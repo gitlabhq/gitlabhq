@@ -1,5 +1,7 @@
 module Projects
   class CreateService < BaseService
+    prepend ::EE::Projects::CreateService
+
     def initialize(user, params)
       @current_user, @params = user, params.dup
     end
@@ -46,6 +48,8 @@ module Projects
         # Set current user namespace if namespace_id is nil
         @project.namespace_id = current_user.namespace_id
       end
+
+      yield(@project)
 
       @project.creator = current_user
 

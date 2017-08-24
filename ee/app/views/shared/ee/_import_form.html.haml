@@ -1,0 +1,15 @@
+- if License.feature_available?(:repository_mirrors)
+  .form-group
+    = f.label :mirror, class: 'label-light' do
+      = f.check_box :mirror, disabled: true
+      %strong
+        Mirror repository
+    .help-block
+      Automatically update this project's branches and tags from the upstream
+      repository every hour. The Git LFS objects will not be synced.
+    - if current_application_settings.should_check_namespace_plan?
+      .help-block
+        Mirroring will only be available if the feature is included in the plan of the selected group or user.
+
+
+  = f.hidden_field :mirror_user_id, value: current_user.id
