@@ -275,6 +275,10 @@ describe API::PipelineSchedules do
 
         expect(response).to have_http_status(:not_found)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", master) }
+      end
     end
 
     context 'authenticated user with invalid permissions' do

@@ -40,3 +40,14 @@ shared_examples_for '404 response' do
     end
   end
 end
+
+shared_examples_for '412 response' do
+  let(:params) { nil }
+  before do
+    delete request, params, { 'HTTP_IF_UNMODIFIED_SINCE' => '1990-01-12T00:00:48-0600' }
+  end
+
+  it 'returns 412' do
+    expect(response).to have_gitlab_http_status(412)
+  end
+end
