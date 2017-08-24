@@ -129,6 +129,11 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
+1. Reconfigure for the change to take effect.
+    ```
+    gitlab-ctl reconfigure
+    ```
+
 ### Step 4. Regenerating the authorized keys in the secondary node
 
 Regenerate the keys for `~/.ssh/authorized_keys`
