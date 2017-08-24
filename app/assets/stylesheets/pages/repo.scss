@@ -3,8 +3,7 @@
   transition: opacity $sidebar-transition-duration;
 }
 
-body[data-page='projects:tree:show'] .content-wrapper,
-body[data-page='projects:blob:show'] .content-wrapper {
+.repo-wrapper {
   padding: 0;
 }
 

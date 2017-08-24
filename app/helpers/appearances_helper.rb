@@ -36,4 +36,10 @@ module AppearancesHelper
     #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
     render "shared/icons/#{icon_name}.svg", size: size
   end
+
+  def repo_wrapper_class
+    is_repo_page = body_data_page == 'projects:tree:show' || body_data_page == 'projects:blob:show'
+
+    'repo-wrapper' if show_new_repo? && is_repo_page
+  end
 end
