@@ -164,8 +164,7 @@ class Repository
 
     return false unless newrev
 
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).add_branch(branch_name, newrev)
+    GitOperationService.new(user, self).add_branch(branch_name, newrev)
 
     after_create_branch
     find_branch(branch_name)
@@ -177,8 +176,7 @@ class Repository
 
     return false unless newrev
 
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).add_tag(tag_name, newrev, options)
+    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
 
     find_tag(tag_name)
   end
@@ -187,8 +185,7 @@ class Repository
     before_remove_branch
     branch = find_branch(branch_name)
 
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).rm_branch(branch)
+    GitOperationService.new(user, self).rm_branch(branch)
 
     after_remove_branch
     true
@@ -198,8 +195,7 @@ class Repository
     before_remove_tag
     tag = find_tag(tag_name)
 
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).rm_tag(tag)
+    GitOperationService.new(user, self).rm_tag(tag)
 
     after_remove_tag
     true
@@ -767,8 +763,7 @@ class Repository
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
 
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).with_branch(
+    GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
@@ -824,8 +819,7 @@ class Repository
   end
 
   def merge(user, source, merge_request, options = {})
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).with_branch(
+    GitOperationService.new(user, self).with_branch(
       merge_request.target_branch) do |start_commit|
       our_commit = start_commit.sha
       their_commit = source
@@ -852,8 +846,7 @@ class Repository
   def revert(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).with_branch(
+    GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
@@ -876,8 +869,7 @@ class Repository
   def cherry_pick(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).with_branch(
+    GitOperationService.new(user, self).with_branch(
       branch_name,
       start_branch_name: start_branch_name,
       start_project: start_project) do |start_commit|
@@ -902,8 +894,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch_name, params)
-    committer = Gitlab::Git::Committer.from_user(user)
-    GitOperationService.new(committer, self).with_branch(branch_name) do
+    GitOperationService.new(user, self).with_branch(branch_name) do
       committer = user_to_committer(user)
 
       create_commit(params.merge(author: committer, committer: committer))

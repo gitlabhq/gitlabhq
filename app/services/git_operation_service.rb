@@ -2,10 +2,9 @@ class GitOperationService
   attr_reader :committer, :repository
 
   def initialize(committer, new_repository)
-    if committer && !committer.is_a?(Gitlab::Git::Committer)
-      raise "expected Gitlab::Git::Committer, got #{committer.inspect}"
-    end
+    committer = Gitlab::Git::Committer.from_user(committer) if committer.is_a?(User)
     @committer = committer
+
     @repository = new_repository
   end
 
