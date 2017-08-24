@@ -961,13 +961,12 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-<<<<<<< HEAD
   def base_pipeline
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
-=======
+  end
+
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
->>>>>>> ce/master
   end
 
   private
