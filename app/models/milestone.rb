@@ -163,7 +163,7 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid, full: false)
-    return if is_group_milestone? && format != :name
+    return if group_milestone? && format != :name
 
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
@@ -207,7 +207,7 @@ class Milestone < ActiveRecord::Base
     group || project
   end
 
-  def is_group_milestone?
+  def group_milestone?
     group_id.present?
   end
 

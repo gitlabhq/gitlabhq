@@ -70,7 +70,7 @@ module Milestoneish
     due_date && due_date.past?
   end
 
-  def is_group_milestone?
+  def group_milestone?
     false
   end
 

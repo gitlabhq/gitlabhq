@@ -5,7 +5,7 @@
   .row
     .col-sm-6
       %strong= link_to truncate(milestone.title, length: 100), milestone_path
-      - if milestone.is_group_milestone?
+      - if milestone.group_milestone?
         %span - Group Milestone
       - else
         %span - Project Milestone
@@ -18,7 +18,7 @@
       &middot;
       = link_to pluralize(milestone.merge_requests.size, 'Merge Request'), merge_requests_path
     .col-sm-6= milestone_progress_bar(milestone)
-  - if milestone.is_a?(GlobalMilestone) || milestone.is_group_milestone?
+  - if milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
     .row
       .col-sm-6
         - if milestone.legacy_group_milestone?
@@ -31,7 +31,7 @@
       - if @group
         .col-sm-6.milestone-actions
           - if can?(current_user, :admin_milestones, @group)
-            - if milestone.is_group_milestone?
+            - if milestone.group_milestone?
               = link_to edit_group_milestone_path(@group, milestone), class: "btn btn-xs btn-grouped" do
                 Edit
               \
