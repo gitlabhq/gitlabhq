@@ -76,7 +76,8 @@ Learn how to deploy a static website with [GitLab Pages](../user/project/pages/i
 
 ## Install and maintain GitLab
 
-[Admin](../#), [install](../install/README.md), upgrade, integrate, migrate to GitLab:
+[Admin](../README.md#administrator-documentation), [install](../install/README.md),
+upgrade, integrate, migrate to GitLab:
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
