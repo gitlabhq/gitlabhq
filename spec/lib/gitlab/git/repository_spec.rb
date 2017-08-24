@@ -1110,6 +1110,34 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#ref_exists?' do
+    shared_examples 'checks the existence of refs' do
+      it 'returns true for an existing tag' do
+        expect(repository.ref_exists?('refs/heads/master')).to eq(true)
+      end
+
+      it 'returns false for a non-existing tag' do
+        expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to eq(false)
+      end
+
+      it 'raises an ArgumentError for an empty string' do
+        expect { repository.ref_exists?('') }.to raise_error(ArgumentError)
+      end
+
+      it 'raises an ArgumentError for an invalid ref' do
+        expect { repository.ref_exists?('INVALID') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when Gitaly ref_exists feature is enabled' do
+      it_behaves_like 'checks the existence of refs'
+    end
+
+    context 'when Gitaly ref_exists feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'checks the existence of refs'
+    end
+  end
+
   describe '#tag_exists?' do
     shared_examples 'checks the existence of tags' do
       it 'returns true for an existing tag' do
