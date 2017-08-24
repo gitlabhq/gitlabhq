@@ -106,7 +106,7 @@
             = f.check_box :user_default_external
             Newly registered users will by default be external
 
-    - if current_application_settings.should_check_namespace_plan?
+    - if ::Gitlab.dev_env_or_com?
       .form-group
         = f.label :check_namespace_plan, 'Check feature availability on namespace plan', class: 'control-label col-sm-2'
         .col-sm-10
