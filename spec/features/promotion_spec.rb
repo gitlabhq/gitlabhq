@@ -179,8 +179,8 @@ describe 'Promotions', js: true do
 
   describe 'for burndown charts', js: true do
     before do
-      allow(License).to receive(:current).and_return(nil)
-      stub_application_setting(check_namespace_plan: false)
+      stub_application_setting(check_namespace_plan: true)
+      allow(Gitlab).to receive(:com?) { true }
 
       project.team << [user, :master]
       sign_in(user)
@@ -188,7 +188,12 @@ describe 'Promotions', js: true do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
-      expect(find('#promote_burndown_charts')).to have_content 'Improve milestones with Burndown Charts.'
+      expect(find('#promote_burndown_charts')).to have_content "Upgrade the plan for #{ .group.name } to improve milestones"
+    end
+
+    it 'should appear in milestone page with owners name' do
+      visit project_milestone_path(otherproject, milestone)
+      expect(find('#promote_burndown_charts')).to have_content "Upgrade #{ otherdeveloper.name }'s plan to improve milestones with Burndown Charts."
     end
 
     it 'does not show when cookie is set' do
