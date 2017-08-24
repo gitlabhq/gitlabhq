@@ -11,15 +11,13 @@ module Projects
         %r{\Arefs/(?:#{names})/}
       end
 
-      attr_reader :project
-
       def initialize(project)
         @project = project
       end
 
       # This could raise Projects::HousekeepingService::LeaseTaken
       def execute
-        Projects::HousekeepingService.new(project).execute do
+        Projects::HousekeepingService.new(@project).execute do
           garbage_refs.each(&rugged.references.method(:delete))
         end
       end
@@ -37,7 +35,7 @@ module Projects
       end
 
       def rugged
-        @rugged ||= project.repository.rugged
+        @rugged ||= @project.repository.rugged
       end
     end
   end
