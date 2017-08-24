@@ -194,6 +194,8 @@ class IssuableBaseService < BaseService
 
   def after_create(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def before_update(issuable)
@@ -202,6 +204,8 @@ class IssuableBaseService < BaseService
 
   def after_update(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def update(issuable)

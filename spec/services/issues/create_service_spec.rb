@@ -35,6 +35,10 @@ describe Issues::CreateService do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'refreshes the number of open issues' do
+        expect { issue }.to change { project.open_issues_count }.from(0).to(1)
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
 

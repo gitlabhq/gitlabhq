@@ -290,6 +290,9 @@
 
 
 .gpg-status-box {
+  padding: 2px 10px;
+  margin-right: $gl-padding;
+
   &:empty {
     display: none;
   }
@@ -318,7 +321,6 @@
   &.valid {
     svg {
       border: 1px solid $brand-success;
-
       fill: $brand-success;
     }
   }
@@ -326,7 +328,6 @@
   &.invalid {
     svg {
       border: 1px solid $common-gray-light;
-
       fill: $common-gray-light;
     }
   }
