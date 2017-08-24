@@ -21,13 +21,13 @@ describe YetAnotherUsersFinder do
     it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
 
     context 'when filtered by search' do
-      let(:params) { {search: 'johndoe' } }
+      let(:params) { { search: 'johndoe' } }
 
       it { is_expected.to match_array([user1]) }
     end
 
     context 'when filtered by skip_users' do
-      let(:params) { {skip_users: [omniauth_user.id, current_user.id] } }
+      let(:params) { { skip_users: [omniauth_user.id, current_user.id] } }
 
       it { is_expected.to match_array([user1, external_user]) }
     end
@@ -39,20 +39,19 @@ describe YetAnotherUsersFinder do
       let!(:done_todo2) { create(:todo, user: user1, author: external_user, state: :done) }
 
       context 'when filtered by todo_filter without todo_state_filter' do
-        let(:params) { {todo_filter: true} }
+        let(:params) { { todo_filter: true } }
 
         it { is_expected.to match_array([]) }
       end
 
       context 'when filtered by todo_filter with pending todo_state_filter' do
-        let(:params) { {todo_filter: true, todo_state_filter: 'pending'} }
+        let(:params) { { todo_filter: true, todo_state_filter: 'pending' } }
 
         it { is_expected.to match_array([user1]) }
       end
 
-
       context 'when filtered by todo_filter with done todo_state_filter' do
-        let(:params) { {todo_filter: true, todo_state_filter: 'done'} }
+        let(:params) { { todo_filter: true, todo_state_filter: 'done' } }
 
         it { is_expected.to match_array([external_user]) }
       end
@@ -60,13 +59,13 @@ describe YetAnotherUsersFinder do
 
     context 'when filtered by current_user' do
       let(:current_user) { user2 }
-      let(:params) { {current_user: true } }
+      let(:params) { { current_user: true } }
 
       it { is_expected.to match_array([user2, user1, external_user, omniauth_user]) }
     end
 
     context 'when filtered by author_id' do
-      let(:params) { {author_id: user2.id } }
+      let(:params) { { author_id: user2.id } }
 
       it { is_expected.to match_array([user2, user1, external_user, omniauth_user, current_user]) }
     end
