@@ -290,12 +290,12 @@ Create a new variable of a pipeline schedule.
 POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 ```
 
-| Attribute     | Type    | required | Description              |
-|---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
-| `key`       | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| `value`     | string  | yes      | The `value` of a variable |
+| Attribute              | Type           | required | Description              |
+|------------------------|----------------|----------|--------------------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `key`                  | string         | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
+| `value`                | string         | yes      | The `value` of a variable |
 
 ```sh
 curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
@@ -316,12 +316,12 @@ Updates the variable of a pipeline schedule.
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 ```
 
-| Attribute     | Type    | required | Description              |
-|---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
-| `key`       | string  | yes      | The `key` of a variable   |
-| `value`     | string  | yes      | The `value` of a variable |
+| Attribute              | Type           | required | Description              |
+|------------------------|----------------|----------|--------------------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `key`                  | string         | yes      | The `key` of a variable   |
+| `value`                | string         | yes      | The `value` of a variable |
 
 ```sh
 curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
@@ -342,18 +342,21 @@ Delete the variable of a pipeline schedule.
 DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 ```
 
-| Attribute      | Type    | required | Description              |
-|----------------|---------|----------|--------------------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
-| `key`     | string  | yes      | The `key` of a variable |
+| Attribute              | Type           | required | Description              |
+|------------------------|----------------|----------|--------------------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id` | integer        | yes      | The pipeline schedule id |
+| `key`                  | string         | yes      | The `key` of a variable |
 
 ```sh
 curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
 ```
 
 ```json
-// Empty
+{
+    "key": "NEW_VARIABLE",
+    "value": "updated value"
+}
 ```
 
 [ce-34518]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34518

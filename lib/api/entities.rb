@@ -819,7 +819,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
-      expose :protected?, as: :protected, if: -> (entity, options) { entity.respond_to?(:protected?) }
+      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
     end
 
     class Pipeline < PipelineBasic

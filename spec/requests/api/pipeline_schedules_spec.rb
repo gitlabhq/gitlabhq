@@ -303,7 +303,7 @@ describe API::PipelineSchedules do
   describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables' do
     let(:params) { attributes_for(:ci_pipeline_schedule_variable) }
 
-    let(:pipeline_schedule) do
+    set(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
@@ -359,7 +359,7 @@ describe API::PipelineSchedules do
   end
 
   describe 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
-    let(:pipeline_schedule) do
+    set(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
@@ -398,7 +398,7 @@ describe API::PipelineSchedules do
   describe 'DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
     let(:master) { create(:user) }
 
-    let!(:pipeline_schedule) do
+    set(:pipeline_schedule) do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
@@ -427,7 +427,7 @@ describe API::PipelineSchedules do
       end
     end
 
-    context 'authenticated user with invalid permissions' do # TODO:
+    context 'authenticated user with invalid permissions' do
       let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: master) }
 
       it 'does not delete pipeline_schedule_variable' do
