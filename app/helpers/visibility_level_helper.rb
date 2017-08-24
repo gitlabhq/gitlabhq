@@ -95,7 +95,7 @@ module VisibilityLevelHelper
             :default_group_visibility,
             to: :current_application_settings
 
-  def skip_level?(form_model, level)
+  def disallowed_visibility_level?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed?)
     !form_model.visibility_level_allowed?(level)
   end
