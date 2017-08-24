@@ -105,33 +105,35 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_parent
-    return if parent_id.blank?
+    return if visibility_level_allowed_by_parent?
 
-    if parent && (visibility_level > parent.visibility_level)
-      errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
-    end
+    errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
   end
 
   def visibility_level_allowed_by_projects
-    check_visibility_level_for(:projects)
+    return if visibility_level_allowed_by_projects?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since this group contains projects with higher visibility.")
   end
 
   def visibility_level_allowed_by_sub_groups
-    check_visibility_level_for(:children)
+    return if visibility_level_allowed_by_sub_groups?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 
-  def check_visibility_level_for(children_type)
-    base_query = public_send(children_type)
-    children_have_higher_visibility = base_query.where('visibility_level > ?', visibility_level).exists?
+  def visibility_level_allowed_by_parent?(level = self.visibility_level)
+    return true unless parent_id.present? || parent
 
-    if children_have_higher_visibility
-      children_label = children_type == :projects ? 'projects' : 'sub groups'
-      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
+    level <= parent.visibility_level
+  end
 
-      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are #{children_label} with higher visibility.")
-    end
+  def visibility_level_allowed_by_projects?(level = self.visibility_level)
+    projects.where('visibility_level > ?', level).none?
+  end
 
-    children_have_higher_visibility
+  def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
+    children.where('visibility_level > ?', level).none?
   end
 
   def avatar_url(**args)
