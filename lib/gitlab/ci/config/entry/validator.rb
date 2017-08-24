@@ -30,7 +30,7 @@ module Gitlab
 
           def key_name
             if key.blank?
-              @entry.class.name.demodulize.underscore.humanize
+              @entry.class.name.to_s.demodulize.underscore.humanize
             else
               key
             end

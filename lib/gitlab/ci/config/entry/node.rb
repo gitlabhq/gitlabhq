@@ -16,8 +16,9 @@ module Gitlab
             @metadata = metadata
             @entries = {}
 
-            @validator = self.class.validator.new(self)
-            @validator.validate(:new)
+            self.class.aspects.to_a.each do |aspect|
+              instance_exec(&aspect)
+            end
           end
 
           def [](key)
@@ -47,7 +48,7 @@ module Gitlab
           end
 
           def errors
-            @validator.messages + descendants.flat_map(&:errors)
+            []
           end
 
           def value
@@ -79,8 +80,8 @@ module Gitlab
           def self.default
           end
 
-          def self.validator
-            Validator
+          def self.aspects
+            @aspects ||= []
           end
         end
       end
