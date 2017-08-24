@@ -33,7 +33,6 @@ export default class ProtectedBranchCreate {
       if ($allowedToPushDropdown.data('glDropdown')) $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
       if ($allowedToMergeDropdown.data('glDropdown')) $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
 
-      
       // Protected branch dropdown
       this.protectedBranchDropdown = new ProtectedBranchDropdown({
         $dropdown: this.$form.find('.js-protected-branch-select'),
