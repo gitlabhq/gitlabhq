@@ -6,7 +6,7 @@ module EE
     end
 
     def build_issue_link_base
-      return super unless @board.is_group_board?
+      return super unless @board.group_board?
 
       "/#{@board.group.path}/:project_path/issues"
     end
@@ -17,7 +17,7 @@ module EE
 
     def board_path(board)
       @board_path ||= begin
-        if board.is_group_board?
+        if board.group_board?
           group_board_path(current_board_parent, board)
         else
           super(board)

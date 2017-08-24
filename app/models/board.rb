@@ -7,7 +7,6 @@ class Board < ActiveRecord::Base
 
   validates :name, presence: true
 
-  # if block needed only for EE which has group boards feature
   validates :project, presence: true, if: -> { respond_to?(:group_id) && !group }
 
   def backlog_list

@@ -1,5 +1,5 @@
 - milestone_filter_opts = { format: :json }
-- milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.is_group_board?
+- milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.group_board?
 
 .block.milestone
   .title

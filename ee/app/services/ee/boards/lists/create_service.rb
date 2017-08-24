@@ -3,7 +3,7 @@ module EE
     module Lists
       module CreateService
         def available_labels_for(board)
-          if board.is_group_board?
+          if board.group_board?
             parent.labels
           else
             super

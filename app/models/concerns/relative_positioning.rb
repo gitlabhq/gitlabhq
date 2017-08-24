@@ -11,7 +11,7 @@ module RelativePositioning
   end
 
   def project_ids
-    project.id
+    [project.id]
   end
 
   def max_relative_position

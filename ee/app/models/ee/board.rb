@@ -23,7 +23,7 @@ module EE
       @parent ||= group || project
     end
 
-    def is_group_board?
+    def group_board?
       group_id.present?
     end
 

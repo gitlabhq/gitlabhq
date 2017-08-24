@@ -12,11 +12,9 @@ module EE
     end
 
     def project_ids
-      if has_group_boards?
-        board_group.projects.pluck(:id)
-      else
-        super
-      end
+      return super unless has_group_boards?
+
+      board_group.projects.select(:id)
     end
   end
 end

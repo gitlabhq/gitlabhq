@@ -1,6 +1,6 @@
 # Group issue board
 
-> Introduced in GitLab 9.5.
+> Introduced in GitLab 10.0.
 
 Group issue boards help users manage teams in organizations
 that have a team-centered or product-centered approach which spans
@@ -8,7 +8,7 @@ many projects.
 
 ![Group Issue Board](img/group_issue_board.png)
 
-The design and functionality are the same of [project boards](../project/issue_board.md) with some small differences:  
+The design and functionality are the same as [project boards](../project/issue_board.md) with some small differences:  
 
 * In a group board all issues within group projects will be displayed 
 on backlog or closed lists. Users don't need to filter them by project on search bar.
