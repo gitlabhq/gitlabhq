@@ -226,7 +226,6 @@ describe Gitlab::PoLinter do
       expect(errors).to include('Failure translating to en with []: broken')
     end
 
-
     it "adds an error when trying to translate with incorrect variables when using unnamed variables" do
       errors = []
 

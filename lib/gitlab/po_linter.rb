@@ -86,15 +86,7 @@ module Gitlab
 
       validate_unnamed_variables(errors, required_variables)
       validate_translation(errors, message_id, required_variables)
-
-      message_translation = join_message(message_translation)
-
-      # We don't need to validate when the message is empty.
-      # Translations could fallback to the default, or we could be validating a
-      # language that does not have plurals.
-      unless message_translation.empty?
-        validate_variable_usage(errors, message_translation, required_variables)
-      end
+      validate_variable_usage(errors, message_translation, required_variables)
     end
 
     def validate_translation(errors, message_id, used_variables)
@@ -150,6 +142,13 @@ module Gitlab
     end
 
     def validate_variable_usage(errors, translation, required_variables)
+      translation = join_message(translation)
+
+      # We don't need to validate when the message is empty.
+      # Translations could fallback to the default, or we could be validating a
+      # language that does not have plurals.
+      return if translation.empty?
+
       found_variables = translation.scan(VARIABLE_REGEX)
 
       missing_variables = required_variables - found_variables
