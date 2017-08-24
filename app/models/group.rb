@@ -136,6 +136,12 @@ class Group < Namespace
     children.where('visibility_level > ?', level).none?
   end
 
+  def visibility_level_allowed?(level = self.visibility_level)
+    visibility_level_allowed_by_parent?(level) &&
+      visibility_level_allowed_by_projects?(level) &&
+      visibility_level_allowed_by_sub_groups?(level)
+  end
+
   def avatar_url(**args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864

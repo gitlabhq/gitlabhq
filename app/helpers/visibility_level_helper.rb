@@ -96,6 +96,7 @@ module VisibilityLevelHelper
             to: :current_application_settings
 
   def skip_level?(form_model, level)
-    form_model.is_a?(Project) && !form_model.visibility_level_allowed?(level)
+    return false unless form_model.respond_to?(:visibility_level_allowed?)
+    !form_model.visibility_level_allowed?(level)
   end
 end
