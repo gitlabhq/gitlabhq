@@ -16,25 +16,32 @@ module API
           optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
         end
         post ":id/(ref/:ref/)trigger/builds", requirements: { ref: /.+/ } do
-          project = find_project(params[:id])
-          trigger = Ci::Trigger.find_by_token(params[:token].to_s)
-          not_found! unless project && trigger
-          unauthorized! unless trigger.project == project
+          authenticate!
+          authorize! :admin_build, user_project
 
           # validate variables
-          variables = params[:variables].to_h
-          unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+          params[:variables] = params[:variables].to_h
+          unless params[:variables].all? { |key, value| key.is_a?(String) && value.is_a?(String) }
             render_api_error!('variables needs to be a map of key-valued strings', 400)
           end
 
-          # create request and trigger builds
-          result = Ci::CreateTriggerRequestService.execute(project, trigger, params[:ref].to_s, variables)
-          pipeline = result.pipeline
+          result = Ci::PipelineTriggerService.new(user_project, nil, params).execute
+          not_found! unless result
 
-          if pipeline.persisted?
-            present result.trigger_request, with: ::API::V3::Entities::TriggerRequest
+          if result[:http_status]
+            render_api_error!(result[:message], result[:http_status])
           else
-            render_validation_error!(pipeline)
+            pipeline = result[:pipeline]
+            trigger_request = pipeline.trigger_request
+
+            # Ws swtiched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
+            # Ci::TriggerRequest doesn't save variables anymore.
+            # Although, to prevent braking compatibility, copying variables and present it as Ci::TriggerRequest.
+            pipeline.variables.each do |variable|
+              trigger_request.variables << { key: variable.key, value: variable.value }
+            end
+
+            present trigger_request, with: ::API::V3::Entities::TriggerRequest
           end
         end
 
