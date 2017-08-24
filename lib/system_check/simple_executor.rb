@@ -53,7 +53,7 @@ module SystemCheck
       end
 
       # When implements a multi check, we don't control the output
-      if check.is_multi_check?
+      if check.multi_check?
         check.multi_check
         return
       end
