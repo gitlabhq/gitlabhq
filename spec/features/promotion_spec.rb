@@ -5,7 +5,7 @@ describe 'Promotions', js: true do
   let(:user) { create(:user) }
   let(:otherdeveloper) { create(:user, name: 'TheOtherDeveloper') }
   let(:group) { create(:group) }
-  let(:project) { create(:project, :repository, namespace: group.namespace) }
+  let(:project) { create(:project, :repository, namespace: group) }
   let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }
   let!(:issue)  { create(:issue, project: project, author: user) }
   let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }
