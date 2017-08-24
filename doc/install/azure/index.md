@@ -8,7 +8,7 @@ Azure is Microsoft's business cloud and GitLab is a pre-configured offering on t
 Hopefully, you aren't surprised to hear that Microsoft and Azure have embraced open source software 
 like Ubuntu, Red Hat Enterprise Linux, and of course - GitLab! This means that you can spin up a 
 pre-configured GitLab VM and have your very own private GitLab up and running in around 30 minutes. 
-Let's get started!
+Let's get started.
 
 ### Getting started
 
