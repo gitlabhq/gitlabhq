@@ -100,7 +100,7 @@ import '~/notes';
       });
     });
 
-    describe('updateNote', () => {
+    fdescribe('updateNote', () => {
       let sampleComment;
       let noteEntity;
       let $form;
@@ -122,6 +122,11 @@ import '~/notes';
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
         $form.find('textarea.js-note-text').val(sampleComment);
+        jasmine.clock().install();
+      });
+
+      afterEach(() => {
+        jasmine.clock().uninstall();
       });
 
       it('updates note and resets edit form', () => {
@@ -131,7 +136,10 @@ import '~/notes';
         spyOn(this.notes, 'setupNewNote');
 
         $('.js-comment-button').click();
+
         deferred.resolve(noteEntity);
+
+        jasmine.clock().tick(200);
 
         const $targetNote = $notesContainer.find(`#note_${noteEntity.id}`);
         const updatedNote = Object.assign({}, noteEntity);
@@ -575,10 +583,15 @@ import '~/notes';
           dataSources: {
             commands: '/root/test-project/autocomplete_sources/commands'
           }
-        };
+        }; 
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
         $form.find('textarea.js-note-text').val(sampleComment);
+        jasmine.clock().install();
+      });
+
+      afterEach(() => {
+        jasmine.clock().uninstall();
       });
 
       it('should remove slash command placeholder when comment with slash commands is done posting', () => {
@@ -589,6 +602,9 @@ import '~/notes';
 
         expect($notesContainer.find('.system-note.being-posted').length).toEqual(1); // Placeholder shown
         deferred.resolve(note);
+
+        jasmine.clock().tick(200);
+
         expect($notesContainer.find('.system-note.being-posted').length).toEqual(0); // Placeholder removed
       });
     });
