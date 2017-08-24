@@ -1,0 +1,39 @@
+{
+  "short_name": "GitLab",
+  "name": "GitLab - Open source software to collaborate on code",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f5f5f5",
+  "icons": [
+    {
+      "src": "webapp/tanuki-launcher-icon-4x.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "density": "4.0"
+    },
+    {
+      "src": "webapp/tanuki-launcher-icon-3x.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "density": "3.0"
+    },
+    {
+      "src": "webapp/tanuki-launcher-icon-2x.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "density": "2.0"
+    },
+    {
+      "src": "webapp/tanuki-launcher-icon-1-5x.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "density": "1.5"
+    },
+    {
+      "src": "webapp/tanuki-launcher-icon-1x.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "density": "1.0"
+    }
+  ]
+}
