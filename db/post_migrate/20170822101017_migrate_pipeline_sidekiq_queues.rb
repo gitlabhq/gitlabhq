@@ -10,5 +10,8 @@ class MigratePipelineSidekiqQueues < ActiveRecord::Migration
 
   def down
     sidekiq_queue_migrate 'pipeline_default', to: 'pipeline'
+    sidekiq_queue_migrate 'pipeline_processing', to: 'pipeline'
+    sidekiq_queue_migrate 'pipeline_hooks', to: 'pipeline'
+    sidekiq_queue_migrate 'pipeline_cache', to: 'pipeline'
   end
 end
