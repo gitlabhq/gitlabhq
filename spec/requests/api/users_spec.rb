@@ -754,6 +754,164 @@ describe API::Users do
     end
   end
 
+  describe 'POST /users/:id/keys' do
+    before do
+      admin
+    end
+
+    it 'does not create invalid GPG key' do
+      post api("/users/#{user.id}/gpg_keys", admin)
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('key is missing')
+    end
+
+    it 'creates GPG key' do
+      key_attrs = attributes_for :gpg_key
+      expect do
+        post api("/users/#{user.id}/gpg_keys", admin), key_attrs
+
+        expect(response).to have_http_status(201)
+      end.to change { user.gpg_keys.count }.by(1)
+    end
+
+    it 'returns 400 for invalid ID' do
+      post api('/users/999999/gpg_keys', admin)
+
+      expect(response).to have_http_status(400)
+    end
+  end
+
+  describe 'GET /user/:id/gpg_keys' do
+    before do
+      admin
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api("/users/#{user.id}/gpg_keys")
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'returns 404 for non-existing user' do
+        get api('/users/999999/gpg_keys', admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns 404 error if key not foud' do
+        delete api("/users/#{user.id}/gpg_keys/42", admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 GPG Key Not Found')
+      end
+
+      it 'returns array of GPG keys' do
+        user.gpg_keys << gpg_key
+        user.save
+
+        get api("/users/#{user.id}/gpg_keys", admin)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['key']).to eq(gpg_key.key)
+      end
+    end
+  end
+
+  describe 'DELETE /user/:id/gpg_keys/:key_id' do
+    before do
+      admin
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        delete api("/users/#{user.id}/keys/42")
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'deletes existing key' do
+        user.gpg_keys << gpg_key
+        user.save
+
+        expect do
+          delete api("/users/#{user.id}/gpg_keys/#{gpg_key.id}", admin)
+
+          expect(response).to have_http_status(204)
+        end.to change { user.gpg_keys.count }.by(-1)
+      end
+
+      it 'returns 404 error if user not found' do
+        user.keys << key
+        user.save
+
+        delete api("/users/999999/gpg_keys/#{gpg_key.id}", admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns 404 error if key not foud' do
+        delete api("/users/#{user.id}/gpg_keys/42", admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 GPG Key Not Found')
+      end
+    end
+  end
+
+  describe 'POST /user/:id/gpg_keys/:key_id/revoke' do
+    before do
+      admin
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        post api("/users/#{user.id}/gpg_keys/42/revoke")
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'revokes existing key' do
+        user.gpg_keys << gpg_key
+        user.save
+
+        expect do
+          post api("/users/#{user.id}/gpg_keys/#{gpg_key.id}/revoke", admin)
+
+          expect(response).to have_http_status(:accepted)
+        end.to change { user.gpg_keys.count }.by(-1)
+      end
+
+      it 'returns 404 error if user not found' do
+        user.gpg_keys << gpg_key
+        user.save
+
+        post api("/users/999999/gpg_keys/#{gpg_key.id}/revoke", admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
+      it 'returns 404 error if key not foud' do
+        post api("/users/#{user.id}/gpg_keys/42/revoke", admin)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 GPG Key Not Found')
+      end
+    end
+  end
+
   describe "POST /users/:id/emails" do
     before do
       admin

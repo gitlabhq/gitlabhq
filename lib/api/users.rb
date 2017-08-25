@@ -233,6 +233,86 @@ module API
         destroy_conditionally!(key)
       end
 
+      desc 'Add a GPG key to a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params.delete(:id))
+        not_found!('User') unless user
+
+        key = user.gpg_keys.new(declared_params(include_missing: false))
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Get the GPG keys of a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        present paginate(user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      delete ':id/gpg_keys/:key_id' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        status 204
+        key.destroy
+      end
+
+      desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post ':id/gpg_keys/:key_id/revoke' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
+      end
+
       desc 'Add an email address to a specified user. Available only for admins.' do
         success Entities::Email
       end
