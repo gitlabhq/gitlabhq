@@ -211,8 +211,6 @@ module Github
             fetch_comments(merge_request, :comment, comments_url)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
-          ensure
-            pull_request.remove_restored_branches!
           end
         end
 
