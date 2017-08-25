@@ -37,7 +37,7 @@ module Gitlab
 
           class UnknownStrategy < Entry::Node
             def errors
-              ['policy has to be either an array of conditions or a hash']
+              ["#{location} has to be either an array of conditions or a hash"]
             end
           end
 

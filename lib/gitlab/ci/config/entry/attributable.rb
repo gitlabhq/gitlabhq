@@ -8,6 +8,8 @@ module Gitlab
           class_methods do
             def attributes(*attributes)
               attributes.flatten.each do |attribute|
+                raise ArgumentError if method_defined?(attribute)
+
                 define_method(attribute) do
                   return unless config.is_a?(Hash)
 

@@ -81,7 +81,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
 
     it 'returns information about errors' do
       expect(entry.errors)
-        .to include 'policy has to be either an array of conditions or a hash'
+        .to include /has to be either an array of conditions or a hash/
     end
   end
 

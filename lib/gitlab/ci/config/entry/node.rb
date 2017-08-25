@@ -71,6 +71,13 @@ module Gitlab
             true
           end
 
+          def location
+            name = @key.presence || self.class.name.to_s.demodulize
+                                        .underscore.humanize.downcase
+
+            ancestors.map(&:key).append(name).compact.join(':')
+          end
+
           def inspect
             val = leaf? ? config : descendants
             unspecified = specified? ? '' : '(unspecified) '
