@@ -111,4 +111,30 @@ describe VisibilityLevelHelper do
       end
     end
   end
+
+  describe "disallowed_visibility_level_description" do
+    let(:group) { create(:group, :internal) }
+    let!(:subgroup) { create(:group, :internal, parent: group) }
+    let!(:project) { create(:project, :internal, group: group) }
+
+    describe "project" do
+      it "provides correct description for disabled levels" do
+        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, project))
+          .to include "the visibility of #{project.group.name} is internal"
+      end
+    end
+
+    describe "group" do
+      it "provides correct description for disabled levels" do
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PRIVATE)).to be_truthy
+        expect(disallowed_visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group))
+          .to include "it contains projects with higher visibility", "it contains sub-groups with higher visibility"
+
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, subgroup))
+          .to include "the visibility of its parent group is internal"
+      end
+    end
+  end
 end
