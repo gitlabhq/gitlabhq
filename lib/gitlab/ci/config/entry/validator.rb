@@ -24,16 +24,11 @@ module Gitlab
           private
 
           def location
-            predecessors = ancestors.map(&:key).compact
-            predecessors.append(key_name).join(':')
+            ancestors.map(&:key).compact.append(key_name).join(':')
           end
 
           def key_name
-            if key.blank?
-              @entry.class.name.to_s.demodulize.underscore.humanize
-            else
-              key
-            end
+            key.presence || @entry.class.name.to_s.demodulize.underscore.humanize
           end
         end
       end
