@@ -19,6 +19,11 @@ export default {
       required: true,
     },
   },
+  computed: {
+    abbreviatedLastCommitHash() {
+      return this.lastCommitHash.slice(0, 8);
+    },
+  },
 };
 </script>
 
@@ -34,7 +39,7 @@ export default {
       v-if="lastCommitHash.length > 0"
       :href="lastCommitUrl"
     >
-      {{lastCommitHash.slice(0, 8)}}
+      {{abbreviatedLastCommitHash}}
     </a>
     <i
       v-else
