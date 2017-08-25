@@ -123,7 +123,7 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
-    return true unless parent_id.present? || parent
+    return true unless parent_id && parent_id.nonzero?
 
     level <= parent.visibility_level
   end
