@@ -32,15 +32,15 @@ export default {
   computed: {
     activeFileLastCommitUrl() {
       const lastCommit = this.activeFileLastCommitInfo;
-      return lastCommit && lastCommit.url;
+      return lastCommit.url;
     },
     activeFileLastCommitHash() {
       const lastCommit = this.activeFileLastCommitInfo;
-      return lastCommit && lastCommit.hash;
+      return lastCommit.hash;
     },
     activeFileLastCommitInfo() {
       return Helper.getFileLastCommitInfo(this.activeFile.name);
-    }
+    },
   },
 
   methods: {

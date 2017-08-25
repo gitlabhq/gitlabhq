@@ -9,7 +9,6 @@ export default {
     lastCommitHash: {
       type: String,
       required: true,
-      default: '',
     },
     lastCommitUrl: {
       type: String,

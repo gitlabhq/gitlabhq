@@ -25,7 +25,13 @@ const RepoHelper = {
   },
 
   getFileLastCommitInfo(filename) {
-    const lastCommit = {};
+    const lastCommit = {
+      hash: '',
+      message: '',
+      update: '',
+      url: '',
+    };
+
     const foundFile = Store.files.find(file => file.name === filename);
 
     if (foundFile) {
