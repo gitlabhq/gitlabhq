@@ -84,4 +84,10 @@ describe Gitlab::Ci::Config::Entry::Policy do
         .to include 'policy has to be either an array of conditions or a hash'
     end
   end
+
+  describe '.default' do
+    it 'does not have a default value' do
+      expect(described_class.default).to be_nil
+    end
+  end
 end
