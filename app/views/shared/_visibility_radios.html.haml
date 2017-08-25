@@ -12,6 +12,6 @@
         = visibility_level_description(level, form_model)
       .option-disabled-reason
         - if restricted
-          This visibility level has been restricted by the administrator.
+          = restricted_visibility_level_description(level)
         - elsif disallowed
-          This option is not available the visibility of parent or child items prevents it.
+          = disallowed_visibility_level_description(level, form_model)

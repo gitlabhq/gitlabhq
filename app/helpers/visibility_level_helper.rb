@@ -63,6 +63,56 @@ module VisibilityLevelHelper
     end
   end
 
+  def restricted_visibility_level_description(level)
+    level_name = Gitlab::VisibilityLevel.level_name(level)
+    "#{level_name.capitalize} visibilitiy has been restricted by the administrator."
+  end
+
+  def disallowed_visibility_level_description(level, form_model)
+    case form_model
+    when Project
+      disallowed_project_visibility_level_description(level, form_model)
+    when Group
+      disallowed_group_visibility_level_description(level, form_model)
+    end
+  end
+
+  def disallowed_project_visibility_level_description(level, project)
+    level_name = Gitlab::VisibilityLevel.level_name(level).downcase
+    reasons = []
+
+    unless project.visibility_level_allowed_as_fork?(level)
+      reasons << "the fork source project has lower visibility"
+    end
+
+    unless project.visibility_level_allowed_by_group?(level)
+      reasons << "the visibility of #{project.group.name} is #{project.group.visibility}"
+    end
+
+    reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
+    "This project cannot be #{level_name}#{reasons}."
+  end
+
+  def disallowed_group_visibility_level_description(level, group)
+    level_name = Gitlab::VisibilityLevel.level_name(level).downcase
+    reasons = []
+
+    unless group.visibility_level_allowed_by_projects?(level)
+      reasons << "it contains projects with higher visibility"
+    end
+
+    unless group.visibility_level_allowed_by_sub_groups?(level)
+      reasons << "it contains sub-groups with higher visibility"
+    end
+
+    unless group.visibility_level_allowed_by_parent?(level)
+      reasons << "the visibility of its parent group is #{group.parent.visibility}"
+    end
+
+    reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
+    "This group cannot be #{level_name}#{reasons}."
+  end
+
   def visibility_icon_description(form_model)
     case form_model
     when Project
