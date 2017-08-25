@@ -73,7 +73,7 @@ module Github
       end
 
       def source_branch_name_prefixed
-        "gh-#{target_branch_short_sha}/#{iid}/#{source_branch_user}/#{source_branch_ref}"
+        "refs/pull/#{pull_request.iid}/head"
       end
 
       def target_branch
