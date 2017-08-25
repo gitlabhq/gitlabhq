@@ -1,6 +1,7 @@
 <script>
 import Store from '../stores/repo_store';
 import Helper from '../helpers/repo_helper';
+import BlobViewerMixin from '../mixins/blob_viewer_mixin';
 
 export default {
   data: {
@@ -11,23 +12,8 @@ export default {
     activeBlobViewers: { type: Object, required: true },
     activeBlobContent: { type: String, required: false },
   },
+  mixins: [BlobViewerMixin],
   computed: {
-    richViewerDetails() {
-      return this.activeBlobViewers.rich_viewer;
-    },
-    simpleViewerDetails() {
-      return this.activeBlobViewers.simple_viewer;
-    },
-    canDisplayRichViewer() {
-      // may need to be moved into higher level because it determine whether switcher should be shown
-      return this.richViewerDetails !== null && this.simpleViewerDetails.name === 'text';
-    },
-    shouldDisplayRichViewer() {
-      if (this.canDisplayRichViewer &&
-    },
-    currentBlobViewer() {
-      return this.shouldDisplayRichViewer ? this.richViewerDetails : this.simpleViewerDetails;
-    },
     largeFileIsCollapsed() {
       return this.currentBlobViewer.render_error === 'collapsed';
     },

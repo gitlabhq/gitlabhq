@@ -36,8 +36,6 @@ export default {
       this.toggleDialogOpen(false);
       this.dialog.status = status;
     },
-
-    toggleBlobView: Store.toggleBlobView,
   },
 };
 </script>
@@ -59,12 +57,14 @@ export default {
         <repo-preview
           class="blob-viewer-container"
           v-if="currentBlobView === 'repo-preview'"
-          :active-blob-viewers='activeFile'
           :active-blob-content='activeBlobContent'
+          :active-blob-viewers='activeBlobViewers'
+          :active-blob-viewer-type='activeBlobViewerType'
         />
 
         <repo-file-buttons
-          :active-blob-viewers='activeFile'
+          :active-blob-viewers='activeBlobViewers'
+          :active-blob-viewer-type='activeBlobViewerType'
         />
       </div>
     </div>

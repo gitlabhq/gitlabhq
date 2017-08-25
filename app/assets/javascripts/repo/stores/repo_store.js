@@ -17,6 +17,9 @@ const RepoStore = {
   projectUrl: '',
   blobRaw: '',
   currentBlobView: 'repo-preview',
+  activeBlobContent: '',
+  activeBlobViewers: null,
+  activeBlobViewerType: '',
   openedFiles: [],
   submitCommitsLoading: false,
   dialog: {

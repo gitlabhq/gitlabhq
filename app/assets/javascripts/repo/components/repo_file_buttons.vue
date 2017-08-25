@@ -2,20 +2,17 @@
 import Store from '../stores/repo_store';
 import Helper from '../helpers/repo_helper';
 import RepoMixin from '../mixins/repo_mixin';
+import BlobViewerMixin from '../mixins/blob_viewer_mixin';
 
-const RepoFileButtons = {
+export default {
   data: () => Store,
   props: {
     activeBlobViewers: { type: Object, required: false },
+    selectedBlobViewerType: { type: String, required: false },
   },
-  mixins: [RepoMixin],
+  mixins: [RepoMixin, BlobViewerMixin],
 
   computed: {
-    viewerIsSimple() {},
-    viewerIsRich() {}
-    canDisplayRichViewer() {
-      // duplicate
-    }
     rawDownloadButtonLabel() {
       return this.binary ? 'Download' : 'Raw';
     },
@@ -37,8 +34,6 @@ const RepoFileButtons = {
     rawPreviewToggle: Store.toggleRawPreview,
   },
 };
-
-export default RepoFileButtons;
 </script>
 
 <template>
