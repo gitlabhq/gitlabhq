@@ -499,12 +499,12 @@ describe 'project routing' do
   # project_blob GET    /:project_id/blob/:id(.:format) blob#show {id: /.+/, project_id: /[^\/]+/}
   describe Projects::BlobController, 'routing' do
     it 'to #show' do
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
-      expect(get('/gitlab/gitlabhq/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
-      expect(get('/gitlab/gitlabhq/blob/master/files.scss')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
-      expect(get('/gitlab/gitlabhq/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/blob/index.js')
-      expect(get('/gitlab/gitlabhq/blob/blob/master/blob/index.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'blob/master/blob/index.js')
+      expect(get('/gitlab/gitlabhq/blob/master/app/models/project.rb')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
+      expect(get('/gitlab/gitlabhq/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
+      expect(get('/gitlab/gitlabhq/blob/master/app/models/diff.js')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
+      expect(get('/gitlab/gitlabhq/blob/master/files.scss')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+      expect(get('/gitlab/gitlabhq/blob/master/blob/index.js')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/blob/index.js')
+      expect(get('/gitlab/gitlabhq/blob/blob/master/blob/index.js')).to route_to('projects/blob#show', format: 'html', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'blob/master/blob/index.js')
     end
   end
 
