@@ -82,6 +82,21 @@ describe Gitlab::Middleware::ReadonlyGeo do
       expect(subject).to disallow_request
     end
 
+    it 'expects a POST LFS request to upload objects to be disallowed' do
+      body = ActiveSupport::JSON.encode({
+        'operation' => 'upload',
+        'objects' => [
+          { 'oid' => '12345678',
+            'size' => '123' }
+        ]
+      })
+
+      response = request.post('/root/rouge.git/info/lfs/objects/batch', input: StringIO.new(body))
+
+      expect(response).to be_a_redirect
+      expect(subject).to disallow_request
+    end
+
     context 'whitelisted requests' do
       it 'expects DELETE request to logout to be allowed' do
         response = request.delete('/users/sign_out')
@@ -99,6 +114,21 @@ describe Gitlab::Middleware::ReadonlyGeo do
 
       it 'expects a GET status request to be allowed' do
         response = request.get("/api/#{API::API.version}/geo/status")
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST LFS request to download objects to be allowed' do
+        body = ActiveSupport::JSON.encode({
+          'operation' => 'download',
+          'objects' => [
+            { 'oid' => '12345678',
+              'size' => '123' }
+          ]
+        })
+
+        response = request.post('/root/rouge.git/info/lfs/objects/batch', input: StringIO.new(body))
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request
