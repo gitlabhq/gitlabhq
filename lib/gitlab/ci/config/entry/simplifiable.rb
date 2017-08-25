@@ -10,7 +10,7 @@ module Gitlab
               variant.condition.call(config)
             end
 
-            entry = self.class.const_get(strategy.name)
+            entry = self.class.entry_class(strategy)
 
             super(entry.new(config, metadata))
           end
@@ -22,7 +22,15 @@ module Gitlab
           end
 
           def self.strategies
-            @strategies || []
+            @strategies.to_a
+          end
+
+          def self.entry_class(strategy)
+            if strategy.present?
+              self.const_get(strategy.name)
+            else
+              self::UnknownStrategy
+            end
           end
         end
       end

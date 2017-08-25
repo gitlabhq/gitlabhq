@@ -57,5 +57,31 @@ describe Gitlab::Ci::Config::Entry::Policy do
   end
 
   context 'when using complex policy' do
+    context 'when it is an empty hash' do
+      let(:config) { { } }
+
+      it 'reports an error about configuration not being present' do
+        expect(entry.errors).to include /can't be blank/
+      end
+    end
+
+    context 'when it contains unknown keys' do
+      let(:config) { { refs: ['something'], invalid: 'master' } }
+
+      it 'is not valid entry' do
+        expect(entry).not_to be_valid
+        expect(entry.errors)
+          .to include /policy config contains unknown keys: invalid/
+      end
+    end
+  end
+
+  context 'when policy strategy does not match' do
+    let(:config) { 'string strategy' }
+
+    it 'returns information about errors' do
+      expect(entry.errors)
+        .to include 'policy has to be either an array of conditions or a hash'
+    end
   end
 end
