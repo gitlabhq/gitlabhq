@@ -1,0 +1,5 @@
+---
+title: Fix failure when issue is authored by a deleted user
+merge_request: 13807
+author:
+type: fixed
