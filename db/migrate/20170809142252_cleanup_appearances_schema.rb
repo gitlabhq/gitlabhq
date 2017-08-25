@@ -7,7 +7,7 @@ class CleanupAppearancesSchema < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  NOT_NULL_COLUMNS = %i[title description description_html created_at updated_at]
+  NOT_NULL_COLUMNS = %i[title description created_at updated_at]
 
   TIME_COLUMNS = %i[created_at updated_at]
 
