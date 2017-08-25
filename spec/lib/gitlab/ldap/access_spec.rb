@@ -374,7 +374,7 @@ describe Gitlab::LDAP::Access do
       allow(access).to receive(:ldap_user).and_return(person_with_memberof)
 
       expect(LdapGroupSyncWorker).to receive(:perform_async)
-                                       .with(group_ids, provider)
+        .with(a_collection_containing_exactly(*group_ids), provider)
 
       access.update_memberships
     end
