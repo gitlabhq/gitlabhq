@@ -2,6 +2,7 @@
 /* global ProjectSelect */
 
 import Cookies from 'js-cookie';
+import getSafeBranchName from './repo/helpers/get_safe_branch_name_helper';
 
 (function() {
   this.Project = (function() {
@@ -119,6 +120,7 @@ import Cookies from 'js-cookie';
           toggleLabel: function(obj, $el) {
             return $el.text().trim();
           },
+          updateLabel: getSafeBranchName,
           clicked: function(options) {
             const { e } = options;
             e.preventDefault();

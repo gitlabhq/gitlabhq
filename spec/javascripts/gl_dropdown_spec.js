@@ -302,25 +302,26 @@ import '~/lib/utils/url_utility';
         expect(input.text).toHaveBeenCalledWith(branch);
       });
 
-      it('does not replace repeated dashes with single dashes', () => {
-        const branch = 'some--branch--name';
-        options.inputFieldName = branch;
+      it('processes the text via function options.updateLabel if available', () => {
+        const branch = 'bran1ch';
+        gitLabDropdownInput.options.updateLabel = label => `${label}:something`;
+        spyOn(gitLabDropdownInput.options, 'updateLabel').and.callThrough();
 
+        event.currentTarget.value = branch;
         GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
 
-        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, branch, {}, true);
-        expect(input.text).toHaveBeenCalledWith(branch);
+        expect(gitLabDropdownInput.options.updateLabel).toHaveBeenCalledWith(branch);
+        expect(input.text).toHaveBeenCalledWith(`${branch}:something`);
       });
 
-      it('removes non-alphanumeric characters', () => {
-        const branch = '$some#-branch!';
-        const val = 'some-branch';
-        options.inputFieldName = branch;
+      it('processes the text via string options.updateLabel if available', () => {
+        const branch = 'bran1ch';
+        gitLabDropdownInput.options.updateLabel = 'override';
 
+        event.currentTarget.value = branch;
         GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
 
-        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, val, {}, true);
-        expect(input.text).toHaveBeenCalledWith(val);
+        expect(input.text).toHaveBeenCalledWith('override');
       });
     });
 

@@ -43,8 +43,10 @@ const GitLabDropdownInput = (function() {
 
   GitLabDropdownInput.prototype.setToggleText = function(e) {
     var val = e.currentTarget.value || this.options.inputFieldName;
-    val = val.split(' ').join('-') // replaces space with dash
-      .replace(/[^a-zA-Z0-9-/]/g, ''); // replace non alphanumeric
+    if (this.options.updateLabel) {
+      val = typeof this.options.updateLabel === 'function' ? this.options.updateLabel(val) : this.options.updateLabel;
+    }
+
     this.cb(this.options.fieldName, val, {}, true);
     this.input.closest('.dropdown')
       .find('.dropdown-toggle-text')
@@ -953,9 +955,9 @@ GitLabDropdown = (function() {
     }
 
     let toggleText = this.options.toggleLabel(selected, el, instance);
+    // Option to override or process the dropdown label text
     if (this.options.updateLabel) {
-      // Option to override the dropdown label text
-      toggleText = this.options.updateLabel;
+      toggleText = typeof this.options.updateLabel === 'function' ? this.options.updateLabel(toggleText) : this.options.updateLabel;
     }
 
     return $(this.el).find(".dropdown-toggle-text").text(toggleText);
