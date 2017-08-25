@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Daemon do
+describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   describe '#run!' do
     let!(:geo_node) { create(:geo_node, :current) }
 
