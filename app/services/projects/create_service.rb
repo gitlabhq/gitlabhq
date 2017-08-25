@@ -112,8 +112,7 @@ module Projects
       if group || @project.gitlab_project_import?
         current_user.refresh_authorized_projects
       else
-        owners = [current_user, @project.namespace.owner].compact.uniq
-        @project.add_master(owners, current_user: current_user)
+        @project.add_master(@project.namespace.owner, current_user: current_user)
       end
     end
 
