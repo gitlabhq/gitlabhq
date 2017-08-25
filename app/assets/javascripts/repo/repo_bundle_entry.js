@@ -1,3 +1,3 @@
 import initRepoBundle from './repo_index';
 
-$(initRepoBundle);
+document.addEventListener('DOMContentLoaded', initRepoBundle);
