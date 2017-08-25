@@ -5,11 +5,17 @@ import RepoMixin from '../mixins/repo_mixin';
 
 const RepoFileButtons = {
   data: () => Store,
-
+  props: {
+    activeBlobViewers: { type: Object, required: false },
+  },
   mixins: [RepoMixin],
 
   computed: {
-
+    viewerIsSimple() {},
+    viewerIsRich() {}
+    canDisplayRichViewer() {
+      // duplicate
+    }
     rawDownloadButtonLabel() {
       return this.binary ? 'Download' : 'Raw';
     },
@@ -17,6 +23,14 @@ const RepoFileButtons = {
     canPreview() {
       return Helper.isRenderable();
     },
+
+    copySourceStatus() {
+      if (!this.viewerIsSimple) {
+        return `Switch to the source to copy it to the clipboard`;
+      }
+
+      return `Copy source to clipboard`;
+    }
   },
 
   methods: {
@@ -37,6 +51,74 @@ export default RepoFileButtons;
       {{rawDownloadButtonLabel}}
     </a>
 
+    <div class="viewer-switcher btn-group">
+      <button
+        v-if="canDisplayRichViewer"
+        aria-label="Display source"
+        class="btn btn-default btn-sm js-blob-viewer-switch-btn has-tooltip"
+        :class='{ active: viewerIsSimple }'
+        :disabled="viewerIsSimple"
+        data-container="body"
+        title=""
+        data-original-title="Display source">
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-code">
+        </i>
+      </button>
+
+      <button
+        v-if="canDisplayRichViewer"
+        aria-label="Display rendered file"
+        class="btn btn-default btn-sm js-blob-viewer-switch-btn has-tooltip active"
+        :class='{ active: viewerIsRich }'
+        :disabled="viewerIsRich"
+        data-container="body"
+        title=""
+        data-original-title="Display rendered file">
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-file-text-o">
+        </i>
+      </button>
+
+      <button
+        class="btn btn-sm js-copy-blob-source-btn"
+        data-toggle="tooltip"
+        data-placement="bottom"
+        data-container="body"
+        data-class="btn btn-sm js-copy-blob-source-btn"
+        data-title="Copy source to clipboard"
+        data-clipboard-target=".blob-content[data-blob-id='cc85e5de40f49d03b59fdaffaafa23a18a07acb2']"
+        :disabled="viewerIsRich"
+        type="button"
+        title="copySourceStatus"
+        aria-label="Copy source to clipboard"
+        data-original-title="Copy source to clipboard">
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-clipboard">
+        </i>
+      </button>
+
+      <a
+        class="btn btn-sm has-tooltip"
+        target="_blank"
+        rel="noopener noreferrer"
+        title=""
+        data-container="body"
+        href="/gitlab-org/gitlab-ce/raw/master/app/views/projects/blob/_viewer.html.haml"
+        data-original-title="Open raw">
+        <i
+          aria-hidden="true"
+          data-hidden="true"
+          class="fa fa-file-code-o">
+        </i>
+      </a>
+    </div>
     <div
       class="btn-group"
       role="group"

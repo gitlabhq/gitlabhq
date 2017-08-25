@@ -130,50 +130,73 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getContent(treeOrFile) {
-    let file = treeOrFile;
-    return Service.getContent()
-    .then((response) => {
-      const data = response.data;
-      Store.isTree = RepoHelper.isTree(data);
-      if (!Store.isTree) {
-        if (!file) file = data;
-        Store.binary = data.binary;
+  getBlobContent(data) {
+    return axios(data.simple_viewer.path).then((resp) => {
+      debugger;
+    })
+  },
+  setTreeContent(tree, data) {
+    if (!tree) {
+      Store.isRoot = RepoHelper.isRoot(Service.url);
+    }
 
-        if (data.binary) {
-          // file might be undefined
-          RepoHelper.setBinaryDataAsBase64(data);
-          Store.setViewToPreview();
-        } else if (!Store.isPreviewView()) {
-          if (!data.render_error) {
-            Service.getRaw(data.raw_path)
-            .then((rawResponse) => {
-              Store.blobRaw = rawResponse.data;
-              data.plain = rawResponse.data;
-              RepoHelper.setFile(data, file);
-            }).catch(RepoHelper.loadingError);
-          }
-        }
+    tree = RepoHelper.setDirectoryOpen(tree);
 
-        if (Store.isPreviewView()) {
+    const newDirectory = RepoHelper.dataToListOfFiles(data);
+
+    Store.addFilesToDirectory(tree, Store.files, newDirectory);
+
+    Store.prevURL = Service.blobURLtoParentTree(Service.url);
+  },
+  setFileContent(file, data) {
+    if (!file) {
+      file = data;
+    }
+
+    Store.binary = data.binary;
+
+    if (Store.binary) {
+      // file might be undefined
+      RepoHelper.setBinaryDataAsBase64(data);
+      Store.setViewToPreview();
+    } else if (!Store.isPreviewView()) {
+      // TODO: What is happening in this state?
+      if (!data.render_error) {
+        Service.getRaw(data.raw_path)
+        .then((rawResponse) => {
+          Store.blobRaw = rawResponse.data;
+          data.plain = rawResponse.data;
           RepoHelper.setFile(data, file);
+        }).catch(RepoHelper.loadingError);
+      }
+    }
+
+    if (Store.isPreviewView()) {
+      RepoHelper.setFile(data, file);
+    }
+    // TODO: Find out when this would be the case
+    // if the file tree is empty
+    if (Store.files.length === 0) {
+      const parentURL = Service.blobURLtoParentTree(Service.url);
+      Service.url = parentURL;
+      RepoHelper.getContent();
+    }
+  },
+  getContent(treeOrFile) {
+    return Service.getContent()
+      .then((response) => {
+        const data = response.data;
+
+        Store.isTree = RepoHelper.isTree(data);
+
+        if (!Store.isTree) {
+          return RepoHelper.getBlobContent(data)
+            .then(RepoHelper.setFileContent(treeOrFile, data));
         }
 
-        // if the file tree is empty
-        if (Store.files.length === 0) {
-          const parentURL = Service.blobURLtoParentTree(Service.url);
-          Service.url = parentURL;
-          RepoHelper.getContent();
-        }
-      } else {
-        // it's a tree
-        if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
-        file = RepoHelper.setDirectoryOpen(file);
-        const newDirectory = RepoHelper.dataToListOfFiles(data);
-        Store.addFilesToDirectory(file, Store.files, newDirectory);
-        Store.prevURL = Service.blobURLtoParentTree(Service.url);
-      }
-    }).catch(RepoHelper.loadingError);
+        return RepoHelper.setTreeContent(treeOrFile, data);
+      })
+      .catch(RepoHelper.loadingError);
   },
 
   setFile(data, file) {

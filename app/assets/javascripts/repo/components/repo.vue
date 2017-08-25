@@ -50,10 +50,22 @@ export default {
       class="panel-right"
       :class="{'edit-mode': editMode}">
         <repo-tabs/>
-        <component
-          :is="currentBlobView"
-          class="blob-viewer-container"/>
-        <repo-file-buttons/>
+
+        <repo-editor
+          class="blob-viewer-container"
+          v-if="currentBlobView === 'repo-editor'"
+        />
+
+        <repo-preview
+          class="blob-viewer-container"
+          v-if="currentBlobView === 'repo-preview'"
+          :active-blob-viewers='activeFile'
+          :active-blob-content='activeBlobContent'
+        />
+
+        <repo-file-buttons
+          :active-blob-viewers='activeFile'
+        />
       </div>
     </div>
     <repo-commit-section/>
