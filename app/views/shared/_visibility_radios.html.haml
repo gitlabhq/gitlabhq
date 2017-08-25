@@ -8,9 +8,10 @@
       = visibility_level_icon(level)
       .option-title
         = visibility_level_label(level)
-      .option-descr
+      .option-description
         = visibility_level_description(level, form_model)
-- unless restricted_visibility_levels.empty?
-  %div
-    %span.info
-      Some visibility level settings have been restricted by the administrator.
+      .option-disabled-reason
+        - if restricted
+          This visibility level has been restricted by the administrator.
+        - elsif disallowed
+          This option is not available the visibility of parent or child items prevents it.

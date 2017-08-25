@@ -158,14 +158,27 @@
       color: $gl-text-color;
     }
 
-    .option-descr {
+    .option-description,
+    .option-disabled-reason {
       margin-left: 29px;
       color: $project-option-descr-color;
+    }
+
+    .option-disabled-reason {
+      display: none;
     }
 
     &.disabled {
       i.fa {
         opacity: 0.5;
+      }
+
+      .option-description {
+        display: none;
+      }
+
+      .option-disabled-reason {
+        display: block;
       }
     }
   }
