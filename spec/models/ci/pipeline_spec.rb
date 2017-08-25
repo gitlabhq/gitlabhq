@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  set(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -156,6 +156,18 @@ describe Ci::Pipeline, :mailer do
 
     def create_build(name, status)
       create(:ci_build, name: name, status: status, pipeline: pipeline)
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { pipeline.predefined_variables }
+
+    it { is_expected.to be_an(Array) }
+
+    it 'includes the defined keys' do
+      keys = subject.map { |v| v[:key] }
+
+      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
     end
   end
 

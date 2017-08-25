@@ -38,7 +38,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
           'a' * 63 => true,
           'a' * 64 => false,
           'a.b' => false,
-          'a*b' => false
+          'a*b' => false,
+          'FOO' => true
         }.each do |namespace, validity|
           it "validates #{namespace} as #{validity ? 'valid' : 'invalid'}" do
             subject.namespace = namespace

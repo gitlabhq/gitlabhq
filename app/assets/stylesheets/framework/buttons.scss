@@ -1,7 +1,7 @@
 @mixin btn-default {
   border-radius: 3px;
   font-size: $gl-font-size;
-  font-weight: 400;
+  font-weight: $gl-font-weight-normal;
   padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,

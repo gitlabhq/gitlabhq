@@ -1,4 +1,0 @@
----
-title: Prevent LDAP login callback from being called with a GET request
-merge_request: 13059
-author:

@@ -1,5 +1,0 @@
----
-title: Fix deleting GitLab Pages files when a project is removed
-merge_request: 13631
-author:
-type: fixed

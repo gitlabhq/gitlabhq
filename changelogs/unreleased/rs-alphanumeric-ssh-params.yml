@@ -1,5 +1,0 @@
----
-title: Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric
-  character
-merge_request:
-author:
