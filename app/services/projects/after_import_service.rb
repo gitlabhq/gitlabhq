@@ -1,10 +1,7 @@
 module Projects
   class AfterImportService
-    RESERVED_REFS_NAMES =
-      %w[heads tags merge-requests keep-around environments].freeze
-
     RESERVED_REFS_REGEXP =
-      %r{\Arefs/(?:#{Regexp.union(*RESERVED_REFS_NAMES)})/}
+      %r{\Arefs/(?:#{Regexp.union(*Repository::RESERVED_REFS_NAMES)})/}
 
     def initialize(project)
       @project = project

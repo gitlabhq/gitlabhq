@@ -37,7 +37,7 @@ describe Projects::AfterImportService do
       end
     end
 
-    described_class::RESERVED_REFS_NAMES.each do |name|
+    Repository::RESERVED_REFS_NAMES.each do |name|
       context "with a ref in refs/#{name}/tmp" do
         before do
           repository.write_ref("refs/#{name}/tmp", sha)
