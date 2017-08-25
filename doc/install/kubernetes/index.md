@@ -1,5 +1,5 @@
 # Installing GitLab on Kubernetes
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
+> These Helm charts are in beta. GitLab is working on a [cloud-native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
 
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
@@ -14,25 +14,6 @@ You can report any issues related to GitLab's Helm Charts at
 https://gitlab.com/charts/charts.gitlab.io/issues.
 Contributions and improvements are also very welcome.
 
-## Prerequisites
-
-To use the charts, the Helm tool must be installed and initialized. The best
-place to start is by reviewing the [Helm Quick Start Guide][helm-quick].
-
-## Add the GitLab Helm repository
-
-Once Helm has been installed, the GitLab chart repository must be added:
-
-```bash
-helm repo add gitlab https://charts.gitlab.io
-```
-
-After adding the repository, Helm must be re-initialized:
-
-```bash
-helm init
-```
-
 ## Using the GitLab Helm Charts
 
 GitLab makes available three Helm Charts.
@@ -44,5 +25,4 @@ GitLab makes available three Helm Charts.
 We are also working on a new set of [cloud native Charts](https://gitlab.com/charts/helm.gitlab.io) which will eventually replace these.
 
 [chart]: https://github.com/kubernetes/charts
-[helm-quick]: https://github.com/kubernetes/helm/blob/master/docs/quickstart.md
 [helm]: https://github.com/kubernetes/helm/blob/master/README.md

@@ -1,5 +1,5 @@
 # GitLab Runner Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
+> These Helm charts are in beta. GitLab is working on a [cloud-native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
 
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
@@ -17,9 +17,7 @@ This chart configures the Runner to:
 - Your GitLab Server's API is reachable from the cluster
 - Kubernetes 1.4+ with Beta APIs enabled
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo added to your Helm Client. See [Adding GitLab Helm Repo](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed
 
 ## Configuring GitLab Runner using the Helm Chart
 
@@ -190,7 +188,7 @@ certsSecretName: <SECRET NAME>
 
 ## Installing GitLab Runner using the Helm Chart
 
-Ensure the GitLab repo has been added and re-initialize Helm:
+Add the GitLab Helm repository and initialize Helm:
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io

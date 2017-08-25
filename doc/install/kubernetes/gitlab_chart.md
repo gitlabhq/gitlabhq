@@ -1,5 +1,5 @@
 # GitLab Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
+> These Helm charts are in beta. GitLab is working on a [cloud-native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
 
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
@@ -22,9 +22,7 @@ This chart includes the following:
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo [added to your Helm Client](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed
 
 ## Configuring GitLab
 
