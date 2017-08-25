@@ -41,9 +41,9 @@ class GeoNodeStatus {
       // Replication lag can be nil if the secondary isn't actually streaming
       if (status.db_replication_lag) {
         const parsedTime = gl.utils.prettyTime.parseSeconds(status.db_replication_lag);
-        this.$dbReplicationLag.html(gl.utils.prettyTime.stringifyTime(parsedTime));
+        this.$dbReplicationLag.text(gl.utils.prettyTime.stringifyTime(parsedTime));
       } else {
-        this.$dbReplicationLag.html('UNKNOWN');
+        this.$dbReplicationLag.text('UNKNOWN');
       }
 
       this.$repositoriesSynced.html(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
