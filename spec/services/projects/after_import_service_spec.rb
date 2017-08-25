@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::HousecleaningService do
+describe Projects::AfterImportService do
   subject { described_class.new(project) }
 
   let(:project) { create(:project, :repository) }
@@ -37,7 +37,7 @@ describe Projects::HousecleaningService do
       end
     end
 
-    described_class.reserved_refs_names.each do |name|
+    described_class::RESERVED_REFS_NAMES.each do |name|
       context "with a ref in refs/#{name}/tmp" do
         before do
           repository.write_ref("refs/#{name}/tmp", sha)

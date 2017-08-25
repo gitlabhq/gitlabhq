@@ -232,6 +232,13 @@ module Gitlab
         branch_names + tag_names
       end
 
+      # Returns an Array of all ref names, except when it's matching pattern
+      #
+      # regexp - The pattern for ref names we don't want
+      def all_ref_names_except(regexp)
+        rugged.references.reject { |ref| ref.name =~ regexp }.map(&:name)
+      end
+
       # Discovers the default branch based on the repository's available branches
       #
       # - If no branches are present, returns nil
@@ -575,6 +582,10 @@ module Gitlab
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
         rugged.branches.delete(branch_name)
+      end
+
+      def delete_refs(ref_names)
+        ref_names.each(&rugged.references.method(:delete))
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
