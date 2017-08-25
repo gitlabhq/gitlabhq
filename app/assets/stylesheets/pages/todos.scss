@@ -108,14 +108,14 @@
     margin: 0;
     float: none;
     display: inline-block;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     padding: 0 5px;
     line-height: inherit;
     font-size: 14px;
   }
 
   .action-name {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .todo-body {
@@ -262,6 +262,6 @@
   }
 
   a {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }

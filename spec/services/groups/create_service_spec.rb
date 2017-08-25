@@ -22,7 +22,7 @@ describe Groups::CreateService, '#execute' do
     end
   end
 
-  describe 'creating subgroup' do
+  describe 'creating subgroup', :nested_groups do
     let!(:group) { create(:group) }
     let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
 

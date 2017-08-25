@@ -66,7 +66,7 @@ Libraries with the following licenses are unacceptable for use:
 
 ## Requesting Approval for Licenses
 
-Libraries that are not listed in the [Acceptable Licenses][Acceptable-Licenses] or [Unacceptable Licenses][Unacceptable-Licenses] list can be submitted to the legal team for review. Please create an issue in the [Organization Repository][Org-Repo] and cc `@gl-legal`. After a decision has been made, the original requestor is responsible for updating this document.
+Libraries that are not listed in the [Acceptable Licenses][Acceptable-Licenses] or [Unacceptable Licenses][Unacceptable-Licenses] list can be submitted to the legal team for review. Please email `legal@gitlab.com` with the details. After a decision has been made, the original requestor is responsible for updating this document.
 
 ## Notes
 

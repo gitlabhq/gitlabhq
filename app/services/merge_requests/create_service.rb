@@ -28,6 +28,8 @@ module MergeRequests
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
       update_merge_requests_head_pipeline(issuable)
+
+      super
     end
 
     private

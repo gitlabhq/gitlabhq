@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def ref_exists?(ref_name)
-        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: ref_name)
+        request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: GitalyClient.encode(ref_name))
         response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
         response.value
       rescue GRPC::InvalidArgument => e
