@@ -19,5 +19,5 @@
             in an attachment.
         .modal-footer
           = link_to 'Export issues', export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
-- else
+- elsif show_promotions?
   = render 'shared/promotions/promote_csv_export'

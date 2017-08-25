@@ -106,19 +106,19 @@ describe 'Promotions', js: true do
 
     it 'should appear in project edit page' do
       visit edit_project_path(project)
-      expect(find('#promote_mr_approval')).to have_content 'Improve Merge Requests and customer support'
+      expect(find('#promote_mr_features')).to have_content 'Improve Merge Requests'
     end
 
     it 'does not show when cookie is set' do
       visit edit_project_path(project)
 
-      within('#promote_mr_approval') do
+      within('#promote_mr_features') do
         find('.close').trigger('click')
       end
 
       visit edit_project_path(project)
 
-      expect(page).not_to have_selector('#promote_mr_approval')
+      expect(page).not_to have_selector('#promote_mr_features')
     end
   end
 

@@ -149,8 +149,7 @@
               = nav_link(controller: :environments) do
                 = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
                   %span
-                    Pages
-            = render 'projects/settings/ee/nav'
+                    Environments
 
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
@@ -212,6 +211,8 @@
                   = link_to project_pages_path(@project), title: 'Pages' do
                     %span
                       Pages
+
+              = render 'projects/settings/ee/nav'
 
       - else
         = nav_link(path: %w[members#show]) do

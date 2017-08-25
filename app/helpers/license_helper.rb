@@ -77,12 +77,15 @@ module LicenseHelper
 
   def show_promotions?(selected_user = current_user)
     if selected_user
-      if current_application_settings.should_check_namespace_plan?
-        true
-      else
-        license = License.current
-        license.nil? || license.expired?
-      end
+      return @show_promotions if defined?(@show_promotions)
+
+      @show_promotions = 
+        if current_application_settings.should_check_namespace_plan?
+          true
+        else
+          license = License.current
+          license.nil? || license.expired?
+        end
     end
   end
 
