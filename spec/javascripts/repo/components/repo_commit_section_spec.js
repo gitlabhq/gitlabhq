@@ -122,7 +122,7 @@ describe('RepoCommitSection', () => {
         expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeTruthy();
 
         const args = RepoService.commitFiles.calls.allArgs()[0];
-        const { commit_message, actions, branch: payloadBranch } = args[0];
+        const { commit_message, start_branch, actions, branch: payloadBranch } = args[0];
 
         expect(commit_message).toBe(commitMessage);
         expect(actions.length).toEqual(2);
