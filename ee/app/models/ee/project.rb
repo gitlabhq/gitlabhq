@@ -8,6 +8,7 @@ module EE
 
     prepended do
       include Elastic::ProjectsSearch
+      include Importable
       prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
 
@@ -53,7 +54,7 @@ module EE
       validates :repository_size_limit,
         numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
-      validates :approvals_before_merge, numericality: true, allow_blank: true
+      validates :approvals_before_merge, numericality: true, allow_blank: true, unless: :importing?
 
       accepts_nested_attributes_for :remote_mirrors,
         allow_destroy: true,
