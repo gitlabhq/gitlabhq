@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824162758) do
+ActiveRecord::Schema.define(version: 20170901071411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1707,6 +1707,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
+  add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
