@@ -28,11 +28,11 @@ namespace :gettext do
     linters = files.map do |file|
       locale = File.basename(File.dirname(file))
 
-      Gitlab::PoLinter.new(file, locale)
+      Gitlab::I18n::PoLinter.new(file, locale)
     end
 
     pot_file = Rails.root.join('locale/gitlab.pot')
-    linters.unshift(Gitlab::PoLinter.new(pot_file))
+    linters.unshift(Gitlab::I18n::PoLinter.new(pot_file))
 
     failed_linters = linters.select { |linter| linter.errors.any? }
 

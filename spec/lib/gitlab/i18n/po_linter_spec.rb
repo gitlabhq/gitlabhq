@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::PoLinter do
+describe Gitlab::I18n::PoLinter do
   let(:linter) { described_class.new(po_path) }
   let(:po_path) { 'spec/fixtures/valid.po' }
 
