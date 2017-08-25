@@ -6,10 +6,14 @@ export default {
       type: String,
       required: true,
     },
-    latestCommitHash: {
+    lastCommitHash: {
       type: String,
-      required: false,
-      default: '2b827d05',
+      required: true,
+      default: '',
+    },
+    lastCommitUrl: {
+      type: String,
+      required: true,
     },
     mimeType: {
       type: String,
@@ -21,12 +25,23 @@ export default {
 
 <template>
   <div class="repo-file-info">
-    <i aria-label="branch" class="fa fa-code-fork" />
+    <i
+      aria-label="branch"
+      class="fa fa-code-fork"
+    />
     <span>{{branchName}}</span>
-
-    <span class="prepend-left-10">Latest Commit:</span>
-    <a href="#">{{latestCommitHash}}</a>
-
+    <span class="prepend-left-10">Latest commit:</span>
+    <a
+      v-if="lastCommitHash.length > 0"
+      :href="lastCommitUrl"
+    >
+      {{lastCommitHash.slice(0, 8)}}
+    </a>
+    <i
+      v-else
+      aria-label="loading"
+      class="fa fa-spinner fa-spin"
+    />
     <span class="pull-right">{{mimeType}}</span>
   </div>
 </template>

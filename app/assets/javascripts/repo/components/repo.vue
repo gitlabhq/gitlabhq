@@ -29,6 +29,20 @@ export default {
     Helper.getContent().catch(Helper.loadingError);
   },
 
+  computed: {
+    activeFileLastCommitUrl() {
+      const lastCommit = this.activeFileLastCommitInfo;
+      return lastCommit && lastCommit.url;
+    },
+    activeFileLastCommitHash() {
+      const lastCommit = this.activeFileLastCommitInfo;
+      return lastCommit && lastCommit.hash;
+    },
+    activeFileLastCommitInfo() {
+      return Helper.getFileLastCommitInfo(this.activeFile.name);
+    }
+  },
+
   methods: {
     toggleDialogOpen(toggle) {
       this.dialog.open = toggle;
@@ -58,6 +72,8 @@ export default {
         <repo-file-buttons/>
         <repo-file-info
           :branch-name="currentBranch"
+          :last-commit-hash="activeFileLastCommitHash"
+          :last-commit-url="activeFileLastCommitUrl"
           :mime-type="activeFile.mime_type"
         />
       </div>
