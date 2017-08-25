@@ -750,6 +750,7 @@
       a,
       button {
         border-radius: 0;
+        line-height: $line-height-base;
         padding: 8px 16px;
 
         // make sure the text color is not overriden
