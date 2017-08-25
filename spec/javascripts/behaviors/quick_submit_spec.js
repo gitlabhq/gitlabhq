@@ -7,6 +7,7 @@ describe('Quick Submit behavior', () => {
 
   beforeEach(() => {
     loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+    $('body').attr('data-page', 'projects:merge_requests:show');
     $('form').submit((e) => {
       // Prevent a form submit from moving us off the testing page
       e.preventDefault();
