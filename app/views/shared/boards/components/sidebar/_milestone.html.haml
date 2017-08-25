@@ -1,6 +1,3 @@
-- milestone_filter_opts = { format: :json }
-- milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.group_board?
-
 .block.milestone
   .title
     Milestone
@@ -19,7 +16,7 @@
         name: "issue[milestone_id]",
         "v-if" => "issue.milestone" }
       .dropdown
-        %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", milestones: milestones_filter_path(milestone_filter_opts), ability_name: "issue", use_id: "true", default_no: "true" },
+        %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", milestones: milestones_filter_path(format: :json), ability_name: "issue", use_id: "true", default_no: "true" },
           ":data-selected" => "milestoneTitle",
           ":data-issuable-id" => "issue.iid",
           ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }

@@ -7,7 +7,11 @@ class Board < ActiveRecord::Base
 
   validates :name, presence: true
 
-  validates :project, presence: true, if: -> { respond_to?(:group_id) && !group }
+  validates :project, presence: true, if: :project_needed?
+
+  def project_needed?
+    true
+  end
 
   def backlog_list
     lists.merge(List.backlog).take

@@ -127,7 +127,8 @@ module LabelsHelper
     if project
       project_labels_path(project, :json)
     elsif @group
-      group_labels_path(@group, :json, only_group_labels: only_group_labels)
+      options = { only_group_labels: only_group_labels } if only_group_labels
+      group_labels_path(@group, :json, options)
     else
       dashboard_labels_path(:json)
     end

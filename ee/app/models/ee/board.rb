@@ -9,6 +9,10 @@ module EE
       validates :group, presence: true, unless: :project
     end
 
+    def project_needed?
+      !group
+    end
+
     def milestone
       return nil unless parent.feature_available?(:issue_board_milestone)
 
