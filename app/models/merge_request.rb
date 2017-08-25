@@ -99,7 +99,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
-  validate :validate_approvals_before_merge
+  validate :validate_approvals_before_merge, unless: :importing?
   validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do

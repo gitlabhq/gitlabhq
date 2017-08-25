@@ -2967,7 +2967,8 @@
           "action": 1,
           "author_id": 1
         }
-      ]
+      ],
+      "approvals_before_merge": 1
     },
     {
       "id": 26,
