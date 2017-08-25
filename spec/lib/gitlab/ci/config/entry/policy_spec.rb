@@ -58,7 +58,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
 
   context 'when using complex policy' do
     context 'when it is an empty hash' do
-      let(:config) { { } }
+      let(:config) { {} }
 
       it 'reports an error about configuration not being present' do
         expect(entry.errors).to include /can't be blank/
