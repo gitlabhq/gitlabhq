@@ -25,7 +25,7 @@ module Gitlab
       end
 
       def parse_po
-        @entries = SimplePoParser.parse(po_path)
+        @entries = SimplePoParser.parse(po_path).map { |data| Gitlab::I18n::PoEntry.new(data) }
         nil
       rescue SimplePoParser::ParserError => e
         @entries = []
@@ -36,11 +36,10 @@ module Gitlab
         errors = {}
 
         entries.each do |entry|
-          # Skip validation of metadata
-          next if entry[:msgid].empty?
+          next if entry.metadata?
 
           errors_for_entry = validate_entry(entry)
-          errors[join_message(entry[:msgid])] = errors_for_entry if errors_for_entry.any?
+          errors[join_message(entry.msgid)] = errors_for_entry if errors_for_entry.any?
         end
 
         errors
@@ -57,27 +56,24 @@ module Gitlab
       end
 
       def validate_newlines(errors, entry)
-        message_id = join_message(entry[:msgid])
+        message_id = join_message(entry.msgid)
 
-        if entry[:msgid].is_a?(Array)
+        if entry.msgid.is_a?(Array)
           errors << "<#{message_id}> is defined over multiple lines, this breaks some tooling."
         end
 
-        if translations_in_entry(entry).any? { |translation| translation.is_a?(Array) }
+        if entry.all_translations.any? { |translation| translation.is_a?(Array) }
           errors << "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
         end
       end
 
       def validate_variables(errors, entry)
-        if entry[:msgid_plural].present?
-          validate_variables_in_message(errors, entry[:msgid], entry['msgstr[0]'])
+        validate_variables_in_message(errors, entry.msgid, entry.singular_translation)
 
-          # Validate all plurals
-          entry.keys.select { |key_name| key_name =~ /msgstr\[[1-9]\]/ }.each do |plural_key|
-            validate_variables_in_message(errors, entry[:msgid_plural], entry[plural_key])
+        if entry.plural?
+          entry.plural_translations.each do |translation|
+            validate_variables_in_message(errors, entry.plural_id, translation)
           end
-        else
-          validate_variables_in_message(errors, entry[:msgid], entry[:msgstr])
         end
       end
 
@@ -168,25 +164,11 @@ module Gitlab
       end
 
       def validate_flags(errors, entry)
-        if flag = entry[:flag]
-          errors << "is marked #{flag}"
-        end
+        errors << "is marked #{entry.flag}" if entry.flag
       end
 
       def join_message(message)
         Array(message).join
-      end
-
-      def translations_in_entry(entry)
-        if entry[:msgid_plural].present?
-          entry.fetch_values(*plural_translation_keys_in_entry(entry))
-        else
-          [entry[:msgstr]]
-        end
-      end
-
-      def plural_translation_keys_in_entry(entry)
-        entry.keys.select { |key| key =~ /msgstr\[\d*\]/ }
       end
     end
   end
