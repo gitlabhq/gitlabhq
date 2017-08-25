@@ -4,6 +4,7 @@ describe API::Users do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
+  let(:gpg_key) { create(:gpg_key, user: user) }
   let(:email) { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
   let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
@@ -1148,6 +1149,173 @@ describe API::Users do
 
     it "returns a 404 for invalid ID" do
       delete api("/users/keys/ASDF", admin)
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'GET /user/gpg_keys' do
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/user/gpg_keys')
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated' do
+      it 'returns array of GPG keys' do
+        user.gpg_keys << gpg_key
+        user.save
+
+        get api('/user/gpg_keys', user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.first['key']).to eq(gpg_key.key)
+      end
+
+      context 'scopes' do
+        let(:path) { '/user/gpg_keys' }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
+    end
+  end
+
+  describe 'GET /user/gpg_keys/:key_id' do
+    it 'returns a single key' do
+      user.gpg_keys << gpg_key
+      user.save
+
+      get api("/user/gpg_keys/#{gpg_key.id}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['key']).to eq(gpg_key.key)
+    end
+
+    it 'returns 404 Not Found within invalid ID' do
+      get api('/user/gpg_keys/42', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it "returns 404 error if admin accesses user's GPG key" do
+      user.gpg_keys << gpg_key
+      user.save
+
+      get api("/user/gpg_keys/#{gpg_key.id}", admin)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it 'returns 404 for invalid ID' do
+      get api('/users/gpg_keys/ASDF', admin)
+
+      expect(response).to have_http_status(404)
+    end
+
+    context 'scopes' do
+      let(:path) { "/user/gpg_keys/#{gpg_key.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
+    end
+  end
+
+  describe 'POST /user/gpg_keys' do
+    it 'creates a GPG key' do
+      key_attrs = attributes_for :gpg_key
+      expect do
+        post api('/user/gpg_keys', user), key_attrs
+
+        expect(response).to have_http_status(201)
+      end.to change { user.gpg_keys.count }.by(1)
+    end
+
+    it 'returns a 401 error if unauthorized' do
+      post api('/user/gpg_keys'), key: 'some key'
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'does not create GPG key without key' do
+      post api('/user/gpg_keys', user)
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to eq('key is missing')
+    end
+  end
+
+  describe 'POST /user/gpg_keys/:key_id/revoke' do
+    it 'revokes existing GPG key' do
+      user.gpg_keys << gpg_key
+      user.save
+
+      expect do
+        post api("/user/gpg_keys/#{gpg_key.id}/revoke", user)
+
+        expect(response).to have_http_status(:accepted)
+      end.to change { user.gpg_keys.count}.by(-1)
+    end
+
+    it 'returns 404 if key ID not found' do
+      post api('/user/gpg_keys/42/revoke', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it 'returns 401 error if unauthorized' do
+      user.gpg_keys << gpg_key
+      user.save
+
+      post api("/user/gpg_keys/#{gpg_key.id}/revoke")
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns a 404 for invalid ID' do
+      post api('/users/gpg_keys/ASDF/revoke', admin)
+
+      expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'DELETE /user/gpg_keys/:key_id' do
+    it 'deletes existing GPG key' do
+      user.gpg_keys << gpg_key
+      user.save
+
+      expect do
+        delete api("/user/gpg_keys/#{gpg_key.id}", user)
+
+        expect(response).to have_http_status(204)
+      end.to change { user.gpg_keys.count}.by(-1)
+    end
+
+    it 'returns 404 if key ID not found' do
+      delete api('/user/gpg_keys/42', user)
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 GPG Key Not Found')
+    end
+
+    it 'returns 401 error if unauthorized' do
+      user.gpg_keys << gpg_key
+      user.save
+
+      delete api("/user/gpg_keys/#{gpg_key.id}")
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'returns a 404 for invalid ID' do
+      delete api('/users/gpg_keys/ASDF', admin)
 
       expect(response).to have_http_status(404)
     end

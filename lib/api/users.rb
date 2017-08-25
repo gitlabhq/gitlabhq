@@ -492,6 +492,76 @@ module API
         destroy_conditionally!(key)
       end
 
+      desc "Get the currently authenticated user's GPG keys" do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        use :pagination
+      end
+      get 'gpg_keys' do
+        present paginate(current_user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Get a single GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      get 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        present key, with: Entities::GPGKey
+      end
+
+      desc 'Add a new GPG key to the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post 'gpg_keys' do
+        key = current_user.gpg_keys.new(declared_params)
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Revoke a GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post 'gpg_keys/:key_id/revoke' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
+      end
+
+      desc 'Delete a GPG key from the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+      end
+      delete 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        status 204
+        key.destroy
+      end
+
       desc "Get the currently authenticated user's email addresses" do
         success Entities::Email
       end
