@@ -12,7 +12,8 @@ module Gitlab
         change_existing_tags: 'You are not allowed to change existing tags on this project.',
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
-        create_protected_tag: 'You are not allowed to create this tag as it is protected.'
+        create_protected_tag: 'You are not allowed to create this tag as it is protected.',
+        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
       }.freeze
 
       attr_reader :user_access, :project, :skip_authorization, :protocol
@@ -36,6 +37,7 @@ module Gitlab
         push_checks
         branch_checks
         tag_checks
+        lfs_objects_exist_check
 
         true
       end
@@ -135,6 +137,14 @@ module Gitlab
 
       def matching_merge_request?
         Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
+      end
+
+      def lfs_objects_exist_check
+        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
+
+        if lfs_check.objects_missing?
+          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
+        end
       end
     end
   end
