@@ -98,6 +98,14 @@ describe GeoNodeStatus do
     end
   end
 
+  describe '#db_replication_lag' do
+    it 'returns the set replication lag' do
+      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(1000)
+
+      expect(subject.db_replication_lag).to eq(1000)
+    end
+  end
+
   describe '#lfs_objects_synced_in_percentage' do
     let(:lfs_object_project) { create(:lfs_objects_project, project: project_1) }
 
@@ -164,6 +172,7 @@ describe GeoNodeStatus do
 
   context 'when no values are available' do
     it 'returns 0 for each attribute' do
+      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(nil)
       subject.attachments_count = nil
       subject.attachments_synced_count = nil
       subject.lfs_objects_count = nil
@@ -172,6 +181,7 @@ describe GeoNodeStatus do
       subject.repositories_synced_count = nil
       subject.repositories_failed_count = nil
 
+      expect(subject.db_replication_lag).to be_nil
       expect(subject.repositories_count).to be_zero
       expect(subject.repositories_synced_count).to be_zero
       expect(subject.repositories_synced_in_percentage).to be_zero

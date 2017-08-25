@@ -14,6 +14,8 @@ class GeoNodeStatusEntity < Grape::Entity
     number_to_percentage(node.attachments_synced_in_percentage, precision: 2)
   end
 
+  expose :db_replication_lag
+
   expose :lfs_objects_count
   expose :lfs_objects_synced_count
   expose :lfs_objects_synced_in_percentage do |node|
