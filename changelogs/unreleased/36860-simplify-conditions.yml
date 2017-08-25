@@ -1,0 +1,5 @@
+---
+title: Remove checks if issue.author is present
+merge_request:
+author:
+type: other
