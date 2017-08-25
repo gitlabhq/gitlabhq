@@ -1,7 +1,6 @@
 class GroupDestroyWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
-  include ExceptionBacktrace
 
   def perform(group_id, user_id)
     begin

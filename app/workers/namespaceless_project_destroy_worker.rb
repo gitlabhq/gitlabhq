@@ -7,7 +7,6 @@
 class NamespacelessProjectDestroyWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
-  include ExceptionBacktrace
 
   def self.bulk_perform_async(args_list)
     Sidekiq::Client.push_bulk('class' => self, 'queue' => sidekiq_options['queue'], 'args' => args_list)
