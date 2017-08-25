@@ -1,0 +1,5 @@
+---
+title: Testing of some integrations were broken due to missing ServiceHook record.
+merge_request:
+author:
+type: fixed

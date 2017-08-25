@@ -107,7 +107,7 @@ module Github
       # this means that repo has wiki enabled, but have no pages. So,
       # we can skip the import.
       if e.message !~ /repository not exported/
-        errors(:wiki, wiki_url, e.message)
+        error(:wiki, wiki_url, e.message)
       end
     end
 

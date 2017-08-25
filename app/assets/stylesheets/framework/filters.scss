@@ -371,7 +371,7 @@
   }
 
   > .value {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
@@ -452,7 +452,7 @@
 
   .dropdown-light-content {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $gl-font-weight-normal;
   }
 
   .dropdown-user {

@@ -1,6 +1,6 @@
 .project-templates-buttons.import-buttons{ data: { toggle: "buttons" } }
   .btn.blank-option.active
-    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "blank", checked: "true" }
+    %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: "blank", checked: "true", value: "" }
     = icon('file-o', class: 'btn-template-icon')
     Blank
   - Gitlab::ProjectTemplate.all.each do |template|

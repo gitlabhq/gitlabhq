@@ -12,11 +12,18 @@ module AvatarsHelper
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
     avatar_url = options[:url] || avatar_icon(options[:user] || options[:user_email], avatar_size)
-    data_attributes = { container: 'body' }
+    has_tooltip = options[:has_tooltip].nil? ? true : options[:has_tooltip]
+    data_attributes = {}
+    css_class = %W[avatar s#{avatar_size}].push(*options[:css_class])
+
+    if has_tooltip
+      css_class.push('has-tooltip')
+      data_attributes = { container: 'body' }
+    end
 
     image_tag(
       avatar_url,
-      class: %W[avatar has-tooltip s#{avatar_size}].push(*options[:css_class]),
+      class: css_class,
       alt: "#{user_name}'s avatar",
       title: user_name,
       data: data_attributes,

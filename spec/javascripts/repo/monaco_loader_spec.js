@@ -1,18 +1,15 @@
-/* global __webpack_public_path__ */
 import monacoContext from 'monaco-editor/dev/vs/loader';
 import monacoLoader from '~/repo/monaco_loader';
 
 describe('MonacoLoader', () => {
   it('calls require.config and exports require', () => {
-    spyOn(monacoContext.require, 'config');
+    const loader = monacoLoader();
 
-    const returnLoader = monacoLoader();
-
-    expect(monacoContext.require.config).toHaveBeenCalledWith({
+    expect(monacoContext.require.getConfig()).toEqual(jasmine.objectContaining({
       paths: {
         vs: `${__webpack_public_path__}monaco-editor/vs`, // eslint-disable-line camelcase
       },
-    });
-    expect(returnLoader).toBe(monacoContext.require);
+    }));
+    expect(loader).toBe(monacoContext.require);
   });
 });

@@ -277,7 +277,7 @@
   }
 
   .trigger-build-variable {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     color: $code-color;
   }
 
@@ -378,7 +378,7 @@
       }
 
       &.active {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
 
         .fa-arrow-right {
           display: block;
