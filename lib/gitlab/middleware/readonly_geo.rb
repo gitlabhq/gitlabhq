@@ -1,9 +1,10 @@
 module Gitlab
   module Middleware
     class ReadonlyGeo
-      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
       APPLICATION_JSON = 'application/json'.freeze
       API_VERSIONS = (3..4)
+      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
+      DOWNLOAD_OPERATION = 'download'.freeze
 
       def initialize(app)
         @app = app
@@ -65,7 +66,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
+        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_download_route
       end
 
       def logout_route
@@ -80,8 +81,21 @@ module Gitlab
         request.path.end_with?('.git/git-upload-pack')
       end
 
-      def lfs_route
-        request.path.end_with?('/info/lfs/objects/batch')
+      def lfs_download_route
+        request.path.end_with?('/info/lfs/objects/batch') && lfs_download_operation?
+      end
+
+      def lfs_download_operation?
+        params = parse_formatted_parameters
+        params[:operation] == DOWNLOAD_OPERATION
+      end
+
+      def parse_formatted_parameters
+        return {} if request.content_length.to_i.zero?
+
+        data = ActiveSupport::JSON.decode(request.body.read) rescue {}
+        request.body.rewind
+        data.with_indifferent_access
       end
     end
   end
