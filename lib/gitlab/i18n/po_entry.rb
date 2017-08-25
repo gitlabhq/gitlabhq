@@ -28,11 +28,16 @@ module Gitlab
       end
 
       def all_translations
-        @all_translations ||= entry_data.fetch_values(*translation_keys)
+        @all_translations ||= entry_data.fetch_values(*translation_keys).reject(&:empty?)
+      end
+
+      def translated?
+        all_translations.any?
       end
 
       def plural_translations
         return [] unless plural?
+        return [] unless translated?
 
         # The singular translation is used if there's only translation. This is
         # the case for languages without plurals.
@@ -45,7 +50,33 @@ module Gitlab
         entry_data[:flag]
       end
 
+      def expected_plurals
+        return nil unless metadata?
+        return nil unless plural_information
+
+        nplurals = plural_information['nplurals'].to_i
+        if nplurals > 0
+          nplurals
+        end
+      end
+
+      # When a translation is a plural, but only has 1 translation, we could be
+      # talking about a language in which plural and singular is the same thing.
+      # In which case we always translate as a plural.
+      def has_singular?
+        !plural? || all_translations.size > 1
+      end
+
       private
+
+      def plural_information
+        return nil unless metadata?
+        return @plural_information if defined?(@plural_information)
+
+        if plural_line = entry_data[:msgstr].detect { |metadata_line| metadata_line.starts_with?('Plural-Forms: ') }
+          @plural_information = Hash[plural_line.scan(/(\w+)=([^;\n]+)/)]
+        end
+      end
 
       def plural_translation_keys
         @plural_translation_keys ||= translation_keys.select do |key|

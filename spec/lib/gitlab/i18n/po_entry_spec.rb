@@ -68,4 +68,71 @@ describe Gitlab::I18n::PoEntry do
       expect(entry.plural_translations).to eq(['Bonjour mondes', 'Bonjour tous les mondes'])
     end
   end
+
+  describe '#expected_plurals' do
+    it 'returns nil when the entry is an actual translation' do
+      data = { msgid: 'Hello world', msgstr: 'Bonjour monde' }
+      entry = described_class.new(data)
+
+      expect(entry.expected_plurals).to be_nil
+    end
+
+    it 'returns the number of plurals' do
+      data = {
+        msgid: "",
+        msgstr: [
+          "",
+          "Project-Id-Version: gitlab 1.0.0\\n",
+          "Report-Msgid-Bugs-To: \\n",
+          "PO-Revision-Date: 2017-07-13 12:10-0500\\n",
+          "Language-Team: Spanish\\n",
+          "Language: es\\n",
+          "MIME-Version: 1.0\\n",
+          "Content-Type: text/plain; charset=UTF-8\\n",
+          "Content-Transfer-Encoding: 8bit\\n",
+          "Plural-Forms: nplurals=2; plural=n != 1;\\n",
+          "Last-Translator: Bob Van Landuyt <bob@gitlab.com>\\n",
+          "X-Generator: Poedit 2.0.2\\n"
+        ]
+      }
+      entry = described_class.new(data)
+
+      expect(entry.expected_plurals).to eq(2)
+    end
+  end
+
+  describe '#has_singular?' do
+    it 'has a singular when the translation is not pluralized' do
+      data = {
+        msgid: 'hello world',
+        msgstr: 'hello'
+      }
+      entry = described_class.new(data)
+
+      expect(entry).to have_singular
+    end
+
+    it 'has a singular when plural and singular are separately defined' do
+      data = {
+        msgid: 'hello world',
+        msgid_plural: 'hello worlds',
+        "msgstr[0]" => 'hello world',
+        "msgstr[1]" => 'hello worlds'
+      }
+      entry = described_class.new(data)
+
+      expect(entry).to have_singular
+    end
+
+    it 'does not have a separate singular if the plural string only has one translation' do
+      data = {
+        msgid: 'hello world',
+        msgid_plural: 'hello worlds',
+        "msgstr[0]" => 'hello worlds'
+      }
+      entry = described_class.new(data)
+
+      expect(entry).not_to have_singular
+    end
+  end
 end

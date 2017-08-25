@@ -3,7 +3,7 @@ require 'simple_po_parser'
 module Gitlab
   module I18n
     class PoLinter
-      attr_reader :po_path, :entries, :locale
+      attr_reader :po_path, :entries, :metadata, :locale
 
       VARIABLE_REGEX = /%{\w*}|%[a-z]/.freeze
 
@@ -26,6 +26,7 @@ module Gitlab
 
       def parse_po
         @entries = SimplePoParser.parse(po_path).map { |data| Gitlab::I18n::PoEntry.new(data) }
+        @metadata = @entries.detect { |entry| entry.metadata? }
         nil
       rescue SimplePoParser::ParserError => e
         @entries = []
@@ -51,24 +52,34 @@ module Gitlab
         validate_flags(errors, entry)
         validate_variables(errors, entry)
         validate_newlines(errors, entry)
+        validate_number_of_plurals(errors, entry)
 
         errors
       end
 
-      def validate_newlines(errors, entry)
-        message_id = join_message(entry.msgid)
+      def validate_number_of_plurals(errors, entry)
+        return unless metadata&.expected_plurals
+        return unless entry.translated?
 
+        if entry.plural? && entry.all_translations.size != metadata.expected_plurals
+          errors << "should have #{metadata.expected_plurals} #{'translations'.pluralize(metadata.expected_plurals)}"
+        end
+      end
+
+      def validate_newlines(errors, entry)
         if entry.msgid.is_a?(Array)
-          errors << "<#{message_id}> is defined over multiple lines, this breaks some tooling."
+          errors << "is defined over multiple lines, this breaks some tooling."
         end
 
         if entry.all_translations.any? { |translation| translation.is_a?(Array) }
-          errors << "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+          errors << "has translations defined over multiple lines, this breaks some tooling."
         end
       end
 
       def validate_variables(errors, entry)
-        validate_variables_in_message(errors, entry.msgid, entry.singular_translation)
+        if entry.has_singular?
+          validate_variables_in_message(errors, entry.msgid, entry.singular_translation)
+        end
 
         if entry.plural?
           entry.plural_translations.each do |translation|

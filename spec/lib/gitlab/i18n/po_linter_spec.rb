@@ -28,21 +28,21 @@ describe Gitlab::I18n::PoLinter do
 
       it 'has an error for a normal string' do
         message_id = "You are going to remove %{group_name}.\\nRemoved groups CANNOT be restored!\\nAre you ABSOLUTELY sure?"
-        expected_message = "<#{message_id}> is defined over multiple lines, this breaks some tooling."
+        expected_message = "is defined over multiple lines, this breaks some tooling."
 
         expect(errors[message_id]).to include(expected_message)
       end
 
       it 'has an error when a translation is defined over multiple lines' do
         message_id = "You are going to remove %{group_name}.\\nRemoved groups CANNOT be restored!\\nAre you ABSOLUTELY sure?"
-        expected_message = "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+        expected_message = "has translations defined over multiple lines, this breaks some tooling."
 
         expect(errors[message_id]).to include(expected_message)
       end
 
       it 'raises an error when a plural translation is defined over multiple lines' do
         message_id = 'With plural'
-        expected_message = "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+        expected_message = "has translations defined over multiple lines, this breaks some tooling."
 
         expect(errors[message_id]).to include(expected_message)
       end
@@ -81,10 +81,10 @@ describe Gitlab::I18n::PoLinter do
     end
 
     context 'with missing plurals' do
-      let(:po_path) { 'spec/fixtures/no_plurals.po' }
+      let(:po_path) { 'spec/fixtures/missing_plurals.po' }
 
       it 'has no errors' do
-        is_expected.to be_empty
+        is_expected.not_to be_empty
       end
     end
 
@@ -151,13 +151,33 @@ describe Gitlab::I18n::PoLinter do
       expect(linter).to receive(:validate_flags).with([], fake_entry)
       expect(linter).to receive(:validate_variables).with([], fake_entry)
       expect(linter).to receive(:validate_newlines).with([], fake_entry)
+      expect(linter).to receive(:validate_number_of_plurals).with([], fake_entry)
 
       linter.validate_entry(fake_entry)
     end
   end
 
+  describe '#validate_number_of_plurals' do
+    it 'validates when there are an incorrect number of translations' do
+      fake_metadata = double
+      allow(fake_metadata).to receive(:expected_plurals).and_return(2)
+      allow(linter).to receive(:metadata).and_return(fake_metadata)
+
+      fake_entry = Gitlab::I18n::PoEntry.new(
+        msgid: 'the singular',
+        msgid_plural: 'the plural',
+        'msgstr[0]' => 'the singular'
+      )
+      errors = []
+
+      linter.validate_number_of_plurals(errors, fake_entry)
+
+      expect(errors).to include('should have 2 translations')
+    end
+  end
+
   describe '#validate_variables' do
-    it 'validates both signular and plural in a pluralized string' do
+    it 'validates both signular and plural in a pluralized string when the entry has a singular' do
       pluralized_entry = Gitlab::I18n::PoEntry.new({
         msgid: 'Hello %{world}',
         msgid_plural: 'Hello all %{world}',
@@ -169,6 +189,19 @@ describe Gitlab::I18n::PoLinter do
                           .with([], 'Hello %{world}', 'Bonjour %{world}')
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello all %{world}', 'Bonjour tous %{world}')
+
+      linter.validate_variables([], pluralized_entry)
+    end
+
+    it 'only validates plural when there is no separate singular' do
+      pluralized_entry = Gitlab::I18n::PoEntry.new({
+        msgid: 'Hello %{world}',
+        msgid_plural: 'Hello all %{world}',
+        'msgstr[0]' => 'Bonjour %{world}'
+      })
+
+      expect(linter).to receive(:validate_variables_in_message)
+                          .with([], 'Hello all %{world}', 'Bonjour %{world}')
 
       linter.validate_variables([], pluralized_entry)
     end
