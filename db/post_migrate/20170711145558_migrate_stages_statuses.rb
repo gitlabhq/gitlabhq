@@ -6,7 +6,7 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   disable_ddl_transaction!
 
   BATCH_SIZE = 10000
-  RANGE_SIZE = 500
+  RANGE_SIZE = 100
   MIGRATION = 'MigrateStageStatus'.freeze
 
   class Stage < ActiveRecord::Base
