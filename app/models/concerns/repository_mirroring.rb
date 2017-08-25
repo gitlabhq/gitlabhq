@@ -12,7 +12,7 @@ module RepositoryMirroring
     config = raw_repository.rugged.config
 
     # This is used to define repository as equivalent as "git clone --mirror"
-    config["remote.#{name}.fetch"] = '+refs/pull/*:refs/merge-requests/*'
+    config["remote.#{name}.fetch"] = '+refs/pull/*/head:refs/merge-requests/*/head'
     config["remote.#{name}.fetch"] = '+refs/heads/*:refs/heads/*'
     config["remote.#{name}.fetch"] = '+refs/tags/*:refs/tags/*'
 

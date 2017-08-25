@@ -66,7 +66,7 @@ module Github
       end
 
       def source_branch_name_prefixed
-        "refs/pull/#{pull_request.iid}/head"
+        "refs/merge-requests/#{pull_request.iid}/head"
       end
 
       def target_branch
