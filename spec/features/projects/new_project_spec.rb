@@ -87,7 +87,7 @@ feature 'New project' do
     end
 
     context 'with subgroup namespace' do
-      let(:group) { create(:group, :private, owner: user) }
+      let(:group) { create(:group, owner: user) }
       let(:subgroup) { create(:group, parent: group) }
 
       before do

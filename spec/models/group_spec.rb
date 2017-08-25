@@ -127,7 +127,7 @@ describe Group do
           internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
 
           expect(internal_group).to be_invalid
-          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are projects with higher visibility.')
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since this group contains projects with higher visibility.')
         end
       end
 
@@ -149,7 +149,7 @@ describe Group do
           internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
 
           expect(internal_group).to be_invalid
-          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are sub groups with higher visibility.')
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are sub-groups with higher visibility.')
         end
       end
 
