@@ -4,7 +4,7 @@
       = link_to group_path(@group), title: @group.name do
         .avatar-container.s40.group-avatar
           = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
-        .group-title
+        .sidebar-context-title
           = @group.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
