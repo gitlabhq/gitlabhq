@@ -147,7 +147,7 @@
   .radio {
     margin-bottom: 10px;
 
-    i {
+    i.fa {
       margin: 2px 0;
       font-size: 20px;
     }
@@ -161,6 +161,12 @@
     .option-descr {
       margin-left: 29px;
       color: $project-option-descr-color;
+    }
+
+    &.disabled {
+      i.fa {
+        opacity: 0.5;
+      }
     }
   }
 }
