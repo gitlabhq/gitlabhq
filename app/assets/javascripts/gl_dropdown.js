@@ -807,7 +807,7 @@ GitLabDropdown = (function() {
     }
   };
 
-  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single, custom) {
+  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
     var $input;
     // Create hidden input for form
     if (single) {
@@ -815,9 +815,6 @@ GitLabDropdown = (function() {
     }
 
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
-    if (custom) {
-      $input.attr('data-' + custom, true);
-    }
 
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
