@@ -15,10 +15,6 @@ module Gitlab
             validations do
               validates :config, array_of_strings_or_regexps: true
             end
-
-            def value
-              { refs: @config }
-            end
           end
 
           class ExpressionsPolicy < Entry::Node

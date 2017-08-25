@@ -17,7 +17,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
 
           describe '#value' do
             it 'returns key value' do
-              expect(entry.value).to eq(refs: config)
+              expect(entry.value).to eq config
             end
           end
         end
