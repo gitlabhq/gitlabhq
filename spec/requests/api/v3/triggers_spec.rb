@@ -37,7 +37,7 @@ describe API::V3::Triggers do
 
       it 'returns unauthorized if token is for different project' do
         post v3_api("/projects/#{project2.id}/trigger/builds"), options.merge(ref: 'master')
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(404)
       end
     end
 

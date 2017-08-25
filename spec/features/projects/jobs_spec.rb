@@ -292,7 +292,7 @@ feature 'Jobs' do
     end
 
     feature 'Variables' do
-      let(:trigger_request) { create(:ci_trigger_request_with_variables) }
+      let(:trigger_request) { create(:ci_trigger_request_with_variables) } # TODO:
 
       let(:job) do
         create :ci_build, pipeline: pipeline, trigger_request: trigger_request
