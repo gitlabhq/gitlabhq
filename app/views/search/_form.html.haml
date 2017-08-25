@@ -11,5 +11,5 @@
         %span.sr-only
           Clear search
     - unless params[:snippets].eql? 'true'
-      = render 'filter' if current_user
+      = render 'filter'
     = button_tag "Search", class: "btn btn-success btn-search"
