@@ -1,3 +1,5 @@
+require 'logger'
+
 desc "GitLab | Migrate files for artifacts to comply with new storage format"
 namespace :gitlab do
   namespace :artifacts do
@@ -11,9 +13,10 @@ namespace :gitlab do
         begin
           build.artifacts_file.migrate!(ArtifactUploader::REMOTE_STORE)
           build.artifacts_metadata.migrate!(ArtifactUploader::REMOTE_STORE)
-          print '.'
-        rescue
-          print 'F'
+
+          logger.info("Transferred artifacts of #{build.id} of #{build.artifacts_size} to object storage")
+        rescue => e
+          logger.error("Failed to transfer artifacts of #{build.id} with error: #{e.message}")
         end
       end
     end
