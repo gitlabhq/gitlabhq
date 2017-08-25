@@ -106,10 +106,8 @@ module Projects
     # project immediately after this request completes), and any other affected
     # users in the background
     def setup_authorizations
-      group = @project.group
-      group&.refresh_members_authorized_projects(blocking: false)
-
-      if group || @project.gitlab_project_import?
+      if @project.group
+        @project.group.refresh_members_authorized_projects(blocking: false)
         current_user.refresh_authorized_projects
       else
         @project.add_master(@project.namespace.owner, current_user: current_user)
