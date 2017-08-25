@@ -69,13 +69,13 @@ export default {
         <component
           :is="currentBlobView"
           class="blob-viewer-container"/>
-        <repo-file-buttons/>
         <repo-file-info
           :branch-name="currentBranch"
           :last-commit-hash="activeFileLastCommitHash"
           :last-commit-url="activeFileLastCommitUrl"
           :mime-type="activeFile.mime_type"
         />
+        <repo-file-buttons/>
       </div>
     </div>
     <repo-commit-section/>
