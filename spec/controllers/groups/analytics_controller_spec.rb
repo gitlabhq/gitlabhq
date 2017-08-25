@@ -49,8 +49,8 @@ describe Groups::AnalyticsController do
   context 'unlicensed but we show promotions' do
     before do
       allow(License).to receive(:current).and_return(nil)
+      LicenseHelper.stub(:show_promotions).and_return(true)
       stub_application_setting(check_namespace_plan: false)
-      @show_promotions = nil
     end
 
     it 'returns page when feature is not available and we show promotions' do
