@@ -385,6 +385,7 @@ module Ci
       [
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
         { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
         { key: 'GITLAB_USER_NAME', value: user.name, public: true }
       ]
     end
