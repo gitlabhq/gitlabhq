@@ -77,6 +77,12 @@ future GitLab releases.**
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
 | **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
+<<<<<<< HEAD
+| **GITLAB_USER_NAME**            | 10.0   | all    | The name of the user who started the job |
+=======
+| **GITLAB_USER_USERNAME**        | 10.0   | all    | The username of the user who started the job |
+| **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
+>>>>>>> 940c584882... fixup name
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 
 ## 9.0 Renaming

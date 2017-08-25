@@ -1247,8 +1247,11 @@ describe Ci::Build do
 
     context 'when build has user' do
       let(:user_variables) do
-        [{ key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
-         { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }]
+        [
+          { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
+          { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+          { key: 'GITLAB_USER_NAME', value: user.name, public: true }
+        ]
       end
 
       before do
