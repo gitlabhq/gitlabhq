@@ -30,7 +30,7 @@ describe Gitlab::Geo::HealthCheck, :postgresql do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive(:configured?) { true }
       allow(Gitlab::Database).to receive(:postgresql?) { true }
-      allow(ActiveRecord::Base).to receive_message_chain(:connection, :execute, :first, :fetch) { 'f' }
+      allow(described_class).to receive(:database_secondary?) { false }
 
       expect(subject.perform_checks).not_to be_blank
     end
@@ -39,7 +39,7 @@ describe Gitlab::Geo::HealthCheck, :postgresql do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive(:configured?) { true }
       allow(Gitlab::Database).to receive(:postgresql?) { true }
-      allow(ActiveRecord::Base).to receive_message_chain(:connection, :execute, :first, :fetch) { 'f' }
+      allow(described_class).to receive(:database_secondary?) { false }
 
       expect(subject.perform_checks).to include('not configured for streaming replication')
     end

@@ -55,8 +55,6 @@ module Gitlab
       end
 
       def self.database_secondary?
-        raise NotImplementedError unless Gitlab::Database.postgresql?
-
         ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
           .first
           .fetch('pg_is_in_recovery') == 't'
@@ -64,8 +62,6 @@ module Gitlab
 
       def self.db_replication_lag
         # Obtain the replication lag in seconds
-        raise NotImplementedError unless Gitlab::Database.postgresql?
-
         ActiveRecord::Base.connection.execute('
           SELECT CASE
                  WHEN pg_last_xlog_receive_location() = pg_last_xlog_replay_location()
