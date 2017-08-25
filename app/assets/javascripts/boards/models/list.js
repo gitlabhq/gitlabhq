@@ -113,6 +113,7 @@ class List {
         issue.id = data.id;
         issue.iid = data.iid;
         issue.milestone = data.milestone;
+        issue.project = data.project;
 
         if (this.issuesSize > 1) {
           const moveBeforeId = this.issues[1].id;
