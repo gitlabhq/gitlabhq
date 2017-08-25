@@ -234,7 +234,7 @@ describe 'Merge request', :js do
     end
 
     it 'user cannot remove source branch' do
-      expect(page).to have_field('remove-source-branch-input', disabled: true)
+      expect(page).not_to have_field('remove-source-branch-input')
     end
   end
 

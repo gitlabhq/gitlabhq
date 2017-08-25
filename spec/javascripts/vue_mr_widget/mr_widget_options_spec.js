@@ -83,6 +83,32 @@ describe('mrWidgetOptions', () => {
       });
     });
 
+    describe('shouldRenderSourceBranchRemovalStatus', () => {
+      describe('when user cannot remove source branch and it will be removed', () => {
+        it('should be true', () => {
+          vm.mr.canRemoveSourceBranch = false;
+          vm.mr.shouldRemoveSourceBranch = true;
+          expect(vm.shouldRenderSourceBranchRemovalStatus).toBe(true);
+        });
+      });
+
+      describe('when user can remove source branch and it will be removed', () => {
+        it('should be false', () => {
+          vm.mr.canRemoveSourceBranch = true;
+          vm.mr.shouldRemoveSourceBranch = true;
+          expect(vm.shouldRenderSourceBranchRemovalStatus).toBe(false);
+        });
+      });
+
+      describe('when user cannot remove source branch and it will not be removed', () => {
+        it('should be false', () => {
+          vm.mr.canRemoveSourceBranch = false;
+          vm.mr.shouldRemoveSourceBranch = false;
+          expect(vm.shouldRenderSourceBranchRemovalStatus).toBe(false);
+        });
+      });
+    });
+
     describe('shouldRenderDeployments', () => {
       it('should return false for the initial data', () => {
         expect(vm.shouldRenderDeployments).toBeFalsy();
@@ -344,6 +370,7 @@ describe('mrWidgetOptions', () => {
       expect(comps['mr-widget-pipeline']).toBeDefined();
       expect(comps['mr-widget-deployment']).toBeDefined();
       expect(comps['mr-widget-related-links']).toBeDefined();
+      expect(comps['mr-widget-source-branch-removal-status']).toBeDefined();
       expect(comps['mr-widget-merged']).toBeDefined();
       expect(comps['mr-widget-closed']).toBeDefined();
       expect(comps['mr-widget-merging']).toBeDefined();

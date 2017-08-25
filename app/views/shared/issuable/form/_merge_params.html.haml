@@ -13,5 +13,6 @@
       .checkbox
         = label_tag 'merge_request[force_remove_source_branch]' do
           = hidden_field_tag 'merge_request[force_remove_source_branch]', '0', id: nil
-          = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?
-          Remove source branch when merge request is accepted.
+          - if @merge_request.source_branch_exists? && @merge_request.can_remove_source_branch?(current_user)
+            = check_box_tag 'merge_request[force_remove_source_branch]', '1', issuable.force_remove_source_branch?
+            Remove source branch when merge request is accepted.

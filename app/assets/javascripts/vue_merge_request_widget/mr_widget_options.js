@@ -6,6 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
+  WidgetSourceBranchRemovalStatus,
   MergedState,
   ClosedState,
   MergingState,
@@ -62,6 +63,9 @@ export default {
     },
     shouldRenderRelatedLinks() {
       return this.mr.relatedLinks;
+    },
+    shouldRenderSourceBranchRemovalStatus() {
+      return !this.mr.canRemoveSourceBranch && this.mr.shouldRemoveSourceBranch;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -211,6 +215,7 @@ export default {
     'mr-widget-pipeline': WidgetPipeline,
     'mr-widget-deployment': WidgetDeployment,
     'mr-widget-related-links': WidgetRelatedLinks,
+    'mr-widget-source-branch-removal-status': WidgetSourceBranchRemovalStatus,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-merging': MergingState,
@@ -250,6 +255,8 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
+        <mr-widget-source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus" />
       </div>
       <div
         class="mr-widget-footer"

@@ -185,30 +185,24 @@ describe('MRWidgetReadyToMerge', () => {
 
     describe('Remove source branch checkbox', () => {
       describe('when user can merge but cannot delete branch', () => {
-        it('isRemoveSourceBranchButtonDisabled should be true', () => {
-          expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-        });
+        it('checkbox should not be in the rendered output', () => {
+          vm.mr.canRemoveSourceBranch = false;
 
-        it('should be disabled in the rendered output', () => {
-          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+          vm.$nextTick(() => {
+            const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+            expect(checkboxElement).toBeNull();
+          });
         });
       });
 
       describe('when user can merge and can delete branch', () => {
-        beforeEach(() => {
-          this.customVm = createComponent({
-            mr: { canRemoveSourceBranch: true },
+        it('checkbox should be in rendered output', () => {
+          vm.mr.canRemoveSourceBranch = true;
+
+          vm.$nextTick(() => {
+            const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+            expect(checkboxElement).not.toBeNull();
           });
-        });
-
-        it('isRemoveSourceBranchButtonDisabled should be false', () => {
-          expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
-        });
-
-        it('should be enabled in rendered output', () => {
-          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBeNull();
         });
       });
     });
