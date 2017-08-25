@@ -6,8 +6,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-  prepend ::EE::Projects::IssuesController
-
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :check_issues_available!
@@ -21,6 +19,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
+
+  prepend ::EE::Projects::IssuesController
 
   respond_to :html
 

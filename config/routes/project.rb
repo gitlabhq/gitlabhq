@@ -349,6 +349,8 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           post :bulk_update
           post :export_csv
+
+          get :service_desk ## EE-specific
         end
 
         resources :issue_links, only: [:index, :create, :destroy], as: 'links', path: 'links'
