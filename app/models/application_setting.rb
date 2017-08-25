@@ -13,6 +13,15 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
+  # Setting a key restriction to `-1` means that all keys of this type are
+  # forbidden.
+  FORBIDDEN_KEY_VALUE = -1
+  SUPPORTED_KEY_TYPES = %i[rsa dsa ecdsa ed25519].freeze
+
+  def self.supported_key_restrictions(type)
+    [0, *Gitlab::SSHPublicKey.supported_sizes(type), FORBIDDEN_KEY_VALUE]
+  end
+
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -20,7 +29,6 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :allowed_key_types, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -147,23 +155,11 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :allowed_key_types, presence: true
-
-  validates :minimum_rsa_bits,
-            presence: true,
-            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('rsa') }
-
-  validates :minimum_dsa_bits,
-            presence: true,
-            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('dsa') }
-
-  validates :minimum_ecdsa_bits,
-            presence: true,
-            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('ecdsa') }
-
-  validates :minimum_ed25519_bits,
-            presence: true,
-            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('ed25519') }
+  SUPPORTED_KEY_TYPES.each do |type|
+    validates :"#{type}_key_restriction",
+              presence: true,
+              inclusion: { in: ApplicationSetting.supported_key_restrictions(type) }
+  end
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
@@ -185,14 +181,6 @@ class ApplicationSetting < ActiveRecord::Base
     value&.each do |source|
       unless Devise.omniauth_providers.include?(source.to_sym)
         record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-      end
-    end
-  end
-
-  validates_each :allowed_key_types do |record, attr, value|
-    value&.each do |type|
-      unless Gitlab::SSHPublicKey.allowed_type?(type)
-        record.errors.add(attr, "'#{type}' is not a valid SSH key type")
       end
     end
   end
@@ -240,7 +228,6 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
-      allowed_key_types: Gitlab::SSHPublicKey.technology_names,
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -250,6 +237,9 @@ class ApplicationSetting < ActiveRecord::Base
       default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
+      dsa_key_restriction: 0,
+      ecdsa_key_restriction: 0,
+      ed25519_key_restriction: 0,
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
       help_page_hide_commercial_content: false,
@@ -268,10 +258,7 @@ class ApplicationSetting < ActiveRecord::Base
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
       performance_bar_allowed_group_id: nil,
-      minimum_rsa_bits: 1024,
-      minimum_dsa_bits: 1024,
-      minimum_ecdsa_bits: 256,
-      minimum_ed25519_bits: 256,
+      rsa_key_restriction: 0,
       plantuml_enabled: false,
       plantuml_url: nil,
       project_export_enabled: true,
@@ -444,6 +431,19 @@ class ApplicationSetting < ActiveRecord::Base
 
   def usage_ping_enabled
     usage_ping_can_be_configured? && super
+  end
+
+  def allowed_key_types
+    SUPPORTED_KEY_TYPES.select do |type|
+      key_restriction_for(type) != FORBIDDEN_KEY_VALUE
+    end
+  end
+
+  def key_restriction_for(type)
+    attr_name = "#{type}_key_restriction"
+
+    # rubocop:disable GitlabSecurity/PublicSend
+    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE
   end
 
   private

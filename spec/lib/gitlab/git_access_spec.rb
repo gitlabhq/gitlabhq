@@ -162,28 +162,28 @@ describe Gitlab::GitAccess do
 
     context 'key is too small' do
       before do
-        stub_application_setting(minimum_rsa_bits: 4096)
+        stub_application_setting(rsa_key_restriction: 4096)
       end
 
       it 'does not allow keys which are too small' do
         aggregate_failures do
           expect(actor).not_to be_valid
-          expect { pull_access_check }.to raise_unauthorized('Your SSH key length must be at least 4096 bits.')
-          expect { push_access_check }.to raise_unauthorized('Your SSH key length must be at least 4096 bits.')
+          expect { pull_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
+          expect { push_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
         end
       end
     end
 
     context 'key type is not allowed' do
       before do
-        stub_application_setting(allowed_key_types: ['ecdsa'])
+        stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
       end
 
       it 'does not allow keys which are too small' do
         aggregate_failures do
           expect(actor).not_to be_valid
-          expect { pull_access_check }.to raise_unauthorized('Your SSH key type is not allowed. Must be ECDSA.')
-          expect { push_access_check }.to raise_unauthorized('Your SSH key type is not allowed. Must be ECDSA.')
+          expect { pull_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
+          expect { push_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
         end
       end
     end

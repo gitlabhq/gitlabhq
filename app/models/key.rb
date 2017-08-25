@@ -24,7 +24,7 @@ class Key < ActiveRecord::Base
     uniqueness: true,
     presence: { message: 'cannot be generated' }
 
-  validate :key_meets_minimum_bit_length, :key_type_is_allowed
+  validate :key_meets_restrictions
 
   delegate :name, :email, to: :user, prefix: true
 
@@ -100,37 +100,24 @@ class Key < ActiveRecord::Base
     self.fingerprint = public_key.fingerprint
   end
 
-  def key_meets_minimum_bit_length
-    case public_key.type
-    when :rsa
-      if public_key.bits < current_application_settings.minimum_rsa_bits
-        errors.add(:key, "length must be at least #{current_application_settings.minimum_rsa_bits} bits")
-      end
-    when :dsa
-      if public_key.bits < current_application_settings.minimum_dsa_bits
-        errors.add(:key, "length must be at least #{current_application_settings.minimum_dsa_bits} bits")
-      end
-    when :ecdsa
-      if public_key.bits < current_application_settings.minimum_ecdsa_bits
-        errors.add(:key, "elliptic curve size must be at least #{current_application_settings.minimum_ecdsa_bits} bits")
-      end
-    when :ed25519
-      if public_key.bits < current_application_settings.minimum_ed25519_bits
-        errors.add(:key, "length must be at least #{current_application_settings.minimum_ed25519_bits} bits")
-      end
+  def key_meets_restrictions
+    restriction = current_application_settings.key_restriction_for(public_key.type)
+
+    if restriction == ApplicationSetting::FORBIDDEN_KEY_VALUE
+      errors.add(:key, forbidden_key_type_message)
+    elsif public_key.bits < restriction
+      errors.add(:key, "must be at least #{restriction} bits")
     end
   end
 
-  def key_type_is_allowed
-    unless current_application_settings.allowed_key_types.include?(public_key.type.to_s)
-      allowed_types =
-        current_application_settings
+  def forbidden_key_type_message
+    allowed_types =
+      current_application_settings
         .allowed_key_types
         .map(&:upcase)
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
 
-      errors.add(:key, "type is not allowed. Must be #{allowed_types}")
-    end
+    "type is forbidden. Must be #{allowed_types}"
   end
 
   def notify_user

@@ -4,32 +4,36 @@ describe Gitlab::SSHPublicKey, lib: true do
   let(:key) { attributes_for(:rsa_key_2048)[:key] }
   let(:public_key) { described_class.new(key) }
 
-  describe '.technology_names' do
-    it 'returns the available technology names' do
-      expect(described_class.technology_names).to eq(%w[rsa dsa ecdsa ed25519])
+  describe '.technology(name)' do
+    it 'returns nil for an unrecognised name' do
+      expect(described_class.technology(:foo)).to be_nil
+    end
+
+    where(:name) do
+      [:rsa, :dsa, :ecdsa, :ed25519]
+    end
+
+    with_them do
+      it { expect(described_class.technology(name).name).to eq(name) }
+      it { expect(described_class.technology(name.to_s).name).to eq(name) }
     end
   end
 
-  describe '.allowed_sizes(name)' do
+  describe '.supported_sizes(name)' do
     where(:name, :sizes) do
       [
-        ['rsa', [1024, 2048, 3072, 4096]],
-        ['dsa', [1024, 2048, 3072]],
-        ['ecdsa', [256, 384, 521]],
-        ['ed25519', [256]]
+        [:rsa, [1024, 2048, 3072, 4096]],
+        [:dsa, [1024, 2048, 3072]],
+        [:ecdsa, [256, 384, 521]],
+        [:ed25519, [256]]
       ]
     end
 
-    subject { described_class.allowed_sizes(name) }
+    subject { described_class.supported_sizes(name) }
 
     with_them do
-      it { is_expected.to eq(sizes) }
-    end
-  end
-
-  describe '.allowed_type?' do
-    it 'determines the key type' do
-      expect(described_class.allowed_type?('foo')).to be(false)
+      it { expect(described_class.supported_sizes(name)).to eq(sizes) }
+      it { expect(described_class.supported_sizes(name.to_s)).to eq(sizes) }
     end
   end
 

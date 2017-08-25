@@ -744,7 +744,6 @@ module API
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
       expose :password_authentication_enabled, as: :signin_enabled
-      expose :allowed_key_types
     end
 
     class Release < Grape::Entity

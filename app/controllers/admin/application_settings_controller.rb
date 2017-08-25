@@ -66,8 +66,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       end
     end
 
-    params[:application_setting][:allowed_key_types]&.delete('')
-
     enabled_oauth_sign_in_sources = params[:application_setting].delete(:enabled_oauth_sign_in_sources)
 
     params[:application_setting][:disabled_oauth_sign_in_sources] =
@@ -85,7 +83,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def visible_application_setting_attributes
     ApplicationSettingsHelper.visible_attributes + [
       :domain_blacklist_file,
-      allowed_key_types: [],
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],

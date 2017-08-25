@@ -57,42 +57,12 @@
         %span.help-block#clone-protocol-help
           Allow only the selected protocols to be used for Git access.
 
-    .form-group
-      = f.label :allowed_key_types, 'Allowed SSH keys', class: 'control-label col-sm-2'
-      .col-sm-10
-        = hidden_field_tag 'application_setting[allowed_key_types][]', nil, id: 'allowed_key_types-none'
-        - allowed_key_types_checkboxes('allowed-key-types-help').each do |key_type_checkbox|
-          .checkbox= key_type_checkbox
-        %span.help-block#allowed-key-types-help
-          Only SSH keys with allowed algorithms can be uploaded.
-
-    .form-group
-      = f.label :minimum_rsa_bits, 'Minimum RSA key length', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :minimum_rsa_bits, Gitlab::SSHPublicKey.allowed_sizes('rsa'), {}, class: 'form-control'
-        .help-block
-          The minimum length for user RSA SSH keys (in bits)
-
-    .form-group
-      = f.label :minimum_dsa_bits, 'Minimum DSA key length', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :minimum_dsa_bits, Gitlab::SSHPublicKey.allowed_sizes('dsa'), {}, class: 'form-control'
-        .help-block
-          The minimum length for user DSA SSH keys (in bits)
-
-    .form-group
-      = f.label :minimum_ecdsa_bits, 'Minimum ECDSA key length', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :minimum_ecdsa_bits, Gitlab::SSHPublicKey.allowed_sizes('ecdsa'), {}, class: 'form-control'
-        .help-block
-          The minimum elliptic curve size for user ECDSA SSH keys (in bits)
-
-    .form-group
-      = f.label :minimum_ed25519_bits, 'Minimum ED25519 key length', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.select :minimum_ed25519_bits, Gitlab::SSHPublicKey.allowed_sizes('ed25519'), {}, class: 'form-control'
-        .help-block
-          The minimum length for user ED25519 SSH keys (in bits)
+    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      - field_name = :"#{type}_key_restriction"
+      .form-group
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
   %fieldset
     %legend Account and Limit Settings

@@ -72,25 +72,22 @@ describe ApplicationSetting do
         .is_greater_than(0)
     end
 
-    it { is_expected.to validate_presence_of(:minimum_rsa_bits) }
-    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('rsa')).for(:minimum_rsa_bits) }
-    it { is_expected.not_to allow_value(128).for(:minimum_rsa_bits) }
+    context 'key restrictions' do
+      it 'supports all key types' do
+        expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)
+      end
 
-    it { is_expected.to validate_presence_of(:minimum_dsa_bits) }
-    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('dsa')).for(:minimum_dsa_bits) }
-    it { is_expected.not_to allow_value(128).for(:minimum_dsa_bits) }
+      where(:type) do
+        described_class::SUPPORTED_KEY_TYPES
+      end
 
-    it { is_expected.to validate_presence_of(:minimum_ecdsa_bits) }
-    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('ecdsa')).for(:minimum_ecdsa_bits) }
-    it { is_expected.not_to allow_value(128).for(:minimum_ecdsa_bits) }
+      with_them do
+        let(:field) { :"#{type}_key_restriction" }
 
-    it { is_expected.to validate_presence_of(:minimum_ed25519_bits) }
-    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('ed25519')).for(:minimum_ed25519_bits) }
-    it { is_expected.not_to allow_value(128).for(:minimum_ed25519_bits) }
-
-    describe 'allowed_key_types validations' do
-      it { is_expected.to allow_value(Gitlab::SSHPublicKey.technology_names).for(:allowed_key_types) }
-      it { is_expected.not_to allow_value(['foo']).for(:allowed_key_types) }
+        it { is_expected.to validate_presence_of(field) }
+        it { is_expected.to allow_value(*described_class.supported_key_restrictions(type)).for(field) }
+        it { is_expected.not_to allow_value(128).for(field) }
+      end
     end
 
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
@@ -463,15 +460,35 @@ describe ApplicationSetting do
     end
   end
 
-  context 'allowed key types attribute' do
-    it 'set value with array of symbols' do
-      setting.allowed_key_types = [:rsa]
-      expect(setting.allowed_key_types).to contain_exactly(:rsa)
+  describe '#allowed_key_types' do
+    it 'includes all key types by default' do
+      expect(setting.allowed_key_types).to contain_exactly(*described_class::SUPPORTED_KEY_TYPES)
     end
 
-    it 'get value as array of symbols' do
-      setting.allowed_key_types = ['rsa']
-      expect(setting.allowed_key_types).to eq(['rsa'])
+    it 'excludes disabled key types' do
+      expect(setting.allowed_key_types).to include(:ed25519)
+
+      setting.ed25519_key_restriction = described_class::FORBIDDEN_KEY_VALUE
+
+      expect(setting.allowed_key_types).not_to include(:ed25519)
+    end
+  end
+
+  describe '#key_restriction_for' do
+    it 'returns the restriction value for recognised types' do
+      setting.rsa_key_restriction = 1024
+
+      expect(setting.key_restriction_for(:rsa)).to eq(1024)
+    end
+
+    it 'allows types to be passed as a string' do
+      setting.rsa_key_restriction = 1024
+
+      expect(setting.key_restriction_for('rsa')).to eq(1024)
+    end
+
+    it 'returns forbidden for unrecognised type' do
+      expect(setting.key_restriction_for(:foo)).to eq(described_class::FORBIDDEN_KEY_VALUE)
     end
   end
 end

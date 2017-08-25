@@ -7,18 +7,22 @@ class AddMinimumKeyLengthToApplicationSettings < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default :application_settings, :minimum_rsa_bits, :integer, default: 1024
-    add_column_with_default :application_settings, :minimum_dsa_bits, :integer, default: 1024
-    add_column_with_default :application_settings, :minimum_ecdsa_bits, :integer, default: 256
-    add_column_with_default :application_settings, :minimum_ed25519_bits, :integer, default: 256
-    add_column_with_default :application_settings, :allowed_key_types, :string, default: %w[rsa dsa ecdsa ed25519].to_yaml
+    # A key restriction has two possible states:
+    #
+    #   * -1 means "this key type is completely disabled"
+    #   * >= 0 means "keys must have at least this many bits to be valid"
+    #
+    # A value of 0 is equivalent to "there are no restrictions on keys of this type"
+    add_column_with_default :application_settings, :rsa_key_restriction, :integer, default: 0
+    add_column_with_default :application_settings, :dsa_key_restriction, :integer, default: 0
+    add_column_with_default :application_settings, :ecdsa_key_restriction, :integer, default: 0
+    add_column_with_default :application_settings, :ed25519_key_restriction, :integer, default: 0
   end
 
   def down
-    remove_column :application_settings, :minimum_rsa_bits
-    remove_column :application_settings, :minimum_dsa_bits
-    remove_column :application_settings, :minimum_ecdsa_bits
-    remove_column :application_settings, :minimum_ed25519_bits
-    remove_column :application_settings, :allowed_key_types
+    remove_column :application_settings, :rsa_key_restriction
+    remove_column :application_settings, :dsa_key_restriction
+    remove_column :application_settings, :ecdsa_key_restriction
+    remove_column :application_settings, :ed25519_key_restriction
   end
 end

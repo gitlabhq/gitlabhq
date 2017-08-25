@@ -81,18 +81,16 @@ module ApplicationSettingsHelper
     end
   end
 
-  def allowed_key_types_checkboxes(help_block_id)
-    Gitlab::SSHPublicKey.technology_names.map do |type|
-      checked = current_application_settings.allowed_key_types.include?(type)
-      checkbox_id = "allowed_key_types-#{type}"
-
-      label_tag(checkbox_id, class: checked ? 'active' : nil) do
-        check_box_tag('application_setting[allowed_key_types][]', type, checked,
-                      autocomplete: 'off',
-                      'aria-describedby' => help_block_id,
-                      id: checkbox_id) + type.upcase
-      end
+  def key_restriction_options_for_select(type)
+    bit_size_options = Gitlab::SSHPublicKey.supported_sizes(type).map do |bits|
+      ["Must be at least #{bits} bits", bits]
     end
+
+    [
+      ['Are allowed', 0],
+      *bit_size_options,
+      ['Are forbidden', ApplicationSetting::FORBIDDEN_KEY_VALUE]
+    ]
   end
 
   def repository_storages_options_for_select
@@ -127,6 +125,9 @@ module ApplicationSettingsHelper
       :domain_blacklist_enabled,
       :domain_blacklist_raw,
       :domain_whitelist_raw,
+      :dsa_key_restriction,
+      :ecdsa_key_restriction,
+      :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
       :gravatar_enabled,
@@ -155,10 +156,6 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
-      :minimum_dsa_bits,
-      :minimum_ecdsa_bits,
-      :minimum_ed25519_bits,
-      :minimum_rsa_bits,
       :password_authentication_enabled,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
@@ -174,6 +171,7 @@ module ApplicationSettingsHelper
       :repository_storages,
       :require_two_factor_authentication,
       :restricted_visibility_levels,
+      :rsa_key_restriction,
       :send_user_confirmation_email,
       :sentry_dsn,
       :sentry_enabled,

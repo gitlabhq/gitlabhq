@@ -104,19 +104,34 @@ describe Key, :mailer do
     end
   end
 
-  context 'validate it meets minimum bit length' do
+  context 'validate it meets key restrictions' do
     where(:factory, :minimum, :result) do
+      forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE
+
       [
+        [:rsa_key_2048,    0, true],
+        [:dsa_key_2048,    0, true],
+        [:ecdsa_key_256,   0, true],
+        [:ed25519_key_256, 0, true],
+
         [:rsa_key_2048, 1024, true],
         [:rsa_key_2048, 2048, true],
         [:rsa_key_2048, 4096, false],
+
         [:dsa_key_2048, 1024, true],
         [:dsa_key_2048, 2048, true],
         [:dsa_key_2048, 4096, false],
+
         [:ecdsa_key_256, 256, true],
         [:ecdsa_key_256, 384, false],
+
         [:ed25519_key_256, 256, true],
-        [:ed25519_key_256, 384, false]
+        [:ed25519_key_256, 384, false],
+
+        [:rsa_key_2048,    forbidden, false],
+        [:dsa_key_2048,    forbidden, false],
+        [:ecdsa_key_256,   forbidden, false],
+        [:ed25519_key_256, forbidden, false]
       ]
     end
 
@@ -124,55 +139,10 @@ describe Key, :mailer do
       subject(:key) { build(factory) }
 
       before do
-        stub_application_setting("minimum_#{key.public_key.type}_bits" => minimum)
+        stub_application_setting("#{key.public_key.type}_key_restriction" => minimum)
       end
 
       it { expect(key.valid?).to eq(result) }
-    end
-  end
-
-  context 'validate the key type is allowed' do
-    it 'accepts RSA, DSA, ECDSA and ED25519 keys by default' do
-      expect(build(:rsa_key_2048)).to be_valid
-      expect(build(:dsa_key_2048)).to be_valid
-      expect(build(:ecdsa_key_256)).to be_valid
-      expect(build(:ed25519_key_256)).to be_valid
-    end
-
-    it 'rejects RSA, ECDSA and ED25519 keys if DSA is the only allowed type' do
-      stub_application_setting(allowed_key_types: ['dsa'])
-
-      expect(build(:rsa_key_2048)).not_to be_valid
-      expect(build(:dsa_key_2048)).to be_valid
-      expect(build(:ecdsa_key_256)).not_to be_valid
-      expect(build(:ed25519_key_256)).not_to be_valid
-    end
-
-    it 'rejects RSA, DSA and ED25519 keys if ECDSA is the only allowed type' do
-      stub_application_setting(allowed_key_types: ['ecdsa'])
-
-      expect(build(:rsa_key_2048)).not_to be_valid
-      expect(build(:dsa_key_2048)).not_to be_valid
-      expect(build(:ecdsa_key_256)).to be_valid
-      expect(build(:ed25519_key_256)).not_to be_valid
-    end
-
-    it 'rejects DSA, ECDSA and ED25519 keys if RSA is the only allowed type' do
-      stub_application_setting(allowed_key_types: ['rsa'])
-
-      expect(build(:rsa_key_2048)).to be_valid
-      expect(build(:dsa_key_2048)).not_to be_valid
-      expect(build(:ecdsa_key_256)).not_to be_valid
-      expect(build(:ed25519_key_256)).not_to be_valid
-    end
-
-    it 'rejects RSA, DSA and ECDSA keys if ED25519 is the only allowed type' do
-      stub_application_setting(allowed_key_types: ['ed25519'])
-
-      expect(build(:rsa_key_2048)).not_to be_valid
-      expect(build(:dsa_key_2048)).not_to be_valid
-      expect(build(:ecdsa_key_256)).not_to be_valid
-      expect(build(:ed25519_key_256)).to be_valid
     end
   end
 

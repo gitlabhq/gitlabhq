@@ -31,7 +31,8 @@ feature 'Profile > SSH Keys' do
 
     context 'when only DSA and ECDSA keys are allowed' do
       before do
-        stub_application_setting(allowed_key_types: %w[dsa ecdsa])
+        forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE
+        stub_application_setting(rsa_key_restriction: forbidden, ed25519_key_restriction: forbidden)
       end
 
       scenario 'shows a validation error' do
@@ -41,7 +42,7 @@ feature 'Profile > SSH Keys' do
         fill_in('Title', with: attrs[:title])
         click_button('Add key')
 
-        expect(page).to have_content('Key type is not allowed. Must be DSA or ECDSA')
+        expect(page).to have_content('Key type is forbidden. Must be DSA or ECDSA')
       end
     end
   end

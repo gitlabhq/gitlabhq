@@ -49,11 +49,10 @@ Example response:
    "plantuml_url": null,
    "terminal_max_session_time": 0,
    "polling_interval_multiplier": 1.0,
-   "minimum_rsa_bits": 1024,
-   "minimum_dsa_bits": 1024,
-   "minimum_ecdsa_bits": 256,
-   "minimum_ed25519_bits": 256,
-   "allowed_key_types": ["rsa", "dsa", "ecdsa", "ed25519"]
+   "rsa_key_restriction": 0,
+   "dsa_key_restriction": 0,
+   "ecdsa_key_restriction": 0,
+   "ed25519_key_restriction": 0,
 }
 ```
 
@@ -93,11 +92,10 @@ PUT /application/settings
 | `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 | `terminal_max_session_time` | integer | no | Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time. |
 | `polling_interval_multiplier` | decimal | no | Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling. |
-| `minimum_rsa_bits` | integer | no | The minimum allowed bit length of an uploaded RSA key. Default is `1024`.
-| `minimum_dsa_bits` | integer | no | The minimum allowed bit length of an uploaded DSA key. Default is `1024`.
-| `minimum_ecdsa_bits` | integer | no | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `256`.
-| `minimum_ed25519_bits` | integer | no | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `256`.
-| `allowed_key_types` | array of strings | no | Array of SSH key types accepted by the application. Allowed values are: `rsa`, `dsa`, `ecdsa`, and `ed25519`. Default is `["rsa", "dsa", "ecdsa", "ed25519"]`.
+| `rsa_key_restriction` | integer | no | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys.
+| `dsa_key_restriction` | integer | no | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys.
+| `ecdsa_key_restriction` | integer | no | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys.
+| `ed25519_key_restriction` | integer | no | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys.
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -136,10 +134,9 @@ Example response:
   "plantuml_url": null,
   "terminal_max_session_time": 0,
   "polling_interval_multiplier": 1.0,
-  "minimum_rsa_bits": 1024,
-  "minimum_dsa_bits": 1024,
-  "minimum_ecdsa_bits": 256,
-  "minimum_ed25519_bits": 256,
-  "allowed_key_types": ["rsa", "dsa", "ecdsa", "ed25519"]
+  "rsa_key_restriction": 0,
+  "dsa_key_restriction": 0,
+  "ecdsa_key_restriction": 0,
+  "ed25519_key_restriction": 0,
 }
 ```
