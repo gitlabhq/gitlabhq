@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'repo-file-info',
+  name: 'repo-file-footer',
   props: {
     branchName: {
       type: String,
@@ -28,7 +28,7 @@ export default {
 </script>
 
 <template>
-  <div class="repo-file-info">
+  <div class="repo-file-footer">
     <i
       aria-label="branch"
       class="fa fa-code-fork"
