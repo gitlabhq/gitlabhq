@@ -17,7 +17,7 @@ This chart configures the Runner to:
 - Your GitLab Server's API is reachable from the cluster
 - Kubernetes 1.4+ with Beta APIs enabled
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab Runner using the Helm Chart
 

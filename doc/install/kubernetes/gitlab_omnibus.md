@@ -35,7 +35,7 @@ Terms:
 - An [external IP address](#networking-prerequisites)
 - A [wildcard DNS entry](#networking-prerequisites), which resolves to the external IP address
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ### Networking Prerequisites
 

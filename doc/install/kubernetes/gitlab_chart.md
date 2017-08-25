@@ -22,7 +22,7 @@ This chart includes the following:
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab
 
@@ -426,7 +426,7 @@ ingress:
 ## Installing GitLab using the Helm Chart
 > You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
-Ensure the GitLab repo has been added and re-initialize Helm:
+Add the GitLab Helm repository and initialize Helm:
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io
