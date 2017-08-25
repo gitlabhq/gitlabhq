@@ -124,6 +124,8 @@ To protect/unprotect runners:
 1. Check the **Protected** option
 1. Click **Save changes** for the changes to take effect
 
+![specific runners edit icon](img/protected_runners_check_box.png)
+
 ## How shared Runners pick jobs
 
 Shared Runners abide to a process queue we call fair usage. The fair usage
