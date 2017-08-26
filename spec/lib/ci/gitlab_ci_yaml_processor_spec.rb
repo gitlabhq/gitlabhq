@@ -344,7 +344,6 @@ module Ci
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
           let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
 
-
           context 'when it is integer' do
             let(:only) { 1 }
 
