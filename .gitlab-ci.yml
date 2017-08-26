@@ -279,7 +279,7 @@ flaky-examples-check:
 
 setup-test-env:
   <<: *use-pg
-  <<: *dedicated-runner
+  <<: *dedicated-runner-high-cpu
   <<: *except-docs
   stage: prepare
   cache:
