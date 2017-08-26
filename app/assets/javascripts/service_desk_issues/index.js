@@ -1,1 +1,2 @@
-console.log("Service desk issues entry point");
+import FilteredSearchServiceDesk from './filtered_search';
+// bulk edit?
