@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::Storage::ForkedStorageCheck, skip_database_cleaner: true do
+describe Gitlab::Git::Storage::ForkedStorageCheck, broken_storage: true, skip_database_cleaner: true do
   let(:existing_path) do
     existing_path = TestEnv.repos_path
     FileUtils.mkdir_p(existing_path)

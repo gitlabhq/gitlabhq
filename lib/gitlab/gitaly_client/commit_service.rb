@@ -159,8 +159,8 @@ module Gitlab
       def raw_blame(revision, path)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)

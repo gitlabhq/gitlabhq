@@ -97,9 +97,15 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
-  if ENV['CI']
-    config.around(:each) do |ex|
-      ex.run_with_retry retry: 2
+  # Stub the `ForkedStorageCheck.storage_available?` method unless
+  # `:broken_storage` metadata is defined
+  #
+  # This check can be slow and is unnecessary in a test environment where we
+  # know the storage is available, because we create it at runtime
+  config.before(:example) do |example|
+    unless example.metadata[:broken_storage]
+      allow(Gitlab::Git::Storage::ForkedStorageCheck)
+        .to receive(:storage_available?).and_return(true)
     end
   end
 
