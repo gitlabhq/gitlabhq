@@ -3,7 +3,7 @@ function setVisibilityOptions(namespaceSelector) {
     return;
   }
   const selectedNamespace = namespaceSelector.options[namespaceSelector.selectedIndex];
-  const { name, visibility, visibilityLevel } = selectedNamespace.dataset;
+  const { name, visibility, visibilityLevel, showPath, editPath } = selectedNamespace.dataset;
 
   document.querySelectorAll('.visibility-level-setting .radio').forEach((option) => {
     const optionInput = option.querySelector('input[type=radio]');
@@ -18,7 +18,11 @@ function setVisibilityOptions(namespaceSelector) {
         optionInput.disabled = true;
         const reason = option.querySelector('.option-disabled-reason');
         if (reason) {
-          reason.innerText = `This project cannot be ${optionName} because the visibility of ${name} is ${visibility}.`;
+          reason.innerHTML =
+            `This project cannot be ${optionName} because the visibility of
+            <a href="${showPath}">${name}</a> is ${visibility}. To make this project
+            ${optionName}, you must first <a href="${editPath}">change the visibility</a>
+            of the parent group.`;
         }
       } else {
         option.classList.remove('disabled');

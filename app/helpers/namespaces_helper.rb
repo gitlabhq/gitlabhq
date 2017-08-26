@@ -41,7 +41,14 @@ module NamespacesHelper
 
     elements = namespaces.sort_by(&:human_name).map! do |n|
       [display_path ? n.full_path : n.human_name, n.id,
-       data: { options_parent: type, visibility_level: n.visibility_level_value, visibility: n.visibility, name: n.name }]
+       data: {
+         options_parent: type,
+         visibility_level: n.visibility_level_value,
+         visibility: n.visibility,
+         name: n.name,
+         show_path: n.is_a?(Group) ? group_path(n) : user_path(n),
+         edit_path: n.is_a?(Group) ? edit_group_path(n) : nil
+       }]
     end
 
     [type.camelize, elements]
