@@ -520,7 +520,7 @@ db:seed_fu-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-runner
+  <<: *dedicated-runner-high-cpu
   <<: *except-docs
   <<: *pull-cache
   stage: test
