@@ -75,7 +75,6 @@
             = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
               %span
                 Requests Profiles
-
           = render 'layouts/nav/ee/new_admin_monitoring_sidebar'
 
       = nav_link(controller: :broadcast_messages) do
@@ -84,6 +83,7 @@
             = custom_icon('messages')
           %span.nav-item-name
             Messages
+
       = nav_link(controller: [:hooks, :hook_logs]) do
         = link_to admin_hooks_path, title: 'Hooks' do
           .nav-icon-container

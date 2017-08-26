@@ -207,6 +207,9 @@ You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
 in your browser.
 
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
+
 ![GitLab Geo dashboard](img/geo-node-dashboard.png)
 
 Disabling a secondary node stops the syncing process.
