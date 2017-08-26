@@ -22,7 +22,7 @@ module Ci
 
     def jobs_for_ref(ref, tag = false, source = nil)
       @jobs.select do |_, job|
-        process?(job[:only], job[:except], ref, tag, source)
+        process?(job.dig(:only, :refs), job.dig(:except, :refs), ref, tag, source)
       end
     end
 
