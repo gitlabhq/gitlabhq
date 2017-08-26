@@ -78,6 +78,8 @@ module CycleAnalyticsHelpers
     @dummy_pipeline ||=
       Ci::Pipeline.new(
         sha: project.repository.commit('master').sha,
+        ref: 'master',
+        source: :push,
         project: project)
   end
 

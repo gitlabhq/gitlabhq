@@ -5,7 +5,7 @@
       = link_to project_path(@project), title: @project.name do
         .avatar-container.s40.project-avatar
           = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
-        .project-title
+        .sidebar-context-title
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do

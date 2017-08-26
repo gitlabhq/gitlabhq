@@ -17,7 +17,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   describe "Respond to" do
     subject { repository }
@@ -56,14 +56,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "#rugged" do
     describe 'when storage is broken', broken_storage: true  do
       it 'raises a storage exception when storage is not available' do
-        broken_repo = described_class.new('broken', 'a/path.git')
+        broken_repo = described_class.new('broken', 'a/path.git', '')
 
         expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
       end
     end
 
     it 'raises a no repository exception when there is no repo' do
-      broken_repo = described_class.new('default', 'a/path.git')
+      broken_repo = described_class.new('default', 'a/path.git', '')
 
       expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
@@ -257,7 +257,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#submodule_url_for' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
     let(:ref) { 'master' }
 
     def submodule_url(path)
@@ -295,7 +295,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   context '#submodules' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
     context 'where repo has submodules' do
       let(:submodules) { repository.send(:submodules, 'master') }
@@ -391,7 +391,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#delete_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.delete_branch("feature")
     end
 
@@ -407,7 +407,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#create_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
     end
 
     it "should create a new branch" do
@@ -445,7 +445,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_delete" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_delete("expendable")
     end
 
@@ -461,7 +461,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_add" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
     end
 
@@ -477,7 +477,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_update" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_update("expendable", url: TEST_NORMAL_REPO_PATH)
     end
 
@@ -506,7 +506,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
       @commit_with_old_name_id = new_commit_edit_old_file(repo)
       @rename_commit_id = new_commit_move_file(repo)
       @commit_with_new_name_id = new_commit_edit_new_file(repo)
@@ -514,7 +514,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     after(:context) do
       # Erase our commits so other tests get the original repo
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
 
@@ -849,7 +849,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.rugged.config['core.autocrlf'] = true
     end
 
@@ -864,7 +864,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf=' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.rugged.config['core.autocrlf'] = false
     end
 
@@ -933,7 +933,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with local and remote branches' do
       let(:repository) do
-        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
       end
 
       before do
@@ -980,7 +980,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with local and remote branches' do
       let(:repository) do
-        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
       end
 
       before do
@@ -1186,7 +1186,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
     end
 
     after(:all) do
