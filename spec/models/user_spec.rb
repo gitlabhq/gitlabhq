@@ -1433,28 +1433,34 @@ describe User do
   describe '#sort' do
     before do
       described_class.delete_all
-      @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
-      @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
-      @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
+      @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
+      @user1 = create :user, created_at: Date.today - 1, current_sign_in_at: Date.today - 1, name: 'Omega'
+      @user2 = create :user, created_at: Date.today - 2, name: 'Beta'
     end
 
     context 'when sort by recent_sign_in' do
-      it 'sorts users by the recent sign-in time' do
-        expect(described_class.sort('recent_sign_in').first).to eq(@user)
+      let(:users) { described_class.sort('recent_sign_in') }
+
+      it 'sorts users by recent sign-in time' do
+        expect(users.first).to eq(@user)
+        expect(users.second).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('recent_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
+      let(:users) { described_class.sort('oldest_sign_in') }
+
       it 'sorts users by the oldest sign-in time' do
-        expect(described_class.sort('oldest_sign_in').first).to eq(@user1)
+        expect(users.first).to eq(@user1)
+        expect(users.second).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('oldest_sign_in').third).to eq(@user2)
+        expect(users.third).to eq(@user2)
       end
     end
 
