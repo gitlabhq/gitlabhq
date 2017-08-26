@@ -11,9 +11,9 @@ module Gitlab
 
       def to_sql
         if exact_matching?
-          query
+          sanitized_query
         else
-          "%#{query}%"
+          "%#{sanitized_query}%"
         end
       end
 
@@ -23,6 +23,11 @@ module Gitlab
 
       def partial_matching?
         @query.length >= MIN_CHARS_FOR_PARTIAL_MATCHING
+      end
+
+      def sanitized_query
+        # Note: ActiveRecord::Base.sanitize_sql_like is a protected method
+        ActiveRecord::Base.__send__(:sanitize_sql_like, query)
       end
     end
   end
