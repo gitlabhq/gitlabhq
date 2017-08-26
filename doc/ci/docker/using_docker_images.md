@@ -430,6 +430,40 @@ To configure access for `registry.example.com`, follow these steps:
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
 
+### When your Docker Client uses system keystore instead of config.json file
+
+In some setups it's possible, that Docker Client will use available system keystore
+to store `docker login` result. In that case it's impossible to read
+`~/.docker/config.json` file and user needs to prepare required content manually.
+
+Let's assume that we have following login credentials:
+
+| Key      | Valye                |
+|----------|----------------------|
+| registry | registry.example.com |
+| username | my_username          |
+| password | my_password          |
+
+Let's prepare a base64 encoded version of `${username}:${password}`. Let's open a terminal
+and execute following command:
+
+```bash
+$ echo -n "my_username:my_password" | base64
+bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+```
+
+Having this we can prepare a content for `DOCKER_AUTH_CONFIG` variable:
+
+```json
+{
+    "auths": {
+        "registry-example.com": {
+            "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
+        }
+    }
+}
+```
+
 ## Configuring services
 
 Many services accept environment variables which allow you to easily change
