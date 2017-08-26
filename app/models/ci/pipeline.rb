@@ -31,6 +31,7 @@ module Ci
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
+    delegate :deployment_variables, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }

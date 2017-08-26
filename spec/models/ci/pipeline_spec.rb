@@ -27,6 +27,14 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
+  describe '#project_deployment_variables' do
+    it 'delegates deployment variables to project' do
+      expect(pipeline)
+        .to delegate_method(:deployment_variables)
+        .to(:project).with_prefix
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
