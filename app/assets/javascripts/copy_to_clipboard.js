@@ -29,12 +29,14 @@ showTooltip = function(target, title) {
   var $target = $(target);
   var originalTitle = $target.data('original-title');
 
-  $target
-    .attr('title', 'Copied')
-    .tooltip('fixTitle')
-    .tooltip('show')
-    .attr('title', originalTitle)
-    .tooltip('fixTitle');
+  if (!$target.data('hideTooltip')) {
+    $target
+      .attr('title', 'Copied')
+      .tooltip('fixTitle')
+      .tooltip('show')
+      .attr('title', originalTitle)
+      .tooltip('fixTitle');
+  }
 };
 
 $(function() {
