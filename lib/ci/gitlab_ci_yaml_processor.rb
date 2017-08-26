@@ -44,6 +44,22 @@ module Ci
       end
     end
 
+    def pipeline_stage_builds(stage, pipeline)
+      builds = builds_for_stage_and_ref(
+        stage, pipeline.ref, pipeline.tag?, pipeline.source)
+
+      builds.select do |build|
+        job = @jobs[build.fetch(:name).to_sym]
+        has_kubernetes = pipeline.has_kubernetes_available?
+        only_kubernetes = job.dig(:only, :kubernetes)
+        except_kubernetes = job.dig(:except, :kubernetes)
+
+        [!only_kubernetes & !except_kubernetes,
+          only_kubernetes & has_kubernetes,
+          except_kubernetes & !has_kubernetes].any?
+      end
+    end
+
     def builds
       @jobs.map do |name, _|
         build_attributes(name)
@@ -52,8 +68,7 @@ module Ci
 
     def stage_seeds(pipeline)
       seeds = @stages.uniq.map do |stage|
-        builds = builds_for_stage_and_ref(
-          stage, pipeline.ref, pipeline.tag?, pipeline.source)
+        builds = pipeline_stage_builds(stage, pipeline)
 
         Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
       end

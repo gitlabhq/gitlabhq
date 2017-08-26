@@ -32,6 +32,7 @@ module Ci
 
     delegate :id, to: :project, prefix: true
     delegate :deployment_variables, to: :project, prefix: true
+    delegate :secret_variables_for, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
@@ -303,6 +304,15 @@ module Ci
       return [] unless config_processor
 
       @stage_seeds ||= config_processor.stage_seeds(self)
+    end
+
+    def variables
+      project_secret_variables_for(ref: ref).map(&:to_runner_variable) +
+        project_deployment_variables
+    end
+
+    def has_kubernetes_available?
+      (variables.map { |v| v.fetch(:key) } & %w[KUBECONFIG KUBE_DOMAIN]).many?
     end
 
     def has_stage_seeds?

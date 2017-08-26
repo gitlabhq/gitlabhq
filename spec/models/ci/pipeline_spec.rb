@@ -542,6 +542,46 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  context 'when kubernetes is configured' do
+    let(:project) { create(:kubernetes_project) }
+
+    before do
+      create(:ci_variable, key: 'KUBE_DOMAIN',
+                           protected: false,
+                           project: project)
+    end
+
+    describe '#variables' do
+      it 'returns kubernetes-related variables' do
+        variables = pipeline.variables.map { |v| v.fetch(:key) }
+
+        expect(variables).to include 'KUBECONFIG', 'KUBE_DOMAIN'
+      end
+    end
+
+    describe '#has_kubernetes_available?' do
+      it 'returns true' do
+        expect(pipeline).to have_kubernetes_available
+      end
+    end
+  end
+
+  context 'when kubernetes is not configured' do
+    describe '#variables' do
+      it 'does not return kubernetes related variables' do
+        variables = pipeline.variables.map { |v| v.fetch(:key) }
+
+        expect(variables).not_to include 'KUBECONFIG', 'KUBE_DOMAIN'
+      end
+    end
+
+    describe '#has_kubernetes_available?' do
+      it 'returns false' do
+        expect(pipeline).not_to have_kubernetes_available
+      end
+    end
+  end
+
   describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
       subject { build(:ci_pipeline_with_one_job) }

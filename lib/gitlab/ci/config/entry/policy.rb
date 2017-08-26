@@ -7,7 +7,7 @@ module Gitlab
         #
         class Policy < Simplifiable
           strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
-          strategy :ExpressionsPolicy, if: -> (config) { config.is_a?(Hash) }
+          strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
 
           class RefsPolicy < Entry::Node
             include Entry::Validatable
@@ -21,20 +21,19 @@ module Gitlab
             end
           end
 
-          class ExpressionsPolicy < Entry::Node
+          class ComplexPolicy < Entry::Node
             include Entry::Validatable
             include Entry::Attributable
 
-            attributes :refs, :expressions
+            attributes :refs, :kubernetes
 
             validations do
               validates :config, presence: true
-              validates :config, allowed_keys: %i[refs expressions]
+              validates :config, allowed_keys: %i[refs kubernetes]
 
               with_options allow_nil: true do
                 validates :refs, array_of_strings_or_regexps: true
-                validates :expressions, type: Array
-                validates :expressions, presence: true
+                validates :kubernetes, inclusion: { in: [true] }
               end
             end
           end
