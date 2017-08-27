@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Group merge requests page' do
+  include FilteredSearchHelpers
+
   let(:path) { merge_requests_group_path(group) }
   let(:issuable) { create(:merge_request, source_project: project, target_project: project, title: 'this is my created issuable') }
 
@@ -31,6 +33,19 @@ feature 'Group merge requests page' do
       expect(page.find('#state-merged span.badge').text).to eq("0")
       expect(page.find('#state-closed span.badge').text).to eq("0")
       expect(page.find('#state-all span.badge').text).to eq("1")
+    end
+  end
+
+  context 'group filtered search', :js do
+    let(:access_level) { ProjectFeature::ENABLED }
+    let(:user) { user_in_group }
+    let(:user2) { user_outside_group }
+
+    it 'filters by assignee only group users' do
+      filtered_search.set('assignee:')
+
+      expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
+      expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
     end
   end
 end
