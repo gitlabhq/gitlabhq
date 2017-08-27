@@ -32,7 +32,7 @@ module Ci
 
     delegate :id, to: :project, prefix: true
 
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
+    validates :source, presence: { unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
