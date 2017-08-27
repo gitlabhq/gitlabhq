@@ -247,6 +247,18 @@ describe Projects::PipelineSchedulesController do
         end
 
         context 'when deletes and creates a same key simultaneously' do
+          # We need to add `as: :json` as a workaround for rails 5 bug, see details
+          # https://github.com/rails/rails/issues/23997
+          # workaround is proposed in https://github.com/rspec/rspec-rails/issues/1700
+          def go
+            put(:update, params: {
+              namespace_id: project.namespace.to_param,
+              project_id: project,
+              id: pipeline_schedule,
+              schedule: schedule
+            }, as: :json)
+          end
+
           let(:schedule) do
             basic_param.merge({
               variables_attributes: [{ id: pipeline_schedule_variable.id, _destroy: true },
@@ -306,9 +318,12 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      put :update, namespace_id: project.namespace.to_param,
-                   project_id: project, id: pipeline_schedule,
-                   schedule: schedule
+      put(:update, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: pipeline_schedule,
+        schedule: schedule
+      })
     end
   end
 
