@@ -27,6 +27,12 @@ For instance, consider the following workflow:
 
 ## How it works
 
+>**Note:**
+In [GitLab Enterprise Edition Starter][ee] 10.0, another job name will
+also be supported: `codequality`. This new job name will eventually replace
+`codeclimate` which is scheduled to be removed in GitLab 11.0. You are advised
+to update your current `.gitlab-ci.yml` configuration to reflect that change.
+
 In order for the report to show in the merge request, you need to specify a
 `codequality` job (exact name) that will analyze the code and upload the resulting
 `codeclimate.json` as an artifact. GitLab will then check this file and show
