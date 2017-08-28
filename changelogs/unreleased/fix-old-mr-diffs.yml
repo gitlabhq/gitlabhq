@@ -1,6 +1,0 @@
----
-title: Show un-highlighted text diffs when we do not have references to the correct
-  blobs
-merge_request:
-author:
-type: fixed
