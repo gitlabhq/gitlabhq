@@ -34,6 +34,56 @@ require 'rainbow/ext/string'
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
+class RSpecQuery
+  attr_reader :count
+
+  def initialize(file)
+    @file = file
+    @count = 0
+  end
+
+  def to_s
+    "#{@count} #{@file}"
+  end
+
+  def increment!
+    @count += 1
+  end
+end
+
+module RSpec
+  def self.queries_profile
+    @queries_profile.to_h.values.sort_by(&:count).reverse.map(&:to_s)
+  end
+
+  def self.current_query_profile
+    @queries_profile.to_h.values.last
+  end
+
+  def self.append_query_profile(file)
+    (@queries_profile ||= {})[file] ||= RSpecQuery.new(file)
+  end
+end
+
+class RSpecQueryListener
+  def example_started(notification)
+    example = notification.try(:example) || notification
+    RSpec.append_query_profile(example.metadata[:file_path].to_s)
+  end
+
+  def dump_summary(*)
+    puts RSpec.queries_profile.inspect
+  end
+end
+
+ActiveSupport::Notifications.subscribe('sql.active_record') do |*args|
+  event = ActiveSupport::Notifications::Event.new(*args)
+
+  if event.payload[:sql] =~ /INSERT INTO "projects"/
+    RSpec.current_query_profile&.increment!
+  end
+end
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
@@ -75,6 +125,8 @@ RSpec.configure do |config|
     config.default_retry_count = 4
     config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
   end
+
+  config.reporter.register_listener(RSpecQueryListener.new, :example_started, :dump_summary)
 
   config.before(:suite) do
     Timecop.safe_mode = true
