@@ -10,7 +10,9 @@ module Github
 
       def source_branch_name
         @source_branch_name ||=
-          if !opened? && (cross_project? || !source_branch_exists?)
+          if !opened? && !source_branch_exists?
+            removed_source_branch_name_prefixed
+          elsif cross_project?
             source_branch_name_prefixed
           else
             source_branch_ref
@@ -65,8 +67,12 @@ module Github
         @source_branch ||= Representation::Branch.new(raw['head'], repository: project.repository)
       end
 
-      def source_branch_name_prefixed
+      def removed_source_branch_name_prefixed
         "refs/merge-requests/#{pull_request.iid}/head"
+      end
+
+      def source_branch_name_prefixed
+        "gh-#{target_branch_short_sha}/#{iid}/#{source_branch_user}/#{source_branch_ref}"
       end
 
       def target_branch
