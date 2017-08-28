@@ -241,6 +241,7 @@
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
               <confidentialIssue v-if="isConfidentialIssue" />
+              <div class="error-alert"></div>
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"

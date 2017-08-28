@@ -20,7 +20,7 @@ shared_examples 'reportable note' do |type|
     open_dropdown(dropdown)
 
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
-    
+
     if type == 'issue'
       expect(dropdown).to have_button('Delete comment')
     else
