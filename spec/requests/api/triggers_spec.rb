@@ -86,6 +86,22 @@ describe API::Triggers do
       end
     end
 
+    context 'when legacy trigger' do
+      before do
+        trigger.update(owner: nil)
+      end
+
+      it 'creates pipeline' do
+        post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'master')
+
+        expect(response).to have_http_status(201)
+        expect(json_response).to include('id' => pipeline.id)
+        pipeline.builds.reload
+        expect(pipeline.builds.pending.size).to eq(2)
+        expect(pipeline.builds.size).to eq(5)
+      end
+    end
+
     context 'when triggering a pipeline from a trigger token' do
       it 'does not leak the presence of project when token is for different project' do
         post api("/projects/#{project2.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
