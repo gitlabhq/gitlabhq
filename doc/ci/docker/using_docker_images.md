@@ -388,15 +388,40 @@ that runner.
 
 As an example, let's assume that you want to use the `registry.example.com/private/image:latest`
 image which is private and requires you to login into a private container registry.
+
+Let's also assume that these are the login credentials:
+
+| Key      | Value                |
+|----------|----------------------|
+| registry | registry.example.com |
+| username | my_username          |
+| password | my_password          |
+
 To configure access for `registry.example.com`, follow these steps:
 
-1. Do a `docker login` on your computer:
+1. Find what the value of `DOCKER_AUTH_CONFIG` should be. There are two ways to
+   accomplish this:
+     - **First way -** Do a `docker login` on your local machine:
 
-     ```bash
-     docker login registry.example.com --username my_username --password my_password
-     ```
+         ```bash
+         docker login registry.example.com --username my_username --password my_password
+         ```
 
-1. Copy the content of `~/.docker/config.json`
+          Then copy the content of `~/.docker/config.json`.
+     - **Second way -** In some setups, it's possible that Docker client will use
+       the available system keystore to store the result of `docker login`. In
+       that case, it's impossible to read `~/.docker/config.json`, so you will
+       need to prepare the required base64-encoded version of
+       `${username}:${password}` manually. Open a terminal and execute the
+       following command:
+
+           ```bash
+           echo -n "my_username:my_password" | base64
+
+           # Example output to copy
+           bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+           ```
+
 1. Create a [secret variable] `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
@@ -410,7 +435,8 @@ To configure access for `registry.example.com`, follow these steps:
      }
      ```
 
-1. Do a `docker logout` on your computer if you don't need access to the
+1. Optionally,if you followed the first way of finding the `DOCKER_AUTH_CONFIG`
+   value, do a `docker logout` on your computer if you don't need access to the
    registry from it:
 
      ```bash
@@ -418,7 +444,7 @@ To configure access for `registry.example.com`, follow these steps:
      ```
 
 1. You can now use any private image from `registry.example.com` defined in
-   `image` and/or `services` in your [`.gitlab-ci.yml` file][yaml-priv-reg]:
+   `image` and/or `services` in your `.gitlab-ci.yml` file:
 
       ```yaml
       image: my.registry.tld:5000/namespace/image:tag
