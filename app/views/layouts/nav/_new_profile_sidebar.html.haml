@@ -43,7 +43,7 @@
             = custom_icon('emails')
           %span.nav-item-name
             Emails
-      - unless current_user.ldap_user?
+      - unless current_user.allow_password_authentication?
         = nav_link(controller: :passwords) do
           = link_to edit_profile_password_path, title: 'Password' do
             .nav-icon-container
