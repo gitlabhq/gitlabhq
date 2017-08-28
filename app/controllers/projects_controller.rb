@@ -323,6 +323,7 @@ class ProjectsController < Projects::ApplicationController
       :build_allow_git_fetch,
       :build_coverage_regex,
       :build_timeout_in_minutes,
+      :collapse_outdated_diff_comments,
       :container_registry_enabled,
       :default_branch,
       :description,

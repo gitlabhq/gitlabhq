@@ -1202,6 +1202,7 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.boolean "public_builds", default: true, null: false
     t.boolean "last_repository_check_failed"
     t.datetime "last_repository_check_at"
+    t.boolean "collapse_outdated_diff_comments", default: false, null: false
     t.boolean "container_registry_enabled"
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"

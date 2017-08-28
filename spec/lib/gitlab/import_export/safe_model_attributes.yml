@@ -398,6 +398,7 @@ Project:
 - public_builds
 - last_repository_check_failed
 - last_repository_check_at
+- collapse_outdated_diff_comments
 - container_registry_enabled
 - only_allow_merge_if_pipeline_succeeds
 - has_external_issue_tracker

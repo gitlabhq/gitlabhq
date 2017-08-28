@@ -64,6 +64,7 @@ module API
         expose :owner, using: ::API::Entities::UserBasic, unless: ->(project, options) { project.group }
         expose :name, :name_with_namespace
         expose :path, :path_with_namespace
+        expose :collapse_outdated_diff_comments
         expose :container_registry_enabled
 
         # Expose old field names with the new permissions methods to keep API compatible

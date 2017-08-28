@@ -17,3 +17,7 @@
     = form.label :printing_merge_request_link_enabled do
       = form.check_box :printing_merge_request_link_enabled
       %strong Show link to create/view merge request when pushing from the command line
+  .checkbox
+    = form.label :collapse_outdated_diff_comments do
+      = form.check_box :collapse_outdated_diff_comments
+      %strong Collapse outdated diffs regardless of discussion resolution

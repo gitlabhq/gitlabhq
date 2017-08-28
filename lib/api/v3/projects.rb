@@ -18,6 +18,7 @@ module API
           optional :builds_enabled, type: Boolean, desc: 'Flag indication if builds are enabled'
           optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
           optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+          optional :collapse_outdated_diff_comments, type: Boolean, desc: 'Collapse outdated diffs regardless of discussion resolution'
           optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
           optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
           optional :public, type: Boolean, desc: 'Create a public project. The same as visibility_level = 20.'
@@ -296,9 +297,9 @@ module API
           use :optional_params
           at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, :builds_enabled, :snippets_enabled,
-            :shared_runners_enabled, :container_registry_enabled,
-            :lfs_enabled, :public, :visibility_level, :public_builds,
-            :request_access_enabled, :only_allow_merge_if_build_succeeds,
+            :shared_runners_enabled, :collapse_outdated_diff_comments,
+            :container_registry_enabled, :lfs_enabled, :public, :visibility_level,
+            :public_builds, :request_access_enabled, :only_allow_merge_if_build_succeeds,
             :only_allow_merge_if_all_discussions_are_resolved, :path,
             :default_branch
         end
