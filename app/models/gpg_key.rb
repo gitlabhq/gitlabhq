@@ -56,7 +56,7 @@ class GpgKey < ActiveRecord::Base
 
   def verified_user_infos
     user_infos.select do |user_info|
-      user_info[:email] == user.email
+      user.verified_email?(user_info[:email])
     end
   end
 
@@ -64,7 +64,7 @@ class GpgKey < ActiveRecord::Base
     user_infos.map do |user_info|
       [
         user_info[:email],
-        user_info[:email] == user.email
+        user.verified_email?(user_info[:email])
       ]
     end.to_h
   end
