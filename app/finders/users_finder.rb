@@ -80,6 +80,6 @@ class UsersFinder
   def by_admin(users)
     return users unless params[:admin]
 
-    users.where(admin: params[:admin])
+    users.admins
   end
 end
