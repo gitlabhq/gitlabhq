@@ -15,6 +15,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   after(:each) do
     FileUtils.rm_rf(export_path, secure: true)
     gitlab_shell.remove_repository(repository_storage_path, 'asd/test-project-path')
+    gitlab_shell.remove_repository(repository_storage_path, 'asd/test-project-path.wiki')
   end
 
   context 'when selecting the namespace' do
