@@ -470,7 +470,8 @@ describe Ci::CreatePipelineService do
     context 'when ref is not protected' do
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request) }
+        let(:trigger) { create(:ci_trigger, owner: nil) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))
