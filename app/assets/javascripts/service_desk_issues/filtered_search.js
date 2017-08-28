@@ -2,7 +2,7 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
   constructor() {
     super('service_desk');
 
-    this.cantEdit = [{ }];
+    this.cantEdit = ['author'];
   }
 
   canEdit(tokenName) {
@@ -10,4 +10,3 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
   }
 }
 
-new FilteredSearchServiceDesk();
