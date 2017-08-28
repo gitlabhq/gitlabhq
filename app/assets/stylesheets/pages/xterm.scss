@@ -281,7 +281,7 @@
   $xterm-fg-255: #eee;
 
   .term-bold {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .term-italic {

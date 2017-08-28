@@ -40,7 +40,7 @@
       // "Changes suppressed. Click to show." link
       .show-suppressed-diff {
         font-size: 110%;
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -104,7 +104,7 @@
       a {
         float: left;
         width: 35px;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
 
         &[disabled] {
           cursor: default;
@@ -395,7 +395,7 @@
   background-color: transparent;
   border: 0;
   color: $gl-link-color;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 
   &:hover,
   &:focus {

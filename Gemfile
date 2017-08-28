@@ -207,9 +207,6 @@ gem 'kubeclient', '~> 2.2.0'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-# underscore-rails
-gem 'underscore-rails', '~> 1.8.0'
-
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
@@ -401,7 +398,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.30.0'
+gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

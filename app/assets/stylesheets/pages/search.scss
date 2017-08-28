@@ -94,7 +94,7 @@ input[type="checkbox"]:hover {
 
       &::before {
         font-family: FontAwesome;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
         font-style: normal;
       }
     }

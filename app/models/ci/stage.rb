@@ -17,6 +17,10 @@ module Ci
     validates :pipeline, presence: true, unless: :importing?
     validates :name, presence: true, unless: :importing?
 
+    after_initialize do |stage|
+      self.status = DEFAULT_STATUS if self.status.nil?
+    end
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending

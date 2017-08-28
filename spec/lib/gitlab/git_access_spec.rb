@@ -384,7 +384,7 @@ describe Gitlab::GitAccess do
 
     def stub_git_hooks
       # Running the `pre-receive` hook is expensive, and not necessary for this test.
-      allow_any_instance_of(GitHooksService).to receive(:execute) do |service, &block|
+      allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute) do |service, &block|
         block.call(service)
       end
     end

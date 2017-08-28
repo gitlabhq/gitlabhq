@@ -1,5 +1,8 @@
 # Group milestones API
 
+> **Notes:**
+> [Introduced][ce-12819] in GitLab 9.5.
+
 ## List group milestones
 
 Returns a list of group milestones.
@@ -118,3 +121,5 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a group milestone
+
+[ce-12819]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12819

@@ -1,16 +1,14 @@
 require 'spec_helper'
 
-describe GitHooksService do
-  include RepoHelpers
-
-  let(:user)    { create(:user) }
-  let(:project) { create(:project, :repository) }
+describe Gitlab::Git::HooksService, seed_helper: true do
+  let(:committer) { Gitlab::Git::Committer.new('Jane Doe', 'janedoe@example.com', 'user-456') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, 'project-123') }
   let(:service) { described_class.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA
-    @oldrev = sample_commit.parent_id
-    @newrev = sample_commit.id
+    @oldrev = SeedRepo::Commit::PARENT_ID
+    @newrev = SeedRepo::Commit::ID
     @ref = 'refs/heads/feature'
   end
 
@@ -20,7 +18,7 @@ describe GitHooksService do
         hook = double(trigger: [true, nil])
         expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
-        service.execute(user, project, @blankrev, @newrev, @ref) { }
+        service.execute(committer, repository, @blankrev, @newrev, @ref) { }
       end
     end
 
@@ -30,8 +28,8 @@ describe GitHooksService do
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do
-          service.execute(user, project, @blankrev, @newrev, @ref)
-        end.to raise_error(GitHooksService::PreReceiveError)
+          service.execute(committer, repository, @blankrev, @newrev, @ref)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
 
@@ -42,8 +40,8 @@ describe GitHooksService do
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do
-          service.execute(user, project, @blankrev, @newrev, @ref)
-        end.to raise_error(GitHooksService::PreReceiveError)
+          service.execute(committer, repository, @blankrev, @newrev, @ref)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
   end

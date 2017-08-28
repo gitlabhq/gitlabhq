@@ -213,7 +213,7 @@
 
   .commit-sha {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
@@ -306,7 +306,7 @@
 .gpg-popover-status {
   display: flex;
   align-items: center;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   line-height: 1.5;
 }
 

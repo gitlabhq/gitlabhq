@@ -20,10 +20,15 @@ describe API::Groups do
 
   describe "GET /groups" do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns public groups" do
         get api("/groups")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
       end
     end
 
@@ -165,6 +170,18 @@ describe API::Groups do
   end
 
   describe "GET /groups/:id" do
+    context 'when unauthenticated' do
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}")
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns 200 for a public group' do
+        get api("/groups/#{group1.id}")
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context "when authenticated as user" do
       it "returns one of user1's groups" do
         project = create(:project, namespace: group2, path: 'Foo')
