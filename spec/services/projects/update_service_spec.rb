@@ -148,6 +148,7 @@ describe Projects::UpdateService, services: true do
       result = update_project(project, admin, { name: 'foo&bar' })
 
       expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    end
   end
 
   def update_project(project, user, opts)
