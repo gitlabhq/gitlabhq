@@ -1,8 +1,5 @@
 class GeoNode < ActiveRecord::Base
   include Presentable
-  include IgnorableColumn
-
-  ignore_column :system_hook_id
 
   belongs_to :geo_node_key, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
