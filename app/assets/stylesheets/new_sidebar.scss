@@ -26,7 +26,8 @@ $new-sidebar-collapsed-width: 50px;
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: calc(100% - #{$header-height});
+    top: $header-height;
+    bottom: 0;
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -37,6 +38,13 @@ $new-sidebar-collapsed-width: 50px;
 .page-with-icon-sidebar {
   @media (min-width: $screen-sm-min) {
     padding-left: $new-sidebar-collapsed-width;
+  }
+
+  // Override position: absolute
+  .right-sidebar {
+    position: fixed;
+    top: $header-height;
+    bottom: 0;
   }
 }
 
