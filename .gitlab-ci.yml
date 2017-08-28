@@ -399,10 +399,9 @@ db:rollback-mysql:
   <<: *except-docs
   variables:
     SIZE: "1"
-    SETUP_DB: "false"
   script:
     - cp -R db/fixtures/development db/fixtures/test
-    - bundle exec rake db:setup db:seed_fu
+    - bundle exec rake db:seed_fu
   artifacts:
     when: on_failure
     expire_in: 1d
