@@ -1,33 +1,20 @@
-# SAS <Stepanov.sa@bashkortostan.ru>, 2017. #zanata
-# Huang Tao <htve@outlook.com>, 2017. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: gitlab 1.0.0\n"
+"Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-13 12:07-0500\n"
+"POT-Creation-Date: 2017-08-18 14:15+0530\n"
+"PO-Revision-Date: 2017-08-23 09:41-0400\n"
+"Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: Russian (https://translate.zanata.org/project/view/GitLab)\n"
-"PO-Revision-Date: 2017-08-06 11:23-0400\n"
-"Last-Translator: Андрей П. <fenixnow33@gmail.com>\n"
-"Language: ru\n"
-"X-Generator: Zanata 3.9.6\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-
-msgid "%s additional commit has been omitted to prevent performance issues."
-msgid_plural ""
-"%s additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-"%s добавленный коммит был исключен для предотвращения проблем с "
-"производительностью."
-msgstr[1] ""
-"%s добавленные коммиты были исключены для предотвращения проблем с "
-"производительностью."
-msgstr[2] ""
-"%s добавленные коммиты были исключены для предотвращения проблем с "
-"производительностью."
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gitlab-ee\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /master/locale/gitlab.pot\n"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -35,8 +22,32 @@ msgstr[0] "%d коммит"
 msgstr[1] "%d коммитов"
 msgstr[2] "%d коммитов"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s добавленный коммит был исключен для предотвращения проблем с производительностью."
+msgstr[1] "%s добавленные коммиты были исключены для предотвращения проблем с производительностью."
+msgstr[2] "%s добавленные коммиты были исключены для предотвращения проблем с производительностью."
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} коммичено %{commit_timeago}"
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -49,6 +60,9 @@ msgstr "Графики относительно непрерывной инте�
 
 msgid "About auto deploy"
 msgstr "Автоматическое развертывание"
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
 
 msgid "Active"
 msgstr "Активный"
@@ -66,18 +80,31 @@ msgid "Add License"
 msgstr "Добавить лицензию"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
-msgstr ""
-"Добавьте ключ SSH в свой профиль, чтобы отправлять или получать код через "
-"SSH."
+msgstr "Добавьте ключ SSH в свой профиль, чтобы отправлять или получать код через SSH."
 
 msgid "Add new directory"
 msgstr "Добавить каталог"
+
+msgid "All"
+msgstr ""
 
 msgid "Archived project! Repository is read-only"
 msgstr "Архивный проект! Репозиторий доступен только для чтения"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Вы действительно хотите удалить это расписание конвейера?"
+
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Приложить файл через drag &amp; drop или %{upload_link}"
@@ -88,14 +115,8 @@ msgstr[0] "Ветка"
 msgstr[1] "Ветки"
 msgstr[2] "Ветки"
 
-msgid ""
-"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
-"choose a GitLab CI Yaml template and commit your changes. "
-"%{link_to_autodeploy_doc}"
-msgstr ""
-"Ветка <strong>%{branch_name}</strong> создана. Для настройки автоматического "
-"развертывания выберете  GitLab CI Yaml-шаблон и зафиксируйте изменения. "
-"%{link_to_autodeploy_doc}"
+msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr "Ветка <strong>%{branch_name}</strong> создана. Для настройки автоматического развертывания выберете  GitLab CI Yaml-шаблон и зафиксируйте изменения. %{link_to_autodeploy_doc}"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "Поиск веток"
@@ -126,6 +147,9 @@ msgstr "Настройка CI"
 
 msgid "Cancel"
 msgstr "Отмена"
+
+msgid "Cancel edit"
+msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "Выбрать в ветке"
@@ -205,6 +229,9 @@ msgstr "пропущено"
 msgid "CiStatus|running"
 msgstr "выполняется"
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "Коммит"
@@ -253,12 +280,11 @@ msgstr "Копировать SHA коммита в буфер обмена"
 msgid "Create New Directory"
 msgstr "Создать директорию"
 
-msgid ""
-"Create a personal access token on your account to pull or push via "
-"%{protocol}."
+msgid "Create a new branch"
 msgstr ""
-"Создать личный токен на аккаунте для получения или отправки через "
-"%{protocol}."
+
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr "Создать личный токен на аккаунте для получения или отправки через %{protocol}."
 
 msgid "Create directory"
 msgstr "Создать директорию"
@@ -290,25 +316,14 @@ msgstr "Синтаксис Cron"
 msgid "Custom notification events"
 msgstr " Настраиваемые уведомления о событиях"
 
-msgid ""
-"Custom notification levels are the same as participating levels. With custom "
-"notification levels you will also receive notifications for select events. "
-"To find out more, check out %{notification_link}."
-msgstr ""
-"Настраиваемые уровни уведомлений аналогичны уровню уведомлений в "
-"соответствии с участием. С настраиваемыми уровнями уведомлений вы также "
-"будете получать уведомления о выбранных событиях. Чтобы узнать больше, "
-"посмотрите %{notification_link}."
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr "Настраиваемые уровни уведомлений аналогичны уровню уведомлений в соответствии с участием. С настраиваемыми уровнями уведомлений вы также будете получать уведомления о выбранных событиях. Чтобы узнать больше, посмотрите %{notification_link}."
 
 msgid "Cycle Analytics"
 msgstr "Цикл Аналитик"
 
-msgid ""
-"Cycle Analytics gives an overview of how much time it takes to go from idea "
-"to production in your project."
-msgstr ""
-"Цикл Аналитик дает представление о том, сколько времени требуется, чтобы "
-"перейти от идеи к производству в проекте."
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr "Цикл Аналитик дает представление о том, сколько времени требуется, чтобы перейти от идеи к производству в проекте."
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "Написание кода"
@@ -346,8 +361,14 @@ msgstr[2] "Размещение"
 msgid "Description"
 msgstr "Описание"
 
+msgid "Details"
+msgstr ""
+
 msgid "Directory name"
 msgstr "Каталог"
+
+msgid "Discard changes"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "Не показывать снова"
@@ -384,6 +405,24 @@ msgstr "Редактировать"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Изменить расписание конвейера %{id}"
+
+msgid "EventFilterBy|Filter by all"
+msgstr ""
+
+msgid "EventFilterBy|Filter by comments"
+msgstr ""
+
+msgid "EventFilterBy|Filter by issue events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by merge events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by push events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by team"
+msgstr ""
 
 msgid "Every day (at 4:00am)"
 msgstr "Ежедневно (в 4:00)"
@@ -433,11 +472,35 @@ msgstr "От создания проблемы до развертывания �
 msgid "From merge request merge until deploy to production"
 msgstr "От запроса на слияние до развертывания в рабочей среде"
 
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr "Перейти к вашему форку"
 
 msgid "GoToYourFork|Fork"
 msgstr "Форк"
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
+msgstr ""
 
 msgid "Home"
 msgstr "Главная"
@@ -448,11 +511,17 @@ msgstr "Очистка успешно запущена"
 msgid "Import repository"
 msgstr "Импорт репозитория"
 
+msgid "Install a Runner compatible with GitLab CI"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr "Шаблон интервала"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Внедрение Цикла Аналитик"
+
+msgid "Issue events"
+msgstr ""
 
 msgid "Jobs for last month"
 msgstr "Работы за прошлый месяц"
@@ -484,6 +553,12 @@ msgstr "Последнее обновление"
 msgid "Last commit"
 msgstr "Последний коммит"
 
+msgid "LastPushEvent|You pushed to"
+msgstr ""
+
+msgid "LastPushEvent|at"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr "Узнайте больше в"
 
@@ -505,8 +580,14 @@ msgstr[2] "Ограничение %d событий"
 msgid "Median"
 msgstr "Среднее"
 
+msgid "Merge events"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "добавить ключ SSH"
+
+msgid "More information is available|here"
+msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -706,6 +787,9 @@ msgstr "со стадией"
 msgid "Pipeline|with stages"
 msgstr "со стадиями"
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Проект '%{project_name}' добавлен в очередь на удаление."
 
@@ -721,26 +805,26 @@ msgstr "Проект '%{project_name}' удален."
 msgid "Project access must be granted explicitly to each user."
 msgstr "Доступ к проекту должен предоставляться явно каждому пользователю."
 
+msgid "Project details"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr "Невозможно удалить экспорт проекта."
 
 msgid "Project export has been deleted."
 msgstr "Экспорт проекта удален."
 
-msgid ""
-"Project export link has expired. Please generate a new export from your "
-"project settings."
-msgstr ""
-"Истек срок действия ссылки на проект. Создайте новый экспорт в ваших "
-"настройках проекта."
+msgid "Project export link has expired. Please generate a new export from your project settings."
+msgstr "Истек срок действия ссылки на проект. Создайте новый экспорт в ваших настройках проекта."
 
 msgid "Project export started. A download link will be sent by email."
-msgstr ""
-"Начат экспорт проекта. Ссылка для скачивания будет отправлена по электронной "
-"почте."
+msgstr "Начат экспорт проекта. Ссылка для скачивания будет отправлена по электронной почте."
 
 msgid "Project home"
 msgstr "Домашняя страница"
+
+msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
 
 msgid "ProjectFeature|Disabled"
 msgstr "Отключено"
@@ -763,11 +847,14 @@ msgstr "Этап"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Граф"
 
+msgid "Push events"
+msgstr ""
+
 msgid "Read more"
 msgstr "Подробнее"
 
 msgid "Readme"
-msgstr "Readme"
+msgstr ""
 
 msgid "RefSwitcher|Branches"
 msgstr "Ветки"
@@ -799,8 +886,20 @@ msgstr "Напомнить позже"
 msgid "Remove project"
 msgstr "Удалить проект"
 
+msgid "Repository"
+msgstr ""
+
 msgid "Request Access"
 msgstr "Запрос доступа"
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr "Отменить это изменение"
@@ -826,13 +925,14 @@ msgstr "Выбрать формат архива"
 msgid "Select a timezone"
 msgstr "Выбор временной зоны"
 
+msgid "Select existing branch"
+msgstr ""
+
 msgid "Select target branch"
 msgstr "Выбор целевой ветки"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
-msgstr ""
-"Установите пароль в своем аккаунте, чтобы отправлять или получать код через "
-"%{protocol}."
+msgstr "Установите пароль в своем аккаунте, чтобы отправлять или получать код через %{protocol}."
 
 msgid "Set up CI"
 msgstr "Настройка CI"
@@ -855,11 +955,17 @@ msgstr[2] "Показано %d событий"
 msgid "Source code"
 msgstr "Исходный код"
 
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr "Отметить"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Начать %{new_merge_request} с этих изменений"
+
+msgid "Start the Runner!"
+msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "Переключить ветка/тег"
@@ -876,14 +982,11 @@ msgstr "Теги"
 msgid "Target Branch"
 msgstr "Ветка"
 
-msgid ""
-"The coding stage shows the time from the first commit to creating the merge "
-"request. The data will automatically be added here once you create your "
-"first merge request."
+msgid "Team"
 msgstr ""
-"На этапе написания кода показывает время первого коммита до создания запроса "
-"на слияние. Данные автоматически добавятся после того, как вы создать свой "
-"первый запрос на слияние."
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr "На этапе написания кода показывает время первого коммита до создания запроса на слияние. Данные автоматически добавятся после того, как вы создать свой первый запрос на слияние."
 
 msgid "The collection of events added to the data gathered for that stage."
 msgstr "Коллекция событий добавленных в данные собранные для этого этапа."
@@ -891,44 +994,20 @@ msgstr "Коллекция событий добавленных в данные
 msgid "The fork relationship has been removed."
 msgstr "Связь форка удалена."
 
-msgid ""
-"The issue stage shows the time it takes from creating an issue to assigning "
-"the issue to a milestone, or add the issue to a list on your Issue Board. "
-"Begin creating issues to see data for this stage."
-msgstr ""
-"Стадия обращения время, которое потребуется с момента создания обращения до "
-"назначения обращению вехи, или добавления обращения в вашу доску обращений. "
-"Начните создавать обращения, чтобы увидеть сведения для этой стадии. "
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr "Стадия обращения время, которое потребуется с момента создания обращения до назначения обращению вехи, или добавления обращения в вашу доску обращений. Начните создавать обращения, чтобы увидеть сведения для этой стадии. "
 
 msgid "The phase of the development lifecycle."
 msgstr "Фаза жизненного цикла разработки."
 
-msgid ""
-"The pipelines schedule runs pipelines in the future, repeatedly, for "
-"specific branches or tags. Those scheduled pipelines will inherit limited "
-"project access based on their associated user."
-msgstr ""
-"Расписание конвейеров запускает в будущем неоднократно конвейеры, для "
-"определенных ветвей или тегов. Запланированные конвейеры наследуют "
-"ограничения на доступ к проекту на основе связанного с ними пользователя."
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
+msgstr "Расписание конвейеров запускает в будущем неоднократно конвейеры, для определенных ветвей или тегов. Запланированные конвейеры наследуют ограничения на доступ к проекту на основе связанного с ними пользователя."
 
-msgid ""
-"The planning stage shows the time from the previous step to pushing your "
-"first commit. This time will be added automatically once you push your first "
-"commit."
-msgstr ""
-"На этапе планирования показывает время от предыдущего шага до проталкивания "
-"первого коммита. Добавляется автоматически, как только проталкиваете свой "
-"первый коммит."
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr "На этапе планирования показывает время от предыдущего шага до проталкивания первого коммита. Добавляется автоматически, как только проталкиваете свой первый коммит."
 
-msgid ""
-"The production stage shows the total time it takes between creating an issue "
-"and deploying the code to production. The data will be automatically added "
-"once you have completed the full idea to production cycle."
-msgstr ""
-"Производственный этап показывает общее время между созданием задачи и "
-"развертывание кода в производственной среде. Данные будут автоматически "
-"добавлены после полного завершения идеи производственного цикла."
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr "Производственный этап показывает общее время между созданием задачи и развертывание кода в производственной среде. Данные будут автоматически добавлены после полного завершения идеи производственного цикла."
 
 msgid "The project can be accessed by any logged in user."
 msgstr "Доступ к проекту возможен любым зарегистрированным пользователем."
@@ -939,50 +1018,26 @@ msgstr "Доступ к проекту возможен без какой-либ
 msgid "The repository for this project does not exist."
 msgstr "Репозиторий для этого проекта не существует."
 
-msgid ""
-"The review stage shows the time from creating the merge request to merging "
-"it. The data will automatically be added after you merge your first merge "
-"request."
-msgstr ""
-"Этап обзора показывает время от создания запроса слияния до его выполнения. "
-"Данные будут автоматически добавлены после завершения первого запроса на "
-"слияние."
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr "Этап обзора показывает время от создания запроса слияния до его выполнения. Данные будут автоматически добавлены после завершения первого запроса на слияние."
 
-msgid ""
-"The staging stage shows the time between merging the MR and deploying code "
-"to the production environment. The data will be automatically added once you "
-"deploy to production for the first time."
-msgstr ""
-"Этап постановки показывает время между слиянием \"MR\" и развертыванием кода "
-"в производственной среде. Данные будут автоматически добавлены после "
-"развертывания в производстве первый раз."
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr "Этап постановки показывает время между слиянием \"MR\" и развертыванием кода в производственной среде. Данные будут автоматически добавлены после развертывания в производстве первый раз."
 
-msgid ""
-"The testing stage shows the time GitLab CI takes to run every pipeline for "
-"the related merge request. The data will automatically be added after your "
-"first pipeline finishes running."
-msgstr ""
-"Этап тестирования показывает время, которое GitLab CI занимает для запуска "
-"каждого конвейера для соответствующего запроса на слияние. Данные будут "
-"автоматически добавлены после завершения работы вашего первого конвейера."
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr "Этап тестирования показывает время, которое GitLab CI занимает для запуска каждого конвейера для соответствующего запроса на слияние. Данные будут автоматически добавлены после завершения работы вашего первого конвейера."
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "Время, затраченное каждым элементом, собранным на этом этапе."
 
-msgid ""
-"The value lying at the midpoint of a series of observed values. E.g., "
-"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
-" 6."
-msgstr ""
-"Среднее значение в ряду. Пример: между 3, 5, 9, среднее 5, между 3, 5, 7, 8, "
-"среднее (5+7)/2 = 6."
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr "Среднее значение в ряду. Пример: между 3, 5, 9, среднее 5, между 3, 5, 7, 8, среднее (5+7)/2 = 6."
 
-msgid ""
-"This means you can not push code until you create an empty repository or "
-"import existing one."
+msgid "There are problems accessing Git storage: "
 msgstr ""
-"Это означает, что вы не можете пушить код, пока не создадите пустой "
-"репозиторий или не импортируете существующий."
+
+msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr "Это означает, что вы не можете пушить код, пока не создадите пустой репозиторий или не импортируете существующий."
 
 msgid "Time before an issue gets scheduled"
 msgstr " Время до начала попадания проблемы в планировщик"
@@ -1152,6 +1207,9 @@ msgstr "Загрузить файл"
 msgid "UploadLink|click to upload"
 msgstr "кликните для загрузки"
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr "Используются глобальный настройки уведомлений"
 
@@ -1185,19 +1243,11 @@ msgstr "Вы собираетесь удалить %{group_name}. Удаленн
 msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "Вы хотите удалить %{project_name_with_namespace}. Удаленный проект НЕ МОЖЕТ быть восстановлен! Вы АБСОЛЮТНО уверены?"
 
-msgid ""
-"You are going to remove the fork relationship to source project "
-"%{forked_from_project}. Are you ABSOLUTELY sure?"
-msgstr ""
-"Вы собираетесь удалить связь форка с исходным проектом "
-"%{forked_from_project}. Вы АБСОЛЮТНО уверены?"
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
+msgstr "Вы собираетесь удалить связь форка с исходным проектом %{forked_from_project}. Вы АБСОЛЮТНО уверены?"
 
-msgid ""
-"You are going to transfer %{project_name_with_namespace} to another owner. "
-"Are you ABSOLUTELY sure?"
-msgstr ""
-"Вы собираетесь передать проект %{project_name_with_namespace} другому "
-"владельцу. Вы АБСОЛЮТНО уверены?"
+msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+msgstr "Вы собираетесь передать проект %{project_name_with_namespace} другому владельцу. Вы АБСОЛЮТНО уверены?"
 
 msgid "You can only add files when you are on a branch"
 msgstr "Вы можете добавлять только файлы, когда находитесь в ветке"
@@ -1217,34 +1267,20 @@ msgstr "Вы не получите никаких уведомлений по э
 msgid "You will only receive notifications for the events you choose"
 msgstr "Вы будете получать уведомления только о выбранных вами событиях"
 
-msgid ""
-"You will only receive notifications for threads you have participated in"
-msgstr ""
-"Вы будете получать уведомления только о тех тредах, в которых вы участвовали"
+msgid "You will only receive notifications for threads you have participated in"
+msgstr "Вы будете получать уведомления только о тех тредах, в которых вы участвовали"
 
 msgid "You will receive notifications for any activity"
 msgstr "Вы будете получать уведомления о любых действиях"
 
-msgid ""
-"You will receive notifications only for comments in which you were "
-"@mentioned"
-msgstr ""
-"Вы будете получать уведомления только для комментариев, в которых вы были "
-"@упомянуты"
+msgid "You will receive notifications only for comments in which you were @mentioned"
+msgstr "Вы будете получать уведомления только для комментариев, в которых вы были @упомянуты"
 
-msgid ""
-"You won't be able to pull or push project code via %{protocol} until you "
-"%{set_password_link} on your account"
-msgstr ""
-"Вы не сможете получать и отправлять код проекта через %{protocol} пока "
-"%{set_password_link} в ваш аккаунт"
+msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
+msgstr "Вы не сможете получать и отправлять код проекта через %{protocol} пока %{set_password_link} в ваш аккаунт"
 
-msgid ""
-"You won't be able to pull or push project code via SSH until you "
-"%{add_ssh_key_link} to your profile"
-msgstr ""
-"Вы не сможете получать и отправлять код проекта через SSH пока "
-"%{add_ssh_key_link} в ваш профиль."
+msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
+msgstr "Вы не сможете получать и отправлять код проекта через SSH пока %{add_ssh_key_link} в ваш профиль."
 
 msgid "Your name"
 msgstr "Ваше имя"
@@ -1266,4 +1302,3 @@ msgid_plural "parents"
 msgstr[0] "источник"
 msgstr[1] "источники"
 msgstr[2] "источники"
-
