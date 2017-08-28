@@ -40,7 +40,7 @@ RSpec.describe NotificationSetting do
         expect(notification_setting.new_issue).to eq(true)
         expect(notification_setting.close_issue).to eq(true)
         expect(notification_setting.merge_merge_request).to eq(true)
-        expect(notification_setting.close_merge_request).to eq(false)
+        expect(notification_setting.close_merge_request).to eq(true)
         expect(notification_setting.reopen_merge_request).to eq(false)
       end
     end
