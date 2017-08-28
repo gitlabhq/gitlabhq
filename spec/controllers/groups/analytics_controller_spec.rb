@@ -47,6 +47,8 @@ describe Groups::AnalyticsController do
   end
 
   context 'unlicensed but we show promotions' do
+    let(:show_promotions?) { true }
+
     before do
       allow(License).to receive(:current).and_return(nil)
       allow(LicenseHelper).to receive(:show_promotions).and_return(true)

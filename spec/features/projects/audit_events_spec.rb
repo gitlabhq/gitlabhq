@@ -33,7 +33,7 @@ feature 'Projects > Audit Events', :js do
       stub_licensed_features(audit_events: false)
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
-      allow(LicenseHelper).to receive(:show_promotions).and_return(true)
+      allow(LicenseHelper).to receive(:show_promotions?).and_return(true)
     end
 
     it 'returns 200' do
