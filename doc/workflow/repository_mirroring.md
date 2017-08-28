@@ -86,7 +86,7 @@ this branch to prevent any changes from being lost.
 
 ### SSH authentication
 
-> [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.15
+> [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.5
 
 If you're mirroring over SSH (i.e., an `ssh://` URL), you can authenticate using
 password-based authentication, just as over HTTPS, but you can also use public
