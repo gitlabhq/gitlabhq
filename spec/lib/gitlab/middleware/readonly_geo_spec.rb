@@ -35,6 +35,7 @@ describe Gitlab::Middleware::ReadonlyGeo do
   end
 
   subject { described_class.new(fake_app) }
+
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
   context 'normal requests to a secondary Gitlab Geo' do
@@ -48,21 +49,21 @@ describe Gitlab::Middleware::ReadonlyGeo do
       response = request.patch('/test_request')
 
       expect(response).to be_a_redirect
-      expect(subject).to disallow_request
+      is_expected.to disallow_request
     end
 
     it 'expects PUT requests to be disallowed' do
       response = request.put('/test_request')
 
       expect(response).to be_a_redirect
-      expect(subject).to disallow_request
+      is_expected.to disallow_request
     end
 
     it 'expects POST requests to be disallowed' do
       response = request.post('/test_request')
 
       expect(response).to be_a_redirect
-      expect(subject).to disallow_request
+      is_expected.to disallow_request
     end
 
     it 'expects a internal POST request to be allowed after a disallowed request' do
@@ -79,22 +80,7 @@ describe Gitlab::Middleware::ReadonlyGeo do
       response = request.delete('/test_request')
 
       expect(response).to be_a_redirect
-      expect(subject).to disallow_request
-    end
-
-    it 'expects a POST LFS request to upload objects to be disallowed' do
-      body = ActiveSupport::JSON.encode({
-        'operation' => 'upload',
-        'objects' => [
-          { 'oid' => '12345678',
-            'size' => '123' }
-        ]
-      })
-
-      response = request.post('/root/rouge.git/info/lfs/objects/batch', input: StringIO.new(body))
-
-      expect(response).to be_a_redirect
-      expect(subject).to disallow_request
+      is_expected.to disallow_request
     end
 
     context 'whitelisted requests' do
@@ -102,36 +88,28 @@ describe Gitlab::Middleware::ReadonlyGeo do
         response = request.delete('/users/sign_out')
 
         expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+        is_expected.not_to disallow_request
       end
 
       it 'expects a POST internal request to be allowed' do
         response = request.post("/api/#{API::API.version}/internal")
 
         expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+        is_expected.not_to disallow_request
       end
 
       it 'expects a GET status request to be allowed' do
         response = request.get("/api/#{API::API.version}/geo/status")
 
         expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+        is_expected.not_to disallow_request
       end
 
-      it 'expects a POST LFS request to download objects to be allowed' do
-        body = ActiveSupport::JSON.encode({
-          'operation' => 'download',
-          'objects' => [
-            { 'oid' => '12345678',
-              'size' => '123' }
-          ]
-        })
-
-        response = request.post('/root/rouge.git/info/lfs/objects/batch', input: StringIO.new(body))
+      it 'expects a POST LFS request to batch URL to be allowed' do
+        response = request.post('/root/rouge.git/info/lfs/objects/batch')
 
         expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+        is_expected.not_to disallow_request
       end
     end
   end

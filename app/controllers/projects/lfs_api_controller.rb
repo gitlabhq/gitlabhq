@@ -2,6 +2,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
   skip_before_action :lfs_check_access!, only: [:deprecated]
+  before_action :lfs_check_batch_operation!, only: [:batch]
 
   def batch
     unless objects.present?
@@ -89,5 +90,17 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         }.compact
       }
     }
+  end
+
+  def lfs_check_batch_operation!
+    if upload_request? && Gitlab::Geo.secondary?
+      render(
+        json: {
+          message: 'You cannot do writing operations on a secondary GitLab Geo instance'
+        },
+        content_type: "application/vnd.git-lfs+json",
+        status: 403
+      )
+    end
   end
 end
