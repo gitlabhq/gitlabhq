@@ -111,6 +111,8 @@ module Ci
     end
 
     def can_pick?(build)
+      return false if self.protected_? && !build.protected?
+
       assignable_for?(build.project) && accepting_tags?(build)
     end
 

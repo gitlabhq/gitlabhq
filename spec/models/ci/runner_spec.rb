@@ -95,6 +95,8 @@ describe Ci::Runner do
     let(:build) { create(:ci_build, pipeline: pipeline) }
     let(:runner) { create(:ci_runner) }
 
+    subject { runner.can_pick?(build) }
+
     before do
       build.project.runners << runner
     end
@@ -220,6 +222,28 @@ describe Ci::Runner do
             expect(runner.can_pick?(build)).to be_falsey
           end
         end
+      end
+    end
+
+    context 'when runner is protected' do
+      before do
+        runner.protected_!
+      end
+
+      context 'when build is protected' do
+        before do
+          build.protected = true
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end
