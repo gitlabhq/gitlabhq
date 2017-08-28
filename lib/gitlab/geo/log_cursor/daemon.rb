@@ -132,10 +132,11 @@ module Gitlab
           # GeoRepositoryDestroyWorker to avoid doing this
           full_path = File.join(deleted_event.repository_storage_path,
                                 deleted_event.deleted_path)
-          job_id = ::GeoRepositoryDestroyWorker.perform_async(
-            deleted_event.project_id,
-            deleted_event.deleted_project_name,
-            full_path)
+          job_id = ::Geo::RepositoryDestroyService
+                     .new(deleted_event.project_id,
+                          deleted_event.deleted_project_name,
+                          full_path)
+                     .async_execute
           log_event_info(event.created_at,
                          message: "Deleted project",
                          project_id: deleted_event.project_id,
@@ -164,8 +165,9 @@ module Gitlab
           old_path = renamed_event.old_path_with_namespace
           new_path = renamed_event.new_path_with_namespace
 
-          job_id = ::GeoRepositoryMoveWorker.perform_async(
-            renamed_event.project_id, "", old_path, new_path)
+          job_id = ::Geo::MoveRepositoryService
+                     .new(renamed_event.project_id, "", old_path, new_path)
+                     .async_execute
 
           log_event_info(event.created_at,
                          message: "Renaming project",
