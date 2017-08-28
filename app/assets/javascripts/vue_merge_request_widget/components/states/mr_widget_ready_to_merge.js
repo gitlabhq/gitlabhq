@@ -271,9 +271,8 @@ export default {
           </span>
           <div class="media-body-wrap space-children">
             <template v-if="shouldShowMergeControls()">
-              <label>
+              <label v-if="canRemoveSourceBranch">
                 <input
-                  v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
