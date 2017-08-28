@@ -91,7 +91,7 @@ describe 'Comments on personal snippets', :js do
 
   context 'when editing a note' do
     it 'changes the text' do
-      find('.js-note-edit').click
+      find('.js-note-edit').trigger('click')
 
       page.within('.current-note-edit-form') do
         fill_in 'note[note]', with: 'new content'
