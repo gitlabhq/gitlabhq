@@ -13,7 +13,6 @@ export default class ProtectedTagCreate {
     if ($allowedToCreateDropdown) {
       // Cache callback
       this.onSelectCallback = this.onSelect.bind(this);
-
       // Allowed to Create dropdown
       this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
         $dropdown: $allowedToCreateDropdown,
