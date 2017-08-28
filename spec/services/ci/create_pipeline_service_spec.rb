@@ -413,7 +413,7 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a developer' do
-        let(:user) {}
+        let(:user) { trigger_request.trigger.owner }
 
         let(:trigger_request) do
           create(:ci_trigger_request).tap do |request|
@@ -431,7 +431,7 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a master' do
-        let(:user) {}
+        let(:user) { trigger_request.trigger.owner }
 
         let(:trigger_request) do
           create(:ci_trigger_request).tap do |request|
@@ -441,7 +441,7 @@ describe Ci::CreatePipelineService do
           end
         end
 
-        it 'does not create a pipeline' do
+        it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
