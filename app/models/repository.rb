@@ -1,9 +1,9 @@
 require 'securerandom'
 
 class Repository
-  REF_MERGE_REQUEST = 'merge-requests'
-  REF_KEEP_AROUND = 'keep-around'
-  REF_ENVIRONMENTS = 'environments'
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
 
   RESERVED_REFS_NAMES = %W[
     heads
