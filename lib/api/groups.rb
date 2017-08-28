@@ -2,7 +2,7 @@ module API
   class Groups < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers do
       params :optional_params_ce do
@@ -56,16 +56,8 @@ module API
         use :pagination
       end
       get do
-        groups = if params[:owned]
-                   current_user.owned_groups
-                 elsif current_user.admin
-                   Group.all
-                 elsif params[:all_available]
-                   GroupsFinder.new(current_user).execute
-                 else
-                   current_user.groups
-                 end
-
+        find_params = { all_available: params[:all_available], owned: params[:owned] }
+        groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])

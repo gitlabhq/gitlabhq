@@ -10,7 +10,7 @@ like Ubuntu, Red Hat Enterprise Linux, and of course - GitLab! This means that y
 pre-configured GitLab VM and have your very own private GitLab up and running in around 30 minutes. 
 Let's get started.
 
-### Getting started
+## Getting started
 
 First, you'll need an account on Azure. There are three ways to do this:
 
@@ -25,7 +25,7 @@ This is a great way to try out Azure and cloud computing, and you can
 subscription gives you recurring Azure credits every month, so why not put those credits to use and 
 try out GitLab right now?
 
-### Working with Azure
+## Working with Azure
 
 Once you have an Azure account, you can get started. Login to Azure using 
 [portal.azure.com](https://portal.azure.com) and the first thing you will see is the Dashboard:
@@ -35,7 +35,7 @@ Once you have an Azure account, you can get started. Login to Azure using
 The Dashboard gives you a quick overview of Azure resources, and from here you you can build VMs, 
 create SQL Databases, author websites, and perform lots of other cloud tasks.
 
-### Create New VM
+## Create New VM
 
 The [Azure Marketplace][Azure-Marketplace] is an online store for pre-configured applications and 
 services which have been optimized for the cloud by software vendors like GitLab, and both 
@@ -56,7 +56,7 @@ Click **"Create"** and you will be presented with the "Create virtual machine" b
 
 ![Azure - Create Virtual Machine - Basics](img/azure-create-virtual-machine-basics.png)
 
-### Basics
+## Basics
 
 The first items we need to configure are the basic settings of the underlying virtual machine:
 
@@ -84,7 +84,7 @@ Here are the settings we've used:
 
 Check the settings you have entered, and then click **"OK"** when you're ready to proceed.
 
-### Size
+## Size
 
 Next, you need to choose the size of your VM - selecting features such as the number of CPU cores, 
 the amount of RAM, the size of storage (and its speed), etc.
@@ -108,7 +108,7 @@ free trial credits, you'll likely want to learn
 Go ahead and click your chosen size, then click **"Select"** when you're ready to proceed to the
 next step.
 
-### Settings
+## Settings
 
 On the next blade, you're asked to configure the Storage, Network and Extension settings. 
 We've gone with the default settings as they're sufficient for test-driving GitLab, but please 
@@ -118,7 +118,7 @@ choose the settings which best meet your own requirements:
 
 Review the settings and then click **"OK"** when you're ready to proceed to the last step.
 
-### Purchase
+## Purchase
 
 The Purchase page is the last step and here you will be presented with the price per hour for your 
 new VM. You'll be billed only for the VM itself (e.g. "Standard DS1 v2") because the 
@@ -131,7 +131,7 @@ previous steps, just click on any of the four steps to re-open them.
 
 When you have read and agreed to the terms of use and are ready to proceed, click **"Purchase"**.
 
-### Deployment
+## Deployment
 
 At this point, Azure will begin deploying your new VM. The deployment process will take a few 
 minutes to complete, with progress displayed on the **"Deployment"** blade:
@@ -146,7 +146,7 @@ on the Azure Dashboard (you may need to refresh the page):
 The new VM can also be accessed by clicking the `All resources` or `Virtual machines` icons in the 
 Azure Portal sidebar navigation menu.
 
-### Setup a domain name
+## Setup a domain name
 
 The VM will have a public IP address (static by default), but Azure allows us to assign a friendly 
 DNS name to the VM, so let's go ahead and do that.
@@ -174,7 +174,7 @@ to make sure your VM is configured to use a _static_ public IP address (i.e. not
 or you will have to reconfigure the DNS `A` record each time Azure reassigns your VM a new public IP 
 address. Read [IP address types and allocation methods in Azure][Azure-IP-Address-Types] to learn more.
 
-### Let's open some ports!
+## Let's open some ports!
 
 At this stage you should have a running and fully operational VM. However, none of the services on 
 your VM (e.g. GitLab) will be publicly accessible via the internet until you have opened up the 
@@ -202,7 +202,7 @@ Next, click **"Add"**:
 
 ![Azure - Network security group - Inbound security rules - Add](img/azure-nsg-inbound-sec-rules-add-highlight.png)
 
-#### Which ports to open?
+### Which ports to open?
 
 Like all servers, our VM will be running many services. However, we want to open up the correct 
 ports to enable public internet access to two services in particular:
@@ -213,7 +213,7 @@ public access to the instance of GitLab running on our VM.
 allowing public access (with authentication) to remote terminal sessions 
 _(you'll see why we need [SSH] access to our VM [later on in this tutorial](#maintaining-your-gitlab-instance))_
 
-#### Open HTTP on Port 80
+### Open HTTP on Port 80
 
 In the **"Add inbound security rule"** blade, let's open port 80 so that our VM will accept HTTP 
 connections:
@@ -225,7 +225,7 @@ connections:
 1. Make sure the `Action` is set to **Allow**
 1. Click **"OK"**
 
-#### Open SSH on Port 22
+### Open SSH on Port 22
 
 Repeat the above process, adding a second Inbound security rule to open port 22, enabling our VM to 
 accept [SSH] connections:

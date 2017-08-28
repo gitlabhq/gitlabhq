@@ -17,7 +17,7 @@ the hardware requirements.
 - [Installation from source](installation.md) - Install GitLab from source.
   Useful for unsupported systems like *BSD. For an overview of the directory
   structure, read the [structure documentation](structure.md).
-- [Docker](https://docs.gitlab.com/omnibus/docker/) - Install GitLab using Docker.
+- [Docker](docker.md) - Install GitLab using Docker.
 
 ## Install GitLab on cloud providers
 
