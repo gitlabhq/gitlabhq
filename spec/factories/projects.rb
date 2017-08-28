@@ -162,8 +162,6 @@ FactoryGirl.define do
   # Test repository source can be found at
   # https://gitlab.com/gitlab-org/gitlab-test
   factory :project, parent: :empty_project do
-    path { 'gitlabhq' }
-
     test_repo
 
     transient do
