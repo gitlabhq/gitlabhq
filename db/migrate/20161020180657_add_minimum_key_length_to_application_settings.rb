@@ -7,12 +7,13 @@ class AddMinimumKeyLengthToApplicationSettings < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    # A key restriction has two possible states:
+    # A key restriction has these possible states:
     #
     #   * -1 means "this key type is completely disabled"
-    #   * >= 0 means "keys must have at least this many bits to be valid"
+    #   * 0 means "all keys of this type are valid"
+    #   * > 0 means "keys must have at least this many bits to be valid"
     #
-    # A value of 0 is equivalent to "there are no restrictions on keys of this type"
+    # The default is 0, for backward compatibility
     add_column_with_default :application_settings, :rsa_key_restriction, :integer, default: 0
     add_column_with_default :application_settings, :dsa_key_restriction, :integer, default: 0
     add_column_with_default :application_settings, :ecdsa_key_restriction, :integer, default: 0

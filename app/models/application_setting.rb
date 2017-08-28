@@ -442,8 +442,7 @@ class ApplicationSetting < ActiveRecord::Base
   def key_restriction_for(type)
     attr_name = "#{type}_key_restriction"
 
-    # rubocop:disable GitlabSecurity/PublicSend
-    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE
+    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
   end
 
   private
