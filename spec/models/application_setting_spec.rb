@@ -85,7 +85,7 @@ describe ApplicationSetting do
         let(:field) { :"#{type}_key_restriction" }
 
         it { is_expected.to validate_presence_of(field) }
-        it { is_expected.to allow_value(*described_class.supported_key_restrictions(type)).for(field) }
+        it { is_expected.to allow_value(*KeyRestrictionValidator.supported_key_restrictions(type)).for(field) }
         it { is_expected.not_to allow_value(128).for(field) }
       end
     end

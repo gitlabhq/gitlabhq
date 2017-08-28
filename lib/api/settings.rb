@@ -125,7 +125,7 @@ module API
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",
                  type: Integer,
-                 values: ApplicationSetting.supported_key_restrictions(type),
+                 values: KeyRestrictionValidator.supported_key_restrictions(type),
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
