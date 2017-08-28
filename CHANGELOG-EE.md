@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.2 (2017-08-28)
+
+- [FIXED] Fix LDAP backwards-compatibility when using "method" or when "verify_certificates" is not defined. !2690
+- [FIXED] Geo - Count projects where wiki sync failed in node status page.
+
 ## 9.5.1 (2017-08-23)
 
 - [FIXED] Fix url for object store artifacts.
