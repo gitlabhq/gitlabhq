@@ -16,12 +16,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.
-  FORBIDDEN_KEY_VALUE = -1
+  FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
   SUPPORTED_KEY_TYPES = %i[rsa dsa ecdsa ed25519].freeze
-
-  def self.supported_key_restrictions(type)
-    [0, *Gitlab::SSHPublicKey.supported_sizes(type), FORBIDDEN_KEY_VALUE]
-  end
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
@@ -169,10 +165,10 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { greater_than_or_equal_to: 0 }
 
   SUPPORTED_KEY_TYPES.each do |type|
-    validates :"#{type}_key_restriction",
-              presence: true,
-              inclusion: { in: ApplicationSetting.supported_key_restrictions(type) }
+    validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
+
+  validates :allowed_key_types, presence: true
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
@@ -489,8 +485,7 @@ class ApplicationSetting < ActiveRecord::Base
   def key_restriction_for(type)
     attr_name = "#{type}_key_restriction"
 
-    # rubocop:disable GitlabSecurity/PublicSend
-    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE
+    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
   end
 
   private

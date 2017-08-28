@@ -3,8 +3,8 @@
     - if key.valid?
       = icon 'key', class: 'settings-list-icon hidden-xs'
     - else
-      = icon 'exclamation-triangle', class: 'settings-list-icon hidden-xs',
-        title: 'The key is disabled because it is invalid'
+      = icon 'exclamation-triangle', class: 'settings-list-icon hidden-xs has-tooltip',
+        title: key.errors.full_messages.join(', ')
 
 
   .key-list-item-info

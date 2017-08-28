@@ -37,8 +37,8 @@ module Gitlab
     end
 
     def check(cmd, changes)
-      check_valid_actor!
       check_protocol!
+      check_valid_actor!
       check_active_user!
       check_project_accessibility!
       check_project_moved!

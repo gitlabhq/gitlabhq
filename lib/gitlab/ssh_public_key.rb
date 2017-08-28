@@ -13,6 +13,10 @@ module Gitlab
       Technologies.find { |tech| tech.name.to_s == name.to_s }
     end
 
+    def self.technology_for_key(key)
+      Technologies.find { |tech| key.is_a?(tech.key_class) }
+    end
+
     def self.supported_sizes(name)
       technology(name)&.supported_sizes
     end
@@ -37,9 +41,7 @@ module Gitlab
     end
 
     def type
-      return unless valid?
-
-      technology.name
+      technology.name if valid?
     end
 
     def bits
@@ -63,12 +65,7 @@ module Gitlab
 
     def technology
       @technology ||=
-        begin
-          tech = Technologies.find { |tech| key.is_a?(tech.key_class) }
-          raise "Unsupported key type: #{key.class}" unless tech
-
-          tech
-        end
+        self.class.technology_for_key(key) || raise("Unsupported key type: #{key.class}")
     end
   end
 end

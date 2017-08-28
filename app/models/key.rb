@@ -1,7 +1,6 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
-  include AfterCommitQueue
   include Gitlab::CurrentSettings
   include Sortable
 
