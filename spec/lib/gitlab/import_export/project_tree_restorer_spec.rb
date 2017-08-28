@@ -79,6 +79,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           expect(event).not_to be_nil
         end
 
+        it 'has the action' do
+          expect(event.action).not_to be_nil
+        end
+
         it 'event belongs to note, belongs to merge request, belongs to a project' do
           expect(event.note.noteable.project).not_to be_nil
         end
