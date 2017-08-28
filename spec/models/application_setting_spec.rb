@@ -79,8 +79,7 @@ describe ApplicationSetting do
     # Upgraded databases will have this sort of content
     context 'repository_storages is a String, not an Array' do
       before do
-        query = "UPDATE application_settings SET repository_storages = 'default'"
-        ActiveRecord::Base.connection.execute(query)
+        ApplicationSetting.where(id: setting.id).update_all(repository_storages: 'default')
       end
 
       it { expect(setting.repository_storages).to eq(['default']) }
