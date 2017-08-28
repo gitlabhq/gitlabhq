@@ -191,7 +191,7 @@ describe('MRWidgetReadyToMerge', () => {
 
         it('should be disabled in the rendered output', () => {
           const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+          expect(checkboxElement).toBe(null);
         });
       });
 
