@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.2 (2017-08-28)
+
+- [FIXED] Fix signing in using LDAP when attribute mapping uses simple strings instead of arrays.
+- [FIXED] Show un-highlighted text diffs when we do not have references to the correct blobs.
+- [FIXED] Fix display of push events for removed refs.
+- [FIXED] Testing of some integrations were broken due to missing ServiceHook record.
+- [FIXED] Fire system hooks when a user is created via LDAP.
+- [FIXED] Fix new project form not resetting the template value.
+
 ## 9.5.1 (2017-08-23)
 
 - [FIXED] Fix merge request pipeline status when pipeline has errors. !13664
