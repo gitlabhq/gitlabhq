@@ -166,7 +166,7 @@ module Gitlab
 
       def remove_branch(name)
         project.repository.delete_branch(name)
-      rescue Rugged::ReferenceError
+      rescue Gitlab::Git::Repository::DeleteBranchFailed
         errors << { type: :remove_branch, name: name }
       end
 
