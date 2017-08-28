@@ -413,14 +413,12 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a developer' do
-        let(:user) { trigger_request.trigger.owner }
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_developer(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_developer(user)
         end
 
         it 'does not create a pipeline' do
@@ -431,14 +429,12 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a master' do
-        let(:user) { trigger_request.trigger.owner }
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_master(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_master(user)
         end
 
         it 'creates a pipeline' do
