@@ -1601,6 +1601,7 @@ describe API::Projects do
       end
 
       it_behaves_like '412 response' do
+        let(:success_status) { 202 }
         let(:request) { api("/projects/#{project.id}", user) }
       end
 
@@ -1636,6 +1637,7 @@ describe API::Projects do
       end
 
       it_behaves_like '412 response' do
+        let(:success_status) { 202 }
         let(:request) { api("/projects/#{project.id}", admin) }
       end
     end
