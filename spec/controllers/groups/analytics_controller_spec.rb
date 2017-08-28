@@ -49,7 +49,7 @@ describe Groups::AnalyticsController do
   context 'unlicensed but we show promotions' do
     before do
       allow(License).to receive(:current).and_return(nil)
-      LicenseHelper.stub(:show_promotions).and_return(true)
+      allow(LicenseHelper).to receive(:show_promotions).and_return(true)
       stub_application_setting(check_namespace_plan: false)
     end
 
