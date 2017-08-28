@@ -1492,7 +1492,7 @@ describe Ci::Build do
 
     context 'when build is for triggers' do
       let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) } # TODO:
+      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
       let(:user_trigger_variable) do
         { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
       end

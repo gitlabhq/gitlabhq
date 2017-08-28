@@ -34,9 +34,10 @@ module API
             pipeline = result[:pipeline]
             trigger_request = pipeline.trigger_request
 
-            # Ws swtiched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
+            # We switched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
             # Ci::TriggerRequest doesn't save variables anymore.
-            # Although, to prevent braking compatibility, copying variables and present it as Ci::TriggerRequest.
+            # Here is copying Ci::PipelineVariable to Ci::TriggerRequest.variables for presenting the variables.
+            # The same endpoint in v4 API pressents Pipeline instead of TriggerRequest, so it doesn't need such a process.
             pipeline.variables.each do |variable|
               trigger_request.variables << { key: variable.key, value: variable.value }
             end

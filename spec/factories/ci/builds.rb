@@ -107,7 +107,7 @@ FactoryGirl.define do
     end
 
     trait :triggered do
-      trigger_request factory: :ci_trigger_request_with_variables # TODO:
+      trigger_request factory: :ci_trigger_request_with_variables
     end
 
     after(:build) do |build, evaluator|
