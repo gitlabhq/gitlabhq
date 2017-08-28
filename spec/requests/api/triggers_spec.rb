@@ -22,7 +22,6 @@ describe API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
-      trigger.update(owner: user)
     end
 
     context 'Handles errors' do
