@@ -173,7 +173,7 @@ module Github
         response.body.each do |raw|
           pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
           merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
-          next unless merge_request.new_record? && pull_request.valid?
+          next unless merge_request.new_record? && pull_request.valid? && merge_request.source_branch_head
 
           begin
             pull_request.restore_branches!

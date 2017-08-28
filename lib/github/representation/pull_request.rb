@@ -10,7 +10,7 @@ module Github
 
       def source_branch_name
         @source_branch_name ||=
-          if cross_project? || !source_branch_exists?
+          if !opened? && (cross_project? || !source_branch_exists?)
             source_branch_name_prefixed
           else
             source_branch_ref
