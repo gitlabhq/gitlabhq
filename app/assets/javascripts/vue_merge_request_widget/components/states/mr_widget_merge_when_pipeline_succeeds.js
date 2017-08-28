@@ -104,6 +104,7 @@ export default {
               class="btn btn-xs btn-default js-remove-source-branch"
               href="#">
               <i
+              v-if="canRemoveSourceBranch"
               v-if="isRemovingSourceBranch"
               class="fa fa-spinner fa-spin"
               aria-hidden="true" />
