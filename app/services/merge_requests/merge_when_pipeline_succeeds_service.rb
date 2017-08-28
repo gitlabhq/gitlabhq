@@ -30,7 +30,7 @@ module MergeRequests
           next
         end
 
-        merge_request.async_merge(merge_request.merge_user_id, merge_request.merge_params)
+        merge_request.merge_async(merge_request.merge_user_id, merge_request.merge_params)
       end
     end
 

@@ -931,7 +931,7 @@ describe MergeRequest do
     end
   end
 
-  describe '#async_merge' do
+  describe '#merge_async' do
     it 'enqueues MergeWorker job and updates merge_jid' do
       merge_request = create(:merge_request)
       user_id = double(:user_id)
@@ -942,7 +942,7 @@ describe MergeRequest do
         merge_jid
       end
 
-      merge_request.async_merge(user_id, params)
+      merge_request.merge_async(user_id, params)
 
       expect(merge_request.reload.merge_jid).to eq(merge_jid)
     end

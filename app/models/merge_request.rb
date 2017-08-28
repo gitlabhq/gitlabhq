@@ -244,7 +244,7 @@ class MergeRequest < ActiveRecord::Base
   # Calls `MergeWorker` to proceed with the merge process and
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.
-  def async_merge(user_id, params)
+  def merge_async(user_id, params)
     jid = MergeWorker.perform_async(id, user_id, params)
     update_column(:merge_jid, jid)
   end
