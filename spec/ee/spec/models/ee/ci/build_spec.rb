@@ -12,6 +12,28 @@ describe Ci::Build do
 
   let(:job) { create(:ci_build, pipeline: pipeline) }
 
+  describe '.codequality' do
+    subject { described_class.codequality }
+
+    context 'when a job name is codequality' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codequality') }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when a job name is codeclimate' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when a job name is irrelevant' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codechecker') }
+
+      it { is_expected.not_to include(job) }
+    end
+  end
+
   describe '#shared_runners_minutes_limit_enabled?' do
     subject { job.shared_runners_minutes_limit_enabled? }
 
@@ -112,7 +134,7 @@ describe Ci::Build do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {
             artifacts: {
@@ -130,7 +152,7 @@ describe Ci::Build do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {}
         )

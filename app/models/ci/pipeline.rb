@@ -442,7 +442,7 @@ module Ci
     end
 
     def codeclimate_artifact
-      artifacts.codeclimate.find(&:has_codeclimate_json?)
+      artifacts.codequality.find(&:has_codeclimate_json?)
     end
 
     private
