@@ -338,9 +338,10 @@ class FilteredSearchManager {
     this.filteredSearchInput.value = '';
 
     const removeElements = [];
+    const customValidator = this.customRemovalValidator || function (t) { return true };
 
     [].forEach.call(this.tokensContainer.children, (t) => {
-      if (t.classList.contains('js-visual-token')) {
+      if (t.classList.contains('js-visual-token') && customValidator(t)) {
         removeElements.push(t);
       }
     });
@@ -419,8 +420,18 @@ class FilteredSearchManager {
     });
   }
 
+  getAllParams() {
+    let params = gl.utils.getUrlParamsArray();
+
+    if (this.modifyUrlParams) {
+      params = this.modifyUrlParams(params);
+    }
+
+    return params;
+  }
+
   loadSearchParamsFromURL() {
-    const params = gl.utils.getUrlParamsArray();
+    const params = this.getAllParams();
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
 
@@ -566,6 +577,7 @@ class FilteredSearchManager {
 
   getUsernameParams() {
     const usernamesById = {};
+
     try {
       const attribute = this.filteredSearchInput.getAttribute('data-username-params');
       JSON.parse(attribute).forEach((user) => {
