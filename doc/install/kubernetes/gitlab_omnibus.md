@@ -41,7 +41,7 @@ Terms:
 
 This chart configures a GitLab server and Kubernetes cluster which can support dynamic [Review Apps](https://docs.gitlab.com/ee/ci/review_apps/index.html), as well as services like the integrated [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html) and [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
 
-To support the GitLab services and dynamic environments, a wildcard DNS entry is required which resolves to the [Load Balancer](load-balancer) or [External IP](#external-ip). Configuration of the DNS entry will depend upon the DNS service being used.
+To support the GitLab services and dynamic environments, a wildcard DNS entry is required which resolves to the [Load Balancer](#load-balancer-ip) or [External IP](#external-ip). Configuration of the DNS entry will depend upon the DNS service being used.
 
 #### External IP (Recommended)
 
