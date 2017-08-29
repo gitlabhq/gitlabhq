@@ -65,29 +65,16 @@ For production deployments of GitLab, we strongly recommend using an [External I
 ## Configuring and Installing GitLab
 
 For most installations, only two parameters are required:
-- `baseIP`: the desired [external IP address](#networking-prerequisites)
 - `baseDomain`: the [base domain](#networking-prerequisites) with the wildcard host entry resolving to the `baseIP`. For example, `mycompany.io`.
 - `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt
 
 Other common configuration options:
+- `baseIP`: the desired [external IP address](#networking-prerequisites)
 - `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for GCP, with `acs` also supported for Azure.
 
 For additional configuration options, consult the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
-
-These settings can either be passed directly on the command line:
-```bash
-helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,gitlabEELicense=$LICENSE,legoEmail=email@gitlab.com gitlab/gitlab-omnibus
-```
-
-or within a YAML file:
-```bash
-helm install --name gitlab -f values.yaml gitlab/gitlab-omnibus
-```
-
-> **Note:**
-If you are using a machine type with support for less than 4 attached disks, like an Azure trial, you should disable dedicated storage for [Postgres and Redis](#persistent-storage).
 
 ### Choosing a different GitLab release version
 
@@ -108,6 +95,8 @@ There is no guarantee that other release versions of GitLab, other than what are
 used by default in the chart, will be supported by a chart install.
 
 ### Persistent storage
+> **Note:**
+If you are using a machine type with support for less than 4 attached disks, like an Azure trial, you should disable dedicated storage for [Postgres and Redis](#persistent-storage).
 
 By default, persistent storage is enabled for GitLab and the charts it depends
 on (Redis and PostgreSQL).
