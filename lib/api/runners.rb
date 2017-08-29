@@ -55,7 +55,8 @@ module API
         optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
         optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
-        optional :access_level, type: Integer, desc: 'The access_level of the runner'
+        optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
+                                desc: 'The access_level of the runner'
         at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
       end
       put ':id' do

@@ -192,7 +192,7 @@ describe API::Runners do
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
                                                  run_untagged: 'false',
                                                  locked: 'true',
-                                                 access_level: Ci::Runner.access_levels['ref_protected'])
+                                                 access_level: 'ref_protected')
           shared_runner.reload
 
           expect(response).to have_http_status(200)
