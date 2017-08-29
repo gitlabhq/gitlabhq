@@ -90,7 +90,7 @@ module LicenseHelper
   end
 
   def show_project_feature_promotion?(project_feature, callout_id = nil)
-    !@project.feature_available?(project_feature) && show_promotions? && !callout_id.nil? && show_callout?(callout_id)
+    !@project.feature_available?(project_feature) && show_promotions? && (callout_id.nil? || show_callout?(callout_id))
   end
 
   extend self
