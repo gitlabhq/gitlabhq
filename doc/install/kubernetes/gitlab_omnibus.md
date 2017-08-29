@@ -52,6 +52,8 @@ If you do not specify a `baseIP`, an ephemeral IP will be assigned to the Load B
 
 The IP address will be displayed in the `EXTERNAL-IP` field, and should be used to configure the Wildcard DNS entry. For more information on creating a wildcard DNS entry, consult the documentation for the DNS server you are using.
 
+For production deployments of GitLab, we strongly recommend using an [External IP](#external-ip).
+
 #### External IP
 
 To provision an external IP on GCP and Azure, simply request a new address from the Networking section. Ensure that the region matches the region your container cluster is created in. Note, it is important that the IP is not assigned at this point in time. It will be automatically assigned once the Helm chart is installed, and assigned to the Load Balancer.
