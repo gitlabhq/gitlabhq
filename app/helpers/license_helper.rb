@@ -77,7 +77,6 @@ module LicenseHelper
 
   def show_promotions?(selected_user = current_user)
     return false unless selected_user
-
     return @show_promotions if defined?(@show_promotions)
 
     @show_promotions =
