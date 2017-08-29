@@ -24,26 +24,6 @@ const RepoHelper = {
     };
   },
 
-  getFileLastCommitInfo(filename) {
-    const lastCommit = {
-      hash: '',
-      message: '',
-      update: '',
-      url: '',
-    };
-
-    const foundFile = Store.files.find(file => file.name === filename);
-
-    if (foundFile) {
-      lastCommit.hash = foundFile.lastCommitHash;
-      lastCommit.message = foundFile.lastCommitMessage;
-      lastCommit.update = foundFile.lastCommitUpdate;
-      lastCommit.url = foundFile.lastCommitUrl;
-    }
-
-    return lastCommit;
-  },
-
   key: '',
 
   isTree(data) {
@@ -212,7 +192,6 @@ const RepoHelper = {
   serializeBlob(blob) {
     const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
     simpleBlob.lastCommitMessage = blob.last_commit.message;
-    simpleBlob.lastCommitHash = blob.last_commit.id;
     simpleBlob.lastCommitUpdate = blob.last_commit.committed_date;
     simpleBlob.loading = false;
 

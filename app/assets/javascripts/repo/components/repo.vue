@@ -29,20 +29,6 @@ export default {
     Helper.getContent().catch(Helper.loadingError);
   },
 
-  computed: {
-    activeFileLastCommitUrl() {
-      const lastCommit = this.activeFileLastCommitInfo;
-      return lastCommit.url;
-    },
-    activeFileLastCommitHash() {
-      const lastCommit = this.activeFileLastCommitInfo;
-      return lastCommit.hash;
-    },
-    activeFileLastCommitInfo() {
-      return Helper.getFileLastCommitInfo(this.activeFile.name);
-    },
-  },
-
   methods: {
     toggleDialogOpen(toggle) {
       this.dialog.open = toggle;
@@ -70,9 +56,7 @@ export default {
           :is="currentBlobView"
           class="blob-viewer-container"/>
         <repo-file-footer
-          :branch-name="currentBranch"
-          :last-commit-hash="activeFileLastCommitHash"
-          :last-commit-url="activeFileLastCommitUrl"
+          :file-path="activeFile.path"
           :mime-type="activeFile.mime_type"
         />
         <repo-file-buttons/>
