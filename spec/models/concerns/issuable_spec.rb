@@ -501,7 +501,7 @@ describe Issuable do
       project.add_guest(contributor)
       project.add_guest(first_time_contributor)
     end
-    
+
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
     let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
@@ -515,13 +515,13 @@ describe Issuable do
 
       it "is false for OWNER" do
         mr = create(:merge_request, author: owner, target_project: project, source_project: project)
-        
+
         expect(mr).not_to be_first_contribution
       end
 
       it "is false for REPORTER" do
         mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
-        
+
         expect(mr).not_to be_first_contribution
       end
 

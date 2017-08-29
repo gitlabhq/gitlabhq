@@ -338,7 +338,7 @@ module Issuable
   ##
   # Override in issuable specialization
   #
-  def first_contribution?(*)
+  def first_contribution?
     false
   end
 end

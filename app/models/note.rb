@@ -47,7 +47,7 @@ class Note < ActiveRecord::Base
 
   # A special role that may be displayed on issuable's discussions
   attr_accessor :special_role
-  
+
   default_value_for :system, false
 
   attr_mentionable :note, pipeline: :note
@@ -233,15 +233,12 @@ class Note < ActiveRecord::Base
     self.class.has_special_role?(role, self)
   end
 
-  def specialize!(role)
-    self.special_role = role if !block_given? || yield(self)
-  end
-
   def specialize_for_first_contribution!(noteable)
     return unless noteable.author_id == self.author_id
-    specialize!(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
+
+    self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
- 
+
   def editable?
     !system?
   end

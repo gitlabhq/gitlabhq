@@ -960,8 +960,9 @@ class MergeRequest < ActiveRecord::Base
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 
-  def first_contribution?(*)
+  def first_contribution?
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
+
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
