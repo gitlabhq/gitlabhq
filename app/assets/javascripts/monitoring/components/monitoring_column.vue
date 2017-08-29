@@ -7,6 +7,7 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
+  import { timeScaleFormat } from '../utils/date_time_formatters';
   import bp from '../../breakpoints';
 
   const bisectDate = d3.bisector(d => d.time).left;
@@ -159,6 +160,7 @@
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
           .ticks(measurements.xTicks)
+          .tickFormat(timeScaleFormat)
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
