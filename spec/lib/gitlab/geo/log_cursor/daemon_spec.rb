@@ -76,7 +76,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
                                  repository_deleted_event.deleted_path)
 
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(project_id, project_name, full_path)
+          .with(project_id, project_name, full_path, project.repository_storage)
 
         subject.run!
       end

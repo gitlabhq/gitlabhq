@@ -128,14 +128,13 @@ module Gitlab
 
         def handle_repository_delete(event)
           deleted_event = event.repository_deleted_event
-          # Once we remove system hooks we can refactor
-          # GeoRepositoryDestroyWorker to avoid doing this
           full_path = File.join(deleted_event.repository_storage_path,
                                 deleted_event.deleted_path)
           job_id = ::Geo::RepositoryDestroyService
                      .new(deleted_event.project_id,
                           deleted_event.deleted_project_name,
-                          full_path)
+                          full_path,
+                          deleted_event.repository_storage_name)
                      .async_execute
           log_event_info(event.created_at,
                          message: "Deleted project",
