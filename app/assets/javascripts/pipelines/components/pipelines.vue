@@ -139,7 +139,9 @@
   };
 </script>
 <template>
-  <div :class="cssClass">
+  <div
+    class="pipelines-container"
+    :class="cssClass">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
       v-if="!isLoading && !shouldRenderEmptyState">
