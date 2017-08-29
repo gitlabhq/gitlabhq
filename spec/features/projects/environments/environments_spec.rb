@@ -299,6 +299,6 @@ feature 'Environments page', :feature, :js do
   end
 
   def visit_environments(project, **opts)
-    visit project_environments_path(project, **opts)
+    visit namespace_project_environments_path(project, **opts)
   end
 end
