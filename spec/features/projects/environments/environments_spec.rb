@@ -25,12 +25,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in available tab page' do
         it 'should show one environment' do
-<<<<<<< HEAD
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
-=======
           visit_environments(project, scope: 'available')
 
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -38,12 +34,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show no environments' do
-<<<<<<< HEAD
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
-=======
           visit_environments(project, scope: 'stopped')
 
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -57,12 +49,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in available tab page' do
         it 'should show no environments' do
-<<<<<<< HEAD
-          visit namespace_project_environments_path(project.namespace, project, scope: 'available')
-=======
           visit_environments(project, scope: 'available')
 
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
           expect(page).to have_css('.environments-container')
           expect(page).to have_content('You don\'t have any environments right now')
         end
@@ -70,12 +58,8 @@ feature 'Environments page', :feature, :js do
 
       describe 'in stopped tab page' do
         it 'should show one environment' do
-<<<<<<< HEAD
-          visit namespace_project_environments_path(project.namespace, project, scope: 'stopped')
-=======
           visit_environments(project, scope: 'stopped')
 
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
           expect(page).to have_css('.environments-container')
           expect(page.all('.environment-name').length).to eq(1)
         end
@@ -122,13 +106,8 @@ feature 'Environments page', :feature, :js do
       end
     end
 
-<<<<<<< HEAD
-    context 'with deployments' do
-      given(:project) { create(:project) }
-=======
     context 'when there are deployments' do
       given(:project) { create(:project, :repository) }
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
 
       given!(:deployment) do
         create(:deployment, environment: environment,
@@ -319,12 +298,7 @@ feature 'Environments page', :feature, :js do
     have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
   end
 
-<<<<<<< HEAD
-  def visit_environments(project)
-    visit namespace_project_environments_path(project.namespace, project)
-=======
   def visit_environments(project, **opts)
     visit project_environments_path(project, **opts)
->>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
   end
 end
