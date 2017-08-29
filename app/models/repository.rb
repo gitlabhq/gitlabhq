@@ -1000,29 +1000,22 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
-    tmp_ref = nil
     return yield nil if start_repository.empty_repo?
 
-    branch_commit =
-      if start_repository == self
-        commit(start_branch_name)
+    if start_repository == self
+      yield commit(start_branch_name)
+    else
+      sha = start_repository.commit(start_branch_name).sha
+
+      if branch_commit = commit(sha)
+        yield branch_commit
       else
-        sha = start_repository.find_branch(start_branch_name).target
-        commit(sha) ||
-          begin
-            tmp_ref = fetch_ref(
-              start_repository.path_to_repo,
-              "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-              "refs/tmp/#{SecureRandom.hex}/head"
-            )
-
-            commit(start_repository.commit(start_branch_name).sha)
-          end
+        with_repo_tmp_commit(
+          start_repository, start_branch_name, sha) do |tmp_commit|
+          yield tmp_commit
+        end
       end
-
-    yield branch_commit
-  ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    end
   end
 
   def add_remote(name, url)
@@ -1230,5 +1223,17 @@ class Repository
       .gitaly_commit_client
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
+  end
+
+  def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+    tmp_ref = fetch_ref(
+      start_repository.path_to_repo,
+      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+      "refs/tmp/#{SecureRandom.hex}/head"
+    )
+
+    yield commit(sha)
+  ensure
+    rugged.references.delete(tmp_ref) if tmp_ref
   end
 end
