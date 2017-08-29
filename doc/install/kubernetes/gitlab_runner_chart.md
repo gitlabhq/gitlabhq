@@ -1,6 +1,4 @@
 # GitLab Runner Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
-
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
@@ -111,6 +109,17 @@ runners:
     cpuRequests: 100m
     memoryRequests: 128Mi
 
+```
+
+### Controlling maximum Runner concurrency
+
+A single GitLab Runner deployed on Kubernetes is able to execute multiple jobs in parallel by automatically starting additional Runner pods. The [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) controls the maximum number of pods allowed at a single time, and defaults to `10`.
+
+```yaml
+## Configure the maximum number of concurrent jobs
+## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
+##
+concurrent: 10
 ```
 
 ### Running Docker-in-Docker containers with GitLab Runners

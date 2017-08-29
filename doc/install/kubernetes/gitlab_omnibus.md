@@ -1,5 +1,7 @@
 # GitLab-Omnibus Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
+> This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
+
+> GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
 
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
@@ -29,7 +31,7 @@ Terms:
 
 ## Prerequisites
 
-- _At least_ 4 GB of RAM available on your cluster, in chunks of 1 GB. 41GB of storage and 2 CPU are also required.
+- _At least_ 4 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - An [external IP address](#networking-prerequisites)
@@ -52,12 +54,12 @@ Now that an external IP address has been allocated, ensure that the wildcard DNS
 For most installations, only two parameters are required:
 - `baseIP`: the desired [external IP address](#networking-prerequisites)
 - `baseDomain`: the [base domain](#networking-prerequisites) with the wildcard host entry resolving to the `baseIP`. For example, `mycompany.io`.
+- `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt
 
 Other common configuration options:
 - `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for GCP, with `acs` also supported for Azure.
-- `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt
 
 For additional configuration options, consult the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
 
