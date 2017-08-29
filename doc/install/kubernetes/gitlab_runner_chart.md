@@ -33,6 +33,8 @@ In order for GitLab Runner to function, your config file **must** specify the fo
  - `runnerRegistrationToken` - The Registration Token for adding new Runners to the GitLab Server. This must be
     retrieved from your GitLab Instance. See the [GitLab Runner Documentation](../../ci/runners/README.md#creating-and-registering-a-runner) for more information.
 
+Unless you need to specify additional configuration, you are [ready to install](#installing-gitlab-runner-using-the-helm-chart).
+
 ### Other configuration
 
 The rest of the configuration is [documented in the `values.yaml`](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-runner/values.yaml) in the chart repository.
