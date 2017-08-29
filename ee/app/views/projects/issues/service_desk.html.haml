@@ -30,6 +30,8 @@
     - if @can_bulk_update
       = render 'shared/issuable/bulk_update_sidebar', type: :issues
 
+    - if @issues.present?
+      = render 'service_desk_empty_state_content'
+
     .issues-holder
       = render 'projects/issues/issues', empty_state_path: 'service_desk_empty_state'
-
