@@ -1,23 +1,29 @@
 <script>
-export default {
-  name: 'PipelineNavigationTabs',
-  props: {
-    scope: {
-      type: String,
-      required: true,
+  export default {
+    name: 'PipelineNavigationTabs',
+    props: {
+      scope: {
+        type: String,
+        required: true,
+      },
+      count: {
+        type: Object,
+        required: true,
+      },
+      paths: {
+        type: Object,
+        required: true,
+      },
     },
-    count: {
-      type: Object,
-      required: true,
+    mounted() {
+      $(document).trigger('init.scrolling-tabs');
     },
-    paths: {
-      type: Object,
-      required: true,
+    methods: {
+      shouldRenderBadge(count) {
+        // 0 is valid in a badge, but evaluates to false, we need to check for undefined
+        return count !== undefined;
+      },
     },
-  },
-  mounted() {
-    $(document).trigger('init.scrolling-tabs');
-  },
 };
 </script>
 <template>
@@ -27,7 +33,9 @@ export default {
       :class="{ active: scope === 'all'}">
       <a :href="paths.allPath">
         All
-        <span class="badge js-totalbuilds-count">
+        <span
+          v-if="shouldRenderBadge(count.all)"
+          class="badge js-totalbuilds-count">
           {{count.all}}
         </span>
       </a>
@@ -37,7 +45,9 @@ export default {
       :class="{ active: scope === 'pending'}">
       <a :href="paths.pendingPath">
         Pending
-        <span class="badge">
+        <span
+          v-if="shouldRenderBadge(count.pending)"
+          class="badge">
           {{count.pending}}
         </span>
       </a>
@@ -47,7 +57,9 @@ export default {
       :class="{ active: scope === 'running'}">
       <a :href="paths.runningPath">
         Running
-        <span class="badge">
+        <span
+          v-if="shouldRenderBadge(count.running)"
+          class="badge">
           {{count.running}}
         </span>
       </a>
@@ -57,7 +69,9 @@ export default {
       :class="{ active: scope === 'finished'}">
       <a :href="paths.finishedPath">
         Finished
-        <span class="badge">
+        <span
+          v-if="shouldRenderBadge(count.finished)"
+          class="badge">
           {{count.finished}}
         </span>
       </a>
