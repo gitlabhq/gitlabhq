@@ -100,28 +100,6 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  context 'when updating a project that contains container images' do
-    before do
-      stub_container_registry_config(enabled: true)
-      stub_container_registry_tags(repository: /image/, tags: %w[rc1])
-      create(:container_repository, project: project, name: :image)
-    end
-
-    it 'does not allow to rename the project' do
-      result = update_project(project, admin, path: 'renamed')
-
-      expect(result).to include(status: :error)
-      expect(result[:message]).to match(/contains container registry tags/)
-    end
-
-    it 'allows to update other settings' do
-      result = update_project(project, admin, public_builds: true)
-
-      expect(result[:status]).to eq :success
-      expect(project.reload.public_builds).to be true
-    end
-  end
-
   context 'when renaming a project' do
     let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
 
