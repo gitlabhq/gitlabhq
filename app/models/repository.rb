@@ -79,6 +79,10 @@ class Repository
     )
   end
 
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
+  end
+
   #
   # Git repository can contains some hidden refs like:
   #   /refs/notes/*
