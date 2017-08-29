@@ -39,6 +39,7 @@
             "type": "string",
             "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
           },
+          "type": { "type": "string" },
           "title": { "type": "string" },
           "priority": { "type": ["integer", "null"] }
         },
