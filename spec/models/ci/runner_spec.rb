@@ -482,9 +482,9 @@ describe Ci::Runner do
   end
 
   describe '.access_level' do
-    context 'when access_level of a runner is protected' do
+    context 'when access_level of a runner is ref_protected' do
       before do
-        create(:ci_runner, :protected)
+        create(:ci_runner, :ref_protected)
       end
 
       it 'a protected runner exists' do
