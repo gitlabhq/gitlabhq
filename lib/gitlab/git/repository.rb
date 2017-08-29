@@ -585,7 +585,7 @@ module Gitlab
       end
 
       def delete_refs(ref_names)
-        ref_names.each(&rugged.references.method(:delete))
+        ref_names.each { |ref| rugged.references.delete(ref) }
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
