@@ -420,14 +420,11 @@ class FilteredSearchManager {
     });
   }
 
+  // allows for modifying params array when a param can't be included in the URL (e.g. Service Desk)
   getAllParams() {
-    let params = gl.utils.getUrlParamsArray();
+    let urlParams = gl.utils.getUrlParamsArray();
 
-    if (this.modifyUrlParams) {
-      params = this.modifyUrlParams(params);
-    }
-
-    return params;
+    return this.modifyUrlParams ? this.modifyUrlParams(urlParams) : urlParams;
   }
 
   loadSearchParamsFromURL() {
