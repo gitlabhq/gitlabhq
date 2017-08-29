@@ -102,42 +102,41 @@ followed by any global declarations, then a blank newline prior to any imports o
 
 1. Relative paths: when importing a module in the same directory, a child
 directory, or an immediate parent directory prefer relative paths.  When
-importing a module which is two or more levels up, prefer either `~/` or `ee/`
-.
+importing a module which is two or more levels up, prefer either `~/` or `ee/`.
 
-In **app/assets/javascripts/my-feature/subdir**:
+    In **app/assets/javascripts/my-feature/subdir**:
 
-``` javascript
-// bad
-import Foo from '~/my-feature/foo';
-import Bar from '~/my-feature/subdir/bar';
-import Bin from '~/my-feature/subdir/lib/bin';
+    ```javascript
+    // bad
+    import Foo from '~/my-feature/foo';
+    import Bar from '~/my-feature/subdir/bar';
+    import Bin from '~/my-feature/subdir/lib/bin';
 
-// good
-import Foo from '../foo';
-import Bar from './bar';
-import Bin from './lib/bin';
-```
+    // good
+    import Foo from '../foo';
+    import Bar from './bar';
+    import Bin from './lib/bin';
+    ```
 
-In **spec/javascripts**:
+    In **spec/javascripts**:
 
-``` javascript
-// bad
-import Foo from '../../app/assets/javascripts/my-feature/foo';
+    ```javascript
+    // bad
+    import Foo from '../../app/assets/javascripts/my-feature/foo';
 
-// good
-import Foo from '~/my-feature/foo';
-```
+    // good
+    import Foo from '~/my-feature/foo';
+    ```
 
-When referencing an **EE component**:
+    When referencing an **EE component**:
 
-``` javascript
-// bad
-import Foo from '../../../../../ee/app/assets/javascripts/my-feature/ee-foo';
+    ```javascript
+    // bad
+    import Foo from '../../../../../ee/app/assets/javascripts/my-feature/ee-foo';
 
-// good
-import Foo from 'ee/my-feature/foo';
-```
+    // good
+    import Foo from 'ee/my-feature/foo';
+    ```
 
 1. Avoid using IIFE. Although we have a lot of examples of files which wrap their
 contents in IIFEs (immediately-invoked function expressions),
@@ -145,24 +144,23 @@ this is no longer necessary after the transition from Sprockets to webpack.
 Do not use them anymore and feel free to remove them when refactoring legacy code.
 
 1. Avoid adding to the global namespace.
-  ```javascript
-    // bad
-    window.MyClass = class { /* ... */ };
+    ```javascript
+      // bad
+      window.MyClass = class { /* ... */ };
 
-    // good
-    export default class MyClass { /* ... */ }
-  ```
+      // good
+      export default class MyClass { /* ... */ }
+    ```
 
 1. Side effects are forbidden in any script which contains exports
-  ```javascript
-    // bad
-    export default class MyClass { /* ... */ }
+    ```javascript
+      // bad
+      export default class MyClass { /* ... */ }
 
-    document.addEventListener("DOMContentLoaded", function(event) {
-      new MyClass();
-    }
-  ```
-
+      document.addEventListener("DOMContentLoaded", function(event) {
+        new MyClass();
+      }
+    ```
 
 #### Data Mutation and Pure functions
 1. Strive to write many small pure functions, and minimize where mutations occur.
@@ -414,19 +412,19 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 #### Data
 1. `data` method should always be a function
 
-  ```javascript
-    // bad
-    data: {
-      foo: 'foo'
-    }
-
-    // good
-    data() {
-      return {
+    ```javascript
+      // bad
+      data: {
         foo: 'foo'
-      };
-    }
-  ```
+      }
+
+      // good
+      data() {
+        return {
+          foo: 'foo'
+        };
+      }
+    ```
 
 #### Directives
 
@@ -481,7 +479,8 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `beforeDestroy`
   1. `destroyed`
 
-#### Vue and Boostrap
+#### Vue and Bootstrap
+
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
   ```javascript
     // bad
@@ -511,23 +510,19 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
     $('span').tooltip('fixTitle');
   ```
+
 ### The Javascript/Vue Accord
 The goal of this accord is to make sure we are all on the same page. 
 
 1. When writing Vue, you may not use jQuery in your application. 
-1.1 If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
-1.2 You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html). 
-1.3 If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
-1.4 We will avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
-
+  1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
+  1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html). 
+  1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
+  1. We will avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object 1 time, while bootstrapping your application for application specific data (e.g. `scrollTo` is ok to access anytime). Do this access during the bootstrapping of your application.
-
 1. You may have a temporary but immediate need to create technical debt by writing code that does not follow our standards, to be refactored later. Maintainers need to be ok with the tech debt in the first place. An issue should be created for that tech debt to evaluate it further and discuss. In the coming months you should fix that tech debt, with it's priority to be determined by maintainers.
-
 1. When creating tech debt you must write the tests for that code before hand and those tests may not be rewritten. e.g. jQuery tests rewritten to Vue tests.
-
 1. You may choose to use VueX as a centralized state management. If you choose not to use VueX, you must use the *store pattern* which can be found in the [Vue.js documentation](https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
-
 1. Once you have chosen a centralized state management solution you must use it for your entire application. i.e. Don't mix and match your state management solutions.
 
 ## SCSS
