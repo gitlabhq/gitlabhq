@@ -1,0 +1,5 @@
+---
+title: Check if table exists before loading the current license.
+merge_request: 2783
+author:
+type: fixed

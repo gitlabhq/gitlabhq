@@ -271,6 +271,16 @@ describe License do
     end
 
     describe ".current" do
+      context 'when licenses table does not exist' do
+        before do
+          allow(described_class).to receive(:table_exists?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(described_class.current).to be_nil
+        end
+      end
+
       context "when there is no license" do
         let!(:license) { nil }
 
