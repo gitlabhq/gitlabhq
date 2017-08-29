@@ -34,7 +34,6 @@ Terms:
 - _At least_ 4 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
-- An [external IP address](#networking-prerequisites)
 - A [wildcard DNS entry](#networking-prerequisites), which resolves to the external IP address
 - The `kubectl` CLI installed locally and authenticated for the cluster
 - The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
@@ -43,11 +42,23 @@ Terms:
 
 This chart configures a GitLab server and Kubernetes cluster which can support dynamic [Review Apps](https://docs.gitlab.com/ee/ci/review_apps/index.html), as well as services like the integrated [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html) and [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
 
-To support the GitLab services and dynamic environments, a wildcard DNS entry is required which resolves to the external Load Balancer IP.
+To support the GitLab services and dynamic environments, a wildcard DNS entry is required which resolves to the [Load Balancer](load-balancer) or [External IP](#external-ip). Configuration of the DNS entry will depend upon the DNS service being used.
+
+#### Load Balancer IP
+
+If you do not specify a `baseIP`, an ephemeral IP will be assigned to the Load Balancer or Ingress. You can retrieve this IP by running the following command *after* deploying GitLab:
+
+`kubectl get svc -w --namespace nginx-ingress nginx`
+
+The IP address will be displayed in the `EXTERNAL-IP` field, and should be used to configure the Wildcard DNS entry. For more information on creating a wildcard DNS entry, consult the documentation for the DNS server you are using.
+
+#### External IP
 
 To provision an external IP on GCP and Azure, simply request a new address from the Networking section. Ensure that the region matches the region your container cluster is created in. Note, it is important that the IP is not assigned at this point in time. It will be automatically assigned once the Helm chart is installed, and assigned to the Load Balancer.
 
 Now that an external IP address has been allocated, ensure that the wildcard DNS entry you would like to use resolves to this IP. Please consult the documentation for your DNS service for more information on creating DNS records.
+
+Finally, set the `baseIP` setting to this IP address when [deploying GitLab](#configuring-and-installing-gitlab).
 
 ## Configuring and Installing GitLab
 
