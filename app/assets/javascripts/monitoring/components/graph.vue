@@ -8,6 +8,7 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { timeScaleFormat } from '../utils/date_time_formatters';
+  import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
 
   const bisectDate = d3.bisector(d => d.time).left;
@@ -63,16 +64,10 @@
     },
 
     components: {
-<<<<<<< HEAD:app/assets/javascripts/monitoring/components/graph.vue
       GraphLegend,
       GraphFlag,
       GraphDeployment,
-=======
-      monitoringLegends,
-      monitoringFlag,
-      monitoringDeployment,
       monitoringPaths,
->>>>>>> Refactored the monitoring_column component to process all of the time series:app/assets/javascripts/monitoring/components/monitoring_column.vue
     },
 
     computed: {
@@ -152,34 +147,10 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = this.columnData.queries[0].result.map((timeSeries) => {
-          const timeSeriesScaleX = d3.time.scale()
-            .range([0, this.graphWidth - 70]);
-
-          const timeSeriesScaleY = d3.scale.linear()
-            .range([this.graphHeight - this.graphHeightOffset, 0]);
-
-          timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
-          timeSeriesScaleY.domain([0, d3.max(timeSeries.values.map(d => d.value))]);
-
-          const lineFunction = d3.svg.line()
-            .x(d => timeSeriesScaleX(d.time))
-            .y(d => timeSeriesScaleY(d.value));
-
-          const areaFunction = d3.svg.area()
-            .x(d => timeSeriesScaleX(d.time))
-            .y0(this.graphHeight - this.graphHeightOffset)
-            .y1(d => timeSeriesScaleY(d.value))
-            .interpolate('linear');
-
-          return {
-            linePath: lineFunction(timeSeries.values),
-            areaPath: areaFunction(timeSeries.values),
-            timeSeriesScaleX,
-            timeSeriesScaleY,
-            values: timeSeries.values,
-          };
-        });
+        this.timeSeries = createTimeSeries(this.columnData.queries[0].result,
+        this.graphWidth,
+        this.graphHeight,
+        this.graphHeightOffset);
 
         if (this.timeSeries.length > 4) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 4) * 20;
@@ -273,23 +244,6 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-<<<<<<< HEAD:app/assets/javascripts/monitoring/components/graph.vue
-            <path
-              class="metric-area"
-              :d="area"
-              :fill="areaColorRgb"
-              transform="translate(-5, 20)">
-            </path>
-            <path
-              class="metric-line"
-              :d="line"
-              :stroke="lineColorRgb"
-              fill="none"
-              stroke-width="2"
-              transform="translate(-5, 20)">
-            </path>
-            <graph-deployment
-=======
             <monitoring-paths 
               v-for="(path, index) in timeSeries"
               :key="index"
@@ -307,7 +261,6 @@
               @mousemove="handleMouseOverGraph($event)">
             </rect>
             <monitoring-deployment
->>>>>>> Refactored the monitoring_column component to process all of the time series:app/assets/javascripts/monitoring/components/monitoring_column.vue
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"

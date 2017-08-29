@@ -1,5 +1,5 @@
 <script>
-  import { formatRelevantDigits } from '../../lib/utils/number_utils';
+  import { formatRelevantDigits } from '../../../lib/utils/number_utils';
 
   export default {
     props: {
@@ -89,8 +89,14 @@
     mounted() {
       this.$nextTick(() => {
         const bbox = this.$refs.ylabel.getBBox();
-        this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
-        this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
+        this.metricUsageXPosition = 0;
+        this.seriesXPosition = 0;
+        if (this.$refs.legendTitleSvg != null) {
+          this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
+        }
+        if (this.$refs.seriesTitleSvg != null) {
+          this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
+        }
         this.yLabelWidth = bbox.width + 10; // Added some padding
         this.yLabelHeight = bbox.height + 5;
       });
