@@ -1,4 +1,4 @@
-- if show_project_feature_promotion?(:merge_request_approvers, 'promote_mr_features_dismissed') || show_project_feature_promotion?(:fast_forward_merge, 'promote_mr_features_dismissed')
+- if show_promotions? && show_callout?('promote_mr_features_dismissed') && (!@project.feature_available?(:merge_request_approvers) || !@project.feature_available?(:fast_forward_merge))
   .user-callout.promotion-callout.append-bottom-20.js-mr-approval-callout#promote_mr_features{ data: { uid: 'promote_mr_features_dismissed' } }
     .bordered-box.content-block
       %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss Merge Request promotion' }

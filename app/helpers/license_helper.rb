@@ -76,21 +76,21 @@ module LicenseHelper
   end
 
   def show_promotions?(selected_user = current_user)
-    if selected_user
-      return @show_promotions if defined?(@show_promotions)
+    return false unless selected_user
 
-      @show_promotions =
-        if current_application_settings.should_check_namespace_plan?
-          true
-        else
-          license = License.current
-          license.nil? || license.expired?
-        end
-    end
+    return @show_promotions if defined?(@show_promotions)
+
+    @show_promotions =
+      if current_application_settings.should_check_namespace_plan?
+        true
+      else
+        license = License.current
+        license.nil? || license.expired?
+      end
   end
 
-  def show_project_feature_promotion?(project_feature, callout_id = '')
-    !@project.feature_available?(project_feature) && show_promotions? && show_callout?(callout_id)
+  def show_project_feature_promotion?(project_feature, callout_id = nil)
+    !@project.feature_available?(project_feature) && show_promotions? && !callout_id.nil? && show_callout?(callout_id)
   end
 
   extend self
