@@ -424,6 +424,18 @@ GET /groups?search=foobar
 ]
 ```
 
+## Sync group with LDAP
+
+Syncs the group with its linked LDAP group. Only available to group owners and administrators.
+
+```
+POST /groups/:id/ldap_sync
+```
+
+Parameters:
+
+- `id` (required) - The ID or path of a user group
+
 ## Group members
 
 Please consult the [Group Members](members.md) documentation.
