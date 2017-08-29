@@ -85,14 +85,6 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
-  describe '#add_tag' do
-    it 'adds a tag' do
-      transaction.add_tag(:foo, 'bar')
-
-      expect(transaction.tags).to eq({ foo: 'bar' })
-    end
-  end
-
   describe '#finish' do
     it 'tracks the transaction details and submits them to Sidekiq' do
       expect(transaction).to receive(:track_self)

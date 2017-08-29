@@ -143,31 +143,6 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '.tag_transaction' do
-    context 'without a transaction' do
-      it 'does nothing' do
-        expect_any_instance_of(Gitlab::Metrics::Transaction)
-          .not_to receive(:add_tag)
-
-        described_class.tag_transaction(:foo, 'bar')
-      end
-    end
-
-    context 'with a transaction' do
-      let(:transaction) { Gitlab::Metrics::Transaction.new }
-
-      it 'adds the tag to the transaction' do
-        expect(described_class).to receive(:current_transaction)
-          .and_return(transaction)
-
-        expect(transaction).to receive(:add_tag)
-          .with(:foo, 'bar')
-
-        described_class.tag_transaction(:foo, 'bar')
-      end
-    end
-  end
-
   describe '.action=' do
     context 'without a transaction' do
       it 'does nothing' do

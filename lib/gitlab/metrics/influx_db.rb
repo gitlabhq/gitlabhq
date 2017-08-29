@@ -109,16 +109,6 @@ module Gitlab
         retval
       end
 
-      # Adds a tag to the current transaction (if any)
-      #
-      # name - The name of the tag to add.
-      # value - The value of the tag.
-      def tag_transaction(name, value)
-        trans = current_transaction
-
-        trans&.add_tag(name, value)
-      end
-
       # Sets the action of the current transaction (if any)
       #
       # action - The name of the action.
