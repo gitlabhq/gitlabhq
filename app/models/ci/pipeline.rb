@@ -5,6 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
+    include InternalId
 
     belongs_to :project
     belongs_to :user
@@ -397,6 +398,7 @@ module Ci
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
+        { key: 'CI_PIPELINE_IID', value: iid.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
         { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
