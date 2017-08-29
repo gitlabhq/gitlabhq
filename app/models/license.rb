@@ -204,6 +204,8 @@ class License < ActiveRecord::Base
     end
 
     def load_license
+      return unless ActiveRecord::Base.connection.table_exists?(:licenses)
+
       license = self.last
 
       return unless license && license.valid?
