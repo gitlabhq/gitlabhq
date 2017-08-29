@@ -8,8 +8,8 @@ describe API::Triggers do
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
-  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2) }
+  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token, owner: user) }
+  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger/pipeline' do
@@ -22,7 +22,6 @@ describe API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
-      trigger.update(owner: user)
     end
 
     context 'Handles errors' do
@@ -83,6 +82,22 @@ describe API::Triggers do
 
           expect(response).to have_http_status(201)
           expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
+        end
+      end
+
+      context 'when legacy trigger' do
+        before do
+          trigger.update(owner: nil)
+        end
+
+        it 'creates pipeline' do
+          post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'master')
+
+          expect(response).to have_http_status(201)
+          expect(json_response).to include('id' => pipeline.id)
+          pipeline.builds.reload
+          expect(pipeline.builds.pending.size).to eq(2)
+          expect(pipeline.builds.size).to eq(5)
         end
       end
     end
@@ -254,8 +269,6 @@ describe API::Triggers do
   describe 'POST /projects/:id/triggers/:trigger_id/take_ownership' do
     context 'authenticated user with valid permissions' do
       it 'updates owner' do
-        expect(trigger.owner).to be_nil
-
         post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user)
 
         expect(response).to have_http_status(200)

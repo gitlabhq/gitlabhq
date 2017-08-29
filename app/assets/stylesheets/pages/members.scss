@@ -96,6 +96,8 @@
 }
 
 .member-search-form {
+  @include new-style-dropdown;
+
   position: relative;
 
   @media (min-width: $screen-sm-min) {

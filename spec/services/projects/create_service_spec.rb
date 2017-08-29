@@ -38,7 +38,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user, admin)
+      expect(project.team.masters).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end

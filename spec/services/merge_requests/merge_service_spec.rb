@@ -12,6 +12,38 @@ describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
+    context 'MergeRequest#merge_jid' do
+      before do
+        merge_request.update_column(:merge_jid, 'hash-123')
+      end
+
+      it 'is cleaned when no error is raised' do
+        service = described_class.new(project, user, commit_message: 'Awesome message')
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_jid).to be_nil
+      end
+
+      it 'is cleaned when expected error is raised' do
+        service = described_class.new(project, user, commit_message: 'Awesome message')
+        allow(service).to receive(:commit).and_raise(described_class::MergeError)
+
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_jid).to be_nil
+      end
+
+      it 'is not cleaned when unexpected error is raised' do
+        service = described_class.new(project, user, commit_message: 'Awesome message')
+        allow(service).to receive(:commit).and_raise(StandardError)
+
+        expect { service.execute(merge_request) }.to raise_error(StandardError)
+
+        expect(merge_request.reload.merge_jid).to be_present
+      end
+    end
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 

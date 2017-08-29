@@ -1181,6 +1181,10 @@ GitlabSecurity/DeepMunge:
     - 'lib/**/*.rake'
     - 'spec/**/*'
 
+# To be enabled by https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13610
+GitlabSecurity/JsonSerialization:
+  Enabled: false
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:

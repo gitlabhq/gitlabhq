@@ -42,6 +42,10 @@
             = link_to admin_cohorts_path, title: 'Cohorts' do
               %span
                 Cohorts
+          = nav_link(controller: :conversational_development_index) do
+            = link_to admin_conversational_development_index_path, title: 'ConvDev Index' do
+              %span
+                ConvDev Index
 
       = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles)) do
         = link_to admin_conversational_development_index_path, title: 'Monitoring' do
@@ -51,10 +55,6 @@
             Monitoring
 
         %ul.sidebar-sub-level-items
-          = nav_link(controller: :conversational_development_index) do
-            = link_to admin_conversational_development_index_path, title: 'ConvDev Index' do
-              %span
-                ConvDev Index
           = nav_link(controller: :system_info) do
             = link_to admin_system_info_path, title: 'System Info' do
               %span
@@ -82,6 +82,7 @@
             = custom_icon('messages')
           %span.nav-item-name
             Messages
+
       = nav_link(controller: [:hooks, :hook_logs]) do
         = link_to admin_hooks_path, title: 'Hooks' do
           .nav-icon-container
@@ -140,7 +141,6 @@
           %span.nav-item-name
             Appearance
 
-      %li.divider
       = nav_link(controller: :application_settings) do
         = link_to admin_application_settings_path, title: 'Settings' do
           .nav-icon-container
