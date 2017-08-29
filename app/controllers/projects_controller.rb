@@ -3,7 +3,6 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
-  before_action :namespace, only: [:new]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
@@ -21,7 +20,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def new
-    build_project
+    @project ||= Project.new(params.permit(:namespace_id))
   end
 
   def edit
@@ -395,13 +394,5 @@ class ProjectsController < Projects::ApplicationController
 
   def project_export_enabled
     render_404 unless current_application_settings.project_export_enabled?
-  end
-
-  def namespace
-    @namespace ||= Namespace.find(params[:namespace_id]) if params[:namespace_id].present?
-  end
-
-  def build_project
-    @project ||= namespace ? namespace.projects.new : Project.new
   end
 end

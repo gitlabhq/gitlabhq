@@ -6,7 +6,6 @@ module NamespacesHelper
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
     groups  = current_user.owned_groups + current_user.masters_groups
     users   = [current_user.namespace]
-    options = []
 
     unless extra_group.nil? || extra_group.is_a?(Group)
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
@@ -16,8 +15,9 @@ module NamespacesHelper
       groups |= [extra_group]
     end
 
-    options << options_for_group(groups, display_path)
-    options << options_for_group(users, display_path)
+    options = []
+    options << options_for_group(groups, display_path: display_path, type: 'group')
+    options << options_for_group(users, display_path: display_path, type: 'user')
 
     if selected == :current_user && current_user.namespace
       selected = current_user.namespace.id
@@ -36,13 +36,12 @@ module NamespacesHelper
 
   private
 
-  def options_for_group(namespaces, display_path)
-    type = namespaces.first.is_a?(Group) ? 'group' : 'users'
-
+  def options_for_group(namespaces, display_path:, type:)
+    group_label = type.pluralize
     elements = namespaces.sort_by(&:human_name).map! do |n|
       [display_path ? n.full_path : n.human_name, n.id,
        data: {
-         options_parent: type,
+         options_parent: group_label,
          visibility_level: n.visibility_level_value,
          visibility: n.visibility,
          name: n.name,
@@ -51,6 +50,6 @@ module NamespacesHelper
        }]
     end
 
-    [type.camelize, elements]
+    [group_label.camelize, elements]
   end
 end

@@ -130,5 +130,23 @@ module Gitlab
     def visibility=(level)
       self[visibility_level_field] = Gitlab::VisibilityLevel.level_value(level)
     end
+
+    def visibility_errors_template
+      @visibility_errors ||= {
+        'Project' => {
+          group: "%{level} is not allowed in a %{group_level} group",
+          fork: "%{level} is not allowed since the fork source project has lower visibility"
+        },
+        'Group' => {
+          parent: "%{level} is not allowed since the parent group has a %{parent_level} visibility",
+          projects: "%{level} is not allowed since this group contains projects with higher visibility",
+          sub_groups: "%{level} is not allowed since there are sub-groups with higher visibility"
+        }
+      }
+    end
+
+    def visibility_error_for(section, variables)
+      visibility_errors_template.dig(model_name.to_s, section) % variables
+    end
   end
 end

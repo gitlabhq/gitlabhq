@@ -26,7 +26,7 @@ class Group < Namespace
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
-  validate :visibility_level_allowed_by_sub_groups, if: :visibility_level_changed?
+  validate :visibility_level_allowed_by_sub_groups
   validate :visibility_level_allowed_by_parent
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -102,24 +102,6 @@ class Group < Namespace
 
   def human_name
     full_name
-  end
-
-  def visibility_level_allowed_by_parent
-    return if visibility_level_allowed_by_parent?
-
-    errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
-  end
-
-  def visibility_level_allowed_by_projects
-    return if visibility_level_allowed_by_projects?
-
-    errors.add(:visibility_level, "#{visibility} is not allowed since this group contains projects with higher visibility.")
-  end
-
-  def visibility_level_allowed_by_sub_groups
-    return if visibility_level_allowed_by_sub_groups?
-
-    errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 
   def visibility_level_allowed_by_parent?(level = self.visibility_level)
@@ -304,11 +286,29 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
-  protected
+  private
 
   def update_two_factor_requirement
     return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
 
     users.find_each(&:update_two_factor_requirement)
+  end
+
+  def visibility_level_allowed_by_parent
+    return if visibility_level_allowed_by_parent?
+
+    errors.add(:visibility_level, visibility_error_for(:parent, level: visibility, parent_level: parent.visibility))
+  end
+
+  def visibility_level_allowed_by_projects
+    return if visibility_level_allowed_by_projects?
+
+    errors.add(:visibility_level, visibility_error_for(:projects, level: visibility))
+  end
+
+  def visibility_level_allowed_by_sub_groups
+    return if visibility_level_allowed_by_sub_groups?
+
+    errors.add(:visibility_level, visibility_error_for(:sub_groups, level: visibility))
   end
 end

@@ -65,7 +65,7 @@ module VisibilityLevelHelper
 
   def restricted_visibility_level_description(level)
     level_name = Gitlab::VisibilityLevel.level_name(level)
-    "#{level_name.capitalize} visibilitiy has been restricted by the administrator."
+    "#{level_name.capitalize} visibility has been restricted by the administrator."
   end
 
   def disallowed_visibility_level_description(level, form_model)
@@ -82,11 +82,11 @@ module VisibilityLevelHelper
     reasons = []
 
     unless project.visibility_level_allowed_as_fork?(level)
-      reasons << "the fork source project has lower visibility"
+      reasons << project.visibility_error_for(:fork, level: level_name)
     end
 
     unless project.visibility_level_allowed_by_group?(level)
-      reasons << "the visibility of #{project.group.name} is #{project.group.visibility}"
+      reasons << project.visibility_error_for(:group, level: level_name, group_level: project.group.visibility)
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
@@ -98,15 +98,15 @@ module VisibilityLevelHelper
     reasons = []
 
     unless group.visibility_level_allowed_by_projects?(level)
-      reasons << "it contains projects with higher visibility"
+      reasons << group.visibility_error_for(:projects, level: level_name)
     end
 
     unless group.visibility_level_allowed_by_sub_groups?(level)
-      reasons << "it contains sub-groups with higher visibility"
+      reasons << group.visibility_error_for(:sub_groups, level: level_name)
     end
 
     unless group.visibility_level_allowed_by_parent?(level)
-      reasons << "the visibility of its parent group is #{group.parent.visibility}"
+      reasons << group.visibility_error_for(:parent, level: level_name, parent_level: group.parent.visibility)
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''

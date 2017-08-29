@@ -671,14 +671,16 @@ class Project < ActiveRecord::Base
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
     group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
-    self.errors.add(:visibility_level, "#{level_name} is not allowed in a #{group_level_name} group.")
+
+    self.errors.add(:visibility_level, visibility_error_for(:group, level: level_name, group_level: group_level_name))
   end
 
   def visibility_level_allowed_as_fork
     return if visibility_level_allowed_as_fork?
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
-    self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
+
+    self.errors.add(:visibility_level, visibility_error_for(:fork, level: level_name))
   end
 
   def check_wiki_path_conflict
