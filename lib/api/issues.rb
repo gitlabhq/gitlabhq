@@ -15,7 +15,7 @@ module API
         args[:label_name] = args.delete(:labels)
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes)
+          .preload(:assignees, :labels, :notes, :timelogs)
 
         issues.reorder(args[:order_by] => args[:sort])
       end
@@ -68,9 +68,11 @@ module API
       get do
         issues = find_issues
 
-        options = { with: Entities::IssueBasic,
-                    current_user: current_user }
-        options[:issuable_metadata] = issuable_meta_data(issues, 'Issue')
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
 
         present paginate(issues), options
       end
@@ -93,9 +95,11 @@ module API
 
         issues = find_issues(group_id: group.id)
 
-        options = { with: Entities::IssueBasic,
-                    current_user: current_user }
-        options[:issuable_metadata] = issuable_meta_data(issues, 'Issue')
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
 
         present paginate(issues), options
       end
@@ -120,10 +124,12 @@ module API
 
         issues = find_issues(project_id: project.id)
 
-        options = { with: Entities::IssueBasic,
-                    current_user: current_user,
-                    project: user_project }
-        options[:issuable_metadata] = issuable_meta_data(issues, 'Issue')
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          project: user_project,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
 
         present paginate(issues), options
       end
