@@ -20,11 +20,8 @@
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls{ class: ("visible-xs" if show_new_nav?) }
-        = render "projects/issues/nav_btns"
+        = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
     = render 'shared/issuable/search_bar', type: :issues
-
-    - if @can_bulk_update
-      = render 'shared/issuable/bulk_update_sidebar', type: :issues
 
     - if @issues.present?
       = render 'service_desk_info_content'
