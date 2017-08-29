@@ -1,14 +1,7 @@
-- button_path = local_assigns.fetch(:button_path, false)
-- project_select_button = local_assigns.fetch(:project_select_button, false)
-- has_button = button_path || project_select_button
-
 .row.empty-state
   .col-xs-12
     .svg-content
       = render 'shared/empty_states/icons/service_desk_empty_state.svg'
   .col-xs-12.text-center
-    .text-content.text-center
-      %h4 Use Service desk to connect with your users (e.g. to offer customer support) through email right inside GitLab.
-      %p Have your users email incoming+victorwu/acme-lawncare-ios@gitlab.com. Those emails automatically become issues (with the comments becoming the email conversation) listed here.
-      %a{ href: '#' } Read more
-
+    .text-content
+      = render 'service_desk_empty_state_content'
