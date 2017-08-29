@@ -123,6 +123,12 @@ describe ProjectsFinder do
         it { is_expected.to match_array([public_project, internal_project, archived_project]) }
       end
 
+      describe 'filter by archived only' do
+        let(:params) { { archived: 'only' } }
+
+        it { is_expected.to eq([archived_project]) }
+      end
+
       describe 'filter by archived for backward compatibility' do
         let(:params) { { archived: false } }
 

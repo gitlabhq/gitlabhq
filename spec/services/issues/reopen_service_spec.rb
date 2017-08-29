@@ -34,6 +34,13 @@ describe Issues::ReopenService do
         described_class.new(project, user).execute(issue)
       end
 
+      it 'refreshes the number of opened issues' do
+        service = described_class.new(project, user)
+
+        expect { service.execute(issue) }
+          .to change { project.open_issues_count }.from(0).to(1)
+      end
+
       context 'when issue is not confidential' do
         it 'executes issue hooks' do
           expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)

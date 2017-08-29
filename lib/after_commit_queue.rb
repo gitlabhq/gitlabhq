@@ -7,7 +7,7 @@ module AfterCommitQueue
   end
 
   def run_after_commit(method = nil, &block)
-    _after_commit_queue << proc { self.send(method) } if method
+    _after_commit_queue << proc { self.send(method) } if method # rubocop:disable GitlabSecurity/PublicSend
     _after_commit_queue << block if block
     true
   end

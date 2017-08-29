@@ -125,9 +125,18 @@ class ProjectsFinder < UnionFinder
   end
 
   def by_archived(projects)
-    # Back-compatibility with the places where `params[:archived]` can be set explicitly to `false`
-    params[:non_archived] = !Gitlab::Utils.to_boolean(params[:archived]) if params.key?(:archived)
-
-    params[:non_archived] ? projects.non_archived : projects
+    if params[:non_archived]
+      projects.non_archived
+    elsif params.key?(:archived) # Back-compatibility with the places where `params[:archived]` can be set explicitly to `false`
+      if params[:archived] == 'only'
+        projects.archived
+      elsif Gitlab::Utils.to_boolean(params[:archived])
+        projects
+      else
+        projects.non_archived
+      end
+    else
+      projects
+    end
   end
 end

@@ -40,4 +40,18 @@ feature 'Issue Detail', :js do
       end
     end
   end
+
+  context 'when authored by a user who is later deleted' do
+    before do
+      issue.update_attribute(:author_id, nil)
+      sign_in(user)
+      visit project_issue_path(project, issue)
+    end
+
+    it 'shows the issue' do
+      page.within('.issuable-details') do
+        expect(find('h2')).to have_content(issue.title)
+      end
+    end
+  end
 end

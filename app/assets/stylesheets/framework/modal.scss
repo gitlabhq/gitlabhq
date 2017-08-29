@@ -8,12 +8,20 @@
   }
 
   .text-danger {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
 body.modal-open {
   overflow: hidden;
+}
+
+.modal-no-backdrop {
+  @extend .modal-dialog;
+
+  .modal-content {
+    box-shadow: none;
+  }
 }
 
 @media (min-width: $screen-md-min) {

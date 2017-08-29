@@ -36,12 +36,12 @@
   color: $common-gray;
   font-size: 14px;
   margin-bottom: 12px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   line-height: 24px;
 }
 
 .bold {
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .tab-content {
@@ -89,7 +89,7 @@ hr {
   }
 }
 
-.item-title { font-weight: 600; }
+.item-title { font-weight: $gl-font-weight-bold; }
 
 /** FLASH message **/
 .author_link,
@@ -118,18 +118,18 @@ table a code {
 span.update-author {
   display: block;
   color: $update-author-color;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   font-style: italic;
 
   strong {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     font-style: normal;
   }
 }
 
 .user-mention {
   color: $user-mention-color;
-  font-weight: bold;
+  font-weight: $gl-font-weight-bold;
 }
 
 .field_with_errors {
@@ -222,7 +222,7 @@ li.note {
   text-align: center;
   background: $error-bg;
   color: $white-light;
-  font-weight: bold;
+  font-weight: $gl-font-weight-bold;
 
   a {
     color: $white-light;
@@ -339,7 +339,7 @@ table {
 .header-with-avatar {
   h3 {
     margin: 0;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .username {

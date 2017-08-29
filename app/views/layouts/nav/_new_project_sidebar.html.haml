@@ -5,7 +5,7 @@
       = link_to project_path(@project), title: @project.name do
         .avatar-container.s40.project-avatar
           = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
-        .project-title
+        .sidebar-context-title
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
@@ -86,7 +86,8 @@
             %span.nav-item-name
               Issues
             - if @project.issues_enabled?
-              %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
+              %span.badge.count.issue_counter
+                = number_with_delimiter(@project.open_issues_count)
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: :issues) do
@@ -116,7 +117,8 @@
               = custom_icon('mr_bold')
             %span.nav-item-name
               Merge Requests
-            %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
+            %span.badge.count.merge_counter.js-merge-counter
+              = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do

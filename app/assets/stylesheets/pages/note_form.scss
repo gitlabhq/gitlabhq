@@ -188,7 +188,7 @@
     .close {
       color: $white-light;
       opacity: 0.85;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
 
       &:hover {
         opacity: 1;

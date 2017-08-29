@@ -1065,6 +1065,8 @@ a list of all previous jobs from which the artifacts should be downloaded.
 You can only define jobs from stages that are executed before the current one.
 An error will be shown if you define jobs from the current stage or next ones.
 Defining an empty array will skip downloading any artifacts for that job.
+The status of the previous job is not considered when using `dependencies`, so
+if it failed or it is a manual job that was not run, no error occurs.
 
 ---
 

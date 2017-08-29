@@ -751,4 +751,22 @@ describe Issue do
       end
     end
   end
+
+  describe 'removing an issue' do
+    it 'refreshes the number of open issues of the project' do
+      project = subject.project
+
+      expect { subject.destroy }
+        .to change { project.open_issues_count }.from(1).to(0)
+    end
+  end
+
+  describe '.public_only' do
+    it 'only returns public issues' do
+      public_issue = create(:issue)
+      create(:issue, confidential: true)
+
+      expect(described_class.public_only).to eq([public_issue])
+    end
+  end
 end

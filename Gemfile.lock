@@ -203,7 +203,7 @@ GEM
       multi_json
     fast_gettext (1.4.0)
     ffaker (2.4.0)
-    ffi (1.9.10)
+    ffi (1.9.18)
     flay (2.8.1)
       erubis (~> 2.7.0)
       path_expander (~> 1.0)
@@ -275,7 +275,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly (0.29.0)
+    gitaly-proto (0.31.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.0)
     github-linguist (4.7.6)
@@ -682,7 +682,7 @@ GEM
     rake (12.0.0)
     rblineprof (0.3.6)
       debugger-ruby_core_source (~> 1.3)
-    rbnacl (3.4.0)
+    rbnacl (4.0.2)
       ffi
     rbnacl-libsodium (1.0.11)
       rbnacl (>= 3.0.1)
@@ -769,7 +769,7 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-gitlab-security (0.0.6)
+    rubocop-gitlab-security (0.1.0)
       rubocop (>= 0.47.1)
     rubocop-rspec (1.15.1)
       rubocop (>= 0.42.0)
@@ -899,7 +899,6 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    underscore-rails (1.8.3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.2)
@@ -1019,7 +1018,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly (~> 0.29.0)
+  gitaly-proto (~> 0.31.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
@@ -1107,7 +1106,7 @@ DEPENDENCIES
   rainbow (~> 2.2)
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
-  rbnacl (~> 3.2)
+  rbnacl (~> 4.0)
   rbnacl-libsodium
   rdoc (~> 4.2)
   re2 (~> 1.1.1)
@@ -1126,7 +1125,7 @@ DEPENDENCIES
   rspec-set (~> 0.1.3)
   rspec_profiling (~> 0.0.5)
   rubocop (~> 0.49.1)
-  rubocop-gitlab-security (~> 0.0.6)
+  rubocop-gitlab-security (~> 0.1.0)
   rubocop-rspec (~> 1.15.1)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
@@ -1163,7 +1162,6 @@ DEPENDENCIES
   truncato (~> 0.7.8)
   u2f (~> 0.2.1)
   uglifier (~> 2.7.2)
-  underscore-rails (~> 1.8.0)
   unf (~> 0.1.4)
   unicorn (~> 5.1.0)
   unicorn-worker-killer (~> 0.4.4)
@@ -1176,4 +1174,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

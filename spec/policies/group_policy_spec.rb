@@ -105,6 +105,8 @@ describe GroupPolicy do
     let(:current_user) { owner }
 
     it do
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
       expect_allowed(*master_permissions)
@@ -116,10 +118,42 @@ describe GroupPolicy do
     let(:current_user) { admin }
 
     it do
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
       expect_allowed(*master_permissions)
       expect_allowed(*owner_permissions)
+    end
+  end
+
+  describe 'when nested group support feature is disabled' do
+    before do
+      allow(Group).to receive(:supports_nested_groups?).and_return(false)
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
+    end
+
+    context 'owner' do
+      let(:current_user) { owner }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
     end
   end
 
@@ -199,6 +233,8 @@ describe GroupPolicy do
       let(:current_user) { owner }
 
       it do
+        allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
         expect_allowed(*master_permissions)

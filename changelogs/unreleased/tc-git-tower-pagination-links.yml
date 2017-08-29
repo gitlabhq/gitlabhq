@@ -1,5 +1,0 @@
----
-title: Improve API pagination headers when no record found
-merge_request: 13629
-author: Jordan Patterson
-type: fixed

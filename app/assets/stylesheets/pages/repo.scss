@@ -99,6 +99,30 @@
     .blob-viewer-container {
       flex: 1;
       overflow: auto;
+
+      > div,
+      .file-content {
+        display: flex;
+      }
+
+      > div,
+      .file-content,
+      .blob-viewer,
+      .line-number,
+      .blob-content,
+      .code {
+        min-height: 100%;
+        width: 100%;
+      }
+
+      .line-numbers {
+        min-width: 44px;
+      }
+
+      .blob-content {
+        flex: 1;
+        overflow-x: auto;
+      }
     }
 
     #tabs {
@@ -182,7 +206,6 @@
       padding: 5px 10px;
       position: relative;
       border-top: 1px solid $white-normal;
-      margin-top: -5px;
     }
 
     #binary-viewer {
@@ -267,7 +290,7 @@
           display: inline-block;
           font-size: 10px;
           text-transform: uppercase;
-          font-weight: bold;
+          font-weight: $gl-font-weight-bold;
           color: $gray-darkest;
           white-space: nowrap;
           overflow: hidden;

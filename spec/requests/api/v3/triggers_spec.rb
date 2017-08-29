@@ -7,7 +7,10 @@ describe API::V3::Triggers do
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
+
+  let!(:trigger) do
+    create(:ci_trigger, project: project, token: trigger_token, owner: user)
+  end
 
   describe 'POST /projects/:project_id/trigger' do
     let!(:project2) { create(:project) }
