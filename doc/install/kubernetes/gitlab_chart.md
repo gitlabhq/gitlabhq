@@ -1,9 +1,7 @@
 # GitLab Helm Chart
-> This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
-
-> GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
-
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
+> **Note:**
+* GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
+* Officially supported cloud providers are Google Container Service and Azure Container Service.
 
 The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
 

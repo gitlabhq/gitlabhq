@@ -1,9 +1,8 @@
 # GitLab-Omnibus Helm Chart
-> This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
-
-> GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
-
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
+> **Note:**
+* This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
+* GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
+* Officially supported cloud providers are Google Container Service and Azure Container Service.
 
 This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
 
@@ -126,7 +125,8 @@ Ingress routing and SSL are automatically configured within this Chart. An NGINX
 Let's Encrypt limits a single TLD to five certificate requests within a single week. This means that common DNS wildcard services like [xip.io](http://xip.io) and [nip.io](http://nip.io) are unlikely to work.
 
 ## Installing GitLab using the Helm Chart
-> You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
+> **Note:**
+You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically start. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
 Add the GitLab Helm repository and initialize Helm:
 
