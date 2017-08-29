@@ -163,24 +163,20 @@
         :y="graphHeight - measurements.legendOffset">
       </rect>
       <text
+        v-if="timeSeries.length > 1"
         class="legend-metric-title"
         ref="legendTitleSvg"
         x="38"
         :y="graphHeight - 30">
-        {{legendTitle}}
+        {{legendTitle}} Series {{index + 1}} {{formatMetricUsage(series)}}
       </text>
       <text
+        v-else
         class="legend-metric-title"
-        ref="seriesTitleSvg"
-        :x="seriesXPosition + 40"
+        ref="legendTitleSvg"
+        x="38"
         :y="graphHeight - 30">
-        Series {{index + 1}}
-      </text>
-      <text
-        class="text-metric-usage"
-        :x="metricUsageXPosition + seriesXPosition + 45"
-        :y="graphHeight - 30">
-        {{formatMetricUsage(series)}}
+        {{legendTitle}} {{formatMetricUsage(series)}}
       </text>
     </g>
   </g>

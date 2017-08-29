@@ -9,7 +9,6 @@ describe('Multiple time series', () => {
     expect(typeof timeSeries[0].linePath).toEqual('string');
     expect(typeof timeSeries[0].areaPath).toEqual('string');
     expect(typeof timeSeries[0].timeSeriesScaleX).toEqual('function');
-    expect(typeof timeSeries[0].timeSeriesScaleY).toEqual('function');
     expect(timeSeries[0].values instanceof Array).toEqual(true);
   });
 

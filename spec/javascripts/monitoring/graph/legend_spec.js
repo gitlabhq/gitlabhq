@@ -93,7 +93,7 @@ describe('GraphLegend', () => {
     const component = createComponent(defaultValuesComponent);
     const titles = component.$el.querySelectorAll('.legend-metric-title');
 
-    expect(getTextFromNode(component, '.legend-metric-title')).toEqual(component.legendTitle);
+    expect(getTextFromNode(component, '.legend-metric-title').indexOf(component.legendTitle)).not.toEqual(-1);
     expect(titles[0].textContent.indexOf('Title')).not.toEqual(-1);
     expect(titles[1].textContent.indexOf('Series')).not.toEqual(-1);
     expect(getTextFromNode(component, '.y-label-text')).toEqual(component.yAxisLabel);
