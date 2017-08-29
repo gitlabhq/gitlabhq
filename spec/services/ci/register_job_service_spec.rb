@@ -215,7 +215,7 @@ module Ci
         end
       end
 
-      context 'when a runner is unprotected' do
+      context 'when a runner is not_protected' do
         context 'when a job is protected' do
           let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
 

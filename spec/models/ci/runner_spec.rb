@@ -227,7 +227,7 @@ describe Ci::Runner do
 
     context 'when runner is protected' do
       before do
-        runner.protected_!
+        runner.ref_protected!
       end
 
       context 'when build is protected' do
@@ -489,18 +489,18 @@ describe Ci::Runner do
 
       it 'a protected runner exists' do
         expect(described_class.count).to eq(1)
-        expect(described_class.last.protected_?).to eq(true)
+        expect(described_class.last.ref_protected?).to eq(true)
       end
     end
 
-    context 'when access_level of a runner is unprotected' do
+    context 'when access_level of a runner is not_protected' do
       before do
-        create(:ci_runner, :unprotected)
+        create(:ci_runner, :not_protected)
       end
 
-      it 'an unprotected runner exists' do
+      it 'an not_protected runner exists' do
         expect(described_class.count).to eq(1)
-        expect(described_class.last.unprotected?).to eq(true)
+        expect(described_class.last.not_protected?).to eq(true)
       end
     end
   end

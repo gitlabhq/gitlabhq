@@ -34,7 +34,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
-    scope :protected_, -> { where(protected: true) }
+    scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader

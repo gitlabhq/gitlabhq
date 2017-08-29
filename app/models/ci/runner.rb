@@ -41,8 +41,8 @@ module Ci
     after_destroy :cleanup_runner_queue
 
     enum access_level: {
-      unprotected: 0,
-      protected_: 1
+      not_protected: 0,
+      ref_protected: 1
     }
 
     # Searches for runners matching the given query.
@@ -111,7 +111,7 @@ module Ci
     end
 
     def can_pick?(build)
-      return false if self.protected_? && !build.protected?
+      return false if self.ref_protected? && !build.protected?
 
       assignable_for?(build.project) && accepting_tags?(build)
     end

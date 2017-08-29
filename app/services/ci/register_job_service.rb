@@ -78,7 +78,7 @@ module Ci
 
     def new_builds
       builds = Ci::Build.pending.unstarted
-      builds = builds.protected_ if runner.protected_?
+      builds = builds.ref_protected if runner.ref_protected?
       builds
     end
 

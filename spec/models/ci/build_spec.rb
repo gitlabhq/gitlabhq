@@ -43,11 +43,11 @@ describe Ci::Build do
     it { is_expected.not_to include(manual_but_created) }
   end
 
-  describe '.protected_' do
+  describe '.ref_protected' do
     let!(:protected_job) { create(:ci_build, :protected) }
     let!(:unprotected_job) { create(:ci_build, :unprotected) }
 
-    subject { described_class.protected_ }
+    subject { described_class.ref_protected }
 
     it { is_expected.to include(protected_job) }
     it { is_expected.not_to include(unprotected_job) }
