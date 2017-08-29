@@ -138,9 +138,10 @@
                 %span
                   Milestones
 
-            = nav_link(controller: [ :issues, :service_desk ]) do
-              = link_to service_desk_project_issues_url(@project), title: 'Service Desk' do
-                %span Service Desk
+            - if @project.service_desk_enabled?
+              = nav_link(controller: [ :issues, :service_desk ]) do
+                = link_to service_desk_project_issues_url(@project), title: 'Service Desk' do
+                  %span Service Desk
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
