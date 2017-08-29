@@ -89,6 +89,8 @@ describe 'Filter issues', js: true do
       milestone: future_milestone,
       project: project)
 
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+
     visit project_issues_path(project)
   end
 
