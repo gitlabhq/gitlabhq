@@ -78,7 +78,7 @@ describe Banzai::Filter::TableOfContentsFilter do
       HTML::Pipeline.new([described_class]).call(html)
     end
 
-    let(:results) { result(header(1, 'Header 1') + header(2, 'Header 1-1') + header(3, 'Header 1-1-1') + header(2, 'Header 1-2') + header(1, 'Header 2') + header(2, 'Header 2-1')) }
+    let(:results) { result(header(1, 'Header 1') + header(2, 'Header 2')) }
     let(:doc) { Nokogiri::XML::DocumentFragment.parse(results[:toc]) }
 
     it 'is contained within a `ul` element' do
@@ -87,46 +87,50 @@ describe Banzai::Filter::TableOfContentsFilter do
     end
 
     it 'contains an `li` element for each header' do
-      expect(doc.css('li').length).to eq 6
+      expect(doc.css('li').length).to eq 2
 
       links = doc.css('li a')
 
-      expect(links[0].attr('href')).to eq '#header-1'
-      expect(links[0].text).to eq 'Header 1'
-      expect(links[1].attr('href')).to eq '#header-1-1'
-      expect(links[1].text).to eq 'Header 1-1'
-      expect(links[2].attr('href')).to eq '#header-1-1-1'
-      expect(links[2].text).to eq 'Header 1-1-1'
-      expect(links[3].attr('href')).to eq '#header-1-2'
-      expect(links[3].text).to eq 'Header 1-2'
-      expect(links[4].attr('href')).to eq '#header-2'
-      expect(links[4].text).to eq 'Header 2'
-      expect(links[5].attr('href')).to eq '#header-2-1'
-      expect(links[5].text).to eq 'Header 2-1'
+      expect(links.first.attr('href')).to eq '#header-1'
+      expect(links.first.text).to eq 'Header 1'
+      expect(links.last.attr('href')).to eq '#header-2'
+      expect(links.last.text).to eq 'Header 2'
     end
 
-    it 'keeps list levels regarding header levels' do
-      items = doc.css('li')
+    context 'table of contents nesting' do
+      let(:results) do
+        result(
+          header(1, 'Header 1') <<
+          header(2, 'Header 1-1') <<
+          header(3, 'Header 1-1-1') <<
+          header(2, 'Header 1-2') <<
+          header(1, 'Header 2') <<
+          header(2, 'Header 2-1')
+        )
+      end
 
-      # Header 1
-      expect(items[0].ancestors.any? {|node| node.name == 'li'}).to eq false
+      it 'keeps list levels regarding header levels' do
+        items = doc.css('li')
 
-      # Header 1-1
-      expect(items[1].ancestors.include?(items[0])).to eq true
+        # Header 1
+        expect(items[0].ancestors).to satisfy_none { |node| node.name == 'li'}
 
-      # Header 1-1-1
-      expect(items[2].ancestors.include?(items[0])).to eq true
-      expect(items[2].ancestors.include?(items[1])).to eq true
+        # Header 1-1
+        expect(items[1].ancestors).to include(items[0])
 
-      # Header 1-2
-      expect(items[3].ancestors.include?(items[0])).to eq true
-      expect(items[3].ancestors.include?(items[1])).to eq false
+        # Header 1-1-1
+        expect(items[2].ancestors).to include(items[0], items[1])
 
-      # Header 2
-      expect(items[4].ancestors.any? {|node| node.name == 'li'}).to eq false
+        # Header 1-2
+        expect(items[3].ancestors).to include(items[0])
+        expect(items[3].ancestors).not_to include(items[1])
 
-      # Header 2-1
-      expect(items[5].ancestors.include?(items[4])).to eq true
+        # Header 2
+        expect(items[4].ancestors).to satisfy_none { |node| node.name == 'li'}
+
+        # Header 2-1
+        expect(items[5].ancestors).to include(items[4])
+      end
     end
   end
 end
