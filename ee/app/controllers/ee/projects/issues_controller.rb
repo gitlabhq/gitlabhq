@@ -30,6 +30,8 @@ module EE
           assignee = User.find_by_id(params[:assignee_id])
           @users.push(assignee) if assignee
         end
+
+        @users.push(::User.support_bot)
       end
 
       def export_csv
