@@ -273,8 +273,7 @@ describe License do
     describe ".current" do
       context 'when licenses table does not exist' do
         before do
-          allow(ActiveRecord::Base.connection).to receive(:table_exists?)
-            .with(:licenses).and_return(false)
+          allow(described_class).to receive(:table_exists?).and_return(false)
         end
 
         it 'returns nil' do
