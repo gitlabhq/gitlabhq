@@ -15,6 +15,6 @@ describe('Multiple time series', () => {
 
   it('createTimeSeries returns an array', () => {
     expect(timeSeries instanceof Array).toEqual(true);
-    expect(timeSeries.length).toEqual(5);
+    expect(timeSeries.length).toEqual(2);
   });
 });
