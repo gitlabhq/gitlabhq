@@ -944,7 +944,7 @@ class Repository
 
     if branch_commit
       same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -958,12 +958,12 @@ class Repository
     nil
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+        raw_repository.ancestor?(ancestor_id, descendant_id)
       else
         rugged_is_ancestor?(ancestor_id, descendant_id)
       end

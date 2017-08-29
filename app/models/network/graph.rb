@@ -152,14 +152,14 @@ module Network
     end
 
     def find_free_parent_space(range, space_base, space_step, space_default)
-      if is_overlap?(range, space_default)
+      if overlap?(range, space_default)
         find_free_space(range, space_step, space_base, space_default)
       else
         space_default
       end
     end
 
-    def is_overlap?(range, overlap_space)
+    def overlap?(range, overlap_space)
       range.each do |i|
         if i != range.first &&
             i != range.last &&

@@ -73,7 +73,7 @@ module SystemCheck
       self.class.instance_methods(false).include?(:skip?)
     end
 
-    def is_multi_check?
+    def multi_check?
       self.class.instance_methods(false).include?(:multi_check)
     end
 
