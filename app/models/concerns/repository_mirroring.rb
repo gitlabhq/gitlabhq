@@ -1,4 +1,6 @@
 module RepositoryMirroring
+  GITHUB_REFS = %w[+refs/pull/*/head:refs/merge-requests/*/head +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*].freeze
+
   def set_remote_as_mirror(name)
     config = raw_repository.rugged.config
 
@@ -8,16 +10,11 @@ module RepositoryMirroring
     config["remote.#{name}.prune"] = true
   end
 
-  def set_github_remote_as_mirror(name)
-    config = raw_repository.rugged.config
-
+  def fetch_github_refs
     # This is used to define repository as equivalent as "git clone --mirror"
-    config["remote.#{name}.fetch"] = '+refs/pull/*/head:refs/merge-requests/*/head'
-    config["remote.#{name}.fetch"] = '+refs/heads/*:refs/heads/*'
-    config["remote.#{name}.fetch"] = '+refs/tags/*:refs/tags/*'
-
-    config["remote.#{name}.mirror"] = true
-    config["remote.#{name}.prune"] = true
+    GITHUB_REFS.each do |ref|
+      fetch_ref(path, *ref.split(':'))
+    end
   end
 
   def fetch_mirror(remote, url)

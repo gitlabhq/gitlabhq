@@ -89,8 +89,8 @@ module Github
       begin
         project.ensure_repository
         project.repository.add_remote('github', repo_url)
-        project.repository.set_github_remote_as_mirror('github')
-        project.repository.fetch_remote('github', forced: true)
+        project.repository.set_remote_as_mirror('github')
+        project.repository.fetch_github_refs
       rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
