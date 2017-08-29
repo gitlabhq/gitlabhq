@@ -1,7 +1,8 @@
 module Boards
   class IssuesController < Boards::ApplicationController
-    include EE::BoardsResponses
+    prepend EE::BoardsResponses
     prepend EE::Boards::IssuesController
+    include BoardsResponses
 
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
