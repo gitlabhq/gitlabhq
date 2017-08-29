@@ -200,6 +200,17 @@ module API
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
+
+      desc 'Sync a group with LDAP.'
+      post ":id/ldap_sync" do
+        group = find_group!(params[:id])
+        authorize! :admin_group, group
+
+        status 202
+        if group.pending_ldap_sync
+          LdapGroupSyncWorker.perform_async(group.id)
+        end
+      end
     end
   end
 end
