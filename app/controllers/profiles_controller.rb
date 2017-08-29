@@ -9,8 +9,6 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update
-    user_params.except!(:email) if @user.external_email?
-
     respond_to do |format|
       result = Users::UpdateService.new(@user, user_params).execute
 

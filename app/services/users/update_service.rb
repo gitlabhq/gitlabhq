@@ -34,6 +34,10 @@ module Users
     private
 
     def assign_attributes(&block)
+      if @user.user_synced_attributes_metadata
+        params.except!(*@user.user_synced_attributes_metadata.read_only_attributes)
+      end
+
       @user.assign_attributes(params) if params.any?
     end
   end

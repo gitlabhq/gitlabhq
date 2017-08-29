@@ -37,7 +37,8 @@ describe Gitlab::LDAP::User do
     end
 
     it "does not mark existing ldap user as changed" do
-      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain', external_email: true, email_provider: 'ldapmain')
+      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      ldap_user.gl_user.user_synced_attributes_metadata(provider: 'ldapmain', email: true)
       expect(ldap_user.changed?).to be_falsey
     end
   end
@@ -141,12 +142,12 @@ describe Gitlab::LDAP::User do
         expect(ldap_user.gl_user.email).to eq(info[:email])
       end
 
-      it "has external_email set to true" do
-        expect(ldap_user.gl_user.external_email?).to be(true)
+      it "has user_synced_attributes_metadata email set to true" do
+        expect(ldap_user.gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
       end
 
-      it "has email_provider set to provider" do
-        expect(ldap_user.gl_user.email_provider).to eql 'ldapmain'
+      it "has synced_attribute_provider set to ldapmain" do
+        expect(ldap_user.gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
       end
     end
 
@@ -156,11 +157,11 @@ describe Gitlab::LDAP::User do
       end
 
       it "has a temp email" do
-        expect(ldap_user.gl_user.temp_oauth_email?).to be(true)
+        expect(ldap_user.gl_user.temp_oauth_email?).to be_truthy
       end
 
-      it "has external_email set to false" do
-        expect(ldap_user.gl_user.external_email?).to be(false)
+      it "has synced attribute email set to false" do
+        expect(ldap_user.gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
       end
     end
   end
@@ -168,7 +169,7 @@ describe Gitlab::LDAP::User do
   describe 'blocking' do
     def configure_block(value)
       allow_any_instance_of(Gitlab::LDAP::Config)
-        .to receive(:block_auto_created_users).and_return(value)
+          .to receive(:block_auto_created_users).and_return(value)
     end
 
     context 'signup' do

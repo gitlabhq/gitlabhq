@@ -2116,4 +2116,70 @@ describe User do
       expect(user.verified_email?('other_email@example.com')).to be false
     end
   end
+
+  describe '#sync_attribute?' do
+    let(:user) { described_class.new }
+
+    context 'oauth user' do
+      it 'returns true if name can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+        expect(user.sync_attribute?(:name)).to be_truthy
+      end
+
+      it 'returns true if email can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        expect(user.sync_attribute?(:email)).to be_truthy
+      end
+
+      it 'returns true if location can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:email)).to be_truthy
+      end
+
+      it 'returns false if name can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns false if email can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns false if location can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns true for all syncable attributes if all syncable attributes can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: true)
+        expect(user.sync_attribute?(:name)).to be_truthy
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_truthy
+      end
+
+      it 'returns false for all syncable attributes but email if no syncable attributes are declared' do
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_falsey
+      end
+    end
+
+    context 'ldap user' do
+      it 'returns true for email if ldap user' do
+        allow(user).to receive(:ldap_user?).and_return(true)
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_falsey
+      end
+
+      it 'returns true for email and location if ldap user and location declared as syncable' do
+        allow(user).to receive(:ldap_user?).and_return(true)
+        stub_omniauth_setting(sync_profile_attributes: %w(location))
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_truthy
+      end
+    end
+  end
 end

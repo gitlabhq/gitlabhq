@@ -1539,6 +1539,16 @@ ActiveRecord::Schema.define(version: 20170905112933) do
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
+  create_table "user_synced_attributes_metadata", force: :cascade do |t|
+    t.boolean "name_synced", default: false
+    t.boolean "email_synced", default: false
+    t.boolean "location_synced", default: false
+    t.integer "user_id", null: false
+    t.string "provider"
+  end
+
+  add_index "user_synced_attributes_metadata", ["user_id"], name: "index_user_synced_attributes_metadata_on_user_id", unique: true, using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1604,8 +1614,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
     t.string "rss_token"
-    t.boolean "external_email", default: false, null: false
-    t.string "email_provider"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1756,6 +1764,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
