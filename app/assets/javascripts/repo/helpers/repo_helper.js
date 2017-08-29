@@ -21,6 +21,7 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
+      auxiliary: '',
     };
   },
 
@@ -130,6 +131,11 @@ const RepoHelper = {
     return isRoot;
   },
 
+  saveAuxiliary(response) {
+    const data = response.data;
+    Store.activeFile.auxiliary = data.html;
+  },
+
   getContent(treeOrFile) {
     let file = treeOrFile;
     return Service.getContent()
@@ -139,6 +145,13 @@ const RepoHelper = {
       if (!Store.isTree) {
         if (!file) file = data;
         Store.binary = data.binary;
+
+        if (data.auxiliary_viewer) {
+          const auxiliaryPath = data.auxiliary_viewer.path;
+          Service.get(auxiliaryPath)
+            .then(RepoHelper.saveAuxiliary)
+            .catch(RepoHelper.loadingError)
+        }
 
         if (data.binary) {
           // file might be undefined

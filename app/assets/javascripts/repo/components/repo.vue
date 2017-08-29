@@ -4,6 +4,7 @@ import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoFileFooter from './repo_file_footer.vue';
+import RepoFileLastCommit from './repo_file_last_commit.vue';
 import RepoPreview from './repo_preview.vue';
 import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
@@ -19,6 +20,7 @@ export default {
     RepoTabs,
     RepoFileButtons,
     RepoFileFooter,
+    RepoFileLastCommit,
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
     RepoCommitSection,
     PopupDialog,
@@ -60,6 +62,10 @@ export default {
           :mime-type="activeFile.mime_type"
         />
         <repo-file-buttons/>
+        <repo-file-last-commit
+          :auxiliary="activeFile.auxiliary"
+          :last-commit="activeFile.last_commit"
+        />
       </div>
     </div>
     <repo-commit-section/>
