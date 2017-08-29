@@ -395,7 +395,7 @@ Example response:
 
 ## Remove group
 
-Removes group with all projects inside.
+Removes group with all projects inside. Only available to group owners and administrators.
 
 ```
 DELETE /groups/:id
