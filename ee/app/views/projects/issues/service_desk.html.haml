@@ -1,5 +1,5 @@
 - @no_container = true
-- @can_bulk_update = can?(current_user, :admin_issue, @project)
+- @can_bulk_update = false
 
 - page_title "Service Desk"
 
@@ -9,14 +9,10 @@
   = webpack_bundle_tag 'service_desk_issues'
   = webpack_bundle_tag 'issues'
 
-= content_for :meta_tags do
-  = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
+
 - if show_new_nav?
   - content_for :breadcrumbs_extra do
-    = render "projects/issues/nav_btns"
-
-- if project_issues(@project).exists?
-  = render 'projects/issues/export_issues/csv_download'
+    = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
 
   - support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
 
@@ -31,7 +27,7 @@
       = render 'shared/issuable/bulk_update_sidebar', type: :issues
 
     - if @issues.present?
-      = render 'service_desk_empty_state_content'
+      = render 'service_desk_info_content'
 
     .issues-holder
       = render 'projects/issues/issues', empty_state_path: 'service_desk_empty_state'
