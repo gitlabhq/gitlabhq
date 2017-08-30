@@ -30,5 +30,23 @@ sudo gitlab-rake gitlab:import_export:data
 bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
 
+A new project export can be scheduled using the following task:
+
+```bash
+bundle exec rake gitlab:import_export:export['namespace/test_project_export', gitlab_username]
+```
+
+An existing exported project file can be scheduled to be imported using the following task:
+
+```bash
+bundle exec rake gitlab:import_export:import['namespace/test_project_export',root,'/path/to/project_export.tar.gz']
+```
+
+The status of any import os export can be checked at any time using the following task:
+
+```bash
+bundle exec rake gitlab:import_export:status['namespace/test_project_export'] # check the status of the import        
+```
+
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
 [tmp]: ../../development/shared_files.md
