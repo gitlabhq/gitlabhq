@@ -103,7 +103,7 @@ module Ci
         end
       end
 
-      before_transition any => [:failed] do |build|
+      before_transition any => [:failed] do |build, transition|
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max

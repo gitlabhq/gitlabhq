@@ -20,6 +20,7 @@ describe StuckCiJobsWorker do
     it 'changes status' do
       worker.perform
       is_expected.to eq('failed')
+      expect(job).to be_failed_by_stuck_and_timeout
     end
   end
 

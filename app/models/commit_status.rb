@@ -38,6 +38,19 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
+  enum failure_reason: {
+    no_error: nil,
+    failed_by_script: 1, # TODO: Not used. Should we expand pipeline as well?
+    failed_by_missing_dependency: 2, # This will be done in the next MR.
+    failed_by_system: 3, # TODO: Not used. What's this state?
+    failed_by_failed_job_state: 4,
+    failed_by_out_of_quota: 5, # TODO: Only EE. How can we detect?
+    failed_by_stuck_and_timeout: 6,
+    failed_by_no_runner: 7, # TODO: Not used. How can we detect?
+    failed_by_api: 8,
+    failed_by_page: 9
+  }
+
   state_machine :status do
     event :process do
       transition [:skipped, :manual] => :created
@@ -77,6 +90,11 @@ class CommitStatus < ActiveRecord::Base
 
     before_transition any => [:success, :failed, :canceled] do |commit_status|
       commit_status.finished_at = Time.now
+    end
+
+    before_transition any => :failed do |commit_status, transition|
+      failure_reason = transition.args.first
+      commit_status.failure_reason = failure_reason
     end
 
     after_transition do |commit_status, transition|
