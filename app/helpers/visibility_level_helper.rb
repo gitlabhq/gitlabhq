@@ -82,17 +82,22 @@ module VisibilityLevelHelper
   def disallowed_project_visibility_level_description(level, project)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
+    instructions = ''
 
     unless project.visibility_level_allowed_as_fork?(level)
       reasons << "the fork source project has lower visibility"
     end
 
     unless project.visibility_level_allowed_by_group?(level)
-      reasons << "the visibility of #{project.group.name} is #{project.group.visibility}"
+      group = link_to project.group.name, group_path(project.group)
+      change_visiblity = link_to 'change the visibility', edit_group_path(project.group)
+
+      reasons << "the visibility of #{group} is #{project.group.visibility}"
+      instructions << " To make this project #{level_name}, you must first #{change_visiblity} of the parent group."
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This project cannot be #{level_name}#{reasons}."
+    "This project cannot be #{level_name}#{reasons}.#{instructions}".html_safe
   end
 
   # Note: these messages closely mirror the form validation strings found in the group
