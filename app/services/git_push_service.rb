@@ -53,7 +53,7 @@ class GitPushService < BaseService
       update_gitattributes if default_branch?
     end
 
-    if current_application_settings.elasticsearch_indexing? && is_default_branch?
+    if current_application_settings.elasticsearch_indexing? && default_branch?
       ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
     end
 
