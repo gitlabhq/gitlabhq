@@ -1,6 +1,18 @@
 require 'securerandom'
 
 class Repository
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
+
+  RESERVED_REFS_NAMES = %W[
+    heads
+    tags
+    #{REF_ENVIRONMENTS}
+    #{REF_KEEP_AROUND}
+    #{REF_ENVIRONMENTS}
+  ].freeze
+
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
@@ -242,10 +254,10 @@ class Repository
     begin
       write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
 
@@ -1164,7 +1176,7 @@ class Repository
   end
 
   def keep_around_ref_name(sha)
-    "refs/keep-around/#{sha}"
+    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})
@@ -1234,6 +1246,6 @@ class Repository
 
     yield commit(sha)
   ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    delete_refs(tmp_ref) if tmp_ref
   end
 end
