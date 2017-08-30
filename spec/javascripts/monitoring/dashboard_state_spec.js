@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import MonitoringState from '~/monitoring/components/monitoring_state.vue';
+import EmptyState from '~/monitoring/components/empty_state.vue';
 import { statePaths } from './mock_data';
 
 const createComponent = (propsData) => {
-  const Component = Vue.extend(MonitoringState);
+  const Component = Vue.extend(EmptyState);
 
   return new Component({
     propsData,
@@ -14,7 +14,7 @@ function getTextFromNode(component, selector) {
   return component.$el.querySelector(selector).firstChild.nodeValue.trim();
 }
 
-describe('MonitoringState', () => {
+describe('EmptyState', () => {
   describe('Computed props', () => {
     it('currentState', () => {
       const component = createComponent({

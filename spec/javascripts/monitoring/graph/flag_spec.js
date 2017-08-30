@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import MonitoringFlag from '~/monitoring/components/monitoring_flag.vue';
+import GraphFlag from '~/monitoring/components/graph/flag.vue';
 
 const createComponent = (propsData) => {
-  const Component = Vue.extend(MonitoringFlag);
+  const Component = Vue.extend(GraphFlag);
 
   return new Component({
     propsData,
@@ -14,7 +14,7 @@ function getCoordinate(component, selector, coordinate) {
   return parseInt(coordinateVal, 10);
 }
 
-describe('MonitoringFlag', () => {
+describe('GraphFlag', () => {
   it('has a line and a circle located at the currentXCoordinate and currentYCoordinate', () => {
     const component = createComponent({
       currentXCoordinate: 200,

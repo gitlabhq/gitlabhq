@@ -1,16 +1,21 @@
 import Vue from 'vue';
-import MonitoringRow from '~/monitoring/components/monitoring_row.vue';
+import GraphRow from '~/monitoring/components/graph_row.vue';
+import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
 import { deploymentData, singleRowMetrics } from './mock_data';
 
 const createComponent = (propsData) => {
-  const Component = Vue.extend(MonitoringRow);
+  const Component = Vue.extend(GraphRow);
 
   return new Component({
     propsData,
   }).$mount();
 };
 
-describe('MonitoringRow', () => {
+describe('GraphRow', () => {
+  beforeEach(() => {
+    spyOn(MonitoringMixins.methods, 'formatDeployments').and.returnValue({});
+  });
+
   describe('Computed props', () => {
     it('bootstrapClass is set to col-md-6 when rowData is higher/equal to 2', () => {
       const component = createComponent({
