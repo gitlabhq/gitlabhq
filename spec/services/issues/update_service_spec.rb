@@ -48,7 +48,8 @@ describe Issues::UpdateService, :mailer do
           assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
-          due_date: Date.tomorrow
+          due_date: Date.tomorrow,
+          discussion_locked: true
         }
       end
 
@@ -62,6 +63,7 @@ describe Issues::UpdateService, :mailer do
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.discussion_locked).to be_truthy
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -103,6 +105,7 @@ describe Issues::UpdateService, :mailer do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+          expect(issue.discussion_locked).to be_falsey
         end
       end
 

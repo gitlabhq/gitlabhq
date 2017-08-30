@@ -591,6 +591,18 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
   end
 
+  def discussion_lock(issuable, author)
+    if issuable.discussion_locked
+      body = 'locked this issue'
+      action = 'locked'
+    else
+      body = 'unlocked this issue'
+      action = 'unlocked'
+    end
+
+    create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
+  end
+
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)
