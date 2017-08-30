@@ -922,13 +922,16 @@ describe Repository, models: true do
   describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
+    let(:updating_ref) { 'refs/heads/feature' }
+    let(:target_project) { project }
+    let(:target_repository) { target_project.repository }
 
     context 'when pre hooks were successful' do
       before do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(user, project, old_rev, new_rev, 'refs/heads/feature')
+          .with(committer, target_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
@@ -957,6 +960,37 @@ describe Repository, models: true do
           end
 
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
+        end
+      end
+
+      context 'when target project does not have the commit' do
+        let(:target_project) { create(:project, :empty_repo) }
+        let(:old_rev) { Gitlab::Git::BLANK_SHA }
+        let(:new_rev) { project.commit('feature').sha }
+        let(:updating_ref) { 'refs/heads/master' }
+
+        it 'fetch_ref and create the branch' do
+          expect(target_project.repository).to receive(:fetch_ref)
+            .and_call_original
+
+          GitOperationService.new(committer, target_repository)
+            .with_branch(
+              'master',
+              start_project: project,
+              start_branch_name: 'feature') { new_rev }
+
+          expect(target_repository.branch_names).to contain_exactly('master')
+        end
+      end
+
+      context 'when target project already has the commit' do
+        let(:target_project) { create(:project, :repository) }
+
+        it 'does not fetch_ref and just pass the commit' do
+          expect(target_repository).not_to receive(:fetch_ref)
+
+          GitOperationService.new(committer, target_repository)
+            .with_branch('feature', start_project: project) { new_rev }
         end
       end
     end
