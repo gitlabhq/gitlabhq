@@ -113,7 +113,6 @@ describe('Fly out sidebar navigation', () => {
         clientX: el.getBoundingClientRect().left + 20,
         clientY: el.getBoundingClientRect().top + 10,
       });
-      console.log(el);
 
       expect(
         getHideSubItemsInterval(),
