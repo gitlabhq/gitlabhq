@@ -20,13 +20,4 @@
         Once imported, repositories can be mirrored over SSH. Read more
         = link_to 'here', help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')
 
-.form-group
-  = f.label :mirror, class: 'label-light' do
-    = f.check_box :mirror, disabled: true
-    %strong
-      Mirror repository
-  .help-block
-    Automatically update this project's branches and tags from the upstream
-    repository every hour. The Git LFS objects will not be synced.
-
-= f.hidden_field :mirror_user_id, value: current_user.id
+= render 'shared/ee/import_form', f: f
