@@ -89,11 +89,10 @@ module VisibilityLevelHelper
     end
 
     unless project.visibility_level_allowed_by_group?(level)
-      group = link_to project.group.name, group_path(project.group)
-      change_visiblity = link_to 'change the visibility', edit_group_path(project.group)
+      errors = visibility_level_errors_for_group(project.group, level_name)
 
-      reasons << "the visibility of #{group} is #{project.group.visibility}"
-      instructions << " To make this project #{level_name}, you must first #{change_visiblity} of the parent group."
+      reasons << errors[:reason]
+      instructions << errors[:instruction]
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
@@ -116,11 +115,10 @@ module VisibilityLevelHelper
     end
 
     unless group.visibility_level_allowed_by_parent?(level)
-      parent_group = link_to group.parent.name, group_path(group.parent)
-      change_visiblity = link_to 'change the visibility', edit_group_path(group.parent)
+      errors = visibility_level_errors_for_group(group.parent, level_name)
 
-      reasons << "the visibility of #{parent_group} is #{group.parent.visibility}"
-      instructions << " To make this group #{level_name}, you must first #{change_visiblity} of the parent group."
+      reasons << errors[:reason]
+      instructions << errors[:instruction]
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
@@ -162,5 +160,15 @@ module VisibilityLevelHelper
   def disallowed_visibility_level?(form_model, level)
     return false unless form_model.respond_to?(:visibility_level_allowed?)
     !form_model.visibility_level_allowed?(level)
+  end
+
+  private
+
+  def visibility_level_errors_for_group(group, level_name)
+    group = link_to group.name, group_path(group)
+    change_visiblity = link_to 'change the visibility', edit_group_path(group)
+
+    { reason: "the visibility of #{group} is #{group.visibility}",
+      instruction: " To make this group #{level_name}, you must first #{change_visiblity} of the parent group." }
   end
 end
