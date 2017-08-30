@@ -190,9 +190,8 @@
     content: '';
     position: absolute;
     width: calc(100% + 2px);
-    top: -1px;
-    left: -1px;
-    // old stuff
+    top: 0;
+    left: 0;
     margin-top: -1px;
     margin-right: -1px;
     margin-left: -1px;
