@@ -41,7 +41,6 @@ module.exports = function(config) {
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
-      'spec/ee/javascripts/**/*.js': ['webpack', 'sourcemap']
     },
     reporters: [progressReporter],
     webpack: webpackConfig,
