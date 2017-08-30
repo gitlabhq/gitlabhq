@@ -7,6 +7,7 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
+  import { timeScaleFormat } from '../utils/date_time_formatters';
   import bp from '../../breakpoints';
 
   const bisectDate = d3.bisector(d => d.time).left;
@@ -159,6 +160,7 @@
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
           .ticks(measurements.xTicks)
+          .tickFormat(timeScaleFormat)
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
@@ -266,14 +268,6 @@
               stroke-width="2"
               transform="translate(-5, 20)">
             </path>
-            <rect
-              class="prometheus-graph-overlay"
-              :width="(graphWidth - 70)"
-              :height="(graphHeight - 100)"
-              transform="translate(-5, 20)"
-              ref="graphOverlay"
-              @mousemove="handleMouseOverGraph($event)">
-            </rect>
             <monitoring-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
@@ -289,6 +283,14 @@
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
             />
+            <rect
+              class="prometheus-graph-overlay"
+              :width="(graphWidth - 70)"
+              :height="(graphHeight - 100)"
+              transform="translate(-5, 20)"
+              ref="graphOverlay"
+              @mousemove="handleMouseOverGraph($event)">
+            </rect>
         </svg>
       </svg>
     </div>

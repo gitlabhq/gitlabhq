@@ -83,7 +83,7 @@ module MergeRequests
       if merge_request.head_pipeline && merge_request.head_pipeline.active?
         MergeRequests::MergeWhenPipelineSucceedsService.new(project, current_user).execute(merge_request)
       else
-        MergeWorker.perform_async(merge_request.id, current_user.id, {})
+        merge_request.merge_async(current_user.id, {})
       end
     end
 

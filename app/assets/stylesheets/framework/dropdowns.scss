@@ -195,7 +195,7 @@
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   padding: 8px 0;
   background-color: $white-light;
   border: 1px solid $dropdown-border-color;
@@ -268,7 +268,7 @@
   }
 
   .dropdown-bold-header {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 22px;
     padding: 0 16px;
   }
@@ -436,7 +436,7 @@
 
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -472,7 +472,7 @@
 
     &.is-indeterminate,
     &.is-active {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       color: $gl-text-color;
 
       &::before {
@@ -506,7 +506,7 @@
   position: relative;
   padding: 2px 25px 10px;
   margin: 0 10px 10px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
@@ -689,7 +689,7 @@
 .dropdown-menu-inner-title {
   display: block;
   color: $gl-text-color;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .dropdown-menu-inner-content {

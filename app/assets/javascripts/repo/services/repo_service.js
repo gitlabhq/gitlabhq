@@ -65,15 +65,17 @@ const RepoService = {
     return urlArray.join('/');
   },
 
-  commitFiles(payload, cb) {
-    Api.commitMultiple(Store.projectId, payload, (data) => {
-      if (data.short_id && data.stats) {
-        Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
-      } else {
-        Flash(data.message);
-      }
-      cb();
-    });
+  commitFiles(payload) {
+    return Api.commitMultiple(Store.projectId, payload)
+      .then(this.commitFlash);
+  },
+
+  commitFlash(data) {
+    if (data.short_id && data.stats) {
+      window.Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+    } else {
+      window.Flash(data.message);
+    }
   },
 };
 

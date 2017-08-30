@@ -37,13 +37,15 @@
 
       %li.divider.droplab-item-ignore
 
-      %li.report-item{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
-                       button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
-        %button.btn.btn-transparent
-          = icon('check', class: 'icon')
-          .description
-            %strong.title Report abuse
-            %p.text
-              Report
-              = display_issuable_type.pluralize
-              that are abusive, inappropriate or spam.
+      / TODO: remove condition #36860
+      - if issuable.author
+        %li.report-item{ data: { text: 'Report abuse', url: new_abuse_report_path(user_id: issuable.author.id, ref_url: issuable_url(issuable)),
+                         button_class: "#{button_class} btn-close-color", toggle_class: "#{toggle_class} btn-close-color", method: '' } }
+          %button.btn.btn-transparent
+            = icon('check', class: 'icon')
+            .description
+              %strong.title Report abuse
+              %p.text
+                Report
+                = display_issuable_type.pluralize
+                that are abusive, inappropriate or spam.

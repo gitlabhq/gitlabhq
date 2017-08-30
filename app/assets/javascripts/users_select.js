@@ -588,9 +588,10 @@ function UsersSelect(currentUser, els) {
             if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
               var trimmed = query.term.trim();
               emailUser = {
-                name: "Invite \"" + query.term + "\"",
+                name: "Invite \"" + query.term + "\" by email",
                 username: trimmed,
-                id: trimmed
+                id: trimmed,
+                invite: true
               };
               data.results.unshift(emailUser);
             }
@@ -642,7 +643,7 @@ UsersSelect.prototype.formatResult = function(user) {
   } else {
     avatar = gon.default_avatar_url;
   }
-  return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar avatar-inline s32' src='" + avatar + "'></div> <div class='user-name dropdown-menu-user-full-name'>" + user.name + "</div> <div class='user-username dropdown-menu-user-username'>" + ("@" + user.username || "") + "</div> </div>";
+  return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar avatar-inline s32' src='" + avatar + "'></div> <div class='user-name dropdown-menu-user-full-name'>" + user.name + "</div> <div class='user-username dropdown-menu-user-username'>" + (!user.invite ? "@" + _.escape(user.username) : "") + "</div> </div>";
 };
 
 UsersSelect.prototype.formatSelection = function(user) {

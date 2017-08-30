@@ -50,7 +50,10 @@ class Issue < ActiveRecord::Base
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
+  scope :public_only, -> { where(confidential: false) }
+
   after_save :expire_etag_cache
+  after_commit :update_project_counter_caches, on: :destroy
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -268,6 +271,10 @@ class Issue < ActiveRecord::Base
 
   def discussions_rendered_on_frontend?
     true
+  end
+
+  def update_project_counter_caches
+    Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 
   private

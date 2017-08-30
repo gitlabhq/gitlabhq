@@ -49,13 +49,14 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage
+      attr_reader :storage, :gl_repository, :relative_path
 
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(storage, relative_path)
+      def initialize(storage, relative_path, gl_repository)
         @storage = storage
         @relative_path = relative_path
+        @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -153,7 +154,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.count_branch_names
           else
-            rugged.branches.count do |ref|
+            rugged.branches.each(:local).count do |ref|
               begin
                 ref.name && ref.target # ensures the branch is valid
 
@@ -197,6 +198,19 @@ module Gitlab
             tags_from_gitaly
           else
             tags_from_rugged
+          end
+        end
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def ref_exists?(ref_name)
+        gitaly_migrate(:ref_exists) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?(ref_name)
+          else
+            rugged_ref_exists?(ref_name)
           end
         end
       end
@@ -425,8 +439,8 @@ module Gitlab
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
-      def is_ancestor?(from, to)
-        gitaly_commit_client.is_ancestor(from, to)
+      def ancestor?(from, to)
+        gitaly_commit_client.ancestor?(from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -987,6 +1001,16 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def rugged_ref_exists?(ref_name)
+        raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+        rugged.references.exist?(ref_name)
+      rescue Rugged::ReferenceError
+        false
       end
 
       # Returns true if the given ref name exists

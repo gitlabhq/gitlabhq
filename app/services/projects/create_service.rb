@@ -99,12 +99,19 @@ module Projects
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
-      unless @project.group || @project.gitlab_project_import?
-        owners = [current_user, @project.namespace.owner].compact.uniq
-        @project.add_master(owners, current_user: current_user)
-      end
+      setup_authorizations
+    end
 
-      @project.group&.refresh_members_authorized_projects
+    # Refresh the current user's authorizations inline (so they can access the
+    # project immediately after this request completes), and any other affected
+    # users in the background
+    def setup_authorizations
+      if @project.group
+        @project.group.refresh_members_authorized_projects(blocking: false)
+        current_user.refresh_authorized_projects
+      else
+        @project.add_master(@project.namespace.owner, current_user: current_user)
+      end
     end
 
     def skip_wiki?

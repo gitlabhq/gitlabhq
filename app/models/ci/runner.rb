@@ -142,7 +142,7 @@ module Ci
         expire: RUNNER_QUEUE_EXPIRY_TIME, overwrite: false)
     end
 
-    def is_runner_queue_value_latest?(value)
+    def runner_queue_value_latest?(value)
       ensure_runner_queue_value == value if value.present?
     end
 

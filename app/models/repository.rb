@@ -206,12 +206,18 @@ class Repository
   end
 
   def branch_exists?(branch_name)
-    branch_names.include?(branch_name)
+    return false unless raw_repository
+
+    @branch_exists_memo ||= Hash.new do |hash, key|
+      hash[key] = raw_repository.branch_exists?(key)
+    end
+
+    @branch_exists_memo[branch_name]
   end
 
   def ref_exists?(ref)
-    rugged.references.exist?(ref)
-  rescue Rugged::ReferenceError
+    !!raw_repository&.ref_exists?(ref)
+  rescue ArgumentError
     false
   end
 
@@ -266,6 +272,7 @@ class Repository
   def expire_branches_cache
     expire_method_caches(%i(branch_names branch_count))
     @local_branches = nil
+    @branch_exists_memo = nil
   end
 
   def expire_statistics_caches
@@ -937,7 +944,7 @@ class Repository
 
     if branch_commit
       same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -951,12 +958,12 @@ class Repository
     nil
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+        raw_repository.ancestor?(ancestor_id, descendant_id)
       else
         rugged_is_ancestor?(ancestor_id, descendant_id)
       end
@@ -1185,7 +1192,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
   end
 
   def circuit_breaker
