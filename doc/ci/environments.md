@@ -448,8 +448,7 @@ and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
 
-### <a name="route-map"></a>Go directly from source files to public pages on the environment
-
+### Go directly from source files to public pages on the environment
 
 > Introduced in GitLab 8.17.
 
