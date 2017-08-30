@@ -57,16 +57,16 @@ The attributes will be exported automatically, but we need to know they are safe
 ## Bumping the version number
 
 Due to the dynamic nature of the Import/Export we don't follow a strict semver 
-as small non-breaking changes may occur very often with a lof of features in the code.
+as small non-breaking changes may occur very often with a lof of new additions to the code.
 
 We always bump the patch version (MAJOR.MINOR.PATCH) when there's a breaking change.
-The other numbers are reserved for changes in the actual Import/Export such as refactoring
-to use a completely different configuration.
+The other numbers are reserved for changes in the actual Import/Export, such as refactoring
+the code to use a completely different configuration.
 
-1. Update `import_export.rb` with the new version (`ImportExport::VERSION`)
-1. Update the table in the docs to add the new version (`import_export.md`)
-1. The `import_file_spec.rb` test may fail bumping the version. You can update the spec
-to use the a new generated `test_project_export.tar.gz` by running the following task: 
+1. Update `import_export.rb` with the new version (`Gitlab::ImportExport::VERSION`)
+1. Update the version table in the docs to add the new version (`import_export.md`)
+1. The `import_file_spec.rb` test may fail after bumping the version. You can update the spec
+to use a new generated `test_project_export.tar.gz` by running the following task: 
     ```sh
     bundle exec rake gitlab:import_export:bump_test_version 
     ```
