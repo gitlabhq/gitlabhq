@@ -36,7 +36,8 @@
   position: relative;
   z-index: 2;
 
-  &:hover span {
+  & span:hover {
+    display: inline-block;
     color: $gl-link-color;
     text-decoration: underline;
   }
