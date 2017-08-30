@@ -55,7 +55,7 @@ class AutocompleteController < ApplicationController
       .limit(AWARD_EMOJI_MAX)
       .where(user: current_user)
       .group(:name)
-      .order(count: :desc, name: :asc)
+      .order('count_all DESC, name ASC')
       .count
 
     # Transform from hash to array to guarantee json order
