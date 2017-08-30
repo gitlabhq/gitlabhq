@@ -634,7 +634,7 @@ describe API::Runner do
           update_job(state: 'failed')
 
           expect(job.reload.status).to eq 'failed'
-          expect(job).to be_failed_by_failed_job_state
+          expect(job).to be_failed_by_job_state
         end
       end
 

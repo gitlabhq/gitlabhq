@@ -43,7 +43,7 @@ class CommitStatus < ActiveRecord::Base
     failed_by_script: 1, # TODO: Not used. Should we expand pipeline as well?
     failed_by_missing_dependency: 2, # This will be done in the next MR.
     failed_by_system: 3, # TODO: Not used. What's this state?
-    failed_by_failed_job_state: 4,
+    failed_by_job_state: 4,
     failed_by_out_of_quota: 5, # TODO: Only EE. How can we detect?
     failed_by_stuck_and_timeout: 6,
     failed_by_no_runner: 7, # TODO: Not used. How can we detect?
