@@ -1,3 +1,6 @@
+- wrapper_class = layout_nav_class
+- wrapper_class << " #{repo_wrapper_class}" if repo_wrapper_class
+
 .page-with-sidebar{ class: page_with_sidebar_class }
   - if show_new_nav?
     - if defined?(nav) && nav
@@ -9,7 +12,7 @@
           = render "layouts/nav/#{nav}"
     - if content_for?(:sub_nav)
       = yield :sub_nav
-  .content-wrapper{ class: "#{layout_nav_class} #{repo_wrapper_class}" }
+  .content-wrapper{ class: wrapper_class }
     - if show_new_nav?
       .mobile-overlay
     .alert-wrapper
