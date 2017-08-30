@@ -31,8 +31,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :read_pipeline_schedule, user_project
-
         present pipeline_schedule, with: Entities::PipelineScheduleDetails
       end
 
@@ -72,7 +70,6 @@ module API
         optional :active, type: Boolean, desc: 'The activation of pipeline schedule'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.update(declared_params(include_missing: false))
@@ -89,7 +86,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule.own!(current_user)
@@ -106,7 +102,6 @@ module API
         requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :admin_pipeline_schedule, pipeline_schedule
 
         destroy_conditionally!(pipeline_schedule)
@@ -121,7 +116,6 @@ module API
         requires :value, type: String, desc: 'The value of the variable'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :update_pipeline_schedule, pipeline_schedule
 
         variable_params = declared_params(include_missing: false)
@@ -142,7 +136,6 @@ module API
         optional :value, type: String, desc: 'The value of the variable'
       end
       put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :update_pipeline_schedule, pipeline_schedule
 
         if pipeline_schedule_variable.update(declared_params(include_missing: false))
@@ -160,7 +153,6 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
-        authorize! :read_pipeline_schedule, user_project
         authorize! :admin_pipeline_schedule, pipeline_schedule
 
         status :accepted
@@ -171,18 +163,23 @@ module API
     helpers do
       def pipeline_schedule
         @pipeline_schedule ||=
-          user_project.pipeline_schedules
-                      .preload(:owner, :last_pipeline)
-                      .find_by(id: params.delete(:pipeline_schedule_id))
-
-        @pipeline_schedule || not_found!('Pipeline Schedule')
+          user_project
+            .pipeline_schedules
+            .preload(:owner, :last_pipeline)
+            .find_by(id: params.delete(:pipeline_schedule_id)).tap do |pipeline_schedule|
+              unless pipeline_schedule || can?(current_user, :read_pipeline_schedule, pipeline_schedule)
+                not_found!('Pipeline Schedule')
+              end
+            end
       end
 
       def pipeline_schedule_variable
         @pipeline_schedule_variable ||=
-          pipeline_schedule.variables.find_by(key: params[:key])
-
-        @pipeline_schedule_variable || not_found!('Pipeline Schedule Variable')
+          pipeline_schedule.variables.find_by(key: params[:key]).tap do |pipeline_schedule_variable|
+            unless pipeline_schedule_variable
+              not_found!('Pipeline Schedule Variable')
+            end
+          end
       end
     end
   end
