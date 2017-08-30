@@ -2,7 +2,8 @@
   .gpg-popover-icon.valid
     = render 'shared/icons/icon_status_success_borderless.svg'
   %div
-    This commit was signed with a <strong>verified</strong> signature.
+    This commit was signed with a <strong>verified</strong> signature and the
+    committer email is verified to belong to the same user.
 
 - content = capture do
   = render partial: 'projects/commit/signature_badge_user', locals: { signature: signature }

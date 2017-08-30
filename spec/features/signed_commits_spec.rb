@@ -60,45 +60,120 @@ describe 'GPG signed commits', :js do
     end
   end
 
-  it 'shows popover badges' do
-    gpg_user = create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
-    Sidekiq::Testing.inline! do
-      create :gpg_key, key: GpgHelpers::User1.public_key, user: gpg_user
+  context 'shows popover badges' do
+    let(:user_1) do
+      create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
     end
 
-    user = create :user
-    project.team << [user, :master]
-
-    sign_in(user)
-    visit project_commits_path(project, :'signed-commits')
-
-    # unverified signature
-    click_on 'Unverified', match: :first
-    within '.popover' do
-      expect(page).to have_content 'This commit was signed with an unverified signature.'
-      expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
+    let(:user_1_key) do
+      Sidekiq::Testing.inline! do
+        create :gpg_key, key: GpgHelpers::User1.public_key, user: user_1
+      end
     end
 
-    # verified and the gpg user has a gitlab profile
-    click_on 'Verified', match: :first
-    within '.popover' do
-      expect(page).to have_content 'This commit was signed with a verified signature.'
-      expect(page).to have_content 'Nannie Bernhard'
-      expect(page).to have_content '@nannie.bernhard'
-      expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
+    let(:user_2) do
+      create(:user, email: GpgHelpers::User2.emails.first, username: 'bette.cartwright', name: 'Bette Cartwright').tap do |user|
+        # secondary, unverified email
+        create :email, user: user, email: GpgHelpers::User2.emails.last
+      end
     end
 
-    # verified and the gpg user's profile doesn't exist anymore
-    gpg_user.destroy!
+    let(:user_2_key) do
+      Sidekiq::Testing.inline! do
+        create :gpg_key, key: GpgHelpers::User2.public_key, user: user_2
+      end
+    end
 
-    visit project_commits_path(project, :'signed-commits')
+    before do
+      user = create :user
+      project.team << [user, :master]
 
-    click_on 'Verified', match: :first
-    within '.popover' do
-      expect(page).to have_content 'This commit was signed with a verified signature.'
-      expect(page).to have_content 'Nannie Bernhard'
-      expect(page).to have_content 'nannie.bernhard@example.com'
-      expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
+      sign_in(user)
+    end
+
+    it 'unverified signature' do
+      visit project_commits_path(project, :'signed-commits')
+
+      within(find('.commit', text: 'signed commit by bette cartwright')) do
+        click_on 'Unverified'
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with an unverified signature.'
+          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
+        end
+      end
+    end
+
+    it 'unverified signature: user email does not match the committer email, but is the same user' do
+      user_2_key
+
+      visit project_commits_path(project, :'signed-commits')
+
+      within(find('.commit', text: 'signed and authored commit by bette cartwright, different email')) do
+        click_on 'Unverified'
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not verified to belong to the same user.'
+          expect(page).to have_content 'Bette Cartwright'
+          expect(page).to have_content '@bette.cartwright'
+          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
+        end
+      end
+    end
+
+    it 'unverified signature: user email does not match the committer email' do
+      user_2_key
+
+      visit project_commits_path(project, :'signed-commits')
+
+      within(find('.commit', text: 'signed commit by bette cartwright')) do
+        click_on 'Unverified'
+        within '.popover' do
+          expect(page).to have_content "This commit was signed with a different user's verified signature."
+          expect(page).to have_content 'Bette Cartwright'
+          expect(page).to have_content '@bette.cartwright'
+          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
+        end
+      end
+    end
+
+    it 'verified and the gpg user has a gitlab profile' do
+      user_1_key
+
+      visit project_commits_path(project, :'signed-commits')
+
+      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
+        click_on 'Verified'
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
+          expect(page).to have_content 'Nannie Bernhard'
+          expect(page).to have_content '@nannie.bernhard'
+          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
+        end
+      end
+    end
+
+    it "verified and the gpg user's profile doesn't exist anymore" do
+      user_1_key
+
+      visit project_commits_path(project, :'signed-commits')
+
+      # wait for the signature to get generated
+      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
+        expect(page).to have_content 'Verified'
+      end
+
+      user_1.destroy!
+
+      refresh
+
+      within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
+        click_on 'Verified'
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
+          expect(page).to have_content 'Nannie Bernhard'
+          expect(page).to have_content 'nannie.bernhard@example.com'
+          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
+        end
+      end
     end
   end
 end

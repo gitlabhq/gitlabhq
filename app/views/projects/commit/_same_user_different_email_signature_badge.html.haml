@@ -1,0 +1,13 @@
+- title = capture do
+  .gpg-popover-icon.invalid
+    = render 'shared/icons/icon_status_notfound_borderless.svg'
+  %div
+    This commit was signed with a verified signature, but the committer email
+    is <strong>not verified</strong> to belong to the same user.
+
+- content = capture do
+  = render partial: 'projects/commit/signature_badge_user', locals: { signature: signature }
+
+- locals = { signature: signature, title: title, content: content, label: 'Unverified', css_classes: ['invalid'] }
+
+= render partial: 'projects/commit/signature_badge', locals: locals
