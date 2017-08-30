@@ -1,5 +1,5 @@
 <script>
-  import { dateFormat, timeFormat } from '../utils/date_time_formatters';
+  import { dateFormat, timeFormat } from '../../utils/date_time_formatters';
 
   export default {
     props: {

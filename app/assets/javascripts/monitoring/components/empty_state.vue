@@ -62,49 +62,33 @@
     },
   };
 </script>
+
 <template>
-  <div 
-    class="prometheus-state">
-    <div 
-      class="row">
-      <div 
-        class="col-md-4 col-md-offset-4 state-svg" 
-        v-html="currentState.svg">
-      </div>
+  <div class="prometheus-state">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4 state-svg" v-html="currentState.svg"></div>
     </div>
-    <div 
-      class="row">
-      <div 
-        class="col-md-6 col-md-offset-3">
-        <h4 
-          class="text-center state-title">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <h4 class="text-center state-title">
           {{currentState.title}}
         </h4>
       </div>
     </div>
-    <div 
-      class="row">
-      <div 
-        class="col-md-6 col-md-offset-3">
-        <div 
-          class="description-text text-center state-description">
-            {{currentState.description}}
-            <a 
-              :href="settingsPath"
-              v-if="showButtonDescription">
-              Prometheus server
-            </a>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="description-text text-center state-description">
+          {{currentState.description}}
+          <a v-if="showButtonDescription" :href="settingsPath">
+            Prometheus server
+          </a>
         </div>
       </div>
     </div>
-    <div 
-      class="row state-button-section">
-      <div 
-        class="col-md-4 col-md-offset-4 text-center state-button">
-        <a 
-          class="btn btn-success" 
-          :href="buttonPath">
-            {{currentState.buttonText}}
+    <div class="row state-button-section">
+      <div class="col-md-4 col-md-offset-4 text-center state-button">
+        <a class="btn btn-success" :href="buttonPath">
+          {{currentState.buttonText}}
         </a>
       </div>
     </div>
