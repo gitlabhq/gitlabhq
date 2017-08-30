@@ -390,6 +390,10 @@ describe API::Notes do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{issue_note.id}", user) }
+      end
     end
 
     context 'when noteable is a Snippet' do
@@ -410,6 +414,10 @@ describe API::Notes do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}", user) }
+      end
     end
 
     context 'when noteable is a Merge Request' do
@@ -429,6 +437,10 @@ describe API::Notes do
                    "#{merge_request.iid}/notes/12345", user)
 
         expect(response).to have_http_status(404)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes/#{merge_request_note.id}", user) }
       end
     end
   end

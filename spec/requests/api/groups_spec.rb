@@ -488,6 +488,10 @@ describe API::Groups do
         expect(response).to have_http_status(204)
       end
 
+      it_behaves_like '412 response' do
+        let(:request) { api("/groups/#{group1.id}", user1) }
+      end
+
       it "does not remove a group if not an owner" do
         user4 = create(:user)
         group1.add_master(user4)

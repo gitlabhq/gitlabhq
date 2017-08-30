@@ -212,5 +212,9 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(response).to have_http_status(404)
       expect(WebHook.exists?(hook.id)).to be_truthy
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/hooks/#{hook.id}", user) }
+    end
   end
 end
