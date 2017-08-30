@@ -6,6 +6,7 @@ const weightTokenKey = {
   param: '',
   symbol: '',
   icon: 'balance-scale',
+  tag: 'weight',
 };
 
 const weightConditions = [{
@@ -75,6 +76,10 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
 
     return tokenKeysWithAlternative.find((tokenKey) => {
       let tokenKeyParam = tokenKey.key;
+
+      // Replace hyphen with underscore to compare keyParam with tokenKeyParam
+      // e.g. 'my-reaction' => 'my_reaction'
+      tokenKeyParam = tokenKeyParam.replace('-', '_');
 
       if (tokenKey.param) {
         tokenKeyParam += `_${tokenKey.param}`;

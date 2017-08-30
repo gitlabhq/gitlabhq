@@ -270,6 +270,12 @@ describe 'Dropdown label', js: true do
 
       expect(page).to have_css(js_dropdown_label)
     end
+
+    it 'opens label dropdown with existing my-reaction' do
+      filtered_search.set('my-reaction:star label:')
+
+      expect(page).to have_css(js_dropdown_label)
+    end
   end
 
   describe 'caching requests' do
