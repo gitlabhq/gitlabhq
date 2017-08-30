@@ -49,7 +49,7 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
-      yield(@project)
+      yield(@project) if block_given?
 
       @project.creator = current_user
 
