@@ -6,6 +6,10 @@ module Gitlab
           EntryStrategy = Struct.new(:name, :condition)
 
           def initialize(config, **metadata)
+            unless self.class.const_defined?(:UnknownStrategy)
+              raise ArgumentError, 'UndefinedStrategy not available!'
+            end
+
             strategy = self.class.strategies.find do |variant|
               variant.condition.call(config)
             end

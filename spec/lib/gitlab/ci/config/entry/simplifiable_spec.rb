@@ -72,4 +72,17 @@ describe Gitlab::Ci::Config::Entry::Simplifiable do
       end
     end
   end
+
+  context 'when a unknown strategy class is not defined' do
+    let(:entry) do
+      Class.new(described_class) do
+        strategy :String, if: -> (*) { true }
+      end
+    end
+
+    it 'raises an error when being initialized' do
+      expect { entry.new('something') }
+        .to raise_error ArgumentError, /UndefinedStrategy not available!/
+    end
+  end
 end
