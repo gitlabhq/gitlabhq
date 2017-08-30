@@ -147,13 +147,13 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.columnData.queries[0].result,
+        this.timeSeries = createTimeSeries(this.graphData.queries[0].result,
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset);
 
-        if (this.timeSeries.length > 4) {
-          this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 4) * 20;
+        if (this.timeSeries.length > 3) {
+          this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
         const axisXScale = d3.time.scale()
