@@ -144,7 +144,7 @@ describe Gitlab::SQL::Pattern do
       let(:query) { 'foo' }
 
       it 'returns a single ILIKE condition' do
-        expect(to_fuzzy_arel.to_sql).to eq(%("issues"."title" ILIKE '%foo%'))
+        expect(to_fuzzy_arel.to_sql).to match(/title.*I?LIKE '\%foo\%'/)
       end
     end
 
@@ -159,16 +159,16 @@ describe Gitlab::SQL::Pattern do
     context 'with two words both equal to 3 chars' do
       let(:query) { 'foo baz' }
 
-      it 'returns a joining ILIKE condition using a AND' do
-        expect(to_fuzzy_arel.to_sql).to eq(%("issues"."title" ILIKE '%foo%' AND "issues"."title" ILIKE '%baz%'))
+      it 'returns a joining LIKE condition using a AND' do
+        expect(to_fuzzy_arel.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%'/)
       end
     end
 
     context 'with a multi-word surrounded by double quote and two words' do
       let(:query) { 'foo "really bar" baz' }
 
-      it 'returns a joining ILIKE condition using a AND' do
-        expect(to_fuzzy_arel.to_sql).to eq(%("issues"."title" ILIKE '%foo%' AND "issues"."title" ILIKE '%baz%' AND "issues"."title" ILIKE '%really bar%'))
+      it 'returns a joining LIKE condition using a AND' do
+        expect(to_fuzzy_arel.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%' AND .*title.*I?LIKE '\%really bar\%'/)
       end
     end
   end
