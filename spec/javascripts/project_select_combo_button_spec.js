@@ -2,10 +2,10 @@ import ProjectSelectComboButton from '~/project_select_combo_button';
 
 const fixturePath = 'static/project_select_combo_button.html.raw';
 
-describe('Project Select Combo Button', () => {
+describe('Project Select Combo Button', function () {
   preloadFixtures(fixturePath);
 
-  beforeEach(() => {
+  beforeEach(function () {
     this.defaults = {
       label: 'Select project to create issue',
       groupId: 12345,
@@ -27,43 +27,43 @@ describe('Project Select Combo Button', () => {
     this.projectSelectInput = document.querySelector('.project-item-select');
   });
 
-  describe('on page load when localStorage is empty', () => {
-    beforeEach(() => {
+  describe('on page load when localStorage is empty', function () {
+    beforeEach(function () {
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
     });
 
-    it('newItemBtn href is null', () => {
+    it('newItemBtn href is null', function () {
       expect(this.newItemBtn.getAttribute('href')).toBe('');
     });
 
-    it('newItemBtn text is the plain default label', () => {
+    it('newItemBtn text is the plain default label', function () {
       expect(this.newItemBtn.textContent).toBe(this.defaults.label);
     });
   });
 
-  describe('on page load when localStorage is filled', () => {
-    beforeEach(() => {
+  describe('on page load when localStorage is filled', function () {
+    beforeEach(function () {
       window.localStorage
         .setItem(this.defaults.localStorageKey, JSON.stringify(this.defaults.projectMeta));
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
     });
 
-    it('newItemBtn href is correctly set', () => {
+    it('newItemBtn href is correctly set', function () {
       expect(this.newItemBtn.getAttribute('href')).toBe(this.defaults.projectMeta.url);
     });
 
-    it('newItemBtn text is the cached label', () => {
+    it('newItemBtn text is the cached label', function () {
       expect(this.newItemBtn.textContent)
         .toBe(`New issue in ${this.defaults.projectMeta.name}`);
     });
 
-    afterEach(() => {
+    afterEach(function () {
       window.localStorage.clear();
     });
   });
 
-  describe('after selecting a new project', () => {
-    beforeEach(() => {
+  describe('after selecting a new project', function () {
+    beforeEach(function () {
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
 
       // mock the effect of selecting an item from the projects dropdown (select2)
@@ -72,23 +72,23 @@ describe('Project Select Combo Button', () => {
         .trigger('change');
     });
 
-    it('newItemBtn href is correctly set', () => {
+    it('newItemBtn href is correctly set', function () {
       expect(this.newItemBtn.getAttribute('href'))
         .toBe('http://myothercoolproject.com/issues/new');
     });
 
-    it('newItemBtn text is the selected project label', () => {
+    it('newItemBtn text is the selected project label', function () {
       expect(this.newItemBtn.textContent)
         .toBe(`New issue in ${this.defaults.newProjectMeta.name}`);
     });
 
-    afterEach(() => {
+    afterEach(function () {
       window.localStorage.clear();
     });
   });
 
-  describe('deriveTextVariants', () => {
-    beforeEach(() => {
+  describe('deriveTextVariants', function () {
+    beforeEach(function () {
       this.mockExecutionContext = {
         resourceType: '',
         resourceLabel: '',
@@ -99,7 +99,7 @@ describe('Project Select Combo Button', () => {
       this.method = this.comboButton.deriveTextVariants.bind(this.mockExecutionContext);
     });
 
-    it('correctly derives test variants for merge requests', () => {
+    it('correctly derives test variants for merge requests', function () {
       this.mockExecutionContext.resourceType = 'merge_requests';
       this.mockExecutionContext.resourceLabel = 'New merge request';
 
@@ -110,7 +110,7 @@ describe('Project Select Combo Button', () => {
       expect(returnedVariants.presetTextSuffix).toBe('merge request');
     });
 
-    it('correctly derives text variants for issues', () => {
+    it('correctly derives text variants for issues', function () {
       this.mockExecutionContext.resourceType = 'issues';
       this.mockExecutionContext.resourceLabel = 'New issue';
 
