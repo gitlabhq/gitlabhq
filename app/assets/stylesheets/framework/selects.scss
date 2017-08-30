@@ -278,7 +278,8 @@
 }
 
 // TODO: change global style
-.ajax-project-dropdown {
+.ajax-project-dropdown,
+body[data-page="projects:new"] #select2-drop {
   &.select2-drop {
     color: $gl-text-color;
   }
