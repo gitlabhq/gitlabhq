@@ -14,8 +14,8 @@ class NoteEntity < API::Entities::Note
 
   expose :redacted_note_html, as: :note_html
 
-  expose :last_edited_at, if: -> (note, _) { note.is_edited? }
-  expose :last_edited_by, using: NoteUserEntity, if: -> (note, _) { note.is_edited? }
+  expose :last_edited_at, if: -> (note, _) { note.edited? }
+  expose :last_edited_by, using: NoteUserEntity, if: -> (note, _) { note.edited? }
 
   expose :current_user do
     expose :can_edit do |note|

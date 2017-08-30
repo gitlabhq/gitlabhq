@@ -89,7 +89,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if noteable.discussions_rendered_on_frontend?
+      if noteable.nil? || noteable.discussions_rendered_on_frontend?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(

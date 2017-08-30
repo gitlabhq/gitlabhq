@@ -300,7 +300,7 @@ class Note < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    return unless noteable.discussions_rendered_on_frontend?
+    return unless noteable&.discussions_rendered_on_frontend?
 
     key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
       project,
