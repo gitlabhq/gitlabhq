@@ -297,18 +297,18 @@ class Group < Namespace
   def visibility_level_allowed_by_parent
     return if visibility_level_allowed_by_parent?
 
-    errors.add(:visibility_level, visibility_error_for(:parent, level: visibility, parent_level: parent.visibility))
+    errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
   end
 
   def visibility_level_allowed_by_projects
     return if visibility_level_allowed_by_projects?
 
-    errors.add(:visibility_level, visibility_error_for(:projects, level: visibility))
+    errors.add(:visibility_level, "#{visibility} is not allowed since this group contains projects with higher visibility.")
   end
 
   def visibility_level_allowed_by_sub_groups
     return if visibility_level_allowed_by_sub_groups?
 
-    errors.add(:visibility_level, visibility_error_for(:sub_groups, level: visibility))
+    errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 end
