@@ -93,6 +93,13 @@
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
+            #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    %gl-emoji
+                    %span.js-data-value.prepend-left-10
+                      {{name}}
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
         .filter-dropdown-container

@@ -351,14 +351,17 @@ describe('DropDown', function () {
 
   describe('render', function () {
     beforeEach(function () {
-      this.list = { querySelector: () => {} };
+      this.list = { querySelector: () => {}, dispatchEvent: () => {} };
       this.dropdown = { renderChildren: () => {}, list: this.list };
       this.renderableList = {};
       this.data = [0, 1];
+      this.customEvent = {};
 
       spyOn(this.dropdown, 'renderChildren').and.callFake(data => data);
       spyOn(this.list, 'querySelector').and.returnValue(this.renderableList);
+      spyOn(this.list, 'dispatchEvent');
       spyOn(this.data, 'map').and.callThrough();
+      spyOn(window, 'CustomEvent').and.returnValue(this.customEvent);
 
       DropDown.prototype.render.call(this.dropdown, this.data);
     });
@@ -373,6 +376,14 @@ describe('DropDown', function () {
 
     it('sets the renderableList .innerHTML', function () {
       expect(this.renderableList.innerHTML).toBe('01');
+    });
+
+    it('should call render.dl', function () {
+      expect(window.CustomEvent).toHaveBeenCalledWith('render.dl', jasmine.any(Object));
+    });
+
+    it('should call dispatchEvent with the customEvent', function () {
+      expect(this.list.dispatchEvent).toHaveBeenCalledWith(this.customEvent);
     });
 
     describe('if no data argument is passed', function () {
@@ -394,7 +405,7 @@ describe('DropDown', function () {
 
     describe('if no dynamic list is present', function () {
       beforeEach(function () {
-        this.list = { querySelector: () => {} };
+        this.list = { querySelector: () => {}, dispatchEvent: () => {} };
         this.dropdown = { renderChildren: () => {}, list: this.list };
         this.data = [0, 1];
 

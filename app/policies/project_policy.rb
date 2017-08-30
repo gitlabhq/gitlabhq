@@ -17,13 +17,13 @@ class ProjectPolicy < BasePolicy
   desc "Project has public builds enabled"
   condition(:public_builds, scope: :subject) { project.public_builds? }
 
-  # For guest access we use #is_team_member? so we can use
+  # For guest access we use #team_member? so we can use
   # project.members, which gets cached in subject scope.
   # This is safe because team_access_level is guaranteed
   # by ProjectAuthorization's validation to be at minimum
   # GUEST
   desc "User has guest access"
-  condition(:guest) { is_team_member? }
+  condition(:guest) { team_member? }
 
   desc "User has reporter access"
   condition(:reporter) { team_access_level >= Gitlab::Access::REPORTER }
@@ -293,7 +293,7 @@ class ProjectPolicy < BasePolicy
 
   private
 
-  def is_team_member?
+  def team_member?
     return false if @user.nil?
 
     greedy_load_subject = false

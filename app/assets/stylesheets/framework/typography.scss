@@ -10,8 +10,7 @@
     color: $md-link-color;
   }
 
-  img {
-    /*max-width: 100%;*/
+  img:not(.emoji) {
     margin: 0 0 8px;
   }
 

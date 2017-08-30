@@ -2036,23 +2036,23 @@ describe Repository, models: true do
     end
   end
 
-  describe '#is_ancestor?' do
+  describe '#ancestor?' do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
     context 'with Gitaly enabled' do
       it 'it is an ancestor' do
-        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
 
       it 'it is not an ancestor' do
-        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
       end
 
       it 'returns false on nil-values' do
-        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+        expect(repository.ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.ancestor?(nil, nil)).to eq(false)
       end
     end
 
@@ -2063,17 +2063,17 @@ describe Repository, models: true do
       end
 
       it 'it is an ancestor' do
-        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
 
       it 'it is not an ancestor' do
-        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
       end
 
       it 'returns false on nil-values' do
-        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+        expect(repository.ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.ancestor?(nil, nil)).to eq(false)
       end
     end
   end

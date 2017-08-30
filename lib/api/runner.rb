@@ -45,8 +45,10 @@ module API
       end
       delete '/' do
         authenticate_runner!
-        status 204
-        Ci::Runner.find_by_token(params[:token]).destroy
+
+        runner = Ci::Runner.find_by_token(params[:token])
+
+        destroy_conditionally!(runner)
       end
 
       desc 'Validates authentication credentials' do
@@ -78,7 +80,7 @@ module API
         no_content! unless current_runner.active?
         update_runner_info
 
-        if current_runner.is_runner_queue_value_latest?(params[:last_update])
+        if current_runner.runner_queue_value_latest?(params[:last_update])
           header 'X-GitLab-Last-Update', params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
           return no_content!
