@@ -58,10 +58,16 @@ module FilteredSearchHelpers
       page.all(:css, '.tokens-container li .selectable').each_with_index do |el, index|
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
+        token_emoji = tokens[index][:emoji_name]
 
         expect(el.find('.name')).to have_content(token_name)
         if token_value
           expect(el.find('.value')).to have_content(token_value)
+        end
+        # gl-emoji content is blank when the emoji unicode is not supported
+        if token_emoji
+          selector = %(gl-emoji[data-name="#{token_emoji}"])
+          expect(el.find('.value')).to have_css(selector)
         end
       end
     end
@@ -87,6 +93,10 @@ module FilteredSearchHelpers
   def label_token(label_name = nil, has_symbol = true)
     symbol = has_symbol ? '~' : nil
     create_token('Label', label_name, symbol)
+  end
+
+  def emoji_token(emoji_name = nil)
+    { name: 'My-Reaction', emoji_name: emoji_name }
   end
 
   def default_placeholder
