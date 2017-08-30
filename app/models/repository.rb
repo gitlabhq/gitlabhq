@@ -1018,7 +1018,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      is_ancestor?(branch_commit.id, upstream_commit.id)
+      ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
