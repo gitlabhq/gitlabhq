@@ -62,11 +62,13 @@
                     Attachments synced:
                     %strong.node-info.js-attachments-synced
                 %p
-                .js-advanced-geo-node-status-toggler
-                  %i.fa.fa-angle-down
-                  %span
-                    Advanced
-                %p
+                .advanced-geo-node-status-container
+                  .toggler-inactive-container
+                    .js-advanced-geo-node-status-toggler
+                      %i.fa.fa-angle-down
+                      %span
+                      Advanced
+                  %p
                   .advanced-status.hide-status
                     %span.help-block
                       Database replication lag:
@@ -77,6 +79,7 @@
                     %span.help-block
                       Last event ID processed by cursor:
                       %strong.node-info.js-last-cursor-event
+                  .toggler-active-container
                 %p
                   .js-health
 
