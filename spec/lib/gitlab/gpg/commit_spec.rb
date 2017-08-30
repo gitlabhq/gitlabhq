@@ -56,7 +56,6 @@ describe Gitlab::Gpg::Commit do
               gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
               gpg_key_user_name: GpgHelpers::User1.names.first,
               gpg_key_user_email: GpgHelpers::User1.emails.first,
-              valid_signature: true,
               verification_status: 'verified'
             )
           end
@@ -96,7 +95,6 @@ describe Gitlab::Gpg::Commit do
               gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
               gpg_key_user_name: GpgHelpers::User1.names.first,
               gpg_key_user_email: GpgHelpers::User1.emails.first,
-              valid_signature: false,
               verification_status: 'same_user_different_email'
             )
           end
@@ -132,7 +130,6 @@ describe Gitlab::Gpg::Commit do
               gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
               gpg_key_user_name: GpgHelpers::User1.names.first,
               gpg_key_user_email: GpgHelpers::User1.emails.first,
-              valid_signature: false,
               verification_status: 'other_user'
             )
           end
@@ -169,7 +166,6 @@ describe Gitlab::Gpg::Commit do
             gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
             gpg_key_user_name: GpgHelpers::User1.names.first,
             gpg_key_user_email: GpgHelpers::User1.emails.first,
-            valid_signature: false,
             verification_status: 'unverified_key'
           )
         end
@@ -200,7 +196,6 @@ describe Gitlab::Gpg::Commit do
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
           gpg_key_user_name: nil,
           gpg_key_user_email: nil,
-          valid_signature: false,
           verification_status: 'unknown_key'
         )
       end

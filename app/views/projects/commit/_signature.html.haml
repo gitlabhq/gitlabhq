@@ -1,5 +1,5 @@
 - if signature
-  - if signature.valid_signature?
+  - if signature.verified?
     = render partial: 'projects/commit/valid_signature_badge', locals: { signature: signature }
   - else
     = render partial: 'projects/commit/invalid_signature_badge', locals: { signature: signature }

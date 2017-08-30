@@ -155,15 +155,15 @@ describe GpgKey do
   describe '#revoke' do
     it 'invalidates all associated gpg signatures and destroys the key' do
       gpg_key = create :gpg_key
-      gpg_signature = create :gpg_signature, valid_signature: true, gpg_key: gpg_key
+      gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: gpg_key
 
       unrelated_gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key
-      unrelated_gpg_signature = create :gpg_signature, valid_signature: true, gpg_key: unrelated_gpg_key
+      unrelated_gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: unrelated_gpg_key
 
       gpg_key.revoke
 
       expect(gpg_signature.reload).to have_attributes(
-        valid_signature: false,
+        verification_status: 'unknown_key',
         gpg_key: nil
       )
 
@@ -171,7 +171,7 @@ describe GpgKey do
 
       # unrelated signature is left untouched
       expect(unrelated_gpg_signature.reload).to have_attributes(
-        valid_signature: true,
+        verification_status: 'verified',
         gpg_key: unrelated_gpg_key
       )
 

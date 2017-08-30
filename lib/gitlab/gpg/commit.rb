@@ -77,7 +77,6 @@ module Gitlab
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
-          valid_signature: verification_status == :verified,
           verification_status: verification_status
         }
       end

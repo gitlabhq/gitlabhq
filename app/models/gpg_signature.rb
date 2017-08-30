@@ -20,6 +20,14 @@ class GpgSignature < ActiveRecord::Base
   validates :project_id, presence: true
   validates :gpg_key_primary_keyid, presence: true
 
+  # backwards compatibility: legacy records that weren't migrated to use the
+  # new `#verification_status` have `#valid_signature` set instead
+  def verified?
+    return valid_signature if verification_status.nil?
+
+    super
+  end
+
   def gpg_key_primary_keyid
     super&.upcase
   end
