@@ -102,7 +102,8 @@ describe Gitlab::I18n::PoLinter do
       it 'fills in the entries' do
         linter.parse_po
 
-        expect(linter.entries).not_to be_empty
+        expect(linter.translation_entries).not_to be_empty
+        expect(linter.metadata_entry).to be_kind_of(Gitlab::I18n::MetadataEntry)
       end
 
       it 'does not have errors' do
@@ -120,21 +121,18 @@ describe Gitlab::I18n::PoLinter do
       it 'sets the entries to an empty array' do
         linter.parse_po
 
-        expect(linter.entries).to eq([])
+        expect(linter.translation_entries).to eq([])
       end
     end
   end
 
   describe '#validate_entries' do
-    it 'skips entries without a `msgid`' do
-      allow(linter).to receive(:entries) { [Gitlab::I18n::PoEntry.new({ msgid: "" })] }
-
-      expect(linter.validate_entries).to be_empty
-    end
-
     it 'keeps track of errors for entries' do
-      fake_invalid_entry = Gitlab::I18n::PoEntry.new({ msgid: "Hello %{world}", msgstr: "Bonjour %{monde}" })
-      allow(linter).to receive(:entries) { [fake_invalid_entry] }
+      fake_invalid_entry = Gitlab::I18n::TranslationEntry.new(
+        msgid: "Hello %{world}",
+        msgstr: "Bonjour %{monde}"
+      )
+      allow(linter).to receive(:translation_entries) { [fake_invalid_entry] }
 
       expect(linter).to receive(:validate_entry)
                           .with(fake_invalid_entry)
@@ -161,9 +159,9 @@ describe Gitlab::I18n::PoLinter do
     it 'validates when there are an incorrect number of translations' do
       fake_metadata = double
       allow(fake_metadata).to receive(:expected_plurals).and_return(2)
-      allow(linter).to receive(:metadata).and_return(fake_metadata)
+      allow(linter).to receive(:metadata_entry).and_return(fake_metadata)
 
-      fake_entry = Gitlab::I18n::PoEntry.new(
+      fake_entry = Gitlab::I18n::TranslationEntry.new(
         msgid: 'the singular',
         msgid_plural: 'the plural',
         'msgstr[0]' => 'the singular'
@@ -178,7 +176,7 @@ describe Gitlab::I18n::PoLinter do
 
   describe '#validate_variables' do
     it 'validates both signular and plural in a pluralized string when the entry has a singular' do
-      pluralized_entry = Gitlab::I18n::PoEntry.new({
+      pluralized_entry = Gitlab::I18n::TranslationEntry.new({
         msgid: 'Hello %{world}',
         msgid_plural: 'Hello all %{world}',
         'msgstr[0]' => 'Bonjour %{world}',
@@ -194,7 +192,7 @@ describe Gitlab::I18n::PoLinter do
     end
 
     it 'only validates plural when there is no separate singular' do
-      pluralized_entry = Gitlab::I18n::PoEntry.new({
+      pluralized_entry = Gitlab::I18n::TranslationEntry.new({
         msgid: 'Hello %{world}',
         msgid_plural: 'Hello all %{world}',
         'msgstr[0]' => 'Bonjour %{world}'
@@ -207,7 +205,10 @@ describe Gitlab::I18n::PoLinter do
     end
 
     it 'validates the message variables' do
-      entry = Gitlab::I18n::PoEntry.new({ msgid: 'Hello', msgstr: 'Bonjour' })
+      entry = Gitlab::I18n::TranslationEntry.new(
+        msgid: 'Hello',
+        msgstr: 'Bonjour'
+      )
 
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello', 'Bonjour')

@@ -3,7 +3,7 @@ require 'simple_po_parser'
 module Gitlab
   module I18n
     class PoLinter
-      attr_reader :po_path, :entries, :metadata, :locale
+      attr_reader :po_path, :translation_entries, :metadata_entry, :locale
 
       VARIABLE_REGEX = /%{\w*}|%[a-z]/.freeze
 
@@ -25,20 +25,23 @@ module Gitlab
       end
 
       def parse_po
-        @entries = SimplePoParser.parse(po_path).map { |data| Gitlab::I18n::PoEntry.new(data) }
-        @metadata = @entries.detect { |entry| entry.metadata? }
+        entries = SimplePoParser.parse(po_path).map { |data| Gitlab::I18n::PoEntry.build(data) }
+
+        # The first entry is the metadata entry if there is one.
+        # This is an entry when empty `msgid`
+        @metadata_entry = entries.shift if entries.first.is_a?(Gitlab::I18n::MetadataEntry)
+        @translation_entries = entries
+
         nil
       rescue SimplePoParser::ParserError => e
-        @entries = []
+        @translation_entries = []
         e.message
       end
 
       def validate_entries
         errors = {}
 
-        entries.each do |entry|
-          next if entry.metadata?
-
+        translation_entries.each do |entry|
           errors_for_entry = validate_entry(entry)
           errors[join_message(entry.msgid)] = errors_for_entry if errors_for_entry.any?
         end
@@ -58,11 +61,12 @@ module Gitlab
       end
 
       def validate_number_of_plurals(errors, entry)
-        return unless metadata&.expected_plurals
+        return unless metadata_entry&.expected_plurals
         return unless entry.translated?
 
-        if entry.plural? && entry.all_translations.size != metadata.expected_plurals
-          errors << "should have #{metadata.expected_plurals} #{'translations'.pluralize(metadata.expected_plurals)}"
+        if entry.plural? && entry.all_translations.size != metadata_entry.expected_plurals
+          errors << "should have #{metadata_entry.expected_plurals} "\
+                    "#{'translations'.pluralize(metadata_entry.expected_plurals)}"
         end
       end
 
