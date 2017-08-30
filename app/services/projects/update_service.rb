@@ -1,5 +1,7 @@
 module Projects
   class UpdateService < BaseService
+    prepend ::EE::Projects::UpdateService
+
     def execute
       # Repository size limit comes as MB from the view
       limit = params.delete(:repository_size_limit)

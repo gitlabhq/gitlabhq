@@ -242,6 +242,12 @@ describe 'Dropdown milestone', :js do
 
       expect(page).to have_css(js_dropdown_milestone, visible: true)
     end
+
+    it 'opens milestone dropdown with existing my-reaction' do
+      filtered_search.set('my-reaction:star milestone:')
+
+      expect(page).to have_css(js_dropdown_milestone, visible: true)
+    end
   end
 
   describe 'caching requests' do

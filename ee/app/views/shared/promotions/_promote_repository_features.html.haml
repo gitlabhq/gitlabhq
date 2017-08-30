@@ -1,0 +1,31 @@
+- if show_promotions? && show_callout?('promote_repository_features_dismissed') && (!@project.feature_available?(:push_rules) || !@project.feature_available?(:repository_mirrors) || !@project.feature_available?(:protected_refs_for_users))
+  .user-callout.promotion-callout{ id: 'promote_repository_features', data: { uid: 'promote_repository_features_dismissed' } }
+    .bordered-box.content-block
+      %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss repository features promotion' }
+        = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+      .svg-container
+        = custom_icon('icon_push_rules')
+      .user-callout-copy
+        %h4
+          - if current_application_settings.should_check_namespace_plan?
+            Upgrade your plan to improve repositories.
+          - else
+            Improve repositories with GitLab Enterprise Edition.
+        %ul
+          - unless @project.feature_available?(:push_rules)
+            %li
+              = link_to 'Push Rules', help_page_path('push_rules/push_rules.md#push-rules'), target: '_blank'
+              %p
+                Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.
+          - unless @project.feature_available?(:repository_mirrors)
+            %li
+              = link_to 'Repository Mirroring', help_page_path('workflow/repository_mirroring.html'), target: '_blank'
+              %p
+                Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository.
+          - unless @project.feature_available?(:protected_refs_for_users)
+            %li
+              = link_to 'Better Protected Branches', help_page_path('user/project/protected_branches.html'), target: '_blank'
+              %p
+                You can restrict access to protected branches by choosing a role (Masters, Developers) as well as certain users.
+
+        = render 'shared/promotions/promotion_link_project'

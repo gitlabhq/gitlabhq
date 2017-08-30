@@ -138,6 +138,10 @@ describe API::Environments do
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Not found')
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/environments/#{environment.id}", user) }
+      end
     end
 
     context 'a non member' do

@@ -301,6 +301,10 @@ describe API::Members do
             expect(response).to have_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master) }
+        end
       end
 
       it 'returns 404 if member does not exist' do

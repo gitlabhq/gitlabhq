@@ -67,5 +67,30 @@ module LicenseHelper
     uri.to_s
   end
 
+  def upgrade_plan_url
+    if  @project.group
+      group_billings_path(@project.group)
+    else
+      profile_billings_path
+    end
+  end
+
+  def show_promotions?(selected_user = current_user)
+    return false unless selected_user
+    return @show_promotions if defined?(@show_promotions)
+
+    @show_promotions =
+      if current_application_settings.should_check_namespace_plan?
+        true
+      else
+        license = License.current
+        license.nil? || license.expired?
+      end
+  end
+
+  def show_project_feature_promotion?(project_feature, callout_id = nil)
+    !@project.feature_available?(project_feature) && show_promotions? && (callout_id.nil? || show_callout?(callout_id))
+  end
+
   extend self
 end

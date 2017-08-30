@@ -1308,6 +1308,10 @@ describe API::Issues, :mailer do
 
         expect(response).to have_http_status(204)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}", owner) }
+      end
     end
 
     context 'when issue does not exist' do

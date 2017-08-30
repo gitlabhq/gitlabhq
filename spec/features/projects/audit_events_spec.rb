@@ -28,6 +28,27 @@ feature 'Projects > Audit Events', :js do
     end
   end
 
+  context 'unlicensed but we show promotions' do
+    before do
+      stub_licensed_features(audit_events: false)
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+      allow(LicenseHelper).to receive(:show_promotions?).and_return(true)
+    end
+
+    it 'returns 200' do
+      visit project_audit_events_path(project)
+
+      expect(page.status_code).to eq(200)
+    end
+
+    it 'does not have Audit Events button in head nav bar' do
+      visit edit_project_path(project)
+
+      expect(page).to have_link('Audit Events')
+    end
+  end
+
   it 'has Audit Events button in head nav bar' do
     visit edit_project_path(project)
 

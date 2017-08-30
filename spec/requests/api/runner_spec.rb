@@ -149,6 +149,11 @@ describe API::Runner do
           expect(response).to have_http_status 204
           expect(Ci::Runner.count).to eq(0)
         end
+
+        it_behaves_like '412 response' do
+          let(:request) { api('/runners') }
+          let(:params) { { token: runner.token } }
+        end
       end
     end
 

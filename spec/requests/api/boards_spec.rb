@@ -210,6 +210,10 @@ describe API::Boards do
 
         expect(response).to have_http_status(204)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("#{base_url}/#{dev_list.id}", owner) }
+      end
     end
   end
 end
