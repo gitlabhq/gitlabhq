@@ -10,7 +10,7 @@
 
     %div
       %strong= user.name
-      %div @#{user.username}
+      %div= user.to_reference
 - else
   = mail_to user_email do
     %div
