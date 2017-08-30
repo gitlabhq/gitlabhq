@@ -4,6 +4,7 @@
 /* global listObj */
 /* global boardsMockInterceptor */
 /* global BoardService */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import '~/boards/models/assignee';
@@ -12,7 +13,7 @@ import '~/boards/models/list';
 import '~/boards/models/label';
 import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card';
-import { mockBoardService } from './mock_data';
+import './mock_data';
 
 describe('Board card', () => {
   let vm;

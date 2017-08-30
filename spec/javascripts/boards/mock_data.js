@@ -68,14 +68,7 @@ const boardsMockInterceptor = (request, next) => {
   }));
 };
 
-window.boardObj = boardObj;
-window.listObj = listObj;
-window.listObjDuplicate = listObjDuplicate;
-window.BoardsMockData = BoardsMockData;
-window.boardsMockInterceptor = boardsMockInterceptor;
-
-// eslint-disable-next-line import/prefer-default-export
-export function mockBoardService(opts = {}) {
+const mockBoardService = (opts = {}) => {
   const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/board';
   const listsEndpoint = opts.listsEndpoint || '/test/boards/1';
   const bulkUpdatePath = opts.bulkUpdatePath || '';
@@ -87,4 +80,11 @@ export function mockBoardService(opts = {}) {
     bulkUpdatePath,
     boardId,
   });
-}
+};
+
+window.boardObj = boardObj;
+window.listObj = listObj;
+window.listObjDuplicate = listObjDuplicate;
+window.BoardsMockData = BoardsMockData;
+window.boardsMockInterceptor = boardsMockInterceptor;
+window.mockBoardService = mockBoardService;

@@ -1,5 +1,6 @@
 /* global boardsMockInterceptor */
 /* global BoardService */
+/* global mockBoardService */
 /* global List */
 /* global listObj */
 
@@ -7,7 +8,7 @@ import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';
 
 import '~/boards/models/list';
-import { mockBoardService } from './mock_data';
+import './mock_data';
 
 describe('Issue boards new issue form', () => {
   let vm;

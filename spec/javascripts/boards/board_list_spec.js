@@ -3,6 +3,7 @@
 /* global List */
 /* global listObj */
 /* global ListIssue */
+/* global mockBoardService */
 import Vue from 'vue';
 import _ from 'underscore';
 import Sortable from 'vendor/Sortable';
@@ -12,7 +13,7 @@ import '~/boards/mixins/sortable_default_options';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import { mockBoardService } from './mock_data';
+import './mock_data';
 
 window.Sortable = Sortable;
 

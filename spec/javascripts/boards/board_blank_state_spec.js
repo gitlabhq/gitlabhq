@@ -1,8 +1,9 @@
 /* global BoardService */
+/* global mockBoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
-import { mockBoardService } from './mock_data';
+import './mock_data';
 
 describe('Boards blank state', () => {
   let vm;

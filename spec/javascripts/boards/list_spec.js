@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle */
 /* global boardsMockInterceptor */
 /* global BoardService */
+/* global mockBoardService */
 /* global List */
 /* global ListIssue */
 /* global listObj */
@@ -15,7 +16,7 @@ import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import { mockBoardService } from './mock_data';
+import './mock_data';
 
 describe('List model', () => {
   let list;
