@@ -47,6 +47,18 @@ module Gitlab
         !plural? || all_translations.size > 1
       end
 
+      def msgid_contains_newlines?
+        msgid.is_a?(Array)
+      end
+
+      def plural_id_contains_newlines?
+        plural_id.is_a?(Array)
+      end
+
+      def translations_contain_newlines?
+        all_translations.any? { |translation| translation.is_a?(Array) }
+      end
+
       private
 
       def plural_translation_keys

@@ -46,6 +46,13 @@ describe Gitlab::I18n::PoLinter do
 
         expect(errors[message_id]).to include(expected_message)
       end
+
+      it 'raises an error when the plural id is defined over multiple lines' do
+        message_id = 'multiline plural id'
+        expected_message = "plural is defined over multiple lines, this breaks some tooling."
+
+        expect(errors[message_id]).to include(expected_message)
+      end
     end
 
     context 'with an invalid po' do

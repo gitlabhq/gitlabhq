@@ -103,4 +103,31 @@ describe Gitlab::I18n::TranslationEntry do
       expect(entry).not_to have_singular
     end
   end
+
+  describe '#msgid_contains_newlines'do
+    it 'is true when the msgid is an array' do
+      data = { msgid: %w(hello world) }
+      entry = described_class.new(data)
+
+      expect(entry.msgid_contains_newlines?).to be_truthy
+    end
+  end
+
+  describe '#plural_id_contains_newlines'do
+    it 'is true when the msgid is an array' do
+      data = { plural_id: %w(hello world) }
+      entry = described_class.new(data)
+
+      expect(entry.plural_id_contains_newlines?).to be_truthy
+    end
+  end
+
+  describe '#translations_contain_newlines'do
+    it 'is true when the msgid is an array' do
+      data = { msgstr: %w(hello world) }
+      entry = described_class.new(data)
+
+      expect(entry.translations_contain_newlines?).to be_truthy
+    end
+  end
 end

@@ -71,11 +71,15 @@ module Gitlab
       end
 
       def validate_newlines(errors, entry)
-        if entry.msgid.is_a?(Array)
+        if entry.msgid_contains_newlines?
           errors << "is defined over multiple lines, this breaks some tooling."
         end
 
-        if entry.all_translations.any? { |translation| translation.is_a?(Array) }
+        if entry.plural_id_contains_newlines?
+          errors << "plural is defined over multiple lines, this breaks some tooling."
+        end
+
+        if entry.translations_contain_newlines?
           errors << "has translations defined over multiple lines, this breaks some tooling."
         end
       end
