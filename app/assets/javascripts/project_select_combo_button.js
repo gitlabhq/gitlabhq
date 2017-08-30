@@ -13,8 +13,16 @@ export default class ProjectSelectComboButton {
   }
 
   bindEvents() {
-    this.projectSelectInput.siblings('.new-project-item-select-button')
-      .on('click', this.openDropdown);
+    const dropdownButton = this.projectSelectInput.siblings('.new-project-item-select-button');
+
+    dropdownButton.on('click', this.openDropdown);
+
+    this.newItemBtn.on('click', (e) => {
+      if (!this.getProjectFromLocalStorage()) {
+        e.preventDefault();
+        dropdownButton.trigger('click');
+      }
+    });
 
     this.projectSelectInput.on('change', () => this.selectProject());
   }
@@ -56,10 +64,8 @@ export default class ProjectSelectComboButton {
     if (project) {
       this.newItemBtn.attr('href', project.url);
       this.newItemBtn.text(`${this.formattedText.defaultTextPrefix} in ${project.name}`);
-      this.newItemBtn.enable();
     } else {
       this.newItemBtn.text(`Select project to create ${this.formattedText.presetTextSuffix}`);
-      this.newItemBtn.disable();
     }
   }
 
