@@ -19,8 +19,10 @@ module API
       end
     end
 
-    def destroy_conditionally!(resource, last_update_field: :updated_at)
-      check_unmodified_since!(resource.public_send(last_update_field))
+    def destroy_conditionally!(resource, last_updated: nil)
+      last_updated ||= resource.updated_at
+
+      check_unmodified_since!(last_updated)
 
       status 204
       if block_given?
