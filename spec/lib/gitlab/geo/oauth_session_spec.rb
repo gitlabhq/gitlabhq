@@ -14,24 +14,24 @@ describe Gitlab::Geo::OauthSession do
     allow(subject).to receive(:primary_node_url) { 'http://localhost:3001/' }
   end
 
-  describe '#is_oauth_state_valid?' do
+  describe '#oauth_state_valid?' do
     it 'returns false when state is not present' do
-      expect(subject.is_oauth_state_valid?).to be_falsey
+      expect(subject.oauth_state_valid?).to be_falsey
     end
 
     it 'returns false when return_to cannot be retrieved' do
       subject.state = 'invalidstate'
-      expect(subject.is_oauth_state_valid?).to be_falsey
+      expect(subject.oauth_state_valid?).to be_falsey
     end
 
     it 'returns false when hmac does not match' do
       subject.state = dummy_state
-      expect(subject.is_oauth_state_valid?).to be_falsey
+      expect(subject.oauth_state_valid?).to be_falsey
     end
 
     it 'returns true when hmac matches generated one' do
       subject.state = valid_state
-      expect(subject.is_oauth_state_valid?).to be_truthy
+      expect(subject.oauth_state_valid?).to be_truthy
     end
   end
 

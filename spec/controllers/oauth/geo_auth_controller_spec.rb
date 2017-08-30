@@ -16,7 +16,7 @@ describe Oauth::GeoAuthController do
     let(:primary_node_oauth_endpoint) { Gitlab::Geo::OauthSession.new.authorize_url(redirect_uri: oauth_geo_callback_url, state: auth_state) }
 
     it 'redirects to root_url when state is invalid' do
-      allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:is_oauth_state_valid?) { false }
+      allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:oauth_state_valid?) { false }
       get :auth, state: auth_state
 
       expect(response).to redirect_to(root_url)
@@ -40,7 +40,7 @@ describe Oauth::GeoAuthController do
       end
 
       it 'redirects to login screen if state is invalid' do
-        allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:is_oauth_state_valid?) { false }
+        allow_any_instance_of(Gitlab::Geo::OauthSession).to receive(:oauth_state_valid?) { false }
         get :callback, state: callback_state
 
         expect(response).to redirect_to(new_user_session_path)
