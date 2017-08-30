@@ -8,13 +8,7 @@
       .user-callout-copy
         %h4
           - if current_application_settings.should_check_namespace_plan?
-            - if can?(current_user, :admin_namespace, @project.namespace)
-              Upgrade your plan to improve milestones with Burndown Charts.
-            - elsif @project.group
-              Upgrade the plan for #{ @project.group.name } to improve milestones with Burndown Charts.
-            - else
-              - owner = @project.namespace.owner
-              Upgrade #{ owner.name }'s plan to improve milestones with Burndown Charts.
+            Upgrade your plan to improve milestones with Burndown Charts.
           - else
             Improve milestones with Burndown Charts.
         %p
