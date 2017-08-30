@@ -1246,6 +1246,6 @@ class Repository
 
     yield commit(sha)
   ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    delete_refs(tmp_ref) if tmp_ref
   end
 end

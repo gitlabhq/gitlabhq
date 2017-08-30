@@ -9,7 +9,7 @@ module Projects
 
     def execute
       Projects::HousekeepingService.new(@project).execute do
-        repository.delete_refs(garbage_refs)
+        repository.delete_refs(*garbage_refs)
       end
     rescue Projects::HousekeepingService::LeaseTaken => e
       Rails.logger.info(

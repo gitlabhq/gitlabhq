@@ -17,6 +17,7 @@ module Gitlab
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
+      GitError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -598,8 +599,21 @@ module Gitlab
         rugged.branches.delete(branch_name)
       end
 
-      def delete_refs(ref_names)
-        ref_names.each { |ref| rugged.references.delete(ref) }
+      def delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
+        message, status = Gitlab::Popen.popen(
+          command,
+          path) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
