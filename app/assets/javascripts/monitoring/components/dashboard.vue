@@ -3,6 +3,7 @@
   import _ from 'underscore';
   import statusCodes from '../../lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
+  import GraphGroup from './graph_group.vue';
   import GraphRow from './graph_row.vue';
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
@@ -31,6 +32,7 @@
     },
 
     components: {
+      GraphGroup,
       GraphRow,
       EmptyState,
     },
@@ -120,29 +122,24 @@
 
 <template>
   <div v-if="!showEmptyState" class="prometheus-graphs">
-    <div
+    <graph-group
       v-for="(groupData, index) in store.groups"
       :key="index"
-      class="panel panel-default prometheus-panel"
+      :name="groupData.group"
     >
-      <div class="panel-heading">
-        <h4>{{groupData.group}}</h4>
-      </div>
-      <div class="panel-body">
-        <graph-row
-          v-for="(row, index) in groupData.metrics"
-          :key="index"
-          :row-data="row"
-          :update-aspect-ratio="updateAspectRatio"
-          :deployment-data="store.deploymentData"
-        />
-      </div>
-    </div>
+      <graph-row
+        v-for="(row, index) in groupData.metrics"
+        :key="index"
+        :row-data="row"
+        :update-aspect-ratio="updateAspectRatio"
+        :deployment-data="store.deploymentData"
+      />
+    </graph-group>
   </div>
   <empty-state
+    v-else
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
-    v-else
   />
 </template>
