@@ -105,6 +105,7 @@ module VisibilityLevelHelper
   def disallowed_group_visibility_level_description(level, group)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
+    instructions = ''
 
     unless group.visibility_level_allowed_by_projects?(level)
       reasons << "it contains projects with higher visibility"
@@ -115,11 +116,15 @@ module VisibilityLevelHelper
     end
 
     unless group.visibility_level_allowed_by_parent?(level)
-      reasons << "the visibility of its parent group is #{group.parent.visibility}"
+      parent_group = link_to group.parent.name, group_path(group.parent)
+      change_visiblity = link_to 'change the visibility', edit_group_path(group.parent)
+
+      reasons << "the visibility of #{parent_group} is #{group.parent.visibility}"
+      instructions << " To make this group #{level_name}, you must first #{change_visiblity} of the parent group."
     end
 
     reasons = reasons.any? ? ' because ' + reasons.to_sentence : ''
-    "This group cannot be #{level_name}#{reasons}."
+    "This group cannot be #{level_name}#{reasons}.#{instructions}".html_safe
   end
 
   def visibility_icon_description(form_model)
