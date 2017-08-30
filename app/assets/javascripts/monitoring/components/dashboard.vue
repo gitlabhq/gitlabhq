@@ -121,25 +121,21 @@
 <template>
   <div v-if="!showEmptyState" class="prometheus-graphs">
     <div
-      class="row"
       v-for="(groupData, index) in store.groups"
       :key="index"
+      class="panel panel-default prometheus-panel"
     >
-      <div class="col-md-12">
-        <div class="panel panel-default prometheus-panel">
-          <div class="panel-heading">
-            <h4>{{groupData.group}}</h4>
-          </div>
-          <div class="panel-body">
-            <graph-row
-              v-for="(row, index) in groupData.metrics"
-              :key="index"
-              :row-data="row"
-              :update-aspect-ratio="updateAspectRatio"
-              :deployment-data="store.deploymentData"
-            />
-          </div>
-        </div>
+      <div class="panel-heading">
+        <h4>{{groupData.group}}</h4>
+      </div>
+      <div class="panel-body">
+        <graph-row
+          v-for="(row, index) in groupData.metrics"
+          :key="index"
+          :row-data="row"
+          :update-aspect-ratio="updateAspectRatio"
+          :deployment-data="store.deploymentData"
+        />
       </div>
     </div>
   </div>
