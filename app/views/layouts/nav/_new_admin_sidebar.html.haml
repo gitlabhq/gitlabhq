@@ -7,7 +7,7 @@
         .sidebar-context-title Admin Area
     %ul.sidebar-top-level-items
       = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts), html_options: {class: 'home'}) do
-        = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
+        = sidebar_link admin_root_path, title: _('Overview'), css: 'shortcuts-tree' do
           .nav-icon-container
             = custom_icon('overview')
           %span.nav-item-name
@@ -48,7 +48,7 @@
                 ConvDev Index
 
       = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles audit_logs)) do
-        = link_to admin_conversational_development_index_path, title: 'Monitoring' do
+        = sidebar_link admin_conversational_development_index_path, title: _('Monitoring') do
           .nav-icon-container
             = custom_icon('monitoring')
           %span.nav-item-name
@@ -78,28 +78,28 @@
           = render 'layouts/nav/ee/new_admin_monitoring_sidebar'
 
       = nav_link(controller: :broadcast_messages) do
-        = link_to admin_broadcast_messages_path, title: 'Messages' do
+        = sidebar_link admin_broadcast_messages_path, title: _('Messages') do
           .nav-icon-container
             = custom_icon('messages')
           %span.nav-item-name
             Messages
 
       = nav_link(controller: [:hooks, :hook_logs]) do
-        = link_to admin_hooks_path, title: 'Hooks' do
+        = sidebar_link admin_hooks_path, title: _('Hooks') do
           .nav-icon-container
             = custom_icon('system_hooks')
           %span.nav-item-name
             System Hooks
 
       = nav_link(controller: :applications) do
-        = link_to admin_applications_path, title: 'Applications' do
+        = sidebar_link admin_applications_path, title: _('Applications') do
           .nav-icon-container
             = custom_icon('applications')
           %span.nav-item-name
             Applications
 
       = nav_link(controller: :abuse_reports) do
-        = link_to admin_abuse_reports_path, title: "Abuse Reports" do
+        = sidebar_link admin_abuse_reports_path, title: _("Abuse Reports") do
           .nav-icon-container
             = custom_icon('abuse_reports')
           %span.nav-item-name
@@ -107,7 +107,7 @@
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
       = nav_link(controller: :licenses) do
-        = link_to admin_license_path, title: 'License' do
+        = sidebar_link admin_license_path, title: _('License') do
           .nav-icon-container
             = custom_icon('license')
           %span.nav-item-name
@@ -115,56 +115,56 @@
 
       - if akismet_enabled?
         = nav_link(controller: :spam_logs) do
-          = link_to admin_spam_logs_path, title: "Spam Logs" do
+          = sidebar_link admin_spam_logs_path, title: _("Spam Logs") do
             .nav-icon-container
               = custom_icon('spam_logs')
             %span.nav-item-name
               Spam Logs
 
       = nav_link(controller: :push_rules) do
-        = link_to admin_push_rule_path, title: 'Push Rules' do
+        = sidebar_link admin_push_rule_path, title: _('Push Rules') do
           .nav-icon-container
             = custom_icon('push_rules')
           %span.nav-item-name
             Push Rules
 
       = nav_link(controller: :geo_nodes) do
-        = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+        = sidebar_link admin_geo_nodes_path, title: _('Geo Nodes') do
           .nav-icon-container
             = custom_icon('geo_nodes')
           %span.nav-item-name
             Geo Nodes
 
       = nav_link(controller: :deploy_keys) do
-        = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
+        = sidebar_link admin_deploy_keys_path, title: _('Deploy Keys') do
           .nav-icon-container
             = custom_icon('key')
           %span.nav-item-name
             Deploy Keys
 
       = nav_link(controller: :services) do
-        = link_to admin_application_settings_services_path, title: 'Service Templates' do
+        = sidebar_link admin_application_settings_services_path, title: _('Service Templates') do
           .nav-icon-container
             = custom_icon('service_templates')
           %span.nav-item-name
             Service Templates
 
       = nav_link(controller: :labels) do
-        = link_to admin_labels_path, title: 'Labels' do
+        = sidebar_link admin_labels_path, title: _('Labels') do
           .nav-icon-container
             = custom_icon('labels')
           %span.nav-item-name
             Labels
 
       = nav_link(controller: :appearances) do
-        = link_to admin_appearances_path, title: 'Appearances' do
+        = sidebar_link admin_appearances_path, title: _('Appearances') do
           .nav-icon-container
             = custom_icon('appearance')
           %span.nav-item-name
             Appearance
 
       = nav_link(controller: :application_settings) do
-        = link_to admin_application_settings_path, title: 'Settings' do
+        = sidebar_link admin_application_settings_path, title: _('Settings') do
           .nav-icon-container
             = custom_icon('settings')
           %span.nav-item-name
