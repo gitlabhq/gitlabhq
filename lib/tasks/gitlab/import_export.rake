@@ -8,24 +8,16 @@ class GitLabProjectImport
   def import
     show_warning!
 
-    project = import_project
+    import_project
 
     puts 'Project will be imported.'
   end
 
   private
 
-  def done
-    @project.errors.invalid? || %w[failed finished].include?(@project.reload.import_status)
-  end
-
   def show_warning!
     puts "This will import GitLab #{@file_path.bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
-    puts "Permission checks are ignored. Press any key to continue.".color(:red)
-
-    STDIN.getch
-
-    puts 'Starting the import (this could take a while)'.color(:green)
+    puts 'Starting the import (this could take some time)'.color(:green)
   end
 
   def import_project
@@ -40,8 +32,8 @@ class GitLabProjectImport
     end
   end
 
-  def find_or_create_namespace(names)
-    return @current_user.namespace if names == @current_user.namespace_path
+  def find_or_create_namespace(namespace_path)
+    return @current_user.namespace if namespace_path == @current_user.namespace_path
     return @current_user.namespace unless @current_user.can_create_group?
 
     Groups::NestedCreateService.new(@current_user, group_path: names).execute
@@ -68,6 +60,7 @@ namespace :gitlab do
     desc 'GitLab | Export a project'
     task :export, [:project_path, :gitlab_username] => :environment do |_t, args|
       project = Project.find_by_full_path(args.project_path)
+
       project.add_export_job(current_user: User.find_by_username(args.gitlab_username))
 
       puts "Project #{project.name} will be exported."
@@ -80,10 +73,10 @@ namespace :gitlab do
       puts "Project exported to #{project.export_project_path}" if project.export_project_path
 
       puts case project.import_status
-             when 'finished', 'scheduled', 'started'
-               "Project import #{project.import_status}."
-             when 'failed'
-               "Project import failed with error: #{project.import_error}"
+           when 'finished', 'scheduled', 'started'
+             "Project import #{project.import_status}."
+           when 'failed'
+             "Project import failed with error: #{project.import_error}"
            end
     end
   end
