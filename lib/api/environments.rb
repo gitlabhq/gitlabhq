@@ -79,8 +79,7 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
-        status 204
-        environment.destroy
+        destroy_conditionally!(environment)
       end
 
       desc 'Stops an existing environment' do

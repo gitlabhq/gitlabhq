@@ -213,6 +213,10 @@ describe API::ProtectedBranches do
       expect(response).to have_gitlab_http_status(204)
     end
 
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/protected_branches/#{branch_name}", user) }
+    end
+
     it "returns 404 if branch does not exist" do
       delete api("/projects/#{project.id}/protected_branches/barfoo", user)
 

@@ -279,6 +279,10 @@ describe API::Runners do
             expect(response).to have_http_status(204)
           end.to change { Ci::Runner.shared.count }.by(-1)
         end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/runners/#{shared_runner.id}", admin) }
+        end
       end
 
       context 'when runner is not shared' do
@@ -331,6 +335,10 @@ describe API::Runners do
 
             expect(response).to have_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/runners/#{specific_runner.id}", user) }
         end
       end
     end
@@ -462,6 +470,10 @@ describe API::Runners do
 
             expect(response).to have_http_status(204)
           end.to change { project.runners.count }.by(-1)
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user) }
         end
       end
 
