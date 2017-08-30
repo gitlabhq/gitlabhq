@@ -43,3 +43,8 @@
  * Styles for JS behaviors.
  */
 @import "behaviors";
+
+/*
+* EE-only stylesheets
+*/
+@import "../../../ee/app/assets/stylesheets/**/*";

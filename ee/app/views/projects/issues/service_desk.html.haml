@@ -15,16 +15,17 @@
     = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
 
   - support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
+  - is_empty_state = !@issues.present?
 
-  %div{ class: (container_class), data: { support_bot: support_bot_attrs }}
+  %div{ class: "#{container_class} service-desk-issues", data: { support_bot: support_bot_attrs }}
     .top-area
       = render 'shared/issuable/nav', type: :issues
       .nav-controls{ class: ("visible-xs" if show_new_nav?) }
         = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
     = render 'shared/issuable/search_bar', type: :issues
 
-    - if @issues.present?
+    - if !is_empty_state
       = render 'service_desk_info_content'
 
     .issues-holder
-      = render 'projects/issues/issues', empty_state_path: 'service_desk_empty_state'
+      = render 'projects/issues/issues', empty_state_path: 'service_desk_info_content'

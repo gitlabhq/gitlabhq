@@ -1,0 +1,23 @@
+.service-desk-issues {
+  .empty-state {
+    max-width: 550px;
+    text-align: center;
+
+    .service-desk-graphic {
+
+    }
+  }
+
+  .non-empty-state {
+    text-align: left;
+
+    .service-desk-graphic {
+      margin-top: 20px;
+    }
+
+    .media-body {
+      margin-top: 10px;
+      margin-left: 20px;
+    }
+  }
+}
