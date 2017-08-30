@@ -34,13 +34,13 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Repository" tab' do
-    page.within '.nav-sidebar' do
+    page.within '.sidebar-top-level-items > .active' do
       click_link('Repository')
     end
   end
 
   step 'I click the "Activity" tab' do
-    page.within '.nav-sidebar' do
+    page.within '.sidebar-top-level-items > .active' do
       click_link('Activity')
     end
   end
@@ -82,7 +82,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Charts" tab' do
-    page.within '.nav-sidebar' do
+    page.within('.sidebar-top-level-items > .active') do
       click_link('Charts')
     end
   end
