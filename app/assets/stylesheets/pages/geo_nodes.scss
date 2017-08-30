@@ -29,6 +29,24 @@
   }
 }
 
+.js-advanced-geo-node-status-toggler {
+  color: $gl-link-color;
+  padding: 10px 0 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+
+  &:hover span {
+    color: $gl-link-color;
+    text-decoration: underline;
+  }
+}
+
+.hide-status {
+  display: none;
+  background: transparent;
+}
+
 .node-info {
   color: $gl-text-color;
 }
