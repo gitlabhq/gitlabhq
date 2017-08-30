@@ -204,6 +204,8 @@ module API
 
       desc 'Sync a group with LDAP.'
       post ":id/ldap_sync" do
+        forbidden!('LDAP is disabled, or LDAP extras are disabled for this license') unless Gitlab::LDAP::Config.enabled_extras?
+
         group = find_group!(params[:id])
         authorize! :admin_group, group
 

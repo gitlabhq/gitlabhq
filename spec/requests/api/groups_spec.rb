@@ -672,74 +672,94 @@ describe API::Groups do
   end
 
   describe 'POST /groups/:id/ldap_sync' do
-    context 'when authenticated as the group owner' do
-      context 'when the group is ready to sync' do
-        it 'returns 202 Accepted' do
-          post api("/groups/#{group1.id}/ldap_sync", user1)
-          expect(response).to have_http_status(202)
-        end
+    context 'when LDAP config enabled_extras is true' do
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(true)
+      end
 
-        it 'queues a sync job' do
-          Sidekiq::Testing.fake! do
-            expect { post api("/groups/#{group1.id}/ldap_sync", user1) }.to change(LdapGroupSyncWorker.jobs, :size).by(1)
+      context 'when authenticated as the group owner' do
+        context 'when the group is ready to sync' do
+          it 'returns 202 Accepted' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(response).to have_http_status(202)
+          end
+
+          it 'queues a sync job' do
+            expect { ldap_sync(group1.id, user1, :fake!) }.to change(LdapGroupSyncWorker.jobs, :size).by(1)
+          end
+
+          it 'sets the ldap_sync state to pending' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(group1.reload.ldap_sync_pending?).to be_truthy
           end
         end
 
-        it 'sets the ldap_sync state to pending' do
-          post api("/groups/#{group1.id}/ldap_sync", user1)
-          expect(group1.reload.ldap_sync_pending?).to be_truthy
-        end
-      end
+        context 'when the group is already pending a sync' do
+          before do
+            group1.pending_ldap_sync!
+          end
 
-      context 'when the group is already pending a sync' do
-        before do
-          group1.pending_ldap_sync!
-        end
+          it 'returns 202 Accepted' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(response).to have_http_status(202)
+          end
 
-        it 'returns 202 Accepted' do
-          post api("/groups/#{group1.id}/ldap_sync", user1)
-          expect(response).to have_http_status(202)
-        end
+          it 'does not queue a sync job' do
+            expect { ldap_sync(group1.id, user1, :fake!) }.not_to change(LdapGroupSyncWorker.jobs, :size)
+          end
 
-        it 'does not queue a sync job' do
-          Sidekiq::Testing.fake! do
-            expect { post api("/groups/#{group1.id}/ldap_sync", user1) }.not_to change(LdapGroupSyncWorker.jobs, :size)
+          it 'does not change the ldap_sync state' do
+            expect do
+              ldap_sync(group1.id, user1, :disable!)
+            end.not_to change { group1.reload.ldap_sync_status }
           end
         end
 
-        it 'does not change the ldap_sync state' do
-          expect do
-            post api("/groups/#{group1.id}/ldap_sync", user1)
-          end.not_to change { group1.reload.ldap_sync_status }
+        it 'returns 404 for a non existing group' do
+          ldap_sync(1328, user1, :disable!)
+          expect(response).to have_http_status(404)
         end
       end
 
-      it 'returns 404 for a non existing group' do
-        post api('/groups/1328/ldap_sync', user1)
-        expect(response).to have_http_status(404)
+      context 'when authenticated as the admin' do
+        it 'returns 202 Accepted' do
+          ldap_sync(group1.id, admin, :disable!)
+          expect(response).to have_http_status(202)
+        end
+      end
+
+      context 'when authenticated as a non-owner user that can see the group' do
+        it 'returns 403' do
+          ldap_sync(group1.id, user2, :disable!)
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'when authenticated as an user that cannot see the group' do
+        it 'returns 404' do
+          ldap_sync(group2.id, user1, :disable!)
+
+          expect(response).to have_http_status(404)
+        end
       end
     end
 
-    context 'when authenticated as the admin' do
-      it 'returns 202 Accepted' do
-        post api("/groups/#{group1.id}/ldap_sync", admin)
-        expect(response).to have_http_status(202)
+    context 'when LDAP config enabled_extras is false' do
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(false)
       end
-    end
 
-    context 'when authenticated as an user that can see the group' do
-      it 'does not updates the group' do
-        post api("/groups/#{group1.id}/ldap_sync", user2)
+      it 'returns 403' do
+        ldap_sync(group1.id, admin, :disable!)
+
         expect(response).to have_http_status(403)
       end
     end
+  end
 
-    context 'when authenticated as an user that cannot see the group' do
-      it 'returns 404 when trying to update the group' do
-        post api("/groups/#{group2.id}/ldap_sync", user1)
-
-        expect(response).to have_http_status(404)
-      end
+  def ldap_sync(group_id, user, sidekiq_testing_method)
+    Sidekiq::Testing.send(sidekiq_testing_method) do
+      post api("/groups/#{group_id}/ldap_sync", user)
     end
   end
 end
