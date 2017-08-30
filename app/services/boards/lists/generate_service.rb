@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class GenerateService < BaseService
+    class GenerateService < Boards::BaseService
       def execute(board)
         return false unless board.lists.movable.empty?
 
