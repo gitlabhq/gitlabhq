@@ -25,6 +25,7 @@ Issue:
 - relative_position
 - last_edited_at
 - last_edited_by_id
+- discussion_locked
 Event:
 - id
 - target_type
@@ -168,6 +169,7 @@ MergeRequest:
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
+- discussion_locked
 MergeRequestDiff:
 - id
 - state
