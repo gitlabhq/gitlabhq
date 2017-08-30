@@ -1,6 +1,5 @@
 /* eslint-disable no-new*/
 import './smart_interval';
-import './lib/utils/datetime_utility';
 
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
