@@ -1,6 +1,6 @@
 module EE
   module UserProjectAccessChangedService
-    def execute
+    def execute(blocking: true)
       result = super
 
       @user_ids.each do |id|
