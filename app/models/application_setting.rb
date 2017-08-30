@@ -155,6 +155,8 @@ class ApplicationSetting < ActiveRecord::Base
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
 
+  validates :allowed_key_types, presence: true
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)

@@ -77,6 +77,15 @@ describe ApplicationSetting do
         expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)
       end
 
+      it 'does not allow all key types to be disabled' do
+        described_class::SUPPORTED_KEY_TYPES.each do |type|
+          setting["#{type}_key_restriction"] = described_class::FORBIDDEN_KEY_VALUE
+        end
+
+        expect(setting).not_to be_valid
+        expect(setting.errors.messages).to have_key(:allowed_key_types)
+      end
+
       where(:type) do
         described_class::SUPPORTED_KEY_TYPES
       end
