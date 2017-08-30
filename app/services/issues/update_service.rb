@@ -41,6 +41,10 @@ module Issues
         create_confidentiality_note(issue)
       end
 
+      if issue.previous_changes.include?('discussion_locked')
+        create_discussion_lock_note(issue)
+      end
+
       added_labels = issue.labels - old_labels
 
       if added_labels.present?
@@ -83,6 +87,10 @@ module Issues
 
     def create_confidentiality_note(issue)
       SystemNoteService.change_issue_confidentiality(issue, issue.project, current_user)
+    end
+
+    def create_discussion_lock_note(issue)
+      SystemNoteService.discussion_lock(issue, current_user)
     end
   end
 end
