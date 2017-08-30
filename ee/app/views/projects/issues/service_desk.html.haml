@@ -15,7 +15,6 @@
     = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
 
   - support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
-  - is_empty_state = !@issues.present?
 
   %div{ class: "#{container_class} service-desk-issues", data: { support_bot: support_bot_attrs }}
     .top-area
@@ -24,7 +23,7 @@
         = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
     = render 'shared/issuable/search_bar', type: :issues
 
-    - if !is_empty_state
+    - if @issues.present?
       = render 'service_desk_info_content'
 
     .issues-holder
