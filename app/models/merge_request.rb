@@ -822,7 +822,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?

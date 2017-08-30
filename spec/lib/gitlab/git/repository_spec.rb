@@ -433,6 +433,40 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#delete_refs' do
+    before(:all) do
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+
+    it 'deletes the ref' do
+      @repo.delete_refs('refs/heads/feature')
+
+      expect(@repo.rugged.references['refs/heads/feature']).to be_nil
+    end
+
+    it 'deletes all refs' do
+      refs = %w[refs/heads/wip refs/tags/v1.1.0]
+      @repo.delete_refs(*refs)
+
+      refs.each do |ref|
+        expect(@repo.rugged.references[ref]).to be_nil
+      end
+    end
+
+    it 'raises an error if it failed' do
+      expect(Gitlab::Popen).to receive(:popen).and_return(['Error', 1])
+
+      expect do
+        @repo.delete_refs('refs/heads/fix')
+      end.to raise_error(Gitlab::Git::Repository::GitError)
+    end
+
+    after(:all) do
+      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+      ensure_seeds
+    end
+  end
+
   describe "#refs_hash" do
     let(:refs) { repository.refs_hash }
 
