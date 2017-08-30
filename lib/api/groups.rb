@@ -153,6 +153,7 @@ module API
         destroy_conditionally!(group) do |group|
           ::Groups::DestroyService.new(group, current_user).execute
         end
+        status 204
       end
 
       desc 'Get a list of projects in this group.' do
@@ -206,10 +207,10 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        status 202
         if group.pending_ldap_sync
           LdapGroupSyncWorker.perform_async(group.id)
         end
+        status 202
       end
     end
   end
