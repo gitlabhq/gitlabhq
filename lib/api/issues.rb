@@ -230,8 +230,8 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
-        status 204
-        issue.destroy
+
+        destroy_conditionally!(issue)
       end
 
       desc 'List merge requests closing issue'  do

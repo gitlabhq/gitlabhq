@@ -207,9 +207,6 @@ gem 'kubeclient', '~> 2.2.0'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-# underscore-rails
-gem 'underscore-rails', '~> 1.8.0'
-
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
@@ -287,7 +284,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta12'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -340,7 +337,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.49.1', require: false
   gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.0.6', require: false
+  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -396,12 +393,12 @@ gem 'net-ssh', '~> 4.1.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 3.2'
+  gem 'rbnacl', '~> 4.0'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.30.0'
+gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

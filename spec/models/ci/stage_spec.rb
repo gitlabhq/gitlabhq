@@ -38,6 +38,17 @@ describe Ci::Stage, :models do
         expect(stage.status).to eq 'success'
       end
     end
+
+    context 'when stage status is not defined' do
+      before do
+        stage.update_column(:status, nil)
+      end
+
+      it 'sets the default value' do
+        expect(described_class.find(stage.id).status)
+          .to eq 'created'
+      end
+    end
   end
 
   describe 'update_status' do

@@ -77,10 +77,10 @@ module API
       end
       delete ':id' do
         runner = get_runner(params[:id])
+
         authenticate_delete_runner!(runner)
 
-        status 204
-        runner.destroy!
+        destroy_conditionally!(runner)
       end
     end
 
@@ -135,8 +135,7 @@ module API
         runner = runner_project.runner
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
-        status 204
-        runner_project.destroy
+        destroy_conditionally!(runner_project)
       end
     end
 

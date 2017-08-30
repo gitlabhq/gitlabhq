@@ -1,5 +1,9 @@
 - page_title "Merge Requests"
 
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+
 - if show_new_nav? && current_user
   - content_for :breadcrumbs_extra do
     = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
@@ -13,7 +17,7 @@
       .nav-controls{ class: ("visible-xs" if show_new_nav?) }
         = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
 
-  = render 'shared/issuable/filter', type: :merge_requests
+  = render 'shared/issuable/search_bar', type: :merge_requests
 
   .row-content-block.second-block
     Only merge requests from

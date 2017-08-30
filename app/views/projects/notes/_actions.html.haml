@@ -26,8 +26,12 @@
           ":title" => "buttonText",
           ":ref" => "'button'" }
 
-        = icon('spin spinner', 'v-show' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
-        %div{ 'v-show' => '!loading' }= render 'shared/icons/icon_status_success.svg'
+        = icon('spin spinner', 'v-if' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
+        %div{ 'v-else' => '' }
+          %template{ 'v-if' => 'isResolved' }
+            = render 'shared/icons/icon_status_success_solid.svg'
+          %template{ 'v-else' => '' }
+            = render 'shared/icons/icon_status_success.svg'
 
 - if current_user
   - if note.emoji_awardable?

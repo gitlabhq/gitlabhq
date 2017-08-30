@@ -200,6 +200,10 @@ describe API::GroupVariables do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/groups/#{group.id}/variables/#{variable.key}", user) }
+      end
     end
 
     context 'authorized user with invalid permissions' do

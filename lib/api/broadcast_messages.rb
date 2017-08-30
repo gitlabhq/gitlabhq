@@ -91,8 +91,7 @@ module API
       delete ':id' do
         message = find_message
 
-        status 204
-        message.destroy
+        destroy_conditionally!(message)
       end
     end
   end

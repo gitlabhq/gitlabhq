@@ -1,3 +1,4 @@
+import './dropdown_emoji';
 import './dropdown_hint';
 import './dropdown_non_user';
 import './dropdown_user';
