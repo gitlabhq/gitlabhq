@@ -733,6 +733,11 @@
   overflow: hidden;
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+}
+
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
@@ -759,6 +764,10 @@
         padding: 8px 16px;
       }
 
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
       a,
       button,
       .menu-item {
@@ -778,6 +787,8 @@
         &:hover,
         &:active,
         &:focus {
+          @include dropdown-item-hover;
+
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
 
