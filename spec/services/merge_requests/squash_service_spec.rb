@@ -134,7 +134,7 @@ describe MergeRequests::SquashService do
 
         it 'logs the stage and output' do
           expect(service).to receive(:log_error).with(a_string_including(stage))
-          expect(service).to receive(:log_error).with(error)
+          expect(service).to receive(:log_error).with(error, save_message_on_model: true)
 
           service.execute(merge_request)
         end

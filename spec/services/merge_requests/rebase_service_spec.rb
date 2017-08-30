@@ -9,14 +9,65 @@ describe MergeRequests::RebaseService do
   end
   let(:project) { merge_request.project }
 
+  subject(:service) { described_class.new(project, user, {}) }
+
   before do
     project.team << [user, :master]
   end
 
   describe '#execute' do
-    context 'valid params' do
-      let(:service) { described_class.new(project, user, {}) }
+    context 'when another rebase is already in progress' do
+      before do
+        allow(merge_request).to receive(:rebase_in_progress?).and_return(true)
+      end
 
+      it 'saves the error message' do
+        subject.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq 'Rebase task canceled: Another rebase is already in progress'
+      end
+
+      it 'returns an error' do
+        expect(service.execute(merge_request)).to match(status: :error,
+                                                        message: 'Failed to rebase. Should be done manually')
+      end
+    end
+
+    context 'when unexpected error occurs' do
+      before do
+        allow(service).to receive(:run_git_command).and_raise('Something went wrong')
+      end
+
+      it 'saves the error message' do
+        subject.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq 'Something went wrong'
+      end
+
+      it 'returns an error' do
+        expect(service.execute(merge_request)).to match(status: :error,
+                                                        message: 'Failed to rebase. Should be done manually')
+      end
+    end
+
+    context 'with git command failure' do
+      before do
+        allow(service).to receive(:popen).and_return(['Something went wrong', 1])
+      end
+
+      it 'saves the error message' do
+        subject.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq 'Something went wrong'
+      end
+
+      it 'returns an error' do
+        expect(service.execute(merge_request)).to match(status: :error,
+                                                        message: 'Failed to rebase. Should be done manually')
+      end
+    end
+
+    context 'valid params' do
       before do
         service.execute(merge_request)
       end
@@ -42,8 +93,6 @@ describe MergeRequests::RebaseService do
       end
 
       context 'git commands' do
-        let(:service) { described_class.new(project, user, {}) }
-
         it 'sets GL_REPOSITORY env variable when calling git commands' do
           expect_any_instance_of(described_class)
             .to receive(:run_git_command).exactly(4).with(
