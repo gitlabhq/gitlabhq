@@ -1,18 +1,16 @@
 class GitLabProjectImport
-  def self.run(*args)
-    new(*args).run
-  end
-
   def initialize(project_path, gitlab_username, file_path)
     @project_path = project_path
     @current_user = User.find_by_username(gitlab_username)
     @file_path = file_path
   end
 
-  def run
+  def import
+    show_warning!
+
     project = import_project
 
-    puts "Project will be exported to #{project.export_path}"
+    puts 'Project will be imported.'
   end
 
   private
@@ -35,7 +33,10 @@ class GitLabProjectImport
       namespace_path, _sep, name = @project_path.rpartition('/')
       namespace = find_or_create_namespace(namespace_path)
 
-      ::Projects::GitlabProjectsImportService.new(@current_user, namespace_id: namespace.id, path: name).execute
+      ::Projects::GitlabProjectsImportService.new(@current_user,
+                                                  namespace_id: namespace.id,
+                                                  path: name,
+                                                  file: File.new(@file_path)).execute
     end
   end
 
@@ -61,7 +62,7 @@ namespace :gitlab do
 
     desc 'GitLab | Import a project'
     task :import, [:project_path, :gitlab_username, :file_path] => :environment do |_t, args|
-      GitLabProjectImport.new(args.project_path, args.gitlab_username, args.file_path)
+      GitLabProjectImport.new(args.project_path, args.gitlab_username, args.file_path).import
     end
 
     desc 'GitLab | Export a project'
