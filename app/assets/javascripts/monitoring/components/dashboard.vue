@@ -3,8 +3,8 @@
   import _ from 'underscore';
   import statusCodes from '../../lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
-  import monitoringRow from './monitoring_row.vue';
-  import monitoringState from './monitoring_state.vue';
+  import GraphRow from './graph_row.vue';
+  import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
 
@@ -31,8 +31,8 @@
     },
 
     components: {
-      monitoringRow,
-      monitoringState,
+      GraphRow,
+      EmptyState,
     },
 
     methods: {
@@ -94,7 +94,6 @@
           this.updatedAspectRatios = 0;
         }
       },
-
     },
 
     created() {
@@ -132,7 +131,7 @@
             <h4>{{groupData.group}}</h4>
           </div>
           <div class="panel-body">
-            <monitoring-row
+            <graph-row
               v-for="(row, index) in groupData.metrics"
               :key="index"
               :row-data="row"
@@ -144,7 +143,7 @@
       </div>
     </div>
   </div>
-  <monitoring-state
+  <empty-state
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
