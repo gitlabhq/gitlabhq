@@ -21,12 +21,12 @@ module Gitlab
 
           def self.strategy(name, **opts)
             EntryStrategy.new(name, opts.fetch(:if)).tap do |strategy|
-              (@strategies ||= []).append(strategy)
+              strategies.append(strategy)
             end
           end
 
           def self.strategies
-            @strategies.to_a
+            @strategies ||= []
           end
 
           def self.entry_class(strategy)
