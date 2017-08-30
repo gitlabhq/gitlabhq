@@ -84,25 +84,11 @@ feature 'Dashboard Projects' do
   end
 
   context 'last push widget' do
-    let(:push_event_data) do
-      {
-        before: Gitlab::Git::BLANK_SHA,
-        after: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
-        ref: 'refs/heads/feature',
-        user_id: user.id,
-        user_name: user.name,
-        repository: {
-          name: project.name,
-          url: 'localhost/rubinius',
-          description: '',
-          homepage: 'localhost/rubinius',
-          private: true
-        }
-      }
-    end
-    let!(:push_event) { create(:event, :pushed, data: push_event_data, project: project, author: user) }
-
     before do
+      event = create(:push_event, project: project, author: user)
+
+      create(:push_event_payload, event: event, ref: 'feature', action: :created)
+
       visit dashboard_projects_path
     end
 

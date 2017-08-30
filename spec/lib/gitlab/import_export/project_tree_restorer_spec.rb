@@ -57,10 +57,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Ci::Pipeline.where(ref: nil)).not_to be_empty
       end
 
-      it 'restores the correct event with symbolised data' do
-        expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
-      end
-
       it 'preserves updated_at on issues' do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 
@@ -80,7 +76,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'event at forth level of the tree' do
-        let(:event) { Event.where(title: 'test levels').first }
+        let(:event) { Event.where(action: 6).first }
 
         it 'restores the event' do
           expect(event).not_to be_nil

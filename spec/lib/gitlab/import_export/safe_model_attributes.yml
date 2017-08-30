@@ -29,8 +29,6 @@ Event:
 - id
 - target_type
 - target_id
-- title
-- data
 - project_id
 - created_at
 - updated_at
