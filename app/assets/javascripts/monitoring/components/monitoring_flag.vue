@@ -1,8 +1,5 @@
 <script>
-  import {
-      dateFormat,
-      timeFormat,
-    } from '../constants';
+  import { dateFormat, timeFormat } from '../utils/date_time_formatters';
 
   export default {
     props: {
@@ -72,7 +69,7 @@
       r="5"
       transform="translate(-5, 20)">
     </circle>
-    <svg 
+    <svg
       class="rect-text-metric"
       :x="currentFlagPosition"
       y="0">

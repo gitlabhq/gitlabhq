@@ -253,6 +253,7 @@ import bp from './breakpoints';
 
     loadDiff(source) {
       if (this.diffsLoaded) {
+        document.dispatchEvent(new CustomEvent('scroll'));
         return;
       }
 

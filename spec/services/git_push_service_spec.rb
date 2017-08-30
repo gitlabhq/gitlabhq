@@ -661,7 +661,7 @@ describe GitPushService do
 
     context 'on the default branch' do
       before do
-        allow(service).to receive(:is_default_branch?).and_return(true)
+        allow(service).to receive(:default_branch?).and_return(true)
       end
 
       it 'flushes the caches of any special files that have been changed' do
@@ -682,7 +682,7 @@ describe GitPushService do
 
     context 'on a non-default branch' do
       before do
-        allow(service).to receive(:is_default_branch?).and_return(false)
+        allow(service).to receive(:default_branch?).and_return(false)
       end
 
       it 'does not flush any conditional caches' do

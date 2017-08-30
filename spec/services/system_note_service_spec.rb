@@ -13,37 +13,16 @@ describe SystemNoteService do
     let(:expected_noteable) { noteable }
     let(:commit_count)      { nil }
 
-    it 'is valid' do
+    it 'has the correct attributes', :aggregate_failures do
       expect(subject).to be_valid
-    end
-
-    it 'sets the noteable model' do
-      expect(subject.noteable).to eq expected_noteable
-    end
-
-    it 'sets the project' do
-      expect(subject.project).to eq project
-    end
-
-    it 'sets the author' do
-      expect(subject.author).to eq author
-    end
-
-    it 'is a system note' do
       expect(subject).to be_system
-    end
 
-    context 'metadata' do
-      it 'creates a new system note metadata record' do
-        expect { subject }.to change { SystemNoteMetadata.count }.from(0).to(1)
-      end
+      expect(subject.noteable).to eq expected_noteable
+      expect(subject.project).to eq project
+      expect(subject.author).to eq author
 
-      it 'creates a record correctly' do
-        metadata = subject.system_note_metadata
-
-        expect(metadata.commit_count).to eq(commit_count)
-        expect(metadata.action).to eq(action)
-      end
+      expect(subject.system_note_metadata.action).to eq(action)
+      expect(subject.system_note_metadata.commit_count).to eq(commit_count)
     end
   end
 

@@ -211,13 +211,13 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
+        case 'groups:merge_requests':
           if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
           new ProjectSelect();

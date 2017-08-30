@@ -15,7 +15,7 @@ module Ci
         pipeline_schedule: schedule
       )
 
-      result = validate(current_user || trigger_request.trigger.owner,
+      result = validate(current_user,
                         ignore_skip_ci: ignore_skip_ci,
                         save_on_errors: save_on_errors,
                         mirror_update: mirror_update)

@@ -1,8 +1,5 @@
 <script>
-  import {
-      dateFormat,
-      timeFormat,
-    } from '../constants';
+  import { dateFormat, timeFormat } from '../utils/date_time_formatters';
 
   export default {
     props: {
@@ -58,7 +55,7 @@
     class="deploy-info"
     v-if="showDeployInfo">
     <g
-      v-for="(deployment, index) in deploymentData" 
+      v-for="(deployment, index) in deploymentData"
       :key="index"
       :class="nameDeploymentClass(deployment)"
       :transform="transformDeploymentGroup(deployment)">
@@ -92,7 +89,7 @@
           width="90"
           height="58">
         </rect>
-        <g 
+        <g
           transform="translate(5, 2)">
           <text
             class="deploy-info-text text-metric-bold">

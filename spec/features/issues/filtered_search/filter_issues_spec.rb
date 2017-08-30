@@ -103,14 +103,6 @@ describe 'Filter issues', js: true do
         expect_issues_list_count(5)
         expect_filtered_search_input_empty
       end
-
-      it 'filters issues by invalid author' do
-        skip('to be tested, issue #26546')
-      end
-
-      it 'filters issues by multiple authors' do
-        skip('to be tested, issue #26546')
-      end
     end
 
     context 'author with other filters' do
@@ -165,10 +157,6 @@ describe 'Filter issues', js: true do
         expect_filtered_search_input(search_term)
       end
     end
-
-    it 'sorting' do
-      skip('to be tested, issue #26546')
-    end
   end
 
   describe 'filter issues by assignee' do
@@ -190,6 +178,7 @@ describe 'Filter issues', js: true do
         expect_issues_list_count(8, 1)
         expect_filtered_search_input_empty
       end
+<<<<<<< HEAD
 
       it 'filters issues by invalid assignee' do
         skip('to be tested, issue #26546')
@@ -208,6 +197,8 @@ describe 'Filter issues', js: true do
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
+=======
+>>>>>>> upstream/master
     end
 
     context 'assignee with other filters' do
@@ -260,12 +251,6 @@ describe 'Filter issues', js: true do
         expect_filtered_search_input(search_term)
       end
     end
-
-    context 'sorting' do
-      it 'sorts' do
-        skip('to be tested, issue #26546')
-      end
-    end
   end
 
   describe 'filter issues by label' do
@@ -286,10 +271,6 @@ describe 'Filter issues', js: true do
         expect_tokens([label_token('none', false)])
         expect_issues_list_count(9, 1)
         expect_filtered_search_input_empty
-      end
-
-      it 'filters issues by invalid label' do
-        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by multiple labels' do
@@ -503,12 +484,6 @@ describe 'Filter issues', js: true do
         expect_filtered_search_input_empty
       end
     end
-
-    context 'sorting' do
-      it 'sorts' do
-        skip('to be tested, issue #26546')
-      end
-    end
   end
 
   describe 'filter issues by milestone' do
@@ -543,14 +518,6 @@ describe 'Filter issues', js: true do
         expect_tokens([milestone_token('started', false)])
         expect_issues_list_count(5)
         expect_filtered_search_input_empty
-      end
-
-      it 'filters issues by invalid milestones' do
-        skip('to be tested, issue #26546')
-      end
-
-      it 'filters issues by multiple milestones' do
-        skip('to be tested, issue #26546')
       end
 
       it 'filters issues by milestone containing special characters' do
@@ -626,12 +593,6 @@ describe 'Filter issues', js: true do
         ])
         expect_issues_list_count(2)
         expect_filtered_search_input(search_term)
-      end
-    end
-
-    context 'sorting' do
-      it 'sorts' do
-        skip('to be tested, issue #26546')
       end
     end
   end

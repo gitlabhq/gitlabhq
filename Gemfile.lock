@@ -798,7 +798,7 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-gitlab-security (0.0.6)
+    rubocop-gitlab-security (0.1.0)
       rubocop (>= 0.47.1)
     rubocop-rspec (1.15.1)
       rubocop (>= 0.42.0)
@@ -1163,7 +1163,7 @@ DEPENDENCIES
   rspec-set (~> 0.1.3)
   rspec_profiling (~> 0.0.5)
   rubocop (~> 0.49.1)
-  rubocop-gitlab-security (~> 0.0.6)
+  rubocop-gitlab-security (~> 0.1.0)
   rubocop-rspec (~> 1.15.1)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
@@ -1213,4 +1213,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

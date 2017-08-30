@@ -249,6 +249,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -392,9 +400,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    return false unless merge_jid
-
-    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+    !!merge_jid && !merged?
   end
 
   def closed_without_fork?
@@ -844,7 +850,7 @@ class MergeRequest < ActiveRecord::Base
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 

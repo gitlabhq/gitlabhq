@@ -30,7 +30,7 @@ class GitPushService < BaseService
       @project.repository.after_create_branch
 
       # Re-find the pushed commits.
-      if is_default_branch?
+      if default_branch?
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".
         process_default_branch
       else
@@ -50,7 +50,7 @@ class GitPushService < BaseService
 
       # Update the bare repositories info/attributes file using the contents of the default branches
       # .gitattributes file
-      update_gitattributes if is_default_branch?
+      update_gitattributes if default_branch?
     end
 
     if current_application_settings.elasticsearch_indexing? && is_default_branch?
@@ -71,7 +71,7 @@ class GitPushService < BaseService
   end
 
   def update_caches
-    if is_default_branch?
+    if default_branch?
       if push_to_new_branch?
         # If this is the initial push into the default branch, the file type caches
         # will already be reset as a result of `Project#change_head`.
@@ -113,7 +113,7 @@ class GitPushService < BaseService
 
   # Schedules processing of commit messages.
   def process_commit_messages
-    default = is_default_branch?
+    default = default_branch?
 
     @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
       if commit.matches_cross_reference_regex?
@@ -216,7 +216,7 @@ class GitPushService < BaseService
     Gitlab::Git.branch_ref?(params[:ref])
   end
 
-  def is_default_branch?
+  def default_branch?
     Gitlab::Git.branch_ref?(params[:ref]) &&
       (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end

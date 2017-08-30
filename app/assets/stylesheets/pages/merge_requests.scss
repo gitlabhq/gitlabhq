@@ -475,6 +475,8 @@
 }
 
 .mr-source-target {
+  @include new-style-dropdown;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
