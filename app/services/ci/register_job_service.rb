@@ -3,6 +3,7 @@ module Ci
   # proper pending build to runner on runner API request
   class RegisterJobService
     include Gitlab::CurrentSettings
+    class MissingDependenciesError < StandardError; end
 
     attr_reader :runner
 
@@ -26,6 +27,11 @@ module Ci
         next unless runner.can_pick?(build)
 
         begin
+          if build.dependencies_exist_in_previous_stage?
+            build.drop!
+            raise MissingDependenciesError.new
+          end
+
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           build.runner_id = runner.id
@@ -33,7 +39,7 @@ module Ci
           register_success(build)
 
           return Result.new(build, true)
-        rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
+        rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError, MissingDependenciesError
           # We are looping to find another build that is not conflicting
           # It also indicates that this build can be picked and passed to runner.
           # If we don't do it, basically a bunch of runners would be competing for a build

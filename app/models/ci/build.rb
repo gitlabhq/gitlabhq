@@ -437,6 +437,16 @@ module Ci
       options[:dependencies]&.empty?
     end
 
+    def dependencies_exist_in_previous_stage?
+      return true if empty_dependencies?
+
+      depended_jobs = depends_on_builds
+
+      depended_jobs.select do |job|
+        options[:dependencies].include?(job.name)
+      end.any?
+    end
+
     def hide_secrets(trace)
       return unless trace
 
