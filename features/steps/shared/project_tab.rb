@@ -53,7 +53,7 @@ module SharedProjectTab
   end
 
   step 'the active sub tab should be Home' do
-    ensure_active_sub_tab('Home')
+    ensure_active_sub_tab('Details')
   end
 
   step 'the active sub tab should be Activity' do
