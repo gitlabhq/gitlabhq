@@ -1,4 +1,4 @@
-# Test and deploy Laravel applications with GitLab CI and Envoy
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy
 
 > **Type:** tutorial ||
 > **Level:** intermediary ||
@@ -437,10 +437,10 @@ Now that we have our `Dockerfile` let's build and push it to our [GitLab Contain
 
 On your GitLab project repository navigate to the **Registry** tab.
 
-![container registry page empty image](img/container-registry-page-empty-image.png)
+![container registry page empty image](img/container_registry_page_empty_image.png)
 
 You may need to enable container registry (under project's settings) to your project to see this tab.
-![container registry checkbox](img/container-registry-checkbox.png)
+![container registry checkbox](img/container_registry_checkbox.png)
 
 To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password.
 
@@ -460,7 +460,7 @@ To run the above commands, we first need to have [Docker](https://docs.docker.co
 
 Congratulations! You just pushed the first Docker image to the GitLab registry, and if you refresh the page you should be able to see it.
 
-![container registry page with image](img/container-registry-page-with-image.png)
+![container registry page with image](img/container_registry_page_with_image.png)
 
 >**Note:**
 You can also [use GitLab CI](https://about.gitlab.com/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine!
@@ -629,7 +629,7 @@ You may also want to add another job for [staging environment](https://about.git
 We have prepared everything we need to test and deploy our app with GitLab CI.
 To do that, commit and push `.gitlab-ci.yml` to the `master` branch. It will trigger a pipeline, which you can watch live under your project's **Pipelines**.
 
-![pipelines page](img/pipelines-page.png)
+![pipelines page](img/pipelines_page.png)
 
 Here we see our **Test** and **Deploy** stages.
 The **Test** stage has the `unit_test` build running.
