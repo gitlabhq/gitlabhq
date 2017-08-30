@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Issue do
+  using RSpec::Parameterized::TableSyntax
+
   describe '#allows_multiple_assignees?' do
     it 'does not allow multiple assignees without license' do
       stub_licensed_features(multiple_issue_assignees: false)
@@ -20,24 +22,23 @@ describe Issue do
   end
 
   describe '#weight' do
-    [
-      { license: true,  database: 5,    expected: 5 },
-      { license: true,  database: nil,  expected: nil },
-      { license: false, database: 5,    expected: nil },
-      { license: false, database: nil,  expected: nil }
-    ].each do |spec|
-      context spec.inspect do
-        let(:spec) { spec }
-        let(:issue) { build(:issue, weight: spec[:database]) }
+    where(:license_value, :database_value, :expected) do
+      true  | 5   | 5
+      true  | nil | nil
+      false | 5   | nil
+      false | nil | nil
+    end
 
-        subject { issue.weight }
+    with_them do
+      let(:issue) { build(:issue, weight: database_value) }
 
-        before do
-          stub_licensed_features(issue_weights: spec[:license])
-        end
+      subject { issue.weight }
 
-        it { is_expected.to eq(spec[:expected]) }
+      before do
+        stub_licensed_features(issue_weights: license_value)
       end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

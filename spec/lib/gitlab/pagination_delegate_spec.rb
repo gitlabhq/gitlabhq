@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Gitlab::PaginationDelegate do
   context 'no data' do
-    let(:delegate) do 
+    let(:delegate) do
       described_class.new(page: 1,
                           per_page: 10,
-                          count: 0) 
+                          count: 0)
     end
 
     it 'shows the correct total count' do
@@ -46,10 +46,10 @@ describe Gitlab::PaginationDelegate do
   end
 
   context 'with data' do
-    let(:delegate) do 
+    let(:delegate) do
       described_class.new(page: 5,
                           per_page: 100,
-                          count: 1000) 
+                          count: 1000)
     end
 
     it 'shows the correct total count' do
@@ -90,10 +90,10 @@ describe Gitlab::PaginationDelegate do
   end
 
   context 'last page' do
-    let(:delegate) do 
+    let(:delegate) do
       described_class.new(page: 10,
                           per_page: 100,
-                          count: 1000) 
+                          count: 1000)
     end
 
     it 'shows the correct total count' do

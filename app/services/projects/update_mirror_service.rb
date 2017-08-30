@@ -50,7 +50,7 @@ module Projects
         else
           begin
             repository.ff_merge(current_user, upstream_branch.dereferenced_target, name)
-          rescue GitHooksService::PreReceiveError, Repository::CommitError => e
+          rescue Gitlab::Git::HooksService::PreReceiveError, Repository::CommitError => e
             errors << e.message
           end
         end

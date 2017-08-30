@@ -729,6 +729,18 @@ test:
     enabled: true
   lfs:
     enabled: false
+  artifacts:
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+    object_store:
+      enabled: false
+      remote_directory: artifacts # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: eu-central-1
   gitlab:
     host: localhost
     port: 80
@@ -744,6 +756,9 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+        failure_count_threshold: 999999
+        failure_wait_time: 0
+        storage_timeout: 30
       broken:
         path: tmp/tests/non-existent-repositories
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket

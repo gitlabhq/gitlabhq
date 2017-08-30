@@ -1,122 +1,105 @@
-/* eslint-disable no-new, arrow-parens, no-param-reassign, comma-dangle, guard-for-in, no-restricted-syntax, max-len */
-/* global ProtectedBranchDropdown */
 /* global Flash */
 
-(global => {
-  global.gl = global.gl || {};
+import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
+import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
+import ProtectedBranchDropdown from './protected_branch_dropdown';
 
-  const ACCESS_LEVELS = {
-    MERGE: 'merge_access_levels',
-    PUSH: 'push_access_levels',
-  };
+export default class ProtectedBranchCreate {
+  constructor() {
+    this.$form = $('.js-new-protected-branch');
+    this.buildDropdowns();
+    this.$branchInput = this.$form.find('input[name="protected_branch[name]"]');
+    this.bindEvents();
+  }
 
-  const LEVEL_TYPES = {
-    ROLE: 'role',
-    USER: 'user',
-    GROUP: 'group'
-  };
+  bindEvents() {
+    this.$form.on('submit', this.onFormSubmit.bind(this));
+  }
 
-  gl.ProtectedBranchCreate = class {
-    constructor() {
-      this.$wrap = this.$form = $('.js-new-protected-branch');
-      this.buildDropdowns();
-      this.$branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
-      this.bindEvents();
-    }
+  buildDropdowns() {
+    const $allowedToMergeDropdown = this.$form.find('.js-allowed-to-merge');
+    const $allowedToPushDropdown = this.$form.find('.js-allowed-to-push');
 
-    bindEvents() {
-      this.$form.on('submit', this.onFormSubmit.bind(this));
-    }
+    // Cache callback
+    this.onSelectCallback = this.onSelect.bind(this);
 
-    buildDropdowns() {
-      const $allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
-      const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+    // Allowed to Merge dropdown
+    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new ProtectedBranchAccessDropdown({
+      $dropdown: $allowedToMergeDropdown,
+      accessLevelsData: gon.merge_access_levels,
+      onSelect: this.onSelectCallback,
+      accessLevel: ACCESS_LEVELS.MERGE,
+    });
 
-      // Cache callback
-      this.onSelectCallback = this.onSelect.bind(this);
+    // Allowed to Push dropdown
+    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new ProtectedBranchAccessDropdown({
+      $dropdown: $allowedToPushDropdown,
+      accessLevelsData: gon.push_access_levels,
+      onSelect: this.onSelectCallback,
+      accessLevel: ACCESS_LEVELS.PUSH,
+    });
 
-      // Allowed to Merge dropdown
-      this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new gl.ProtectedBranchAccessDropdown({
-        $dropdown: $allowedToMergeDropdown,
-        accessLevelsData: gon.merge_access_levels,
-        onSelect: this.onSelectCallback,
-        accessLevel: ACCESS_LEVELS.MERGE
-      });
+    this.protectedBranchDropdown = new ProtectedBranchDropdown({
+      $dropdown: this.$form.find('.js-protected-branch-select'),
+      onSelect: this.onSelectCallback,
+    });
+  }
 
-      // Allowed to Push dropdown
-      this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new gl.ProtectedBranchAccessDropdown({
-        $dropdown: $allowedToPushDropdown,
-        accessLevelsData: gon.push_access_levels,
-        onSelect: this.onSelectCallback,
-        accessLevel: ACCESS_LEVELS.PUSH
-      });
+  // Enable submit button after selecting an option
+  onSelect() {
+    const $allowedToMerge = this[`${ACCESS_LEVELS.MERGE}_dropdown`].getSelectedItems();
+    const $allowedToPush = this[`${ACCESS_LEVELS.PUSH}_dropdown`].getSelectedItems();
+    const toggle = !(this.$form.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
 
-      // Protected branch dropdown
-      new window.ProtectedBranchDropdown({
-        $dropdown: this.$wrap.find('.js-protected-branch-select'),
-        onSelect: this.onSelectCallback
-      });
-    }
+    this.$form.find('input[type="submit"]').attr('disabled', toggle);
+  }
 
-    // Enable submit button after selecting an option
-    onSelect() {
-      const $allowedToMerge = this[`${ACCESS_LEVELS.MERGE}_dropdown`].getSelectedItems();
-      const $allowedToPush = this[`${ACCESS_LEVELS.PUSH}_dropdown`].getSelectedItems();
-      const toggle = !(this.$wrap.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
+  getFormData() {
+    const formData = {
+      authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
+      protected_branch: {
+        name: this.$form.find('input[name="protected_branch[name]"]').val(),
+      },
+    };
 
-      this.$form.find('input[type="submit"]').attr('disabled', toggle);
-    }
+    Object.keys(ACCESS_LEVELS).forEach((level) => {
+      const accessLevel = ACCESS_LEVELS[level];
+      const selectedItems = this[`${accessLevel}_dropdown`].getSelectedItems();
+      const levelAttributes = [];
 
-    getFormData() {
-      const formData = {
-        authenticity_token: this.$form.find('input[name="authenticity_token"]').val(),
-        protected_branch: {
-          name: this.$wrap.find('input[name="protected_branch[name]"]').val(),
+      selectedItems.forEach((item) => {
+        if (item.type === LEVEL_TYPES.USER) {
+          levelAttributes.push({
+            user_id: item.user_id,
+          });
+        } else if (item.type === LEVEL_TYPES.ROLE) {
+          levelAttributes.push({
+            access_level: item.access_level,
+          });
+        } else if (item.type === LEVEL_TYPES.GROUP) {
+          levelAttributes.push({
+            group_id: item.group_id,
+          });
         }
-      };
-
-      for (const ACCESS_LEVEL in ACCESS_LEVELS) {
-        const selectedItems = this[`${ACCESS_LEVELS[ACCESS_LEVEL]}_dropdown`].getSelectedItems();
-        const levelAttributes = [];
-
-        for (let i = 0; i < selectedItems.length; i += 1) {
-          const current = selectedItems[i];
-
-          if (current.type === LEVEL_TYPES.USER) {
-            levelAttributes.push({
-              user_id: selectedItems[i].user_id
-            });
-          } else if (current.type === LEVEL_TYPES.ROLE) {
-            levelAttributes.push({
-              access_level: selectedItems[i].access_level
-            });
-          } else if (current.type === LEVEL_TYPES.GROUP) {
-            levelAttributes.push({
-              group_id: selectedItems[i].group_id
-            });
-          }
-        }
-
-        formData.protected_branch[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = levelAttributes;
-      }
-
-      return formData;
-    }
-
-    onFormSubmit(e) {
-      e.preventDefault();
-
-      $.ajax({
-        url: this.$form.attr('action'),
-        method: this.$form.attr('method'),
-        data: this.getFormData()
-      })
-      .success(() => {
-        location.reload();
-      })
-      .fail(() => {
-        new Flash('Failed to protect the branch');
       });
-    }
-  };
-})(window);
+
+      formData.protected_branch[`${accessLevel}_attributes`] = levelAttributes;
+    });
+
+    return formData;
+  }
+
+  onFormSubmit(e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: this.$form.attr('action'),
+      method: this.$form.attr('method'),
+      data: this.getFormData(),
+    })
+    .success(() => {
+      location.reload();
+    })
+    .fail(() => new Flash('Failed to protect the branch'));
+  }
+}

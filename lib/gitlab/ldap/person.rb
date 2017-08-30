@@ -3,7 +3,7 @@
 module Gitlab
   module LDAP
     class Person
-      include ::EE::Gitlab::LDAP::Person
+      prepend ::EE::Gitlab::LDAP::Person
 
       # Active Directory-specific LDAP filter that checks if bit 2 of the
       # userAccountControl attribute is set.
@@ -25,6 +25,15 @@ module Gitlab
         adapter.dn_matches_filter?(dn, AD_USER_DISABLED)
       end
 
+      def self.ldap_attributes(config)
+        [
+          'dn', # Used in `dn`
+          config.uid, # Used in `uid`
+          *config.attributes['name'], # Used in `name`
+          *config.attributes['email'] # Used in `email`
+        ]
+      end
+
       def initialize(entry, provider)
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
@@ -36,7 +45,7 @@ module Gitlab
       end
 
       def uid
-        entry.send(config.uid).first
+        entry.public_send(config.uid).first # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def username
@@ -69,7 +78,7 @@ module Gitlab
 
         return nil unless selected_attr
 
-        entry.public_send(selected_attr)
+        entry.public_send(selected_attr) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
   end

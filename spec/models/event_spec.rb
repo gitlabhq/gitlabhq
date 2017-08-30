@@ -304,27 +304,59 @@ describe Event do
     end
   end
 
-  def create_push_event(project, user, attrs = {})
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/master",
-      user_id: user.id,
-      user_name: user.name,
-      repository: {
-        name: project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
+  describe '#body?' do
+    let(:push_event) do
+      event = build(:push_event)
 
-    described_class.create({
-      project: project,
-      action: described_class::PUSHED,
-      data: data,
-      author_id: user.id
-    }.merge!(attrs))
+      allow(event).to receive(:push?).and_return(true)
+
+      event
+    end
+
+    it 'returns true for a push event with commits' do
+      allow(push_event).to receive(:push_with_commits?).and_return(true)
+
+      expect(push_event).to be_body
+    end
+
+    it 'returns false for a push event without a valid commit range' do
+      allow(push_event).to receive(:push_with_commits?).and_return(false)
+
+      expect(push_event).not_to be_body
+    end
+
+    it 'returns true for a Note event' do
+      event = build(:event)
+
+      allow(event).to receive(:note?).and_return(true)
+
+      expect(event).to be_body
+    end
+
+    it 'returns true if the target responds to #title' do
+      event = build(:event)
+
+      allow(event).to receive(:target).and_return(double(:target, title: 'foo'))
+
+      expect(event).to be_body
+    end
+
+    it 'returns false for a regular event without a target' do
+      event = build(:event)
+
+      expect(event).not_to be_body
+    end
+  end
+
+  def create_push_event(project, user)
+    event = create(:push_event, project: project, author: user)
+
+    create(:push_event_payload,
+           event: event,
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 0,
+           ref: 'master')
+
+    event
   end
 end

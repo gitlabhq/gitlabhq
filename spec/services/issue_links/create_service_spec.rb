@@ -60,6 +60,22 @@ describe IssueLinks::CreateService do
       end
     end
 
+    context 'source and target are the same issue' do
+      let(:params) do
+        { issue_references: [issue.to_reference] }
+      end
+
+      it 'does not create notes' do
+        expect(SystemNoteService).not_to receive(:relate_issue)
+
+        subject
+      end
+
+      it 'no relationship is created' do
+        expect { subject }.not_to change(IssueLink, :count)
+      end
+    end
+
     context 'when there is an issue to relate' do
       let(:issue_a) { create :issue, project: project }
       let(:another_project) { create :project, namespace: project.namespace }

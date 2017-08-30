@@ -24,6 +24,18 @@ class MergeRequestsFinder < IssuableFinder
 
   private
 
+  def by_assignee(items)
+    if assignee
+      items = items.where(assignee_id: assignee.id)
+    elsif no_assignee?
+      items = items.where(assignee_id: nil)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items = items.none
+    end
+
+    items
+  end
+
   def item_project_ids(items)
     items&.reorder(nil)&.select(:target_project_id)
   end

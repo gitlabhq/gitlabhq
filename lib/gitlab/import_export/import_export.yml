@@ -3,18 +3,22 @@ project_tree:
   - labels:
       :priorities
   - milestones:
-    - :events
+    - events:
+      - :push_event_payload
   - issues:
-    - :events
+    - events:
+      - :push_event_payload
     - :timelogs
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
   - snippets:
     - :award_emoji
     - notes:
@@ -25,21 +29,25 @@ project_tree:
   - merge_requests:
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - merge_request_diff:
       - :merge_request_diff_commits
       - :merge_request_diff_files
-    - :events
+    - events:
+      - :push_event_payload
     - :timelogs
     - label_links:
       - label:
           :priorities
     - milestone:
-      - :events
+      - events:
+        - :push_event_payload
   - pipelines:
     - notes:
       - :author
-      - :events
+      - events:
+        - :push_event_payload
     - :stages
     - :statuses
   - :triggers
@@ -94,6 +102,7 @@ excluded_attributes:
     - :mirror_last_successful_update_at
     - :mirror_user_id
     - :mirror_trigger_builds
+    - :storage_version
   snippets:
     - :expired_at
   merge_request_diff:
@@ -111,6 +120,8 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
+  push_event_payload:
+    - :event_id
 
 methods:
   labels:
@@ -127,5 +138,7 @@ methods:
     - :utf8_diff
   merge_requests:
     - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
   project:
     - :description_html

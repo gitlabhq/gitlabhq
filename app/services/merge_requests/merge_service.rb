@@ -78,7 +78,7 @@ module MergeRequests
       raise MergeError, 'Conflicts detected during merge' unless commit_id
 
       merge_request.update(merge_commit_sha: commit_id)
-    rescue GitHooksService::PreReceiveError => e
+    rescue Gitlab::Git::HooksService::PreReceiveError => e
       raise MergeError, e.message
     rescue StandardError => e
       raise MergeError, "Something went wrong during merge: #{e.message}"

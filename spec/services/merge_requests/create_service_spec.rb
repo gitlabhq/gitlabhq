@@ -18,34 +18,48 @@ describe MergeRequests::CreateService do
       end
 
       let(:service) { described_class.new(project, user, opts) }
+      let(:merge_request) { service.execute }
 
       before do
         project.team << [user, :master]
         project.team << [assignee, :developer]
         allow(service).to receive(:execute_hooks)
-
-        @merge_request = service.execute
       end
 
       it 'creates an MR' do
-        expect(@merge_request).to be_valid
-        expect(@merge_request.title).to eq('Awesome merge_request')
-        expect(@merge_request.assignee).to be_nil
-        expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+        expect(merge_request).to be_valid
+        expect(merge_request.title).to eq('Awesome merge_request')
+        expect(merge_request.assignee).to be_nil
+        expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
       it 'executes hooks with default action' do
-        expect(service).to have_received(:execute_hooks).with(@merge_request)
+        expect(service).to have_received(:execute_hooks).with(merge_request)
+      end
+
+      it 'refreshes the number of open merge requests' do
+        expect { service.execute }
+          .to change { project.open_merge_requests_count }.from(0).to(1)
       end
 
       it 'does not creates todos' do
         attributes = {
           project: project,
-          target_id: @merge_request.id,
-          target_type: @merge_request.class.name
+          target_id: merge_request.id,
+          target_type: merge_request.class.name
         }
 
         expect(Todo.where(attributes).count).to be_zero
+      end
+
+      it 'creates exactly 1 create MR event' do
+        attributes = {
+          action: Event::CREATED,
+          target_id: merge_request.id,
+          target_type: merge_request.class.name
+        }
+
+        expect(Event.where(attributes).count).to eq(1)
       end
 
       context 'when merge request is assigned to someone' do
@@ -59,15 +73,15 @@ describe MergeRequests::CreateService do
           }
         end
 
-        it { expect(@merge_request.assignee).to eq assignee }
+        it { expect(merge_request.assignee).to eq assignee }
 
         it 'creates a todo for new assignee' do
           attributes = {
             project: project,
             author: user,
             user: assignee,
-            target_id: @merge_request.id,
-            target_type: @merge_request.class.name,
+            target_id: merge_request.id,
+            target_type: merge_request.class.name,
             action: Todo::ASSIGNED,
             state: :pending
           }

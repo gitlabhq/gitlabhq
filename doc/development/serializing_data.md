@@ -1,7 +1,8 @@
 # Serializing Data
 
 **Summary:** don't store serialized data in the database, use separate columns
-and/or tables instead.
+and/or tables instead. This includes storing of comma separated values as a
+string.
 
 Rails makes it possible to store serialized data in JSON, YAML or other formats.
 Such a field can be defined as follows:

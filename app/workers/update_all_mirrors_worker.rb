@@ -9,17 +9,9 @@ class UpdateAllMirrorsWorker
     lease_uuid = try_obtain_lease
     return unless lease_uuid
 
-    fail_stuck_mirrors!
-
     schedule_mirrors!
 
     cancel_lease(lease_uuid)
-  end
-
-  def fail_stuck_mirrors!
-    Project.stuck_mirrors.find_each(batch_size: 50) do |project|
-      project.mark_import_as_failed('The mirror update took too long to complete.')
-    end
   end
 
   def schedule_mirrors!
@@ -59,12 +51,7 @@ class UpdateAllMirrorsWorker
   end
 
   def pull_mirrors_batch(freeze_at:, batch_size:, offset_at: nil)
-    relation = Project
-      .mirror
-      .joins(:mirror_data)
-      .where("next_execution_timestamp <= ? AND import_status NOT IN ('scheduled', 'started')", freeze_at)
-      .reorder('project_mirror_data.next_execution_timestamp')
-      .limit(batch_size)
+    relation = Project.mirrors_to_sync(freeze_at).reorder('project_mirror_data.next_execution_timestamp').limit(batch_size)
 
     relation = relation.where('next_execution_timestamp > ?', offset_at) if offset_at
 

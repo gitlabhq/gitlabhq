@@ -55,7 +55,9 @@ class Repository
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+        __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+      end
     end
   end
 
@@ -211,12 +213,18 @@ class Repository
   end
 
   def branch_exists?(branch_name)
-    branch_names.include?(branch_name)
+    return false unless raw_repository
+
+    @branch_exists_memo ||= Hash.new do |hash, key|
+      hash[key] = raw_repository.branch_exists?(key)
+    end
+
+    @branch_exists_memo[branch_name]
   end
 
   def ref_exists?(ref)
-    rugged.references.exist?(ref)
-  rescue Rugged::ReferenceError
+    !!raw_repository&.ref_exists?(ref)
+  rescue ArgumentError
     false
   end
 
@@ -231,7 +239,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -242,6 +250,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -267,6 +279,7 @@ class Repository
   def expire_branches_cache
     expire_method_caches(%i(branch_names branch_count))
     @local_branches = nil
+    @branch_exists_memo = nil
   end
 
   def expire_statistics_caches
@@ -446,9 +459,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -779,7 +792,7 @@ class Repository
       end
 
       actions.each do |options|
-        index.public_send(options.delete(:action), options)
+        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       options = {
@@ -983,7 +996,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(branch_commit.id, upstream_commit.id)
+      !rugged_is_ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -994,7 +1007,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(upstream_commit.id, branch_commit.id)
+      !rugged_is_ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end
@@ -1059,12 +1072,10 @@ class Repository
       if start_repository == self
         start_branch_name
       else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
+        tmp_ref = fetch_ref(
           start_repository.path_to_repo,
           "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
+          "refs/tmp/#{SecureRandom.hex}/head"
         )
 
         start_repository.commit(start_branch_name).sha
@@ -1095,7 +1106,12 @@ class Repository
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    run_git(args)
+    message, status = run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)
@@ -1256,7 +1272,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
   end
 
   def circuit_breaker

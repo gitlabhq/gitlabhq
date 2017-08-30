@@ -353,7 +353,7 @@ feature 'Issues > Labels bulk assignment' do
 
     context 'cannot bulk assign labels' do
       it do
-        expect(page).not_to have_button 'Edit Issues'
+        expect(page).not_to have_button 'Edit issues'
         expect(page).not_to have_css '.check-all-issues'
         expect(page).not_to have_css '.issue-check'
       end
@@ -411,7 +411,7 @@ feature 'Issues > Labels bulk assignment' do
 
   def enable_bulk_update
     visit project_issues_path(project)
-    click_button 'Edit Issues'
+    click_button 'Edit issues'
   end
 
   def disable_bulk_update

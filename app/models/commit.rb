@@ -200,7 +200,7 @@ class Commit
   end
 
   def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -383,6 +383,6 @@ class Commit
   end
 
   def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
+    @gpg_commit ||= Gitlab::Gpg::Commit.for_commit(self)
   end
 end

@@ -20,6 +20,8 @@ documentation.
 For security reasons, when using the command line, we strongly recommend
 you to [connect with GitLab via SSH](../../../ssh/README.md).
 
+## Files
+
 ## Create and edit files
 
 Host your codebase in GitLab repositories by pushing your files to GitLab.
@@ -46,6 +48,10 @@ it's easier to do so [via GitLab UI](web_editor.md):
 
 To get started with the command line, please read through the
 [command line basics documentation](../../../gitlab-basics/command-line-commands.md).
+
+### Find files
+
+Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
 ## Branches
 

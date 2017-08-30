@@ -111,6 +111,20 @@ describe Gitlab::GitalyClient::CommitService do
 
       client.tree_entries(repository, revision, path)
     end
+
+    context 'with UTF-8 params strings' do
+      let(:revision) { "branch\u011F" }
+      let(:path) { "foo/\u011F.txt" }
+
+      it 'handles string encodings correctly' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_return([])
+
+        client.tree_entries(repository, revision, path)
+      end
+    end
   end
 
   describe '#find_commit' do
@@ -124,6 +138,31 @@ describe Gitlab::GitalyClient::CommitService do
         .with(request, kind_of(Hash)).and_return(double(commit: nil))
 
       described_class.new(repository).find_commit(revision)
+    end
+  end
+
+  describe '#patch' do
+    let(:request) do
+      Gitaly::CommitPatchRequest.new(
+        repository: repository_message, revision: revision
+      )
+    end
+    let(:response) { [double(data: "my "), double(data: "diff")] }
+
+    subject { described_class.new(repository).patch(revision) }
+
+    it 'sends an RPC request' do
+      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_patch)
+        .with(request, kind_of(Hash)).and_return([])
+
+      subject
+    end
+
+    it 'concatenates the responses data' do
+      allow_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_patch)
+        .with(request, kind_of(Hash)).and_return(response)
+
+      expect(subject).to eq("my diff")
     end
   end
 end

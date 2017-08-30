@@ -132,9 +132,11 @@ module Gitlab
       #
       # See `Gitlab::Metrics::Transaction#add_event` for more details.
       def add_event(*args)
-        trans = current_transaction
+        current_transaction&.add_event(*args)
+      end
 
-        trans&.add_event(*args)
+      def add_event_with_values(*args)
+        current_transaction&.add_event_with_values(*args)
       end
 
       # Returns the prefix to use for the name of a series.

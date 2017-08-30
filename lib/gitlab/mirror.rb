@@ -24,8 +24,16 @@ module Gitlab
         available_capacity <= 0
       end
 
-      def threshold_reached?
-        available_capacity >= capacity_threshold
+      def reschedule_immediately?
+        available_spots = available_capacity
+        return false if available_spots < capacity_threshold
+
+        # Only reschedule if we are able to completely fill up the available spots.
+        mirrors_ready_to_sync_count >= available_spots
+      end
+
+      def mirrors_ready_to_sync_count
+        Project.mirrors_to_sync(Time.now).count
       end
 
       def available_capacity
@@ -67,10 +75,6 @@ module Gitlab
 
       def capacity_threshold
         current_application_settings.mirror_capacity_threshold
-      end
-
-      def increment_metric(name, docstring)
-        Gitlab::Metrics.counter(name, docstring).increment
       end
 
       private

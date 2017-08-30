@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Audit::Details do
   let(:user) { create(:user) }
-  
+
   describe '.humanize' do
     context 'user' do
       let(:login_action) do
@@ -13,12 +13,12 @@ describe Audit::Details do
           target_details: user.name
         }
       end
-      
+
       it 'humanizes user login action' do
         expect(described_class.humanize(login_action)).to eq('Signed in with LDAP authentication')
       end
     end
-    
+
     context 'project' do
       let(:user_member) { create(:user) }
       let(:project) { create(:project) }
@@ -33,12 +33,12 @@ describe Audit::Details do
           target_details: member.user.name
         }
       end
-      
+
       it 'humanizes add project member access action' do
         expect(described_class.humanize(member_access_action)).to eq('Added user access as Developer')
       end
     end
-    
+
     context 'group' do
       let(:user_member) { create(:user) }
       let(:group) { create(:group) }
@@ -54,12 +54,12 @@ describe Audit::Details do
           target_details: member.user.name
         }
       end
-      
+
       it 'humanizes add group member access action' do
         expect(described_class.humanize(member_access_action)).to eq('Changed access level from Guest to Owner')
       end
     end
-    
+
     context 'deploy key' do
       let(:removal_action) do
         {

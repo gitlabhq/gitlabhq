@@ -606,6 +606,11 @@ module Gitlab
           Arel::Nodes::SqlLiteral.new(replace.to_sql)
         end
       end
+
+      def remove_foreign_key_without_error(*args)
+        remove_foreign_key(*args)
+      rescue ArgumentError
+      end
     end
   end
 end

@@ -1,3 +1,33 @@
+- group: Response metrics (NGINX Ingress)
+  priority: 10
+  metrics:
+  - title: "Throughput"
+    y_label: "Requests / Sec"
+    required_metrics:
+      - nginx_upstream_requests_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_upstream_requests_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]))'
+      label: Total
+      unit: req / sec
+  - title: "Latency"
+    y_label: "Latency (ms)"
+    required_metrics:
+      - nginx_upstream_response_msecs_avg
+    weight: 1
+    queries:
+    - query_range: 'avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"})'
+      label: Average
+      unit: ms
+  - title: "HTTP Error Rate"
+    y_label: "HTTP 500 Errors / Sec"
+    required_metrics:
+      - nginx_upstream_responses_total
+    weight: 1
+    queries:
+    - query_range: 'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]))'
+      label: HTTP Errors
+      unit: "errors / sec"
 - group: Response metrics (HA Proxy)
   priority: 10
   metrics:
@@ -68,18 +98,18 @@
       - nginx_upstream_response_msecs_avg
     weight: 1
     queries:
-    - query_range: 'avg(nginx_upstream_response_msecs_avg{%{environment_filter}}) * 1000'
+    - query_range: 'avg(nginx_upstream_response_msecs_avg{%{environment_filter}})'
       label: Upstream
       unit: ms
   - title: "HTTP Error Rate"
-    y_label: "Error Rate (%)"
+    y_label: "HTTP 500 Errors / Sec"
     required_metrics:
       - nginx_responses_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m])) / sum(rate(nginx_requests_total{server_zone!="*", server_zone!="_", %{environment_filter}}[2m]))'
+    - query_range: 'sum(rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m]))'
       label: HTTP Errors
-      unit: "%"
+      unit: "errors / sec"
 - group: System metrics (Kubernetes)
   priority: 5
   metrics:

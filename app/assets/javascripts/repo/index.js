@@ -7,8 +7,7 @@ import RepoEditButton from './components/repo_edit_button.vue';
 import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
-  $('.project-refs-target-form').hide();
-  $('.fa-long-arrow-right').hide();
+  $('.js-tree-ref-target-holder').hide();
 }
 
 function addEventsForNonVueEls() {
@@ -34,6 +33,8 @@ function setInitialStore(data) {
   Store.projectId = data.projectId;
   Store.projectName = data.projectName;
   Store.projectUrl = data.projectUrl;
+  Store.canCommit = data.canCommit;
+  Store.onTopOfBranch = data.onTopOfBranch;
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
 }
@@ -43,6 +44,9 @@ function initRepo(el) {
     el,
     components: {
       repo: Repo,
+    },
+    render(createElement) {
+      return createElement('repo');
     },
   });
 }

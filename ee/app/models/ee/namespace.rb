@@ -21,10 +21,6 @@ module EE
     }.freeze
 
     prepended do
-      include IgnorableColumn
-
-      ignore_column :plan
-
       belongs_to :plan
 
       has_one :namespace_statistics

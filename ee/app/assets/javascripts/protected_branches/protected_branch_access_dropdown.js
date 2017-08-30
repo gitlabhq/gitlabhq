@@ -1,439 +1,480 @@
-/* eslint-disable arrow-parens, no-param-reassign, object-shorthand, no-else-return, comma-dangle, no-underscore-dangle, no-continue, no-restricted-syntax, guard-for-in, no-new, class-methods-use-this, consistent-return, max-len */
+/* eslint-disable no-underscore-dangle, class-methods-use-this */
 /* global Flash */
 
-(global => {
-  global.gl = global.gl || {};
+import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 
-  const PUSH_ACCESS_LEVEL = 'push_access_levels';
-  const LEVEL_TYPES = {
-    ROLE: 'role',
-    USER: 'user',
-    GROUP: 'group'
-  };
+export default class ProtectedBranchAccessDropdown {
+  constructor(options) {
+    const {
+      $dropdown,
+      accessLevel,
+      accessLevelsData,
+    } = options;
+    this.options = options;
+    this.groups = [];
+    this.accessLevel = accessLevel;
+    this.accessLevelsData = accessLevelsData.roles;
+    this.$dropdown = $dropdown;
+    this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
+    this.$protectedTagsContainer = $('.js-protected-branches-container');
+    this.usersPath = '/autocomplete/users.json';
+    this.groupsPath = '/autocomplete/project_groups.json';
+    this.defaultLabel = this.$dropdown.data('defaultLabel');
 
-  gl.ProtectedBranchAccessDropdown = class {
-    constructor(options) {
-      const self = this;
-      const {
-        $dropdown,
-        onSelect,
-        onHide,
-        accessLevel,
-        accessLevelsData
-      } = options;
+    this.setSelectedItems([]);
+    this.persistPreselectedItems();
 
-      this.isAllowedToPushDropdown = false;
-      this.groups = [];
-      this.accessLevel = accessLevel;
-      this.accessLevelsData = accessLevelsData.roles;
-      this.$dropdown = $dropdown;
-      this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
-      this.usersPath = '/autocomplete/users.json';
-      this.groupsPath = '/autocomplete/project_groups.json';
-      this.defaultLabel = this.$dropdown.data('defaultLabel');
+    this.noOneObj = this.accessLevelsData.find(level => level.id === ACCESS_LEVEL_NONE);
 
-      this.setSelectedItems([]);
-      this.persistPreselectedItems();
+    this.initDropdown();
+  }
 
-      if (PUSH_ACCESS_LEVEL === this.accessLevel) {
-        this.isAllowedToPushDropdown = true;
-        this.noOneObj = this.accessLevelsData[2];
-      }
+  initDropdown() {
+    const { onSelect, onHide } = this.options;
+    this.$dropdown.glDropdown({
+      data: this.getData.bind(this),
+      selectable: true,
+      filterable: true,
+      filterRemote: true,
+      multiSelect: this.$dropdown.hasClass('js-multiselect'),
+      renderRow: this.renderRow.bind(this),
+      toggleLabel: this.toggleLabel.bind(this),
+      hidden() {
+        if (onHide) {
+          onHide();
+        }
+      },
+      clicked: (options) => {
+        const { $el, e } = options;
+        const item = options.selectedObj;
 
-      $dropdown.glDropdown({
-        selectable: true,
-        filterable: true,
-        filterRemote: true,
-        data: this.getData.bind(this),
-        multiSelect: $dropdown.hasClass('js-multiselect'),
-        renderRow: this.renderRow.bind(this),
-        toggleLabel: this.toggleLabel.bind(this),
-        hidden() {
-          if (onHide) {
-            onHide();
-          }
-        },
-        clicked(opts) {
-          const { $el, e } = opts;
-          const item = opts.selectedObj;
+        e.preventDefault();
 
-          e.preventDefault();
-
-          if ($el.is('.is-active')) {
-            if (self.isAllowedToPushDropdown) {
-              if (item.id === self.noOneObj.id) {
-                // remove all others selected items
-                self.accessLevelsData.forEach((level) => {
-                  if (level.id !== item.id) {
-                    self.removeSelectedItem(level);
-                  }
-                });
-
-                // remove selected item visually
-                self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
-              } else {
-                const $noOne = self.$wrap.find(`.is-active.item-${item.type}:contains('No one')`);
-                if ($noOne.length) {
-                  $noOne.removeClass('is-active');
-                  self.removeSelectedItem(self.noOneObj);
-                }
+        if ($el.is('.is-active')) {
+          if (item.id === this.noOneObj.id) {
+            // remove all others selected items
+            this.accessLevelsData.forEach((level) => {
+              if (level.id !== item.id) {
+                this.removeSelectedItem(level);
               }
+            });
 
-              // make element active right away
-              $el.addClass(`is-active item-${item.type}`);
-            }
-
-            // Add "No one"
-            self.addSelectedItem(item);
+            // remove selected item visually
+            this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
           } else {
-            self.removeSelectedItem(item);
+            const $noOne = this.$wrap.find(`.is-active.item-${item.type}[data-role-id="${this.noOneObj.id}"]`);
+            if ($noOne.length) {
+              $noOne.removeClass('is-active');
+              this.removeSelectedItem(this.noOneObj);
+            }
           }
 
-          if (onSelect) {
-            onSelect(item, $el, self);
-          }
-        }
-      });
-    }
+          // make element active right away
+          $el.addClass(`is-active item-${item.type}`);
 
-    persistPreselectedItems() {
-      const itemsToPreselect = this.$dropdown.data('preselectedItems');
-
-      if (typeof itemsToPreselect === 'undefined' || !itemsToPreselect.length) {
-        return;
-      }
-
-      itemsToPreselect.forEach((item) => {
-        item.persisted = true;
-      });
-
-      this.setSelectedItems(itemsToPreselect);
-    }
-
-    setSelectedItems(items) {
-      this.items = items.length ? items : [];
-    }
-
-    getSelectedItems() {
-      return this.items.filter((item) => !item._destroy);
-    }
-
-    getAllSelectedItems() {
-      return this.items;
-    }
-
-    // Return dropdown as input data ready to submit
-    getInputData() {
-      const accessLevels = [];
-      const selectedItems = this.getAllSelectedItems();
-
-      selectedItems.forEach((item) => {
-        const obj = {};
-
-        if (typeof item.id !== 'undefined') {
-          obj.id = item.id;
-        }
-
-        if (typeof item._destroy !== 'undefined') {
-          obj._destroy = item._destroy;
-        }
-
-        if (item.type === LEVEL_TYPES.ROLE) {
-          obj.access_level = item.access_level;
-        } else if (item.type === LEVEL_TYPES.USER) {
-          obj.user_id = item.user_id;
-        } else if (item.type === LEVEL_TYPES.GROUP) {
-          obj.group_id = item.group_id;
-        }
-
-        accessLevels.push(obj);
-      });
-
-      return accessLevels;
-    }
-
-    addSelectedItem(selectedItem) {
-      let itemToAdd = {};
-
-      // If the item already exists, just use it
-      let index = -1;
-      const selectedItems = this.getAllSelectedItems();
-
-      for (let i = 0; i < selectedItems.length; i += 1) {
-        if (selectedItem.id === selectedItems[i].access_level) {
-          index = i;
-          continue;
-        }
-      }
-
-      if (index !== -1 && selectedItems[index]._destroy) {
-        delete selectedItems[index]._destroy;
-        return;
-      }
-
-      itemToAdd.type = selectedItem.type;
-
-      if (selectedItem.type === LEVEL_TYPES.USER) {
-        itemToAdd = {
-          user_id: selectedItem.id,
-          name: selectedItem.name || '_name1',
-          username: selectedItem.username || '_username1',
-          avatar_url: selectedItem.avatar_url || '_avatar_url1',
-          type: LEVEL_TYPES.USER
-        };
-      } else if (selectedItem.type === LEVEL_TYPES.ROLE) {
-        itemToAdd = {
-          access_level: selectedItem.id,
-          type: LEVEL_TYPES.ROLE
-        };
-      } else if (selectedItem.type === LEVEL_TYPES.GROUP) {
-        itemToAdd = {
-          group_id: selectedItem.id,
-          type: LEVEL_TYPES.GROUP
-        };
-      }
-
-      this.items.push(itemToAdd);
-    }
-
-    removeSelectedItem(itemToDelete) {
-      let index = -1;
-      const selectedItems = this.getAllSelectedItems();
-
-      // To find itemToDelete on selectedItems, first we need the index
-      for (let i = 0; i < selectedItems.length; i += 1) {
-        const currentItem = selectedItems[i];
-
-        if (currentItem.type !== itemToDelete.type) {
-          continue;
-        }
-
-        if (currentItem.type === LEVEL_TYPES.USER && currentItem.user_id === itemToDelete.id) {
-          index = i;
-        } else if (currentItem.type === LEVEL_TYPES.ROLE && currentItem.access_level === itemToDelete.id) {
-          index = i;
-        } else if (currentItem.type === LEVEL_TYPES.GROUP && currentItem.group_id === itemToDelete.id) {
-          index = i;
-        }
-
-        if (index > -1) { break; }
-      }
-
-      // if ItemToDelete is not really selected do nothing
-      if (index === -1) {
-        return;
-      }
-
-      if (selectedItems[index].persisted) {
-        // If we toggle an item that has been already marked with _destroy
-        if (selectedItems[index]._destroy) {
-          delete selectedItems[index]._destroy;
+          // Add "No one"
+          this.addSelectedItem(item);
         } else {
-          selectedItems[index]._destroy = '1';
+          this.removeSelectedItem(item);
         }
-      } else {
-        selectedItems.splice(index, 1);
-      }
+
+        if (onSelect) {
+          onSelect(item, $el, this);
+        }
+      },
+    });
+  }
+
+  persistPreselectedItems() {
+    const itemsToPreselect = this.$dropdown.data('preselectedItems');
+
+    if (!itemsToPreselect || !itemsToPreselect.length) {
+      return;
     }
 
-    toggleLabel() {
-      const currentItems = this.getSelectedItems();
-      const types = _.groupBy(currentItems, (item) => item.type);
-      const label = [];
+    const persistedItems = itemsToPreselect.map((item) => {
+      const persistedItem = Object.assign({}, item);
+      persistedItem.persisted = true;
+      return persistedItem;
+    });
 
-      if (currentItems.length) {
-        for (const LEVEL_TYPE in LEVEL_TYPES) {
-          const typeName = LEVEL_TYPES[LEVEL_TYPE];
-          const numberOfTypes = types[typeName] ? types[typeName].length : 0;
-          const text = numberOfTypes === 1 ? typeName : `${typeName}s`;
+    this.setSelectedItems(persistedItems);
+  }
 
-          label.push(`${numberOfTypes} ${text}`);
-        }
-      } else {
-        label.push(this.defaultLabel);
+  setSelectedItems(items = []) {
+    this.items = items;
+  }
+
+  getSelectedItems() {
+    return this.items.filter(item => !item._destroy);
+  }
+
+  getAllSelectedItems() {
+    return this.items;
+  }
+
+  // Return dropdown as input data ready to submit
+  getInputData() {
+    const selectedItems = this.getAllSelectedItems();
+
+    const accessLevels = selectedItems.map((item) => {
+      const obj = {};
+
+      if (typeof item.id !== 'undefined') {
+        obj.id = item.id;
       }
 
-      this.$dropdown.find('.dropdown-toggle-text').toggleClass('is-default', !currentItems.length);
+      if (typeof item._destroy !== 'undefined') {
+        obj._destroy = item._destroy;
+      }
 
-      return label.join(', ');
+      if (item.type === LEVEL_TYPES.ROLE) {
+        obj.access_level = item.access_level;
+      } else if (item.type === LEVEL_TYPES.USER) {
+        obj.user_id = item.user_id;
+      } else if (item.type === LEVEL_TYPES.GROUP) {
+        obj.group_id = item.group_id;
+      }
+
+      return obj;
+    });
+
+    return accessLevels;
+  }
+
+  addSelectedItem(selectedItem) {
+    let itemToAdd = {};
+
+    // If the item already exists, just use it
+    let index = -1;
+    const selectedItems = this.getAllSelectedItems();
+
+    // Compare IDs based on selectedItem.type
+    selectedItems.forEach((item, i) => {
+      let comparator;
+      switch (selectedItem.type) {
+        case LEVEL_TYPES.ROLE:
+          comparator = LEVEL_ID_PROP.ROLE;
+          break;
+        case LEVEL_TYPES.GROUP:
+          comparator = LEVEL_ID_PROP.GROUP;
+          break;
+        case LEVEL_TYPES.USER:
+          comparator = LEVEL_ID_PROP.USER;
+          break;
+        default:
+          break;
+      }
+
+      if (selectedItem.id === item[comparator]) {
+        index = i;
+      }
+    });
+
+    if (index !== -1 && selectedItems[index]._destroy) {
+      delete selectedItems[index]._destroy;
+      return;
     }
 
-    getData(query, callback) {
-      this.getUsers(query).done((usersResponse) => {
+    itemToAdd.type = selectedItem.type;
+
+    if (selectedItem.type === LEVEL_TYPES.USER) {
+      itemToAdd = {
+        user_id: selectedItem.id,
+        name: selectedItem.name || '_name1',
+        username: selectedItem.username || '_username1',
+        avatar_url: selectedItem.avatar_url || '_avatar_url1',
+        type: LEVEL_TYPES.USER,
+      };
+    } else if (selectedItem.type === LEVEL_TYPES.ROLE) {
+      itemToAdd = {
+        access_level: selectedItem.id,
+        type: LEVEL_TYPES.ROLE,
+      };
+    } else if (selectedItem.type === LEVEL_TYPES.GROUP) {
+      itemToAdd = {
+        group_id: selectedItem.id,
+        type: LEVEL_TYPES.GROUP,
+      };
+    }
+
+    this.items.push(itemToAdd);
+  }
+
+  removeSelectedItem(itemToDelete) {
+    let index = -1;
+    const selectedItems = this.getAllSelectedItems();
+
+    // To find itemToDelete on selectedItems, first we need the index
+    selectedItems.every((item, i) => {
+      if (item.type !== itemToDelete.type) {
+        return true;
+      }
+
+      if (item.type === LEVEL_TYPES.USER &&
+        item.user_id === itemToDelete.id) {
+        index = i;
+      } else if (item.type === LEVEL_TYPES.ROLE &&
+        item.access_level === itemToDelete.id) {
+        index = i;
+      } else if (item.type === LEVEL_TYPES.GROUP &&
+        item.group_id === itemToDelete.id) {
+        index = i;
+      }
+
+      // Break once we have index set
+      return !(index > -1);
+    });
+
+    // if ItemToDelete is not really selected do nothing
+    if (index === -1) {
+      return;
+    }
+
+    if (selectedItems[index].persisted) {
+      // If we toggle an item that has been already marked with _destroy
+      if (selectedItems[index]._destroy) {
+        delete selectedItems[index]._destroy;
+      } else {
+        selectedItems[index]._destroy = '1';
+      }
+    } else {
+      selectedItems.splice(index, 1);
+    }
+  }
+
+  toggleLabel() {
+    const currentItems = this.getSelectedItems();
+    const types = _.groupBy(currentItems, item => item.type);
+    let label = [];
+
+    if (currentItems.length) {
+      label = Object.keys(LEVEL_TYPES).map((levelType) => {
+        const typeName = LEVEL_TYPES[levelType];
+        const numberOfTypes = types[typeName] ? types[typeName].length : 0;
+        const text = numberOfTypes === 1 ? typeName : `${typeName}s`;
+
+        return `${numberOfTypes} ${text}`;
+      });
+    } else {
+      label.push(this.defaultLabel);
+    }
+
+    this.$dropdown.find('.dropdown-toggle-text').toggleClass('is-default', !currentItems.length);
+
+    return label.join(', ');
+  }
+
+  getData(query, callback) {
+    this.getUsers(query)
+      .done((usersResponse) => {
         if (this.groups.length) {
           callback(this.consolidateData(usersResponse, this.groups));
         } else {
-          this.getGroups(query).done((groupsResponse) => {
-            // Cache groups to avoid multiple requests
-            this.groups = groupsResponse;
-            callback(this.consolidateData(usersResponse, groupsResponse));
-          });
+          this.getGroups(query)
+            .done((groupsResponse) => {
+              // Cache groups to avoid multiple requests
+              this.groups = groupsResponse;
+              callback(this.consolidateData(usersResponse, groupsResponse));
+            })
+            .error(() => new Flash('Failed to load groups.'));
         }
-      }).error(() => {
-        new Flash('Failed to load users.');
-      });
+      }).error(() => new Flash('Failed to load users.'));
+  }
+
+  consolidateData(usersResponse, groupsResponse) {
+    let consolidatedData = [];
+    const map = [];
+    const selectedItems = this.getSelectedItems();
+
+    // ID property is handled differently locally from the server
+    //
+    // For Groups
+    // In dropdown: `id`
+    // For submit: `group_id`
+    //
+    // For Roles
+    // In dropdown: `id`
+    // For submit: `access_level`
+    //
+    // For Users
+    // In dropdown: `id`
+    // For submit: `user_id`
+
+    /*
+     * Build groups
+     */
+    const groups = groupsResponse.map(group => ({ ...group, type: LEVEL_TYPES.GROUP }));
+
+    /*
+     * Build roles
+     */
+    const roles = this.accessLevelsData.map((level) => {
+      /* eslint-disable no-param-reassign */
+      // This re-assignment is intentional as
+      // level.type property is being used in removeSelectedItem()
+      // for comparision, and accessLevelsData is provided by
+      // gon.create_access_levels which doesn't have `type` included.
+      // See this discussion https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1629#note_31285823
+      level.type = LEVEL_TYPES.ROLE;
+      return level;
+    });
+
+    /*
+     * Build users
+     */
+    const users = selectedItems.filter(item => item.type === LEVEL_TYPES.USER).map((item) => {
+      // Save identifiers for easy-checking more later
+      map.push(LEVEL_TYPES.USER + item.user_id);
+
+      return {
+        id: item.user_id,
+        name: item.name,
+        username: item.username,
+        avatar_url: item.avatar_url,
+        type: LEVEL_TYPES.USER,
+      };
+    });
+
+    // Has to be checked against server response
+    // because the selected item can be in filter results
+    usersResponse.forEach((response) => {
+      // Add is it has not been added
+      if (map.indexOf(LEVEL_TYPES.USER + response.id) === -1) {
+        const user = Object.assign({}, response);
+        user.type = LEVEL_TYPES.USER;
+        users.push(user);
+      }
+    });
+
+    if (roles.length) {
+      consolidatedData = consolidatedData.concat([{ header: 'Roles' }], roles);
     }
 
-    consolidateData(usersResponse, groupsResponse) {
-      let consolidatedData = [];
-      const map = [];
-      let roles = [];
-      const users = [];
-      let groups = [];
-      const selectedItems = this.getSelectedItems();
-
-      // ID property is handled differently locally from the server
-      //
-      // For Groups
-      // In dropdown: `id`
-      // For submit: `group_id`
-      //
-      // For Roles
-      // In dropdown: `id`
-      // For submit: `access_level`
-      //
-      // For Users
-      // In dropdown: `id`
-      // For submit: `user_id`
-
-      /*
-       * Build groups
-       */
-      groups = groupsResponse.map((group) => {
-        group.type = LEVEL_TYPES.GROUP;
-        return group;
-      });
-
-      /*
-       * Build roles
-       */
-      roles = this.accessLevelsData.map((level) => {
-        level.type = LEVEL_TYPES.ROLE;
-        return level;
-      });
-
-      /*
-       * Build users
-       */
-      for (let x = 0; x < selectedItems.length; x += 1) {
-        const current = selectedItems[x];
-
-        if (current.type !== LEVEL_TYPES.USER) { continue; }
-
-        // Collect selected users
-        users.push({
-          id: current.user_id,
-          name: current.name,
-          username: current.username,
-          avatar_url: current.avatar_url,
-          type: LEVEL_TYPES.USER,
-        });
-
-        // Save identifiers for easy-checking more later
-        map.push(LEVEL_TYPES.USER + current.user_id);
-      }
-
-      // Has to be checked against server response
-      // because the selected item can be in filter results
-      for (let i = 0; i < usersResponse.length; i += 1) {
-        const u = usersResponse[i];
-
-        // Add is it has not been added
-        if (map.indexOf(LEVEL_TYPES.USER + u.id) === -1) {
-          u.type = LEVEL_TYPES.USER;
-          users.push(u);
-        }
-      }
-
+    if (groups.length) {
       if (roles.length) {
-        consolidatedData = consolidatedData.concat([{ header: 'Roles', }], roles);
+        consolidatedData = consolidatedData.concat(['divider']);
       }
 
-      if (groups.length) {
-        if (roles.length) {
-          consolidatedData = consolidatedData.concat(['divider']);
-        }
-
-        consolidatedData = consolidatedData.concat([{ header: 'Groups', }], groups);
-      }
-
-      if (users.length) {
-        consolidatedData = consolidatedData.concat(['divider'], [{ header: 'Users', }], users);
-      }
-
-      return consolidatedData;
+      consolidatedData = consolidatedData.concat([{ header: 'Groups' }], groups);
     }
 
-    getUsers(query) {
-      return $.ajax({
-        dataType: 'json',
-        url: this.buildUrl(this.usersPath),
-        data: {
-          search: query,
-          per_page: 20,
-          active: true,
-          project_id: gon.current_project_id,
-          push_code: true,
-        }
-      });
+    if (users.length) {
+      consolidatedData = consolidatedData.concat(['divider'], [{ header: 'Users' }], users);
     }
 
-    getGroups() {
-      return $.ajax({
-        dataType: 'json',
-        url: this.buildUrl(this.groupsPath),
-        data: {
-          project_id: gon.current_project_id
-        }
-      });
+    return consolidatedData;
+  }
+
+  getUsers(query) {
+    return $.ajax({
+      dataType: 'json',
+      url: this.buildUrl(gon.relative_url_root, this.usersPath),
+      data: {
+        search: query,
+        per_page: 20,
+        active: true,
+        project_id: gon.current_project_id,
+        push_code: true,
+      },
+    });
+  }
+
+  getGroups() {
+    return $.ajax({
+      dataType: 'json',
+      url: this.buildUrl(gon.relative_url_root, this.groupsPath),
+      data: {
+        project_id: gon.current_project_id,
+      },
+    });
+  }
+
+  buildUrl(urlRoot, url) {
+    let newUrl;
+    if (urlRoot != null) {
+      newUrl = urlRoot.replace(/\/$/, '') + url;
     }
+    return newUrl;
+  }
 
-    buildUrl(url) {
-      if (gon.relative_url_root != null) {
-        url = gon.relative_url_root.replace(/\/$/, '') + url;
-      }
-      return url;
-    }
+  renderRow(item) {
+    let criteria = {};
+    let groupRowEl;
 
-    renderRow(item) {
-      let criteria = {};
-
-      // Dectect if the current item is already saved so we can add
-      // the `is-active` class so the item looks as marked
-      if (item.type === LEVEL_TYPES.USER) {
+    // Dectect if the current item is already saved so we can add
+    // the `is-active` class so the item looks as marked
+    switch (item.type) {
+      case LEVEL_TYPES.USER:
         criteria = { user_id: item.id };
-      } else if (item.type === LEVEL_TYPES.ROLE) {
+        break;
+      case LEVEL_TYPES.ROLE:
         criteria = { access_level: item.id };
-      } else if (item.type === LEVEL_TYPES.GROUP) {
+        break;
+      case LEVEL_TYPES.GROUP:
         criteria = { group_id: item.id };
-      }
-
-      const isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
-
-      if (item.type === LEVEL_TYPES.USER) {
-        return this.userRowHtml(item, isActive);
-      } else if (item.type === LEVEL_TYPES.ROLE) {
-        return this.roleRowHtml(item, isActive);
-      } else if (item.type === LEVEL_TYPES.GROUP) {
-        return this.groupRowHtml(item, isActive);
-      }
+        break;
+      default:
+        break;
     }
 
-    userRowHtml(user, isActive) {
-      const avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
-      const nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
-      const usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
+    const isActive = _.findWhere(this.getSelectedItems(), criteria) ? 'is-active' : '';
+
+    switch (item.type) {
+      case LEVEL_TYPES.USER:
+        groupRowEl = this.userRowHtml(item, isActive);
+        break;
+      case LEVEL_TYPES.ROLE:
+        groupRowEl = this.roleRowHtml(item, isActive);
+        break;
+      case LEVEL_TYPES.GROUP:
+        groupRowEl = this.groupRowHtml(item, isActive);
+        break;
+      default:
+        groupRowEl = '';
+        break;
     }
 
-    groupRowHtml(group, isActive) {
-      const avatarHtml = group.avatar_url ? `<img src='${group.avatar_url}' class='avatar avatar-inline' width='30'>` : '';
-      const groupnameHtml = `<span class='dropdown-menu-group-groupname'>${group.name}</span>`;
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''}'>${avatarHtml} ${groupnameHtml}</a></li>`;
-    }
+    return groupRowEl;
+  }
 
-    roleRowHtml(role, isActive) {
-      return `<li><a href='#' class='${isActive ? 'is-active' : ''} item-${role.type}'>${role.text}</a></li>`;
-    }
-  };
-})(window);
+  userRowHtml(user, isActive) {
+    const isActiveClass = isActive || '';
+
+    return `
+      <li>
+        <a href="#" class="${isActiveClass}">
+          <img src="${user.avatar_url}" class="avatar avatar-inline" width="30">
+          <strong class="dropdown-menu-user-full-name">${user.name}</strong>
+          <span class="dropdown-menu-user-username">${user.username}</span>
+        </a>
+      </li>
+    `;
+  }
+
+  groupRowHtml(group, isActive) {
+    const isActiveClass = isActive || '';
+    const avatarEl = group.avatar_url ? `<img src="${group.avatar_url}" class="avatar avatar-inline" width="30">` : '';
+
+    return `
+      <li>
+        <a href="#" class="${isActiveClass}">
+          ${avatarEl}
+          <span class="dropdown-menu-group-groupname">${group.name}</span>
+        </a>
+      </li>
+    `;
+  }
+
+  roleRowHtml(role, isActive) {
+    const isActiveClass = isActive || '';
+
+    return `
+      <li>
+        <a href="#" class="${isActiveClass} item-${role.type}" data-role-id="${role.id}">
+          ${role.text}
+        </a>
+      </li>
+    `;
+  }
+}

@@ -49,14 +49,17 @@ module StubConfiguration
   end
 
   def stub_storage_settings(messages)
+    # Default storage is always required
+    messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_settings|
+      storage_settings['path'] ||= TestEnv.repos_path
       storage_settings['failure_count_threshold'] ||= 10
       storage_settings['failure_wait_time'] ||= 30
       storage_settings['failure_reset_time'] ||= 1800
       storage_settings['storage_timeout'] ||= 5
     end
 
-    allow(Gitlab.config.repositories).to receive(:storages).and_return(messages)
+    allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))
   end
 
   private

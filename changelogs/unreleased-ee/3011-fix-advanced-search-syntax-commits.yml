@@ -1,0 +1,5 @@
+---
+title: Fix global code search when using negation queries
+merge_request: 2709
+author:
+type: fixed

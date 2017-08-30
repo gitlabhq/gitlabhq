@@ -1,15 +1,15 @@
 module Audit
   class Details
     ACTIONS = %i[add remove failed_login change].freeze
-    
+
     def self.humanize(*args)
       new(*args).humanize
     end
-    
+
     def initialize(details)
       @details = details
     end
-    
+
     def humanize
       if @details[:with]
         "Signed in with #{@details[:with].upcase} authentication"
@@ -17,9 +17,9 @@ module Audit
         action_text
       end
     end
-    
+
     private
-    
+
     def action_text
       action = @details.slice(*ACTIONS)
       value = @details.values.first.tr('_', ' ')

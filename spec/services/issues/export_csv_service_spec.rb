@@ -4,6 +4,7 @@ describe Issues::ExportCsvService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let!(:issue)  { create(:issue, project: project, author: user) }
+  let!(:bad_issue) { create(:issue, project: project, author: user) }
   let(:subject) { described_class.new(Issue.all) }
 
   it 'renders csv to string' do
@@ -40,7 +41,10 @@ describe Issues::ExportCsvService do
                     created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),
                     closed_at: DateTime.new(2017, 6, 5, 4, 3, 2),
-                    labels: [feature_label, idea_label])
+                    labels: [feature_label, idea_label],
+                    time_estimate: 72000)
+      issue.timelogs.create(time_spent: 360, user: user)
+      issue.timelogs.create(time_spent: 200, user: user)
     end
 
     specify 'iid' do
@@ -61,6 +65,7 @@ describe Issues::ExportCsvService do
 
     specify 'description' do
       expect(csv[0]['Description']).to eq issue.description
+      expect(csv[1]['Description']).to eq nil
     end
 
     specify 'author name' do
@@ -73,10 +78,12 @@ describe Issues::ExportCsvService do
 
     specify 'assignee name' do
       expect(csv[0]['Assignee']).to eq user.name
+      expect(csv[1]['Assignee']).to eq ''
     end
 
     specify 'assignee username' do
       expect(csv[0]['Assignee Username']).to eq user.username
+      expect(csv[1]['Assignee Username']).to eq ''
     end
 
     specify 'confidential' do
@@ -85,14 +92,17 @@ describe Issues::ExportCsvService do
 
     specify 'milestone' do
       expect(csv[0]['Milestone']).to eq issue.milestone.title
+      expect(csv[1]['Milestone']).to eq nil
     end
 
     specify 'labels' do
       expect(csv[0]['Labels']).to eq 'Feature,Idea'
+      expect(csv[1]['Labels']).to eq nil
     end
 
     specify 'due_date' do
       expect(csv[0]['Due Date']).to eq '2014-03-02'
+      expect(csv[1]['Due Date']).to eq nil
     end
 
     specify 'created_at' do
@@ -105,6 +115,17 @@ describe Issues::ExportCsvService do
 
     specify 'closed_at' do
       expect(csv[0]['Closed At (UTC)']).to eq '2017-06-05 04:03:02'
+      expect(csv[1]['Closed At (UTC)']).to eq nil
+    end
+
+    specify 'time estimate' do
+      expect(csv[0]['Time Estimate']).to eq '72000'
+      expect(csv[1]['Time Estimate']).to eq '0'
+    end
+
+    specify 'time spent' do
+      expect(csv[0]['Time Spent']).to eq '560'
+      expect(csv[1]['Time Spent']).to eq '0'
     end
   end
 

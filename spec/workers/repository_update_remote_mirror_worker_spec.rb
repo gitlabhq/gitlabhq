@@ -6,12 +6,8 @@ describe RepositoryUpdateRemoteMirrorWorker do
   let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
   let(:scheduled_time) { Time.now - 5.minutes }
 
-  before do
-    Timecop.freeze(Time.now)
-  end
-
-  after do
-    Timecop.return
+  around do |example|
+    Timecop.freeze(Time.now) { example.run }
   end
 
   describe '#perform' do

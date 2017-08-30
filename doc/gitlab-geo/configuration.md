@@ -129,6 +129,11 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
+1. Reconfigure for the change to take effect.
+    ```
+    gitlab-ctl reconfigure
+    ```
+
 ### Step 4. Regenerating the authorized keys in the secondary node
 
 Regenerate the keys for `~/.ssh/authorized_keys`
@@ -164,6 +169,7 @@ New users and SSH keys updated after this step, will be replicated automatically
    in your browser.
 1. Add the secondary node by providing its full URL and the public SSH key
    you created previously. **Do NOT** check the box 'This is a primary node'.
+1. Added in GitLab 9.5: Choose which namespaces should be replicated by the secondary node. Leave blank to replicate all. Read more in [selective replication](#selective-replication).
 1. Click the **Add node** button.
 
 ---
@@ -200,6 +206,9 @@ Currently, this is what is synced:
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
 in your browser.
+
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
 
 ![GitLab Geo dashboard](img/geo-node-dashboard.png)
 
@@ -249,6 +258,21 @@ If your installation isn't working properly, check the
 [troubleshooting](#troubleshooting) section.
 
 Point your users to the [after setup steps](after_setup.md).
+
+## Selective replication
+
+With GitLab **9.5**, GitLab Geo now supports the first iteration of selective
+replication, which allows admins to choose which namespaces should be
+replicated by secondary nodes.
+
+It is important to notice that selective replication:
+
+1. Does not restrict permissions from secondary nodes.
+1. Does not hide projects metadata from secondary nodes. Since Geo currently
+relies on PostgreSQL replication, all project metadata gets replicated to
+secondary nodes, but repositories that have not been selected will be empty.
+1. Secondary nodes won't pull repositories that do not belong to the selected
+namespaces to be replicated.
 
 ## Adding another secondary Geo node
 

@@ -258,21 +258,39 @@ class Group < Namespace
   end
 
   def user_ids_for_project_authorizations
-    users_with_parents.pluck(:id)
+    members_with_parents.pluck(:user_id)
   end
 
   def members_with_parents
-    GroupMember.active.where(source_id: ancestors.pluck(:id).push(id)).where.not(user_id: nil)
+    # Avoids an unnecessary SELECT when the group has no parents
+    source_ids =
+      if parent_id
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    GroupMember
+      .active_without_invites
+      .where(source_id: source_ids)
+  end
+
+  def members_with_descendants
+    GroupMember
+      .active_without_invites
+      .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
   def users_with_parents
-    User.where(id: members_with_parents.select(:user_id))
+    User
+      .where(id: members_with_parents.select(:user_id))
+      .reorder(nil)
   end
 
   def users_with_descendants
-    members_with_descendants = GroupMember.non_request.where(source_id: descendants.pluck(:id).push(id))
-
-    User.where(id: members_with_descendants.select(:user_id))
+    User
+      .where(id: members_with_descendants.select(:user_id))
+      .reorder(nil)
   end
 
   def max_member_access_for_user(user)

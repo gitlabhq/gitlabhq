@@ -194,6 +194,8 @@ class IssuableBaseService < BaseService
 
   def after_create(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def before_update(issuable)
@@ -202,6 +204,8 @@ class IssuableBaseService < BaseService
 
   def after_update(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def update(issuable)
@@ -340,7 +344,7 @@ class IssuableBaseService < BaseService
 
   def invalidate_cache_counts(issuable, users: [], skip_project_cache: false)
     users.each do |user|
-      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts")
+      user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     unless skip_project_cache

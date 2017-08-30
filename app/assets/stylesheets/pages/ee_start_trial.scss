@@ -44,7 +44,7 @@
 
   p a {
     text-decoration: none;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
 
     &:hover {
       color: $white-dark;

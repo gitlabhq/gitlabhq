@@ -55,7 +55,17 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
+## Issues and merge requests within a group
+
+Issues and merge requests are part of projects. For a given group, view all the
+[issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+together in a single list view.
+
 ## Create a new group
+
+> **Notes:**
+- For a list of words that are not allowed to be used as group names see the
+  [reserved names][reserved].
 
 You can create a group in GitLab from:
 
@@ -153,6 +163,14 @@ Find this option under your project's settings.
 
 GitLab administrators can use the admin interface to move any project to any namespace if needed.
 
+## Sharing a project with a group
+
+You can [share your projects with a group](../project/members/share_project_with_groups.md)
+and give your group members access to the project all at once.
+
+Alternatively, with [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
+you can [lock the sharing with group feature](#share-with-group-lock-ees-eep).
+
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
@@ -203,7 +221,7 @@ request to add new user to project through API will not be possible.
 
 In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
 it is possible to prevent projects in a group from [sharing
-a project with another group](../../workflow/share_projects_with_other_groups.md).
+a project with another group](../project/members/share_project_with_groups.md).
 This allows for tighter control over project access.
 
 For example, consider you have two distinct teams (Group A and Group B)
@@ -231,4 +249,5 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
 [permissions]: ../permissions.md#permissions
+[reserved]:  ../reserved_names.md
 [ee]: https://about.gitlab.com/products/

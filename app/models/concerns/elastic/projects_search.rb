@@ -65,7 +65,7 @@ module Elastic
         end
 
         TRACKED_FEATURE_SETTINGS.each do |feature|
-          data[feature] = project_feature.public_send(feature)
+          data[feature] = project_feature.public_send(feature) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         data

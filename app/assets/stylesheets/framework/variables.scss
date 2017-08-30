@@ -111,6 +111,8 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-weight-normal: 400;
+$gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
@@ -300,7 +302,7 @@ $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-
+$dropdown-item-hover-bg: $gray-darker;
 
 /*
 * Filtered Search

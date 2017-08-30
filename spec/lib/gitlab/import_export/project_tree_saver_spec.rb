@@ -11,6 +11,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     before do
       project.team << [user, :master]
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+      allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
+      allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
     end
 
     after do
@@ -31,6 +33,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json).to include({ "visibility_level" => 20 })
       end
 
+      it 'has approvals_before_merge set' do
+        expect(saved_project_json['approvals_before_merge']).to eq(1)
+      end
+
       it 'has milestones' do
         expect(saved_project_json['milestones']).not_to be_empty
       end
@@ -41,6 +47,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has merge request\'s milestones' do
         expect(saved_project_json['merge_requests'].first['milestone']).not_to be_empty
+      end
+
+      it 'has merge request\'s source branch SHA' do
+        expect(saved_project_json['merge_requests'].first['source_branch_sha']).to eq('ABCD')
+      end
+
+      it 'has merge request\'s target branch SHA' do
+        expect(saved_project_json['merge_requests'].first['target_branch_sha']).to eq('DCBA')
       end
 
       it 'has events' do
@@ -231,7 +245,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
-                     group: group
+                     group: group,
+                     approvals_before_merge: 1
                     )
     project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)

@@ -481,7 +481,7 @@ describe Gitlab::OAuth::User do
           email: 'admin@othermail.com'
         }
       end
-      
+
       it 'generates the username with a counter' do
         expect(gl_user.username).to eq('admin1')
       end

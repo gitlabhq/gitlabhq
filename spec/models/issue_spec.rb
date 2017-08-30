@@ -57,18 +57,14 @@ describe Issue do
   end
 
   describe '#closed_at' do
-    after do
-      Timecop.return
-    end
-
-    let!(:now) { Timecop.freeze(Time.now) }
-
     it 'sets closed_at to Time.now when issue is closed' do
       issue = create(:issue, state: 'opened')
 
+      expect(issue.closed_at).to be_nil
+
       issue.close
 
-      expect(issue.closed_at).to eq(now)
+      expect(issue.closed_at).to be_present
     end
   end
 
@@ -774,6 +770,24 @@ describe Issue do
       it 'returns false' do
         is_expected.to be_falsey
       end
+    end
+  end
+
+  describe 'removing an issue' do
+    it 'refreshes the number of open issues of the project' do
+      project = subject.project
+
+      expect { subject.destroy }
+        .to change { project.open_issues_count }.from(1).to(0)
+    end
+  end
+
+  describe '.public_only' do
+    it 'only returns public issues' do
+      public_issue = create(:issue)
+      create(:issue, confidential: true)
+
+      expect(described_class.public_only).to eq([public_issue])
     end
   end
 end

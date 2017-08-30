@@ -26,6 +26,13 @@ class GroupsController < Groups::ApplicationController
 
   def new
     @group = Group.new
+
+    if params[:parent_id].present?
+      parent = Group.find_by(id: params[:parent_id])
+      if can?(current_user, :create_subgroup, parent)
+        @group.parent = parent
+      end
+    end
   end
 
   def create
@@ -167,9 +174,9 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(@projects)
-    @events = event_filter.apply_filter(@events).with_associations
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    @events = EventCollection
+      .new(@projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 
   def user_actions

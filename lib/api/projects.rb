@@ -363,6 +363,8 @@ module API
 
         if user_project.forked_from_project.nil?
           user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
+
+          ::Projects::ForksCountService.new(forked_from_project).refresh_cache
         else
           render_api_error!("Project already forked", 409)
         end

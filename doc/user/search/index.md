@@ -27,7 +27,7 @@ on the search field on the top-right of your screen:
 
 ![shortcut to your issues and mrs](img/issues_mrs_shortcut.png)
 
-## Issues and merge requests per project
+### Issues and merge requests per project
 
 If you want to search for issues present in a specific project, navigate to
 a project's **Issues** tab, and click on the field **Search or filter results...**. It will
@@ -40,6 +40,18 @@ The same process is valid for merge requests. Navigate to your project's **Merge
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
+### Issues and merge requests per group
+
+Similar to **Issues and merge requests per project**, you can also search for issues
+within a group. Navigate to a group's **Issues** tab and query search results in
+the same way as you do for projects.
+
+![filter issues in a group](img/group_issues_filter.png)
+
+The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab.
+The search and filter UI currently uses dropdowns. In a future release, the same
+dynamic UI as above will be carried over here.
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
@@ -49,6 +61,12 @@ You can view recent searches by clicking on the little arrow-clock icon, which i
 ## Removing search filters
 
 Individual filters can be removed by clicking on the filter's (x) button or backspacing. The entire search filter can be cleared by clicking on the search box's (x) button.
+
+## Filtering with multiple filters of the same type
+
+Some filters can be added multiple times. These include but are not limited to assignees and labels. When you filter with these multiple filters of the same type, the AND logic is applied. For example, if you were filtering `assignee:@sam assignee:@sarah`, your results will only include entries whereby the assignees are assigned to both Sam and Sarah are returned.
+
+![multiple assignees filtering](img/multiple_assignees.png)
 
 ### Shortcut
 

@@ -29,6 +29,10 @@
         margin-right: 15px;
       }
 
+      .tree-ref-target-holder {
+        display: inline-block;
+      }
+
       .repo-breadcrumb {
         li:last-of-type {
           position: relative;
@@ -227,7 +231,7 @@
 }
 
 .upload-link {
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   color: $md-link-color;
 }
 

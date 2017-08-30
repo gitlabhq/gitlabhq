@@ -57,7 +57,7 @@ module API
     end
     get "templates/licenses" do
       options = {
-        featured: declared(params).popular.present? ? true : nil
+        featured: declared(params)[:popular].present? ? true : nil
       }
       licences = ::Kaminari.paginate_array(Licensee::License.all(options))
       present paginate(licences), with: Entities::RepoLicense
@@ -71,7 +71,7 @@ module API
       requires :name, type: String, desc: 'The name of the template'
     end
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
-      not_found!('License') unless Licensee::License.find(declared(params).name)
+      not_found!('License') unless Licensee::License.find(declared(params)[:name])
 
       template = parsed_license_template
 
@@ -102,7 +102,7 @@ module API
         requires :name, type: String, desc: 'The name of the template'
       end
       get "templates/#{template_type}/:name" do
-        new_template = klass.find(declared(params).name)
+        new_template = klass.find(declared(params)[:name])
 
         render_response(template_type, new_template)
       end

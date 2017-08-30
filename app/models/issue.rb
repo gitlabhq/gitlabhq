@@ -12,10 +12,7 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
-  include IgnorableColumn
   include CreatedAtFilterable
-
-  ignore_column :position
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
@@ -64,7 +61,10 @@ class Issue < ActiveRecord::Base
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
+  scope :public_only, -> { where(confidential: false) }
+
   after_save :expire_etag_cache
+  after_commit :update_project_counter_caches, on: :destroy
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -301,6 +301,10 @@ class Issue < ActiveRecord::Base
         )
       end
     end
+  end
+
+  def update_project_counter_caches
+    Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 
   private

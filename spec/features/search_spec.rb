@@ -195,37 +195,33 @@ describe "Search"  do
 
         it 'takes user to her issues page when issues assigned is clicked' do
           find('.dropdown-menu').click_link 'Issues assigned to me'
-          sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([assignee_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
           find('.dropdown-menu').click_link "Issues I've created"
-          sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([author_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
           find('.dropdown-menu').click_link 'Merge requests assigned to me'
-          sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([assignee_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR authored is clicked' do
           find('.dropdown-menu').click_link "Merge requests I've created"
-          sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([author_token(user.name)])
           expect_filtered_search_input_empty
         end
       end
@@ -283,6 +279,32 @@ describe "Search"  do
       click_link 'Commits'
 
       expect(page).to have_selector('.commit-row-description', count: 9)
+    end
+  end
+
+  context 'anonymous user' do
+    let(:project) { create(:project, :public) }
+
+    before do
+      sign_out(user)
+    end
+
+    it 'preserves the group being searched in' do
+      visit search_path(group_id: project.namespace.id)
+
+      fill_in 'search', with: 'foo'
+      click_button 'Search'
+
+      expect(find('#group_id').value).to eq(project.namespace.id.to_s)
+    end
+
+    it 'preserves the project being searched in' do
+      visit search_path(project_id: project.id)
+
+      fill_in 'search', with: 'foo'
+      click_button 'Search'
+
+      expect(find('#project_id').value).to eq(project.id.to_s)
     end
   end
 end

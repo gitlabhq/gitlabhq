@@ -1,8 +1,9 @@
 module Gitlab
   module Geo
     module ProjectLogHelpers
-      def log_info(message)
+      def log_info(message, details = {})
         data = base_log_data(message)
+        data.merge!(details) if details
         Gitlab::Geo::Logger.info(data)
       end
 

@@ -2522,7 +2522,7 @@
       "id": 27,
       "target_branch": "feature",
       "source_branch": "feature_conflict",
-      "source_project_id": 5,
+      "source_project_id": 999,
       "author_id": 1,
       "assignee_id": null,
       "title": "MR1",
@@ -2536,6 +2536,9 @@
       "position": 0,
       "updated_by_id": null,
       "merge_error": null,
+      "diff_head_sha": "HEAD",
+      "source_branch_sha": "ABCD",
+      "target_branch_sha": "DCBA",
       "merge_params": {
         "force_remove_source_branch": null
       },
@@ -2964,7 +2967,8 @@
           "action": 1,
           "author_id": 1
         }
-      ]
+      ],
+      "approvals_before_merge": 1
     },
     {
       "id": 26,

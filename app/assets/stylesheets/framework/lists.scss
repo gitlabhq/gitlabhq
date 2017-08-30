@@ -113,7 +113,7 @@ ul.content-list {
     }
 
     .title {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
 
     a {
@@ -132,6 +132,8 @@ ul.content-list {
     }
 
     .controls {
+      @include new-style-dropdown;
+
       float: right;
 
       > .control-text {
@@ -216,7 +218,7 @@ ul.content-list {
   }
 
   .row-title {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .row-second-line {

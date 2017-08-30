@@ -69,16 +69,23 @@ RSpec.describe Geo::WikiSyncService do
       context 'when repository sync succeed' do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
-        before do
-          subject.execute
-        end
-
         it 'sets last_wiki_synced_at' do
+          subject.execute
+
           expect(registry.last_wiki_synced_at).not_to be_nil
         end
 
         it 'sets last_wiki_successful_sync_at' do
+          subject.execute
+
           expect(registry.last_wiki_successful_sync_at).not_to be_nil
+        end
+
+        it 'logs success with timings' do
+          allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
+          expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :update_delay_s, :download_time_s)).and_call_original
+
+          subject.execute
         end
       end
 

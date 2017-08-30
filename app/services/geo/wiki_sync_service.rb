@@ -10,18 +10,21 @@ module Geo
 
     def fetch_wiki_repository
       log_info('Fetching wiki repository')
-      update_registry(:wiki, started_at: DateTime.now)
+      update_registry(started_at: DateTime.now)
 
       begin
         project.wiki.ensure_repository
         project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
 
-        update_registry(:wiki, finished_at: DateTime.now)
+        update_registry(finished_at: DateTime.now)
+        log_info("Finished wiki sync",
+                 update_delay_s: update_delay_in_seconds,
+                 download_time_s: download_time_in_seconds)
       rescue Gitlab::Git::Repository::NoRepository,
              Gitlab::Shell::Error,
              ProjectWiki::CouldNotCreateWikiError,
              Geo::EmptyCloneUrlPrefixError => e
-        log_error("Error syncing wiki repository", e)
+        log_error('Error syncing wiki repository', e)
       end
     end
 

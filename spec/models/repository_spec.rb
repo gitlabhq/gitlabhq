@@ -8,6 +8,7 @@ describe Repository, models: true do
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
+  let(:committer) { Gitlab::Git::Committer.from_user(user) }
 
   let(:commit_options) do
     author = repository.user_to_committer(user)
@@ -852,7 +853,7 @@ describe Repository, models: true do
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
 
       it 'does not create the branch' do
@@ -860,7 +861,7 @@ describe Repository, models: true do
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
         expect(repository.find_branch('new_feature')).to be_nil
       end
     end
@@ -890,8 +891,8 @@ describe Repository, models: true do
 
     context 'when pre hooks were successful' do
       it 'runs without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute)
-          .with(user, project, old_rev, blank_sha, 'refs/heads/feature')
+        expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
+          .with(committer, repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -911,7 +912,7 @@ describe Repository, models: true do
 
         expect do
           repository.rm_branch(user, 'feature')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
 
       it 'does not delete the branch' do
@@ -919,7 +920,7 @@ describe Repository, models: true do
 
         expect do
           repository.rm_branch(user, 'feature')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
         expect(repository.find_branch('feature')).not_to be_nil
       end
     end
@@ -931,23 +932,23 @@ describe Repository, models: true do
 
     context 'when pre hooks were successful' do
       before do
-        service = GitHooksService.new
-        expect(GitHooksService).to receive(:new).and_return(service)
+        service = Gitlab::Git::HooksService.new
+        expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(user, project, old_rev, new_rev, 'refs/heads/feature')
+          .with(committer, repository, old_rev, new_rev, 'refs/heads/feature')
           .and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          GitOperationService.new(user, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository).with_branch('feature') do
             new_rev
           end
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
-        service = GitOperationService.new(user, repository)
+        service = GitOperationService.new(committer, repository)
 
         expect(service).to receive(:update_autocrlf_option)
 
@@ -958,12 +959,33 @@ describe Repository, models: true do
         it 'updates the head' do
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
 
-          GitOperationService.new(user, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository).with_branch('feature') do
             new_rev
           end
 
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
+      end
+    end
+
+    context 'when temporary ref failed to be created from other project' do
+      let(:target_project) { create(:project, :empty_repo) }
+
+      before do
+        expect(target_project.repository).to receive(:run_git)
+      end
+
+      it 'raises Rugged::ReferenceError' do
+        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
+          expect(err.cause).to be_nil
+        end
+
+        expect do
+          GitOperationService.new(committer, target_project.repository)
+            .with_branch('feature',
+                         start_project: project,
+                         &:itself)
+        end.to raise_reference_error
       end
     end
 
@@ -981,7 +1003,7 @@ describe Repository, models: true do
         repository.add_branch(user, branch, old_rev)
 
         expect do
-          GitOperationService.new(user, repository).with_branch(branch) do
+          GitOperationService.new(committer, repository).with_branch(branch) do
             new_rev
           end
         end.not_to raise_error
@@ -999,7 +1021,7 @@ describe Repository, models: true do
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
         expect do
-          GitOperationService.new(user, repository).with_branch(branch) do
+          GitOperationService.new(committer, repository).with_branch(branch) do
             new_rev
           end
         end.to raise_error(Repository::CommitError)
@@ -1011,10 +1033,10 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          GitOperationService.new(user, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository).with_branch('feature') do
             new_rev
           end
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
 
@@ -1029,7 +1051,7 @@ describe Repository, models: true do
         expect(repository).not_to receive(:expire_emptiness_caches)
         expect(repository).to     receive(:expire_branches_cache)
 
-        GitOperationService.new(user, repository)
+        GitOperationService.new(committer, repository)
           .with_branch('new-feature') do
             new_rev
           end

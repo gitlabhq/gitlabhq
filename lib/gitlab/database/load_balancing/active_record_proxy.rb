@@ -1,14 +1,11 @@
 module Gitlab
   module Database
     module LoadBalancing
-      # Module injected into ActiveRecord::Base to allow proxying of subclasses.
+      # Module injected into ActiveRecord::Base to allow hijacking of the
+      # "connection" method.
       module ActiveRecordProxy
-        def inherited(by)
-          super(by)
-
-          # The methods in ModelProxy will become available as class methods for
-          # the class defined in `by`.
-          by.singleton_class.prepend(ModelProxy)
+        def connection
+          LoadBalancing.proxy
         end
       end
     end

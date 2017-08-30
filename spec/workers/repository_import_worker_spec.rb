@@ -35,8 +35,8 @@ describe RepositoryImportWorker do
       it 'hide the credentials that were used in the import URL' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
 
+        project.update_attributes(import_jid: '123')
         expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
-        allow(subject).to receive(:jid).and_return('123')
 
         expect do
           subject.perform(project.id)

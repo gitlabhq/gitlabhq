@@ -8,6 +8,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
+require 'rspec-parameterized'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -83,6 +84,7 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    Timecop.safe_mode = true
     TestEnv.init
   end
 
@@ -117,6 +119,18 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
+  # Stub the `ForkedStorageCheck.storage_available?` method unless
+  # `:broken_storage` metadata is defined
+  #
+  # This check can be slow and is unnecessary in a test environment where we
+  # know the storage is available, because we create it at runtime
+  config.before(:example) do |example|
+    unless example.metadata[:broken_storage]
+      allow(Gitlab::Git::Storage::ForkedStorageCheck)
+        .to receive(:storage_available?).and_return(true)
+    end
+  end
+
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
@@ -144,17 +158,12 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.before(:example, :migration) do
-    ActiveRecord::Migrator
-      .migrate(migrations_paths, previous_migration.version)
-
-    reset_column_in_migration_models
+  config.before(:each, :migration) do
+    schema_migrate_down!
   end
 
-  config.after(:example, :migration) do
-    ActiveRecord::Migrator.migrate(migrations_paths)
-
-    reset_column_in_migration_models
+  config.after(:context, :migration) do
+    schema_migrate_up!
   end
 
   config.around(:each, :nested_groups) do |example|

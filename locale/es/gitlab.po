@@ -1,21 +1,20 @@
-# Spanish translations for gitlab package.
-# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the gitlab package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: gitlab 1.0.0\n"
+"Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-07-13 12:10-0500\n"
+"POT-Creation-Date: 2017-08-18 14:15+0530\n"
+"PO-Revision-Date: 2017-08-23 09:37-0400\n"
+"Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Spanish\n"
-"Language: es\n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"Last-Translator: Bob Van Landuyt <bob@gitlab.com>\n"
-"X-Generator: Poedit 2.0.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gitlab-ee\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /master/locale/gitlab.pot\n"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -30,16 +29,36 @@ msgstr[1] "%s cambios adicionales han sido omitidos para evitar problemas de ren
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} cambió %{commit_timeago}"
 
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
+
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 pipeline"
-msgstr[1] "%d pipelines"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Una colección de gráficos sobre Integración Continua"
 
 msgid "About auto deploy"
 msgstr "Acerca del auto despliegue"
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
 
 msgid "Active"
 msgstr "Activo"
@@ -62,11 +81,26 @@ msgstr "Agregar una clave SSH a tu perfil para actualizar o enviar a través de 
 msgid "Add new directory"
 msgstr "Agregar nuevo directorio"
 
+msgid "All"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "¡Proyecto archivado! El repositorio es de solo lectura"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "¿Estás seguro que deseas eliminar esta programación del pipeline?"
+
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Adjunte un archivo arrastrando &amp; soltando o %{upload_link}"
@@ -109,6 +143,9 @@ msgstr "Configuración de CI"
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgid "Cancel edit"
+msgstr ""
+
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "Escoger en la rama"
 
@@ -122,7 +159,7 @@ msgid "ChangeTypeAction|Revert"
 msgstr "Revertir"
 
 msgid "Changelog"
-msgstr "Changelog"
+msgstr ""
 
 msgid "Charts"
 msgstr "Gráficos"
@@ -187,6 +224,9 @@ msgstr "omitido"
 msgid "CiStatus|running"
 msgstr "en ejecución"
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "Cambio"
@@ -234,6 +274,9 @@ msgstr "Copiar SHA del cambio al portapapeles"
 msgid "Create New Directory"
 msgstr "Crear Nuevo Directorio"
 
+msgid "Create a new branch"
+msgstr ""
+
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Crear un token de acceso personal en tu cuenta para actualizar o enviar a través de %{protocol}."
 
@@ -271,7 +314,7 @@ msgid "Custom notification levels are the same as participating levels. With cus
 msgstr "Los niveles de notificación personalizados son los mismos que los niveles participantes. Con los niveles de notificación personalizados, también recibirá notificaciones para eventos seleccionados. Para obtener más información, consulte %{notification_link}."
 
 msgid "Cycle Analytics"
-msgstr "Cycle Analytics"
+msgstr ""
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr "Cycle Analytics ofrece una visión general de cuánto tiempo tarda en pasar de idea a producción en su proyecto."
@@ -311,8 +354,14 @@ msgstr[1] "Despliegues"
 msgid "Description"
 msgstr "Descripción"
 
+msgid "Details"
+msgstr ""
+
 msgid "Directory name"
 msgstr "Nombre del directorio"
+
+msgid "Discard changes"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "No mostrar de nuevo"
@@ -349,6 +398,24 @@ msgstr "Editar"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Editar Programación del Pipeline %{id}"
+
+msgid "EventFilterBy|Filter by all"
+msgstr ""
+
+msgid "EventFilterBy|Filter by comments"
+msgstr ""
+
+msgid "EventFilterBy|Filter by issue events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by merge events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by push events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by team"
+msgstr ""
 
 msgid "Every day (at 4:00am)"
 msgstr "Todos los días (a las 4:00 am)"
@@ -397,11 +464,35 @@ msgstr "Desde la creación de la incidencia hasta el despliegue a producción"
 msgid "From merge request merge until deploy to production"
 msgstr "Desde la integración de la solicitud de fusión hasta el despliegue a producción"
 
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr "Ir a tu bifurcación"
 
 msgid "GoToYourFork|Fork"
 msgstr "Bifurcación"
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
+msgstr ""
 
 msgid "Home"
 msgstr "Inicio"
@@ -412,11 +503,17 @@ msgstr "Servicio de limpieza iniciado con éxito"
 msgid "Import repository"
 msgstr "Importar repositorio"
 
+msgid "Install a Runner compatible with GitLab CI"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr "Patrón de intervalo"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
+
+msgid "Issue events"
+msgstr ""
 
 msgid "Jobs for last month"
 msgstr "Trabajos del mes pasado"
@@ -447,6 +544,12 @@ msgstr "Última actualización"
 msgid "Last commit"
 msgstr "Último cambio"
 
+msgid "LastPushEvent|You pushed to"
+msgstr ""
+
+msgid "LastPushEvent|at"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr "Más información en la"
 
@@ -467,8 +570,14 @@ msgstr[1] "Limitado a mostrar máximo %d eventos"
 msgid "Median"
 msgstr "Mediana"
 
+msgid "Merge events"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "agregar una clave SSH"
+
+msgid "More information is available|here"
+msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -581,7 +690,7 @@ msgid "Owner"
 msgstr "Propietario"
 
 msgid "Pipeline"
-msgstr "Pipeline"
+msgstr ""
 
 msgid "Pipeline Health"
 msgstr "Estado del Pipeline"
@@ -650,7 +759,7 @@ msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Personalizado"
 
 msgid "Pipelines"
-msgstr "Pipelines"
+msgstr ""
 
 msgid "Pipelines charts"
 msgstr "Gráficos de los pipelines"
@@ -667,6 +776,9 @@ msgstr "con etapa"
 msgid "Pipeline|with stages"
 msgstr "con etapas"
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Proyecto ‘%{project_name}’ en cola para eliminación."
 
@@ -682,6 +794,9 @@ msgstr "Proyecto ‘%{project_name}’ será eliminado."
 msgid "Project access must be granted explicitly to each user."
 msgstr "El acceso al proyecto debe concederse explícitamente a cada usuario."
 
+msgid "Project details"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr "No se pudo eliminar la exportación del proyecto."
 
@@ -696,6 +811,9 @@ msgstr "Se inició la exportación del proyecto. Se enviará un enlace de descar
 
 msgid "Project home"
 msgstr "Inicio del proyecto"
+
+msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
 
 msgid "ProjectFeature|Disabled"
 msgstr "Deshabilitada"
@@ -717,6 +835,9 @@ msgstr "Etapa"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Historial gráfico"
+
+msgid "Push events"
+msgstr ""
 
 msgid "Read more"
 msgstr "Leer más"
@@ -754,8 +875,20 @@ msgstr "Recordar después"
 msgid "Remove project"
 msgstr "Eliminar proyecto"
 
+msgid "Repository"
+msgstr ""
+
 msgid "Request Access"
 msgstr "Solicitar acceso"
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr "Revertir este cambio"
@@ -780,6 +913,9 @@ msgstr "Seleccionar formato de archivo"
 
 msgid "Select a timezone"
 msgstr "Selecciona una zona horaria"
+
+msgid "Select existing branch"
+msgstr ""
 
 msgid "Select target branch"
 msgstr "Selecciona una rama de destino"
@@ -807,11 +943,17 @@ msgstr[1] "Mostrando %d eventos"
 msgid "Source code"
 msgstr "Código fuente"
 
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr "Destacar"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Iniciar una %{new_merge_request} con estos cambios"
+
+msgid "Start the Runner!"
+msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "Cambiar rama/etiqueta"
@@ -826,6 +968,9 @@ msgstr "Etiquetas"
 
 msgid "Target Branch"
 msgstr "Rama de destino"
+
+msgid "Team"
+msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "La etapa de desarrollo muestra el tiempo desde el primer cambio hasta la creación de la solicitud de fusión. Los datos serán automáticamente incorporados aquí una vez creada tu primera solicitud de fusión."
@@ -874,6 +1019,9 @@ msgstr "El tiempo utilizado por cada entrada de datos obtenido por esa etapa."
 
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr "El valor en el punto medio de una serie de valores observados. Por ejemplo, entre 3, 5, 9, la mediana es 5. Entre 3, 5, 7, 8, la mediana es (5 + 7) / 2 = 6."
+
+msgid "There are problems accessing Git storage: "
+msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "Esto significa que no puede enviar código hasta que cree un repositorio vacío o importe uno existente."
@@ -1044,6 +1192,9 @@ msgstr "Subir archivo"
 msgid "UploadLink|click to upload"
 msgstr "Hacer clic para subir"
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr "Utiliza tu configuración de notificación global"
 
@@ -1071,23 +1222,11 @@ msgstr "No hay suficientes datos para mostrar en esta etapa."
 msgid "Withdraw Access Request"
 msgstr "Retirar Solicitud de Acceso"
 
-msgid ""
-"You are going to remove %{group_name}.\n"
-"Removed groups CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
-msgstr ""
-"Va a eliminar %{group_name}.\n"
-"¡El grupo eliminado NO puede ser restaurado!\n"
-"¿Estás TOTALMENTE seguro?"
+msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
+msgstr "Va a eliminar %{group_name}. ¡El grupo eliminado NO puede ser restaurado! ¿Estás TOTALMENTE seguro?"
 
-msgid ""
-"You are going to remove %{project_name_with_namespace}.\n"
-"Removed project CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
-msgstr ""
-"Va a eliminar %{project_name_with_namespace}.\n"
-"¡El proyecto eliminado NO puede ser restaurado!\n"
-"¿Estás TOTALMENTE seguro?"
+msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
+msgstr "Va a eliminar %{project_name_with_namespace}. ¡El proyecto eliminado NO puede ser restaurado! ¿Estás TOTALMENTE seguro?"
 
 msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr "Vas a eliminar el enlace de la bifurcación con el proyecto original %{forked_from_project}. ¿Estás TOTALMENTE seguro?"

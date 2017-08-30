@@ -42,14 +42,6 @@ describe 'Filter issues weight', :js do
 
       expect_issues_list_count(1)
     end
-
-    it 'filters issues by invalid weight' do
-      skip('to be tested, issue #1517')
-    end
-
-    it 'filters issues by multiple weights' do
-      skip('to be tested, issue #1517')
-    end
   end
 
   describe 'weight with other filters' do

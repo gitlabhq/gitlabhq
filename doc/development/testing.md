@@ -283,6 +283,43 @@ end
 - Avoid scenario titles that add no information, such as "successfully".
 - Avoid scenario titles that repeat the feature title.
 
+### Table-based / Parameterized tests
+
+This style of testing is used to exercise one piece of code with a comprehensive
+range of inputs. By specifying the test case once, alongside a table of inputs
+and the expected output for each, your tests can be made easier to read and more
+compact.
+
+We use the [rspec-parameterized](https://github.com/tomykaira/rspec-parameterized)
+gem. A short example, using the table syntax and checking Ruby equality for a
+range of inputs, might look like this:
+
+```ruby
+describe "#==" do
+  using Rspec::Parameterized::TableSyntax
+
+  let(:project1) { create(:project) }
+  let(:project2) { create(:project) }
+  where(:a, :b, :result) do
+    1         | 1        | true
+    1         | 2        | false
+    true      | true     | true
+    true      | false    | false
+    project1  | project1 | true
+    project2  | project2 | true
+    project 1 | project2 | false
+  end
+
+  with_them do
+    it { expect(a == b).to eq(result) }
+
+    it 'is isomorphic' do
+      expect(b == a).to eq(result)
+    end
+  end
+end
+```
+
 ### Matchers
 
 Custom matchers should be created to clarify the intent and/or hide the
@@ -290,6 +327,15 @@ complexity of RSpec expectations.They should be placed under
 `spec/support/matchers/`. Matchers can be placed in subfolder if they apply to
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.
+
+#### have_gitlab_http_status
+
+Prefer `have_gitlab_http_status` over `have_http_status` because the former
+could also show the response body whenever the status mismatched. This would
+be very useful whenever some tests start breaking and we would love to know
+why without editing the source and rerun the tests.
+
+This is especially useful whenever it's showing 500 internal server error.
 
 ### Shared contexts
 

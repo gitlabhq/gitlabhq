@@ -5,7 +5,7 @@ RSpec.configure do |config|
   end
 
   config.append_after(:context) do
-    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.clean_with(:truncation, cache_tables: false)
   end
 
   config.before(:each) do
@@ -13,16 +13,16 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
   end
 
-  config.before(:each, js: true) do
+  config.before(:each, :js) do
     DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
   end
 
-  config.before(:each, truncate: true) do
+  config.before(:each, :truncate) do
     DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
   end
 
   config.before(:each, :migration) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :truncation, { cache_tables: false }
   end
 
   config.before(:each) do

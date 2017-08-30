@@ -13,10 +13,17 @@ module Gitlab
         )
         response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request)
 
-        blob = response.first
-        return unless blob.oid.present?
+        data = ''
+        blob = nil
+        response.each do |msg|
+          if blob.nil?
+            blob = msg
+          end
 
-        data = response.reduce(blob.data.dup) { |memo, msg| memo << msg.data.dup }
+          data << msg.data
+        end
+
+        return nil if blob.oid.blank?
 
         Gitlab::Git::Blob.new(
           id: blob.oid,

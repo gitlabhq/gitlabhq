@@ -1,57 +1,57 @@
 import Vue from 'vue';
 import repoCommitSection from '~/repo/components/repo_commit_section.vue';
 import RepoStore from '~/repo/stores/repo_store';
-import RepoHelper from '~/repo/helpers/repo_helper';
-import Api from '~/api';
+import RepoService from '~/repo/services/repo_service';
 
 describe('RepoCommitSection', () => {
   const branch = 'master';
   const projectUrl = 'projectUrl';
-  const openedFiles = [{
+  const changedFiles = [{
     id: 0,
     changed: true,
     url: `/namespace/${projectUrl}/blob/${branch}/dir/file0.ext`,
+    path: 'dir/file0.ext',
     newContent: 'a',
   }, {
     id: 1,
     changed: true,
     url: `/namespace/${projectUrl}/blob/${branch}/dir/file1.ext`,
+    path: 'dir/file1.ext',
     newContent: 'b',
-  }, {
+  }];
+  const openedFiles = changedFiles.concat([{
     id: 2,
     url: `/namespace/${projectUrl}/blob/${branch}/dir/file2.ext`,
+    path: 'dir/file2.ext',
     changed: false,
-  }];
+  }]);
 
   RepoStore.projectUrl = projectUrl;
 
-  function createComponent() {
+  function createComponent(el) {
     const RepoCommitSection = Vue.extend(repoCommitSection);
 
-    return new RepoCommitSection().$mount();
+    return new RepoCommitSection().$mount(el);
   }
 
   it('renders a commit section', () => {
     RepoStore.isCommitable = true;
+    RepoStore.currentBranch = branch;
     RepoStore.targetBranch = branch;
     RepoStore.openedFiles = openedFiles;
 
-    spyOn(RepoHelper, 'getBranch').and.returnValue(branch);
-
     const vm = createComponent();
-    const changedFiles = [...vm.$el.querySelectorAll('.changed-files > li')];
+    const changedFileElements = [...vm.$el.querySelectorAll('.changed-files > li')];
     const commitMessage = vm.$el.querySelector('#commit-message');
-    const submitCommit = vm.$el.querySelector('.submit-commit');
+    const submitCommit = vm.$refs.submitCommit;
     const targetBranch = vm.$el.querySelector('.target-branch');
 
     expect(vm.$el.querySelector(':scope > form')).toBeTruthy();
-    expect(vm.$el.querySelector('.staged-files').textContent).toEqual('Staged files (2)');
-    expect(changedFiles.length).toEqual(2);
+    expect(vm.$el.querySelector('.staged-files').textContent.trim()).toEqual('Staged files (2)');
+    expect(changedFileElements.length).toEqual(2);
 
-    changedFiles.forEach((changedFile, i) => {
-      const filePath = RepoHelper.getFilePathFromFullPath(openedFiles[i].url, branch);
-
-      expect(changedFile.textContent).toEqual(filePath);
+    changedFileElements.forEach((changedFile, i) => {
+      expect(changedFile.textContent.trim()).toEqual(changedFiles[i].path);
     });
 
     expect(commitMessage.tagName).toEqual('TEXTAREA');
@@ -59,9 +59,9 @@ describe('RepoCommitSection', () => {
     expect(submitCommit.type).toEqual('submit');
     expect(submitCommit.disabled).toBeTruthy();
     expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeFalsy();
-    expect(vm.$el.querySelector('.commit-summary').textContent).toEqual('Commit 2 files');
-    expect(targetBranch.querySelector(':scope > label').textContent).toEqual('Target branch');
-    expect(targetBranch.querySelector('.help-block').textContent).toEqual(branch);
+    expect(vm.$el.querySelector('.commit-summary').textContent.trim()).toEqual('Commit 2 files');
+    expect(targetBranch.querySelector(':scope > label').textContent.trim()).toEqual('Target branch');
+    expect(targetBranch.querySelector('.help-block').textContent.trim()).toEqual(branch);
   });
 
   it('does not render if not isCommitable', () => {
@@ -89,14 +89,20 @@ describe('RepoCommitSection', () => {
     const projectId = 'projectId';
     const commitMessage = 'commitMessage';
     RepoStore.isCommitable = true;
+    RepoStore.currentBranch = branch;
+    RepoStore.targetBranch = branch;
     RepoStore.openedFiles = openedFiles;
     RepoStore.projectId = projectId;
 
-    spyOn(RepoHelper, 'getBranch').and.returnValue(branch);
+    // We need to append to body to get form `submit` events working
+    // Otherwise we run into, "Form submission canceled because the form is not connected"
+    // See https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm
+    const el = document.createElement('div');
+    document.body.appendChild(el);
 
-    const vm = createComponent();
+    const vm = createComponent(el);
     const commitMessageEl = vm.$el.querySelector('#commit-message');
-    const submitCommit = vm.$el.querySelector('.submit-commit');
+    const submitCommit = vm.$refs.submitCommit;
 
     vm.commitMessage = commitMessage;
 
@@ -105,7 +111,7 @@ describe('RepoCommitSection', () => {
       expect(submitCommit.disabled).toBeFalsy();
 
       spyOn(vm, 'makeCommit').and.callThrough();
-      spyOn(Api, 'commitMultiple');
+      spyOn(RepoService, 'commitFiles').and.callFake(() => Promise.resolve());
 
       submitCommit.click();
 
@@ -113,10 +119,9 @@ describe('RepoCommitSection', () => {
         expect(vm.makeCommit).toHaveBeenCalled();
         expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeTruthy();
 
-        const args = Api.commitMultiple.calls.allArgs()[0];
-        const { commit_message, actions, branch: payloadBranch } = args[1];
+        const args = RepoService.commitFiles.calls.allArgs()[0];
+        const { commit_message, actions, branch: payloadBranch } = args[0];
 
-        expect(args[0]).toBe(projectId);
         expect(commit_message).toBe(commitMessage);
         expect(actions.length).toEqual(2);
         expect(payloadBranch).toEqual(branch);
@@ -124,10 +129,8 @@ describe('RepoCommitSection', () => {
         expect(actions[1].action).toEqual('update');
         expect(actions[0].content).toEqual(openedFiles[0].newContent);
         expect(actions[1].content).toEqual(openedFiles[1].newContent);
-        expect(actions[0].file_path)
-          .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[0].url, branch));
-        expect(actions[1].file_path)
-          .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[1].url, branch));
+        expect(actions[0].file_path).toEqual(openedFiles[0].path);
+        expect(actions[1].file_path).toEqual(openedFiles[1].path);
 
         done();
       });
@@ -140,7 +143,6 @@ describe('RepoCommitSection', () => {
         const vm = {
           submitCommitsLoading: true,
           changedFiles: new Array(10),
-          openedFiles: new Array(10),
           commitMessage: 'commitMessage',
           editMode: true,
         };
@@ -149,7 +151,6 @@ describe('RepoCommitSection', () => {
 
         expect(vm.submitCommitsLoading).toEqual(false);
         expect(vm.changedFiles).toEqual([]);
-        expect(vm.openedFiles).toEqual([]);
         expect(vm.commitMessage).toEqual('');
         expect(vm.editMode).toEqual(false);
       });

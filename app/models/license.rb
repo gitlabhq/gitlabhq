@@ -204,6 +204,8 @@ class License < ActiveRecord::Base
     end
 
     def load_license
+      return unless self.table_exists?
+
       license = self.last
 
       return unless license && license.valid?
@@ -246,7 +248,7 @@ class License < ActiveRecord::Base
     if License.column_names.include?(method_name.to_s)
       super
     elsif license && license.respond_to?(method_name)
-      license.send(method_name, *arguments, &block)
+      license.__send__(method_name, *arguments, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
       super
     end

@@ -252,6 +252,10 @@ Layout/Tab:
 Layout/TrailingBlankLines:
   Enabled: true
 
+# Avoid trailing whitespace.
+Layout/TrailingWhitespace:
+  Enabled: true
+
 # Style #######################################################################
 
 # Check the naming of accessor methods for get_/set_.
@@ -1179,29 +1183,33 @@ RSpec/VerifiedDoubles:
 GitlabSecurity/DeepMunge:
   Enabled: true
   Exclude:
-    - 'spec/**/*'
     - 'lib/**/*.rake'
+    - 'spec/**/*'
 
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
-    - 'spec/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'features/**/*'
     - 'lib/**/*.rake'
+    - 'qa/**/*'
+    - 'spec/**/*'
 
 GitlabSecurity/RedirectToParamsUpdate:
   Enabled: true
   Exclude:
-    - 'spec/**/*'
     - 'lib/**/*.rake'
+    - 'spec/**/*'
 
 GitlabSecurity/SqlInjection:
   Enabled: true
   Exclude:
-    - 'spec/**/*'
     - 'lib/**/*.rake'
+    - 'spec/**/*'
 
 GitlabSecurity/SystemCommandInjection:
   Enabled: true
   Exclude:
-    - 'spec/**/*'
     - 'lib/**/*.rake'
+    - 'spec/**/*'
