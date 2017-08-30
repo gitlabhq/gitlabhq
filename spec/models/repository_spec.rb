@@ -923,13 +923,16 @@ describe Repository, models: true do
   describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
+    let(:updating_ref) { 'refs/heads/feature' }
+    let(:target_project) { project }
+    let(:target_repository) { target_project.repository }
 
     context 'when pre hooks were successful' do
       before do
         service = Gitlab::Git::HooksService.new
         expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, repository, old_rev, new_rev, 'refs/heads/feature')
+          .with(committer, target_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
@@ -958,6 +961,37 @@ describe Repository, models: true do
           end
 
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
+        end
+      end
+
+      context 'when target project does not have the commit' do
+        let(:target_project) { create(:project, :empty_repo) }
+        let(:old_rev) { Gitlab::Git::BLANK_SHA }
+        let(:new_rev) { project.commit('feature').sha }
+        let(:updating_ref) { 'refs/heads/master' }
+
+        it 'fetch_ref and create the branch' do
+          expect(target_project.repository).to receive(:fetch_ref)
+            .and_call_original
+
+          GitOperationService.new(committer, target_repository)
+            .with_branch(
+              'master',
+              start_project: project,
+              start_branch_name: 'feature') { new_rev }
+
+          expect(target_repository.branch_names).to contain_exactly('master')
+        end
+      end
+
+      context 'when target project already has the commit' do
+        let(:target_project) { create(:project, :repository) }
+
+        it 'does not fetch_ref and just pass the commit' do
+          expect(target_repository).not_to receive(:fetch_ref)
+
+          GitOperationService.new(committer, target_repository)
+            .with_branch('feature', start_project: project) { new_rev }
         end
       end
     end
@@ -2036,23 +2070,23 @@ describe Repository, models: true do
     end
   end
 
-  describe '#is_ancestor?' do
+  describe '#ancestor?' do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
     context 'with Gitaly enabled' do
       it 'it is an ancestor' do
-        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
 
       it 'it is not an ancestor' do
-        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
       end
 
       it 'returns false on nil-values' do
-        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+        expect(repository.ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.ancestor?(nil, nil)).to eq(false)
       end
     end
 
@@ -2063,17 +2097,17 @@ describe Repository, models: true do
       end
 
       it 'it is an ancestor' do
-        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
       end
 
       it 'it is not an ancestor' do
-        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
       end
 
       it 'returns false on nil-values' do
-        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+        expect(repository.ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.ancestor?(nil, nil)).to eq(false)
       end
     end
   end

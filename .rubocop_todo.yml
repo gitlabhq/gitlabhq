@@ -237,14 +237,6 @@ Style/PercentLiteralDelimiters:
 Style/PerlBackrefs:
   Enabled: false
 
-# Offense count: 105
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-Style/PredicateName:
-  Enabled: false
-
 # Offense count: 58
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

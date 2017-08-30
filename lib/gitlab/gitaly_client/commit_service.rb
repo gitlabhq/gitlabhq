@@ -22,7 +22,7 @@ module Gitlab
         end
       end
 
-      def is_ancestor(ancestor_id, child_id)
+      def ancestor?(ancestor_id, child_id)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,
