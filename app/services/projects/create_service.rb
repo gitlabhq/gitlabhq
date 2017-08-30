@@ -103,14 +103,13 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       setup_authorizations
-    end
 
-<<<<<<< HEAD
       # EE-only
       create_predefined_push_rule
 
       @project.group&.refresh_members_authorized_projects
-=======
+    end
+
     # Refresh the current user's authorizations inline (so they can access the
     # project immediately after this request completes), and any other affected
     # users in the background
@@ -121,7 +120,6 @@ module Projects
       else
         @project.add_master(@project.namespace.owner, current_user: current_user)
       end
->>>>>>> upstream/master
     end
 
     def skip_wiki?

@@ -248,15 +248,11 @@ class Group < Namespace
     SystemHooksService.new
   end
 
-<<<<<<< HEAD
   def first_non_empty_project
     projects.detect { |project| !project.empty_repo? }
   end
 
-  def refresh_members_authorized_projects
-=======
   def refresh_members_authorized_projects(blocking: true)
->>>>>>> upstream/master
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
       .execute(blocking: blocking)
   end

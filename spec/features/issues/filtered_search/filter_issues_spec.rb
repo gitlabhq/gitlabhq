@@ -178,7 +178,6 @@ describe 'Filter issues', js: true do
         expect_issues_list_count(8, 1)
         expect_filtered_search_input_empty
       end
-<<<<<<< HEAD
 
       it 'filters issues by invalid assignee' do
         skip('to be tested, issue #26546')
@@ -197,8 +196,6 @@ describe 'Filter issues', js: true do
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
-=======
->>>>>>> upstream/master
     end
 
     context 'assignee with other filters' do
