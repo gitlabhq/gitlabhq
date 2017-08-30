@@ -414,6 +414,7 @@ describe API::Projects do
         jobs_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
+        collapse_outdated_diff_comments: false,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
@@ -475,6 +476,18 @@ describe API::Projects do
 
       project_id = json_response['id']
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
+    end
+
+    it 'sets a project as allowing outdated diff comments to collapse regardless of discussion resolution' do
+      project = attributes_for(:project, { collapse_outdated_diff_comments: false })
+      post api('/projects', user), project
+      expect(json_response['collapse_outdated_diff_comments']).to be_falsey
+    end
+
+    it 'sets a project as allowing outdated diff comments to collapse if collapse_outdated_diff_comments' do
+      project = attributes_for(:project, { collapse_outdated_diff_comments: true })
+      post api('/projects', user), project
+      expect(json_response['collapse_outdated_diff_comments']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -642,6 +655,22 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
+    it 'sets a project as allowing outdated diff comments to collapse regardless of discussion resolution' do
+      project = attributes_for(:project, { collapse_outdated_diff_comments: false })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['collapse_outdated_diff_comments']).to be_falsey
+    end
+
+    it 'sets a project as allowing outdated diff comments to collapse only if collapse_outdated_diff_comments' do
+      project = attributes_for(:project, { collapse_outdated_diff_comments: true })
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['collapse_outdated_diff_comments']).to be_truthy
+    end
+
     it 'sets a project as allowing merge even if build fails' do
       project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
       post api("/projects/user/#{user.id}", admin), project
@@ -732,6 +761,7 @@ describe API::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['collapse_outdated_diff_comments']).to eq(project.collapse_outdated_diff_comments)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present
