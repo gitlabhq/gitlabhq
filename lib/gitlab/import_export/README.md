@@ -64,19 +64,9 @@ The other numbers are reserved for changes in the actual Import/Export such as r
 to use a completely different configuration.
 
 1. Update `import_export.rb` with the new version (`ImportExport::VERSION`)
-1. Update the table in `import_export.md` in the docs to add the new version
-1. The `import_file_spec.rb` test may fail because of the new version used, update the spec
-with a new file. You can either update the file manually, or use the rake tasks:
-    1. Run the following in master or stash your changes:
-        ```shell
-        bundle exec rake gitlab:import_export:import['root/test_project_export',root,'/path/to/gitlab/spec/features/projects/import_export/test_project_export.tar.gz']
-        bundle exec rake gitlab:import_export:status['root/test_project_export'] # check the status of the import        
-        ```
-    1. Switch back to your branch, bump the version (if not already) and export the integration test file again:
-        ```shell
-        bundle exec rake gitlab:import_export:export['root/test_project_export', root]
-        bundle exec rake gitlab:import_export:status['root/test_project_export'] # check the status of the export                
-        ```
-    1. Copy the file (as stated in the export status check) and replace `test_project_export.tar.gz`
-
-Done!
+1. Update the table in the docs to add the new version (`import_export.md`)
+1. The `import_file_spec.rb` test may fail bumping the version. You can update the spec
+to use the a new generated `test_project_export.tar.gz` by running the following task: 
+    ```sh
+    bundle exec rake gitlab:import_export:bump_test_version 
+    ```

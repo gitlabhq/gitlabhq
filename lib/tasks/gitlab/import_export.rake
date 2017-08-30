@@ -67,7 +67,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | Check the Import/Export status of a project'
-    task :status, [:project_path, :gitlab_username] => :environment do |_t, args|
+    task :status, [:project_path] => :environment do |_t, args|
       project = Project.find_by_full_path(args.project_path)
 
       puts "Project exported to #{project.export_project_path}" if project.export_project_path
@@ -78,6 +78,17 @@ namespace :gitlab do
            when 'failed'
              "Project import failed with error: #{project.import_error}"
            end
+    end
+
+    desc 'GitLab | Bumps the Import/Export version for test_project_export.tar.gz'
+    task bump_test_version: :environment do
+      Dir.mktmpdir do |tmp_dir|
+        system("tar -zxf spec/features/projects/import_export/test_project_export.tar.gz -C #{tmp_dir} > /dev/null")
+        File.write(File.join(tmp_dir, 'VERSION'), Gitlab::ImportExport.version, mode: 'w')
+        system("tar -zcvf spec/features/projects/import_export/test_project_export.tar.gz -C #{tmp_dir} . > /dev/null")
+      end
+
+      puts "Updated to #{Gitlab::ImportExport.version}"
     end
   end
 end
