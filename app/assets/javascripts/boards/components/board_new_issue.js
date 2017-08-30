@@ -1,7 +1,6 @@
 /* global ListIssue */
 import eventHub from '../eventhub';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import Api from '../../api';
+import ProjectSelect from './project_select';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -27,12 +26,9 @@ export default {
     };
   },
   components: {
-    loadingIcon,
+    'project-select': ProjectSelect,
   },
   computed: {
-    selectedProjectName() {
-      return this.selectedProject.name || 'Select a project';
-    },
     disabled() {
       if (this.groupId) {
         return this.title === '' || !this.selectedProject.name;
@@ -86,43 +82,13 @@ export default {
       this.title = '';
       eventHub.$emit(`hide-issue-form-${this.list.id}`);
     },
+    setSelectedProject(selectedProject) {
+      this.selectedProject = selectedProject;
+    },
   },
   mounted() {
     this.$refs.input.focus();
-    if (this.groupId) {
-      $(this.$refs.projectsDropdown).glDropdown({
-        filterable: true,
-        filterRemote: true,
-        search: {
-          fields: ['name_with_namespace'],
-        },
-        clicked: ({ $el, e }) => {
-          e.preventDefault();
-          this.selectedProject = {
-            id: $el.data('project-id'),
-            name: $el.data('project-name'),
-          };
-        },
-        selectable: true,
-        data: (term, callback) => {
-          this.loading = true;
-          return Api.groupProjects(this.groupId, term, (projects) => {
-            this.loading = false;
-            callback(projects);
-          });
-        },
-        renderRow(project) {
-          return `
-            <li>
-              <a href='#' class='dropdown-menu-link' data-project-id="${project.id}" data-project-name="${project.name}">
-                ${_.escape(project.name)}
-              </a>
-            </li>
-          `;
-        },
-        text: project => project.name,
-      });
-    }
+    eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   template: `
     <div class="board-new-issue-form">
@@ -144,37 +110,10 @@ export default {
             ref="input"
             autocomplete="off"
             :id="list.id + '-title'" />
-          <template v-if="groupId">
-            <label class="label-light prepend-top-10"
-              :for="list.id + '-project'">
-              Project
-            </label>
-            <div ref="projectsDropdown" class="dropdown">
-              <button
-                class="dropdown-menu-toggle wide"
-                type="button"
-                data-toggle="dropdown"
-                aria-expanded="false">
-                {{ selectedProjectName }}
-                <i class="fa fa-chevron-down" aria-hidden="true"></i>
-              </button>
-              <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-                <div class="dropdown-title">
-                  <span>Projects</span>
-                  <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
-                    <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
-                  </button>
-                </div>
-                <div class="dropdown-input">
-                  <input class="dropdown-input-field">
-                </div>
-                <div class="dropdown-content"></div>
-                <div class="dropdown-loading">
-                  <loading-icon />
-                </div>
-              </div>
-            </div>
-          </template>
+          <project-select
+            v-if="groupId"
+            :groupId="groupId"
+          />
           <div class="clearfix prepend-top-10">
             <button class="btn btn-success pull-left"
               type="submit"
