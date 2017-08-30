@@ -77,6 +77,8 @@ module VisibilityLevelHelper
     end
   end
 
+  # Note: these messages closely mirror the form validation strings found in the project
+  # model and any changes or additons to these may also need to be made there.
   def disallowed_project_visibility_level_description(level, project)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
@@ -93,6 +95,8 @@ module VisibilityLevelHelper
     "This project cannot be #{level_name}#{reasons}."
   end
 
+  # Note: these messages closely mirror the form validation strings found in the group
+  # model and any changes or additons to these may also need to be made there.
   def disallowed_group_visibility_level_description(level, group)
     level_name = Gitlab::VisibilityLevel.level_name(level).downcase
     reasons = []
