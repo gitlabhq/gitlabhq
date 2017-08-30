@@ -75,7 +75,7 @@ log_bin_trust_function_creators=1
 
 ### MySQL utf8mb4 support
 
-After installation or upgrade, remember to [convert any new tables](#convert) to `utf8mb4`/`utf8mb4_general_ci`.
+After installation or upgrade, remember to [convert any new tables](#tables-and-data-conversion-to-utf8mb4) to `utf8mb4`/`utf8mb4_general_ci`.
 
 ---
 
@@ -230,7 +230,6 @@ We need to check, enable and probably convert your existing GitLab DB tables to 
 > Now, ensure that [innodb_file_format](https://dev.mysql.com/doc/refman/5.6/en/tablespace-enabling.html) and [innodb_large_prefix](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_large_prefix) are **persisted** in your `my.cnf` file.
 
 #### Tables and data conversion to utf8mb4
-<a name="convert"></a>
 
 Now that you have a persistent MySQL setup, you can safely upgrade tables after setup or upgrade time:
 
