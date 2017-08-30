@@ -117,8 +117,7 @@ module API
         not_found!('PipelineSchedule') unless pipeline_schedule
         authorize! :admin_pipeline_schedule, pipeline_schedule
 
-        status :accepted
-        present pipeline_schedule.destroy, with: Entities::PipelineScheduleDetails
+        destroy_conditionally!(pipeline_schedule)
       end
     end
 

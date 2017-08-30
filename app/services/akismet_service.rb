@@ -7,7 +7,7 @@ class AkismetService
     @options = options
   end
 
-  def is_spam?
+  def spam?
     return false unless akismet_enabled?
 
     params = {

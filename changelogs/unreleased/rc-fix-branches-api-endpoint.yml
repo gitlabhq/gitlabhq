@@ -1,5 +1,0 @@
----
-title: Fix the /projects/:id/repository/branches endpoint to handle dots in the branch
-  name when the project full path contains a `/`
-merge_request: 13115
-author:

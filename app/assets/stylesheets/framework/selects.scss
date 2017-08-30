@@ -76,7 +76,7 @@
 }
 
 .select2-results li.select2-result-with-children > .select2-result-label {
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
   color: $gl-text-color;
 }
 
@@ -227,7 +227,7 @@
   }
 
   .group-name {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   .group-path {
@@ -252,15 +252,56 @@
 .namespace-result {
   .namespace-kind {
     color: $namespace-kind-color;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .namespace-path {
     margin-left: 10px;
-    font-weight: bolder;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
 .ajax-users-dropdown {
   min-width: 250px !important;
+}
+
+// TODO: change global style
+.ajax-project-dropdown,
+body[data-page="projects:blob:new"] #select2-drop,
+body[data-page="profiles:show"] #select2-drop,
+body[data-page="projects:blob:edit"] #select2-drop {
+  &.select2-drop {
+    color: $gl-text-color;
+  }
+
+  .select2-results {
+    .select2-no-results,
+    .select2-searching,
+    .select2-ajax-error,
+    .select2-selection-limit {
+      background: transparent;
+    }
+
+    .select2-result {
+      padding: 0 1px;
+
+      .select2-match {
+        font-weight: $gl-font-weight-bold;
+        text-decoration: none;
+      }
+
+      .select2-result-label {
+        padding: #{$gl-padding / 2} $gl-padding;
+      }
+
+      &.select2-highlighted {
+        background-color: transparent !important;
+        color: $gl-text-color;
+
+        .select2-result-label {
+          background-color: $dropdown-item-hover-bg;
+        }
+      }
+    }
+  }
 }

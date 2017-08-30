@@ -57,7 +57,7 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Assignee
-                %li.divider
+                %li.divider.droplab-item-ignore
                 - if current_user
                   = render 'shared/issuable/user_dropdown_item',
                     user: current_user
@@ -76,7 +76,7 @@
                 %li.filter-dropdown-item{ 'data-value' => 'started' }
                   %button.btn.btn-link
                     Started
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value
@@ -86,13 +86,20 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Label
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link
                     %span.dropdown-label-box{ style: 'background: {{color}}' }
                     %span.label-title.js-data-value
                       {{title}}
+            #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link
+                    %gl-emoji
+                    %span.js-data-value.prepend-left-10
+                      {{name}}
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
         .filter-dropdown-container

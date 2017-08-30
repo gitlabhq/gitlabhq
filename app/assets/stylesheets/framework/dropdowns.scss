@@ -195,7 +195,7 @@
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   padding: 8px 0;
   background-color: $white-light;
   border: 1px solid $dropdown-border-color;
@@ -268,7 +268,7 @@
   }
 
   .dropdown-bold-header {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 22px;
     padding: 0 16px;
   }
@@ -432,7 +432,7 @@
 
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -468,7 +468,7 @@
 
     &.is-indeterminate,
     &.is-active {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       color: $gl-text-color;
 
       &::before {
@@ -502,7 +502,7 @@
   position: relative;
   padding: 2px 25px 10px;
   margin: 0 10px 10px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
@@ -685,7 +685,7 @@
 .dropdown-menu-inner-title {
   display: block;
   color: $gl-text-color;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .dropdown-menu-inner-content {
@@ -728,18 +728,27 @@
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
-    .divider {
-      margin: 6px 0;
-    }
-
     li {
       padding: 0 1px;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &.divider {
+        margin: 6px 0;
+
+        &:hover {
+          background-color: $dropdown-divider-color;
+        }
+      }
 
       &.dropdown-header {
         padding: 8px 16px;
       }
 
-      a {
+      a,
+      button {
         border-radius: 0;
         padding: 8px 16px;
 
@@ -752,7 +761,8 @@
         &:hover,
         &:active,
         &:focus {
-          background-color: $gray-darker;
+          background-color: $dropdown-item-hover-bg;
+          color: $gl-text-color;
         }
 
         &.is-active {
@@ -760,6 +770,11 @@
 
           &::before {
             top: 16px;
+          }
+
+          &.dropdown-menu-user-link::before {
+            top: 50%;
+            transform: translateY(-50%);
           }
         }
       }

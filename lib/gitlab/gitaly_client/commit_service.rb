@@ -22,7 +22,7 @@ module Gitlab
         end
       end
 
-      def is_ancestor(ancestor_id, child_id)
+      def ancestor?(ancestor_id, child_id)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,
@@ -80,8 +80,8 @@ module Gitlab
       def tree_entries(repository, revision, path)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path.presence || '.'
+          revision: GitalyClient.encode(revision),
+          path: path.present? ? GitalyClient.encode(path) : '.'
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
@@ -175,8 +175,8 @@ module Gitlab
       def raw_blame(revision, path)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
@@ -192,6 +192,16 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
 
         response.commit
+      end
+
+      def patch(revision)
+        request = Gitaly::CommitPatchRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
+
+        response.sum(&:data)
       end
 
       private

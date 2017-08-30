@@ -6,7 +6,7 @@
 }
 
 .environments-folder-name {
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   padding-top: 20px;
 }
 
@@ -246,13 +246,13 @@
   }
 
   .text-metric-bold {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .label-axis-text,
   .text-metric-usage {
     fill: $black;
-    font-weight: 500;
+    font-weight: $gl-font-weight-normal;
     font-size: 12px;
   }
 

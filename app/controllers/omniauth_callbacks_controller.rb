@@ -10,6 +10,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  if Gitlab::LDAP::Config.enabled?
+    Gitlab::LDAP::Config.available_servers.each do |server|
+      define_method server['provider_name'] do
+        ldap
+      end
+    end
+  end
+
   # Extend the standard message generation to accept our custom exception
   def failure_message
     exception = env["omniauth.error"]

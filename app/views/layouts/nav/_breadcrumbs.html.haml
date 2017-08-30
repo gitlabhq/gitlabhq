@@ -1,7 +1,8 @@
+- container = @no_breadcrumb_container ? 'container-fluid' : container_class
 - hide_top_links = @hide_top_links || false
 
-%nav.breadcrumbs{ role: "navigation", class: [container_class, @content_class] }
-  .breadcrumbs-container
+%nav.breadcrumbs{ role: "navigation" }
+  .breadcrumbs-container{ class: [container, @content_class] }
     - if defined?(@new_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only Open sidebar

@@ -7,7 +7,7 @@
     padding: 10px 16px;
 
     h4 {
-      font-weight: bold;
+      font-weight: $gl-font-weight-bold;
     }
 
     .progress {
@@ -81,7 +81,7 @@
   }
 
   .remaining-days strong {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 
   .milestone-stat {

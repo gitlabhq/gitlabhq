@@ -19,11 +19,21 @@ class BroadcastMessage < ActiveRecord::Base
   after_commit :flush_redis_cache
 
   def self.current
-    Rails.cache.fetch(CACHE_KEY) do
-      where('ends_at > :now AND starts_at <= :now', now: Time.zone.now)
-        .reorder(id: :asc)
-        .to_a
-    end
+    messages = Rails.cache.fetch(CACHE_KEY) { current_and_future_messages.to_a }
+
+    return messages if messages.empty?
+
+    now_or_future = messages.select(&:now_or_future?)
+
+    # If there are cached entries but none are to be displayed we'll purge the
+    # cache so we don't keep running this code all the time.
+    Rails.cache.delete(CACHE_KEY) if now_or_future.empty?
+
+    now_or_future.select(&:now?)
+  end
+
+  def self.current_and_future_messages
+    where('ends_at > :now', now: Time.zone.now).reorder(id: :asc)
   end
 
   def active?
@@ -36,6 +46,18 @@ class BroadcastMessage < ActiveRecord::Base
 
   def ended?
     ends_at < Time.zone.now
+  end
+
+  def now?
+    (starts_at..ends_at).cover?(Time.zone.now)
+  end
+
+  def future?
+    starts_at > Time.zone.now
+  end
+
+  def now_or_future?
+    now? || future?
   end
 
   def flush_redis_cache

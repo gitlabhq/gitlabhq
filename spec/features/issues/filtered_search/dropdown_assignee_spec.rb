@@ -204,6 +204,12 @@ describe 'Dropdown assignee', :js do
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
+
+    it 'opens assignee dropdown with existing my-reaction' do
+      filtered_search.set('my-reaction:star assignee:')
+
+      expect(page).to have_css(js_dropdown_assignee, visible: true)
+    end
   end
 
   describe 'caching requests' do

@@ -119,12 +119,23 @@ When performing inline reviews to implementations
 to your codebase through merge requests you can
 gather feedback through [resolvable discussions](discussions/index.md#resolvable-discussions).
 
+### GitLab Flavored Markdown (GFM)
+
+Read through the [GFM documentation](markdown.md) to learn how to apply
+the best of GitLab Flavored Markdown in your discussions, comments,
+issues and merge requests descriptions, and everywhere else GMF is
+supported.
+
 ## Todos
 
 Never forget to reply to your collaborators. [GitLab Todos](../workflow/todos.md)
 are a tool for working faster and more effectively with your team,
 by listing all user or group mentions, as well as issues and merge
 requests you're assigned to.
+
+## Search
+
+[Search and filter](search/index.md) through groups, projects, issues, merge requests, files, code, and more.
 
 ## Snippets
 

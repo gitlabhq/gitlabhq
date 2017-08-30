@@ -55,10 +55,15 @@ describe Ci::CreatePipelineService do
 
       context 'when merge requests already exist for this source branch' do
         it 'updates head pipeline of each merge request' do
-          merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
-          merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+          merge_request_1 = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-          head_pipeline = pipeline
+          merge_request_2 = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_2",
+                                                   source_project: project)
+
+          head_pipeline = execute_service
 
           expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
           expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
@@ -66,9 +71,11 @@ describe Ci::CreatePipelineService do
 
         context 'when there is no pipeline for source branch' do
           it "does not update merge request head pipeline" do
-            merge_request = create(:merge_request, source_branch: 'feature', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'feature',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
           end
@@ -76,13 +83,19 @@ describe Ci::CreatePipelineService do
 
         context 'when merge request target project is different from source project' do
           let!(:target_project) { create(:project, :repository) }
-          let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
+
+          let!(:forked_project_link) do
+            create(:forked_project_link, forked_to_project: project,
+                                         forked_from_project: target_project)
+          end
 
           it 'updates head pipeline for merge request' do
-            merge_request =
-              create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project, target_project: target_project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project,
+                                                   target_project: target_project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
           end
@@ -90,13 +103,34 @@ describe Ci::CreatePipelineService do
 
         context 'when the pipeline is not the latest for the branch' do
           it 'does not update merge request head pipeline' do
-            merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:latest?).and_return(false)
 
-            pipeline
+            execute_service
 
             expect(merge_request.reload.head_pipeline).to be_nil
+          end
+        end
+
+        context 'when pipeline has errors' do
+          before do
+            stub_ci_pipeline_yaml_file('some invalid syntax')
+          end
+
+          it 'updates merge request head pipeline reference' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_persisted
+            expect(head_pipeline.yaml_errors).to be_present
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
       end
@@ -379,14 +413,12 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a developer' do
-        let(:user) {}
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_developer(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_developer(user)
         end
 
         it 'does not create a pipeline' do
@@ -397,17 +429,15 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a master' do
-        let(:user) {}
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_master(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_master(user)
         end
 
-        it 'does not create a pipeline' do
+        it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
@@ -436,7 +466,8 @@ describe Ci::CreatePipelineService do
     context 'when ref is not protected' do
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request) }
+        let(:trigger) { create(:ci_trigger, owner: nil) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))

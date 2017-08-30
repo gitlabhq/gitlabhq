@@ -164,7 +164,7 @@ module MilestonesHelper
   def group_milestone_route(milestone, params = {})
     params = nil if params.empty?
 
-    if milestone.is_legacy_group_milestone?
+    if milestone.legacy_group_milestone?
       group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
     else
       group_milestone_path(@group, milestone.iid, milestone: params)

@@ -733,6 +733,10 @@ describe API::Users do
         end.to change { user.keys.count }.by(-1)
       end
 
+      it_behaves_like '412 response' do
+        let(:request) { api("/users/#{user.id}/keys/#{key.id}", admin) }
+      end
+
       it 'returns 404 error if user not found' do
         user.keys << key
         user.save
@@ -838,6 +842,10 @@ describe API::Users do
         end.to change { user.emails.count }.by(-1)
       end
 
+      it_behaves_like '412 response' do
+        let(:request) { api("/users/#{user.id}/emails/#{email.id}", admin) }
+      end
+
       it 'returns 404 error if user not found' do
         user.emails << email
         user.save
@@ -874,6 +882,10 @@ describe API::Users do
       expect(response).to have_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/users/#{user.id}", admin) }
     end
 
     it "does not delete for unauthenticated user" do
@@ -1116,6 +1128,10 @@ describe API::Users do
       end.to change { user.keys.count}.by(-1)
     end
 
+    it_behaves_like '412 response' do
+      let(:request) { api("/user/keys/#{key.id}", user) }
+    end
+
     it "returns 404 if key ID not found" do
       delete api("/user/keys/42", user)
 
@@ -1237,6 +1253,10 @@ describe API::Users do
 
         expect(response).to have_http_status(204)
       end.to change { user.emails.count}.by(-1)
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/user/emails/#{email.id}", user) }
     end
 
     it "returns 404 if email ID not found" do
@@ -1549,6 +1569,10 @@ describe API::Users do
 
       expect(response).to have_http_status(403)
       expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin) }
     end
 
     it 'revokes a impersonation token' do

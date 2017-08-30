@@ -606,6 +606,25 @@ module Gitlab
           Arel::Nodes::SqlLiteral.new(replace.to_sql)
         end
       end
+
+      def remove_foreign_key_without_error(*args)
+        remove_foreign_key(*args)
+      rescue ArgumentError
+      end
+
+      def sidekiq_queue_migrate(queue_from, to:)
+        while sidekiq_queue_length(queue_from) > 0
+          Sidekiq.redis do |conn|
+            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
+          end
+        end
+      end
+
+      def sidekiq_queue_length(queue_name)
+        Sidekiq.redis do |conn|
+          conn.llen("queue:#{queue_name}")
+        end
+      end
     end
   end
 end

@@ -230,8 +230,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        status 204
-        key.destroy
+        destroy_conditionally!(key)
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -287,7 +286,11 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, email: email.email).execute
+        end
+
+        user.update_secondary_emails!
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -299,11 +302,13 @@ module API
       end
       delete ":id" do
         authenticated_as_admin!
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        status 204
-        user.delete_async(deleted_by: current_user, params: params)
+        destroy_conditionally!(user) do
+          user.delete_async(deleted_by: current_user, params: params)
+        end
       end
 
       desc 'Block a user. Available only for admins.'
@@ -403,8 +408,11 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
-            status 204
-            find_impersonation_token.revoke!
+            token = find_impersonation_token
+
+            destroy_conditionally!(token) do
+              token.revoke!
+            end
           end
         end
       end
@@ -481,8 +489,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
-        status 204
-        key.destroy
+        destroy_conditionally!(key)
       end
 
       desc "Get the currently authenticated user's email addresses" do
@@ -533,8 +540,11 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        status 204
-        Emails::DestroyService.new(current_user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, email: email.email).execute
+        end
+
+        current_user.update_secondary_emails!
       end
 
       desc 'Get a list of user activities'

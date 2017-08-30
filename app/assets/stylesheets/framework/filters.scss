@@ -50,6 +50,8 @@
 }
 
 .filtered-search-wrapper {
+  @include new-style-dropdown;
+
   display: -webkit-flex;
   display: flex;
 
@@ -223,6 +225,18 @@
     color: $common-gray-dark;
   }
 
+  gl-emoji {
+    display: inline-block;
+    font-family: inherit;
+    font-size: inherit;
+    vertical-align: inherit;
+
+    img {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
   .form-control {
     position: relative;
     min-width: 200px;
@@ -275,7 +289,7 @@
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 225px;
+  max-height: 260px;
   max-width: 280px;
   overflow: auto;
 
@@ -369,7 +383,7 @@
   }
 
   > .value {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }
 
@@ -411,8 +425,6 @@
 }
 
 %filter-dropdown-item-btn-hover {
-  background-color: $dropdown-hover-color;
-  color: $white-light;
   text-decoration: none;
   outline: 0;
 
@@ -422,8 +434,6 @@
 }
 
 .droplab-dropdown .dropdown-menu .filter-dropdown-item {
-  padding: 0;
-
   .btn {
     border: none;
     width: 100%;
@@ -454,7 +464,7 @@
 
   .dropdown-light-content {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: $gl-font-weight-normal;
   }
 
   .dropdown-user {
@@ -479,4 +489,8 @@
 .filter-dropdown-loading {
   padding: 8px 16px;
   text-align: center;
+}
+
+.issues-details-filters {
+  @include new-style-dropdown;
 }
