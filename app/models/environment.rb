@@ -114,7 +114,7 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/environments/#{Shellwords.shellescape(name)}"
+    "refs/#{Repository::REF_ENVIRONMENTS}/#{Shellwords.shellescape(name)}"
   end
 
   def formatted_external_url
