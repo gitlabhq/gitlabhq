@@ -13,14 +13,13 @@ export default class ProjectSelectComboButton {
   }
 
   bindEvents() {
-    const dropdownButton = this.projectSelectInput.siblings('.new-project-item-select-button');
-
-    dropdownButton.on('click', this.openDropdown);
+    this.projectSelectInput.siblings('.new-project-item-select-button')
+      .on('click', e => this.openDropdown(e));
 
     this.newItemBtn.on('click', (e) => {
       if (!this.getProjectFromLocalStorage()) {
         e.preventDefault();
-        dropdownButton.trigger('click');
+        this.openDropdown(e);
       }
     });
 
@@ -36,8 +35,9 @@ export default class ProjectSelectComboButton {
     }
   }
 
-  openDropdown() {
-    $(this).siblings('.project-item-select').select2('open');
+  // eslint-disable-next-line class-methods-use-this
+  openDropdown(event) {
+    $(event.currentTarget).siblings('.project-item-select').select2('open');
   }
 
   selectProject() {
