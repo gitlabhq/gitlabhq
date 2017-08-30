@@ -334,14 +334,19 @@ class FilteredSearchManager {
     this.clearSearch();
   }
 
+  removalValidator(token) {
+    const isToken = token.classList.contains('js-visual-token');
+
+    return this.customRemovalValidator ? (isToken && this.customRemovalValidator(token)) : isToken;
+  }
+
   clearSearch() {
     this.filteredSearchInput.value = '';
 
     const removeElements = [];
-    const customValidator = this.customRemovalValidator || function (t) { return true };
 
     [].forEach.call(this.tokensContainer.children, (t) => {
-      if (t.classList.contains('js-visual-token') && customValidator(t)) {
+      if (this.removalValidator(t)) {
         removeElements.push(t);
       }
     });
