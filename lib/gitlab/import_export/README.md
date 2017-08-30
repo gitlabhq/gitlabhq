@@ -33,7 +33,7 @@ in the DB has changed that needs an update in the Import/Export.
 ### Adding a new sensitive word (such as `pass`) will make the feature spec `export_file_spec.rb` to fail.
 
 - You can update the spec to add the model to `safe_list` in case it's fine to export this info.
-- Alternatively, you can ignore the attribute in `import_export.yml` (excluded_attributes section)
+- Alternatively, you can ignore the attribute in `import_export.yml` (`excluded_attributes` section)
 
 ### Adding a new model - `model_configuration_spec.rb`
 
@@ -52,7 +52,7 @@ The attributes will be exported automatically, but we need to know they are safe
 
 - If it's safe to export/import this attributes, simply add them to `safe_model_attributes.yml`
 - If you don't want those attributes to be exported/imported, blacklist them in `import_export.yml`
-(excluded_attributes section)
+(`excluded_attributes` section)
 
 ## Bumping the version number
 
