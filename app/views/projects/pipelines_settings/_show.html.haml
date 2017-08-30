@@ -5,11 +5,45 @@
   .col-lg-8
     = form_for @project, url: project_pipelines_settings_path(@project) do |f|
       %fieldset.builds-feature
-        - unless @repository.gitlab_ci_yml
-          .form-group
-            %p Pipelines need to be configured before you can begin using Continuous Integration.
-            = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
-            %hr
+        .form-group
+          %p Pipelines need to have AutoDevOps enabled or have a .gitlab-ci.yml configured before you can begin using Continious Integration and Delivery.
+          = f.label :auto_devops_enabled, 'Auto DevOps (Beta)', class: 'label-light'
+          %p
+            Auto DevOps will automatically build, test, and deploy your application based on a predefined CI/CD configuration.
+            = link_to 'Learn more about Auto DevOps', help_page_path('ci/quick_start/README') #TODO fix the link
+          = f.fields_for :auto_devops_attributes, @auto_devops do |form|
+            .radio
+              = form.radio_button :enabled, true
+            %strong Enable Auto DevOps
+            %br
+            %span.descr
+              The Auto DevOps pipeline configuration will be used when ther is no .gitlab-ci.yml
+              in the repository.
+            .radio
+              = form.radio_button :enabled, false
+            %strong Disable Auto DevOps
+            %br
+            %span.descr
+              A specific .gitlab-ci.yml file needs to be specified before you can begin using Continious Integration and Delivery
+            .radio
+              = form.radio_button :enabled, nil
+            %strong
+              Instance default (status: #{current_application_settings.auto_devops_enabled?})
+            %br
+            %span.descr
+              Follow the instance default to either have Auto DevOps enabled or disabled when there is no .gitlab-ci.yml file specified
+            %br
+            %p
+              Define a domain used by Auto DevOps to deploy towards, this is required for deploys to succeed.
+              = link_to 'Learn more about deploying with Auto DevOps', help_page_path('ci/quick_start/README') #TODO fix the link
+            = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
+          %br
+          %p
+            %strong Project specific pipeline configuration
+            Define a project specific pipeline configuration by creating a .gitlab-ci.yml file.
+          = link_to 'Learn more about pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
+
+        %hr
         .form-group.append-bottom-default
           = f.label :runners_token, "Runner token", class: 'label-light'
           = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'

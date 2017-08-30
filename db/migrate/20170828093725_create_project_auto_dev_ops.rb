@@ -8,7 +8,7 @@ class CreateProjectAutoDevOps < ActiveRecord::Migration
   def up
     create_table :project_auto_devops do |t|
       t.belongs_to :project, index: true
-      t.boolean :enabled, default: true
+      t.boolean :enabled, default: nil, null: true
       t.string :domain
     end
 

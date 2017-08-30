@@ -217,13 +217,17 @@
         .help-block 0 for unlimited
 
   %fieldset
-    %legend Continuous Integration and Continuous Deployment
+    %legend Continuous Integration and Deployment
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :auto_devops_enabled do
             = f.check_box :auto_devops_enabled
-            Allow projects to get automaticly configured to use GitLab CI/CD.
+            Enabled Auto DevOps (Beta) for projects by default
+        .help-block
+          It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
+          - # Fix this link
+          = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
