@@ -118,26 +118,22 @@
     },
   };
 </script>
+
 <template>
-  <div 
-    class="prometheus-graphs" 
-    v-if="!showEmptyState">
-    <div 
+  <div v-if="!showEmptyState" class="prometheus-graphs">
+    <div
       class="row"
       v-for="(groupData, index) in store.groups"
-      :key="index">
-      <div 
-        class="col-md-12">
-        <div 
-          class="panel panel-default prometheus-panel">
-          <div 
-            class="panel-heading">
+      :key="index"
+    >
+      <div class="col-md-12">
+        <div class="panel panel-default prometheus-panel">
+          <div class="panel-heading">
             <h4>{{groupData.group}}</h4>
           </div>
-          <div 
-            class="panel-body">
+          <div class="panel-body">
             <monitoring-row
-              v-for="(row, index) in groupData.metrics" 
+              v-for="(row, index) in groupData.metrics"
               :key="index"
               :row-data="row"
               :update-aspect-ratio="updateAspectRatio"
@@ -148,7 +144,7 @@
       </div>
     </div>
   </div>
-  <monitoring-state 
+  <monitoring-state
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"

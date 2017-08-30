@@ -26,11 +26,11 @@
     },
   };
 </script>
+
 <template>
-  <div 
-    class="prometheus-row row">
+  <div class="prometheus-row row">
     <monitoring-column
-      v-for="(column, index) in rowData" 
+      v-for="(column, index) in rowData"
       :column-data="column"
       :class-type="bootstrapClass"
       :key="index"
