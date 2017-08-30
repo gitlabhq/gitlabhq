@@ -6,11 +6,15 @@ module Gitlab
       end
 
       def call(env)
-        return @app.call(env) unless /JIRA DVCS Connector/.match(env['HTTP_USER_AGENT'])
-
-        env['HTTP_AUTHORIZATION'] = env['HTTP_AUTHORIZATION'].sub('token', 'Bearer')
+        env['HTTP_AUTHORIZATION'].sub!('token', 'Bearer') if jira_dvcs_connector?(env)
 
         @app.call(env)
+      end
+
+      private
+
+      def jira_dvcs_connector?(env)
+        /JIRA DVCS Connector/.match(env['HTTP_USER_AGENT'])
       end
     end
   end
