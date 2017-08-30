@@ -5,7 +5,7 @@ module SharedProjectTab
   include SharedActiveTab
 
   step 'the active main tab should be Project' do
-    ensure_active_main_tab('Project')
+    ensure_active_main_tab('Overview')
   end
 
   step 'the active main tab should be Repository' do
