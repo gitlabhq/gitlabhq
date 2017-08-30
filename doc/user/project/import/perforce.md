@@ -3,6 +3,8 @@
 [Perforce Helix](https://www.perforce.com/) provides a set of tools which also
 include a centralized, proprietary version control system similar to Git.
 
+## Perforce vs Git
+
 The following list illustrates the main differences between Perforce Helix and
 Git:
 
