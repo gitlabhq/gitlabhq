@@ -214,6 +214,8 @@
                     %span
                       Pages
 
+              = render 'projects/settings/ee/nav'
+
       - else
         = nav_link(path: %w[members#show]) do
           = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do

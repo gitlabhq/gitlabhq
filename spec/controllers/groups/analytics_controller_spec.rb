@@ -38,12 +38,28 @@ describe Groups::AnalyticsController do
     create_push_event(user3, project)
   end
 
-  it 'returns 404 when feature is not available' do
+  it 'returns 404 when feature is not available and we dont show promotions' do
     stub_licensed_features(contribution_analytics: false)
 
     get :show, group_id: group.path
 
     expect(response).to have_http_status(404)
+  end
+
+  context 'unlicensed but we show promotions' do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      allow(LicenseHelper).to receive(:show_promotions?).and_return(true)
+      stub_application_setting(check_namespace_plan: false)
+    end
+
+    it 'returns page when feature is not available and we show promotions' do
+      stub_licensed_features(contribution_analytics: false)
+
+      get :show, group_id: group.path
+
+      expect(response).to have_http_status(200)
+    end
   end
 
   it 'sets instance variables properly' do

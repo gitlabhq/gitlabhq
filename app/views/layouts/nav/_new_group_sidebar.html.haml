@@ -25,7 +25,7 @@
               %span
                 Activity
 
-          - if @group.feature_available?(:contribution_analytics)
+          - if @group.feature_available?(:contribution_analytics) || show_promotions?
             = nav_link(path: 'analytics#show') do
               = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
                 %span
