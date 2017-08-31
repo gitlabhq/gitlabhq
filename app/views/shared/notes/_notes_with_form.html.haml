@@ -1,3 +1,6 @@
+- issuable = @issue || @merge_request
+- discussion_locked = issuable&.discussion_locked?
+
 %ul#notes-list.notes.main-notes-list.timeline
   = render "shared/notes/notes"
 
@@ -21,5 +24,10 @@
     or
     = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
     to comment
-
+- elsif discussion_locked
+  .discussion_locked
+    %span
+      This
+      = issuable.class.to_s
+      has been locked. Posting comments has been restricted to project members.
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe
