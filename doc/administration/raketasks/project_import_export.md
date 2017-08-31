@@ -42,10 +42,10 @@ An existing exported project file can be scheduled to be imported using the foll
 bundle exec rake gitlab:import_export:import['namespace/test_project_export',root,'/path/to/project_export.tar.gz']
 ```
 
-The status of any import os export can be checked at any time using the following task:
+The status of any import or export can be checked at any time using the following task:
 
 ```bash
-bundle exec rake gitlab:import_export:status['namespace/test_project_export'] # check the status of the import        
+bundle exec rake gitlab:import_export:status['namespace/test_project_export']
 ```
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
