@@ -1,6 +1,13 @@
 module Gitlab
   module I18n
-    class TranslationEntry < PoEntry
+    class TranslationEntry
+      attr_reader :nplurals, :entry_data
+
+      def initialize(entry_data, nplurals)
+        @entry_data = entry_data
+        @nplurals = nplurals
+      end
+
       def msgid
         entry_data[:msgid]
       end
@@ -9,16 +16,17 @@ module Gitlab
         entry_data[:msgid_plural]
       end
 
-      def plural?
+      def has_plural?
         plural_id.present?
       end
 
       def singular_translation
-        plural? ? entry_data['msgstr[0]'] : entry_data[:msgstr]
+        all_translations.first if has_singular_translation?
       end
 
       def all_translations
-        @all_translations ||= entry_data.fetch_values(*translation_keys).reject(&:empty?)
+        @all_translations ||= entry_data.fetch_values(*translation_keys)
+                                .reject(&:empty?)
       end
 
       def translated?
@@ -26,25 +34,22 @@ module Gitlab
       end
 
       def plural_translations
-        return [] unless plural?
+        return [] unless has_plural?
         return [] unless translated?
 
-        # The singular translation is used if there's only translation. This is
-        # the case for languages without plurals.
-        return all_translations if all_translations.size == 1
-
-        entry_data.fetch_values(*plural_translation_keys)
+        @plural_translations ||= if has_singular_translation?
+                                   all_translations.drop(1)
+                                 else
+                                   all_translations
+                                 end
       end
 
       def flag
         entry_data[:flag]
       end
 
-      # When a translation is a plural, but only has 1 translation, we could be
-      # talking about a language in which plural and singular is the same thing.
-      # In which case we always translate as a plural.
-      def has_singular?
-        !plural? || all_translations.size > 1
+      def has_singular_translation?
+        nplurals > 1 || !has_plural?
       end
 
       def msgid_contains_newlines?
@@ -61,15 +66,8 @@ module Gitlab
 
       private
 
-      def plural_translation_keys
-        @plural_translation_keys ||= translation_keys.select do |key|
-          plural_index = key.scan(/\d+/).first.to_i
-          plural_index > 0
-        end
-      end
-
       def translation_keys
-        @translation_keys ||= if plural?
+        @translation_keys ||= if has_plural?
                                 entry_data.keys.select { |key| key =~ /msgstr\[\d+\]/ }
                               else
                                 [:msgstr]

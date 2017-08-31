@@ -25,12 +25,19 @@ module Gitlab
       end
 
       def parse_po
-        entries = SimplePoParser.parse(po_path).map { |data| Gitlab::I18n::PoEntry.build(data) }
+        entries = SimplePoParser.parse(po_path)
 
         # The first entry is the metadata entry if there is one.
         # This is an entry when empty `msgid`
-        @metadata_entry = entries.shift if entries.first.is_a?(Gitlab::I18n::MetadataEntry)
-        @translation_entries = entries
+        if entries.first[:msgid].empty?
+          @metadata_entry = Gitlab::I18n::MetadataEntry.new(entries.shift)
+        else
+          return 'Missing metadata entry.'
+        end
+
+        @translation_entries = entries.map do |entry_data|
+          Gitlab::I18n::TranslationEntry.new(entry_data, metadata_entry.expected_plurals)
+        end
 
         nil
       rescue SimplePoParser::ParserError => e
@@ -64,7 +71,7 @@ module Gitlab
         return unless metadata_entry&.expected_plurals
         return unless entry.translated?
 
-        if entry.plural? && entry.all_translations.size != metadata_entry.expected_plurals
+        if entry.has_plural? && entry.all_translations.size != metadata_entry.expected_plurals
           errors << "should have #{metadata_entry.expected_plurals} "\
                     "#{'translations'.pluralize(metadata_entry.expected_plurals)}"
         end
@@ -85,11 +92,11 @@ module Gitlab
       end
 
       def validate_variables(errors, entry)
-        if entry.has_singular?
+        if entry.has_singular_translation?
           validate_variables_in_message(errors, entry.msgid, entry.singular_translation)
         end
 
-        if entry.plural?
+        if entry.has_plural?
           entry.plural_translations.each do |translation|
             validate_variables_in_message(errors, entry.plural_id, translation)
           end
@@ -161,8 +168,8 @@ module Gitlab
         translation = join_message(translation)
 
         # We don't need to validate when the message is empty.
-        # Translations could fallback to the default, or we could be validating a
-        # language that does not have plurals.
+        # In this case we fall back to the default, which has all the the
+        # required variables.
         return if translation.empty?
 
         found_variables = translation.scan(VARIABLE_REGEX)

@@ -1,13 +1,16 @@
 module Gitlab
   module I18n
-    class MetadataEntry < PoEntry
+    class MetadataEntry
+      attr_reader :entry_data
+
+      def initialize(entry_data)
+        @entry_data = entry_data
+      end
+
       def expected_plurals
         return nil unless plural_information
 
-        nplurals = plural_information['nplurals'].to_i
-        if nplurals > 0
-          nplurals
-        end
+        plural_information['nplurals'].to_i
       end
 
       private

@@ -69,6 +69,14 @@ describe Gitlab::I18n::PoLinter do
       end
     end
 
+    context 'with missing metadata' do
+      let(:po_path) { 'spec/fixtures/missing_metadata.po' }
+
+      it 'returns the an error' do
+        is_expected.to include('PO-syntax errors' => a_kind_of(Array))
+      end
+    end
+
     context 'with a valid po' do
       it 'parses the file' do
         expect(linter).to receive(:parse_po).and_call_original
@@ -90,7 +98,7 @@ describe Gitlab::I18n::PoLinter do
     context 'with missing plurals' do
       let(:po_path) { 'spec/fixtures/missing_plurals.po' }
 
-      it 'has no errors' do
+      it 'has errors' do
         is_expected.not_to be_empty
       end
     end
@@ -136,8 +144,7 @@ describe Gitlab::I18n::PoLinter do
   describe '#validate_entries' do
     it 'keeps track of errors for entries' do
       fake_invalid_entry = Gitlab::I18n::TranslationEntry.new(
-        msgid: "Hello %{world}",
-        msgstr: "Bonjour %{monde}"
+        { msgid: "Hello %{world}", msgstr: "Bonjour %{monde}" }, 2
       )
       allow(linter).to receive(:translation_entries) { [fake_invalid_entry] }
 
@@ -169,9 +176,8 @@ describe Gitlab::I18n::PoLinter do
       allow(linter).to receive(:metadata_entry).and_return(fake_metadata)
 
       fake_entry = Gitlab::I18n::TranslationEntry.new(
-        msgid: 'the singular',
-        msgid_plural: 'the plural',
-        'msgstr[0]' => 'the singular'
+        { msgid: 'the singular', msgid_plural: 'the plural', 'msgstr[0]' => 'the singular' },
+        2
       )
       errors = []
 
@@ -183,27 +189,31 @@ describe Gitlab::I18n::PoLinter do
 
   describe '#validate_variables' do
     it 'validates both signular and plural in a pluralized string when the entry has a singular' do
-      pluralized_entry = Gitlab::I18n::TranslationEntry.new({
-        msgid: 'Hello %{world}',
-        msgid_plural: 'Hello all %{world}',
-        'msgstr[0]' => 'Bonjour %{world}',
-        'msgstr[1]' => 'Bonjour tous %{world}'
-      })
+      pluralized_entry = Gitlab::I18n::TranslationEntry.new(
+        { msgid: 'Hello %{world}',
+          msgid_plural: 'Hello all %{world}',
+          'msgstr[0]' => 'Bonjour %{world}',
+          'msgstr[1]' => 'Bonjour tous %{world}' },
+        2
+      )
 
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello %{world}', 'Bonjour %{world}')
+                          .and_call_original
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello all %{world}', 'Bonjour tous %{world}')
+                          .and_call_original
 
       linter.validate_variables([], pluralized_entry)
     end
 
     it 'only validates plural when there is no separate singular' do
-      pluralized_entry = Gitlab::I18n::TranslationEntry.new({
-        msgid: 'Hello %{world}',
-        msgid_plural: 'Hello all %{world}',
-        'msgstr[0]' => 'Bonjour %{world}'
-      })
+      pluralized_entry = Gitlab::I18n::TranslationEntry.new(
+        { msgid: 'Hello %{world}',
+          msgid_plural: 'Hello all %{world}',
+          'msgstr[0]' => 'Bonjour %{world}' },
+        1
+      )
 
       expect(linter).to receive(:validate_variables_in_message)
                           .with([], 'Hello all %{world}', 'Bonjour %{world}')
@@ -213,8 +223,8 @@ describe Gitlab::I18n::PoLinter do
 
     it 'validates the message variables' do
       entry = Gitlab::I18n::TranslationEntry.new(
-        msgid: 'Hello',
-        msgstr: 'Bonjour'
+        { msgid: 'Hello', msgstr: 'Bonjour' },
+        2
       )
 
       expect(linter).to receive(:validate_variables_in_message)
