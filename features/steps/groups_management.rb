@@ -23,7 +23,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to "Open" project members page' do
     click_link 'Sourcing / Open'
-    page.within('.layout-nav') do
+    page.within('.nav-sidebar') do
       click_link 'Settings'
     end
     click_link 'Members'
@@ -46,10 +46,10 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I go to group settings page' do
     visit dashboard_groups_path
     click_link 'Sourcing'
-    page.within '.layout-nav' do
+    page.within '.nav-sidebar' do
       find('a', text: 'Settings').trigger('click')
     end
-    page.within '.sub-nav' do
+    page.within '.sidebar-top-level-items > .active' do
       find('a', text: 'General').trigger('click')
     end
   end
@@ -61,7 +61,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I go to project settings' do
     @project = Project.find_by(name: "Open")
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       click_link 'Projects'
     end
 

@@ -12,6 +12,6 @@ describe 'Issues sub nav EE' do
   end
 
   it 'should have a `Boards` item' do
-    expect(find('.sub-nav')).to have_content 'Boards'
+    expect(find('.nav-sidebar')).to have_content 'Boards'
   end
 end
