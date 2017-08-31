@@ -96,7 +96,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     if upload_request? && Gitlab::Geo.secondary?
       render(
         json: {
-          message: 'You cannot do writing operations on a secondary GitLab Geo instance'
+          message: 'You cannot do writing operations on a secondary GitLab Geo instance.'
         },
         content_type: "application/vnd.git-lfs+json",
         status: 403
