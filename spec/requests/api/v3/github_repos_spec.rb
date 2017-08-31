@@ -2,15 +2,17 @@ require 'spec_helper'
 
 describe API::V3::GithubRepos do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: user.namespace) }
+  let!(:project) { create(:project, :repository, creator: user) }
+
+  before do
+    project.add_master(user)
+  end
 
   describe 'GET /orgs/:id/repos' do
-    let(:current_user) { user }
-
     it 'returns an array of projects' do
       group = create(:group)
 
-      get v3_api("/orgs/#{group.path}/repos", current_user)
+      get v3_api("/orgs/#{group.path}/repos", user)
 
       expect(response).to have_http_status(200)
     end
@@ -29,12 +31,18 @@ describe API::V3::GithubRepos do
   end
 
    describe 'GET /repos/:namespace/:repo/branches' do
-     it 'returns branches with expected format' do
-       get v3_api("/repos/#{user.namespace.path}/foo/branches", user)
+     context 'when user namespace path' do
+       it 'returns an array of project branches with github format' do
+         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
 
-       expect(response).to have_http_status(200)
-       expect(json_response).to be_an(Array)
-       expect(json_response).to eq('')
+         expect(response).to have_http_status(200)
+         expect(json_response).to be_an(Array)
+         expect(json_response.first.keys).to contain_exactly('name', 'commit')
+         expect(json_response.first['commit'].keys).to contain_exactly('sha', 'type')
+       end
+     end
+
+     xcontext 'when group path' do
      end
    end
 

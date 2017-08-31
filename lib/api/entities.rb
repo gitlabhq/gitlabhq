@@ -1092,7 +1092,7 @@ module API
     end
 
     module Github
-      class GithubRepoOwner < Grape::Entity
+      class User < Grape::Entity
         expose :id
         expose :login do |project|
           project.namespace.name
@@ -1101,8 +1101,23 @@ module API
 
       class Repository < Grape::Entity
         expose :id
-        expose :owner, using: GithubRepoOwner, unless: -> (project, options) { project.group }
+        expose :owner, using: User, unless: -> (project, options) { project.group }
         expose :name
+      end
+
+      class Commit < Grape::Entity
+        expose :id, as: :sha
+        expose :type do |model|
+          'commit'
+        end
+      end
+
+      class Branch < Grape::Entity
+        expose :name
+
+        expose :commit, using: Commit do |repo_branch, options|
+          options[:project].repository.commit(repo_branch.dereferenced_target)
+        end
       end
     end
   end

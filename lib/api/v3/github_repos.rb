@@ -19,21 +19,25 @@ module API
         get ':username/repos' do
           projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
 
-          present projects, with: ::API::Entities::Github::Repository
+          present paginate(projects), with: ::API::Entities::Github::Repository
         end
       end
 
+      params do
+        requires :namespace, type: String
+        requires :project, type: String
+      end
       resource :repos do
-        get ':namespace/:repo/branches' do
-          present [
-            {
-              "name" => "feature",
-              "commit" => {
-                "type" => 'commit',
-                "sha" => "6367e27cc0928789a860676f560ceda6b41b6215"
-              }
-            }
-          ]
+        get ':namespace/:project/branches' do
+          namespace = params[:namespace]
+          project = params[:project]
+          user_project = find_project!("#{namespace}/#{project}")
+
+          branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
+
+          present paginate(branches),
+                  with: ::API::Entities::Github::Branch,
+                  project: user_project
         end
 
         get ':namespace/:repo/commits/:sha' do
