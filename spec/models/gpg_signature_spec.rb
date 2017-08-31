@@ -25,34 +25,4 @@ RSpec.describe GpgSignature do
       gpg_signature.commit
     end
   end
-
-  describe '#verified?' do
-    it 'returns true when `verification_status` is not set, but `valid_signature` is true' do
-      signature = create :gpg_signature, valid_signature: true, verification_status: nil
-
-      expect(signature.verified?).to be true
-      expect(signature.reload.verified?).to be true
-    end
-
-    it 'returns true when `verification_status` is set to :verified' do
-      signature = create :gpg_signature, verification_status: :verified
-
-      expect(signature.verified?).to be true
-      expect(signature.reload.verified?).to be true
-    end
-
-    it 'returns false when `verification_status` is set to :unknown_key' do
-      signature = create :gpg_signature, verification_status: :unknown_key
-
-      expect(signature.verified?).to be false
-      expect(signature.reload.verified?).to be false
-    end
-
-    it 'returns false when `verification_status` is not set, but `valid_signature` is false' do
-      signature = create :gpg_signature, valid_signature: false, verification_status: nil
-
-      expect(signature.verified?).to be false
-      expect(signature.reload.verified?).to be false
-    end
-  end
 end
