@@ -59,8 +59,11 @@ module Gitlab
 
           next unless relation_hash_list
 
-          relation_hash = create_relation(relation_key, relation_hash_list)
-          saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+          [relation_hash_list].flatten.each_slice(10) do |relation_hash_batch|
+
+            relation_hash = create_relation(relation_key, relation_hash_batch)
+            saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+          end
         end
         saved.all?
       end
@@ -77,7 +80,7 @@ module Gitlab
         @project.update_columns(project_params)
         @project
       end
-
+git che
       def project_params
         @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
