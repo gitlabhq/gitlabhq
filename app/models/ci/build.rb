@@ -26,7 +26,7 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-    validates :protected, inclusion: { in: [ true, false ] }, on: :create
+    validates :protected, inclusion: { in: [true, false] }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
