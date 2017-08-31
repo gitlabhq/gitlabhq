@@ -1,0 +1,4 @@
+---
+title: Disallow arbitrary properties in `th` and `td` `style` attributes
+merge_request:
+author:
