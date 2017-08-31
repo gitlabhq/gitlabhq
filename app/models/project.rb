@@ -1231,6 +1231,10 @@ class Project < ActiveRecord::Base
     File.join(pages_path, 'public')
   end
 
+  def pages_available?
+    Gitlab.config.pages.enabled && !namespace.subgroup?
+  end
+
   def remove_private_deploy_keys
     exclude_keys_linked_to_other_projects = <<-SQL
       NOT EXISTS (
