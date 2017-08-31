@@ -4,8 +4,9 @@ describe 'Filter issues', js: true do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }
-  let!(:user) { create(:user, username: 'joe', name: 'Joe') }
-  let!(:user2) { create(:user, username: 'jane') }
+  let!(:user) { create(:user) }
+  let!(:user2) { create(:user) }
+
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
 
@@ -78,7 +79,7 @@ describe 'Filter issues', js: true do
     multiple_words_label_issue = create(:issue, title: "Issue with multiple words label", project: project)
     multiple_words_label_issue.labels << multiple_words_label
 
-    future_milestone = create(:milestone, title: "future", project: project, due_date: Time.now + 1.month)
+    future_milestone = create(:milestone, project: project, due_date: 1.month.from_now)
 
     create(:issue,
       title: "Issue with future milestone",
