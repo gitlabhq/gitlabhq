@@ -32,6 +32,11 @@ describe('Project Select Combo Button', function () {
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
     });
 
+    it('newItemBtn is disabled', function () {
+      expect(this.newItemBtn.hasAttribute('disabled')).toBe(true);
+      expect(this.newItemBtn.classList.contains('disabled')).toBe(true);
+    });
+
     it('newItemBtn href is null', function () {
       expect(this.newItemBtn.getAttribute('href')).toBe('');
     });
@@ -46,6 +51,11 @@ describe('Project Select Combo Button', function () {
       window.localStorage
         .setItem(this.defaults.localStorageKey, JSON.stringify(this.defaults.projectMeta));
       this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
+    });
+
+    it('newItemBtn is not disabled', function () {
+      expect(this.newItemBtn.hasAttribute('disabled')).toBe(false);
+      expect(this.newItemBtn.classList.contains('disabled')).toBe(false);
     });
 
     it('newItemBtn href is correctly set', function () {
@@ -70,6 +80,11 @@ describe('Project Select Combo Button', function () {
       $('.project-item-select')
         .val(JSON.stringify(this.defaults.newProjectMeta))
         .trigger('change');
+    });
+
+    it('newItemBtn is not disabled', function () {
+      expect(this.newItemBtn.hasAttribute('disabled')).toBe(false);
+      expect(this.newItemBtn.classList.contains('disabled')).toBe(false);
     });
 
     it('newItemBtn href is correctly set', function () {
