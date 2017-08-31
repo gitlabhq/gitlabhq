@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'Filter issues', js: true do
-  include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
 
   let!(:group) { create(:group) }
