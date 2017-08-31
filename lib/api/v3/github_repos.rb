@@ -3,23 +3,23 @@ module API
     class GithubRepos < Grape::API
       before { authenticate! }
 
-      desc 'Get a list of repos of a group'
       resource :orgs do
         get ':namespace/repos' do
           present []
         end
       end
 
+      resource :user do
+        get :repos do
+          present []
+        end
+      end
+
       resource :users do
-        get ':namespace/repos' do
-          present [{
-                     "id" => 11,
-                     "owner" => {
-                       "login" => "oswaldo",
-                       "id" => 1,
-                     },
-                     "name" => "test",
-                   }]
+        get ':username/repos' do
+          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+
+          present projects, with: ::API::Entities::Github::Repository
         end
       end
 
@@ -79,12 +79,6 @@ module API
             }
 
           present hash
-        end
-      end
-
-      resource :user do
-        get :repos do
-          present []
         end
       end
     end

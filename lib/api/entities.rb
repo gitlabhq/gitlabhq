@@ -1091,17 +1091,19 @@ module API
       expose :total_failures
     end
 
-    class GithubRepoOwner < Grape::Entity
-      expose :id
-      expose :login do |project|
-        project.namespace&.name
+    module Github
+      class GithubRepoOwner < Grape::Entity
+        expose :id
+        expose :login do |project|
+          project.namespace.name
+        end
       end
-    end
 
-    class GithubUserRepo < Grape::Entity
-      expose :id
-      expose :owner, using: GithubRepoOwner, unless: -> (project, options) { project.group }
-      expose :name
+      class Repository < Grape::Entity
+        expose :id
+        expose :owner, using: GithubRepoOwner, unless: -> (project, options) { project.group }
+        expose :name
+      end
     end
   end
 end

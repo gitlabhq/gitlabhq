@@ -2,29 +2,29 @@ require 'spec_helper'
 
 describe API::V3::GithubRepos do
   let(:user) { create(:user) }
+  let!(:project) { create(:project, namespace: user.namespace) }
 
   describe 'GET /orgs/:id/repos' do
     let(:current_user) { user }
 
-    it 'returns repos with expected format' do
+    it 'returns an array of projects' do
       group = create(:group)
 
       get v3_api("/orgs/#{group.path}/repos", current_user)
 
       expect(response).to have_http_status(200)
-      expect(json_response).to be_empty
     end
   end
 
   describe 'GET /users/:id/repos' do
-    let(:current_user) { user }
-
-    it 'returns repos with expected format' do
-      get v3_api("/users/#{user.namespace.path}/repos", current_user)
+    it 'returns an array of projects with github format' do
+      get v3_api("/users/whatever/repos", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an(Array)
-      expect(json_response).to eq('')
+      expect(json_response.size).to eq(1)
+      expect(json_response.first.keys).to contain_exactly('id', 'owner', 'name')
+      expect(json_response.first['owner'].keys).to contain_exactly('login', 'id')
     end
   end
 
