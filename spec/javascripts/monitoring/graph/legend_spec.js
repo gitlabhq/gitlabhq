@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import MonitoringLegends from '~/monitoring/components/monitoring_legends.vue';
+import GraphLegend from '~/monitoring/components/graph/legend.vue';
 import measurements from '~/monitoring/utils/measurements';
 
 const createComponent = (propsData) => {
-  const Component = Vue.extend(MonitoringLegends);
+  const Component = Vue.extend(GraphLegend);
 
   return new Component({
     propsData,
@@ -14,7 +14,7 @@ function getTextFromNode(component, selector) {
   return component.$el.querySelector(selector).firstChild.nodeValue.trim();
 }
 
-describe('MonitoringLegends', () => {
+describe('GraphLegend', () => {
   describe('Computed props', () => {
     it('textTransform', () => {
       const component = createComponent({

@@ -344,28 +344,31 @@ module Ci
           let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
           let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
 
-          shared_examples 'raises an error' do
-            it do
-              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'jobs:rspec:only config should be an array of strings or regexps')
-            end
-          end
-
           context 'when it is integer' do
             let(:only) { 1 }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:only has to be either an array of conditions or a hash')
+            end
           end
 
           context 'when it is an array of integers' do
             let(:only) { [1, 1] }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:only config should be an array of strings or regexps')
+            end
           end
 
           context 'when it is invalid regex' do
             let(:only) { ["/*invalid/"] }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:only config should be an array of strings or regexps')
+            end
           end
         end
       end
@@ -518,28 +521,31 @@ module Ci
           let(:config) { { rspec: { script: "rspec", except: except } } }
           let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
 
-          shared_examples 'raises an error' do
-            it do
-              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'jobs:rspec:except config should be an array of strings or regexps')
-            end
-          end
-
           context 'when it is integer' do
             let(:except) { 1 }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:except has to be either an array of conditions or a hash')
+            end
           end
 
           context 'when it is an array of integers' do
             let(:except) { [1, 1] }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:except config should be an array of strings or regexps')
+            end
           end
 
           context 'when it is invalid regex' do
             let(:except) { ["/*invalid/"] }
 
-            it_behaves_like 'raises an error'
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                                  'jobs:rspec:except config should be an array of strings or regexps')
+            end
           end
         end
       end
