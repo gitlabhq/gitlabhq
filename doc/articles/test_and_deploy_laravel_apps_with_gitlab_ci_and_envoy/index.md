@@ -488,6 +488,8 @@ services:
 variables:
   MYSQL_DATABASE: homestead
   MYSQL_ROOT_PASSWORD: secret
+  DB_HOST: mysql
+  DB_USERNAME: root
 
 stages:
   - test
@@ -548,19 +550,20 @@ We defined MySQL as our database management system, which comes with a superuser
 So we just should adjust the configuration of MySQL instance by defining `MYSQL_DATABASE` variable as our database name and `MYSQL_ROOT_PASSWORD` variable as the password of `root`.
 Find out more about MySQL variables at the [official MySQL Docker Image](https://hub.docker.com/r/_/mysql/).
 
+Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are the Laravel specific variables.
+We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../ce/ci/docker/using_docker_images.html/#how-services-are-linked-to-the-build).
+
 ```yaml
 ...
 
 variables:
   MYSQL_DATABASE: homestead
   MYSQL_ROOT_PASSWORD: secret
+  DB_HOST: mysql
+  DB_USERNAME: root
 
 ...
 ```
-
-Clone the `.env.example` file to `.env.testing` from your root repository and set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`.  Make sure to set the `APP_KEY` for `.env.testing` as well. This file will override values from the `.env` file when running PHPUnit tests or executing Artisan commands with the `--env=testing option`.
-
-We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../ce/ci/docker/using_docker_images.html/#how-services-are-linked-to-the-build).
 
 #### Unit Test as the first job
 
@@ -670,6 +673,3 @@ As you see, the `.env` is pointing to the `/var/www/app/.env` file and also `sto
 
 We configured GitLab CI to perform automated tests and used the method of [Continuous delivery](https://continuousdelivery.com/) to deploy to production a Laravel application with Envoy, directly from the codebase.
 Envoy also was a great match to help us deploy the application without writing our custom bash script and doing Linux magics.
-
-## About guest author
-Mehran is a web developer writing applications with PHP, Javascript. Recently interested in learning swift.
