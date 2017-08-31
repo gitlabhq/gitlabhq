@@ -240,16 +240,12 @@ module IssuablesHelper
     }
   end
 
-  def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    cache_key = finder.state_counter_cache_key
+  def issuables_count_for_state(issuable_type, state)
+    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
 
     @counts ||= {}
-    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      finder.count_by_state
-    end
-
-    @counts[cache_key][state]
+    @counts[issuable_type] ||= finder.count_by_state
+    @counts[issuable_type][state]
   end
 
   def close_issuable_url(issuable)
