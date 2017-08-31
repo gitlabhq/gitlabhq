@@ -1,4 +1,6 @@
 class AkismetService
+  include Gitlab::CurrentSettings
+
   attr_accessor :owner, :text, :options
 
   def initialize(owner, text, options = {})
