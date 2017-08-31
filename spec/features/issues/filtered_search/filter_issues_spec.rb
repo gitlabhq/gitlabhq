@@ -4,7 +4,12 @@ describe 'Filter issues', js: true do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }
-  let(:user) { create(:user) }
+
+  # NOTE: The short name here is actually important
+  #
+  # When the name is longer, the filtered search input can end up scrolling
+  # horizontally, and PhantomJS can't handle it.
+  let(:user) { create(:user, name: 'Ann') }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
