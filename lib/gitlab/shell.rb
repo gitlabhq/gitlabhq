@@ -98,33 +98,24 @@ module Gitlab
 
     # Fetch remote for repository
     #
-    # name - project path with namespace
+    # repository - an instance of Git::Repository
     # remote - remote name
     # forced - should we use --force flag?
     # no_tags - should we use --no-tags flag?
     #
     # Ex.
-    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #   fetch_remote(my_repo, "upstream")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
-    def fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
-      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
-      args << '--force' if forced
-      args << '--no-tags' if no_tags
-
-      vars = {}
-
-      if ssh_auth&.ssh_import?
-        if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
-          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
-        end
-
-        if ssh_auth.ssh_known_hosts.present?
-          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
+      gitaly_migrate(:fetch_remote) do |is_enabled|
+        if is_enabled
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+        else
+          storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
+          local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
         end
       end
-
-      gitlab_shell_fast_execute_raise_error(args, vars)
     end
 
     # Move repository
@@ -302,6 +293,26 @@ module Gitlab
 
     private
 
+    def local_fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, name, remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
+      args << '--force' if forced
+      args << '--no-tags' if no_tags
+
+      vars = {}
+
+      if ssh_auth&.ssh_import?
+        if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
+          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
+        end
+
+        if ssh_auth.ssh_known_hosts.present?
+          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+        end
+      end
+
+      gitlab_shell_fast_execute_raise_error(args, vars)
+    end
+
     def gitlab_shell_fast_execute(cmd)
       output, status = gitlab_shell_fast_execute_helper(cmd)
 
@@ -324,6 +335,14 @@ module Gitlab
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH
       Bundler.with_original_env { Popen.popen(cmd, nil, vars) }
+    end
+
+    def gitaly_migrate(method, &block)
+      Gitlab::GitalyClient.migrate(method, &block)
+    rescue GRPC::NotFound, GRPC::BadStatus => e
+      # Old Popen code returns [Error, output] to the caller, so we
+      # need to do the same here...
+      raise Error, e
     end
   end
 end
