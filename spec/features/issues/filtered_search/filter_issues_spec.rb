@@ -3,9 +3,8 @@ require 'spec_helper'
 describe 'Filter issues', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:project) }
-  let!(:user) { create(:user) }
-  let!(:user2) { create(:user) }
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
 
   let!(:label) { create(:label, project: project) }
   let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
@@ -37,56 +36,50 @@ describe 'Filter issues', js: true do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
 
-    sign_in(user)
+    user2 = create(:user)
 
-    create(:issue, project: project, title: "Bug report 1")
-    create(:issue, project: project, title: "Bug report 2")
-    create(:issue, project: project, title: "issue with 'single quotes'")
-    create(:issue, project: project, title: "issue with \"double quotes\"")
-    create(:issue, project: project, title: "issue with !@\#{$%^&*()-+")
-    create(:issue, project: project, title: "issue by assignee", milestone: milestone, author: user, assignees: [user])
-    create(:issue, project: project, title: "issue by assignee with searchTerm", milestone: milestone, author: user, assignees: [user])
+    create(:issue, project: project, author: user2, title: "Bug report 1")
+    create(:issue, project: project, author: user2, title: "Bug report 2")
+    create(:issue, project: project, author: user2, title: "issue with 'single quotes'")
+    create(:issue, project: project, author: user2, title: "issue with \"double quotes\"")
+    create(:issue, project: project, author: user2, title: "issue with !@\#{$%^&*()-+")
 
-    issue = create(:issue,
+    create(:issue, project: project, author: user,  title: "issue by assignee", milestone: milestone, assignees: [user])
+    create(:issue, project: project, author: user,  title: "issue by assignee with searchTerm", milestone: milestone, assignees: [user])
+
+    create(:labeled_issue,
       title: "Bug 2",
       project: project,
       milestone: milestone,
       author: user,
-      assignees: [user])
-    issue.labels << bug_label
+      assignees: [user],
+      labels: [bug_label])
 
-    issue_with_caps_label = create(:issue,
+    create(:labeled_issue,
       title: "issue by assignee with searchTerm and label",
       project: project,
       milestone: milestone,
       author: user,
-      assignees: [user])
-    issue_with_caps_label.labels << caps_sensitive_label
+      assignees: [user],
+      labels: [caps_sensitive_label])
 
-    issue_with_everything = create(:issue,
+    create(:labeled_issue,
       title: "Bug report foo was possible",
       project: project,
       milestone: milestone,
       author: user,
-      assignees: [user])
-    issue_with_everything.labels << bug_label
-    issue_with_everything.labels << caps_sensitive_label
+      assignees: [user],
+      labels: [bug_label, caps_sensitive_label])
 
-    multiple_words_label_issue = create(:issue, title: "Issue with multiple words label", project: project)
-    multiple_words_label_issue.labels << multiple_words_label
+    create(:labeled_issue, title: "Issue with multiple words label", project: project, labels: [multiple_words_label])
 
-    future_milestone = create(:milestone, project: project, due_date: 1.month.from_now)
+    create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
+      create(:issue, project: project, milestone: future_milestone, author: user2)
+    end
 
-    create(:issue,
-      title: "Issue with future milestone",
-      milestone: future_milestone,
-      project: project)
-
-    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
-
+    sign_in(user)
     visit project_issues_path(project)
   end
 
