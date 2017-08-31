@@ -71,7 +71,7 @@ you can skip the step 1 below; you only need to enable it per project.
      checking to this service.
 
      ![Service Desk enabled](img/service_desk_enabled.png)
-5.   Service Desk is now enabled for this project! You should be able to access it from your project's sidebar **Issue submenu**:
+5.   Service Desk is now enabled for this project! You should be able to access it from your project's navigation **Issue submenu**:
 
       ![Service Desk Navigation Item](img/service_desk_nav_item.png)
 
