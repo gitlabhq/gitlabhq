@@ -11,8 +11,6 @@ describe 'Filter issues', js: true do
   let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
 
-  let!(:closed_issue) { create(:issue, title: 'bug that is closed', project: project, state: :closed) }
-
   def expect_no_issues_list
     page.within '.issues-list' do
       expect(page).to have_no_selector('.issue')
@@ -122,7 +120,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('assignee:none')
 
         expect_tokens([assignee_token('none')])
-        expect_issues_list_count(3, 1)
+        expect_issues_list_count(3)
         expect_filtered_search_input_empty
       end
     end
@@ -159,7 +157,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('label:none')
 
         expect_tokens([label_token('none', false)])
-        expect_issues_list_count(8, 1)
+        expect_issues_list_count(8)
         expect_filtered_search_input_empty
       end
 
@@ -322,7 +320,7 @@ describe 'Filter issues', js: true do
         input_filtered_search("milestone:none")
 
         expect_tokens([milestone_token('none', false)])
-        expect_issues_list_count(3, 1)
+        expect_issues_list_count(3)
         expect_filtered_search_input_empty
       end
 
@@ -394,7 +392,7 @@ describe 'Filter issues', js: true do
         search = 'Bug'
         input_filtered_search(search)
 
-        expect_issues_list_count(4, 1)
+        expect_issues_list_count(4)
         expect_filtered_search_input(search)
       end
 
@@ -497,6 +495,8 @@ describe 'Filter issues', js: true do
   end
 
   describe 'retains filter when switching issue states' do
+    let!(:closed_issue) { create(:issue, :closed, project: project, title: 'closed bug') }
+
     before do
       input_filtered_search('bug')
 
