@@ -31,8 +31,6 @@ module Ci
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
-    delegate :deployment_variables, to: :project, prefix: true
-    delegate :secret_variables_for, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
@@ -306,13 +304,19 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
-    def variables
-      project_secret_variables_for(ref: ref).map(&:to_runner_variable) +
-        project_deployment_variables
+    def context_variables
+      @context_variables ||= project.secret_variables_for(ref: ref).to_a
+        .map(&:to_runner_variable) + project.deployment_variables.to_a
     end
 
     def has_kubernetes_available?
-      (variables.map { |v| v.fetch(:key) } & %w[KUBECONFIG KUBE_DOMAIN]).many?
+      kubernetes_variables = context_variables.select do |variable|
+        variable.fetch(:key).in?(%w[KUBECONFIG KUBE_DOMAIN])
+      end
+
+      return false if kubernetes_variables.empty?
+
+      kubernetes_variables.map { |var| var.fetch(:value).present? }.all?
     end
 
     def has_stage_seeds?

@@ -27,14 +27,6 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
-  describe '#project_deployment_variables' do
-    it 'delegates deployment variables to project' do
-      expect(pipeline)
-        .to delegate_method(:deployment_variables)
-        .to(:project).with_prefix
-    end
-  end
-
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -551,9 +543,9 @@ describe Ci::Pipeline, :mailer do
                            project: project)
     end
 
-    describe '#variables' do
+    describe '#context_variables' do
       it 'returns kubernetes-related variables' do
-        variables = pipeline.variables.map { |v| v.fetch(:key) }
+        variables = pipeline.context_variables.map { |v| v.fetch(:key) }
 
         expect(variables).to include 'KUBECONFIG', 'KUBE_DOMAIN'
       end
@@ -567,9 +559,9 @@ describe Ci::Pipeline, :mailer do
   end
 
   context 'when kubernetes is not configured' do
-    describe '#variables' do
+    describe '#context_variables' do
       it 'does not return kubernetes related variables' do
-        variables = pipeline.variables.map { |v| v.fetch(:key) }
+        variables = pipeline.context_variables.map { |v| v.fetch(:key) }
 
         expect(variables).not_to include 'KUBECONFIG', 'KUBE_DOMAIN'
       end
