@@ -44,6 +44,8 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
+      yield(@project) if block_given?
+
       @project.creator = current_user
 
       if forked_from_project_id

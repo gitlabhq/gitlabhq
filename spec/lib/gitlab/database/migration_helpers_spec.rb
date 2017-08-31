@@ -450,6 +450,8 @@ describe Gitlab::Database::MigrationHelpers do
         it 'renames a column concurrently' do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
+          expect(model).to receive(:check_trigger_permissions!).with(:users)
+
           expect(model).to receive(:install_rename_triggers_for_mysql)
             .with(trigger_name, 'users', 'old', 'new')
 
@@ -476,6 +478,8 @@ describe Gitlab::Database::MigrationHelpers do
       context 'using PostgreSQL' do
         it 'renames a column concurrently' do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+          expect(model).to receive(:check_trigger_permissions!).with(:users)
 
           expect(model).to receive(:install_rename_triggers_for_postgresql)
             .with(trigger_name, 'users', 'old', 'new')
@@ -506,6 +510,8 @@ describe Gitlab::Database::MigrationHelpers do
     it 'cleans up the renaming procedure for PostgreSQL' do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
+
       expect(model).to receive(:remove_rename_triggers_for_postgresql)
         .with(:users, /trigger_.{12}/)
 
@@ -516,6 +522,8 @@ describe Gitlab::Database::MigrationHelpers do
 
     it 'cleans up the renaming procedure for MySQL' do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
 
       expect(model).to receive(:remove_rename_triggers_for_mysql)
         .with(/trigger_.{12}/)
@@ -573,8 +581,8 @@ describe Gitlab::Database::MigrationHelpers do
 
   describe '#remove_rename_triggers_for_postgresql' do
     it 'removes the function and trigger' do
-      expect(model).to receive(:execute).with('DROP TRIGGER foo ON bar')
-      expect(model).to receive(:execute).with('DROP FUNCTION foo()')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo ON bar')
+      expect(model).to receive(:execute).with('DROP FUNCTION IF EXISTS foo()')
 
       model.remove_rename_triggers_for_postgresql('bar', 'foo')
     end
@@ -582,8 +590,8 @@ describe Gitlab::Database::MigrationHelpers do
 
   describe '#remove_rename_triggers_for_mysql' do
     it 'removes the triggers' do
-      expect(model).to receive(:execute).with('DROP TRIGGER foo_insert')
-      expect(model).to receive(:execute).with('DROP TRIGGER foo_update')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo_insert')
+      expect(model).to receive(:execute).with('DROP TRIGGER IF EXISTS foo_update')
 
       model.remove_rename_triggers_for_mysql('foo')
     end
@@ -888,6 +896,22 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model.sidekiq_queue_length('new_test')).to eq 2
         end
       end
+    end
+  end
+
+  describe '#check_trigger_permissions!' do
+    it 'does nothing when the user has the correct permissions' do
+      expect { model.check_trigger_permissions!('users') }
+        .not_to raise_error(RuntimeError)
+    end
+
+    it 'raises RuntimeError when the user does not have the correct permissions' do
+      allow(Gitlab::Database::Grant).to receive(:create_and_execute_trigger?)
+        .with('kittens')
+        .and_return(false)
+
+      expect { model.check_trigger_permissions!('kittens') }
+        .to raise_error(RuntimeError, /Your database user is not allowed/)
     end
   end
 end

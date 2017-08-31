@@ -125,11 +125,18 @@ module API
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        result = DeleteBranchService.new(user_project, current_user)
-                 .execute(params[:branch])
+        branch = user_project.repository.find_branch(params[:branch])
+        not_found!('Branch') unless branch
 
-        if result[:status] != :success
-          render_api_error!(result[:message], result[:return_code])
+        commit = user_project.repository.commit(branch.dereferenced_target)
+
+        destroy_conditionally!(commit, last_updated: commit.authored_date) do
+          result = DeleteBranchService.new(user_project, current_user)
+                    .execute(params[:branch])
+
+          if result[:status] != :success
+            render_api_error!(result[:message], result[:return_code])
+          end
         end
       end
 

@@ -4,6 +4,8 @@ module API
 
     before { authenticate! }
 
+    helpers ::Gitlab::IssuableMetadata
+
     helpers do
       def find_issues(args = {})
         args = params.merge(args)
@@ -13,6 +15,7 @@ module API
         args[:label_name] = args.delete(:labels)
 
         issues = IssuesFinder.new(current_user, args).execute
+          .preload(:assignees, :labels, :notes, :timelogs)
 
         issues.reorder(args[:order_by] => args[:sort])
       end
@@ -65,7 +68,13 @@ module API
       get do
         issues = find_issues
 
-        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
+
+        present paginate(issues), options
       end
     end
 
@@ -86,7 +95,13 @@ module API
 
         issues = find_issues(group_id: group.id)
 
-        present paginate(issues), with: Entities::IssueBasic, current_user: current_user
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
+
+        present paginate(issues), options
       end
     end
 
@@ -109,7 +124,14 @@ module API
 
         issues = find_issues(project_id: project.id)
 
-        present paginate(issues), with: Entities::IssueBasic, current_user: current_user, project: user_project
+        options = {
+          with: Entities::IssueBasic,
+          current_user: current_user,
+          project: user_project,
+          issuable_metadata: issuable_meta_data(issues, 'Issue')
+        }
+
+        present paginate(issues), options
       end
 
       desc 'Get a single project issue' do
@@ -230,8 +252,8 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
-        status 204
-        issue.destroy
+
+        destroy_conditionally!(issue)
       end
 
       desc 'List merge requests closing issue'  do

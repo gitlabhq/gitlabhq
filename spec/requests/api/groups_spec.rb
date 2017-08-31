@@ -444,6 +444,7 @@ describe API::Groups do
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
+        expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
       end
 
       it "creates a nested group", :nested_groups do
@@ -486,6 +487,10 @@ describe API::Groups do
         delete api("/groups/#{group1.id}", user1)
 
         expect(response).to have_http_status(204)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/groups/#{group1.id}", user1) }
       end
 
       it "does not remove a group if not an owner" do
