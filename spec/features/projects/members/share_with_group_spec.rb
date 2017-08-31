@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project group links', :js do
+feature 'Project > Members > Share with Group', :js do
   include Select2Helper
 
   let(:master) { create(:user) }
@@ -12,7 +12,7 @@ feature 'Project group links', :js do
     sign_in(master)
   end
 
-  context 'setting an expiration date for a group link' do
+  context 'after setting an expiration date for a group link' do
     before do
       visit project_settings_members_path(project)
 
@@ -24,7 +24,7 @@ feature 'Project group links', :js do
       find('.btn-create').trigger('click')
     end
 
-    it 'shows the expiration time with a warning class' do
+    scenario 'the group link shows the expiration time with a warning class' do
       page.within('.project-members-groups') do
         expect(page).to have_content('Expires in 4 days')
         expect(page).to have_selector('.text-warning')
@@ -32,7 +32,7 @@ feature 'Project group links', :js do
     end
   end
 
-  context 'nested group project' do
+  context 'for a project in a nested group' do
     let!(:nested_group) { create(:group, parent: group) }
     let!(:another_group) { create(:group) }
     let!(:project) { create(:project, namespace: nested_group) }
@@ -42,7 +42,7 @@ feature 'Project group links', :js do
       another_group.add_master(master)
     end
 
-    it 'does not show ancestors', :nested_groups do
+    scenario 'the groups dropdown does not show ancestors', :nested_groups do
       visit project_settings_members_path(project)
 
       click_on 'share-with-group-tab'
