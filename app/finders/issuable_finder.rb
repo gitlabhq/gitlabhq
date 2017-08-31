@@ -18,6 +18,7 @@
 #     sort: string
 #     non_archived: boolean
 #     iids: integer[]
+#     my_reaction_emoji: string
 #
 class IssuableFinder
   include CreatedAtFilter
@@ -51,6 +52,7 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
+    items = by_my_reaction_emoji(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -387,6 +389,14 @@ class IssuableFinder
 
   def filter_by_any_weight?
     params[:weight] == Issue::WEIGHT_ANY
+  end
+
+  def by_my_reaction_emoji(items)
+    if params[:my_reaction_emoji].present? && current_user
+      items = items.awarded(current_user, params[:my_reaction_emoji])
+    end
+
+    items
   end
 
   def by_due_date(items)

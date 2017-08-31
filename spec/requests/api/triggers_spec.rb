@@ -399,6 +399,10 @@ describe API::Triggers do
 
         expect(response).to have_http_status(404)
       end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/triggers/#{trigger.id}", user) }
+      end
     end
 
     context 'authenticated user with invalid permissions' do

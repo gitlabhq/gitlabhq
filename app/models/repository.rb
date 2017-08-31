@@ -3,6 +3,18 @@ require 'securerandom'
 require 'forwardable'
 
 class Repository
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
+
+  RESERVED_REFS_NAMES = %W[
+    heads
+    tags
+    #{REF_ENVIRONMENTS}
+    #{REF_KEEP_AROUND}
+    #{REF_ENVIRONMENTS}
+  ].freeze
+
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
   include RepositoryMirroring
@@ -241,10 +253,10 @@ class Repository
     begin
       write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
 
@@ -1239,7 +1251,7 @@ class Repository
   end
 
   def keep_around_ref_name(sha)
-    "refs/keep-around/#{sha}"
+    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})
@@ -1298,5 +1310,17 @@ class Repository
       .gitaly_commit_client
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
+  end
+
+  def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+    tmp_ref = fetch_ref(
+      start_repository.path_to_repo,
+      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+      "refs/tmp/#{SecureRandom.hex}/head"
+    )
+
+    yield commit(sha)
+  ensure
+    delete_refs(tmp_ref) if tmp_ref
   end
 end

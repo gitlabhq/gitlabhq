@@ -204,6 +204,7 @@ import initGroupAnalytics from './init_group_analytics';
           new ProjectSelect();
           break;
         case 'projects:milestones:show':
+          new UserCallout();
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
           new Milestone();
@@ -290,6 +291,7 @@ import initGroupAnalytics from './init_group_analytics';
               action: mrNewSubmitNode.dataset.mrSubmitAction,
             });
           }
+          new UserCallout();
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
@@ -391,7 +393,8 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UsersSelect();
+          new UserCallout('js-service-desk-callout');
+          new UserCallout('js-mr-approval-callout');
           break;
         case 'projects:imports:show':
           new ProjectImport();
@@ -541,6 +544,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:settings:repository:show':
           new UsersSelect();
+          new UserCallout();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;

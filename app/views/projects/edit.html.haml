@@ -163,24 +163,13 @@
       %p
         Customize your merge request restrictions.
     .settings-content.no-animate{ class: ('expanded' if expanded) }
+      = render 'shared/promotions/promote_mr_features'
+
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
-  - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
-    %section.settings.js-service-desk-setting-wrapper
-      .settings-header
-        %h4
-          Service Desk
-        %button.btn.js-settings-toggle
-          = expanded ? 'Collapse' : 'Expand'
-        %p
-          Customize your service desk settings.
-          = link_to "Learn more about service desk.", help_page_path('user/project/service_desk')
-      .settings-content.no-animate{ class: ('expanded' if expanded) }
-        .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
-          enabled: "#{@project.service_desk_enabled}",
-          incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
+  = render 'projects/ee/service_desk_settings'
 
   = render 'export', project: @project
 

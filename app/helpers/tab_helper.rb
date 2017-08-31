@@ -119,4 +119,8 @@ module TabHelper
 
     'active' if current_controller?('oauth/applications')
   end
+
+  def sidebar_link(href, title: nil, css: nil, &block)
+    link_to capture(&block), href, title: (title if collapsed_sidebar?), class: css, aria: { label: title }
+  end
 end

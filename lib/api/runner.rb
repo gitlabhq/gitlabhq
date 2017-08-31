@@ -45,8 +45,10 @@ module API
       end
       delete '/' do
         authenticate_runner!
-        status 204
-        Ci::Runner.find_by_token(params[:token]).destroy
+
+        runner = Ci::Runner.find_by_token(params[:token])
+
+        destroy_conditionally!(runner)
       end
 
       desc 'Validates authentication credentials' do
