@@ -133,15 +133,15 @@
                 %span
                   Labels
 
-            = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones' do
-                %span
-                  Milestones
-
             - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
               = nav_link(controller: [ :issues, :service_desk ]) do
                 = link_to service_desk_project_issues_url(@project), title: 'Service Desk' do
                   %span Service Desk
+
+            = nav_link(controller: :milestones) do
+              = link_to project_milestones_path(@project), title: 'Milestones' do
+                %span
+                  Milestones
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
