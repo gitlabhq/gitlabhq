@@ -101,8 +101,18 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
+<<<<<<< HEAD
       "confidential": false,
       "weight": null
+=======
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false
+>>>>>>> upstream/master
    }
 ]
 ```
@@ -199,8 +209,18 @@ Example response:
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
+<<<<<<< HEAD
       "confidential": false,
       "weight": null
+=======
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false
+>>>>>>> upstream/master
    }
 ]
 ```
@@ -298,8 +318,18 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
+<<<<<<< HEAD
       "confidential": false,
       "weight": null
+=======
+      "time_stats": {
+         "time_estimate": 0,
+         "total_time_spent": 0,
+         "human_time_estimate": null,
+         "human_total_time_spent": null
+      },
+      "confidential": false
+>>>>>>> upstream/master
    }
 ]
 ```
@@ -375,6 +405,12 @@ Example response:
    "user_notes_count": 1,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/1",
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
    "confidential": false,
    "weight": null,
    "_links": {
@@ -445,6 +481,12 @@ Example response:
    "user_notes_count": 0,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/14",
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
    "confidential": false,
    "weight": null,
    "_links": {
@@ -516,6 +558,12 @@ Example response:
    "user_notes_count": 0,
    "due_date": "2016-07-22",
    "web_url": "http://example.com/example/example/issues/15",
+   "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+   },
    "confidential": false,
    "weight": null,
    "_links": {
@@ -609,6 +657,12 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  },
   "confidential": false,
   "weight": null,
   "_links": {
@@ -681,6 +735,12 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  },
   "confidential": false,
   "weight": null,
   "_links": {
@@ -1012,7 +1072,13 @@ Example response:
     "user_notes_count": 1,
     "should_remove_source_branch": null,
     "force_remove_source_branch": false,
-    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432"
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test/merge_requests/6432",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
   }
 ]
 ```

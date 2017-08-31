@@ -1,8 +1,8 @@
 <script>
   import d3 from 'd3';
-  import monitoringLegends from './monitoring_legends.vue';
-  import monitoringFlag from './monitoring_flag.vue';
-  import monitoringDeployment from './monitoring_deployment.vue';
+  import GraphLegend from './graph/legend.vue';
+  import GraphFlag from './graph/flag.vue';
+  import GraphDeployment from './graph/deployment.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
@@ -14,7 +14,7 @@
 
   export default {
     props: {
-      columnData: {
+      graphData: {
         type: Object,
         required: true,
       },
@@ -66,9 +66,9 @@
     },
 
     components: {
-      monitoringLegends,
-      monitoringFlag,
-      monitoringDeployment,
+      GraphLegend,
+      GraphFlag,
+      GraphDeployment,
     },
 
     computed: {
@@ -97,7 +97,7 @@
     methods: {
       draw() {
         const breakpointSize = bp.getBreakpointSize();
-        const query = this.columnData.queries[0];
+        const query = this.graphData.queries[0];
         this.margin = measurements.large.margin;
         if (breakpointSize === 'xs' || breakpointSize === 'sm') {
           this.graphHeight = 300;
@@ -106,7 +106,7 @@
         }
         this.data = query.result[0].values;
         this.unitOfDisplay = query.unit || '';
-        this.yAxisLabel = this.columnData.y_label || 'Values';
+        this.yAxisLabel = this.graphData.y_label || 'Values';
         this.legendTitle = query.label || 'Average';
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
@@ -224,7 +224,7 @@
     :class="classType">
     <h5
       class="text-center graph-title">
-        {{columnData.title}}
+        {{graphData.title}}
     </h5>
     <div
       class="prometheus-svg-container"
@@ -240,7 +240,7 @@
           class="y-axis"
           transform="translate(70, 20)">
         </g>
-        <monitoring-legends
+        <graph-legend
           :graph-width="graphWidth"
           :graph-height="graphHeight"
           :margin="margin"
@@ -268,13 +268,13 @@
               stroke-width="2"
               transform="translate(-5, 20)">
             </path>
-            <monitoring-deployment
+            <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
             />
-            <monitoring-flag
+            <graph-flag
               v-if="showFlag"
               :current-x-coordinate="currentXCoordinate"
               :current-y-coordinate="currentYCoordinate"

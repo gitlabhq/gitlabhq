@@ -70,7 +70,11 @@ module API
 
         commit = user_project.repository.commit(tag.dereferenced_target)
 
+<<<<<<< HEAD
         destroy_conditionally!(commit, last_update_field: :authored_date) do
+=======
+        destroy_conditionally!(commit, last_updated: commit.authored_date) do
+>>>>>>> upstream/master
           result = ::Tags::DestroyService.new(user_project, current_user)
                     .execute(params[:tag_name])
 

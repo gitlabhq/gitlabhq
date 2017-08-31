@@ -74,7 +74,7 @@
   };
 </script>
 <template>
-  <g 
+  <g
     class="axis-label-container">
     <line
       class="label-x-axis-line"
@@ -100,7 +100,7 @@
       :width="yLabelWidth"
       :height="yLabelHeight">
     </rect>
-    <text 
+    <text
       class="label-axis-text y-label-text"
       text-anchor="middle"
       :transform="textTransform"

@@ -281,6 +281,7 @@
 .ajax-project-dropdown,
 body[data-page="projects:new"] #select2-drop,
 body[data-page="projects:blob:new"] #select2-drop,
+body[data-page="profiles:show"] #select2-drop,
 body[data-page="projects:blob:edit"] #select2-drop {
   &.select2-drop {
     color: $gl-text-color;

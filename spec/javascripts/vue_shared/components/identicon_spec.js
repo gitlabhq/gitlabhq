@@ -1,22 +1,18 @@
 import Vue from 'vue';
-import groupIdenticonComponent from '~/groups/components/group_identicon.vue';
-import GroupsStore from '~/groups/stores/groups_store';
-import { group1 } from './mock_data';
+import identiconComponent from '~/vue_shared/components/identicon.vue';
 
 const createComponent = () => {
-  const Component = Vue.extend(groupIdenticonComponent);
-  const store = new GroupsStore();
-  const group = store.decorateGroup(group1);
+  const Component = Vue.extend(identiconComponent);
 
   return new Component({
     propsData: {
-      entityId: group.id,
-      entityName: group.name,
+      entityId: 1,
+      entityName: 'entity-name',
     },
   }).$mount();
 };
 
-describe('GroupIdenticonComponent', () => {
+describe('IdenticonComponent', () => {
   let vm;
 
   beforeEach(() => {

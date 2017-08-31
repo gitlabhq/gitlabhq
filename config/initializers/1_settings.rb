@@ -186,18 +186,11 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['encryption'] = 'simple_tls' if server['encryption'] == 'ssl'
     server['encryption'] = 'start_tls' if server['encryption'] == 'tls'
 
-    # Certificates are not verified for backwards compatibility.
-    # This default should be flipped to true in 9.5.
-    if server['verify_certificates'].nil?
-      server['verify_certificates'] = false
-
-      message = <<-MSG.strip_heredoc
-        LDAP SSL certificate verification is disabled for backwards-compatibility.
-        Please add the "verify_certificates" option to gitlab.yml for each LDAP
-        server. Certificate verification will be enabled by default in GitLab 9.5.
-      MSG
-      Rails.logger.warn(message)
-    end
+    # Certificate verification was added in 9.4.2, and defaulted to false for
+    # backwards-compatibility.
+    #
+    # Since GitLab 10.0, verify_certificates defaults to true for security.
+    server['verify_certificates'] = true if server['verify_certificates'].nil?
 
     Settings.ldap['servers'][key] = server
   end

@@ -817,6 +817,7 @@ describe User do
   describe '.search' do
     let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
     let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
+    let!(:user3) { create(:user, name: 'us', username: 'se', email: 'foo@gmail.com') }
 
     describe 'name matching' do
       it 'returns users with a matching name with exact match first' do
@@ -829,6 +830,14 @@ describe User do
 
       it 'returns users with a matching name regardless of the casing' do
         expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
+
+      it 'returns users with a exact matching name shorter than 3 chars' do
+        expect(described_class.search(user3.name)).to eq([user3])
+      end
+
+      it 'returns users with a exact matching name shorter than 3 chars regardless of the casing' do
+        expect(described_class.search(user3.name.upcase)).to eq([user3])
       end
     end
 
@@ -857,6 +866,14 @@ describe User do
 
       it 'returns users with a matching username regardless of the casing' do
         expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
+
+      it 'returns users with a exact matching username shorter than 3 chars' do
+        expect(described_class.search(user3.username)).to eq([user3])
+      end
+
+      it 'returns users with a exact matching username shorter than 3 chars regardless of the casing' do
+        expect(described_class.search(user3.username.upcase)).to eq([user3])
       end
     end
   end

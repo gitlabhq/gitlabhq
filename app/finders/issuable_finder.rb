@@ -366,6 +366,7 @@ class IssuableFinder
     items
   end
 
+<<<<<<< HEAD
   def by_weight(items)
     return items unless weights?
 
@@ -391,6 +392,8 @@ class IssuableFinder
     params[:weight] == Issue::WEIGHT_ANY
   end
 
+=======
+>>>>>>> upstream/master
   def by_my_reaction_emoji(items)
     if params[:my_reaction_emoji].present? && current_user
       items = items.awarded(current_user, params[:my_reaction_emoji])

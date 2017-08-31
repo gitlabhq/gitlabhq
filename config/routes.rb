@@ -36,7 +36,10 @@ Rails.application.routes.draw do
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
   get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
+<<<<<<< HEAD
   get '/autocomplete/project_groups' => 'autocomplete#project_groups'
+=======
+>>>>>>> upstream/master
 
   # Search
   get 'search' => 'search#show'

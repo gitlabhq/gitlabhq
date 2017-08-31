@@ -3,7 +3,7 @@
 require ::File.expand_path('../lib/gitlab/popen', __dir__)
 
 tasks = [
-  %w[bundle exec bundle-audit check --update --ignore CVE-2016-4658 CVE-2017-5029],
+  %w[bundle exec bundle-audit check --update],
   %w[bundle exec rake config_lint],
   %w[bundle exec rake flay],
   %w[bundle exec rake haml_lint],

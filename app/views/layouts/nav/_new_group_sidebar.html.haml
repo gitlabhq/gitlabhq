@@ -7,7 +7,11 @@
         .sidebar-context-title
           = @group.name
     %ul.sidebar-top-level-items
+<<<<<<< HEAD
       = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
+=======
+      = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
+>>>>>>> upstream/master
         = sidebar_link group_path(@group), title: _('Group overview') do
           .nav-icon-container
             = custom_icon('project')
@@ -71,7 +75,11 @@
           %span.nav-item-name
             Members
       - if current_user && can?(current_user, :admin_group, @group)
+<<<<<<< HEAD
         = nav_link(path: %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]) do
+=======
+        = nav_link(path: %w[groups#projects groups#edit ci_cd#show]) do
+>>>>>>> upstream/master
           = sidebar_link edit_group_path(@group), title: _('Settings') do
             .nav-icon-container
               = custom_icon('settings')
