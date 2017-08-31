@@ -19,7 +19,7 @@ describe 'Filter issues', js: true do
 
   def expect_no_issues_list
     page.within '.issues-list' do
-      expect(page).not_to have_selector('.issue')
+      expect(page).to have_no_selector('.issue')
     end
   end
 
