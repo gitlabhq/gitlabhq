@@ -226,49 +226,51 @@ module Github
       while url
         response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
-        response.body.each do |raw|
-          representation = Github::Representation::Issue.new(raw, options)
-
-          begin
-            # Every pull request is an issue, but not every issue
-            # is a pull request. For this reason, "shared" actions
-            # for both features, like manipulating assignees, labels
-            # and milestones, are provided within the Issues API.
-            if representation.pull_request?
-              next unless representation.has_labels?
-
-              merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
-              merge_request.update_attribute(:label_ids, label_ids(representation.labels))
-            else
-              next if Issue.where(iid: representation.iid, project_id: project.id).exists?
-
-              author_id          = user_id(representation.author, project.creator_id)
-              issue              = Issue.new
-              issue.iid          = representation.iid
-              issue.project_id   = project.id
-              issue.title        = representation.title
-              issue.description  = format_description(representation.description, representation.author)
-              issue.state        = representation.state
-              issue.label_ids    = label_ids(representation.labels)
-              issue.milestone_id = milestone_id(representation.milestone)
-              issue.author_id    = author_id
-              issue.assignee_ids = [user_id(representation.assignee)]
-              issue.created_at   = representation.created_at
-              issue.updated_at   = representation.updated_at
-              issue.save!(validate: false)
-
-              # Fetch comments
-              if representation.has_comments?
-                comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
-                fetch_comments(issue, :comment, comments_url)
-              end
-            end
-          rescue => e
-            error(:issue, representation.url, e.message)
-          end
-        end
+        response.body.each { |raw| populate_issue(raw) }
 
         url = response.rels[:next]
+      end
+    end
+
+    def populate_issue(raw)
+      representation = Github::Representation::Issue.new(raw, options)
+
+      begin
+        # Every pull request is an issue, but not every issue
+        # is a pull request. For this reason, "shared" actions
+        # for both features, like manipulating assignees, labels
+        # and milestones, are provided within the Issues API.
+        if representation.pull_request?
+          return unless representation.has_labels?
+
+          merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
+          merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+        else
+          return if Issue.where(iid: representation.iid, project_id: project.id).exists?
+
+          author_id          = user_id(representation.author, project.creator_id)
+          issue              = Issue.new
+          issue.iid          = representation.iid
+          issue.project_id   = project.id
+          issue.title        = representation.title
+          issue.description  = format_description(representation.description, representation.author)
+          issue.state        = representation.state
+          issue.label_ids    = label_ids(representation.labels)
+          issue.milestone_id = milestone_id(representation.milestone)
+          issue.author_id    = author_id
+          issue.assignee_ids = [user_id(representation.assignee)]
+          issue.created_at   = representation.created_at
+          issue.updated_at   = representation.updated_at
+          issue.save!(validate: false)
+
+          # Fetch comments
+          if representation.has_comments?
+            comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
+            fetch_comments(issue, :comment, comments_url)
+          end
+        end
+      rescue => e
+        error(:issue, representation.url, e.message)
       end
     end
 

@@ -125,6 +125,15 @@ describe API::Files do
         expect(response).to have_http_status(200)
       end
 
+      it 'returns raw file info for files with dots' do
+        url = route('.gitignore') + "/raw"
+        expect(Gitlab::Workhorse).to receive(:send_git_blob)
+
+        get api(url, current_user), params
+
+        expect(response).to have_http_status(200)
+      end
+
       it 'returns file by commit sha' do
         # This file is deleted on HEAD
         file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
