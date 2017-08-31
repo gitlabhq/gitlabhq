@@ -206,7 +206,7 @@ module Ci
       end
     end
 
-    describe "#builds_for_ref" do
+    describe "#builds_for_stage_and_ref" do
       let(:type) { 'test' }
 
       it "returns builds if no branch specified" do

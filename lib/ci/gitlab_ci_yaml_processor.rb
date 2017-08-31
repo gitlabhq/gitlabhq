@@ -32,12 +32,6 @@ module Ci
       end
     end
 
-    def builds_for_ref(ref, tag = false, source = nil)
-      jobs_for_ref(ref, tag, source).map do |name, _|
-        build_attributes(name)
-      end
-    end
-
     def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
       jobs_for_stage_and_ref(stage, ref, tag, source).map do |name, _|
         build_attributes(name)
