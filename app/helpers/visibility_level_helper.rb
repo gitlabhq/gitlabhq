@@ -165,10 +165,10 @@ module VisibilityLevelHelper
   private
 
   def visibility_level_errors_for_group(group, level_name)
-    group = link_to group.name, group_path(group)
+    group_name = link_to group.name, group_path(group)
     change_visiblity = link_to 'change the visibility', edit_group_path(group)
 
-    { reason: "the visibility of #{group} is #{group.visibility}",
+    { reason: "the visibility of #{group_name} is #{group.visibility}",
       instruction: " To make this group #{level_name}, you must first #{change_visiblity} of the parent group." }
   end
 end
