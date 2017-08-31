@@ -1,0 +1,5 @@
+---
+title: Upgrade mail and nokogiri gems due to security issues
+merge_request: 13662
+author: Markus Koller
+type: security

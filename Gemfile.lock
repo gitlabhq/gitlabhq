@@ -284,7 +284,7 @@ GEM
       escape_utils (~> 1.1.0)
       mime-types (>= 1.19)
       rugged (>= 0.23.0b)
-    github-markup (1.4.0)
+    github-markup (1.6.1)
     gitlab-flowdock-git-hook (1.0.1)
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
@@ -453,7 +453,7 @@ GEM
       multi_json (~> 1.10)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
-    mail (2.6.5)
+    mail (2.6.6)
       mime-types (>= 1.16, < 4)
     mail_room (0.9.1)
     memoist (0.15.0)
@@ -859,7 +859,7 @@ GEM
     truncato (0.7.10)
       htmlentities (~> 4.3.1)
       nokogiri (~> 1.8.0, >= 1.7.0)
-    tzinfo (1.2.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
     u2f (0.2.1)
     uglifier (2.7.2)
@@ -1128,4 +1128,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.1
+   1.15.4
