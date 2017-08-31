@@ -6,12 +6,13 @@
 
 Service Desk is a module that allows your team to connect directly
 with any external party through email right inside of GitLab; no external tools required.
-An ongoing conversation right where your software is built ensures that user feedback ends up directly where needed,
-helping you build the right features to solve your user's real problems.
+An ongoing conversation right where your software is built ensures that user feedback ends
+up directly where it's needed, helping you build the right features to solve your users'
+real problems.
 
-Provide efficient email support to your customers, who can email bug reports,
-feature requests, or any other general feedback directly into your GitLab project as a new issue.
-In turn, your team can respond straight from the project.
+With Service Desk, you can provide efficient email support to your customers, who can now
+email you bug reports, feature requests, or general feedback that will all end up in your
+GitLab project as new issues. In turn, your team can respond straight from the project.
 
 As Service Desk is built right into GitLab itself, the complexity and inefficiencies
 of multiple tools and external integrations are eliminated, significantly shortening
@@ -23,12 +24,15 @@ For instance, let's assume you develop a game for iOS or Android.
 The codebase is hosted in your GitLab instance, built and deployed
 with GitLab CI.
 
-1. Offer email support to your paying customers, who can email you directly from their app
-1. The email they send creates an issue in the appropriate project
-1. Your team members reply to that issue thread to follow up with your customer
+Here's how Service Desk will work for you:
+
+1. You'll provide a project-specific email address to your paying customers, who can email you directly from within the app
+1. Each email they send creates an issue in the appropriate project
+1. Your team members navigate to the Service Desk issue tracker, where they can see new support requests and respond inside associated issues
+1. Your team communicates back and forth with the customer to understand the request
 1. Your team starts working on implementing code to solve your customer's problem
-1. When your team finishes the implementation, their merged merge request will close the issue
-1. The customer will have been attended successfully through GitLab, without having real access to your GitLab instance
+1. When your team finishes the implementation, whereupon the merge request is merged and the issue is closed automatically
+1. The customer will have been attended successfully via email, without having real access to your GitLab instance
 1. Your team saved time by not having to leave GitLab (or setup any integrations) to follow up with your customer
 
 ## How it works
@@ -67,7 +71,9 @@ you can skip the step 1 below; you only need to enable it per project.
      checking to this service.
 
      ![Service Desk enabled](img/service_desk_enabled.png)
-5.   Service Desk is now enabled for this project!
+5.   Service Desk is now enabled for this project! You should be able to access it from your project's sidebar **Issue submenu**:
+
+      ![Service Desk Navigation Item](img/service_desk_nav_item.png)
 
 ## Using Service Desk
 
@@ -90,13 +96,18 @@ And any responses they send will be displayed in the issue itself.
 
 ### As a responder to the issue
 
-For responders to the issue, everything works as usual. Messages from the end
-user will show as coming from the special Support Bot user, but apart from that,
+For responders to the issue, everything works as usual. They'll see a familiar looking
+issue tracker, where they can see issues created via customer support requests and
+filter and interact with them just like other GitLab issues.
+
+![Service Desk Issue tracker](img/service_desk_issue_tracker.png)
+
+Messages from the end user will show as coming from the special Support Bot user, but apart from that,
 you can read and write comments as you normally do:
 
 ![Service Desk issue thread](img/service_desk_thread.png)
 
-> Note that the project's visibility (private, internal, public) does not affect Service Desk. 
+> Note that the project's visibility (private, internal, public) does not affect Service Desk.
 
 [ee-149]: https://gitlab.com/gitlab-org/gitlab-ee/issues/149 "Service Desk with email"
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
