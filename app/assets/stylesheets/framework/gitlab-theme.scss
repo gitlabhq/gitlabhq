@@ -1,0 +1,122 @@
+/**
+ * Styles the GitLab application with a specific color theme
+ *
+ * $color-light  -
+ * $color        -
+ * $color-darker -
+ * $color-dark   -
+ */
+@mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
+
+
+  header.navbar-gitlab-new {
+    background: linear-gradient(to right, $color-darker, $color);
+  }
+
+
+
+
+
+
+
+
+
+  .page-with-sidebar {
+    .toggle-nav-collapse,
+    .pin-nav-btn {
+      color: $color-light;
+
+      &:hover {
+        color: $white-light;
+      }
+    }
+
+    .sidebar-wrapper {
+      background: $color-darker;
+    }
+
+    .sidebar-action-buttons {
+      color: $color-light;
+      background-color: lighten($color-darker, 5%);
+    }
+
+    .nav-sidebar {
+      li {
+        a {
+          color: $color-light;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: $color-dark;
+          }
+
+          i {
+            color: $color-light;
+          }
+
+          path,
+          polygon {
+            fill: $color-light;
+          }
+
+          .count {
+            color: $color-light;
+            background: $color-dark;
+          }
+
+          svg {
+            position: relative;
+            top: 3px;
+          }
+        }
+
+        &.separate-item {
+          border-top: 1px solid $color;
+        }
+
+        &.active a {
+          color: $white-light;
+          background: $color-dark;
+
+          &.no-highlight {
+            border: none;
+          }
+
+          i {
+            color: $white-light;
+          }
+
+          path,
+          polygon {
+            fill: $white-light;
+          }
+        }
+      }
+
+      .about-gitlab {
+        color: $color-light;
+      }
+    }
+  }
+}
+
+$theme-black-light: #979797;
+$theme-black: #373737;
+$theme-black-dark: #272727;
+$theme-black-darker: #222;
+
+$theme-indigo-light: #98c;
+$theme-indigo: #548;
+$theme-indigo-dark: #436;
+$theme-indigo-darker: #325;
+
+body {
+  &.ui_indigo {
+    @include gitlab-theme($theme-indigo-light, $theme-indigo, $theme-indigo-dark, $theme-indigo-darker);
+  }
+
+  &.ui_dark {
+    @include gitlab-theme($theme-black-light, $theme-black, $theme-black-dark, $theme-black-darker);
+  }
+}
