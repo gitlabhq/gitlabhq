@@ -3,13 +3,13 @@
 > **Type:** tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Mehran Rasulian](https://gitlab.com/mehranrasulian) ||
-> **Publication date:** 2017/06/14
+> **Publication date:** 2017-08-31
 
 ## Introduction
 
-GitLab features our applications with Continuous Integration, and it is possible to deploy the new code changes to the production server whenever we want just by clicking a button!
+GitLab features our applications with Continuous Integration, and it is possible to easily deploy the new code changes to the production server whenever we want.
 
-In this tutorial, we'll show you how to initialize a [Laravel](http://laravel.com/) application and setup our [Envoy](laravel.com/docs/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI](/gitlab-ci/) via [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
+In this tutorial, we'll show you how to initialize a [Laravel](http://laravel.com/) application and setup our [Envoy](laravel.com/docs/envoy) tasks, then we'll jump into see how to test and deploy it with [GitLab CI/CD](../../ci/README.md) via [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).
 
 We assume you have a basic experience with Laravel, Linux servers,
 and you know how to use GitLab.
@@ -18,17 +18,16 @@ Laravel is a high quality web framework written in PHP.
 It has a great community with a [fantastic documentation](https://laravel.com/docs).
 Aside from the usual routing, controllers, requests, responses, views, and (blade) templates, out of the box Laravel provides plenty of additional services such as cache, events, localization, authentication and many others.
 
-We will use [Envoy](https://laravel.com/docs/master/envoy) as an SSH task runner which is based on PHP.
-It uses a clean, minimal [Blade syntax](https://laravel.com/docs/blade) to setup tasks that can run on remote servers.
-Those tasks can be cloning your project from the repository, installing the Composer dependencies, running [Artisan commands](https://laravel.com/docs/artisan) and more.
+We will use [Envoy](https://laravel.com/docs/master/envoy) as an SSH task runner based on PHP.
+It uses a clean, minimal [Blade syntax](https://laravel.com/docs/blade) to setup tasks that can run on remote servers, such as, cloning your project from the repository, installing the Composer dependencies, and running [Artisan commands](https://laravel.com/docs/artisan).
 
 ## Initialize our Laravel app on GitLab
 
-We assume [you have installed a new laravel project](https://laravel.com/docs/installation#installation), so we start with writing a unit test, and initialize the git for the project.
+We assume [you have installed a new laravel project](https://laravel.com/docs/installation#installation), so let's start with a unit test, and initialize Git for the project.
 
 ### Unit Test
 
-Every new installation of Laravel (currently 5.4) comes with two type of tests 'Feature' and 'Unit' placed in the tests directory.
+Every new installation of Laravel (currently 5.4) comes with two type of tests, 'Feature' and 'Unit', placed in the tests directory.
 Here's a unit test from `test/Unit/ExampleTest.php`:
 
 ```php
@@ -47,23 +46,23 @@ class ExampleTest extends TestCase
 }
 ```
 
-This test is as simple as asserting that the given value is true!
+This test is as simple as asserting that the given value is true.
 
 Laravel uses `PHPUnit` for tests by default.
-If we run `vendor/bin/phpunit` we should see green!
+If we run `vendor/bin/phpunit` we should see the green output:
 
 ```bash
 vendor/bin/phpunit
 OK (1 test, 1 assertions)
 ```
 
-This test will be used later for continuously testing our app with GitLab CI.
+This test will be used later for continuously testing our app with GitLab CI/CD.
 
 ### Push to GitLab
 
 Since we have our app up and running locally, it's time to push the codebase to our remote repository.
 Let's create [a new project](https://docs.gitlab.com/ee/gitlab-basics/create-project.html) in GitLab named `laravel-sample`.
-After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and do the first commit.
+After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and push the first commit.
 
 
 ```bash
@@ -77,7 +76,7 @@ git push -u origin master
 
 ## Configure the production server
 
-Before we begin setting up Envoy and GitLab CI, let's quickly make sure the production server is ready for deployment.
+Before we begin setting up Envoy and GitLab CI/CD, let's quickly make sure the production server is ready for deployment.
 We have installed LEMP stack which stands for Linux, Nginx, MySQL and PHP on our Ubuntu 16.04.
 
 ### Create a new user
@@ -113,9 +112,9 @@ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 cat ~/.ssh/id_rsa
 ```
 
-Now, add it to your GitLab project as a [secret variable](../../ci/variables/README.html#secret-variables).
+Now, let's add it to your GitLab project as a [secret variable](../../ci/variables/README.html#secret-variables).
 Secret variables are user-defined variables and are stored out of `.gitlab-ci.yml`, for security purposes.
-They can be added per project by navigating to **Project** > **Settings** > **CI/CD Pipelines**.
+They can be added per project by navigating to the project's **Settings** > **CI/CD**.
 
 ![secret variables page](img/secret_variables_page.png)
 
@@ -192,7 +191,7 @@ To start, we create an `Envoy.blade.php` in the root of our app with a simple ta
 @endtask
 ```
 
-As you may expect, we have an array within `@servers` directive at the top of the file, which contains a key named `web` with a value of the server's address (e.g. deployer@192.168.1.1).
+As you may expect, we have an array within `@servers` directive at the top of the file, which contains a key named `web` with a value of the server's address (e.g. `deployer@192.168.1.1`).
 Then within our `@task` directive we define the bash commands that should be run on the server when the task is executed.
 
 On the local machine use the `run` command to run Envoy tasks.
@@ -214,6 +213,10 @@ Our deployment plan is to clone the latest release from GitLab repository, insta
 
 #### @setup directive
 
+The first step of our deployment process is to define a set of variables within [@setup](https://laravel.com/docs/envoy/#setup) directive.
+You may change the `app` to your application's name:
+
+
 ```php
 ...
 
@@ -234,10 +237,11 @@ Our deployment plan is to clone the latest release from GitLab repository, insta
 - `$release` contains a date, so every time that we deploy a new release of our app, we get a new folder with the current date as name
 - `$new_release_dir` is the full path of the new release which is used just to make the tasks cleaner
 
-The first step of our deployment process is to define a set of variables within [@setup](https://laravel.com/docs/envoy/#setup) directive.
-You may change the `app` to your application's name.
-
 #### @story directive
+
+The [@story](https://laravel.com/docs/envoy/#stories) directive allows us define a list of tasks that can be run as a single task.
+Here we have three tasks called `clone_repository`, `run_composer`, `update_symlinks`. These variables are usable to making our task's codes more cleaner:
+
 
 ```php
 ...
@@ -250,9 +254,6 @@ You may change the `app` to your application's name.
 
 ...
 ```
-
-The [@story](https://laravel.com/docs/envoy/#stories) directive allows us define a list of tasks that can be run as a single task.
-Here we have three tasks called `clone_repository`, `run_composer`, `update_symlinks`. These variables are usable to making our task's codes more cleaner.
 
 Let's create these three tasks one by one.
 
@@ -274,12 +275,12 @@ The `releases` directory will hold all our deployments:
 ```
 
 While our project grows, its Git history will be very very long over time.
-Since we are creating a directory for each release, it might not be necessary to have the history of the project downloaded for each release.
+Since we are creating a directory per release, it might not be necessary to have the history of the project downloaded for each release.
 The `--depth 1` option is a great solution which saves systems time and disk space as well.
 
 #### Installing dependencies with Composer
 
-As you may suppose, this task just navigates to the new release directory and runs Composer to install the application dependencies:
+As you may know, this task just navigates to the new release directory and runs Composer to install the application dependencies:
 
 ```php
 ...
@@ -296,7 +297,7 @@ As you may suppose, this task just navigates to the new release directory and ru
 #### Activate new release
 
 Next thing to do after preparing the requirements of our new release, is to remove the storage directory from it and to create two symbolic links to point the application's `storage` directory and `.env` file to the new release.
-Then, creating another symbolic link to the new release with the name of `current` placed in the app directory.
+Then, we need to create another symbolic link to the new release with the name of `current` placed in the app directory.
 The `current` symbolic link always points to the latest release of our app:
 
 ```php
@@ -315,7 +316,7 @@ The `current` symbolic link always points to the latest release of our app:
 @endtask
 ```
 
-As you see, we use `-nfs` as an option for `ln` command, which says that the `storage`, `.env` and `current` no longer points to the preview's release and will point them to the new release by force (`f` from -nfs means force), which is the case when we are doing multiple deployments.
+As you see, we use `-nfs` as an option for `ln` command, which says that the `storage`, `.env` and `current` no longer points to the preview's release and will point them to the new release by force (`f` from `-nfs` means force), which is the case when we are doing multiple deployments.
 
 ### Full script
 
@@ -372,7 +373,7 @@ These are persistent data and will be shared to every new release.
 
 Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../ce/ci/environments.html), which will be described [later](#setting-up-gitlab-ci) in this tutorial.
 
-It is time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
+Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
 To keep things simple, we commit directly to `master`, without using [feature-branches](../../ee/workflow/gitlab_flow.html/#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
 In a real world project, teams may use [Issue Tracker](../../user/project/issues/index.md) and [Merge Requests](../../user/project/merge_requests/index.md) to move their code across branches:
 
@@ -385,14 +386,14 @@ git push origin master
 ## Continuous Integration with GitLab
 
 We have our app ready on GitLab, and we also can deploy it manually.
-But let's take a step forward to do it automatically with Continuous Delivery method.
+But let's take a step forward to do it automatically with [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) method.
 We need to check every commit with a set of automated tests to become aware of issues at the earliest, and then, we can deploy to the target environment if we are happy with the result of the tests.
 
-[GitLab CI](/gitlab-ci/) allows us to use [Docker](https://docker.com/) engine to handle the process of testing and deploying our app.
+[GitLab CI/CD](../../ci/README.md) allows us to use [Docker](https://docker.com/) engine to handle the process of testing and deploying our app.
 In the case you're not familiar with Docker, refer to [How to Automate Docker Deployments](http://paislee.io/how-to-automate-docker-deployments/).
 
-Before setting up GitLab CI, we need to prepare our work environment to be able to build, test, and deploy our app with GitLab CI.
-To do that, We'll use a Docker image which has the minimum requirements that a Laravel app needs to run.
+To be able to build, test, and deploy our app with GitLab CI/CD, we need to prepare our work environment.
+To do that, we'll use a Docker image which has the minimum requirements that a Laravel app needs to run.
 [There are other ways](../../ce/ci/examples/php.html/#test-php-projects-using-the-docker-executor) to do that as well, but they may lead our builds run slowly, which is not what we want when there are faster options to use.
 
 With Docker images our builds run incredibly faster!
@@ -439,10 +440,11 @@ On your GitLab project repository navigate to the **Registry** tab.
 
 ![container registry page empty image](img/container_registry_page_empty_image.png)
 
-You may need to enable container registry (under project's settings) to your project to see this tab.
+You may need to [enable Container Registry](../../user/project/container_registry.md#enable-the-container-registry-for-your-project) to your project to see this tab. You'll find it under your project's **Settings > General > Sharing and permissions**.
+
 ![container registry checkbox](img/container_registry_checkbox.png)
 
-To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password.
+To start using Container Registry on our machine, we first need to login to the GitLab registry using our GitLab username and password:
 
 ```bash
 docker login registry.gitlab.com
@@ -458,14 +460,14 @@ docker push registry.gitlab.com/<USERNAME>/laravel-sample
 >**Note:**
 To run the above commands, we first need to have [Docker](https://docs.docker.com/engine/installation/) installed on our machine.
 
-Congratulations! You just pushed the first Docker image to the GitLab registry, and if you refresh the page you should be able to see it.
+Congratulations! You just pushed the first Docker image to the GitLab Registry, and if you refresh the page you should be able to see it:
 
 ![container registry page with image](img/container_registry_page_with_image.png)
 
 >**Note:**
-You can also [use GitLab CI](https://about.gitlab.com/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine!
+You can also [use GitLab CI/CD](https://about.gitlab.com/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine.
 
-We'll use this image further down in the `.gitlab-ci.yml` config file to handle the process of testing and deploying our app.
+We'll use this image further down in the `.gitlab-ci.yml` configuration file to handle the process of testing and deploying our app.
 
 Let's commit the `Dockerfile` file.
 
@@ -475,9 +477,11 @@ git commit -m 'Add Dockerfile'
 git push origin master
 ```
 
-### Setting up GitLab CI
+### Setting up GitLab CI/CD
 
-In order to build and test our app with GitLab CI, we need a file called `.gitlab-ci.yml` in our repository's root. It is similar to Circle CI and Travis CI, but built in GitLab.
+In order to build and test our app with GitLab CI/CD, we need a file called `.gitlab-ci.yml` in our repository's root. It is similar to Circle CI and Travis CI, but built-in GitLab.
+
+Our `.gitlab-ci.yml` file will look like this:
 
 ```yaml
 image: registry.gitlab.com/<USERNAME>/laravel-sample:latest
@@ -526,9 +530,9 @@ That's a lot to take in, isn't it? Let's run through it step by step.
 
 #### Image and Services
 
-[GitLab Runners](../ee/ci/runners/README.html) run the script defined by .gitlab-ci.yml.
+[GitLab Runners](../ee/ci/runners/README.md) run the script defined by `.gitlab-ci.yml`.
 The `image` keyword tells the Runners which image to use.
-The `services` keyword defines additional images [that are linked to the main image](../ce/ci/docker/using_docker_images.html/#what-is-a-service).
+The `services` keyword defines additional images [that are linked to the main image](../ce/ci/docker/using_docker_images.md/#what-is-a-service).
 Here we use the container image we created before as our main image and also use MySQL 5.7 as a service.
 
 ```yaml
@@ -541,17 +545,18 @@ services:
 ```
 
 >**Note:**
-If you wish to test your app with different PHP versions and [database management systems](../ee/ci/services/README.html), you can define different `image` and `services` keywords for each test job.
+If you wish to test your app with different PHP versions and [database management systems](../ee/ci/services/README.md), you can define different `image` and `services` keywords for each test job.
 
 #### Variables
 
-GitLab CI allows us to use [environment variables](../ce/ci/yaml/#variables) in our jobs.
-We defined MySQL as our database management system, which comes with a superuser root, created by default.
-So we just should adjust the configuration of MySQL instance by defining `MYSQL_DATABASE` variable as our database name and `MYSQL_ROOT_PASSWORD` variable as the password of `root`.
+GitLab CI/CD allows us to use [environment variables](../ce/ci/yaml/#variables) in our jobs.
+We defined MySQL as our database management system, which comes with a superuser root created by default.
+
+So we should adjust the configuration of MySQL instance by defining `MYSQL_DATABASE` variable as our database name and `MYSQL_ROOT_PASSWORD` variable as the password of `root`.
 Find out more about MySQL variables at the [official MySQL Docker Image](https://hub.docker.com/r/_/mysql/).
 
-Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are the Laravel specific variables.
-We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../ce/ci/docker/using_docker_images.html/#how-services-are-linked-to-the-build).
+Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are Laravel specific variables.
+We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../ce/ci/docker/using_docker_images.md/#how-services-are-linked-to-the-build).
 
 ```yaml
 ...
@@ -590,13 +595,13 @@ unit_test:
 ...
 ```
 
-#### Deploy Production
+#### Deploy to production
 
 The job `deploy_production` will deploy the app to the production server.
-To deploy our app with Envoy, we had to set up the `$SSH_PRIVATE_KEY` variable as an [SSH private key](../ce/ci/ssh_keys/README.html/#ssh-keys-when-using-the-docker-executor).
+To deploy our app with Envoy, we had to set up the `$SSH_PRIVATE_KEY` variable as an [SSH private key](../ce/ci/ssh_keys/README.md/#ssh-keys-when-using-the-docker-executor).
 If the SSH keys have added successfully, we can run Envoy.
 
-GitLab CI supports [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) as well.
+As mentioned before, GitLab supports [Continuous Delivery](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-delivery) methods as well.
 The [environment](../ce/ci/yaml/#environment) keyword tells GitLab that this job deploys to the `production` environment.
 The `url` keyword is used to generate a link to our application on the GitLab Environments page.
 The `only` keyword tells GitLab CI that the job should be executed only when the pipeline is building the `master` branch.
@@ -627,9 +632,9 @@ deploy_production:
 
 You may also want to add another job for [staging environment](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments), to final test your application before deploying to production.
 
-### Turn on GitLab CI
+### Turn on GitLab CI/CD
 
-We have prepared everything we need to test and deploy our app with GitLab CI.
+We have prepared everything we need to test and deploy our app with GitLab CI/CD.
 To do that, commit and push `.gitlab-ci.yml` to the `master` branch. It will trigger a pipeline, which you can watch live under your project's **Pipelines**.
 
 ![pipelines page](img/pipelines_page.png)
@@ -661,7 +666,6 @@ In the case that you're interested to know how is the application directory stru
 As you know, the `current` directory is a symbolic link that points to the latest release.
 The `.env` file consists of our Laravel environment variables.
 
-
 ![production server app directory](img/production_server_app_directory.png)
 
 If you navigate to the `current` directory, you should see the application's content.
@@ -671,5 +675,6 @@ As you see, the `.env` is pointing to the `/var/www/app/.env` file and also `sto
 
 ## Conclusion
 
-We configured GitLab CI to perform automated tests and used the method of [Continuous delivery](https://continuousdelivery.com/) to deploy to production a Laravel application with Envoy, directly from the codebase.
+We configured GitLab CI to perform automated tests and used the method of [Continuous Delivery](https://continuousdelivery.com/) to deploy to production a Laravel application with Envoy, directly from the codebase.
+
 Envoy also was a great match to help us deploy the application without writing our custom bash script and doing Linux magics.
