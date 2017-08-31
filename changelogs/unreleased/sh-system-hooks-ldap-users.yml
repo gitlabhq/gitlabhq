@@ -1,5 +1,0 @@
----
-title: Fire system hooks when a user is created via LDAP
-merge_request:
-author:
-type: fixed

@@ -434,12 +434,9 @@ db:rollback-mysql:
   stage: test
   variables:
     SIZE: "1"
-    SETUP_DB: "false"
-    RAILS_ENV: "development"
   script:
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
+    - cp -R db/fixtures/development db/fixtures/test
+    - bundle exec rake db:seed_fu
   artifacts:
     when: on_failure
     expire_in: 1d

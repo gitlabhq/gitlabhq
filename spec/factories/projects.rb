@@ -62,8 +62,6 @@ FactoryGirl.define do
 
     # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
-      path { 'gitlabhq' }
-
       test_repo
 
       transient do

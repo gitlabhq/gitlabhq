@@ -473,7 +473,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]['path']
+    Gitlab.config.repositories.storages[repository_storage].try(:[], 'path')
   end
 
   def team
@@ -574,7 +574,7 @@ class Project < ActiveRecord::Base
   end
 
   def valid_import_url?
-    valid? || errors.messages[:import_url].nil?
+    valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
@@ -991,6 +991,22 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Check if repository already exists on disk
+  def can_create_repository?
+    return false unless repository_storage_path
+
+    if gitlab_shell.exists?(repository_storage_path, "#{build_full_path}.git")
+      errors.add(:base, 'There is already a repository with that name on disk')
+      return false
+    end
+
+    true
+  end
+
+  def renamed?
+    persisted? && path_changed?
+  end
+
   def hook_attrs(backward: true)
     attrs = {
       name: name,
@@ -1397,6 +1413,10 @@ class Project < ActiveRecord::Base
 
   def forks_count
     Projects::ForksCountService.new(self).count
+  end
+
+  def legacy_storage?
+    self.storage_version.nil?
   end
 
   private

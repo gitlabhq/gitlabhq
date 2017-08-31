@@ -1,6 +1,0 @@
----
-title: Fix signing in using LDAP when attribute mapping uses simple strings instead
-  of arrays
-merge_request:
-author:
-type: fixed
