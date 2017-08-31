@@ -8,10 +8,21 @@ describe API::Internal do
 
   describe "GET /internal/check" do
     it do
+      expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
+
       get api("/internal/check"), secret_token: secret_token
 
       expect(response).to have_http_status(200)
       expect(json_response['api_version']).to eq(API::API.version)
+      expect(json_response['redis']).to be(true)
+    end
+
+    it 'returns false for field `redis` when redis is unavailable' do
+      expect_any_instance_of(Redis).to receive(:ping).and_raise(Errno::ENOENT)
+
+      get api("/internal/check"), secret_token: secret_token
+
+      expect(json_response['redis']).to be(false)
     end
   end
 
