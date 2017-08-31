@@ -77,10 +77,11 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
-import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
+import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 
@@ -657,6 +658,7 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();

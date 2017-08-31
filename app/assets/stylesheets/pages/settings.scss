@@ -143,6 +143,47 @@
   }
 }
 
+.visibility-level-setting {
+  .radio {
+    margin-bottom: 10px;
+
+    i.fa {
+      margin: 2px 0;
+      font-size: 20px;
+    }
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description,
+    .option-disabled-reason {
+      margin-left: 29px;
+      color: $project-option-descr-color;
+    }
+
+    .option-disabled-reason {
+      display: none;
+    }
+
+    &.disabled {
+      i.fa {
+        opacity: 0.5;
+      }
+
+      .option-description {
+        display: none;
+      }
+
+      .option-disabled-reason {
+        display: block;
+      }
+    }
+  }
+}
+
 .nested-settings {
   padding-left: 20px;
 }
