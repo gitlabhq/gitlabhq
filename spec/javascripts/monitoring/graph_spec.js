@@ -21,7 +21,7 @@ describe('Graph', () => {
 
   it('has a title', () => {
     const component = createComponent({
-      columnData: convertedMetrics[1],
+      graphData: convertedMetrics[1],
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
@@ -33,7 +33,7 @@ describe('Graph', () => {
   describe('Computed props', () => {
     it('axisTransform translates an element Y position depending of its height', () => {
       const component = createComponent({
-        columnData: convertedMetrics[1],
+        graphData: convertedMetrics[1],
         classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
@@ -46,7 +46,7 @@ describe('Graph', () => {
 
     it('outterViewBox gets a width and height property based on the DOM size of the element', () => {
       const component = createComponent({
-        columnData: convertedMetrics[1],
+        graphData: convertedMetrics[1],
         classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
@@ -61,7 +61,7 @@ describe('Graph', () => {
 
   it('sends an event to the eventhub when it has finished resizing', (done) => {
     const component = createComponent({
-      columnData: convertedMetrics[1],
+      graphData: convertedMetrics[1],
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
@@ -77,7 +77,7 @@ describe('Graph', () => {
 
   it('has a title for the y-axis and the chart legend that comes from the backend', () => {
     const component = createComponent({
-      columnData: convertedMetrics[1],
+      graphData: convertedMetrics[1],
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
