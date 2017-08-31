@@ -42,7 +42,6 @@ describe 'Filter issues', js: true do
 
     sign_in(user)
 
-    create(:issue, project: project)
     create(:issue, project: project, title: "Bug report 1")
     create(:issue, project: project, title: "Bug report 2")
     create(:issue, project: project, title: "issue with 'single quotes'")
@@ -140,7 +139,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('assignee:none')
 
         expect_tokens([assignee_token('none')])
-        expect_issues_list_count(8, 1)
+        expect_issues_list_count(7, 1)
         expect_filtered_search_input_empty
       end
     end
@@ -177,7 +176,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('label:none')
 
         expect_tokens([label_token('none', false)])
-        expect_issues_list_count(9, 1)
+        expect_issues_list_count(8, 1)
         expect_filtered_search_input_empty
       end
 
@@ -340,7 +339,7 @@ describe 'Filter issues', js: true do
         input_filtered_search("milestone:none")
 
         expect_tokens([milestone_token('none', false)])
-        expect_issues_list_count(7, 1)
+        expect_issues_list_count(6, 1)
         expect_filtered_search_input_empty
       end
 
