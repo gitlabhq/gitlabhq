@@ -1,4 +1,7 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
+  include ApplicationSettingsHelper
+  include ApplicationHelper
+  include GitlabRoutingHelper
   include LfsRequest
 
   skip_before_action :lfs_check_access!, only: [:deprecated]
@@ -96,7 +99,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
     if upload_request? && Gitlab::Geo.secondary?
       render(
         json: {
-          message: 'You cannot do writing operations on a secondary GitLab Geo instance.'
+          message: "You cannot write to a secondary GitLab Geo instance. Please use #{geo_primary_default_url_to_repo(project)} instead."
         },
         content_type: "application/vnd.git-lfs+json",
         status: 403

@@ -861,6 +861,7 @@ describe 'Git LFS API and storage' do
   end
 
   describe 'when handling lfs batch request on a secondary Geo node' do
+    let!(:primary) { create(:geo_node, :primary) }
     let(:authorization) { authorize_user }
     let(:project) { create(:project) }
     let(:path) { "#{project.http_url_to_repo}/info/lfs/objects/batch" }
@@ -889,7 +890,7 @@ describe 'Git LFS API and storage' do
       post_lfs_json path, body.merge('operation' => 'upload'), headers
 
       expect(response).to have_http_status(403)
-      expect(json_response).to include('message' => 'You cannot do writing operations on a secondary GitLab Geo instance.')
+      expect(json_response).to include('message' => "You cannot write to a secondary GitLab Geo instance. Please use #{project.http_url_to_repo} instead.")
     end
   end
 
