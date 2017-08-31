@@ -1,122 +1,54 @@
 /**
  * Styles the GitLab application with a specific color theme
- *
- * $color-light  -
- * $color        -
- * $color-darker -
- * $color-dark   -
  */
-@mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
 
-
+@mixin gitlab-theme($color-200, $color-500, $color-700, $color-800, $color-900) {
   header.navbar-gitlab-new {
-    background: linear-gradient(to right, $color-darker, $color);
+    background: linear-gradient(to right, $color-900, $color-800);
   }
 
+  .navbar-sub-nav {
+    color: $color-200;
+  }
 
+  .nav-sidebar li.active {
+    box-shadow: inset 4px 0 0 $color-700;
 
-
-
-
-
-
-
-  .page-with-sidebar {
-    .toggle-nav-collapse,
-    .pin-nav-btn {
-      color: $color-light;
-
-      &:hover {
-        color: $white-light;
-      }
+    > a {
+      color: $color-900;
     }
 
-    .sidebar-wrapper {
-      background: $color-darker;
-    }
-
-    .sidebar-action-buttons {
-      color: $color-light;
-      background-color: lighten($color-darker, 5%);
-    }
-
-    .nav-sidebar {
-      li {
-        a {
-          color: $color-light;
-
-          &:hover,
-          &:focus,
-          &:active {
-            background: $color-dark;
-          }
-
-          i {
-            color: $color-light;
-          }
-
-          path,
-          polygon {
-            fill: $color-light;
-          }
-
-          .count {
-            color: $color-light;
-            background: $color-dark;
-          }
-
-          svg {
-            position: relative;
-            top: 3px;
-          }
-        }
-
-        &.separate-item {
-          border-top: 1px solid $color;
-        }
-
-        &.active a {
-          color: $white-light;
-          background: $color-dark;
-
-          &.no-highlight {
-            border: none;
-          }
-
-          i {
-            color: $white-light;
-          }
-
-          path,
-          polygon {
-            fill: $white-light;
-          }
-        }
-      }
-
-      .about-gitlab {
-        color: $color-light;
-      }
+    svg {
+      fill: $color-900;
     }
   }
+
 }
 
-$theme-black-light: #979797;
-$theme-black: #373737;
-$theme-black-dark: #272727;
-$theme-black-darker: #222;
+$dark-50:  #fafafa;
+$dark-100: #f2f2f2;
+$dark-200: #dfdfdf;
+$dark-300: #cccccc;
+$dark-400: #bababa;
+$dark-500: #a7a7a7;
+$dark-600: #949494;
+$dark-700: #707070;
+$dark-800: #4f4f4f;
+$dark-900: #2e2e2e;
+$dark-950: #1f1f1f;
 
-$theme-indigo-light: #98c;
-$theme-indigo: #548;
-$theme-indigo-dark: #436;
-$theme-indigo-darker: #325;
+$indigo-200: #d1d1f0;
+$indigo-500: #6666c4;
+$indigo-700: #4b4ba3;
+$indigo-800: #393982;
+$indigo-900: #292961;
 
 body {
   &.ui_indigo {
-    @include gitlab-theme($theme-indigo-light, $theme-indigo, $theme-indigo-dark, $theme-indigo-darker);
+    @include gitlab-theme($indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900);
   }
 
   &.ui_dark {
-    @include gitlab-theme($theme-black-light, $theme-black, $theme-black-dark, $theme-black-darker);
+    @include gitlab-theme($dark-200, $dark-500, $dark-700, $dark-800, $dark-900);
   }
 }
