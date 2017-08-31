@@ -233,7 +233,6 @@
           :graph-height="graphHeight"
           :margin="margin"
           :measurements="measurements"
-          :area-color-rgb="areaColorRgb"
           :legend-title="legendTitle"
           :y-axis-label="yAxisLabel"
           :time-series="timeSeries"
@@ -249,17 +248,9 @@
               :key="index"
               :generated-line-path="path.linePath"
               :generated-area-path="path.areaPath"
-              :line-color="lineColorRgb"
-              :area-color="areaColorRgb"
+              :line-color="path.lineColor"
+              :area-color="path.areaColor"
             />
-            <rect
-              class="prometheus-graph-overlay"
-              :width="(graphWidth - 70)"
-              :height="(graphHeight - 100)"
-              transform="translate(-5, 20)"
-              ref="graphOverlay"
-              @mousemove="handleMouseOverGraph($event)">
-            </rect>
             <monitoring-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"

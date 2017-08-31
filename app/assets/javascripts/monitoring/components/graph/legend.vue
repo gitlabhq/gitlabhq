@@ -19,10 +19,6 @@
         type: Object,
         required: true,
       },
-      areaColorRgb: {
-        type: String,
-        required: true,
-      },
       legendTitle: {
         type: String,
         required: true,
@@ -156,7 +152,7 @@
       :key="index"
       :transform="translateLegendGroup(index)">
       <rect
-        :fill="areaColorRgb"
+        :fill="series.areaColor"
         :width="measurements.legends.width"
         :height="measurements.legends.height"
         x="20"

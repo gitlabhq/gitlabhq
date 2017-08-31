@@ -33,7 +33,7 @@
       :d="generatedLinePath"
       :stroke="lineColor"
       fill="none"
-      stroke-width="2"
+      stroke-width="1"
       transform="translate(-5, 20)">
     </path>
   </g>
