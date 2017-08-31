@@ -9,6 +9,14 @@ class Board < ActiveRecord::Base
     true
   end
 
+  def parent
+    project
+  end
+
+  def group_board?
+    false
+  end
+
   def backlog_list
     lists.merge(List.backlog).take
   end

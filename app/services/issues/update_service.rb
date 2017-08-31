@@ -54,7 +54,7 @@ module Issues
       end
     end
 
-    def handle_move_between_iids(issue)
+    def handle_move_between_ids(issue)
       return unless params[:move_between_ids]
 
       after_id, before_id = params.delete(:move_between_ids)
