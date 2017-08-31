@@ -462,7 +462,7 @@ To run the above commands, we first need to have [Docker](https://docs.docker.co
 
 Congratulations! You just pushed the first Docker image to the GitLab Registry, and if you refresh the page you should be able to see it:
 
-![container registry page with image](img/container_registry_page_empty_image.png)
+![container registry page with image](img/container_registry_page_with_image.jpg)
 
 >**Note:**
 You can also [use GitLab CI/CD](https://about.gitlab.com/2016/05/23/gitlab-container-registry/#use-with-gitlab-ci) to build and push your Docker images, rather than doing that on your machine.
