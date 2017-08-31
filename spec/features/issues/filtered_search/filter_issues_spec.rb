@@ -67,6 +67,23 @@ describe 'Filter issues', js: true do
     visit project_issues_path(project)
   end
 
+  it 'filters by all available tokens' do
+    search_term = 'issue'
+
+    input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
+
+    wait_for_requests
+
+    expect_tokens([
+      assignee_token(user.name),
+      author_token(user.name),
+      label_token(caps_sensitive_label.title),
+      milestone_token(milestone.title)
+    ])
+    expect_issues_list_count(1)
+    expect_filtered_search_input(search_term)
+  end
+
   describe 'filter issues by author' do
     context 'only author' do
       it 'filters issues by searched author' do
@@ -77,25 +94,6 @@ describe 'Filter issues', js: true do
         expect_tokens([author_token(user.name)])
         expect_issues_list_count(5)
         expect_filtered_search_input_empty
-      end
-    end
-
-    context 'author with other filters' do
-      it 'filters issues by searched author, assignee, label, milestone and text' do
-        search_term = 'issue'
-
-        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          author_token(user.name),
-          assignee_token(user.name),
-          label_token(caps_sensitive_label.title),
-          milestone_token(milestone.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
       end
     end
   end
@@ -118,23 +116,6 @@ describe 'Filter issues', js: true do
         expect_tokens([assignee_token('none')])
         expect_issues_list_count(3)
         expect_filtered_search_input_empty
-      end
-    end
-
-    context 'assignee with other filters' do
-      it 'filters issues by searched assignee, author, label, milestone and text' do
-        search_term = 'searchTerm'
-
-        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
-
-        expect_tokens([
-          assignee_token(user.name),
-          author_token(user.name),
-          label_token(caps_sensitive_label.title),
-          milestone_token(milestone.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
       end
     end
   end
@@ -249,23 +230,6 @@ describe 'Filter issues', js: true do
       end
     end
 
-    context 'label with other filters' do
-      it 'filters issues by searched label, author, assignee, milestone and text' do
-        search_term = 'bug'
-
-        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
-
-        expect_tokens([
-          label_token(caps_sensitive_label.title),
-          author_token(user.name),
-          assignee_token(user.name),
-          milestone_token(milestone.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-    end
-
     context 'multiple labels with other filters' do
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
         search_term = 'bug'
@@ -359,25 +323,6 @@ describe 'Filter issues', js: true do
         expect_tokens([milestone_token(new_milestone.title)])
         expect_no_issues_list
         expect_filtered_search_input_empty
-      end
-    end
-
-    context 'milestone with other filters' do
-      it 'filters issues by searched milestone, author, assignee, label and text' do
-        search_term = 'bug'
-
-        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          milestone_token(milestone.title),
-          author_token(user.name),
-          assignee_token(user.name),
-          label_token(bug_label.title)
-        ])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
       end
     end
   end
