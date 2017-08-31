@@ -17,7 +17,7 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
     const supportBotParamPair = `${paramKey}=support-bot`;
 
     return paramsArray.map((param) => {
-      return param.indexOf(paramKey) !== -1 ? param : supportBotParamPair;
+      return param.indexOf(paramKey) === -1 ? param : supportBotParamPair;
     });
   }
 }
