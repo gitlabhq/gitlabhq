@@ -3,7 +3,7 @@
 > **Article [Type](../../development/writing_documentation.md#types-of-technical-articles):**  tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Crt Mori](https://gitlab.com/Letme)  ||
-> **Publication date:** 2017/08/17
+> **Publication date:** 2017-08-17
 
 ## Introduction
 
