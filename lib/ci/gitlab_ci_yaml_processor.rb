@@ -48,9 +48,9 @@ module Ci
         only_kubernetes = job.dig(:only, :kubernetes)
         except_kubernetes = job.dig(:except, :kubernetes)
 
-        [!only_kubernetes & !except_kubernetes,
-          only_kubernetes & has_kubernetes,
-          except_kubernetes & !has_kubernetes].any?
+        [!only_kubernetes && !except_kubernetes,
+          only_kubernetes && has_kubernetes,
+          except_kubernetes && !has_kubernetes].any?
       end
     end
 
