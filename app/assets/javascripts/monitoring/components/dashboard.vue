@@ -3,8 +3,9 @@
   import _ from 'underscore';
   import statusCodes from '../../lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
-  import monitoringRow from './monitoring_row.vue';
-  import monitoringState from './monitoring_state.vue';
+  import GraphGroup from './graph_group.vue';
+  import GraphRow from './graph_row.vue';
+  import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
 
@@ -31,8 +32,9 @@
     },
 
     components: {
-      monitoringRow,
-      monitoringState,
+      GraphGroup,
+      GraphRow,
+      EmptyState,
     },
 
     methods: {
@@ -94,7 +96,6 @@
           this.updatedAspectRatios = 0;
         }
       },
-
     },
 
     created() {
@@ -118,40 +119,27 @@
     },
   };
 </script>
+
 <template>
-  <div 
-    class="prometheus-graphs" 
-    v-if="!showEmptyState">
-    <div 
-      class="row"
+  <div v-if="!showEmptyState" class="prometheus-graphs">
+    <graph-group
       v-for="(groupData, index) in store.groups"
-      :key="index">
-      <div 
-        class="col-md-12">
-        <div 
-          class="panel panel-default prometheus-panel">
-          <div 
-            class="panel-heading">
-            <h4>{{groupData.group}}</h4>
-          </div>
-          <div 
-            class="panel-body">
-            <monitoring-row
-              v-for="(row, index) in groupData.metrics" 
-              :key="index"
-              :row-data="row"
-              :update-aspect-ratio="updateAspectRatio"
-              :deployment-data="store.deploymentData"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+      :key="index"
+      :name="groupData.group"
+    >
+      <graph-row
+        v-for="(row, index) in groupData.metrics"
+        :key="index"
+        :row-data="row"
+        :update-aspect-ratio="updateAspectRatio"
+        :deployment-data="store.deploymentData"
+      />
+    </graph-group>
   </div>
-  <monitoring-state 
+  <empty-state
+    v-else
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
-    v-else
   />
 </template>

@@ -1,5 +1,5 @@
 <script>
-  import monitoringColumn from './monitoring_column.vue';
+  import Graph from './graph.vue';
 
   export default {
     props: {
@@ -17,7 +17,7 @@
       },
     },
     components: {
-      monitoringColumn,
+      Graph,
     },
     computed: {
       bootstrapClass() {
@@ -26,12 +26,12 @@
     },
   };
 </script>
+
 <template>
-  <div 
-    class="prometheus-row row">
-    <monitoring-column
-      v-for="(column, index) in rowData" 
-      :column-data="column"
+  <div class="prometheus-row row">
+    <graph
+      v-for="(graphData, index) in rowData"
+      :graph-data="graphData"
       :class-type="bootstrapClass"
       :key="index"
       :update-aspect-ratio="updateAspectRatio"

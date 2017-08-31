@@ -1,5 +1,8 @@
 module ApplicationSettingsHelper
   extend self
+
+  include Gitlab::CurrentSettings
+
   delegate  :gravatar_enabled?,
             :signup_enabled?,
             :password_authentication_enabled?,

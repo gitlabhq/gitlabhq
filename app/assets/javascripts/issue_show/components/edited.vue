@@ -37,7 +37,7 @@ export default {
     Edited
     <time-ago-tooltip
       v-if="updatedAt"
-      placement="bottom"
+      tooltip-placement="bottom"
       :time="updatedAt"
     />
     <span

@@ -273,7 +273,13 @@ class Issue < ActiveRecord::Base
     true
   end
 
+  def update_project_counter_caches?
+    state_changed? || confidential_changed?
+  end
+
   def update_project_counter_caches
+    return unless update_project_counter_caches?
+
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 

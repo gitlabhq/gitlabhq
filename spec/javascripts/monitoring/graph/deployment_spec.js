@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import MonitoringState from '~/monitoring/components/monitoring_deployment.vue';
-import { deploymentData } from './mock_data';
+import GraphDeployment from '~/monitoring/components/graph/deployment.vue';
+import { deploymentData } from '../mock_data';
 
 const createComponent = (propsData) => {
-  const Component = Vue.extend(MonitoringState);
+  const Component = Vue.extend(GraphDeployment);
 
   return new Component({
     propsData,
