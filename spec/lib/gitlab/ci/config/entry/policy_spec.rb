@@ -56,6 +56,50 @@ describe Gitlab::Ci::Config::Entry::Policy do
     end
   end
 
+  context 'when using complex policy' do
+    context 'when specifiying refs policy' do
+      let(:config) { { refs: ['master'] } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(refs: %w[master])
+      end
+    end
+
+    context 'when specifying kubernetes policy' do
+      let(:config) { { kubernetes: 'configured' } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(kubernetes: 'configured')
+      end
+    end
+
+    context 'when specifying invalid kubernetes policy' do
+      let(:config) { { kubernetes: 'active' } }
+
+      it 'reports an error about invalid policy' do
+        expect(entry.errors).to include /unknown value: active/
+      end
+    end
+
+    context 'when specifying unknown policy' do
+      let(:config) { { refs: ['master'], invalid: :something } }
+
+      it 'returns error about invalid key' do
+        expect(entry.errors).to include /unknown keys: invalid/
+      end
+    end
+
+    context 'when policy is empty' do
+      let(:config) { {} }
+
+      it 'is not a valid configuration' do
+        expect(entry.errors).to include /can't be blank/
+      end
+    end
+  end
+
   context 'when policy strategy does not match' do
     let(:config) { 'string strategy' }
 

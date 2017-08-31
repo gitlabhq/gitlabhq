@@ -172,7 +172,7 @@ module Ci
           YAML.dump(
             spinach: { stage: 'test', script: 'spinach' },
             production: { stage: 'deploy', script: 'cap', only: {
-                          kubernetes: true } }
+                          kubernetes: 'configured' } }
           )
         end
 

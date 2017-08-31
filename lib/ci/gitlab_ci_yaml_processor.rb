@@ -94,11 +94,10 @@ module Ci
         except_kubernetes = job.dig(:except, :kubernetes)
 
         [!only_kubernetes && !except_kubernetes,
-          only_kubernetes && has_kubernetes,
-          except_kubernetes && !has_kubernetes].any?
+         only_kubernetes && has_kubernetes,
+         except_kubernetes && !has_kubernetes].any?
       end
     end
-
 
     def jobs_for_ref(ref, tag = false, source = nil)
       @jobs.select do |_, job|
