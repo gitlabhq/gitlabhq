@@ -2,7 +2,7 @@ class AutocompleteController < ApplicationController
   AWARD_EMOJI_MAX = 100
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
-  before_action :load_project, only: [:users]
+  before_action :load_project, only: [:users, :project_groups]
   before_action :find_users, only: [:users]
 
   def users
