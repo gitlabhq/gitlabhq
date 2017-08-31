@@ -1092,16 +1092,13 @@ module API
     end
 
     module Github
-      class User < Grape::Entity
-        expose :id
-        expose :login do |project|
-          project.namespace.name
-        end
+      class Namespace < Grape::Entity
+        expose :path, as: :login
       end
 
       class Repository < Grape::Entity
         expose :id
-        expose :owner, using: User, unless: -> (project, options) { project.group }
+        expose :namespace, as: :owner, using: Namespace
         expose :name
       end
 

@@ -26,7 +26,7 @@ describe API::V3::GithubRepos do
       expect(json_response).to be_an(Array)
       expect(json_response.size).to eq(1)
       expect(json_response.first.keys).to contain_exactly('id', 'owner', 'name')
-      expect(json_response.first['owner'].keys).to contain_exactly('login', 'id')
+      expect(json_response.first['owner'].keys).to contain_exactly('login')
     end
   end
 

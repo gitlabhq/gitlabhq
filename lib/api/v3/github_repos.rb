@@ -16,10 +16,8 @@ module API
       end
 
       resource :users do
-        get ':username/repos' do
-          projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
-
-          present paginate(projects), with: ::API::Entities::Github::Repository
+        get ':namespace/repos' do
+          present paginate(current_user.authorized_projects), with: ::API::Entities::Github::Repository
         end
       end
 
