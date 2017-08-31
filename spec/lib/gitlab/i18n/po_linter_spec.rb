@@ -106,7 +106,7 @@ describe Gitlab::I18n::PoLinter do
     context 'with multiple plurals' do
       let(:po_path) { 'spec/fixtures/multiple_plurals.po' }
 
-      it 'has no errors' do
+      it 'has errors' do
         is_expected.not_to be_empty
       end
     end

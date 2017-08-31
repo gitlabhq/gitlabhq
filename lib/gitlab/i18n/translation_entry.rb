@@ -67,11 +67,7 @@ module Gitlab
       private
 
       def translation_keys
-        @translation_keys ||= if has_plural?
-                                entry_data.keys.select { |key| key =~ /msgstr\[\d+\]/ }
-                              else
-                                [:msgstr]
-                              end
+        @translation_keys ||= entry_data.keys.select { |key| key.to_s =~ /\Amsgstr(\[\d+\])?\z/ }
       end
     end
   end
