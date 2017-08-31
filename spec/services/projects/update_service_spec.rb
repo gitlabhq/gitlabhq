@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute', :services do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -122,6 +123,27 @@ describe Projects::UpdateService, '#execute', :services do
 
       expect(result[:status]).to eq :success
       expect(project.reload.public_builds).to be true
+    end
+  end
+
+  context 'when renaming a project' do
+    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+    before do
+      gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    after do
+      gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    it 'does not allow renaming when new path matches existing repository on disk' do
+      result = update_project(project, admin, path: 'existing')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to include('Cannot rename project')
+      expect(project.errors.messages).to have_key(:base)
+      expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
     end
   end
 
