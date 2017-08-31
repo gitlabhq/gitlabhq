@@ -1102,17 +1102,55 @@ module API
         expose :name
       end
 
-      class Commit < Grape::Entity
+      class BranchCommit < Grape::Entity
         expose :id, as: :sha
         expose :type do |model|
           'commit'
         end
       end
 
+      class CommitUser < Grape::Entity
+        expose :path, as: :login
+      end
+
+      class RepoCommit < Grape::Entity
+        expose :id, as: :sha
+        expose :author do |commit|
+          {
+            "login" => "oswaldo",
+          }
+        end
+        expose :committer do |commit|
+          {
+            "login" => "oswaldo",
+          }
+        end
+        expose :commit do |commit|
+          # TODO: export to entity
+          {
+            author: {
+              name: commit.author_name,
+              email: commit.author_email,
+              date: "2011-04-14T16:00:49Z"
+            },
+            committer: {
+              name: commit.committer_name,
+              email: commit.committer_email,
+              date: "2011-04-14T16:00:49Z"#commit.committed_date.iso8601(3)
+            },
+            message: commit.safe_message
+          }
+        end
+        expose :parents do |commit|
+          # TODO: export to entity
+          commit.parent_ids.map { |id| { sha: id } }
+        end
+      end
+
       class Branch < Grape::Entity
         expose :name
 
-        expose :commit, using: Commit do |repo_branch, options|
+        expose :commit, using: BranchCommit do |repo_branch, options|
           options[:project].repository.commit(repo_branch.dereferenced_target)
         end
       end
