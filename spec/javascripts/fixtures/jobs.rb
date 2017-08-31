@@ -21,6 +21,10 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'builds/build-with-artifacts.html.raw' do |example|
     get :show,
       namespace_id: project.namespace.to_param,
