@@ -108,43 +108,9 @@ describe 'Filter issues', js: true do
     end
 
     context 'author with other filters' do
-      let(:search_term) { 'issue' }
-
-      it 'filters issues by searched author and text' do
-        input_filtered_search("author:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([author_token(user.name)])
-        expect_issues_list_count(3)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched author, assignee and text' do
-        input_filtered_search("author:@#{user.username} assignee:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([author_token(user.name), assignee_token(user.name)])
-        expect_issues_list_count(3)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched author, assignee, label, and text' do
-        input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          author_token(user.name),
-          assignee_token(user.name),
-          label_token(caps_sensitive_label.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
       it 'filters issues by searched author, assignee, label, milestone and text' do
+        search_term = 'issue'
+
         input_filtered_search("author:@#{user.username} assignee:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
 
         wait_for_requests
@@ -183,43 +149,9 @@ describe 'Filter issues', js: true do
     end
 
     context 'assignee with other filters' do
-      let(:search_term) { 'searchTerm' }
-
-      it 'filters issues by searched assignee and text' do
-        input_filtered_search("assignee:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([assignee_token(user.name)])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched assignee, author and text' do
-        input_filtered_search("assignee:@#{user.username} author:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([assignee_token(user.name), author_token(user.name)])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched assignee, author, label, text' do
-        input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          assignee_token(user.name),
-          author_token(user.name),
-          label_token(caps_sensitive_label.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
       it 'filters issues by searched assignee, author, label, milestone and text' do
+        search_term = 'searchTerm'
+
         input_filtered_search("assignee:@#{user.username} author:@#{user.username} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} #{search_term}")
 
         expect_tokens([
@@ -235,8 +167,6 @@ describe 'Filter issues', js: true do
   end
 
   describe 'filter issues by label' do
-    let(:search_term) { 'bug' }
-
     context 'only label' do
       it 'filters issues by searched label' do
         input_filtered_search("label:~#{bug_label.title}")
@@ -347,39 +277,9 @@ describe 'Filter issues', js: true do
     end
 
     context 'label with other filters' do
-      it 'filters issues by searched label and text' do
-        input_filtered_search("label:~#{caps_sensitive_label.title} #{search_term}")
-
-        expect_tokens([label_token(caps_sensitive_label.title)])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched label, author and text' do
-        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([label_token(caps_sensitive_label.title), author_token(user.name)])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched label, author, assignee and text' do
-        input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          label_token(caps_sensitive_label.title),
-          author_token(user.name),
-          assignee_token(user.name)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
       it 'filters issues by searched label, author, assignee, milestone and text' do
+        search_term = 'bug'
+
         input_filtered_search("label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
 
         expect_tokens([
@@ -394,47 +294,9 @@ describe 'Filter issues', js: true do
     end
 
     context 'multiple labels with other filters' do
-      it 'filters issues by searched label, label2, and text' do
-        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} #{search_term}")
-
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched label, label2, author and text' do
-        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title),
-          author_token(user.name)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched label, label2, author, assignee and text' do
-        input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          label_token(bug_label.title),
-          label_token(caps_sensitive_label.title),
-          author_token(user.name),
-          assignee_token(user.name)
-        ])
-        expect_issues_list_count(1)
-        expect_filtered_search_input(search_term)
-      end
-
       it 'filters issues by searched label, label2, author, assignee, milestone and text' do
+        search_term = 'bug'
+
         input_filtered_search("label:~#{bug_label.title} label:~#{caps_sensitive_label.title} author:@#{user.username} assignee:@#{user.username} milestone:%#{milestone.title} #{search_term}")
 
         wait_for_requests
@@ -524,44 +386,9 @@ describe 'Filter issues', js: true do
     end
 
     context 'milestone with other filters' do
-      let(:search_term) { 'bug' }
-
-      it 'filters issues by searched milestone and text' do
-        input_filtered_search("milestone:%#{milestone.title} #{search_term}")
-
-        expect_tokens([milestone_token(milestone.title)])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched milestone, author and text' do
-        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          milestone_token(milestone.title),
-          author_token(user.name)
-        ])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
-      end
-
-      it 'filters issues by searched milestone, author, assignee and text' do
-        input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} #{search_term}")
-
-        wait_for_requests
-
-        expect_tokens([
-          milestone_token(milestone.title),
-          author_token(user.name),
-          assignee_token(user.name)
-        ])
-        expect_issues_list_count(2)
-        expect_filtered_search_input(search_term)
-      end
-
       it 'filters issues by searched milestone, author, assignee, label and text' do
+        search_term = 'bug'
+
         input_filtered_search("milestone:%#{milestone.title} author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} #{search_term}")
 
         wait_for_requests
@@ -638,77 +465,6 @@ describe 'Filter issues', js: true do
     end
 
     context 'searched text with other filters' do
-      it 'filters issues by searched text and author' do
-        # After searching, all search terms are placed at the end
-        input_filtered_search("bug author:@#{user.username}")
-
-        expect_issues_list_count(2)
-        expect_filtered_search_input('bug')
-      end
-
-      it 'filters issues by searched text, author and more text' do
-        input_filtered_search("bug author:@#{user.username} report")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug report')
-      end
-
-      it 'filters issues by searched text, author and assignee' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username}")
-
-        expect_issues_list_count(2)
-        expect_filtered_search_input('bug')
-      end
-
-      it 'filters issues by searched text, author, more text and assignee' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username}")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug report')
-      end
-
-      it 'filters issues by searched text, author, more text, assignee and even more text' do
-        input_filtered_search("bug author:@#{user.username} report assignee:@#{user.username} foo")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug report foo')
-      end
-
-      it 'filters issues by searched text, author, assignee and label' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title}")
-
-        expect_issues_list_count(2)
-        expect_filtered_search_input('bug')
-      end
-
-      it 'filters issues by searched text, author, text, assignee, text, label and text' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} foo")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug report foo')
-      end
-
-      it 'filters issues by searched text, author, assignee, label and milestone' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} milestone:%#{milestone.title}")
-
-        expect_issues_list_count(2)
-        expect_filtered_search_input('bug')
-      end
-
-      it 'filters issues by searched text, author, text, assignee, text, label, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} milestone:%#{milestone.title} foo")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug report foo')
-      end
-
-      it 'filters issues by searched text, author, assignee, multiple labels and milestone' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title}")
-
-        expect_issues_list_count(1)
-        expect_filtered_search_input('bug')
-      end
-
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
         input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
 
