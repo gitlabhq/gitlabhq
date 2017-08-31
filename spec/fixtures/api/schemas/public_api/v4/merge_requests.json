@@ -73,17 +73,14 @@
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
-<<<<<<< HEAD
       "approvals_before_merge": { "type": ["integer", "null"] },
-      "squash": { "type": "boolean" }
-=======
+      "squash": { "type": "boolean" },
       "time_stats": {
         "time_estimate": { "type": "integer" },
         "total_time_spent": { "type": "integer" },
         "human_time_estimate": { "type": ["string", "null"] },
         "human_total_time_spent": { "type": ["string", "null"] }
       }
->>>>>>> upstream/master
     },
     "required": [
       "id", "iid", "project_id", "title", "description",

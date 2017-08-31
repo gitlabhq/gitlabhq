@@ -83,14 +83,11 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
-<<<<<<< HEAD
+- Commits
+  - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
 - **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
-=======
-- Commits
-  - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
->>>>>>> upstream/master
 
 ### Issues and Merge Requests (MRs)
 

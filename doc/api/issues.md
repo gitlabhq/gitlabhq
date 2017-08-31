@@ -101,10 +101,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
-<<<<<<< HEAD
       "confidential": false,
-      "weight": null
-=======
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -112,7 +110,6 @@ Example response:
          "human_total_time_spent": null
       },
       "confidential": false
->>>>>>> upstream/master
    }
 ]
 ```
@@ -209,10 +206,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
-<<<<<<< HEAD
       "confidential": false,
-      "weight": null
-=======
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -220,7 +215,6 @@ Example response:
          "human_total_time_spent": null
       },
       "confidential": false
->>>>>>> upstream/master
    }
 ]
 ```
@@ -318,10 +312,8 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
-<<<<<<< HEAD
       "confidential": false,
-      "weight": null
-=======
+      "weight": null,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
@@ -329,7 +321,6 @@ Example response:
          "human_total_time_spent": null
       },
       "confidential": false
->>>>>>> upstream/master
    }
 ]
 ```

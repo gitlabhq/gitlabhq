@@ -188,10 +188,7 @@ Parameters:
     "approvals_before_merge": null
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
-<<<<<<< HEAD
     "squash": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
-=======
     "web_url": "http://example.com/example/example/merge_requests/1",
     "time_stats": {
       "time_estimate": 0,
@@ -199,7 +196,6 @@ Parameters:
       "human_time_estimate": null,
       "human_total_time_spent": null
     }
->>>>>>> upstream/master
   }
 ]
 ```
@@ -269,10 +265,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-<<<<<<< HEAD
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
-=======
   "web_url": "http://example.com/example/example/merge_requests/1",
   "time_stats": {
     "time_estimate": 0,
@@ -280,7 +273,6 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   }
->>>>>>> upstream/master
 }
 ```
 
@@ -492,10 +484,7 @@ order for it to take effect:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-<<<<<<< HEAD
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
-=======
   "web_url": "http://example.com/example/example/merge_requests/1",
   "time_stats": {
     "time_estimate": 0,
@@ -503,7 +492,6 @@ order for it to take effect:
     "human_time_estimate": null,
     "human_total_time_spent": null
   }
->>>>>>> upstream/master
 }
 ```
 
@@ -584,10 +572,7 @@ Must include at least one non-required attribute from above.
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-<<<<<<< HEAD
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
-=======
   "web_url": "http://example.com/example/example/merge_requests/1",
   "time_stats": {
     "time_estimate": 0,
@@ -595,7 +580,6 @@ Must include at least one non-required attribute from above.
     "human_time_estimate": null,
     "human_total_time_spent": null
   }
->>>>>>> upstream/master
 }
 ```
 
@@ -694,10 +678,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-<<<<<<< HEAD
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
-=======
   "web_url": "http://example.com/example/example/merge_requests/1",
   "time_stats": {
     "time_estimate": 0,
@@ -705,7 +686,6 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   }
->>>>>>> upstream/master
 }
 ```
 
@@ -902,10 +882,7 @@ Parameters:
   "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-<<<<<<< HEAD
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
-=======
   "web_url": "http://example.com/example/example/merge_requests/1",
   "time_stats": {
     "time_estimate": 0,
@@ -913,7 +890,6 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   }
->>>>>>> upstream/master
 }
 ```
 

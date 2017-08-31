@@ -1257,7 +1257,6 @@ describe API::Projects do
       before do
         create(:project_group_link, group: group, project: project)
       end
-<<<<<<< HEAD
 
       it 'returns 204 when deleting a group share' do
         delete api("/projects/#{project.id}/share/#{group.id}", user)
@@ -1266,8 +1265,6 @@ describe API::Projects do
         expect(project.project_group_links).to be_empty
       end
 
-=======
-
       it 'returns 204 when deleting a group share' do
         delete api("/projects/#{project.id}/share/#{group.id}", user)
 
@@ -1275,7 +1272,6 @@ describe API::Projects do
         expect(project.project_group_links).to be_empty
       end
 
->>>>>>> upstream/master
       it_behaves_like '412 response' do
         let(:request) { api("/projects/#{project.id}/share/#{group.id}", user) }
       end

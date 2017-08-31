@@ -2,11 +2,7 @@ class AutocompleteController < ApplicationController
   AWARD_EMOJI_MAX = 100
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
-<<<<<<< HEAD
-  before_action :load_project, only: [:users, :project_groups]
-=======
   before_action :load_project, only: [:users]
->>>>>>> upstream/master
   before_action :find_users, only: [:users]
 
   def users
@@ -63,11 +59,7 @@ class AutocompleteController < ApplicationController
       .limit(AWARD_EMOJI_MAX)
       .where(user: current_user)
       .group(:name)
-<<<<<<< HEAD
-      .order(count: :desc, name: :asc)
-=======
       .order('count_all DESC, name ASC')
->>>>>>> upstream/master
       .count
 
     # Transform from hash to array to guarantee json order
