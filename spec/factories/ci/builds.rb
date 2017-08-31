@@ -12,6 +12,7 @@ FactoryGirl.define do
     started_at 'Di 29. Okt 09:51:28 CET 2013'
     finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
+    protected false
 
     options do
       {
@@ -227,11 +228,11 @@ FactoryGirl.define do
       self.when 'manual'
     end
 
-    trait(:protected) do
+    trait :protected do
       protected true
     end
 
-    trait(:unprotected) do
+    trait :unprotected do
       protected false
     end
   end
