@@ -1,5 +1,7 @@
 import _ from 'underscore';
 
+const sortMetrics = metrics => _.chain(metrics).sortBy('weight').sortBy('title').value();
+
 class MonitoringStore {
   constructor() {
     this.groups = [];
@@ -43,12 +45,10 @@ class MonitoringStore {
   }
 
   storeMetrics(groups = []) {
-    this.groups = groups.map((group) => {
-      const currentGroup = group;
-      currentGroup.metrics = _.chain(group.metrics).sortBy('weight').sortBy('title').value();
-      currentGroup.metrics = this.createArrayRows(currentGroup.metrics);
-      return currentGroup;
-    });
+    this.groups = groups.map(group => ({
+      ...group,
+      metrics: this.createArrayRows(sortMetrics(group.metrics)),
+    }));
   }
 
   storeDeploymentData(deploymentData = []) {
