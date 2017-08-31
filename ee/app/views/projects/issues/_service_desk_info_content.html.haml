@@ -20,5 +20,5 @@
     = link_to 'Read more', help_page_path('user/project/service_desk')
 
     - if !service_desk_enabled
-      %div.configure-btn-container
+      %div.turn-on-btn-container
         = link_to "Turn on Service Desk", edit_project_path(@project), class: 'btn btn-new btn-inverted'
