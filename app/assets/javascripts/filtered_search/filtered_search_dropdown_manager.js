@@ -2,13 +2,14 @@ import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 
 class FilteredSearchDropdownManager {
-  constructor(baseEndpoint = '', tokenizer, page) {
+  constructor(baseEndpoint = '', tokenizer, page, isGroup) {
     this.container = FilteredSearchContainer.container;
     this.baseEndpoint = baseEndpoint.replace(/\/$/, '');
     this.tokenizer = tokenizer;
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
     this.filteredSearchInput = this.container.querySelector('.filtered-search');
     this.page = page;
+    this.groupsOnly = page === 'boards' && isGroup;
 
     if (this.page === 'issues' || this.page === 'boards') {
       this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeysIssuesEE;
@@ -47,7 +48,7 @@ class FilteredSearchDropdownManager {
         reference: null,
         gl: 'DropdownNonUser',
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/milestones.json?only_group_milestones=true`,
+          endpoint: `${this.baseEndpoint}/milestones.json${this.groupsOnly ? '?only_group_milestones=true' : ''}`,
           symbol: '%',
         },
         element: this.container.querySelector('#js-dropdown-milestone'),
@@ -56,7 +57,7 @@ class FilteredSearchDropdownManager {
         reference: null,
         gl: 'DropdownNonUser',
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json?only_group_labels=true`,
+          endpoint: `${this.baseEndpoint}/labels.json${this.groupsOnly ? '?only_group_labels=true' : ''}`,
           symbol: '~',
           preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
         },
