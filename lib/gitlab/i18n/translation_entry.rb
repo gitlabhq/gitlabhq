@@ -1,6 +1,8 @@
 module Gitlab
   module I18n
     class TranslationEntry
+      PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/.freeze
+
       attr_reader :nplurals, :entry_data
 
       def initialize(entry_data, nplurals)
@@ -62,6 +64,22 @@ module Gitlab
 
       def translations_contain_newlines?
         all_translations.any? { |translation| translation.is_a?(Array) }
+      end
+
+      def msgid_contains_unescaped_chars?
+        contains_unescaped_chars?(msgid)
+      end
+
+      def plural_id_contains_unescaped_chars?
+        contains_unescaped_chars?(plural_id)
+      end
+
+      def translations_contain_unescaped_chars?
+        all_translations.any? { |translation| contains_unescaped_chars?(translation) }
+      end
+
+      def contains_unescaped_chars?(string)
+        string =~ PERCENT_REGEX
       end
 
       private

@@ -130,4 +130,74 @@ describe Gitlab::I18n::TranslationEntry do
       expect(entry.translations_contain_newlines?).to be_truthy
     end
   end
+
+  describe '#contains_unescaped_chars' do
+    let(:data) { { msgid: '' } }
+    let(:entry) { described_class.new(data, 2) }
+    it 'is true when the msgid is an array' do
+      string = '「100%確定」'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_truthy
+    end
+
+    it 'is false when the `%` char is escaped' do
+      string = '「100%%確定」'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_falsy
+    end
+
+    it 'is false when using an unnamed variable' do
+      string = '「100%d確定」'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_falsy
+    end
+
+    it 'is false when using a named variable' do
+      string = '「100%{named}確定」'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_falsy
+    end
+
+    it 'is true when an unnamed variable is not closed' do
+      string = '「100%{named確定」'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_truthy
+    end
+
+    it 'is true when the string starts with a `%`' do
+      string = '%10'
+
+      expect(entry.contains_unescaped_chars?(string)).to be_truthy
+    end
+  end
+
+  describe '#msgid_contains_unescaped_chars' do
+    it 'is true when the msgid contains a `%`' do
+      data = { msgid: '「100%確定」' }
+      entry = described_class.new(data, 2)
+
+      expect(entry).to receive(:contains_unescaped_chars?).and_call_original
+      expect(entry.msgid_contains_unescaped_chars?).to be_truthy
+    end
+  end
+
+  describe '#plural_id_contains_unescaped_chars' do
+    it 'is true when the plural msgid contains a `%`' do
+      data = { msgid_plural: '「100%確定」' }
+      entry = described_class.new(data, 2)
+
+      expect(entry).to receive(:contains_unescaped_chars?).and_call_original
+      expect(entry.plural_id_contains_unescaped_chars?).to be_truthy
+    end
+  end
+
+  describe '#translations_contain_unescaped_chars' do
+    it 'is true when the translation contains a `%`' do
+      data = { msgstr: '「100%確定」' }
+      entry = described_class.new(data, 2)
+
+      expect(entry).to receive(:contains_unescaped_chars?).and_call_original
+      expect(entry.translations_contain_unescaped_chars?).to be_truthy
+    end
+  end
 end

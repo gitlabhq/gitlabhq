@@ -63,8 +63,23 @@ module Gitlab
         validate_variables(errors, entry)
         validate_newlines(errors, entry)
         validate_number_of_plurals(errors, entry)
+        validate_unescaped_chars(errors, entry)
 
         errors
+      end
+
+      def validate_unescaped_chars(errors, entry)
+        if entry.msgid_contains_unescaped_chars?
+          errors << 'contains unescaped `%`, escape it using `%%`'
+        end
+
+        if entry.plural_id_contains_unescaped_chars?
+          errors << 'plural id contains unescaped `%`, escape it using `%%`'
+        end
+
+        if entry.translations_contain_unescaped_chars?
+          errors << 'translation contains unescaped `%`, escape it using `%%`'
+        end
       end
 
       def validate_number_of_plurals(errors, entry)
@@ -79,15 +94,15 @@ module Gitlab
 
       def validate_newlines(errors, entry)
         if entry.msgid_contains_newlines?
-          errors << "is defined over multiple lines, this breaks some tooling."
+          errors << 'is defined over multiple lines, this breaks some tooling.'
         end
 
         if entry.plural_id_contains_newlines?
-          errors << "plural is defined over multiple lines, this breaks some tooling."
+          errors << 'plural is defined over multiple lines, this breaks some tooling.'
         end
 
         if entry.translations_contain_newlines?
-          errors << "has translations defined over multiple lines, this breaks some tooling."
+          errors << 'has translations defined over multiple lines, this breaks some tooling.'
         end
       end
 

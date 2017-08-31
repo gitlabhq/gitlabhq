@@ -110,6 +110,17 @@ describe Gitlab::I18n::PoLinter do
         is_expected.not_to be_empty
       end
     end
+
+    context 'with unescaped chars' do
+      let(:po_path) { 'spec/fixtures/unescaped_chars.po' }
+
+      it 'contains an error' do
+        message_id = 'You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?'
+        expected_error = 'translation contains unescaped `%`, escape it using `%%`'
+
+        expect(errors[message_id]).to include(expected_error)
+      end
+    end
   end
 
   describe '#parse_po' do
@@ -157,13 +168,14 @@ describe Gitlab::I18n::PoLinter do
   end
 
   describe '#validate_entry' do
-    it 'validates the flags, variable usage, and newlines' do
+    it 'validates the flags, variable usage, newlines, and unescaped chars' do
       fake_entry = double
 
       expect(linter).to receive(:validate_flags).with([], fake_entry)
       expect(linter).to receive(:validate_variables).with([], fake_entry)
       expect(linter).to receive(:validate_newlines).with([], fake_entry)
       expect(linter).to receive(:validate_number_of_plurals).with([], fake_entry)
+      expect(linter).to receive(:validate_unescaped_chars).with([], fake_entry)
 
       linter.validate_entry(fake_entry)
     end
