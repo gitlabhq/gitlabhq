@@ -133,7 +133,7 @@ module CommitsHelper
     source_name = clean(commit.send "#{options[:source]}_name".to_sym)
     source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
-    person_name = simple_sanitize(user.try(:name) || source_name)
+    person_name = sanitize(user.try(:name) || source_name)
 
     text =
       if options[:avatar]
