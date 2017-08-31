@@ -1,3 +1,6 @@
+- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
+- if @group.feature_available?(:group_issue_boards)
+  - issues_sub_menu_items.push('boards#index')
 .nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     .context-header
@@ -31,7 +34,7 @@
                 %span
                   Contribution Analytics
 
-      = nav_link(path: ['groups#issues', 'boards#index', 'labels#index', 'milestones#index']) do
+      = nav_link(path: issues_sub_menu_items) do
         = link_to issues_group_path(@group), title: 'Issues' do
           .nav-icon-container
             = custom_icon('issues')
@@ -46,10 +49,11 @@
               %span
                 List
 
-          = nav_link(path: 'boards#index') do
-            = link_to group_boards_path(@group), title: 'Boards' do
-              %span
-                Boards
+          - if @group.feature_available?(:group_issue_boards)
+            = nav_link(path: 'boards#index') do
+              = link_to group_boards_path(@group), title: 'Boards' do
+                %span
+                  Boards
 
           = nav_link(path: 'labels#index') do
             = link_to group_labels_path(@group), title: 'Labels' do

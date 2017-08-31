@@ -63,7 +63,12 @@ class FilteredSearchManager {
 
     if (this.filteredSearchInput) {
       this.tokenizer = gl.FilteredSearchTokenizer;
-      this.dropdownManager = new gl.FilteredSearchDropdownManager(this.filteredSearchInput.getAttribute('data-base-endpoint') || '', this.tokenizer, this.page);
+      this.dropdownManager = new gl.FilteredSearchDropdownManager(
+        this.filteredSearchInput.getAttribute('data-base-endpoint') || '',
+        this.tokenizer,
+        this.page,
+        Boolean(this.filteredSearchInput.getAttribute('data-group-id')),
+      );
 
       this.recentSearchesRoot = new RecentSearchesRoot(
         this.recentSearchesStore,

@@ -1,6 +1,6 @@
 /* global ListIssue */
 import eventHub from '../eventhub';
-import ProjectSelect from './project_select';
+import ProjectSelect from './project_select.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
