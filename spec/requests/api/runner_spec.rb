@@ -627,14 +627,14 @@ describe API::Runner do
           update_job(state: 'success')
 
           expect(job.reload.status).to eq 'success'
-          expect(job).to be_no_error
+          expect(job).to be_unknown_failure
         end
 
         it 'mark job as failed' do
           update_job(state: 'failed')
 
           expect(job.reload.status).to eq 'failed'
-          expect(job).to be_failed_by_job_state
+          expect(job).to be_job_failure
         end
       end
 

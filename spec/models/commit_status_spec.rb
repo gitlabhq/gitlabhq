@@ -443,4 +443,24 @@ describe CommitStatus do
       end
     end
   end
+
+  describe 'set failure_reason when drop' do
+    let(:build) { create(:ci_build, :created) }
+
+    before do
+      build.drop!(reason)
+    end
+
+    context 'when failure_reason is nil' do
+      let(:reason) { }
+
+      it { expect(build).to be_unknown_failure }
+    end
+
+    context 'when failure_reason is job_failure' do
+      let(:reason) { :job_failure }
+
+      it { expect(build).to be_job_failure }
+    end
+  end
 end

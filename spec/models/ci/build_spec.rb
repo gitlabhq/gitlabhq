@@ -1710,24 +1710,4 @@ describe Ci::Build do
       end
     end
   end
-
-  describe 'set failure_reason when drop' do
-    let(:build) { create(:ci_build, :created) }
-
-    before do
-      build.drop!(reason)
-    end
-
-    context 'when failure_reason is nil' do
-      let(:reason) { }
-
-      it { expect(build).to be_no_error }
-    end
-
-    context 'when failure_reason is script_error' do
-      let(:reason) { :script_error }
-
-      it { expect(build).to be_failed_by_missing_dependency }
-    end
-  end
 end

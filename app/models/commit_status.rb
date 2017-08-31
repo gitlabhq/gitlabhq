@@ -39,16 +39,10 @@ class CommitStatus < ActiveRecord::Base
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
   enum failure_reason: {
-    no_error: nil,
-    failed_by_script: 1, # TODO: Not used. Should we expand pipeline as well?
-    failed_by_missing_dependency: 2, # This will be done in the next MR.
-    failed_by_system: 3, # TODO: Not used. What's this state?
-    failed_by_job_state: 4,
-    failed_by_out_of_quota: 5, # TODO: Only EE. How can we detect?
-    failed_by_stuck_and_timeout: 6,
-    failed_by_no_runner: 7, # TODO: Not used. How can we detect?
-    failed_by_api: 8,
-    failed_by_page: 9
+    unknown_failure: nil,
+    job_failure: 1,
+    api_failure: 2,
+    stuck_or_timeout_failure: 3,
   }
 
   state_machine :status do

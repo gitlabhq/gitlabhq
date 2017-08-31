@@ -127,7 +127,7 @@ module API
         when 'success'
           job.success
         when 'failed'
-          job.drop(:failed_job_state)
+          job.drop(:job_failure)
         end
       end
 
