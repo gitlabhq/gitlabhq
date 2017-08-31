@@ -22,7 +22,7 @@ you to [connect with GitLab via SSH](../../../ssh/README.md).
 
 ## Files
 
-## Create and edit files
+### Create and edit files
 
 Host your codebase in GitLab repositories by pushing your files to GitLab.
 You can either use the user interface (UI), or connect your local computer
@@ -111,6 +111,8 @@ right from the UI.
 - **Revert a commit:**
 Easily [revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
 from the UI to a selected branch.
+- **Sign a commit:**
+Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 

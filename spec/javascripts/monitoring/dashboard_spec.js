@@ -1,21 +1,21 @@
 import Vue from 'vue';
-import Monitoring from '~/monitoring/components/monitoring.vue';
+import Dashboard from '~/monitoring/components/dashboard.vue';
 import { MonitorMockInterceptor } from './mock_data';
 
-describe('Monitoring', () => {
+describe('Dashboard', () => {
   const fixtureName = 'environments/metrics/metrics.html.raw';
-  let MonitoringComponent;
+  let DashboardComponent;
   let component;
   preloadFixtures(fixtureName);
 
   beforeEach(() => {
     loadFixtures(fixtureName);
-    MonitoringComponent = Vue.extend(Monitoring);
+    DashboardComponent = Vue.extend(Dashboard);
   });
 
   describe('no metrics are available yet', () => {
     it('shows a getting started empty state when no metrics are present', () => {
-      component = new MonitoringComponent({
+      component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
       });
 
@@ -36,7 +36,7 @@ describe('Monitoring', () => {
     });
 
     it('shows up a loading state', (done) => {
-      component = new MonitoringComponent({
+      component = new DashboardComponent({
         el: document.querySelector('#prometheus-graphs'),
       });
       component.$mount();

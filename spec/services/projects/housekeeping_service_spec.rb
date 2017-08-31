@@ -23,6 +23,12 @@ describe Projects::HousekeepingService do
       expect(project.reload.pushes_since_gc).to eq(0)
     end
 
+    it 'yields the block if given' do
+      expect do |block|
+        subject.execute(&block)
+      end.to yield_with_no_args
+    end
+
     context 'when no lease can be obtained' do
       before do
         expect(subject).to receive(:try_obtain_lease).and_return(false)
@@ -38,6 +44,13 @@ describe Projects::HousekeepingService do
         expect do
           expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
         end.not_to change { project.pushes_since_gc }
+      end
+
+      it 'does not yield' do
+        expect do |block|
+          expect { subject.execute(&block) }
+            .to raise_error(Projects::HousekeepingService::LeaseTaken)
+        end.not_to yield_with_no_args
       end
     end
   end
