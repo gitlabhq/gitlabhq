@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170830125940) do
+ActiveRecord::Schema.define(version: 20170831195038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -609,7 +609,6 @@ ActiveRecord::Schema.define(version: 20170830125940) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "gpg_key_id"
-    t.boolean "valid_signature"
     t.binary "commit_sha"
     t.binary "gpg_key_primary_keyid"
     t.text "gpg_key_user_name"
