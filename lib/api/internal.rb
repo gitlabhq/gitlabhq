@@ -143,6 +143,14 @@ module API
         { success: true, recovery_codes: codes }
       end
 
+      post '/pre_receive' do
+        status 200
+
+        reference_counter_increased = Gitlab::ReferenceCounter.new(params[:gl_repository]).increase
+
+        { reference_counter_increased: reference_counter_increased }
+      end
+
       post "/notify_post_receive" do
         status 200
 
