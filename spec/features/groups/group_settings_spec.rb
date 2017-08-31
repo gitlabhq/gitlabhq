@@ -90,14 +90,14 @@ feature 'Edit group settings' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.title')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.title')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.path)
       end
     end
   end
