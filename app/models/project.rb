@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
 
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
