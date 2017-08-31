@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Ci::Runner do
   describe 'validation' do
+    it { is_expected.to validate_presence_of(:access_level) }
+
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
         it 'is not valid' do
@@ -15,6 +17,34 @@ describe Ci::Runner do
           runner = build(:ci_runner, tag_list: ['tag'], run_untagged: false)
           expect(runner).to be_valid
         end
+      end
+    end
+  end
+
+  describe '#access_level' do
+    context 'when creating new runner and access_level is nil' do
+      let(:runner) do
+        build(:ci_runner, access_level: nil)
+      end
+
+      it "object is invalid" do
+        expect(runner).not_to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is defined in enum' do
+      let(:runner) do
+        build(:ci_runner, access_level: :not_protected)
+      end
+
+      it "object is valid" do
+        expect(runner).to be_valid
+      end
+    end
+
+    context 'when creating new runner and access_level is not defined in enum' do
+      it "raises an error" do
+        expect { build(:ci_runner, access_level: :this_is_not_defined) }.to raise_error(ArgumentError)
       end
     end
   end
@@ -478,30 +508,6 @@ describe Ci::Runner do
 
     it 'returns runners with a matching description regardless of the casing' do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
-    end
-  end
-
-  describe '.access_level' do
-    context 'when access_level of a runner is ref_protected' do
-      before do
-        create(:ci_runner, :ref_protected)
-      end
-
-      it 'a protected runner exists' do
-        expect(described_class.count).to eq(1)
-        expect(described_class.last.ref_protected?).to eq(true)
-      end
-    end
-
-    context 'when access_level of a runner is not_protected' do
-      before do
-        create(:ci_runner, :not_protected)
-      end
-
-      it 'an not_protected runner exists' do
-        expect(described_class.count).to eq(1)
-        expect(described_class.last.not_protected?).to eq(true)
-      end
     end
   end
 end

@@ -35,6 +35,7 @@ module Ci
     end
 
     validate :tag_constraints
+    validates :access_level, presence: true
 
     acts_as_taggable
 

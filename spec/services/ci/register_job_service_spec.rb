@@ -215,7 +215,9 @@ module Ci
         end
       end
 
-      context 'when a runner is not_protected' do
+      context 'when access_level of runner is not_protected' do
+        let!(:specific_runner) { create(:ci_runner, :not_protected, :specific) }
+
         context 'when a job is protected' do
           let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
 
@@ -233,7 +235,7 @@ module Ci
         end
       end
 
-      context 'when a runner is ref_protected' do
+      context 'when access_level of runner is ref_protected' do
         let!(:specific_runner) { create(:ci_runner, :ref_protected, :specific) }
 
         context 'when a job is protected' do

@@ -23,11 +23,11 @@ FactoryGirl.define do
     end
 
     trait :ref_protected do
-      access_level 'ref_protected'
+      access_level :ref_protected
     end
 
     trait :not_protected do
-      access_level 'not_protected'
+      access_level :not_protected
     end
   end
 end

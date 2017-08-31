@@ -44,13 +44,25 @@ describe Ci::Build do
   end
 
   describe '.ref_protected' do
-    let!(:protected_job) { create(:ci_build, :protected) }
-    let!(:unprotected_job) { create(:ci_build, :unprotected) }
-
     subject { described_class.ref_protected }
 
-    it { is_expected.to include(protected_job) }
-    it { is_expected.not_to include(unprotected_job) }
+    context 'when protected is true' do
+      let!(:job) { create(:ci_build, :protected) }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when protected is false' do
+      let!(:job) { create(:ci_build, :unprotected) }
+
+      it { is_expected.not_to include(job) }
+    end
+
+    context 'when protected is false' do
+      let!(:job) { create(:ci_build, protected: nil) }
+
+      it { is_expected.not_to include(job) }
+    end
   end
 
   describe '#actionize' do
