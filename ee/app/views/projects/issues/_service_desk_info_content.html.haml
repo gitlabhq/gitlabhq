@@ -5,17 +5,20 @@
 - svg_path = !is_empty_state ? 'shared/empty_states/icons/service_desk_callout.svg' : 'shared/empty_states/icons/service_desk_empty_state.svg'
 
 %div{ class: "#{callout_selector}" }
-	.service-desk-graphic
-		= render svg_path
+  .service-desk-graphic
+    = render svg_path
 
-	.media-body
-		%h4 Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab.
+  .media-body
+    %h5 Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab.
 
-		- if service_desk_enabled
-			%p
-				Have your users email
-				%code= @project.service_desk_address
-				Those emails automatically become issues (with the comments becoming the email conversation) listed here.
-				= link_to 'Read more', help_page_path('user/project/service_desk')
-				%div.configure-btn-container
-					= link_to "Configure Service Desk", edit_project_path(@project), class: 'btn'
+    - if service_desk_enabled
+      %p
+        Have your users email
+        %code= @project.service_desk_address
+
+    %span Those emails automatically become issues (with the comments becoming the email conversation) listed here.
+    = link_to 'Read more', help_page_path('user/project/service_desk')
+
+    - if !service_desk_enabled
+      %div.configure-btn-container
+        = link_to "Turn on Service Desk", edit_project_path(@project), class: 'btn btn-new btn-inverted'
