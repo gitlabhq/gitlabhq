@@ -251,15 +251,10 @@ describe 'Filter issues', js: true do
     end
 
     context 'issue label clicked' do
-      before do
+      it 'filters and displays in search bar' do
         find('.issues-list .issue .issue-main-info .issuable-info a .label', text: multiple_words_label.title).click
-      end
 
-      it 'filters' do
         expect_issues_list_count(1)
-      end
-
-      it 'displays in search bar' do
         expect_tokens([label_token("\"#{multiple_words_label.title}\"")])
         expect_filtered_search_input_empty
       end
@@ -435,7 +430,7 @@ describe 'Filter issues', js: true do
     end
   end
 
-  describe 'retains filter when switching issue states' do
+  describe 'switching issue states' do
     let!(:closed_issue) { create(:issue, :closed, project: project, title: 'closed bug') }
 
     before do
@@ -445,25 +440,21 @@ describe 'Filter issues', js: true do
       expect_issues_list_count(4, 1)
     end
 
-    it 'open state' do
-      find('.issues-state-filters [data-state="closed"]').click
-      wait_for_requests
-
-      find('.issues-state-filters [data-state="opened"]').click
-      wait_for_requests
-
-      expect(page).to have_selector('.issues-list .issue', count: 4)
-    end
-
-    it 'closed state' do
+    it 'maintains filter' do
+      # Closed
       find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
-      expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(closed_issue.title)
-    end
+      expect(page).to have_link(closed_issue.title)
 
-    it 'all state' do
+      # Opened
+      find('.issues-state-filters [data-state="opened"]').click
+      wait_for_requests
+
+      expect(page).to have_selector('.issues-list .issue', count: 4)
+
+      # All
       find('.issues-state-filters [data-state="all"]').click
       wait_for_requests
 
