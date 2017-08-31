@@ -42,9 +42,6 @@ describe 'Filter issues', js: true do
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
     create(:issue, project: project, author: user2, title: "Bug report 2")
-    create(:issue, project: project, author: user2, title: "issue with 'single quotes'")
-    create(:issue, project: project, author: user2, title: "issue with \"double quotes\"")
-    create(:issue, project: project, author: user2, title: "issue with !@\#{$%^&*()-+")
 
     create(:issue, project: project, author: user,  title: "issue by assignee", milestone: milestone, assignees: [user])
     create(:issue, project: project, author: user,  title: "issue by assignee with searchTerm", milestone: milestone, assignees: [user])
@@ -74,10 +71,6 @@ describe 'Filter issues', js: true do
       labels: [bug_label, caps_sensitive_label])
 
     create(:labeled_issue, title: "Issue with multiple words label", project: project, labels: [multiple_words_label])
-
-    create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
-      create(:issue, project: project, milestone: future_milestone, author: user2)
-    end
 
     sign_in(user)
     visit project_issues_path(project)
@@ -132,7 +125,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('assignee:none')
 
         expect_tokens([assignee_token('none')])
-        expect_issues_list_count(7, 1)
+        expect_issues_list_count(3, 1)
         expect_filtered_search_input_empty
       end
     end
@@ -196,13 +189,13 @@ describe 'Filter issues', js: true do
         expect_filtered_search_input_empty
       end
 
-      it 'does not show issues' do
+      it 'does not show issues for unused labels' do
         new_label = create(:label, project: project, title: 'new_label')
 
         input_filtered_search("label:~#{new_label.title}")
 
         expect_tokens([label_token(new_label.title)])
-        expect_no_issues_list()
+        expect_no_issues_list
         expect_filtered_search_input_empty
       end
     end
@@ -332,11 +325,15 @@ describe 'Filter issues', js: true do
         input_filtered_search("milestone:none")
 
         expect_tokens([milestone_token('none', false)])
-        expect_issues_list_count(6, 1)
+        expect_issues_list_count(3, 1)
         expect_filtered_search_input_empty
       end
 
       it 'filters issues by upcoming milestones' do
+        create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
+          create(:issue, project: project, milestone: future_milestone, author: user)
+        end
+
         input_filtered_search("milestone:upcoming")
 
         expect_tokens([milestone_token('upcoming', false)])
@@ -354,7 +351,7 @@ describe 'Filter issues', js: true do
 
       it 'filters issues by milestone containing special characters' do
         special_milestone = create(:milestone, title: '!@\#{$%^&*()}', project: project)
-        create(:issue, title: "Issue with special character milestone", project: project, milestone: special_milestone)
+        create(:issue, project: project, milestone: special_milestone)
 
         input_filtered_search("milestone:%#{special_milestone.title}")
 
@@ -363,13 +360,13 @@ describe 'Filter issues', js: true do
         expect_filtered_search_input_empty
       end
 
-      it 'does not show issues' do
-        new_milestone = create(:milestone, title: "new", project: project)
+      it 'does not show issues for unused milestones' do
+        new_milestone = create(:milestone, title: 'new', project: project)
 
         input_filtered_search("milestone:%#{new_milestone.title}")
 
         expect_tokens([milestone_token(new_milestone.title)])
-        expect_no_issues_list()
+        expect_no_issues_list
         expect_filtered_search_input_empty
       end
     end
@@ -421,34 +418,43 @@ describe 'Filter issues', js: true do
       end
 
       it 'filters issues by searched text containing single quotes' do
-        search = '\'single quotes\''
+        issue = create(:issue, project: project, author: user, title: "issue with 'single quotes'")
+
+        search = "'single quotes'"
         input_filtered_search(search)
 
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
+        expect(page).to have_content(issue.title)
       end
 
       it 'filters issues by searched text containing double quotes' do
+        issue = create(:issue, project: project, author: user, title: "issue with \"double quotes\"")
+
         search = '"double quotes"'
         input_filtered_search(search)
 
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
+        expect(page).to have_content(issue.title)
       end
 
       it 'filters issues by searched text containing special characters' do
+        issue = create(:issue, project: project, author: user, title: "issue with !@\#{$%^&*()-+")
+
         search = '!@#{$%^&*()-+'
         input_filtered_search(search)
 
         expect_issues_list_count(1)
         expect_filtered_search_input(search)
+        expect(page).to have_content(issue.title)
       end
 
       it 'does not show any issues' do
         search = 'testing'
         input_filtered_search(search)
 
-        expect_no_issues_list()
+        expect_no_issues_list
         expect_filtered_search_input(search)
       end
     end
@@ -575,7 +581,7 @@ describe 'Filter issues', js: true do
       input_filtered_search("milestone:", submit: false)
 
       within('#js-dropdown-milestone') do
-        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 2)
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 1)
       end
     end
 
