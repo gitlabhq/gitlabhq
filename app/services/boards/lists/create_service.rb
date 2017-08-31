@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class CreateService < BaseService
+    class CreateService < Boards::BaseService
       def execute(board)
         List.transaction do
           label    = available_labels_for(board).find(params[:label_id])
