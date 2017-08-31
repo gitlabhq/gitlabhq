@@ -3,8 +3,7 @@ require 'spec_helper'
 describe 'Filter issues', js: true do
   include FilteredSearchHelpers
 
-  let!(:group) { create(:group) }
-  let!(:project) { create(:project, group: group) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, username: 'joe', name: 'Joe') }
   let!(:user2) { create(:user, username: 'jane') }
   let!(:label) { create(:label, project: project) }
@@ -39,8 +38,6 @@ describe 'Filter issues', js: true do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    group.add_developer(user)
-    group.add_developer(user2)
 
     sign_in(user)
 
@@ -538,6 +535,13 @@ describe 'Filter issues', js: true do
   end
 
   describe 'RSS feeds' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+
+    before do
+      group.add_developer(user)
+    end
+
     it 'updates atom feed link for project issues' do
       visit project_issues_path(project, milestone_title: milestone.title, assignee_id: user.id)
       link = find_link('Subscribe')
