@@ -749,10 +749,10 @@ describe API::Groups do
         allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(false)
       end
 
-      it 'returns 403' do
+      it 'returns 404 (same as CE would)' do
         ldap_sync(group1.id, admin, :disable!)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(404)
       end
     end
   end

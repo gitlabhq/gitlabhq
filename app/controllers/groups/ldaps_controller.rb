@@ -17,6 +17,6 @@ class Groups::LdapsController < Groups::ApplicationController
   private
 
   def check_enabled_extras!
-    render_403 unless Gitlab::LDAP::Config.enabled_extras?
+    render_404 unless Gitlab::LDAP::Config.enabled_extras?
   end
 end
