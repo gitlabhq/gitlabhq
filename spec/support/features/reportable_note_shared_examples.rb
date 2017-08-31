@@ -31,7 +31,7 @@ shared_examples 'reportable note' do
   end
 
   def open_dropdown(dropdown)
-    dropdown.click
+    dropdown.find('.more-actions-toggle').trigger('click')
     dropdown.find('.dropdown-menu li', match: :first)
   end
 end

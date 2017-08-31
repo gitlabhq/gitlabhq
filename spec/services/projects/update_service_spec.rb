@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, services: true do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
@@ -89,10 +90,43 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  it 'returns an error result when record cannot be updated' do
-    result = update_project(project, admin, { name: 'foo&bar' })
+  context 'when updating a default branch' do
+    let(:project) { create(:project, :repository) }
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    it 'changes a default branch' do
+      update_project(project, admin, default_branch: 'feature')
+
+      expect(Project.find(project.id).default_branch).to eq 'feature'
+    end
+  end
+
+  context 'when renaming a project' do
+    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+    before do
+      gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    after do
+      gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    it 'does not allow renaming when new path matches existing repository on disk' do
+      result = update_project(project, admin, path: 'existing')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to include('Cannot rename project')
+      expect(project.errors.messages).to have_key(:base)
+      expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+    end
+  end
+
+  context 'when passing invalid parameters' do
+    it 'returns an error result when record cannot be updated' do
+      result = update_project(project, admin, { name: 'foo&bar' })
+
+      expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    end
   end
 
   def update_project(project, user, opts)

@@ -4,7 +4,7 @@ describe Gitlab::Email::Message::RepositoryPush do
   include RepoHelpers
 
   let!(:group) { create(:group, name: 'my_group') }
-  let!(:project) { create(:project, :repository, name: 'my_project', namespace: group) }
+  let!(:project) { create(:project, :repository, namespace: group) }
   let!(:author) { create(:author, name: 'Author') }
 
   let(:message) do
@@ -38,7 +38,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#project_name_with_namespace' do
       subject { message.project_name_with_namespace }
-      it { is_expected.to eq 'my_group / my_project' }
+      it { is_expected.to eq "#{group.name} / #{project.name}" }
     end
 
     describe '#author' do

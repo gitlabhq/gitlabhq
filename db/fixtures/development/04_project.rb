@@ -75,7 +75,7 @@ Sidekiq::Testing.inline! do
         project.send(:_run_after_commit_queue)
       end
 
-      if project.valid? && project.valid_repo?
+      if project.errors.messages.empty? && project.valid_repo?
         print '.'
       else
         puts project.errors.full_messages
