@@ -6,9 +6,6 @@ describe 'Filter issues', js: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-  let!(:label) { create(:label, project: project) }
-  let!(:wontfix) { create(:label, project: project, title: "Won't fix") }
-
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
   let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
@@ -589,7 +586,7 @@ describe 'Filter issues', js: true do
       input_filtered_search("label:", submit: false)
 
       within('#js-dropdown-label') do
-        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
+        expect(page).to have_selector('.filter-dropdown .filter-dropdown-item', count: 3)
       end
     end
   end
