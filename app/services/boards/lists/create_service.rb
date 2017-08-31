@@ -1,6 +1,6 @@
 module Boards
   module Lists
-    class CreateService < BaseService
+    class CreateService < Boards::BaseService
       prepend EE::Boards::Lists::CreateService
 
       def execute(board)
