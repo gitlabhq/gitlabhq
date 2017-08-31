@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170828093725) do
+ActiveRecord::Schema.define(version: 20170824162758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -125,11 +125,10 @@ ActiveRecord::Schema.define(version: 20170828093725) do
     t.boolean "prometheus_metrics_enabled", default: false, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
-    t.boolean "password_authentication_enabled"
     t.integer "performance_bar_allowed_group_id"
-    t.boolean "hashed_storage_enabled", default: false, null: false
+    t.boolean "password_authentication_enabled"
     t.boolean "project_export_enabled", default: true, null: false
-    t.boolean "auto_devops_enabled", default: false, null: false
+    t.boolean "hashed_storage_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1117,16 +1116,6 @@ ActiveRecord::Schema.define(version: 20170828093725) do
   add_index "project_authorizations", ["project_id"], name: "index_project_authorizations_on_project_id", using: :btree
   add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
 
-  create_table "project_auto_devops", force: :cascade do |t|
-    t.integer "project_id"
-    t.boolean "enabled", default: true
-    t.string "domain"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-  end
-
-  add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", using: :btree
-
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
     t.integer "merge_requests_access_level"
@@ -1210,7 +1199,6 @@ ActiveRecord::Schema.define(version: 20170828093725) do
     t.string "repository_storage", default: "default", null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
-    t.string "ci_config_path"
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
@@ -1218,8 +1206,9 @@ ActiveRecord::Schema.define(version: 20170828093725) do
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
     t.string "import_jid"
     t.integer "cached_markdown_version"
-    t.text "delete_error"
     t.datetime "last_repository_updated_at"
+    t.string "ci_config_path"
+    t.text "delete_error"
     t.integer "storage_version", limit: 2
   end
 
@@ -1733,7 +1722,6 @@ ActiveRecord::Schema.define(version: 20170828093725) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
-  add_foreign_key "project_auto_devops", "projects", name: "fk_45436b12b2", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade

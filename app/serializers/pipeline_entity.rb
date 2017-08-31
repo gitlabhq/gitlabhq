@@ -16,6 +16,7 @@ class PipelineEntity < Grape::Entity
   expose :flags do
     expose :latest?, as: :latest
     expose :stuck?, as: :stuck
+    expose :auto_devops?, as: :auto_devops
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable

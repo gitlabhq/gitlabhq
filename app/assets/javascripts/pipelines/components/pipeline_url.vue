@@ -58,6 +58,13 @@ export default {
         yaml invalid
       </span>
       <span
+        v-if="pipeline.flags.auto_devops"
+        v-tooltip
+        class="label label-info"
+        title="Pipeline was configured by Auto DevOps">
+        Auto DevOps
+      </span>
+      <span
         v-if="pipeline.flags.stuck"
         class="js-pipeline-url-stuck label label-warning">
         stuck

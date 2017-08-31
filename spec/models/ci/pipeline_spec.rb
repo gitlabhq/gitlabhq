@@ -794,14 +794,27 @@ describe Ci::Pipeline, :mailer do
         expect(pipeline.ci_yaml_file).to be_a(String)
         expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
         expect(pipeline.yaml_errors).to be_nil
+        expect(pipeline.repository?).to be(true)
       end
 
-      it 'returns the implied configuration when its not found' do
-        allow_any_instance_of(ApplicationSetting)
-          .to receive(:auto_devops_enabled?) { true }
-        allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+      context 'when the implied configuration will be used' do
+        before do
+          allow_any_instance_of(ApplicationSetting)
+            .to receive(:auto_devops_enabled?) { true }
+        end
 
-        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        it 'returns the implied configuration when its not found' do
+          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+          expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        end
+
+        it 'sets the config source' do
+          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+          expect(pipeline.ci_yaml_file).to eq(implied_yml)
+          expect(pipeline.auto_devops?).to be(true)
+        end
       end
     end
 

@@ -50,6 +50,11 @@ module Ci
       external: 6
     }
 
+    enum config_source: {
+      repository: nil,
+      auto_devops: 1
+    }
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -338,10 +343,14 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = (ci_yaml_from_repo || implied_ci_yaml_file).tap do |config|
-        unless config
-          self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
-        end
+      @ci_yaml_file = ci_yaml_from_repo
+      @ci_yaml_file ||= implied_ci_yaml_file&.tap { self.auto_devops! }
+
+      if @ci_yaml_file
+        @ci_yaml_file
+      else
+        self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
+        nil
       end
     end
 
