@@ -20,6 +20,7 @@
     "babel-preset-latest": "^6.24.0",
     "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "^3.3.6",
+    "brace-expansion": "^1.1.8",
     "compression-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.0.1",
     "core-js": "^2.4.1",
