@@ -42,7 +42,7 @@ It is also good practice to check the server's own public key to make sure you
 are not being targeted by a man-in-the-middle attack. To do this, add another
 variable named `SSH_SERVER_HOSTKEYS`. To find out the hostkeys of your server, run
 the `ssh-keyscan YOUR_SERVER` command from a trusted network (ideally, from the
-server itself), and paste its output into the `SSH_SERVER_HOSTKEY` variable. If
+server itself), and paste its output into the `SSH_SERVER_HOSTKEYS` variable. If
 you need to connect to multiple servers, concatenate all the server public keys
 that you collected into the **Value** of the variable. There must be one key per
 line.
