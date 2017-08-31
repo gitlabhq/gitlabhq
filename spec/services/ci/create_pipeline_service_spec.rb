@@ -398,6 +398,7 @@ describe Ci::CreatePipelineService do
         it 'creates a pipeline' do
           expect(execute_service).to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
+          expect(Ci::Pipeline.last).to be_protected
         end
       end
 
@@ -473,6 +474,7 @@ describe Ci::CreatePipelineService do
           expect(execute_service(trigger_request: trigger_request))
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
+          expect(Ci::Pipeline.last).not_to be_protected
         end
       end
     end
