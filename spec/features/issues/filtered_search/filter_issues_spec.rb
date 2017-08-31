@@ -26,10 +26,6 @@ describe 'Filter issues', js: true do
     end
   end
 
-  def select_search_at_index(pos)
-    evaluate_script("el = document.querySelector('.filtered-search'); el.focus(); el.setSelectionRange(#{pos}, #{pos});")
-  end
-
   before do
     project.add_master(user)
 
