@@ -7,7 +7,7 @@ class NotePolicy < BasePolicy
   condition(:is_noteable_author) { @user && @subject.noteable.author_id == @user.id }
 
   condition(:editable, scope: :subject) { @subject.editable? }
-  condition(:locked) { @subject.noteable.discussion_locked? }
+  condition(:locked) { [MergeRequest, Issue].include?(@subject.noteable.class) && @subject.noteable.discussion_locked? }
 
   rule { ~editable | anonymous }.prevent :edit_note
 

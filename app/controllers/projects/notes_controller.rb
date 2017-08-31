@@ -77,7 +77,7 @@ class Projects::NotesController < Projects::ApplicationController
   def authorize_create_note!
     noteable_type = note_params[:noteable_type]
 
-    return unless ['MergeRequest', 'Issue'].include?(noteable_type)
+    return unless %w[MergeRequest Issue].include?(noteable_type)
     return access_denied! unless can?(current_user, :create_note, project)
 
     noteable = noteable_type.constantize.find(note_params[:noteable_id])

@@ -253,7 +253,7 @@ describe Projects::NotesController do
         end
 
         it 'creates a new note' do
-          expect{ post :create, request_params }.to change { Note.count }.by(1)
+          expect { post :create, request_params }.to change { Note.count }.by(1)
         end
       end
 
@@ -269,7 +269,7 @@ describe Projects::NotesController do
         end
 
         it 'does not create a new note' do
-          expect{ post :create, request_params }.not_to change { Note.count }
+          expect { post :create, request_params }.not_to change { Note.count }
         end
       end
     end
