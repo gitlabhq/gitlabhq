@@ -941,4 +941,27 @@ class MergeRequest < ActiveRecord::Base
 
     true
   end
+
+  def update_project_counter_caches?
+    state_changed?
+  end
+
+  def update_project_counter_caches
+    return unless update_project_counter_caches?
+
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  end
+
+  private
+
+  def write_ref
+    target_project.repository.with_repo_branch_commit(
+      source_project.repository, source_branch) do |commit|
+        if commit
+          target_project.repository.write_ref(ref_path, commit.sha)
+        else
+          raise Rugged::ReferenceError, 'source repository is empty'
+        end
+      end
+  end
 end
