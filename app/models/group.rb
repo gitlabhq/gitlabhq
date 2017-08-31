@@ -206,9 +206,9 @@ class Group < Namespace
     SystemHooksService.new
   end
 
-  def refresh_members_authorized_projects
+  def refresh_members_authorized_projects(blocking: true)
     UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
-      .execute
+      .execute(blocking: blocking)
   end
 
   def user_ids_for_project_authorizations

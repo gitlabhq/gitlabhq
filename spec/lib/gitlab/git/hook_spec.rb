@@ -10,7 +10,8 @@ describe Gitlab::Git::Hook do
 
   describe "#trigger" do
     let(:project) { create(:project, :repository) }
-    let(:repo_path) { project.repository.path }
+    let(:repository) { project.repository.raw_repository }
+    let(:repo_path) { repository.path }
     let(:user) { create(:user) }
     let(:gl_id) { Gitlab::GlId.gl_id(user) }
 
@@ -48,7 +49,7 @@ describe Gitlab::Git::Hook do
 
           it "returns success with no errors" do
             create_hook(hook_name)
-            hook = described_class.new(hook_name, project)
+            hook = described_class.new(hook_name, repository)
             blank = Gitlab::Git::BLANK_SHA
             ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 
@@ -66,7 +67,7 @@ describe Gitlab::Git::Hook do
         context "when the hook is unsuccessful" do
           it "returns failure with errors" do
             create_failing_hook(hook_name)
-            hook = described_class.new(hook_name, project)
+            hook = described_class.new(hook_name, repository)
             blank = Gitlab::Git::BLANK_SHA
             ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 
@@ -80,7 +81,7 @@ describe Gitlab::Git::Hook do
 
     context "when the hook doesn't exist" do
       it "returns success with no errors" do
-        hook = described_class.new('unknown_hook', project)
+        hook = described_class.new('unknown_hook', repository)
         blank = Gitlab::Git::BLANK_SHA
         ref = Gitlab::Git::BRANCH_REF_PREFIX + 'new_branch'
 

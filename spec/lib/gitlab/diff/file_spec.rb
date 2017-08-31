@@ -15,6 +15,17 @@ describe Gitlab::Diff::File do
     it { expect(diff_lines.first).to be_kind_of(Gitlab::Diff::Line) }
   end
 
+  describe '#highlighted_diff_lines' do
+    it 'highlights the diff and memoises the result' do
+      expect(Gitlab::Diff::Highlight).to receive(:new)
+                                           .with(diff_file, repository: project.repository)
+                                           .once
+                                           .and_call_original
+
+      diff_file.highlighted_diff_lines
+    end
+  end
+
   describe '#mode_changed?' do
     it { expect(diff_file.mode_changed?).to be_falsey }
   end
@@ -122,8 +133,20 @@ describe Gitlab::Diff::File do
         let(:commit) { project.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
         let(:diff_file) { commit.diffs.diff_file_with_new_path('files/images/6049019_460s.jpg') }
 
-        it 'returns true' do
-          expect(diff_file.content_changed?).to be_truthy
+        context 'when the blobs are different' do
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
+        end
+
+        context 'when there are no diff refs' do
+          before do
+            allow(diff_file).to receive(:diff_refs).and_return(nil)
+          end
+
+          it 'returns false' do
+            expect(diff_file.content_changed?).to be_falsey
+          end
         end
       end
 
@@ -131,8 +154,20 @@ describe Gitlab::Diff::File do
         let(:commit) { project.commit('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
         let(:diff_file) { commit.diffs.diff_file_with_new_path('files/ruby/popen.rb') }
 
-        it 'returns true' do
-          expect(diff_file.content_changed?).to be_truthy
+        context 'when the blobs are different' do
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
+        end
+
+        context 'when there are no diff refs' do
+          before do
+            allow(diff_file).to receive(:diff_refs).and_return(nil)
+          end
+
+          it 'returns true' do
+            expect(diff_file.content_changed?).to be_truthy
+          end
         end
       end
     end
@@ -268,6 +303,21 @@ describe Gitlab::Diff::File do
 
       it 'returns a Mode Changed viewer' do
         expect(diff_file.simple_viewer).to be_a(DiffViewer::ModeChanged)
+      end
+    end
+
+    context 'when no other conditions apply' do
+      before do
+        allow(diff_file).to receive(:content_changed?).and_return(false)
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(false)
+        allow(diff_file).to receive(:renamed_file?).and_return(false)
+        allow(diff_file).to receive(:mode_changed?).and_return(false)
+        allow(diff_file).to receive(:raw_text?).and_return(false)
+      end
+
+      it 'returns a No Preview viewer' do
+        expect(diff_file.simple_viewer).to be_a(DiffViewer::NoPreview)
       end
     end
   end

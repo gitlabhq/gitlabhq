@@ -17,6 +17,7 @@ module Gitlab
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
+      GitError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -49,13 +50,14 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage
+      attr_reader :storage, :gl_repository, :relative_path
 
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(storage, relative_path)
+      def initialize(storage, relative_path, gl_repository)
         @storage = storage
         @relative_path = relative_path
+        @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -153,7 +155,7 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.count_branch_names
           else
-            rugged.branches.count do |ref|
+            rugged.branches.each(:local).count do |ref|
               begin
                 ref.name && ref.target # ensures the branch is valid
 
@@ -201,6 +203,19 @@ module Gitlab
         end
       end
 
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def ref_exists?(ref_name)
+        gitaly_migrate(:ref_exists) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?(ref_name)
+          else
+            rugged_ref_exists?(ref_name)
+          end
+        end
+      end
+
       # Returns true if the given tag exists
       #
       # name - The name of the tag as a String.
@@ -230,6 +245,13 @@ module Gitlab
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
+      end
+
+      # Returns an Array of all ref names, except when it's matching pattern
+      #
+      # regexp - The pattern for ref names we don't want
+      def all_ref_names_except(regexp)
+        rugged.references.reject { |ref| ref.name =~ regexp }.map(&:name)
       end
 
       # Discovers the default branch based on the repository's available branches
@@ -425,8 +447,8 @@ module Gitlab
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
-      def is_ancestor?(from, to)
-        gitaly_commit_client.is_ancestor(from, to)
+      def ancestor?(from, to)
+        gitaly_commit_client.ancestor?(from, to)
       end
 
       # Return an array of Diff objects that represent the diff
@@ -575,6 +597,23 @@ module Gitlab
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
         rugged.branches.delete(branch_name)
+      end
+
+      def delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
+        message, status = Gitlab::Popen.popen(
+          command,
+          path) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
@@ -987,6 +1026,16 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def rugged_ref_exists?(ref_name)
+        raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+        rugged.references.exist?(ref_name)
+      rescue Rugged::ReferenceError
+        false
       end
 
       # Returns true if the given ref name exists

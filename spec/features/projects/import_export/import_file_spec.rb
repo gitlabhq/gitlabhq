@@ -99,6 +99,6 @@ feature 'Import/Export - project import integration test', js: true do
   end
 
   def project_hook_exists?(project)
-    Gitlab::Git::Hook.new('post-receive', project).exists?
+    Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository).exists?
   end
 end

@@ -111,6 +111,8 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
+$gl-font-weight-normal: 400;
+$gl-font-weight-bold: 600;
 $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
@@ -118,6 +120,7 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
+$gl-text-green-hover: $green-700;
 $gl-text-red: $red-500;
 $gl-text-orange: $orange-600;
 $gl-link-color: $blue-600;

@@ -9,6 +9,14 @@ module Gitlab
       ActiveRecord::Base.configurations[Rails.env]
     end
 
+    def self.username
+      config['username'] || ENV['USER']
+    end
+
+    def self.database_name
+      config['database']
+    end
+
     def self.adapter_name
       config['adapter']
     end

@@ -20,7 +20,7 @@ module SystemCheck
       # Returns true if all subcommands were successful (according to their exit code)
       # Returns false if any or all subcommands failed.
       def repair!
-        return false unless is_gitlab_user?
+        return false unless gitlab_user?
 
         command_success = OPTIONS.map do |name, value|
           system(*%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))

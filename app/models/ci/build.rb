@@ -46,7 +46,10 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create :execute_hooks
+    after_create do |build|
+      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+    end
+
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 
@@ -384,7 +387,9 @@ module Ci
 
       [
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
+        { key: 'GITLAB_USER_NAME', value: user.name, public: true }
       ]
     end
 

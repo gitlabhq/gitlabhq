@@ -16,6 +16,8 @@ module MigrationsHelpers
   end
 
   def reset_column_in_migration_models
+    ActiveRecord::Base.clear_cache!
+
     described_class.constants.sort.each do |name|
       const = described_class.const_get(name)
 

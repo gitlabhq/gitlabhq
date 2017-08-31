@@ -27,7 +27,7 @@ gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
 gem 'omniauth-azure-oauth2', '~> 0.0.6'
-gem 'omniauth-cas3', '~> 1.1.2'
+gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
@@ -126,12 +126,9 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
-gem 'truncato', '~> 0.7.8'
+gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-
-# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
-# and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
-gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
+gem 'nokogiri', '~> 1.8.0'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -207,9 +204,6 @@ gem 'kubeclient', '~> 2.2.0'
 # d3
 gem 'd3_rails', '~> 3.5.0'
 
-# underscore-rails
-gem 'underscore-rails', '~> 1.8.0'
-
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
@@ -248,7 +242,7 @@ gem 'uglifier', '~> 2.7.2'
 gem 'addressable', '~> 2.3.8'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
-gem 'gemojione', '~> 3.0'
+gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails', '~> 4.1.0'
@@ -287,7 +281,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta12'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -340,7 +334,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.49.1', require: false
   gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.0.6', require: false
+  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -396,12 +390,12 @@ gem 'net-ssh', '~> 4.1.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 3.2'
+  gem 'rbnacl', '~> 4.0'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.30.0'
+gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
