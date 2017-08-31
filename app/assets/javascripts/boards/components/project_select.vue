@@ -1,3 +1,41 @@
+<template>
+  <div>
+    <label class="label-light prepend-top-10">
+      Project
+    </label>
+    <div ref="projectsDropdown" class="dropdown">
+      <button
+        class="dropdown-menu-toggle wide"
+        type="button"
+        data-toggle="dropdown"
+        aria-expanded="false">
+        {{ selectedProjectName }}
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+      </button>
+      <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
+        <div class="dropdown-title">
+          <span>Projects</span>
+          <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
+            <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
+          </button>
+        </div>
+        <div class="dropdown-input">
+          <input
+            class="dropdown-input-field"
+            type="search"
+            placeholder="Search projects">
+          <i aria-hidden="true" data-hidden="true" class="fa fa-search dropdown-input-search"></i>
+        </div>
+        <div class="dropdown-content"></div>
+        <div class="dropdown-loading">
+          <loading-icon />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
 /* global ListIssue */
 import eventHub from '../eventhub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -65,37 +103,6 @@ export default {
       },
       text: project => project.name,
     });
-  },
-  template: `
-    <div>
-      <label class="label-light prepend-top-10">
-        Project
-      </label>
-      <div ref="projectsDropdown" class="dropdown">
-        <button
-          class="dropdown-menu-toggle wide"
-          type="button"
-          data-toggle="dropdown"
-          aria-expanded="false">
-          {{ selectedProjectName }}
-          <i class="fa fa-chevron-down" aria-hidden="true"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-          <div class="dropdown-title">
-            <span>Projects</span>
-            <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
-              <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
-            </button>
-          </div>
-          <div class="dropdown-input">
-            <input class="dropdown-input-field">
-          </div>
-          <div class="dropdown-content"></div>
-          <div class="dropdown-loading">
-            <loading-icon />
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+  }
 };
+</script>
