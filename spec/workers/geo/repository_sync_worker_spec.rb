@@ -90,5 +90,29 @@ describe Geo::RepositorySyncWorker do
         subject.perform
       end
     end
+
+    context 'all repositories fail' do
+      before do
+        allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(4)
+        allow_any_instance_of(described_class).to receive(:max_capacity).and_return(5)
+        allow_any_instance_of(Project).to receive(:ensure_repository).and_raise(Gitlab::Shell::Error.new('foo'))
+        allow_any_instance_of(Geo::ProjectSyncWorker).to receive(:sync_wiki?).and_return(false)
+        allow_any_instance_of(Geo::RepositorySyncService).to receive(:expire_repository_caches)
+        allow_any_instance_of(Geo::RepositorySyncService).to receive(:try_obtain_lease) { |&arg| arg.call }
+
+        create_list(:project, 20, :random_last_repository_updated_at)
+      end
+
+      it 'attempts to sync them all' do
+        Sidekiq::Testing.inline! do
+          10.times do
+            subject.perform
+            break if Geo::ProjectRegistry.count == Project.count
+          end
+        end
+
+        expect(Geo::ProjectRegistry.count).to eq(Project.count)
+      end
+    end
   end
 end

@@ -190,6 +190,10 @@ FactoryGirl.define do
       end
     end
 
+    trait :random_last_repository_updated_at do
+      last_repository_updated_at { rand(1.year).seconds.ago }
+    end
+
     trait(:wiki_enabled)            { wiki_access_level ProjectFeature::ENABLED }
     trait(:wiki_disabled)           { wiki_access_level ProjectFeature::DISABLED }
     trait(:wiki_private)            { wiki_access_level ProjectFeature::PRIVATE }
