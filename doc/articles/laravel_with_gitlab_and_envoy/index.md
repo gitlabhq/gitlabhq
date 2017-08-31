@@ -1,9 +1,9 @@
 # Test and deploy Laravel applications with GitLab CI/CD and Envoy
 
-> **Type:** tutorial ||
+> **[Article Type](../../development/writing_documentation.md#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Mehran Rasulian](https://gitlab.com/mehranrasulian) ||
-> **Publication date:** 2017-08-31
+> **Publication date:** 2017-09-01
 
 ## Introduction
 

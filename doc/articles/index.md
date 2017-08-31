@@ -26,7 +26,7 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
-| [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md) | Tutorial | 2017-08-31 |
+| [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md) | Tutorial | 2017-09-01 |
 | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md) | Tutorial | 2017-08-15 |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017-07-13 |
 | [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017-07-11 |
