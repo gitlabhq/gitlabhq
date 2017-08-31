@@ -191,7 +191,15 @@ describe ProjectsHelper do
     end
   end
 
-  describe 'link_to_member' do
+  describe '#link_to_member_avatar' do
+    let(:user) { create(:user) }
+
+    it 'returns image tag for member avatar' do
+      expect(helper.link_to_member_avatar(user)).to eq("<img width=\"16\" class=\"avatar avatar-inline s16  lazy\" alt=\"\" data-src=\"http://www.gravatar.com/avatar/a763e4acc6bc22cbabeae2638cfd4db4?s=32&amp;d=identicon\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" />")
+    end
+  end
+
+  describe '#link_to_member' do
     let(:group)   { create(:group) }
     let(:project) { create(:project, group: group) }
     let(:user)    { create(:user) }

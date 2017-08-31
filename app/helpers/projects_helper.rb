@@ -17,7 +17,7 @@ module ProjectsHelper
   def link_to_member_avatar(author, opts = {})
     default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: ['avatar', 'avatar-inline', "#{"s#{opts[:size]}" if opts[:size]}", opts[:avatar_class]].reject(&:blank?), alt: '') if opts[:avatar]
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -29,7 +29,7 @@ module ProjectsHelper
     author_html = ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
+    author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]

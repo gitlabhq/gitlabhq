@@ -643,7 +643,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 15
+  Max: 14
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
