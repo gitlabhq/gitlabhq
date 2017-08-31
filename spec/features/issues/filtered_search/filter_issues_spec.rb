@@ -8,8 +8,8 @@ describe 'Filter issues', js: true do
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
-  let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
   let!(:multiple_words_label) { create(:label, project: project, title: "Two words") }
+  let!(:milestone) { create(:milestone, title: "8", project: project, start_date: 2.days.ago) }
 
   def expect_no_issues_list
     page.within '.issues-list' do
