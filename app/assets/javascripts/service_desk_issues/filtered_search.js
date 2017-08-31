@@ -20,7 +20,8 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
       return param.indexOf(authorParamKey) === -1;
     });
 
-    onlyValidParams.push(supportBotParamPair);
+    // unshift ensures author param is always first token element
+    onlyValidParams.unshift(supportBotParamPair);
 
     return onlyValidParams;
   }
