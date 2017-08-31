@@ -40,8 +40,6 @@
         graphHeightOffset: 120,
         margin: {},
         unitOfDisplay: '',
-        areaColorRgb: '#8fbce8',
-        lineColorRgb: '#1f78d1',
         yAxisLabel: '',
         legendTitle: '',
         reducedDeploymentData: [],
@@ -143,7 +141,7 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.graphData.queries[0].result,
+        this.timeSeries = createTimeSeries(this.graphData.queries[0],
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset);
@@ -162,7 +160,7 @@
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
-          .ticks(measurements.xTicks)
+          .ticks(d3.time.minute, 60)
           .tickFormat(timeScaleFormat)
           .orient('bottom');
 
