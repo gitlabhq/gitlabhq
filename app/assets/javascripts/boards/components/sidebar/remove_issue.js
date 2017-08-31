@@ -33,9 +33,12 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       const issue = this.issue;
       const lists = issue.getLists();
       const listLabelIds = lists.map(list => list.label.id);
-      const labelIds = this.issue.labels
+      let labelIds = this.issue.labels
         .map(label => label.id)
         .filter(id => !listLabelIds.includes(id));
+      if (labelIds.length === 0) {
+        labelIds = [''];
+      }
       const data = {
         issue: {
           label_ids: labelIds,
