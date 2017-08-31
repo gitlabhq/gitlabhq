@@ -138,7 +138,7 @@
                 %span
                   Milestones
 
-            - if @project.service_desk_enabled?
+            - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
               = nav_link(controller: [ :issues, :service_desk ]) do
                 = link_to service_desk_project_issues_url(@project), title: 'Service Desk' do
                   %span Service Desk
