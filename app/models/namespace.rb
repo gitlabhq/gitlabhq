@@ -44,6 +44,10 @@ class Namespace < ActiveRecord::Base
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
+  before_create :sync_share_with_group_lock_with_parent
+  before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
+  after_commit :force_share_with_group_lock_on_descendants, on: :update, if: -> { previous_changes.key?('share_with_group_lock') && share_with_group_lock? }
+
   # Legacy Storage specific hooks
 
   after_update :move_dir, if: :path_changed?
@@ -218,5 +222,15 @@ class Namespace < ActiveRecord::Base
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, "has too deep level of nesting")
     end
+  end
+
+  def sync_share_with_group_lock_with_parent
+    if has_parent? && parent.share_with_group_lock?
+      self.share_with_group_lock = true
+    end
+  end
+
+  def force_share_with_group_lock_on_descendants
+    descendants.update_all(share_with_group_lock: true)
   end
 end
