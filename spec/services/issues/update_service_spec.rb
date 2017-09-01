@@ -144,6 +144,13 @@ describe Issues::UpdateService, :mailer do
           expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
         end
+
+        it 'creates system note about discussion lock' do
+          note = find_note('locked this issue')
+
+          expect(note).not_to be_nil
+          expect(note.note).to eq 'locked this issue'
+        end
       end
     end
 

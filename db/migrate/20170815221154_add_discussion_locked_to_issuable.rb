@@ -1,8 +1,5 @@
-class AddDicussionLockedToIssuable < ActiveRecord::Migration
-  include Gitlab::Database::MigrationHelpers
-
+class AddDiscussionLockedToIssuable < ActiveRecord::Migration
   DOWNTIME = false
-  disable_ddl_transaction!
 
   def up
     add_column(:merge_requests, :discussion_locked, :boolean)

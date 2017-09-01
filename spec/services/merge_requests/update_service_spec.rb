@@ -125,6 +125,13 @@ describe MergeRequests::UpdateService, :mailer do
         expect(note.note).to eq 'changed target branch from `master` to `target`'
       end
 
+      it 'creates system note about discussion lock' do
+        note = find_note('locked this issue')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq 'locked this issue'
+      end
+
       context 'when not including source branch removal options' do
         before do
           opts.delete(:force_remove_source_branch)

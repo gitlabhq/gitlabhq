@@ -9,7 +9,7 @@
       "title": { "type": "string" },
       "description": { "type": ["string", "null"] },
       "state": { "type": "string" },
-      "discussion_locked": { "type": "boolean" },
+      "discussion_locked": { "type": ["boolean", "null"] },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "labels": {
