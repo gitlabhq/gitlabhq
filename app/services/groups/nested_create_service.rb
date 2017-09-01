@@ -15,6 +15,10 @@ module Groups
         return group
       end
 
+      if group_path.include?('/') && !Group.supports_nested_groups?
+        raise 'Nested groups are not supported on MySQL'
+      end
+
       create_group_path
     end
 

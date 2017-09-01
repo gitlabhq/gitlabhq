@@ -499,6 +499,10 @@ describe API::Branches do
 
       expect(response).to have_gitlab_http_status(404)
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/repository/branches/#{branch_name}", user) }
+    end
   end
 
   describe 'DELETE /projects/:id/repository/merged_branches' do

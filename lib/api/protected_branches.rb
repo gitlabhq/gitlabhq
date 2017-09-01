@@ -76,9 +76,7 @@ module API
       delete ':id/protected_branches/:name', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         protected_branch = user_project.protected_branches.find_by!(name: params[:name])
 
-        protected_branch.destroy
-
-        status 204
+        destroy_conditionally!(protected_branch)
       end
     end
   end

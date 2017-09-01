@@ -1563,10 +1563,18 @@ describe Project do
 
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
-      let(:housekeeping_service) { spy }
+      let(:after_import_service) { spy(:after_import_service) }
+      let(:housekeeping_service) { spy(:housekeeping_service) }
 
       before do
-        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+        allow(Projects::AfterImportService)
+          .to receive(:new) { after_import_service }
+
+        allow(after_import_service)
+          .to receive(:execute) { housekeeping_service.execute }
+
+        allow(Projects::HousekeepingService)
+          .to receive(:new) { housekeeping_service }
       end
 
       it 'resets project import_error' do
@@ -1581,6 +1589,7 @@ describe Project do
 
         project.import_finish
 
+        expect(after_import_service).to have_received(:execute)
         expect(housekeeping_service).to have_received(:execute)
       end
 
@@ -2222,6 +2231,28 @@ describe Project do
 
         expect(projects).to eq([public_project])
       end
+    end
+  end
+
+  describe '#pages_available?' do
+    let(:project) { create(:project, group: group) }
+
+    subject { project.pages_available? }
+
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+    end
+
+    context 'when the project is in a top level namespace' do
+      let(:group) { create(:group) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the project is in a subgroup' do
+      let(:group) { create(:group, :nested) }
+
+      it { is_expected.to be(false) }
     end
   end
 

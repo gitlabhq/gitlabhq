@@ -189,6 +189,11 @@ describe API::Labels do
       delete api("/projects/#{project.id}/labels", user)
       expect(response).to have_http_status(400)
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/labels", user) }
+      let(:params) { { name: 'label1' } }
+    end
   end
 
   describe 'PUT /projects/:id/labels' do

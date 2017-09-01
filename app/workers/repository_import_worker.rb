@@ -3,6 +3,7 @@ class RepositoryImportWorker
 
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
+  include ExceptionBacktrace
 
   sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 

@@ -10,7 +10,9 @@ describe 'projects/edit' do
     assign(:project, project)
 
     allow(controller).to receive(:current_user).and_return(user)
-    allow(view).to receive_messages(current_user: user, can?: true)
+    allow(view).to receive_messages(current_user: user,
+                                    can?: true,
+                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
   end
 
   context 'LFS enabled setting' do

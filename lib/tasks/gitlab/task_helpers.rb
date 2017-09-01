@@ -104,7 +104,7 @@ module Gitlab
       Gitlab.config.gitlab.user
     end
 
-    def is_gitlab_user?
+    def gitlab_user?
       return @is_gitlab_user unless @is_gitlab_user.nil?
 
       current_user = run_command(%w(whoami)).chomp
@@ -114,7 +114,7 @@ module Gitlab
     def warn_user_is_not_gitlab
       return if @warned_user_not_gitlab
 
-      unless is_gitlab_user?
+      unless gitlab_user?
         current_user = run_command(%w(whoami)).chomp
 
         puts " Warning ".color(:black).background(:yellow)

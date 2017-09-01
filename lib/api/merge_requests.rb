@@ -21,7 +21,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
+          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels, :timelogs)
       end
 
       params :merge_requests_params do
@@ -164,8 +164,8 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
-        status 204
-        merge_request.destroy
+
+        destroy_conditionally!(merge_request)
       end
 
       params do

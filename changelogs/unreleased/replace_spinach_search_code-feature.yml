@@ -1,0 +1,5 @@
+---
+title: Replace 'source/search_code.feature' spinach test with an rspec analog
+merge_request: 13697
+author: blackst0ne
+type: other

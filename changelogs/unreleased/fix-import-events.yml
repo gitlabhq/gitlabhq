@@ -1,0 +1,5 @@
+---
+title: Fix events error importing GitLab projects
+merge_request:
+author:
+type: fixed

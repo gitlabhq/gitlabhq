@@ -74,6 +74,7 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
@@ -184,13 +185,13 @@ import initChangesDropdown from './init_changes_dropdown';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
+        case 'groups:merge_requests':
           if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
           new ProjectSelect();
@@ -575,6 +576,7 @@ import initChangesDropdown from './init_changes_dropdown';
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();

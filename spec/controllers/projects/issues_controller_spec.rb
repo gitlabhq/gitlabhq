@@ -268,7 +268,7 @@ describe Projects::IssuesController do
         context 'when an issue is not identified as spam' do
           before do
             allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
           end
 
           it 'normally updates the issue' do
@@ -278,7 +278,7 @@ describe Projects::IssuesController do
 
         context 'when an issue is identified as spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
           end
 
           context 'when captcha is not verified' do
@@ -672,7 +672,7 @@ describe Projects::IssuesController do
       context 'when an issue is not identified as spam' do
         before do
           allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-          allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
         end
 
         it 'does not create an issue' do
@@ -682,7 +682,7 @@ describe Projects::IssuesController do
 
       context 'when an issue is identified as spam' do
         before do
-          allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
         end
 
         context 'when captcha is not verified' do

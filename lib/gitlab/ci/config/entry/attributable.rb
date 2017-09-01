@@ -8,6 +8,10 @@ module Gitlab
           class_methods do
             def attributes(*attributes)
               attributes.flatten.each do |attribute|
+                if method_defined?(attribute)
+                  raise ArgumentError, 'Method already defined!'
+                end
+
                 define_method(attribute) do
                   return unless config.is_a?(Hash)
 

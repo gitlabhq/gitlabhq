@@ -241,6 +241,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -384,9 +392,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    return false unless merge_jid
-
-    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+    !!merge_jid && !merged?
   end
 
   def closed_without_fork?
@@ -683,9 +689,8 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
-
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -798,7 +803,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?
@@ -820,7 +825,7 @@ class MergeRequest < ActiveRecord::Base
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 
@@ -937,7 +942,13 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def update_project_counter_caches?
+    state_changed?
+  end
+
   def update_project_counter_caches
+    return unless update_project_counter_caches?
+
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 

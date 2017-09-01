@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
 
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
@@ -247,6 +248,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
@@ -371,11 +373,7 @@ class Project < ActiveRecord::Base
 
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
         project.run_after_commit do
-          begin
-            Projects::HousekeepingService.new(project).execute
-          rescue Projects::HousekeepingService::LeaseTaken => e
-            Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
-          end
+          Projects::AfterImportService.new(project).execute
         end
       end
     end
@@ -1232,6 +1230,10 @@ class Project < ActiveRecord::Base
 
   def public_pages_path
     File.join(pages_path, 'public')
+  end
+
+  def pages_available?
+    Gitlab.config.pages.enabled && !namespace.subgroup?
   end
 
   def remove_private_deploy_keys

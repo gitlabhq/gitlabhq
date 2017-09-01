@@ -4,25 +4,41 @@ const tokenKeys = [{
   param: 'username',
   symbol: '@',
   icon: 'pencil',
+  tag: '@author',
 }, {
   key: 'assignee',
   type: 'string',
   param: 'username',
   symbol: '@',
   icon: 'user',
+  tag: '@assignee',
 }, {
   key: 'milestone',
   type: 'string',
   param: 'title',
   symbol: '%',
   icon: 'clock-o',
+  tag: '%milestone',
 }, {
   key: 'label',
   type: 'array',
   param: 'name[]',
   symbol: '~',
   icon: 'tag',
+  tag: '~label',
 }];
+
+if (gon.current_user_id) {
+  // Appending tokenkeys only logged-in
+  tokenKeys.push({
+    key: 'my-reaction',
+    type: 'string',
+    param: 'emoji',
+    symbol: '',
+    icon: 'thumbs-up',
+    tag: 'emoji',
+  });
+}
 
 const alternativeTokenKeys = [{
   key: 'label',
@@ -83,6 +99,10 @@ class FilteredSearchTokenKeys {
   static searchByKeyParam(keyParam) {
     return tokenKeysWithAlternative.find((tokenKey) => {
       let tokenKeyParam = tokenKey.key;
+
+      // Replace hyphen with underscore to compare keyParam with tokenKeyParam
+      // e.g. 'my-reaction' => 'my_reaction'
+      tokenKeyParam = tokenKeyParam.replace('-', '_');
 
       if (tokenKey.param) {
         tokenKeyParam += `_${tokenKey.param}`;

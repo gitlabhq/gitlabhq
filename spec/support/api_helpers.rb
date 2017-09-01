@@ -45,18 +45,4 @@ module ApiHelpers
       oauth_access_token: oauth_access_token
     )
   end
-
-  def ci_api(path, user = nil)
-    "/ci/api/v1/#{path}" +
-
-      # Normalize query string
-      (path.index('?') ? '' : '?') +
-
-      # Append private_token if given a User object
-      if user.respond_to?(:private_token)
-        "&private_token=#{user.private_token}"
-      else
-        ''
-      end
-  end
 end

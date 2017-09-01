@@ -1,6 +1,18 @@
 require 'securerandom'
 
 class Repository
+  REF_MERGE_REQUEST = 'merge-requests'.freeze
+  REF_KEEP_AROUND = 'keep-around'.freeze
+  REF_ENVIRONMENTS = 'environments'.freeze
+
+  RESERVED_REFS_NAMES = %W[
+    heads
+    tags
+    #{REF_ENVIRONMENTS}
+    #{REF_KEEP_AROUND}
+    #{REF_ENVIRONMENTS}
+  ].freeze
+
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
@@ -60,6 +72,10 @@ class Repository
     @project = project
   end
 
+  def ==(other)
+    @disk_path == other.disk_path
+  end
+
   def raw_repository
     return nil unless full_path
 
@@ -73,6 +89,10 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(repository_storage_path, disk_path + '.git')
     )
+  end
+
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
   end
 
   #
@@ -206,12 +226,18 @@ class Repository
   end
 
   def branch_exists?(branch_name)
-    branch_names.include?(branch_name)
+    return false unless raw_repository
+
+    @branch_exists_memo ||= Hash.new do |hash, key|
+      hash[key] = raw_repository.branch_exists?(key)
+    end
+
+    @branch_exists_memo[branch_name]
   end
 
   def ref_exists?(ref)
-    rugged.references.exist?(ref)
-  rescue Rugged::ReferenceError
+    !!raw_repository&.ref_exists?(ref)
+  rescue ArgumentError
     false
   end
 
@@ -228,10 +254,10 @@ class Repository
     begin
       write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
 
@@ -266,6 +292,7 @@ class Repository
   def expire_branches_cache
     expire_method_caches(%i(branch_names branch_count))
     @local_branches = nil
+    @branch_exists_memo = nil
   end
 
   def expire_statistics_caches
@@ -937,7 +964,7 @@ class Repository
 
     if branch_commit
       same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -951,12 +978,12 @@ class Repository
     nil
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+        raw_repository.ancestor?(ancestor_id, descendant_id)
       else
         rugged_is_ancestor?(ancestor_id, descendant_id)
       end
@@ -985,25 +1012,22 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
+    return yield nil if start_repository.empty_repo?
 
-    branch_name_or_sha =
-      if start_repository == self
-        start_branch_name
+    if start_repository == self
+      yield commit(start_branch_name)
+    else
+      sha = start_repository.commit(start_branch_name).sha
+
+      if branch_commit = commit(sha)
+        yield branch_commit
       else
-        tmp_ref = fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          "refs/tmp/#{SecureRandom.hex}/head"
-        )
-
-        start_repository.commit(start_branch_name).sha
+        with_repo_tmp_commit(
+          start_repository, start_branch_name, sha) do |tmp_commit|
+          yield tmp_commit
+        end
       end
-
-    yield(commit(branch_name_or_sha))
-
-  ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    end
   end
 
   def add_remote(name, url)
@@ -1020,7 +1044,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1152,7 +1176,7 @@ class Repository
   end
 
   def keep_around_ref_name(sha)
-    "refs/keep-around/#{sha}"
+    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})
@@ -1185,7 +1209,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
   end
 
   def circuit_breaker
@@ -1211,5 +1235,17 @@ class Repository
       .gitaly_commit_client
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
+  end
+
+  def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+    tmp_ref = fetch_ref(
+      start_repository.path_to_repo,
+      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+      "refs/tmp/#{SecureRandom.hex}/head"
+    )
+
+    yield commit(sha)
+  ensure
+    delete_refs(tmp_ref) if tmp_ref
   end
 end
