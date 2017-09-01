@@ -153,6 +153,7 @@ module API
         destroy_conditionally!(group) do |group|
           ::Groups::DestroyService.new(group, current_user).execute
         end
+        status 204
       end
 
       desc 'Get a list of projects in this group.' do
@@ -199,6 +200,19 @@ module API
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
+      end
+
+      desc 'Sync a group with LDAP.'
+      post ":id/ldap_sync" do
+        not_found! unless Gitlab::LDAP::Config.enabled_extras?
+
+        group = find_group!(params[:id])
+        authorize! :admin_group, group
+
+        if group.pending_ldap_sync
+          LdapGroupSyncWorker.perform_async(group.id)
+        end
+        status 202
       end
     end
   end
