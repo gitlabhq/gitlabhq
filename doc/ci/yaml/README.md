@@ -130,7 +130,7 @@ There are also two edge cases worth mentioning:
 
 ### types
 
-> Deprecated, and will be removed in 10.0. Use [stages](#stages) instead.
+> Deprecated, and could be removed in one of the future releases. Use [stages](#stages) instead.
 
 Alias for [stages](#stages).
 
