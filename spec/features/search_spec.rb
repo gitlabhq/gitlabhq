@@ -295,7 +295,7 @@ describe "Search"  do
       fill_in 'search', with: 'foo'
       click_button 'Search'
 
-      expect(find('#group_id').value).to eq(project.namespace.id.to_s)
+      expect(find('#group_id', visible: false).value).to eq(project.namespace.id.to_s)
     end
 
     it 'preserves the project being searched in' do
@@ -304,7 +304,7 @@ describe "Search"  do
       fill_in 'search', with: 'foo'
       click_button 'Search'
 
-      expect(find('#project_id').value).to eq(project.id.to_s)
+      expect(find('#project_id', visible: false).value).to eq(project.id.to_s)
     end
   end
 end
