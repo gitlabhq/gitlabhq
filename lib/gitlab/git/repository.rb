@@ -70,6 +70,10 @@ module Gitlab
 
       delegate :exists?, to: :gitaly_repository_client
 
+      def ==(other)
+        path == other.path
+      end
+
       # Default branch in the repository
       def root_ref
         @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
