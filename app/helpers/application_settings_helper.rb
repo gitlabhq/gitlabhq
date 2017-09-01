@@ -2,11 +2,8 @@ module ApplicationSettingsHelper
   prepend EE::ApplicationSettingsHelper
   extend self
 
-<<<<<<< HEAD
-=======
   include Gitlab::CurrentSettings
 
->>>>>>> upstream/master
   delegate  :gravatar_enabled?,
             :signup_enabled?,
             :password_authentication_enabled?,

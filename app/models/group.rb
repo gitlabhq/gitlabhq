@@ -131,19 +131,11 @@ class Group < Namespace
   def visibility_level_allowed_by_projects?(level = self.visibility_level)
     !projects.where('visibility_level > ?', level).exists?
   end
-<<<<<<< HEAD
 
   def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
     !children.where('visibility_level > ?', level).exists?
   end
 
-=======
-
-  def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
-    !children.where('visibility_level > ?', level).exists?
-  end
-
->>>>>>> upstream/master
   def visibility_level_allowed?(level = self.visibility_level)
     visibility_level_allowed_by_parent?(level) &&
       visibility_level_allowed_by_projects?(level) &&
