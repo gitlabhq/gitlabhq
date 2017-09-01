@@ -500,13 +500,14 @@ except master.
 ### only and except (complex)
 
 > Introduced in GitLab 10.0
-> This an _alpha_ feature, and it it subject to change at any time without prior notice!
+> This an _alpha_ feature, and it it subject to change at any time without
+  prior notice!
 
-Since GitLab 10.0 it is possible to define a complex only/except job policy
-configuration.
+Since GitLab 10.0 it is possible to define a more elaborate only/except job
+policy configuration.
 
 GitLab now supports both, simple and complex strategies, so it is possible to
-use array and hash scheme configuration.
+use an array and a hash configuration scheme.
 
 Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
 simplified only/except configuration, whereas kubernetes strategy accepts only
