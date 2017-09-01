@@ -58,16 +58,16 @@ class GeoNodeStatus {
         this.$dbReplicationLag.text('UNKNOWN');
       }
 
-      this.$repositoriesSynced.html(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
-      this.$repositoriesFailed.html(status.repositories_failed_count);
-      this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
-      this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
+      this.$repositoriesSynced.text(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
+      this.$repositoriesFailed.text(status.repositories_failed_count);
+      this.$lfsObjectsSynced.text(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
+      this.$attachmentsSynced.text(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
       const eventDate = gl.utils.formatDate(new Date(status.last_event_date));
       const cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_date));
-      this.$lastEventSeen.html(`${status.last_event_id} (${eventDate})`);
-      this.$lastCursorEvent.html(`${status.cursor_last_event_id} (${cursorDate})`);
+      this.$lastEventSeen.text(`${status.last_event_id} (${eventDate})`);
+      this.$lastCursorEvent.text(`${status.cursor_last_event_id} (${cursorDate})`);
       if (status.health === 'Healthy') {
-        this.$health.html('');
+        this.$health.text('');
       } else {
         const strippedData = $('<div>').html(`${status.health}`).text();
         this.$health.html(`<code class="geo-health">${strippedData}</code>`);
@@ -96,11 +96,11 @@ class GeoNodeStatus {
     if (healthy) {
       this.$healthStatus.removeClass(unhealthyClass)
                         .addClass(healthyClass)
-                        .html('Healthy');
+                        .text('Healthy');
     } else {
       this.$healthStatus.removeClass(healthyClass)
                         .addClass(unhealthyClass)
-                        .html('Unhealthy');
+                        .text('Unhealthy');
     }
   }
 }
