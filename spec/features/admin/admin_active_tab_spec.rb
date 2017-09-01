@@ -7,15 +7,15 @@ RSpec.describe 'admin active tab' do
 
   shared_examples 'page has active tab' do |title|
     it "activates #{title} tab" do
-      expect(page).to have_selector('.layout-nav .nav-links > li.active', count: 1)
-      expect(page.find('.layout-nav li.active')).to have_content(title)
+      expect(page).to have_selector('.nav-sidebar .sidebar-top-level-items > li.active', count: 1)
+      expect(page.find('.nav-sidebar .sidebar-top-level-items > li.active')).to have_content(title)
     end
   end
 
   shared_examples 'page has active sub tab' do |title|
     it "activates #{title} sub tab" do
-      expect(page).to have_selector('.sub-nav li.active', count: 1)
-      expect(page.find('.sub-nav li.active')).to have_content(title)
+      expect(page).to have_selector('.sidebar-sub-level-items li.active', count: 1)
+      expect(page.find('.sidebar-sub-level-items li.active')).to have_content(title)
     end
   end
 

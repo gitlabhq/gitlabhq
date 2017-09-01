@@ -89,6 +89,8 @@ describe 'Filter issues', js: true do
       milestone: future_milestone,
       project: project)
 
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+
     visit project_issues_path(project)
   end
 
@@ -798,7 +800,7 @@ describe 'Filter issues', js: true do
 
     it 'updates atom feed link for group issues' do
       visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a', text: 'Subscribe')
+      link = find('.breadcrumbs a', text: 'Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
