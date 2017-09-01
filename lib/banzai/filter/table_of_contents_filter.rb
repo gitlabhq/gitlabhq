@@ -43,15 +43,7 @@ module Banzai
           end
         end
 
-        if header_root.children.length > 0
-          result[:toc] = %q{<ul class="section-nav">}
-
-          header_root.children.each do |child|
-            push_toc(child)
-          end
-
-          result[:toc] << '</ul>'
-        end
+        push_toc(header_root.children, root: true)
 
         doc
       end
@@ -62,19 +54,19 @@ module Banzai
         %Q{<a id="user-content-#{href}" class="anchor" href="##{href}" aria-hidden="true"></a>}
       end
 
-      def push_toc(header_node)
+      def push_toc(children, root: false)
+        return if children.empty?
+
+        klass = ' class="section-nav"' if root
+
+        result[:toc] << "<ul#{klass}>"
+        children.each { |child| push_anchor(child) }
+        result[:toc] << '</ul>'
+      end
+
+      def push_anchor(header_node)
         result[:toc] << %Q{<li><a href="##{header_node.href}">#{header_node.text}</a>}
-
-        if header_node.children.length > 0
-          result[:toc] << '<ul>'
-
-          header_node.children.each do |child|
-            push_toc(child)
-          end
-
-          result[:toc] << '</ul>'
-        end
-
+        push_toc(header_node.children)
         result[:toc] << '</li>'
       end
 
