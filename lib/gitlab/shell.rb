@@ -442,9 +442,9 @@ module Gitlab
     def authorized_keys_enabled?
       # Return true if nil to ensure the authorized_keys methods work while
       # fixing the authorized_keys file during migration.
-      return true if current_application_settings.authorized_keys_enabled.nil?
+      return true if Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled.nil?
 
-      current_application_settings.authorized_keys_enabled
+      Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled
     end
 
     private
