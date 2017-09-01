@@ -33,7 +33,7 @@ describe Gitlab::Ci::Stage::Seed do
         allow_any_instance_of(Project).to receive(:protected_for?).and_return(true)
       end
 
-      it 'returns unprotected builds' do
+      it 'returns protected builds' do
         expect(subject.builds).to all(include(protected: true))
       end
     end

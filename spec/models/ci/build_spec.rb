@@ -58,7 +58,7 @@ describe Ci::Build do
       it { is_expected.not_to include(job) }
     end
 
-    context 'when protected is false' do
+    context 'when protected is nil' do
       let!(:job) { create(:ci_build) }
 
       before do
