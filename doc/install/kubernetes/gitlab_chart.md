@@ -1,9 +1,9 @@
 # GitLab Helm Chart
 > **Note:**
-* GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will replace these.
+* > *Note*: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
 * Officially supported cloud providers are Google Container Service and Azure Container Service.
 
-The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
+The `gitlab` Helm chart deploys *just* GitLab into your Kubernetes cluster, and offers extensive configuration options. For most deployments we recommended the [gitlab-omnibus](gitlab_omnibus.md) chart,
 
 This chart includes the following:
 
