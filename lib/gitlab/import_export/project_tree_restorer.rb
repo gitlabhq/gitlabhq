@@ -9,6 +9,7 @@ module Gitlab
         @user = user
         @shared = shared
         @project = project
+        @project_id = project.id
       end
 
       def restore
@@ -48,24 +49,42 @@ module Gitlab
       # the configuration yaml file too.
       # Finally, it updates each attribute in the newly imported project.
       def create_relations
-        saved = []
+        @saved = []
         default_relation_list.each do |relation|
           next unless relation.is_a?(Hash) || @tree_hash[relation.to_s].present?
-
-          create_sub_relations(relation, @tree_hash) if relation.is_a?(Hash)
-
-          relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
-          relation_hash_list = @tree_hash[relation_key.to_s]
-
-          next unless relation_hash_list
-
-          [relation_hash_list].flatten.each_slice(10) do |relation_hash_batch|
-
-            relation_hash = create_relation(relation_key, relation_hash_batch)
-            saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+          if relation.is_a?(Hash)
+            create_sub_relations(relation, @tree_hash)
+          else
+            relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
+            relation_hash_list = @tree_hash[relation_key.to_s]
+            save_relation_hash(relation_hash_list, relation_key, saved)
           end
+
+
+          # relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
+          # relation_hash_list = @tree_hash[relation_key.to_s]
+          #
+          # next unless relation_hash_list
+          #
+          # if relation_hash_list.is_a?(Array)
+          #   [relation_hash_list].flatten.each_slice(15) do |relation_hash_batch|
+          #     save_relation_hash(relation_hash_batch, relation_key, saved)
+          #   end
+          # else
+          #   save_relation_hash(relation_hash_list, relation_key, saved)
+          # end
+
         end
-        saved.all?
+        @saved.all?
+      end
+
+      def save_relation_hash(relation_hash_batch, relation_key)
+        relation_hash = create_relation(relation_key, relation_hash_batch)
+        @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+        @restored_project = nil
+        @project = nil
+
+        @project = Project.find_by_id(@project_id)
       end
 
       def default_relation_list
@@ -80,7 +99,7 @@ module Gitlab
         @project.update_columns(project_params)
         @project
       end
-git che
+
       def project_params
         @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
@@ -110,6 +129,8 @@ git che
             relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
             relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
           end
+
+          save_relation_hash(relation_item, relation_key)
         end
       end
 
