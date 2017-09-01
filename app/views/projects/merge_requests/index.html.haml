@@ -20,8 +20,8 @@
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }
-    -# TODO add verfication
-    = render 'shared/auto_devops_callout'
+    -if show_callout?('auto_devops_settings_dismissed')
+      = render 'shared/auto_devops_callout'
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
       .nav-controls{ class: ("visible-xs" if show_new_nav?) }

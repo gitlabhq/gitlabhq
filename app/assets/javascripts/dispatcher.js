@@ -385,8 +385,6 @@ import initChangesDropdown from './init_changes_dropdown';
               parentEl: '.pipelines-tabs',
             },
           });
-
-          new UserCallout();
           break;
         case 'groups:activity':
           new gl.Activities();
