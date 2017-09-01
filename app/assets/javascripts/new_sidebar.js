@@ -19,6 +19,11 @@ export default class NewNavSidebar {
   }
 
   bindEvents() {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
+        this.toggleCollapsedSidebar(true);
+      }
+    });
     this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));

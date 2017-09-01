@@ -99,6 +99,13 @@ $new-sidebar-collapsed-width: 50px;
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
 
+  &:not(.sidebar-icons-only) {
+    @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+      box-shadow: inset -2px 0 0 $border-color,
+                  2px 1px 3px $dropdown-shadow-color;
+    }
+  }
+
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
 
