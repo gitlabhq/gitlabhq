@@ -19,7 +19,7 @@ feature 'Edit group settings' do
       scenario 'is able to navigate to LDAP group section' do
         visit edit_group_path(group)
 
-        expect(find('div.sub-nav')).to have_content('LDAP Group')
+        expect(find('.nav-sidebar')).to have_content('LDAP Group')
       end
 
       context 'with owners not being able to manage LDAP' do
@@ -28,7 +28,7 @@ feature 'Edit group settings' do
 
           visit edit_group_path(group)
 
-          expect(find('div.sub-nav')).not_to have_content('LDAP Group')
+          expect(find('.nav-sidebar')).not_to have_content('LDAP Group')
         end
       end
     end
@@ -90,14 +90,14 @@ feature 'Edit group settings' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.title')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.title')).to have_content(project.path)
+        expect(find('.breadcrumbs')).to have_content(project.path)
       end
     end
   end

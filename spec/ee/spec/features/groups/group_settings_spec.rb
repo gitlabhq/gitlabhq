@@ -15,7 +15,7 @@ feature 'Edit group settings' do
 
       visit edit_group_path(group)
 
-      within('.sub-nav') do
+      within('.nav-sidebar') do
         expect(page).to have_link('Webhooks')
       end
     end
@@ -27,7 +27,7 @@ feature 'Edit group settings' do
 
       visit edit_group_path(group)
 
-      within('.sub-nav') do
+      within('.nav-sidebar') do
         expect(page).not_to have_link('Webhooks')
       end
     end
