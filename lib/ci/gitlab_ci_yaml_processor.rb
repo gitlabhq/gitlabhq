@@ -20,7 +20,6 @@ module Ci
       raise ValidationError, e.message
     end
 
-
     def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
       jobs_for_stage_and_ref(stage, ref, tag, source).map do |name, _|
         build_attributes(name)
