@@ -546,42 +546,18 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  context 'when kubernetes is configured' do
-    let(:project) { create(:kubernetes_project) }
+  describe '#has_kubernetes_active?' do
+    context 'when kubernetes is configured' do
+      let(:project) { create(:kubernetes_project) }
 
-    before do
-      create(:ci_variable, key: 'KUBE_DOMAIN',
-                           protected: false,
-                           project: project)
-    end
-
-    describe '#context_variables' do
-      it 'returns kubernetes-related variables' do
-        variables = pipeline.context_variables.map { |v| v.fetch(:key) }
-
-        expect(variables).to include 'KUBECONFIG', 'KUBE_DOMAIN'
-      end
-    end
-
-    describe '#has_kubernetes_available?' do
       it 'returns true' do
-        expect(pipeline).to have_kubernetes_available
-      end
-    end
-  end
-
-  context 'when kubernetes is not configured' do
-    describe '#context_variables' do
-      it 'does not return kubernetes related variables' do
-        variables = pipeline.context_variables.map { |v| v.fetch(:key) }
-
-        expect(variables).not_to include 'KUBECONFIG', 'KUBE_DOMAIN'
+        expect(pipeline).to have_kubernetes_active
       end
     end
 
-    describe '#has_kubernetes_available?' do
+    context 'when kubernetes is not configured' do
       it 'returns false' do
-        expect(pipeline).not_to have_kubernetes_available
+        expect(pipeline).not_to have_kubernetes_active
       end
     end
   end

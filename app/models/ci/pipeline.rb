@@ -304,19 +304,8 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
-    def context_variables
-      @context_variables ||= project.secret_variables_for(ref: ref).to_a
-        .map(&:to_runner_variable) + project.deployment_variables.to_a
-    end
-
-    def has_kubernetes_available?
-      kubernetes_variables = context_variables.select do |variable|
-        variable.fetch(:key).in?(%w[KUBECONFIG KUBE_DOMAIN])
-      end
-
-      return false if kubernetes_variables.empty?
-
-      kubernetes_variables.map { |var| var.fetch(:value).present? }.all?
+    def has_kubernetes_active?
+      project.kubernetes_service&.active?
     end
 
     def has_stage_seeds?

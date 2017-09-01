@@ -89,7 +89,7 @@ module Ci
 
       builds.select do |build|
         job = @jobs[build.fetch(:name).to_sym]
-        has_kubernetes = pipeline.has_kubernetes_available?
+        has_kubernetes = pipeline.has_kubernetes_active?
         only_kubernetes = job.dig(:only, :kubernetes)
         except_kubernetes = job.dig(:except, :kubernetes)
 
