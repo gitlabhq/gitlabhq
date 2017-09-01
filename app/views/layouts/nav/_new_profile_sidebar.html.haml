@@ -20,8 +20,10 @@
             Account
       - if current_application_settings.should_check_namespace_plan?
         = nav_link(controller: :billings) do
-          = link_to profile_billings_path, title: 'Billing' do
-            %span
+          = sidebar_link profile_billings_path, title: _('Billing') do
+            .nav-icon-container
+              = custom_icon('credit_card')
+            %span.nav-item-name
               Billing
       - if current_application_settings.user_oauth_applications?
         = nav_link(controller: 'oauth/applications') do
