@@ -25,7 +25,7 @@ function collate(array, rows = 2) {
   let row = [];
   array.forEach((value, index) => {
     row.push(value);
-    if (index % rows === 0) {
+    if ((index + 1) % rows === 0) {
       collatedArray.push(row);
       row = [];
     }
