@@ -519,7 +519,7 @@ describe Issues::UpdateService, :mailer do
         end
 
         it 'calls the move service with the proper issue and project' do
-          move_stub = class_double("Issues::MoveService").as_stubbed_const
+          move_stub = instance_double(Issues::MoveService)
           allow(Issues::MoveService).to receive(:new).and_return(move_stub)
           allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
 
