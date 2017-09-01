@@ -18,7 +18,11 @@ module EE
     end
 
     def board_base_url
-      return group_boards_path(@group) if @group
+      if board.group_board?
+        group_boards_url(@group)
+      else
+        super
+      end
     end
 
     def board_path(board)
