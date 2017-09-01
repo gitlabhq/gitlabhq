@@ -547,7 +547,7 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#has_kubernetes_active?' do
-    context 'when kubernetes is configured' do
+    context 'when kubernetes is active' do
       let(:project) { create(:kubernetes_project) }
 
       it 'returns true' do
@@ -555,7 +555,7 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    context 'when kubernetes is not configured' do
+    context 'when kubernetes is not active' do
       it 'returns false' do
         expect(pipeline).not_to have_kubernetes_active
       end

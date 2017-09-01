@@ -172,19 +172,13 @@ module Ci
           YAML.dump(
             spinach: { stage: 'test', script: 'spinach' },
             production: { stage: 'deploy', script: 'cap', only: {
-                          kubernetes: 'configured' } }
+                          kubernetes: 'active' } }
           )
         end
 
-        context 'when kubernetes is configured' do
+        context 'when kubernetes is active' do
           let(:project) { create(:kubernetes_project) }
           let(:pipeline) { create(:ci_empty_pipeline, project: project) }
-
-          before do
-            create(:ci_variable, key: 'KUBE_DOMAIN',
-                                 protected: false,
-                                 project: project)
-          end
 
           it 'returns seeds for kubernetes dependent job' do
             seeds = subject.stage_seeds(pipeline)
@@ -195,7 +189,7 @@ module Ci
           end
         end
 
-        context 'when kubernetes is not configured' do
+        context 'when kubernetes is not active' do
           it 'does not return seeds for kubernetes dependent job' do
             seeds = subject.stage_seeds(pipeline)
 

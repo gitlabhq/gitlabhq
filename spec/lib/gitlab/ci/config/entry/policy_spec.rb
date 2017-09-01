@@ -67,19 +67,19 @@ describe Gitlab::Ci::Config::Entry::Policy do
     end
 
     context 'when specifying kubernetes policy' do
-      let(:config) { { kubernetes: 'configured' } }
+      let(:config) { { kubernetes: 'active' } }
 
       it 'is a correct configuraton' do
         expect(entry).to be_valid
-        expect(entry.value).to eq(kubernetes: 'configured')
+        expect(entry.value).to eq(kubernetes: 'active')
       end
     end
 
     context 'when specifying invalid kubernetes policy' do
-      let(:config) { { kubernetes: 'active' } }
+      let(:config) { { kubernetes: 'something' } }
 
       it 'reports an error about invalid policy' do
-        expect(entry.errors).to include /unknown value: active/
+        expect(entry.errors).to include /unknown value: something/
       end
     end
 

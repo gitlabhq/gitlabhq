@@ -33,7 +33,7 @@ module Gitlab
 
               with_options allow_nil: true do
                 validates :refs, array_of_strings_or_regexps: true
-                validates :kubernetes, allowed_values: %w[configured]
+                validates :kubernetes, allowed_values: %w[active]
               end
             end
           end
