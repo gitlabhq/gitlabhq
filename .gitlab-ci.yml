@@ -102,7 +102,6 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
-      - log/gitaly-test.log
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
@@ -135,7 +134,6 @@ stages:
       - coverage/
       - knapsack/
       - tmp/capybara/
-      - log/gitaly-test.log
 
 .spinach-metadata-pg: &spinach-metadata-pg
   <<: *spinach-metadata
