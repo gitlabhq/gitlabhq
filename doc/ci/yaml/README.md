@@ -500,6 +500,7 @@ except master.
 ### only and except (complex)
 
 > Introduced in GitLab 10.0
+> This an _alpha_ feature, and it it subject to change at any time without prior notice!
 
 Since GitLab 10.0 it is possible to define a complex only/except job policy
 configuration.
