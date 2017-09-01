@@ -61,34 +61,37 @@ module CiStatusHelper
     status.humanize
   end
 
+  def ci_icon_name_for_status(status)
+    case status
+    when 'success'
+      'icon_status_success'
+    when 'success_with_warnings'
+      'icon_status_warning'
+    when 'failed'
+      'icon_status_failed'
+    when 'pending'
+      'icon_status_pending'
+    when 'running'
+      'icon_status_running'
+    when 'play'
+      'icon_play'
+    when 'created'
+      'icon_status_created'
+    when 'skipped'
+      'icon_status_skipped'
+    when 'manual'
+      'icon_status_manual'
+    else
+      'icon_status_canceled'
+    end
+  end
+
   def ci_icon_for_status(status)
     if detailed_status?(status)
       return custom_icon(status.icon)
     end
 
-    icon_name =
-      case status
-      when 'success'
-        'icon_status_success'
-      when 'success_with_warnings'
-        'icon_status_warning'
-      when 'failed'
-        'icon_status_failed'
-      when 'pending'
-        'icon_status_pending'
-      when 'running'
-        'icon_status_running'
-      when 'play'
-        'icon_play'
-      when 'created'
-        'icon_status_created'
-      when 'skipped'
-        'icon_status_skipped'
-      when 'manual'
-        'icon_status_manual'
-      else
-        'icon_status_canceled'
-      end
+    icon_name = ci_icon_name_for_status(status)
 
     custom_icon(icon_name)
   end

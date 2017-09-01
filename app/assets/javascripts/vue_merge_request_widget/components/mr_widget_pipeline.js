@@ -21,10 +21,38 @@ export default {
       return statusIconEntityMap.icon_status_failed;
     },
     stageText() {
-      return this.mr.pipeline.details.stages.length > 1 ? 'stages' : 'stage';
+      let stageText = 'stage';
+      if (
+        this.mr.pipeline &&
+        this.mr.pipeline.details &&
+        this.mr.pipeline.details.stages &&
+        this.mr.pipeline.details.stages.length > 1
+      ) {
+        stageText = 'stages';
+      }
+
+      return stageText;
+    },
+    stages() {
+      let stages = [];
+      if (this.mr.pipeline.details && this.mr.pipeline.details.stages) {
+        stages = this.mr.pipeline.details.stages;
+      }
+
+      return stages;
     },
     status() {
-      return this.mr.pipeline.details.status || {};
+      console.log('mr', this.mr);
+      console.log('mr pipeline', this.mr.pipeline);
+      let status = {
+        group: this.mr.ciStatus,
+      };
+      if (this.mr.pipeline && this.mr.pipeline.details) {
+        status = this.mr.pipeline.details.status;
+      }
+
+      console.log('mr status', status);
+      return status;
     },
   },
   template: `
@@ -44,33 +72,42 @@ export default {
           <div class="ci-status-icon append-right-10">
             <a
               class="icon-link"
-              :href="this.status.details_path">
+              :href="status.details_path">
               <ci-icon :status="status" />
             </a>
           </div>
           <div class="media-body">
-            <span>
+            <span v-if="mr.pipeline.id">
               Pipeline
               <a
                 :href="mr.pipeline.path"
                 class="pipeline-id">#{{mr.pipeline.id}}</a>
             </span>
-            <span class="mr-widget-pipeline-graph">
+            <span v-else>
+              External pipeline
+            </span>
+            <span
+              v-if="stages.length > 0"
+              class="mr-widget-pipeline-graph">
               <span class="stage-cell">
                 <div
-                  v-if="mr.pipeline.details.stages.length > 0"
-                  v-for="stage in mr.pipeline.details.stages"
+                  v-for="stage in stages"
                   class="stage-container dropdown js-mini-pipeline-graph">
                   <pipeline-stage :stage="stage" />
                 </div>
               </span>
             </span>
+            <span v-else>
+              <pipeline-stage :stage="status" disable-dropdown="true" />
+            </span>
             <span>
-              {{mr.pipeline.details.status.label}} for
-              <a
-                :href="mr.pipeline.commit.commit_path"
-                class="commit-sha js-commit-link">
-                {{mr.pipeline.commit.short_id}}</a>.
+              {{status.label}}
+              <template v-if="mr.pipeline.commit">for
+                <a
+                  :href="mr.pipeline.commit.commit_path"
+                  class="commit-sha js-commit-link">
+                  {{mr.pipeline.commit.short_id}}</a>.
+              </template>
             </span>
             <span
               v-if="mr.pipeline.coverage"

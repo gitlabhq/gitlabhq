@@ -1,5 +1,7 @@
 class MergeRequestEntity < IssuableEntity
   include RequestAwareEntity
+  include MergeRequestsHelper
+  include CiStatusHelper
 
   expose :in_progress_merge_commit_sha
   expose :merge_commit_sha
@@ -28,7 +30,6 @@ class MergeRequestEntity < IssuableEntity
 
   expose :merge_commit_sha
   expose :merge_commit_message
-  expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
   # Booleans
   expose :merge_ongoing?, as: :merge_ongoing
@@ -53,6 +54,39 @@ class MergeRequestEntity < IssuableEntity
   expose :has_ci?, as: :has_ci
   expose :ci_status do |merge_request|
     presenter(merge_request).ci_status
+  end
+  #expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
+  expose :pipeline do |merge_request|
+    ci_service = merge_request.source_project.try(:ci_service)
+    if ci_service
+      group_status = presenter(merge_request).ci_status
+      details_path = ci_build_details_path(merge_request)
+
+      status_map = {
+        icon: ci_icon_name_for_status(group_status),
+        text: ci_text_for_status(group_status),
+        label: ci_label_for_status(group_status),
+        group: group_status,
+        has_details: !details_path.nil?,
+        details_path: details_path
+      }
+
+      {
+        details: {
+          status: status_map,
+          stages: [{
+            name: 'Build',
+            title: "Build: #{ci_label_for_status(group_status)}",
+            status: status_map
+          }]
+        }
+      }
+    else
+      # Currently doesn't work, `undefined method expose for #<MergeRequestEntity:xxx>`
+      # https://github.com/ruby-grape/grape-entity#merge-fields
+      # https://github.com/ruby-grape/grape-entity/issues/191
+      expose :head_pipeline, merge: true, with: PipelineDetailsEntity
+    end
   end
 
   expose :issues_links do

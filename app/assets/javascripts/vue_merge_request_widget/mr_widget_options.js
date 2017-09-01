@@ -85,6 +85,7 @@ export default {
         .then(res => res.json())
         .then((res) => {
           this.handleNotification(res);
+          console.log('checkStatus request', res);
           this.mr.setData(res);
           this.setFavicon();
 
@@ -177,6 +178,7 @@ export default {
       });
 
       eventHub.$on('UpdateWidgetData', (data) => {
+        console.log('UpdateWidgetData', data);
         this.mr.setData(data);
       });
 

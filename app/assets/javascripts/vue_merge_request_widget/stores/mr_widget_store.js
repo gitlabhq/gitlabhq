@@ -11,6 +11,7 @@ export default class MergeRequestStore {
   }
 
   setData(data) {
+    console.log('setData', data);
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 

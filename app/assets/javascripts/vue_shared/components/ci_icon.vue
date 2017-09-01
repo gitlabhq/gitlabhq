@@ -32,7 +32,7 @@
 
     computed: {
       statusIconSvg() {
-        return statusIconEntityMap[this.status.icon];
+        return statusIconEntityMap[this.status.icon || `icon_status_${this.status.group}`];
       },
 
       cssClass() {
