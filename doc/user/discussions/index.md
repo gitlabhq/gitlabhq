@@ -116,18 +116,17 @@ are resolved.
 
 ![Only allow merge if all the discussions are resolved message](img/only_allow_merge_if_all_discussions_are_resolved_msg.png)
 
-### Automatically collapse outdated diff comments regardless of discussion resolution
+### Automatically resolve merge request diffs discussions on lines changed with a push
 
-You can automatically collapse comments on outdated diffs regardless of whether
-the discussion is resolved.
+You can automatically resolve merge request diff discussions on lines modified with a new commit.
 
 Navigate to your project's settings page, select the
-**Collapse outdated diffs regardless of discussion resolution** check box and hit
+**Automatically resolve merge request diffs discussions on lines changed with a push** check box and hit
 **Save** for the changes to take effect.
 
-![Automatically collapse outdated diff comments regardless of discussion resolution](img/automatically_collapse_outdated_diff_comments_regardless_of_discussion_resolution.png)
+![Automatically resolve merge request diffs discussions on lines changed with a push](img/automatically_resolve_outdated_diff_discussions.png)
 
-From now on, any discussions on an outdated diff will be collapsed by default. 
+From now on, any discussions on an outdated diff will be resolved by default. 
 
 ## Threaded discussions
 

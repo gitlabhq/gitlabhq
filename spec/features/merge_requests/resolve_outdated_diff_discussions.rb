@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Collapse outdated diff comments', js: true do
+feature 'Resolve outdated diff discussions', js: true do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
 
@@ -23,9 +23,9 @@ feature 'Collapse outdated diff comments', js: true do
     sign_in(create(:admin))
   end
 
-  context 'when project.collapse_outdated_diff_comments == true' do
+  context 'when project.resolve_outdated_diff_discussions == true' do
     before do
-      project.update_column(:collapse_outdated_diff_comments, true)
+      project.update_column(:resolve_outdated_diff_discussions, true)
     end
 
     context 'with unresolved outdated discussions' do
@@ -33,6 +33,7 @@ feature 'Collapse outdated diff comments', js: true do
         visit_merge_request(merge_request)
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: false)
+          expect(page).to have_content('Automatically resolved')
         end
       end
     end
@@ -42,14 +43,15 @@ feature 'Collapse outdated diff comments', js: true do
         visit_merge_request(merge_request)
         within(".discussion[data-discussion-id='#{active_discussion.id}']") do
           expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
+          expect(page).not_to have_content('Automatically resolved')
         end
       end
     end
   end
 
-  context 'when project.collapse_outdated_diff_comments == false' do
+  context 'when project.resolve_outdated_diff_discussions == false' do
     before do
-      project.update_column(:collapse_outdated_diff_comments, false)
+      project.update_column(:resolve_outdated_diff_discussions, false)
     end
 
     context 'with unresolved outdated discussions' do
@@ -57,6 +59,7 @@ feature 'Collapse outdated diff comments', js: true do
         visit_merge_request(merge_request)
         within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
           expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
+          expect(page).not_to have_content('Automatically resolved')
         end
       end
     end
@@ -66,6 +69,7 @@ feature 'Collapse outdated diff comments', js: true do
         visit_merge_request(merge_request)
         within(".discussion[data-discussion-id='#{active_discussion.id}']") do
           expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
+          expect(page).not_to have_content('Automatically resolved')
         end
       end
     end

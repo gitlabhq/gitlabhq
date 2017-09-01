@@ -70,7 +70,7 @@ Parameters:
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "collapse_outdated_diff_comments": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -138,7 +138,7 @@ Parameters:
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "collapse_outdated_diff_comments": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -248,7 +248,7 @@ Parameters:
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "collapse_outdated_diff_comments": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -316,7 +316,7 @@ Parameters:
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "collapse_outdated_diff_comments": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -415,7 +415,7 @@ Parameters:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "collapse_outdated_diff_comments": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -542,7 +542,7 @@ Parameters:
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
-| `collapse_outdated_diff_comments` | boolean | no | Collapse outdated diffs regardless of discussion resolution |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -580,7 +580,7 @@ Parameters:
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
-| `collapse_outdated_diff_comments` | boolean | no | Collapse outdated diffs regardless of discussion resolution |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -617,7 +617,7 @@ Parameters:
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
-| `collapse_outdated_diff_comments` | boolean | no | Collapse outdated diffs regardless of discussion resolution |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -691,7 +691,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "collapse_outdated_diff_comments": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -767,7 +767,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "collapse_outdated_diff_comments": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -849,7 +849,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "collapse_outdated_diff_comments": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -943,7 +943,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "collapse_outdated_diff_comments": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",

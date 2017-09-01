@@ -394,7 +394,7 @@ describe API::V3::Projects do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        collapse_outdated_diff_comments: false,
+        resolve_outdated_diff_discussions: false,
         only_allow_merge_if_build_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false
@@ -456,16 +456,16 @@ describe API::V3::Projects do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
-    it 'sets a project as allowing outdated diff comments to collapse regardless of discussion resolution' do
-      project = attributes_for(:project, { collapse_outdated_diff_comments: false })
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+      project = attributes_for(:project, { resolve_outdated_diff_discussions: false })
       post v3_api('/projects', user), project
-      expect(json_response['collapse_outdated_diff_comments']).to be_falsey
+      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
 
-    it 'sets a project as allowing outdated diff comments to collapse if collapse_outdated_diff_comments' do
-      project = attributes_for(:project, { collapse_outdated_diff_comments: true })
+    it 'sets a project as allowing outdated diff discussions to automatically resolve if resolve_outdated_diff_discussions' do
+      project = attributes_for(:project, { resolve_outdated_diff_discussions: true })
       post v3_api('/projects', user), project
-      expect(json_response['collapse_outdated_diff_comments']).to be_truthy
+      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -612,16 +612,16 @@ describe API::V3::Projects do
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
-    it 'sets a project as allowing outdated diff comments to collapse regardless of discussion resolution' do
-      project = attributes_for(:project, { collapse_outdated_diff_comments: false })
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+      project = attributes_for(:project, { resolve_outdated_diff_discussions: false })
       post v3_api("/projects/user/#{user.id}", admin), project
-      expect(json_response['collapse_outdated_diff_comments']).to be_falsey
+      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
 
-    it 'sets a project as allowing outdated diff comments to collapse only if collapse_outdated_diff_comments' do
-      project = attributes_for(:project, { collapse_outdated_diff_comments: true })
+    it 'sets a project as allowing outdated diff discussions to automatically resolve only if resolve_outdated_diff_discussions' do
+      project = attributes_for(:project, { resolve_outdated_diff_discussions: true })
       post v3_api("/projects/user/#{user.id}", admin), project
-      expect(json_response['collapse_outdated_diff_comments']).to be_truthy
+      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -712,7 +712,7 @@ describe API::V3::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['builds_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
-        expect(json_response['collapse_outdated_diff_comments']).to eq(project.collapse_outdated_diff_comments)
+        expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present

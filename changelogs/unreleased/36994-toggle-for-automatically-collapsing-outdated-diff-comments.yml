@@ -1,6 +1,5 @@
 ---
-title: Add repository toggle for automatically collapsing outdated diff comments regardless
-  of discussion resolution
+title: Add repository toggle for automatically resolving outdated diff discussions
 merge_request:
 author:
 type: added

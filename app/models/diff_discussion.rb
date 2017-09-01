@@ -18,14 +18,6 @@ class DiffDiscussion < Discussion
     false
   end
 
-  def collapsed?
-    resolved? || (project.collapse_outdated_diff_comments && !active?)
-  end
-
-  def expanded?
-    !collapsed?
-  end
-
   def merge_request_version_params
     return unless for_merge_request?
     return {} if active?
