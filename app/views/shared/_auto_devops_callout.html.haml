@@ -1,0 +1,17 @@
+.user-callout{ data: { uid: 'TODO' } }
+  .bordered-box.landing.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button',
+      'aria-label' => 'Dismiss Auto Dev Ops box' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .svg-container
+      = custom_icon('icon_autodevops')
+    .user-callout-copy
+      %h4
+        Auto Dev Ops (Beta)
+      %p
+        Automated Dev Ops can be activated for this project. It will automatically run tests on your code based on a predefined set of rules.
+      %p
+        Learn more in the
+        = link_to 'Auto Dev Ops documentation', help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+
+      = link_to 'Enable in settings', project_settings_ci_cd_path(@project), class: 'btn btn-primary js-close-callout'

@@ -2,20 +2,23 @@
 - page_title "Pipelines"
 = render "projects/pipelines/head"
 
-#pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
-  "css-class" => container_class,
-  "help-page-path" => help_page_path('ci/quick_start/README'),
-  "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
-  "new-pipeline-path" => new_project_pipeline_path(@project),
-  "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
-  "all-path" =>  project_pipelines_path(@project),
-  "pending-path" => project_pipelines_path(@project, scope: :pending),
-  "running-path" => project_pipelines_path(@project, scope: :running),
-  "finished-path" => project_pipelines_path(@project, scope: :finished),
-  "branches-path" => project_pipelines_path(@project, scope: :branches),
-  "tags-path" => project_pipelines_path(@project, scope: :tags),
-  "has-ci" => @repository.gitlab_ci_yml || @project.auto_devops_enabled?,
-  "ci-lint-path" => ci_lint_path } }
+%div{ 'class' => container_class }
+  -# TODO add verfication
+  = render 'shared/auto_devops_callout'
 
-= page_specific_javascript_bundle_tag('common_vue')
-= page_specific_javascript_bundle_tag('pipelines')
+  #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
+    "help-page-path" => help_page_path('ci/quick_start/README'),
+    "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
+    "new-pipeline-path" => new_project_pipeline_path(@project),
+    "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
+    "all-path" =>  project_pipelines_path(@project),
+    "pending-path" => project_pipelines_path(@project, scope: :pending),
+    "running-path" => project_pipelines_path(@project, scope: :running),
+    "finished-path" => project_pipelines_path(@project, scope: :finished),
+    "branches-path" => project_pipelines_path(@project, scope: :branches),
+    "tags-path" => project_pipelines_path(@project, scope: :tags),
+    "has-ci" => @repository.gitlab_ci_yml || @project.auto_devops_enabled?,
+    "ci-lint-path" => ci_lint_path } }
+
+  = page_specific_javascript_bundle_tag('common_vue')
+  = page_specific_javascript_bundle_tag('pipelines')

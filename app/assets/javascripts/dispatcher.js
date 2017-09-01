@@ -156,6 +156,9 @@ import initChangesDropdown from './init_changes_dropdown';
           new UsersSelect();
           break;
         case 'projects:merge_requests:index':
+          new UserCallout();
+          break;
+        case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
@@ -344,6 +347,7 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout();
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -363,6 +367,9 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
+        case 'projects:pipelines:index':
+          new UserCallout();
+          break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
@@ -378,6 +385,8 @@ import initChangesDropdown from './init_changes_dropdown';
               parentEl: '.pipelines-tabs',
             },
           });
+
+          new UserCallout();
           break;
         case 'groups:activity':
           new gl.Activities();
@@ -420,6 +429,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
+          new UserCallout();
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
