@@ -7,15 +7,11 @@
  * {
  *   directives: [popover]
  * }
- * <a v-popover>popover</a>
+ * <a v-popover="{options}">popover</a>
  */
 export default {
   bind(el, binding) {
-    const renderHTML = binding.arg === 'html';
-
-    $(el).popover({
-      html: renderHTML,
-    });
+    $(el).popover(binding.value);
   },
 
   unbind(el) {
