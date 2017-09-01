@@ -92,22 +92,28 @@ describe Geo::RepositorySyncWorker do
     end
 
     context 'all repositories fail' do
+      let!(:project_list) { create_list(:project, 4, :random_last_repository_updated_at) }
+
       before do
         allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(2) # Must be >1 because of the Geo::BaseSchedulerWorker#interleave
         allow_any_instance_of(described_class).to receive(:max_capacity).and_return(3) # Must be more than db_retrieve_batch_size
         allow_any_instance_of(Project).to receive(:ensure_repository).and_raise(Gitlab::Shell::Error.new('foo'))
         allow_any_instance_of(Geo::ProjectSyncWorker).to receive(:sync_wiki?).and_return(false)
         allow_any_instance_of(Geo::RepositorySyncService).to receive(:expire_repository_caches)
-
-        create_list(:project, 4, :random_last_repository_updated_at)
       end
 
-      it 'does not retry the same projects over and over again' do
-        Sidekiq::Testing.inline! { subject.perform }
+      it 'tries to sync every project' do
+        project_list.each do |project|
+          expect(Geo::ProjectSyncWorker)
+            .to receive(:perform_in)
+              .with(anything, project.id, anything)
+              .at_least(:once)
+              .and_call_original
+        end
 
-        expect do
+        3.times do
           Sidekiq::Testing.inline! { subject.perform }
-        end.to change { Geo::ProjectRegistry.count }
+        end
       end
     end
   end
