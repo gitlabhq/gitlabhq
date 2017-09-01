@@ -10,9 +10,9 @@ module EE
 
         super do |project|
           if mirror && project.feature_available?(:repository_mirrors)
-            project.mirror = mirror
+            project.mirror = mirror unless mirror.nil?
+            project.mirror_trigger_builds = mirror_trigger_builds unless mirror_trigger_builds.nil?
             project.mirror_user_id = mirror_user_id
-            project.mirror_trigger_builds = mirror_trigger_builds
           end
         end
       end
