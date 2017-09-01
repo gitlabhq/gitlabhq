@@ -42,7 +42,7 @@ class GeoNodeStatus {
     const $closestStatus = $element.closest('.advanced-geo-node-status-container').find('.advanced-status')
 
     $element.find('.fa').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
-    $closestStatus.toggleClass('hide-status');
+    $closestStatus.toggleClass('hidden');
   }
 
   getStatus() {
