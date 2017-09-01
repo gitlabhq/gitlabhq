@@ -411,4 +411,62 @@ describe('Filtered Search Manager', () => {
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(false);
     });
   });
+
+  describe('removalValidator', () => {
+    beforeEach(() => {
+      Object.assign(gl.FilteredSearchManager.prototype, {
+        customRemovalValidator: () => true,
+      });
+
+      spyOn(gl.FilteredSearchManager.prototype, 'removalValidator').and.callThrough();
+      spyOn(gl.FilteredSearchManager.prototype, 'customRemovalValidator').and.callThrough();
+
+      initializeManager();
+    });
+
+    it('is called on clearSearch', () => {
+      manager.clearSearch();
+
+      expect(manager.removalValidator).toHaveBeenCalled();
+    });
+
+    it('calls the customRemovalValidator when present', () => {
+      manager.clearSearch();
+
+      expect(manager.customRemovalValidator).toHaveBeenCalled();
+    });
+  });
+
+  describe('getAllParams', () => {
+    beforeEach(() => {
+      this.paramsArr = ['key=value', 'otherkey=othervalue'];
+
+      Object.assign(gl.FilteredSearchManager.prototype, {
+        modifyUrlParams: paramsArr => paramsArr.reverse(),
+      });
+
+      spyOn(gl.FilteredSearchManager.prototype, 'modifyUrlParams').and.callThrough();
+
+      initializeManager();
+    });
+
+    it('calls modifyUrlParams when present', () => {
+      manager.getAllParams(this.paramsArr);
+
+      expect(manager.modifyUrlParams).toHaveBeenCalled();
+    });
+
+    it('correctly modifies params when custom modifier is passed', () => {
+      const modifedParams = manager.getAllParams(this.paramsArr);
+
+      expect(modifedParams[0]).toBe('otherkey=othervalue');
+    });
+
+    it('does not modify params when no custom modifier is passed', () => {
+      Object.assign(gl.FilteredSearchManager.prototype, { modifyUrlParams: undefined });
+      const modifedParams = manager.getAllParams(this.paramsArr);
+
+      expect(modifedParams[1]).toBe('otherkey=othervalue');
+    });
+  });
 });

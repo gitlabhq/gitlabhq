@@ -337,7 +337,7 @@ class FilteredSearchManager {
   removalValidator(token) {
     const isToken = token.classList.contains('js-visual-token');
 
-    return this.customRemovalValidator ? (isToken && this.customRemovalValidator(token)) : isToken;
+    return this.customRemovalValidator ? (this.customRemovalValidator(token) && isToken) : isToken;
   }
 
   clearSearch() {
@@ -426,14 +426,13 @@ class FilteredSearchManager {
   }
 
   // allows for modifying params array when a param can't be included in the URL (e.g. Service Desk)
-  getAllParams() {
-    let urlParams = gl.utils.getUrlParamsArray();
-
+  getAllParams(urlParams) {
     return this.modifyUrlParams ? this.modifyUrlParams(urlParams) : urlParams;
   }
 
   loadSearchParamsFromURL() {
-    const params = this.getAllParams();
+    const urlParams = gl.utils.getUrlParamsArray();
+    const params = this.getAllParams(urlParams);
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
 
