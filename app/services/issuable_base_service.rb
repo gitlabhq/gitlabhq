@@ -56,6 +56,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_id)
       params.delete(:due_date)
       params.delete(:canonical_issue_id)
+      params.delete(:project)
     end
 
     filter_assignee(issuable)
