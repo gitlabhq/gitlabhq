@@ -42,7 +42,7 @@ class CommitStatus < ActiveRecord::Base
     unknown_failure: nil,
     job_failure: 1,
     api_failure: 2,
-    stuck_or_timeout_failure: 3,
+    stuck_or_timeout_failure: 3
   }
 
   state_machine :status do

@@ -114,6 +114,8 @@ module API
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :trace, type: String, desc: %q(Job's full trace)
         optional :state, type: String, desc: %q(Job's status: success, failed)
+        optional :failure_reason, type: String, values: CommitStatus.failure_reasons.keys,
+                                  desc: %q(Job's failure_reason)
       end
       put '/:id' do
         job = authenticate_job!
@@ -127,7 +129,11 @@ module API
         when 'success'
           job.success
         when 'failed'
-          job.drop(:job_failure)
+          if params[:failure_reason]
+            job.drop(params[:failure_reason].to_sym)
+          else
+            job.drop(:job_failure)
+          end
         end
       end
 
