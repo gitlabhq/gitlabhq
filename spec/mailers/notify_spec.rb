@@ -27,7 +27,6 @@ describe Notify do
                    description: 'My awesome description!')
   end
 
-
   def have_referable_subject(referable, reply: false)
     prefix = referable.project.name if referable.project
     prefix = "Re: #{prefix}" if reply
@@ -54,7 +53,6 @@ describe Notify do
       end
 
       context 'for issues' do
-
         describe 'that are new' do
           subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
@@ -241,7 +239,6 @@ describe Notify do
             end
           end
         end
-
 
         describe 'that are reassigned' do
           subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
