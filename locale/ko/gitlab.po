@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-18 14:15+0530\n"
 "PO-Revision-Date: 2017-08-23 10:05-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Korean\n"
@@ -38,7 +39,6 @@ msgstr ""
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
 msgstr[0] ""
-msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
@@ -507,6 +507,15 @@ msgstr "Cycle Analytics 소개"
 msgid "Issue events"
 msgstr ""
 
+msgid "Jobs for last month"
+msgstr "지난달 Jobs"
+
+msgid "Jobs for last week"
+msgstr "지난주 Jobs"
+
+msgid "Jobs for last year"
+msgstr "지난해 Jobs"
+
 msgid "LFSStatus|Disabled"
 msgstr "Disabled"
 
@@ -743,18 +752,6 @@ msgstr "파이프라인"
 
 msgid "Pipelines charts"
 msgstr "파이프라인 차트"
-
-#, fuzzy
-msgid "Pipelines for last month"
-msgstr "파이프라인"
-
-#, fuzzy
-msgid "Pipelines for last week"
-msgstr "파이프라인"
-
-#, fuzzy
-msgid "Pipelines for last year"
-msgstr "파이프라인"
 
 msgid "Pipeline|all"
 msgstr "모두"

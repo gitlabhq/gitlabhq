@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-18 14:15+0530\n"
 "PO-Revision-Date: 2017-08-23 09:59-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Simplified\n"
@@ -38,7 +39,6 @@ msgstr ""
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
 msgstr[0] ""
-msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
@@ -507,6 +507,15 @@ msgstr "周期分析简介"
 msgid "Issue events"
 msgstr ""
 
+msgid "Jobs for last month"
+msgstr "上个月的作业"
+
+msgid "Jobs for last week"
+msgstr "上个星期的作业"
+
+msgid "Jobs for last year"
+msgstr "去年的作业"
+
 msgid "LFSStatus|Disabled"
 msgstr "停用"
 
@@ -743,18 +752,6 @@ msgstr "流水线"
 
 msgid "Pipelines charts"
 msgstr "流水线统计图"
-
-#, fuzzy
-msgid "Pipelines for last month"
-msgstr "流水线"
-
-#, fuzzy
-msgid "Pipelines for last week"
-msgstr "流水线"
-
-#, fuzzy
-msgid "Pipelines for last year"
-msgstr "流水线"
 
 msgid "Pipeline|all"
 msgstr "所有"

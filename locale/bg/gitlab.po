@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-18 14:15+0530\n"
 "PO-Revision-Date: 2017-08-23 10:02-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Bulgarian\n"
@@ -514,6 +515,15 @@ msgstr "Представяме Ви анализа на циклите"
 msgid "Issue events"
 msgstr ""
 
+msgid "Jobs for last month"
+msgstr "Задачи за последния месец"
+
+msgid "Jobs for last week"
+msgstr "Задачи за последната седмица"
+
+msgid "Jobs for last year"
+msgstr "Задачи за последната година"
+
 msgid "LFSStatus|Disabled"
 msgstr "Изключено"
 
@@ -753,18 +763,6 @@ msgstr "Схеми"
 
 msgid "Pipelines charts"
 msgstr "Графики за схемите"
-
-#, fuzzy
-msgid "Pipelines for last month"
-msgstr "Схеми"
-
-#, fuzzy
-msgid "Pipelines for last week"
-msgstr "Схеми"
-
-#, fuzzy
-msgid "Pipelines for last year"
-msgstr "Схеми"
 
 msgid "Pipeline|all"
 msgstr "всички"
