@@ -1,15 +1,15 @@
 .user-callout{ data: { uid: 'auto_devops_settings_dismissed' } }
   .bordered-box.landing.content-block
     %button.btn.btn-default.close.js-close-callout{ type: 'button',
-      'aria-label' => 'Dismiss Auto Dev Ops box' }
+      'aria-label' => 'Dismiss Auto DevOps box' }
       = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
     .svg-container
       = custom_icon('icon_autodevops')
     .user-callout-copy
       %h4
-        Auto Dev Ops (Beta)
+        Auto DevOps (Beta)
       %p
-        Auto Dev Ops can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.
+        Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.
       %p
         Learn more in the
         = link_to 'Auto DevOps documentation', help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
