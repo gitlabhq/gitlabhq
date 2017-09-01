@@ -98,23 +98,6 @@ module API
           end
         end
 
-        def find_merge_requests(args = {})
-          args = params.merge(args)
-
-          args[:milestone_title] = args.delete(:milestone)
-          args[:label_name] = args.delete(:labels)
-
-          merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                             .reorder(args[:order_by] => args[:sort])
-          merge_requests = paginate(merge_requests)
-                             .preload(:target_project)
-
-          return merge_requests if args[:view] == 'simple'
-
-          merge_requests
-            .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
-        end
-
         params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
