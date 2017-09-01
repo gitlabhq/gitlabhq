@@ -101,7 +101,7 @@ module API
       end
     end
 
-    resource :users, requirements: { user_id: %r{[^/]+} } do
+    resource :users, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end
@@ -189,7 +189,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a single project' do
         success Entities::ProjectWithAccess
       end

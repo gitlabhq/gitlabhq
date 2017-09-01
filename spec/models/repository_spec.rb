@@ -1413,8 +1413,11 @@ describe Repository, models: true do
       it 'cherry-picks the changes' do
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
+
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
+        expect(cherry_pick_commit_message).to include('cherry picked from')
       end
     end
   end

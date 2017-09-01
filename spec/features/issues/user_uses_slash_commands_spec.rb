@@ -231,5 +231,114 @@ feature 'Issues > User uses quick actions', js: true do
         end
       end
     end
+
+    describe 'move the issue to another project' do
+      let(:issue) { create(:issue, project: project) }
+
+      context 'when the project is valid', js: true do
+        let(:target_project) { create(:project, :public) }
+
+        before do
+          target_project.team << [user, :master]
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'moves the issue' do
+          write_note("/move #{target_project.full_path}")
+
+          expect(page).to have_content 'Commands applied'
+          expect(issue.reload).to be_closed
+
+          visit project_issue_path(target_project, issue)
+
+          expect(page).to have_content 'Issues 1'
+        end
+      end
+
+      context 'when the project is valid but the user not authorized', js: true do
+        let(:project_unauthorized) {create(:project, :public)}
+
+        before do
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'does not move the issue' do
+          write_note("/move #{project_unauthorized.full_path}")
+
+          expect(page).not_to have_content 'Commands applied'
+          expect(issue.reload).to be_open
+        end
+      end
+
+      context 'when the project is invalid', js: true do
+        before do
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'does not move the issue' do
+          write_note("/move not/valid")
+
+          expect(page).not_to have_content 'Commands applied'
+          expect(issue.reload).to be_open
+        end
+      end
+
+      context 'when the user issues multiple commands', js: true do
+        let(:target_project) { create(:project, :public) }
+        let(:milestone) { create(:milestone, title: '1.0', project: project) }
+        let(:target_milestone) { create(:milestone, title: '1.0', project: target_project) }
+        let(:bug)      { create(:label, project: project, title: 'bug') }
+        let(:wontfix)  { create(:label, project: project, title: 'wontfix') }
+        let(:bug_target)      { create(:label, project: target_project, title: 'bug') }
+        let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
+
+        before do
+          target_project.team << [user, :master]
+          sign_in(user)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'applies the commands to both issues and moves the issue' do
+          write_note("/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"\n/move #{target_project.full_path}")
+
+          expect(page).to have_content 'Commands applied'
+          expect(issue.reload).to be_closed
+
+          visit project_issue_path(target_project, issue)
+
+          expect(page).to have_content 'bug'
+          expect(page).to have_content 'wontfix'
+          expect(page).to have_content '1.0'
+
+          visit project_issue_path(project, issue)
+          expect(page).to have_content 'Closed'
+          expect(page).to have_content 'bug'
+          expect(page).to have_content 'wontfix'
+          expect(page).to have_content '1.0'
+        end
+
+        it 'moves the issue and applies the commands to both issues' do
+          write_note("/move #{target_project.full_path}\n/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"")
+
+          expect(page).to have_content 'Commands applied'
+          expect(issue.reload).to be_closed
+
+          visit project_issue_path(target_project, issue)
+
+          expect(page).to have_content 'bug'
+          expect(page).to have_content 'wontfix'
+          expect(page).to have_content '1.0'
+
+          visit project_issue_path(project, issue)
+          expect(page).to have_content 'Closed'
+          expect(page).to have_content 'bug'
+          expect(page).to have_content 'wontfix'
+          expect(page).to have_content '1.0'
+        end
+      end
+    end
   end
 end

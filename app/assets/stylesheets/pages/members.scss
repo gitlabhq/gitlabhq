@@ -61,6 +61,10 @@
       display: -webkit-flex;
       display: flex;
     }
+
+    .dropdown-menu.dropdown-menu-align-right {
+      margin-top: -2px;
+    }
   }
 
   .form-horizontal {
@@ -355,4 +359,8 @@
       margin-left: 0;
     }
   }
+}
+
+.member-form-control {
+  @include new-style-dropdown;
 }

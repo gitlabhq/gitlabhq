@@ -148,6 +148,7 @@ def instrument_classes(instrumentation)
 
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/36061
   instrumentation.instrument_instance_method(MergeRequest, :ensure_ref_fetched)
+  instrumentation.instrument_instance_method(MergeRequest, :fetch_ref)
 end
 # rubocop:enable Metrics/AbcSize
 
