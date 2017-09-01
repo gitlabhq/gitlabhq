@@ -20,7 +20,6 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
 
-  CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
@@ -171,7 +170,7 @@ class Repository
 
     return false unless newrev
 
-    GitOperationService.new(user, raw_repository).add_branch(branch_name, newrev)
+    Gitlab::Git::OperationService.new(user, raw_repository).add_branch(branch_name, newrev)
 
     after_create_branch
     find_branch(branch_name)
@@ -183,7 +182,7 @@ class Repository
 
     return false unless newrev
 
-    GitOperationService.new(user, raw_repository).add_tag(tag_name, newrev, options)
+    Gitlab::Git::OperationService.new(user, raw_repository).add_tag(tag_name, newrev, options)
 
     find_tag(tag_name)
   end
@@ -192,7 +191,7 @@ class Repository
     before_remove_branch
     branch = find_branch(branch_name)
 
-    GitOperationService.new(user, raw_repository).rm_branch(branch)
+    Gitlab::Git::OperationService.new(user, raw_repository).rm_branch(branch)
 
     after_remove_branch
     true
@@ -202,7 +201,7 @@ class Repository
     before_remove_tag
     tag = find_tag(tag_name)
 
-    GitOperationService.new(user, raw_repository).rm_tag(tag)
+    Gitlab::Git::OperationService.new(user, raw_repository).rm_tag(tag)
 
     after_remove_tag
     true
@@ -772,7 +771,7 @@ class Repository
   end
 
   def with_branch(user, *args)
-    result = GitOperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
+    result = Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
       yield start_commit
     end
 
@@ -868,7 +867,7 @@ class Repository
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
-  rescue Repository::CommitError # when merge_index.conflicts?
+  rescue Gitlab::Git::CommitError # when merge_index.conflicts?
     false
   end
 
