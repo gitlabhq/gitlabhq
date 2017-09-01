@@ -9,6 +9,10 @@
         type: Object,
         required: true,
       },
+      autoDevopsHelpPath: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       userAvatarLink,
@@ -25,7 +29,7 @@
         return '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>';
       },
       autoDevOpsContent() {
-        return '<a class="autodevops-link" href="">Learn more about Auto DevOps</a>';
+        return `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`;
       },
     },
   };

@@ -16,6 +16,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -30,6 +31,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -50,6 +52,7 @@ describe('Pipeline Url Component', () => {
           path: '/',
         },
       },
+      autoDevopsHelpPath: 'foo',
     };
 
     const component = new PipelineUrlComponent({
@@ -73,6 +76,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -91,6 +95,7 @@ describe('Pipeline Url Component', () => {
             stuck: true,
           },
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -112,6 +117,7 @@ describe('Pipeline Url Component', () => {
             auto_devops: true,
           },
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
