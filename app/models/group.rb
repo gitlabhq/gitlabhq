@@ -37,6 +37,8 @@ class Group < Namespace
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
+  validate :visibility_level_allowed_by_sub_groups
+  validate :visibility_level_allowed_by_parent
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
@@ -120,15 +122,24 @@ class Group < Namespace
     full_name
   end
 
-  def visibility_level_allowed_by_projects
-    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
+  def visibility_level_allowed_by_parent?(level = self.visibility_level)
+    return true unless parent_id && parent_id.nonzero?
 
-    unless allowed_by_projects
-      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
-      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
-    end
+    level <= parent.visibility_level
+  end
 
-    allowed_by_projects
+  def visibility_level_allowed_by_projects?(level = self.visibility_level)
+    !projects.where('visibility_level > ?', level).exists?
+  end
+
+  def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
+    !children.where('visibility_level > ?', level).exists?
+  end
+
+  def visibility_level_allowed?(level = self.visibility_level)
+    visibility_level_allowed_by_parent?(level) &&
+      visibility_level_allowed_by_projects?(level) &&
+      visibility_level_allowed_by_sub_groups?(level)
   end
 
   def avatar_url(**args)
@@ -321,11 +332,29 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
-  protected
+  private
 
   def update_two_factor_requirement
     return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
 
     users.find_each(&:update_two_factor_requirement)
+  end
+
+  def visibility_level_allowed_by_parent
+    return if visibility_level_allowed_by_parent?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
+  end
+
+  def visibility_level_allowed_by_projects
+    return if visibility_level_allowed_by_projects?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since this group contains projects with higher visibility.")
+  end
+
+  def visibility_level_allowed_by_sub_groups
+    return if visibility_level_allowed_by_sub_groups?
+
+    errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 end

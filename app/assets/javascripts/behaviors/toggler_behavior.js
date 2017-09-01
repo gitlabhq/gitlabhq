@@ -5,6 +5,7 @@
 //   %button.js-toggle-button
 //   %div.js-toggle-content
 //
+import '~/lib/utils/url_utility';
 
 $(() => {
   function toggleContainer(container, toggleState) {

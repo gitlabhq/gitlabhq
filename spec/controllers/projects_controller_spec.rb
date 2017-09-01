@@ -7,6 +7,38 @@ describe ProjectsController do
   let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
+  describe 'GET new' do
+    context 'with an authenticated user' do
+      let(:group) { create(:group) }
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when namespace_id param is present' do
+        context 'when user has access to the namespace' do
+          it 'renders the template' do
+            group.add_owner(user)
+
+            get :new, namespace_id: group.id
+
+            expect(response).to have_http_status(200)
+            expect(response).to render_template('new')
+          end
+        end
+
+        context 'when user does not have access to the namespace' do
+          it 'responds with status 404' do
+            get :new, namespace_id: group.id
+
+            expect(response).to have_http_status(404)
+            expect(response).not_to render_template('new')
+          end
+        end
+      end
+    end
+  end
+
   describe 'GET index' do
     context 'as a user' do
       it 'redirects to root page' do

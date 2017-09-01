@@ -1,15 +1,17 @@
 - Gitlab::VisibilityLevel.values.each do |level|
-  - next if skip_level?(form_model, level)
-  .radio
-    - restricted = restricted_visibility_levels.include?(level)
+  - disallowed = disallowed_visibility_level?(form_model, level)
+  - restricted = restricted_visibility_levels.include?(level)
+  - disabled = disallowed || restricted
+  .radio{ class: [('disabled' if disabled), ('restricted' if restricted)] }
     = form.label "#{model_method}_#{level}" do
-      = form.radio_button model_method, level, checked: (selected_level == level), disabled: restricted
+      = form.radio_button model_method, level, checked: (selected_level == level), disabled: disabled
       = visibility_level_icon(level)
       .option-title
         = visibility_level_label(level)
-      .option-descr
+      .option-description
         = visibility_level_description(level, form_model)
-- unless restricted_visibility_levels.empty?
-  %div
-    %span.info
-      Some visibility level settings have been restricted by the administrator.
+      .option-disabled-reason
+        - if restricted
+          = restricted_visibility_level_description(level)
+        - elsif disallowed
+          = disallowed_visibility_level_description(level, form_model)
