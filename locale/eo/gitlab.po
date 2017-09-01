@@ -2,7 +2,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
 "PO-Revision-Date: 2017-08-23 09:53-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Esperanto\n"
@@ -515,15 +514,6 @@ msgstr "Ni prezentas al vi la ciklan analizon"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Taskoj po la lasta monato"
-
-msgid "Jobs for last week"
-msgstr "Taskoj po la lasta semajno"
-
-msgid "Jobs for last year"
-msgstr "Taskoj po la lasta jaro"
-
 msgid "LFSStatus|Disabled"
 msgstr "Malŝaltita"
 
@@ -763,6 +753,18 @@ msgstr "Ĉenstabloj"
 
 msgid "Pipelines charts"
 msgstr "Ĉenstablaj diagramoj"
+
+#, fuzzy
+msgid "Pipelines for last month"
+msgstr "Ĉenstabloj"
+
+#, fuzzy
+msgid "Pipelines for last week"
+msgstr "Ĉenstabloj"
+
+#, fuzzy
+msgid "Pipelines for last year"
+msgstr "Ĉenstabloj"
 
 msgid "Pipeline|all"
 msgstr "ĉiuj"

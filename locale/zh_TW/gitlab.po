@@ -2,7 +2,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
 "PO-Revision-Date: 2017-08-23 09:59-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
@@ -39,6 +38,7 @@ msgstr ""
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
 msgstr[0] ""
+msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr ""
@@ -106,7 +106,8 @@ msgid_plural "Branches"
 msgstr[0] "分支 (branch) "
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
-msgstr "已建立分支 (branch)  <strong>%{branch_name}</strong> 。如要設定自動部署， 請選擇合適的 GitLab CI Yaml 模板，然後記得要送交 (commit) 您的編輯內容。%{link_to_autodeploy_doc}\n"
+msgstr ""
+"已建立分支 (branch)  <strong>%{branch_name}</strong> 。如要設定自動部署， 請選擇合適的 GitLab CI Yaml 模板，然後記得要送交 (commit) 您的編輯內容。%{link_to_autodeploy_doc}\n"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "搜尋分支 (branches)"
@@ -507,15 +508,6 @@ msgstr "週期分析簡介"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "上個月的任務 (job) "
-
-msgid "Jobs for last week"
-msgstr "上個星期的任務 (job) "
-
-msgid "Jobs for last year"
-msgstr "去年的任務 (job) "
-
 msgid "LFSStatus|Disabled"
 msgstr "停用"
 
@@ -752,6 +744,18 @@ msgstr "流水線 (pipeline) "
 
 msgid "Pipelines charts"
 msgstr "流水線 (pipeline) 圖表"
+
+#, fuzzy
+msgid "Pipelines for last month"
+msgstr "流水線 (pipeline) "
+
+#, fuzzy
+msgid "Pipelines for last week"
+msgstr "流水線 (pipeline) "
+
+#, fuzzy
+msgid "Pipelines for last year"
+msgstr "流水線 (pipeline) "
 
 msgid "Pipeline|all"
 msgstr "所有"
