@@ -18,9 +18,6 @@ module EE
         if ::Gitlab::Geo.primary?
           # Create wiki repository updated event on Geo event log
           ::Geo::RepositoryUpdatedEventStore.new(project, source: Geo::RepositoryUpdatedEvent::WIKI).create
-
-          # Triggers repository update on secondary nodes
-          ::Gitlab::Geo.notify_wiki_update(project)
         end
       end
     end
