@@ -195,6 +195,67 @@ eos
     it { expect(data[:removed]).to eq([]) }
   end
 
+  describe '#cherry_pick_message' do
+    let(:user) { create(:user) }
+
+    context 'of a regular commit' do
+      let(:commit) { project.commit('video') }
+
+      it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
+    end
+
+    context 'of a merge commit' do
+      let(:repository) { project.repository }
+
+      let(:commit_options) do
+        author = repository.user_to_committer(user)
+        { message: 'Test message', committer: author, author: author }
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_branch: 'video',
+               target_branch: 'master',
+               source_project: project,
+               author: user)
+      end
+
+      let(:merge_commit) do
+        merge_commit_id = repository.merge(user,
+                                           merge_request.diff_head_sha,
+                                           merge_request,
+                                           commit_options)
+
+        repository.commit(merge_commit_id)
+      end
+
+      context 'that is found' do
+        before do
+          # Artificially mark as completed.
+          merge_request.update(merge_commit_sha: merge_commit.id)
+        end
+
+        it do
+          expected_appended_text = <<~STR.rstrip
+
+            (cherry picked from commit #{merge_commit.sha})
+
+            467dc98f Add new 'videos' directory
+            88790590 Upload new video file
+          STR
+
+          expect(merge_commit.cherry_pick_message(user)).to include(expected_appended_text)
+        end
+      end
+
+      context "that is existing but not found" do
+        it 'does not include details of the merged commits' do
+          expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
+        end
+      end
+    end
+  end
+
   describe '#reverts_commit?' do
     let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
     let(:user) { commit.author }

@@ -474,7 +474,7 @@ describe API::V3::Commits do
 
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq(master_pickable_commit.title)
-        expect(json_response['message']).to eq(master_pickable_commit.message)
+        expect(json_response['message']).to eq(master_pickable_commit.cherry_pick_message(user))
         expect(json_response['author_name']).to eq(master_pickable_commit.author_name)
         expect(json_response['committer_name']).to eq(user.name)
       end
