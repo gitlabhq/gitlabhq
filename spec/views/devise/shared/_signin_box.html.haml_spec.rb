@@ -5,6 +5,7 @@ describe 'devise/shared/_signin_box' do
     before do
       stub_devise
       assign(:ldap_servers, [])
+      allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
     end
 
     it 'is shown when Crowd is enabled' do

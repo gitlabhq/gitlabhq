@@ -1,4 +1,6 @@
 class UploadService
+  include Gitlab::CurrentSettings
+
   def initialize(model, file, uploader_class = FileUploader)
     @model, @file, @uploader_class = model, file, uploader_class
   end
