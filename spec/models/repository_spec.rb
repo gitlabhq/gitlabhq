@@ -1068,6 +1068,24 @@ describe Repository, models: true do
       end
     end
 
+    context 'when target branch is different from source branch' do
+      before do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+      end
+
+      it 'expires branch cache' do
+        expect(repository).not_to receive(:expire_exists_cache)
+        expect(repository).not_to receive(:expire_root_ref_cache)
+        expect(repository).not_to receive(:expire_emptiness_caches)
+        expect(repository).to     receive(:expire_branches_cache)
+
+        repository.with_branch(user, 'new-feature') do
+            new_rev
+        end
+      end
+    end
+
+
     context 'when repository is empty' do
       before do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
