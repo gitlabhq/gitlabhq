@@ -578,7 +578,6 @@ class FilteredSearchManager {
 
   getUsernameParams() {
     const usernamesById = {};
-
     try {
       const attribute = this.filteredSearchInput.getAttribute('data-username-params');
       JSON.parse(attribute).forEach((user) => {

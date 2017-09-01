@@ -134,7 +134,7 @@
                   Labels
 
             - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
-              = nav_link(controller: [ :issues, :service_desk ]) do
+              = nav_link(controller: :issues, action: :service_desk ) do
                 = link_to service_desk_project_issues_url(@project), title: 'Service Desk' do
                   %span Service Desk
 
