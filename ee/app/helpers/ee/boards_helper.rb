@@ -2,7 +2,13 @@ module EE
   module BoardsHelper
     def board_data
       parent = @group || @project
-      super.merge(focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s)
+
+      data = {
+        board_milestone_title: board&.milestone&.title,
+        focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s
+      }
+
+      super.merge(data)
     end
 
     def build_issue_link_base
