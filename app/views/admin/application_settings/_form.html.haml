@@ -147,7 +147,7 @@
         .checkbox
           = f.label :password_authentication_enabled do
             = f.check_box :password_authentication_enabled
-            Password authentication enabled
+            Sign-in enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
