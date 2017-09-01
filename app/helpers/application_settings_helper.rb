@@ -84,6 +84,18 @@ module ApplicationSettingsHelper
     end
   end
 
+  def key_restriction_options_for_select(type)
+    bit_size_options = Gitlab::SSHPublicKey.supported_sizes(type).map do |bits|
+      ["Must be at least #{bits} bits", bits]
+    end
+
+    [
+      ['Are allowed', 0],
+      *bit_size_options,
+      ['Are forbidden', ApplicationSetting::FORBIDDEN_KEY_VALUE]
+    ]
+  end
+
   def repository_storages_options_for_select
     options = Gitlab.config.repositories.storages.map do |name, storage|
       ["#{name} - #{storage['path']}", name]
@@ -116,6 +128,9 @@ module ApplicationSettingsHelper
       :domain_blacklist_enabled,
       :domain_blacklist_raw,
       :domain_whitelist_raw,
+      :dsa_key_restriction,
+      :ecdsa_key_restriction,
+      :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
       :gravatar_enabled,
@@ -159,6 +174,7 @@ module ApplicationSettingsHelper
       :repository_storages,
       :require_two_factor_authentication,
       :restricted_visibility_levels,
+      :rsa_key_restriction,
       :send_user_confirmation_email,
       :sentry_dsn,
       :sentry_enabled,
