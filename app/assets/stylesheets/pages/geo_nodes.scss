@@ -36,12 +36,8 @@
     padding-right: 0px;
     border-right: 0px;
 
-    &:hover, &:focus {
-      text-decoration: none;
-    }
-
-    span:hover {
-      text-decoration: underline;
+    .fa {
+      margin-left: 3px;
     }
   }
 }
