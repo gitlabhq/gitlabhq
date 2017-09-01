@@ -447,7 +447,10 @@ describe CommitStatus do
   describe 'set failure_reason when drop' do
     let(:commit_status) { create(:commit_status, :created) }
 
-    subject { commit_status.drop!(reason); commit_status }
+    subject do
+      commit_status.drop!(reason)
+      commit_status
+    end
 
     context 'when failure_reason is nil' do
       let(:reason) { }
