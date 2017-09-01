@@ -3,7 +3,7 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
-  import monitoringPaths from './monitoring_paths.vue';
+  import GraphPath from './graph_path.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
@@ -63,7 +63,7 @@
       GraphLegend,
       GraphFlag,
       GraphDeployment,
-      monitoringPaths,
+      GraphPath,
     },
 
     computed: {
@@ -238,7 +238,7 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <monitoring-paths
+            <graph-path
               v-for="(path, index) in timeSeries"
               :key="index"
               :generated-line-path="path.linePath"
@@ -246,7 +246,7 @@
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />
-            <monitoring-deployment
+            <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"

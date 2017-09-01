@@ -15,6 +15,9 @@ export default function createTimeSeries(seriesData, graphWidth, graphHeight, gr
   let timeSeriesNumber = 1;
   let lineColor = '#1f78d1';
   let areaColor = '#8fbce8';
+  const lineColors = ['#1f78d1', '#fc9403', '#db3b21', '#1aaa55', '#6666c4'];
+  const areaColors = ['#8fbce8', '#feca81', '#ed9d90', '#8dd5aa', '#d1d1f0'];
+
   return seriesData.map((timeSeries) => {
     const timeSeriesScaleX = d3.time.scale()
       .range([0, graphWidth - 70]);
@@ -35,32 +38,8 @@ export default function createTimeSeries(seriesData, graphWidth, graphHeight, gr
       .y1(d => timeSeriesScaleY(d.value))
       .interpolate('linear');
 
-    switch (timeSeriesNumber) {
-      case 1:
-        lineColor = '#1f78d1';
-        areaColor = '#8fbce8';
-        break;
-      case 2:
-        lineColor = '#fc9403';
-        areaColor = '#feca81';
-        break;
-      case 3:
-        lineColor = '#db3b21';
-        areaColor = '#ed9d90';
-        break;
-      case 4:
-        lineColor = '#1aaa55';
-        areaColor = '#8dd5aa';
-        break;
-      case 5:
-        lineColor = '#6666c4';
-        areaColor = '#d1d1f0';
-        break;
-      default:
-        lineColor = '#1f78d1';
-        areaColor = '#8fbce8';
-        break;
-    }
+    lineColor = lineColors[timeSeriesNumber - 1];
+    areaColor = areaColors[timeSeriesNumber - 1];
 
     if (timeSeriesNumber <= 5) {
       timeSeriesNumber = timeSeriesNumber += 1;
