@@ -39,7 +39,7 @@
   };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm">
+  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
@@ -75,7 +75,7 @@
       </span>
       <a
         v-if="pipeline.flags.auto_devops"
-        class="js-pipeline-url-autodevops label label-info autodevops-link"
+        class="js-pipeline-url-autodevops label label-info autodevops-badge"
         v-popover="popoverOptions"
         role="button">
         Auto DevOps
