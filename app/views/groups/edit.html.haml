@@ -33,13 +33,13 @@
         .col-sm-10
           .checkbox
             = f.label :share_with_group_lock do
-              = f.check_box :share_with_group_lock
+              = f.check_box :share_with_group_lock, disabled: share_with_group_lock_disabled
               %strong
                 Prevent sharing a project within
                 = @group.name
                 with other groups
               %br/
-              %span.descr This setting will be applied to all subgroups unless overridden by a group owner
+              %span.descr= share_with_group_lock_help_text
 
       = render 'group_admin_settings', f: f
 

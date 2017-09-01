@@ -65,6 +65,22 @@ module GroupsHelper
       { group_name: group.name }
   end
 
+  def share_with_group_lock_disabled
+    return false unless @group.has_parent?
+    return false unless @group.parent.share_with_group_lock?
+    return false unless @group.share_with_group_lock?
+    return false if     @group.has_owner?(current_user)
+    return true
+  end
+
+  def share_with_group_lock_help_text
+    return default_help                          unless @group.has_parent?
+    return default_help                          unless @group.parent.share_with_group_lock?
+    return parent_locked_and_has_been_overridden unless @group.share_with_group_lock?
+    return parent_locked_but_you_can_override    if     @group.has_owner?(current_user)
+    return parent_locked_so_ask_the_owner
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false)
@@ -79,5 +95,21 @@ module GroupsHelper
       output << simple_sanitize(group.name)
       output.html_safe
     end
+  end
+
+  def default_help
+    "This setting will be applied to all subgroups unless overridden by a group owner."
+  end
+
+  def parent_locked_but_you_can_override
+    "This setting is applied on #{@group.parent.name}. You can override the setting or remove the share lock from the parent group."
+  end
+
+  def parent_locked_so_ask_the_owner
+    "This setting is applied on #{@group.parent.name}. To share this group with another group, ask the owner to override the setting or remove the share lock from the parent group."
+  end
+
+  def parent_locked_and_has_been_overridden
+    "This setting is applied on #{@group.parent.name} and has been overridden on this subgroup."
   end
 end
