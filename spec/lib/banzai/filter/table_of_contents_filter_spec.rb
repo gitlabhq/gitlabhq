@@ -113,7 +113,7 @@ describe Banzai::Filter::TableOfContentsFilter do
         items = doc.css('li')
 
         # Header 1
-        expect(items[0].ancestors).to satisfy_none { |node| node.name == 'li'}
+        expect(items[0].ancestors).to satisfy_none { |node| node.name == 'li' }
 
         # Header 1-1
         expect(items[1].ancestors).to include(items[0])
@@ -126,7 +126,7 @@ describe Banzai::Filter::TableOfContentsFilter do
         expect(items[3].ancestors).not_to include(items[1])
 
         # Header 2
-        expect(items[4].ancestors).to satisfy_none { |node| node.name == 'li'}
+        expect(items[4].ancestors).to satisfy_none { |node| node.name == 'li' }
 
         # Header 2-1
         expect(items[5].ancestors).to include(items[4])
