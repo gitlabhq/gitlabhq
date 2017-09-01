@@ -29,15 +29,14 @@
   }
 }
 
-.js-advanced-geo-node-status-toggler {
+.advanced-status-toggler {
   color: $gl-link-color;
   padding: 10px 0 0;
   cursor: pointer;
   position: relative;
-  z-index: 2;
+  display: inline-block;
 
   & span:hover {
-    display: inline-block;
     color: $gl-link-color;
     text-decoration: underline;
   }

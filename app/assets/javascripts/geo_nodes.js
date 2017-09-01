@@ -43,7 +43,6 @@ class GeoNodeStatus {
     const currentlyActive = !closestStatus.hasClass('hide-status')
     const togglerContainer = currentlyActive ? $('.toggler-inactive-container') : $('.toggler-active-container')
 
-    element.detach().appendTo(togglerContainer);
     element.find('.fa').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
     closestStatus.toggleClass('hide-status');
   }

@@ -63,11 +63,6 @@
                     %strong.node-info.js-attachments-synced
                 %p
                 .advanced-geo-node-status-container
-                  .toggler-inactive-container
-                    .js-advanced-geo-node-status-toggler
-                      %span Advanced
-                      %i.fa.fa-angle-down
-                  %p
                   .advanced-status.hide-status
                     %span.help-block
                       Database replication lag:
@@ -78,7 +73,10 @@
                     %span.help-block
                       Last event ID processed by cursor:
                       %strong.node-info.js-last-cursor-event
-                  .toggler-active-container
+                  .advanced-status-toggler
+                    .js-advanced-geo-node-status-toggler
+                      %span Advanced
+                      = icon('angle-down')
                 %p
                   .js-health
 
