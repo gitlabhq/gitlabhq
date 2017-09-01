@@ -29,16 +29,15 @@
   }
 }
 
-.advanced-status-toggler {
-  color: $gl-link-color;
-  padding: 10px 0 0;
-  cursor: pointer;
-  position: relative;
-  display: inline-block;
+.advanced-geo-node-status-container {
+  .btn-link {
+    &:hover, &:focus {
+      text-decoration: none;
+    }
 
-  span:hover {
-    color: $gl-link-color;
-    text-decoration: underline;
+    span:hover {
+      text-decoration: underline;
+    }
   }
 }
 

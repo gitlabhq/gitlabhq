@@ -39,7 +39,7 @@ class GeoNodeStatus {
 
   toggleShowAdvancedStatus(e) {
     const $element = $(e.currentTarget);
-    const $closestStatus = $element.closest('.advanced-geo-node-status-container').find('.advanced-status')
+    const $closestStatus = $element.siblings('.advanced-status')
 
     $element.find('.fa').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
     $closestStatus.toggleClass('hidden');
