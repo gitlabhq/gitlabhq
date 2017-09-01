@@ -98,4 +98,25 @@ describe('Pipeline Url Component', () => {
     expect(component.$el.querySelector('.js-pipeline-url-yaml').textContent).toContain('yaml invalid');
     expect(component.$el.querySelector('.js-pipeline-url-stuck').textContent).toContain('stuck');
   });
+
+  it('should render a badge for autodevops', () => {
+    const component = new PipelineUrlComponent({
+      propsData: {
+        pipeline: {
+          id: 1,
+          path: 'foo',
+          flags: {
+            latest: true,
+            yaml_errors: true,
+            stuck: true,
+            auto_devops: true,
+          },
+        },
+      },
+    }).$mount();
+
+    expect(
+      component.$el.querySelector('.js-pipeline-url-autodevops').textContent.trim(),
+    ).toEqual('Auto DevOps');
+  });
 });

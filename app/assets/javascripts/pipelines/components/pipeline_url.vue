@@ -1,26 +1,34 @@
 <script>
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
+  import popover from '../../vue_shared/directives/popover';
 
-export default {
-  props: {
-    pipeline: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      pipeline: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-  components: {
-    userAvatarLink,
-  },
-  directives: {
-    tooltip,
-  },
-  computed: {
-    user() {
-      return this.pipeline.user;
+    components: {
+      userAvatarLink,
     },
-  },
-};
+    directives: {
+      tooltip,
+      popover,
+    },
+    computed: {
+      user() {
+        return this.pipeline.user;
+      },
+      autoDevOpsTitle() {
+        return '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>';
+      },
+      autoDevOpsContent() {
+        return '<a class="autodevops-link" href="">Learn more about Auto DevOps</a>';
+      },
+    },
+  };
 </script>
 <template>
   <div class="table-section section-15 hidden-xs hidden-sm">
@@ -57,13 +65,18 @@ export default {
         :title="pipeline.yaml_errors">
         yaml invalid
       </span>
-      <span
+      <a
         v-if="pipeline.flags.auto_devops"
-        v-tooltip
-        class="label label-info"
-        title="Pipeline was configured by Auto DevOps">
+        class="js-pipeline-url-autodevops label label-info"
+        v-popover:html
+        tabindex="0"
+        role="button"
+        data-trigger="focus"
+        data-placement="top"
+        :title="autoDevOpsTitle"
+        :data-content="autoDevOpsContent">
         Auto DevOps
-      </span>
+      </a>
       <span
         v-if="pipeline.flags.stuck"
         class="js-pipeline-url-stuck label label-warning">

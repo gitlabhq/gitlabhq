@@ -220,7 +220,7 @@
 .commit,
 .generic_commit_status {
 
-  a,
+  a:not(.label):not(.autodevops-link),
   button {
     color: $gl-text-color;
     vertical-align: baseline;

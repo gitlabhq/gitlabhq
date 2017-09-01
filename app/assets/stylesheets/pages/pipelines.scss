@@ -931,3 +931,12 @@ button.mini-pipeline-graph-dropdown-toggle {
 .pipelines-container .top-area .nav-controls > .btn:last-child {
   float: none;
 }
+
+.autodevops-title {
+  font-weight: $gl-font-weight-normal;
+  line-height: 1.5;
+}
+
+.autodevops-link {
+  color: $gl-link-color;
+}
