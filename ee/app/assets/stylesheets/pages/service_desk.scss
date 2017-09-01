@@ -6,7 +6,8 @@
 
   .non-empty-state {
     text-align: left;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid $border-color;
 
     .service-desk-graphic {
       margin-top: 20px;
