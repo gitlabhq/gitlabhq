@@ -397,7 +397,7 @@ describe 'Filter issues', js: true do
 
     context 'searched text with other filters' do
       it 'filters issues by searched text, author, text, assignee, text, label1, text, label2, text, milestone and text' do
-        input_filtered_search("bug author:@#{user.username} assignee:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
+        input_filtered_search("bug author:@#{user.username} report label:~#{bug_label.title} label:~#{caps_sensitive_label.title} milestone:%#{milestone.title} foo")
 
         expect_issues_list_count(1)
         expect_filtered_search_input('bug report foo')
