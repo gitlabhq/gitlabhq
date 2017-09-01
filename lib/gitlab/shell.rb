@@ -391,6 +391,14 @@ module Gitlab
       File.join(gitlab_shell_path, 'bin', 'gitlab-keys')
     end
 
+    def authorized_keys_enabled?
+      # Return true if nil to ensure the authorized_keys methods work while
+      # fixing the authorized_keys file during migration.
+      return true if Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled.nil?
+
+      Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled
+    end
+
     private
 
     def gitlab_projects(shard_path, disk_path)
@@ -467,14 +475,6 @@ module Gitlab
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
-    end
-
-    def authorized_keys_enabled?
-      # Return true if nil to ensure the authorized_keys methods work while
-      # fixing the authorized_keys file during migration.
-      return true if current_application_settings.authorized_keys_enabled.nil?
-
-      current_application_settings.authorized_keys_enabled
     end
   end
 end
