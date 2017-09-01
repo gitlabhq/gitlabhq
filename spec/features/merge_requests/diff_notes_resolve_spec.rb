@@ -196,10 +196,11 @@ feature 'Diff notes resolve', js: true do
       end
 
       it 'does not mark discussion as resolved when resolving single note' do
-        page.first '.diff-content .note' do
+        page.within("#note_#{note.id}") do
           first('.line-resolve-btn').click
 
-          expect(page).to have_selector('.note-action-button .loading')
+          wait_for_requests
+
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
