@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
 /* global ListLabel */
 /* global ListMilestone */
-/* global IssueProject */
 /* global ListAssignee */
 
 import Vue from 'vue';
+import IssueProject from './project';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {

@@ -103,6 +103,6 @@ export default {
       },
       text: project => project.name,
     });
-  }
+  },
 };
 </script>
