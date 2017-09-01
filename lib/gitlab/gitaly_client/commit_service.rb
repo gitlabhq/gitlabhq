@@ -107,8 +107,7 @@ module Gitlab
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
         return unless gitaly_commit
 
-        commit = GitalyClient::Commit.new(@repository, gitaly_commit)
-        Gitlab::Git::Commit.new(commit)
+        Gitlab::Git::Commit.new(@repository, gitaly_commit)
       end
 
       def between(from, to)
@@ -170,7 +169,7 @@ module Gitlab
       private
 
       def commit_diff_request_params(commit, options = {})
-        parent_id = commit.parents[0]&.id || EMPTY_TREE_ID
+        parent_id = commit.parent_ids.first || EMPTY_TREE_ID
 
         {
           repository: @gitaly_repo,
@@ -183,8 +182,7 @@ module Gitlab
       def consume_commits_response(response)
         response.flat_map do |message|
           message.commits.map do |gitaly_commit|
-            commit = GitalyClient::Commit.new(@repository, gitaly_commit)
-            Gitlab::Git::Commit.new(commit)
+            Gitlab::Git::Commit.new(@repository, gitaly_commit)
           end
         end
       end
