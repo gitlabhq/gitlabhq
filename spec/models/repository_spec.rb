@@ -1085,7 +1085,6 @@ describe Repository, models: true do
       end
     end
 
-
     context 'when repository is empty' do
       before do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
