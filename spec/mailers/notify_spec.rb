@@ -8,6 +8,25 @@ describe Notify do
 
   include_context 'gitlab email notification'
 
+  set(:user) { create(:user) }
+  set(:current_user) { create(:user, email: "current@email.com") }
+  set(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
+
+  set(:merge_request) do
+    create(:merge_request, source_project: project,
+                           target_project: project,
+                           author: current_user,
+                           assignee: assignee,
+                           description: 'Awesome description')
+  end
+
+  set(:issue) do
+    create(:issue, author: current_user,
+                   assignees: [assignee],
+                   project: project,
+                   description: 'My awesome description!')
+  end
+
   def have_referable_subject(referable, reply: false)
     prefix = referable.project.name if referable.project
     prefix = "Re: #{prefix}" if reply
@@ -19,8 +38,6 @@ describe Notify do
 
   context 'for a project' do
     describe 'items that are assignable, the email' do
-      let(:current_user) { create(:user, email: "current@email.com") }
-      let(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
       let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
 
       shared_examples 'an assignee email' do
@@ -36,9 +53,6 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignees: [assignee], project: project) }
-        let(:issue_with_description) { create(:issue, author: current_user, assignees: [assignee], project: project, description: 'My awesome description') }
-
         describe 'that are new' do
           subject { described_class.new_issue_email(issue.assignees.first.id, issue.id) }
 
@@ -56,6 +70,10 @@ describe Notify do
             end
           end
 
+          it 'contains the description' do
+            is_expected.to have_html_escaped_body_text issue.description
+          end
+
           context 'when enabled email_author_in_body' do
             before do
               stub_application_setting(email_author_in_body: true)
@@ -65,16 +83,6 @@ describe Notify do
               is_expected.to have_html_escaped_body_text(issue.author_name)
               is_expected.to have_body_text 'created an issue:'
             end
-          end
-        end
-
-        describe 'that are new with a description' do
-          subject { described_class.new_issue_email(issue_with_description.assignees.first.id, issue_with_description.id) }
-
-          it_behaves_like 'it should show Gmail Actions View Issue link'
-
-          it 'contains the description' do
-            is_expected.to have_html_escaped_body_text issue_with_description.description
           end
         end
 
@@ -197,11 +205,6 @@ describe Notify do
       end
 
       context 'for merge requests' do
-        let(:project) { create(:project, :repository) }
-        let(:merge_author) { create(:user) }
-        let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
-        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: 'My awesome description') }
-
         describe 'that are new' do
           subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
 
@@ -221,6 +224,10 @@ describe Notify do
             end
           end
 
+          it 'contains the description' do
+            is_expected.to have_html_escaped_body_text merge_request.description
+          end
+
           context 'when enabled email_author_in_body' do
             before do
               stub_application_setting(email_author_in_body: true)
@@ -230,17 +237,6 @@ describe Notify do
               is_expected.to have_html_escaped_body_text merge_request.author_name
               is_expected.to have_body_text 'created a merge request:'
             end
-          end
-        end
-
-        describe 'that are new with a description' do
-          subject { described_class.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
-
-          it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like "an unsubscribeable thread"
-
-          it 'contains the description' do
-            is_expected.to have_html_escaped_body_text merge_request_with_description.description
           end
         end
 
@@ -321,6 +317,7 @@ describe Notify do
         end
 
         describe 'that are merged' do
+          let(:merge_author) { create(:user) }
           subject { described_class.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
           it_behaves_like 'a multiple recipients email'
@@ -348,8 +345,6 @@ describe Notify do
     end
 
     describe 'project was moved' do
-      let(:project) { create(:project) }
-      let(:user) { create(:user) }
       subject { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
       it_behaves_like 'an email sent from GitLab'
@@ -371,7 +366,6 @@ describe Notify do
           end
         end
 
-        let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
           project.requesters.find_by(user_id: user.id)
@@ -398,7 +392,6 @@ describe Notify do
         let(:group_owner) { create(:user) }
         let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
         let(:project) { create(:project, :public, :access_requestable, namespace: group) }
-        let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
           project.requesters.find_by(user_id: user.id)
@@ -424,7 +417,6 @@ describe Notify do
 
     describe 'project access denied' do
       let(:project) { create(:project, :public, :access_requestable) }
-      let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
@@ -445,7 +437,6 @@ describe Notify do
     describe 'project access changed' do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
       let(:project) { create(:project, :public, :access_requestable, namespace: owner.namespace) }
-      let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { described_class.member_access_granted_email('project', project_member.id) }
 
@@ -474,7 +465,6 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
@@ -494,7 +484,6 @@ describe Notify do
     end
 
     describe 'project invitation accepted' do
-      let(:project) { create(:project) }
       let(:invited_user) { create(:user, name: 'invited user') }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
@@ -519,7 +508,6 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
@@ -582,7 +570,6 @@ describe Notify do
       end
 
       describe 'on a commit' do
-        let(:project) { create(:project, :repository) }
         let(:commit) { project.commit }
 
         before do
@@ -607,7 +594,6 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
 
         before do
@@ -632,7 +618,6 @@ describe Notify do
       end
 
       describe 'on an issue' do
-        let(:issue) { create(:issue, project: project) }
         let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
 
         before do
@@ -658,7 +643,6 @@ describe Notify do
     end
 
     context 'items that are noteable, the email for a discussion note' do
-      let(:project) { create(:project, :repository) }
       let(:note_author) { create(:user, name: 'author_name') }
 
       before :each do
@@ -722,7 +706,6 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, author: note_author) }
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
 
@@ -749,7 +732,6 @@ describe Notify do
       end
 
       describe 'on an issue' do
-        let(:issue) { create(:issue, project: project) }
         let(:note) { create(:discussion_note_on_issue, noteable: issue, project: project, author: note_author) }
         let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
 
@@ -835,7 +817,6 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note) { create(:diff_note_on_merge_request) }
 
         subject { described_class.note_merge_request_email(recipient.id, note.id) }
@@ -848,9 +829,10 @@ describe Notify do
   end
 
   context 'for a group' do
+    set(:group) { create(:group) }
+
     describe 'group access requested' do
       let(:group) { create(:group, :public, :access_requestable) }
-      let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
@@ -870,8 +852,6 @@ describe Notify do
     end
 
     describe 'group access denied' do
-      let(:group) { create(:group) }
-      let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
@@ -890,8 +870,6 @@ describe Notify do
     end
 
     describe 'group access changed' do
-      let(:group) { create(:group) }
-      let(:user) { create(:user) }
       let(:group_member) { create(:group_member, group: group, user: user) }
 
       subject { described_class.member_access_granted_email('group', group_member.id) }
@@ -921,7 +899,6 @@ describe Notify do
     end
 
     describe 'group invitation' do
-      let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) { invite_to_group(group, inviter: owner) }
 
@@ -941,7 +918,6 @@ describe Notify do
     end
 
     describe 'group invitation accepted' do
-      let(:group) { create(:group) }
       let(:invited_user) { create(:user, name: 'invited user') }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
@@ -966,7 +942,6 @@ describe Notify do
     end
 
     describe 'group invitation declined' do
-      let(:group) { create(:group) }
       let(:owner) { create(:user).tap { |u| group.add_user(u, Gitlab::Access::OWNER) } }
       let(:group_member) do
         invitee = invite_to_group(group, inviter: owner)
@@ -1020,7 +995,6 @@ describe Notify do
 
   describe 'email on push for a created branch' do
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
     let(:tree_path) { project_tree_path(project, "empty-branch") }
 
     subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/empty-branch', action: :create) }
@@ -1046,7 +1020,6 @@ describe Notify do
 
   describe 'email on push for a created tag' do
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
     let(:tree_path) { project_tree_path(project, "v1.0") }
 
     subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
@@ -1072,7 +1045,6 @@ describe Notify do
 
   describe 'email on push for a deleted branch' do
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
 
     subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
@@ -1094,7 +1066,6 @@ describe Notify do
 
   describe 'email on push for a deleted tag' do
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
 
     subject { described_class.repository_push_email(project.id, author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
@@ -1115,9 +1086,7 @@ describe Notify do
   end
 
   describe 'email on push with multiple commits' do
-    let(:project) { create(:project, :repository) }
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
     let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:compare) { Compare.decorate(raw_compare, project) }
     let(:commits) { compare.commits }
@@ -1209,9 +1178,7 @@ describe Notify do
   end
 
   describe 'email on push with a single commit' do
-    let(:project) { create(:project, :repository) }
     let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
     let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:compare) { Compare.decorate(raw_compare, project) }
     let(:commits) { compare.commits }
@@ -1242,8 +1209,6 @@ describe Notify do
   end
 
   describe 'HTML emails setting' do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
     let(:multipart_mail) { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
     context 'when disabled' do
