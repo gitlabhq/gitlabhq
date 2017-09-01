@@ -92,7 +92,13 @@ Parameters:
     "user_notes_count": 1,
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
+    "web_url": "http://example.com/example/example/merge_requests/1",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
   }
 ]
 ```
@@ -183,7 +189,13 @@ Parameters:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
+    "web_url": "http://example.com/example/example/merge_requests/1",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
   }
 ]
 ```
@@ -254,7 +266,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -362,6 +380,12 @@ Parameters:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
   "changes": [
     {
     "old_path": "VERSION",
@@ -461,7 +485,13 @@ order for it to take effect:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -543,7 +573,13 @@ Must include at least one non-required attribute from above.
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -643,7 +679,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -841,7 +883,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
-  "web_url": "http://example.com/example/example/merge_requests/1"
+  "web_url": "http://example.com/example/example/merge_requests/1",
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 

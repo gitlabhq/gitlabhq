@@ -19,7 +19,7 @@ class GroupMilestone < GlobalMilestone
     { group_id: group.id }
   end
 
-  def is_legacy_group_milestone?
+  def legacy_group_milestone?
     true
   end
 end

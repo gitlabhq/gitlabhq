@@ -15,9 +15,10 @@ module Gitlab
         #
         module Configurable
           extend ActiveSupport::Concern
-          include Validatable
 
           included do
+            include Validatable
+
             validations do
               validates :config, type: Hash
             end

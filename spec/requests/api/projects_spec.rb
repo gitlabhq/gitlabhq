@@ -1265,6 +1265,13 @@ describe API::Projects do
         expect(project.project_group_links).to be_empty
       end
 
+      it 'returns 204 when deleting a group share' do
+        delete api("/projects/#{project.id}/share/#{group.id}", user)
+
+        expect(response).to have_http_status(204)
+        expect(project.project_group_links).to be_empty
+      end
+
       it_behaves_like '412 response' do
         let(:request) { api("/projects/#{project.id}/share/#{group.id}", user) }
       end

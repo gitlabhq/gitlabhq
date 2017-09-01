@@ -370,7 +370,7 @@ describe Issues::CreateService do
       context 'when recaptcha was not verified' do
         context 'when akismet detects spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
           end
 
           it 'marks an issue as a spam ' do
@@ -392,7 +392,7 @@ describe Issues::CreateService do
 
         context 'when akismet does not detect spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
           end
 
           it 'does not mark an issue as a spam ' do

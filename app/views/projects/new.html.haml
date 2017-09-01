@@ -68,9 +68,10 @@
                       - if git_import_enabled?
                         %button.btn.js-toggle-button.import_git{ type: "button" }
                           = icon('git', text: 'Repo by URL')
-                    .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
-                      = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
-                        = icon('gitlab', text: 'GitLab export')
+                    - if gitlab_project_import_enabled?
+                      .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
+                        = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
+                          = icon('gitlab', text: 'GitLab export')
 
         .row
           .col-lg-12

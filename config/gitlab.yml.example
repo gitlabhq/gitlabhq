@@ -317,9 +317,8 @@ production: &base
         encryption: 'plain'
 
         # Enables SSL certificate verification if encryption method is
-        # "start_tls" or "simple_tls". (Defaults to false for backward-
-        # compatibility)
-        verify_certificates: false
+        # "start_tls" or "simple_tls". Defaults to true.
+        verify_certificates: true
 
         # Specifies the path to a file containing a PEM-format CA certificate,
         # e.g. if you need to use an internal CA.

@@ -4,7 +4,7 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def auth
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
-    unless oauth.is_oauth_state_valid?
+    unless oauth.oauth_state_valid?
       redirect_to root_url
       return
     end
@@ -14,7 +14,7 @@ class Oauth::GeoAuthController < ActionController::Base
 
   def callback
     oauth = Gitlab::Geo::OauthSession.new(state: params[:state])
-    unless oauth.is_oauth_state_valid?
+    unless oauth.oauth_state_valid?
       redirect_to new_user_session_path
       return
     end

@@ -74,19 +74,6 @@ stages:
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
 
-.only-if-want-mysql: &only-if-want-mysql
-  only:
-    - /mysql/
-    - /-stable/
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
-    - tags@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ee
-    - tags@gitlab/gitlabhq
-    - tags@gitlab/gitlab-ee
-
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
 # https://docs.gitlab.com/ce/development/writing_documentation.html#testing
@@ -130,7 +117,6 @@ stages:
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-  <<: *only-if-want-mysql
   <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
@@ -162,7 +148,6 @@ stages:
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
-  <<: *only-if-want-mysql
   <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters
