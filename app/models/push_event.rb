@@ -30,6 +30,44 @@ class PushEvent < Event
   delegate :commit_count, to: :push_event_payload
   alias_method :commits_count, :commit_count
 
+  # Returns events of pushes that either pushed to an existing ref or created a
+  # new one.
+  def self.created_or_pushed
+    actions = [
+      PushEventPayload.actions[:pushed],
+      PushEventPayload.actions[:created]
+    ]
+
+    joins(:push_event_payload)
+      .where(push_event_payloads: { action: actions })
+  end
+
+  # Returns events of pushes to a branch.
+  def self.branch_events
+    ref_type = PushEventPayload.ref_types[:branch]
+
+    joins(:push_event_payload)
+      .where(push_event_payloads: { ref_type: ref_type })
+  end
+
+  # Returns PushEvent instances for which no merge requests have been created.
+  def self.without_existing_merge_requests
+    existing_mrs = MergeRequest.except(:order)
+      .select(1)
+      .where('merge_requests.source_project_id = events.project_id')
+      .where('merge_requests.source_branch = push_event_payloads.ref')
+
+    # For reasons unknown the use of #eager_load will result in the
+    # "push_event_payload" association not being set. Because of this we're
+    # using "joins" here, which does mean an additional query needs to be
+    # executed in order to retrieve the "push_event_association" when the
+    # returned PushEvent is used.
+    joins(:push_event_payload)
+      .where('NOT EXISTS (?)', existing_mrs)
+      .created_or_pushed
+      .branch_events
+  end
+
   def self.sti_name
     PUSHED
   end
