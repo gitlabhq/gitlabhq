@@ -5,13 +5,30 @@ describe NotePolicy, mdoels: true do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project) }
-    let(:note) { create(:note, noteable: issue, author: user, project: project) }
 
-    let(:policies) { described_class.new(user, note) }
+    def policies(noteable = nil)
+      return @policies if @policies
+
+      noteable ||= issue
+      note = create(:note, noteable: noteable, author: user, project: project)
+
+      @policies = described_class.new(user, note)
+    end
 
     context 'when the project is public' do
       context 'when the note author is not a project member' do
         it 'can edit a note' do
+          expect(policies).to be_allowed(:update_note)
+          expect(policies).to be_allowed(:admin_note)
+          expect(policies).to be_allowed(:resolve_note)
+          expect(policies).to be_allowed(:read_note)
+        end
+      end
+
+      context 'when the noteable is a snippet' do
+        it 'can edit note' do
+          policies = policies(create(:project_snippet, project: project))
+
           expect(policies).to be_allowed(:update_note)
           expect(policies).to be_allowed(:admin_note)
           expect(policies).to be_allowed(:resolve_note)
@@ -29,7 +46,7 @@ describe NotePolicy, mdoels: true do
             project.add_developer(user)
           end
 
-          it 'can eddit a note' do
+          it 'can edit a note' do
             expect(policies).to be_allowed(:update_note)
             expect(policies).to be_allowed(:admin_note)
             expect(policies).to be_allowed(:resolve_note)

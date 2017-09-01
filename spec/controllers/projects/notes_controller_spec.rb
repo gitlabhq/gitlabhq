@@ -239,6 +239,15 @@ describe Projects::NotesController do
         merge_request.update_attribute(:discussion_locked, true)
       end
 
+      context 'when a noteable is not found' do
+        it 'returns 404 status' do
+          request_params[:note][:noteable_id] = 9999
+          post :create, request_params.merge(format: :json)
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
       context 'when a user is a team member' do
         it 'returns 302 status for html' do
           post :create, request_params

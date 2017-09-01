@@ -48,7 +48,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
-        optional :discussion_locked, type: Boolean, desc: "Boolean parameter if the issue's discussion should be locked"
+        optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
       end
 
       params :issue_params do

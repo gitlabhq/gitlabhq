@@ -71,8 +71,6 @@ module API
         post ":id/#{noteables_str}/:noteable_id/notes" do
           noteable = find_project_noteable(noteables_str, params[:noteable_id])
 
-          authorize! :create_note, user_project
-
           opts = {
             note: params[:body],
             noteable_type: noteables_str.classify,
@@ -80,14 +78,11 @@ module API
           }
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
+            authorize! :create_note, noteable
+
             if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
               opts[:created_at] = params[:created_at]
             end
-
-            noteable_type = opts[:noteable_type].to_s
-            noteable = Issue.find(opts[:noteable_id]) if noteable_type == 'Issue'
-            noteable = MergeRequest.find(opts[:noteable_id]) if noteable_type == 'MergeRequest'
-            authorize! :create_note, noteable if noteable
 
             note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
