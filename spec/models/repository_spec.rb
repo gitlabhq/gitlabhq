@@ -1080,7 +1080,7 @@ describe Repository, models: true do
         expect(repository).to     receive(:expire_branches_cache)
 
         repository.with_branch(user, 'new-feature') do
-            new_rev
+          new_rev
         end
       end
     end
