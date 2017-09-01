@@ -46,12 +46,12 @@
             %span.build-light-text Token:
             #{@build.trigger_request.trigger.short_token}
 
-          - if @build.trigger_request.variables
+          - if @build.old_or_new_trigger_variables
             %p
               %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
-              - @build.trigger_request.variables.each do |key, value|
+              - @build.old_or_new_trigger_variables.each do |key, value|
                 %dt.js-build-variable.trigger-build-variable= key
                 %dd.js-build-value.trigger-build-value= value
 
