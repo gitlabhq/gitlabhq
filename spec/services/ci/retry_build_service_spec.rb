@@ -22,7 +22,7 @@ describe Ci::RetryBuildService do
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id retried protected].freeze
+       user_id auto_canceled_by_id retried].freeze
 
   shared_examples 'build duplication' do
     let(:stage) do
@@ -48,7 +48,7 @@ describe Ci::RetryBuildService do
     describe 'clone accessors' do
       CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
-          expect(new_build.send(attribute)).to be_present
+          expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
       end
