@@ -86,7 +86,8 @@ module Banzai
           @href = href
           @children = []
 
-          find_parent(previous_header)
+          @parent = find_parent(previous_header)
+          @parent.children.push(self) if @parent
         end
 
         def level
@@ -107,15 +108,15 @@ module Banzai
           return unless previous_header
 
           if level == previous_header.level
-            @parent = previous_header.parent
+            parent = previous_header.parent
           elsif level > previous_header.level
-            @parent = previous_header
+            parent = previous_header
           else
-            @parent = previous_header
-            @parent = @parent.parent while @parent.level >= level
+            parent = previous_header
+            parent = parent.parent while parent.level >= level
           end
 
-          @parent.children.push(self)
+          parent
         end
       end
     end
