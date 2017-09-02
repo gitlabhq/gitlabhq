@@ -219,18 +219,30 @@ module Ci
         let!(:specific_runner) { create(:ci_runner, :not_protected, :specific) }
 
         context 'when a job is protected' do
-          let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
+          let!(:protected_job) { create(:ci_build, :protected, pipeline: pipeline) }
 
           it 'picks the protected job' do
-            expect(execute(specific_runner)).to eq(pending_build)
+            expect(execute(specific_runner)).to eq(protected_job)
           end
         end
 
         context 'when a job is unprotected' do
-          let!(:pending_build) { create(:ci_build, :unprotected, pipeline: pipeline) }
+          let!(:unprotected_job) { create(:ci_build, pipeline: pipeline) }
 
           it 'picks the unprotected job' do
-            expect(execute(specific_runner)).to eq(pending_build)
+            expect(execute(specific_runner)).to eq(unprotected_job)
+          end
+        end
+
+        context 'when protected attribute of a job is nil' do
+          let!(:legacy_job) { create(:ci_build, pipeline: pipeline) }
+
+          before do
+            legacy_job.update_attribute(:protected, nil)
+          end
+
+          it 'picks the legacy job' do
+            expect(execute(specific_runner)).to eq(legacy_job)
           end
         end
       end
@@ -239,17 +251,29 @@ module Ci
         let!(:specific_runner) { create(:ci_runner, :ref_protected, :specific) }
 
         context 'when a job is protected' do
-          let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
+          let!(:protected_job) { create(:ci_build, :protected, pipeline: pipeline) }
 
           it 'picks the protected job' do
-            expect(execute(specific_runner)).to eq(pending_build)
+            expect(execute(specific_runner)).to eq(protected_job)
           end
         end
 
         context 'when a job is unprotected' do
-          let!(:unprotected_job) { create(:ci_build, :unprotected, pipeline: pipeline) }
+          let!(:unprotected_job) { create(:ci_build, pipeline: pipeline) }
 
           it 'does not pick the unprotected job' do
+            expect(execute(specific_runner)).to be_nil
+          end
+        end
+
+        context 'when protected attribute of a job is nil' do
+          let!(:legacy_job) { create(:ci_build, pipeline: pipeline) }
+
+          before do
+            legacy_job.update_attribute(:protected, nil)
+          end
+
+          it 'does not pick the legacy job' do
             expect(execute(specific_runner)).to be_nil
           end
         end

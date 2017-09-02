@@ -255,7 +255,29 @@ describe Ci::Runner do
       end
     end
 
-    context 'when runner is protected' do
+    context 'when access_level of runner is not_protected' do
+      before do
+        runner.not_protected!
+      end
+
+      context 'when build is protected' do
+        before do
+          build.protected = true
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when build is unprotected' do
+        before do
+          build.protected = false
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when access_level of runner is ref_protected' do
       before do
         runner.ref_protected!
       end

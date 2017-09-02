@@ -81,7 +81,7 @@ module CycleAnalyticsHelpers
         ref: 'master',
         source: :push,
         project: project,
-        protected: true)
+        protected: false)
   end
 
   def new_dummy_job(environment)
@@ -95,7 +95,7 @@ module CycleAnalyticsHelpers
       tag: false,
       name: 'dummy',
       pipeline: dummy_pipeline,
-      protected: true)
+      protected: false)
   end
 end
 

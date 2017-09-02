@@ -391,14 +391,16 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when user is master' do
+        let(:pipeline) { execute_service }
+
         before do
           project.add_master(user)
         end
 
-        it 'creates a pipeline' do
-          expect(execute_service).to be_persisted
+        it 'creates a protected pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).to be_protected
           expect(Ci::Pipeline.count).to eq(1)
-          expect(Ci::Pipeline.last).to be_protected
         end
       end
 
@@ -469,12 +471,12 @@ describe Ci::CreatePipelineService do
         let(:user) {}
         let(:trigger) { create(:ci_trigger, owner: nil) }
         let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
+        let(:pipeline) { execute_service(trigger_request: trigger_request) }
 
-        it 'creates a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .to be_persisted
+        it 'creates an unprotected pipeline' do
+          expect(pipeline).to be_persisted
+          expect(pipeline).not_to be_protected
           expect(Ci::Pipeline.count).to eq(1)
-          expect(Ci::Pipeline.last).not_to be_protected
         end
       end
     end

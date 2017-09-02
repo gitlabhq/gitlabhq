@@ -231,9 +231,5 @@ FactoryGirl.define do
     trait :protected do
       protected true
     end
-
-    trait :unprotected do
-      protected false
-    end
   end
 end
