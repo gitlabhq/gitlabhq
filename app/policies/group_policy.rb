@@ -15,6 +15,9 @@ class GroupPolicy < BasePolicy
 
   condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
 
+  condition(:parent_share_locked) { @subject.has_parent? && @subject.parent.share_with_group_lock? }
+  condition(:parent_owner) { @subject.has_parent? && @subject.parent.has_owner?(@user) }
+
   condition(:has_projects) do
     GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
   end
@@ -53,6 +56,8 @@ class GroupPolicy < BasePolicy
   rule { ~request_access_enabled }.prevent :request_access
   rule { ~can?(:view_globally) }.prevent   :request_access
   rule { has_access }.prevent              :request_access
+
+  rule { owner & (~parent_share_locked | parent_owner) }.enable :change_share_with_group_lock
 
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?

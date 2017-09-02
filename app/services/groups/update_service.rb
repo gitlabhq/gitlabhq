@@ -10,9 +10,11 @@ module Groups
             Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
 
           deny_visibility_level(group, new_visibility)
-          return group
+          return false
         end
       end
+
+      return false unless valid_share_with_group_lock_change?
 
       group.assign_attributes(params)
 
@@ -29,6 +31,20 @@ module Groups
 
     def reject_parent_id!
       params.except!(:parent_id)
+    end
+
+    def valid_share_with_group_lock_change?
+      return true unless changing_share_with_group_lock?
+      return true if can?(current_user, :change_share_with_group_lock, group)
+
+      group.errors.add(:share_with_group_lock, 'cannot be disabled when the parent group Share lock is enabled, except by the owner of the parent group')
+      false
+    end
+
+    def changing_share_with_group_lock?
+      return false if params[:share_with_group_lock].nil?
+
+      params[:share_with_group_lock] != group.share_with_group_lock
     end
   end
 end
