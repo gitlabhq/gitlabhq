@@ -19,7 +19,7 @@ These charts utilize our [GitLab Omnibus Docker images](https://docs.gitlab.com/
 https://gitlab.com/charts/charts.gitlab.io/issues.
 
 ### Deploying GitLab on Kubernetes
-> *Note*: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
+> **Note**: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
 
 The best way to deploy GitLab on Kubernetes is to use the [gitlab-omnibus](gitlab_omnibus.md) chart.
 
@@ -32,7 +32,7 @@ To deploy just the [GitLab Runner](https://docs.gitlab.com/runner/), utilize the
 It offers a quick way to configure and deploy the Runner on Kubernetes, regardless of where your GitLab server may be running.
 
 ### Advanced deployment of GitLab
-> *Note*: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
+> **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
 
 If advanced configuration of GitLab is required, the beta [gitlab](gitlab_chart.md) chart can be used which deploys the GitLab service along with optional Postgres and Redis. It offers extensive configuration, but requires deep knowledge of Kubernetes and Helm to use.
 
