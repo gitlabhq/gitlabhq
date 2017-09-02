@@ -1,18 +1,11 @@
 module Groups
   class UpdateService < Groups::BaseService
+    include UpdateVisibilityLevel
+
     def execute
       reject_parent_id!
 
-      # check that user is allowed to set specified visibility_level
-      new_visibility = params[:visibility_level]
-      if new_visibility && new_visibility.to_i != group.visibility_level
-        unless can?(current_user, :change_visibility_level, group) &&
-            Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
-
-          deny_visibility_level(group, new_visibility)
-          return false
-        end
-      end
+      return false unless visibility_level_allowed?(group, params[:visibility_level])
 
       return false unless valid_share_with_group_lock_change?
 
