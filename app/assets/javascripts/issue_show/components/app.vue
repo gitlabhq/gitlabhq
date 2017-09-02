@@ -80,11 +80,11 @@ export default {
       type: Boolean,
       required: true,
     },
-    markdownPreviewUrl: {
+    markdownPreviewPath: {
       type: String,
       required: true,
     },
-    markdownDocs: {
+    markdownDocsPath: {
       type: String,
       required: true,
     },
@@ -96,7 +96,7 @@ export default {
       type: String,
       required: true,
     },
-    projectsAutocompleteUrl: {
+    projectsAutocompletePath: {
       type: String,
       required: true,
     },
@@ -242,11 +242,11 @@ export default {
       :can-move="canMove"
       :can-destroy="canDestroy"
       :issuable-templates="issuableTemplates"
-      :markdown-docs="markdownDocs"
-      :markdown-preview-url="markdownPreviewUrl"
+      :markdown-docs-path="markdownDocsPath"
+      :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
-      :projects-autocomplete-url="projectsAutocompleteUrl"
+      :projects-autocomplete-path="projectsAutocompletePath"
     />
     <div v-else>
       <title-component

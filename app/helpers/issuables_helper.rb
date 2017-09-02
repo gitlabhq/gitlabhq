@@ -35,7 +35,7 @@ module IssuablesHelper
   def serialize_issuable(issuable)
     case issuable
     when Issue
-      IssueSerializer.new.represent(issuable).to_json
+      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
     when MergeRequest
       MergeRequestSerializer
         .new(current_user: current_user, project: issuable.project)
@@ -210,9 +210,9 @@ module IssuablesHelper
       canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
-      markdownPreviewUrl: preview_markdown_path(@project),
-      markdownDocs: help_page_path('user/markdown'),
-      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      markdownPreviewPath: preview_markdown_path(@project),
+      markdownDocsPath: help_page_path('user/markdown'),
+      projectsAutocompletePath: autocomplete_projects_path(project_id: @project.id),
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,

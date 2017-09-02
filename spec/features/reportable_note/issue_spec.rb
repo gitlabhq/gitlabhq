@@ -13,5 +13,5 @@ describe 'Reportable note on issue', :js do
     visit project_issue_path(project, issue)
   end
 
-  it_behaves_like 'reportable note'
+  it_behaves_like 'reportable note', 'issue'
 end
