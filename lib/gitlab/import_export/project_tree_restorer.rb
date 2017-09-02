@@ -80,6 +80,7 @@ module Gitlab
 
       def save_relation_hash(relation_hash_batch, relation_key)
         relation_hash = create_relation(relation_key, relation_hash_batch)
+
         @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
         @restored_project = nil
         @project = nil
@@ -115,7 +116,8 @@ module Gitlab
       # issue, finds any subrelations such as notes, creates them and assign them back to the hash
       #
       # Recursively calls this method if the sub-relation is a hash containing more sub-relations
-      def create_sub_relations(relation, tree_hash)
+      def create_sub_relations(relation, tree_hash, save = true)
+        tree_hash = tree_hash.dup
         relation_key = relation.keys.first.to_s
         return if tree_hash[relation_key].blank?
 
@@ -124,13 +126,13 @@ module Gitlab
             # We just use author to get the user ID, do not attempt to create an instance.
             next if sub_relation == :author
 
-            create_sub_relations(sub_relation, relation_item) if sub_relation.is_a?(Hash)
+            create_sub_relations(sub_relation, relation_item, false) if sub_relation.is_a?(Hash)
 
             relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
             relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
           end
 
-          save_relation_hash(relation_item, relation_key)
+          save_relation_hash([relation_item], relation_key) if save
         end
       end
 
