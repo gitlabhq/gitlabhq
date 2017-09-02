@@ -58,7 +58,7 @@ feature 'Project > Members > Share with Group', :js do
       end
     end
 
-    context 'for a project in a subgroup', :postgresql do
+    context 'for a project in a subgroup', :nested_groups do
       let!(:group_to_share_with) { create(:group) }
       let(:root_group) { create(:group) }
       let(:subgroup) { create(:group, parent: root_group) }

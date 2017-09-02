@@ -9,7 +9,7 @@ feature 'Group share lock' do
     sign_in(root_owner)
   end
 
-  context 'with a subgroup' do
+  context 'with a subgroup', :nested_groups do
     given!(:subgroup) { create(:group, parent: root_group) }
 
     context 'when enabling the parent group share lock' do

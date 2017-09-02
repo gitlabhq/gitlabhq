@@ -244,7 +244,7 @@ describe GroupPolicy do
   end
 
   describe 'change_share_with_group_lock' do
-    context 'when the group has a parent' do
+    context 'when the group has a parent', :nested_groups do
       let(:group) { create(:group, parent: parent) }
 
       context 'when the parent share_with_group_lock is enabled' do

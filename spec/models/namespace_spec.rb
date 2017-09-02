@@ -407,7 +407,7 @@ describe Namespace do
     it { expect(group.all_projects.to_a).to eq([project2, project1]) }
   end
 
-  describe '#share_with_group_lock with subgroups' do
+  describe '#share_with_group_lock with subgroups', :nested_groups do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}
 
