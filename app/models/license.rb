@@ -130,12 +130,15 @@ class License < ActiveRecord::Base
   # Early adopters should not earn new features as they're
   # introduced.
   EARLY_ADOPTER_FEATURES = [
+    { ADMIN_AUDIT_LOG_FEATURE => 1 },
     { AUDIT_EVENTS_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
     { BURNDOWN_CHARTS_FEATURE => 1 },
     { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { CROSS_PROJECT_PIPELINES_FEATURE => 1 },
+    { DB_LOAD_BALANCING_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
+    { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
@@ -146,6 +149,7 @@ class License < ActiveRecord::Base
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { JENKINS_INTEGRATION_FEATURE => 1 },
+    { LDAP_EXTRAS_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
@@ -154,8 +158,11 @@ class License < ActiveRecord::Base
     { OBJECT_STORAGE_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
+    { RELATED_ISSUES_FEATURE => 1 },
     { REPOSITORY_MIRRORS_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 }
+    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 },
+    { SERVICE_DESK_FEATURE => 1 },
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze
 
   FEATURES_BY_PLAN = {
