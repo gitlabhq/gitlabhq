@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
   end
 
-  scope path: '/jira/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+  scope path: '/-/jira/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
     get :authorize, action: :new
     get :callback
     post :access_token
