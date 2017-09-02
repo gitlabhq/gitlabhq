@@ -1092,13 +1092,13 @@ module API
     end
 
     module Github
-      class Namespace < Grape::Entity
-        expose :path, as: :login
+      class User < Grape::Entity
+        expose :username
       end
 
       class Repository < Grape::Entity
         expose :id
-        expose :namespace, as: :owner, using: Namespace
+        expose :owner, using: User
         expose :name
       end
 
@@ -1109,20 +1109,18 @@ module API
         end
       end
 
-      class CommitUser < Grape::Entity
-        expose :path, as: :login
-      end
-
       class RepoCommit < Grape::Entity
         expose :id, as: :sha
         expose :author do |commit|
           {
-            "login" => "oswaldo",
+            login: commit.author.username,
+            email: commit.author_email
           }
         end
         expose :committer do |commit|
           {
-            "login" => "oswaldo",
+            login: commit.author.username,
+            email: commit.committer_email
           }
         end
         expose :commit do |commit|
@@ -1131,12 +1129,14 @@ module API
             author: {
               name: commit.author_name,
               email: commit.author_email,
-              date: commit.authored_date.iso8601(3)
+              date: commit.authored_date.iso8601,
+              type: 'User'
             },
             committer: {
               name: commit.committer_name,
               email: commit.committer_email,
-              date: commit.committed_date.iso8601(3)
+              date: commit.committed_date.iso8601,
+              type: 'User'
             },
             message: commit.safe_message
           }
@@ -1144,6 +1144,9 @@ module API
         expose :parents do |commit|
           # TODO: export to entity
           commit.parent_ids.map { |id| { sha: id } }
+        end
+        expose :files do |commit|
+          []
         end
       end
 
