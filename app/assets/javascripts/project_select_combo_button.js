@@ -14,7 +14,14 @@ export default class ProjectSelectComboButton {
 
   bindEvents() {
     this.projectSelectInput.siblings('.new-project-item-select-button')
-      .on('click', this.openDropdown);
+      .on('click', e => this.openDropdown(e));
+
+    this.newItemBtn.on('click', (e) => {
+      if (!this.getProjectFromLocalStorage()) {
+        e.preventDefault();
+        this.openDropdown(e);
+      }
+    });
 
     this.projectSelectInput.on('change', () => this.selectProject());
   }
@@ -28,8 +35,9 @@ export default class ProjectSelectComboButton {
     }
   }
 
-  openDropdown() {
-    $(this).siblings('.project-item-select').select2('open');
+  // eslint-disable-next-line class-methods-use-this
+  openDropdown(event) {
+    $(event.currentTarget).siblings('.project-item-select').select2('open');
   }
 
   selectProject() {
@@ -56,10 +64,8 @@ export default class ProjectSelectComboButton {
     if (project) {
       this.newItemBtn.attr('href', project.url);
       this.newItemBtn.text(`${this.formattedText.defaultTextPrefix} in ${project.name}`);
-      this.newItemBtn.enable();
     } else {
       this.newItemBtn.text(`Select project to create ${this.formattedText.presetTextSuffix}`);
-      this.newItemBtn.disable();
     }
   }
 

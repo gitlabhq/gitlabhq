@@ -70,6 +70,11 @@
               = link_to charts_project_graph_path(@project, current_ref) do
                 #{ _('Charts') }
 
+            - if @project.feature_available?(:file_locks)
+              = nav_link(controller: [:path_locks]) do
+                = link_to project_path_locks_path(@project) do
+                  #{ _('Locked Files') }
+
       - if project_nav_tab? :container_registry
         = nav_link(controller: %w[projects/registry/repositories]) do
           = sidebar_link project_container_registry_index_path(@project), title: _('Container Registry'), css: 'shortcuts-container-registry' do

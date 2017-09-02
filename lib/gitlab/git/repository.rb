@@ -47,6 +47,9 @@ module Gitlab
       # Directory name of repo
       attr_reader :name
 
+      # Relative path of repo
+      attr_reader :relative_path
+
       # Rugged repo object
       attr_reader :rugged
 
@@ -447,8 +450,8 @@ module Gitlab
       end
 
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
-      def is_ancestor?(from, to)
-        gitaly_commit_client.is_ancestor(from, to)
+      def ancestor?(from, to)
+        gitaly_commit_client.ancestor?(from, to)
       end
 
       # Return an array of Diff objects that represent the diff

@@ -74,7 +74,7 @@ module GroupsHelper
   def group_title_link(group, hidable: false)
     link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
       output =
-        if show_new_nav?
+        if show_new_nav? && !Rails.env.test?
           image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
         else
           ""

@@ -413,14 +413,12 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a developer' do
-        let(:user) {}
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_developer(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_developer(user)
         end
 
         it 'does not create a pipeline' do
@@ -431,17 +429,15 @@ describe Ci::CreatePipelineService do
       end
 
       context 'when trigger belongs to a master' do
-        let(:user) {}
+        let(:user) { create(:user) }
+        let(:trigger) { create(:ci_trigger, owner: user) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_master(user)
-            request.trigger.update(owner: user)
-          end
+        before do
+          project.add_master(user)
         end
 
-        it 'does not create a pipeline' do
+        it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
@@ -470,7 +466,8 @@ describe Ci::CreatePipelineService do
     context 'when ref is not protected' do
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request) }
+        let(:trigger) { create(:ci_trigger, owner: nil) }
+        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         it 'creates a pipeline' do
           expect(execute_service(trigger_request: trigger_request))

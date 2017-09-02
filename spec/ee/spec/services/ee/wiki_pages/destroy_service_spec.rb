@@ -23,12 +23,6 @@ describe WikiPages::DestroyService do
 
         service.execute(page)
       end
-
-      it 'triggers wiki update on secondary nodes' do
-        expect(Gitlab::Geo).to receive(:notify_wiki_update).with(instance_of(Project))
-
-        service.execute(page)
-      end
     end
   end
 end

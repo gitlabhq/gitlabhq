@@ -21,8 +21,10 @@ module API
       end
     end
 
-    def destroy_conditionally!(resource, last_update_field: :updated_at)
-      check_unmodified_since!(resource.public_send(last_update_field))
+    def destroy_conditionally!(resource, last_updated: nil)
+      last_updated ||= resource.updated_at
+
+      check_unmodified_since!(last_updated)
 
       status 204
       if block_given?
@@ -157,13 +159,6 @@ module API
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
-        unauthorized!
-      end
-    end
-
-    def authenticate_by_gitlab_geo_token!
-      token = headers['X-Gitlab-Token'].try(:chomp)
-      unless token && Devise.secure_compare(geo_token, token)
         unauthorized!
       end
     end

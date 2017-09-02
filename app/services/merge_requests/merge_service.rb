@@ -33,10 +33,12 @@ module MergeRequests
       merge_request.in_locked_state do
         if commit
           after_merge
+          clean_merge_jid
           success
         end
       end
     rescue MergeError => e
+      clean_merge_jid
       log_merge_error(e.message, save_message_on_model: true)
     end
 
@@ -97,6 +99,10 @@ module MergeRequests
             .execute(merge_request.source_branch)
         end
       end
+    end
+
+    def clean_merge_jid
+      merge_request.update_column(:merge_jid, nil)
     end
 
     def branch_deletion_user

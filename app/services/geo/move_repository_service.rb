@@ -11,6 +11,10 @@ module Geo
       @new_path_with_namespace = new_path_with_namespace
     end
 
+    def async_execute
+      GeoRepositoryMoveWorker.perform_async(id, name, old_path_with_namespace, new_path_with_namespace)
+    end
+
     def execute
       project = Project.find(id)
       project.expire_caches_before_rename(old_path_with_namespace)

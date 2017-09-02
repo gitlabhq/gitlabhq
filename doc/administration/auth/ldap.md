@@ -101,9 +101,12 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   encryption: 'plain'
 
   # Enables SSL certificate verification if encryption method is
-  # "start_tls" or "simple_tls". (Defaults to false for backward-
-  # compatibility)
-  verify_certificates: false
+  # "start_tls" or "simple_tls". Defaults to true since GitLab 10.0 for
+  # security. This may break installations upon upgrade to 10.0, that did
+  # not know their LDAP SSL certificates were not setup properly. For
+  # example, when using self-signed certificates, the ca_file path may
+  # need to be specified.
+  verify_certificates: true
 
   # Specifies the path to a file containing a PEM-format CA certificate,
   # e.g. if you need to use an internal CA.

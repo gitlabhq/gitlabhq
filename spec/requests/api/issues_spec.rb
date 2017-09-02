@@ -513,6 +513,18 @@ describe API::Issues, :mailer do
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
 
+    it 'avoids N+1 queries' do
+      control_count = ActiveRecord::QueryRecorder.new do
+        get api("/projects/#{project.id}/issues", user)
+      end.count
+
+      create(:issue, author: user, project: project)
+
+      expect do
+        get api("/projects/#{project.id}/issues", user)
+      end.not_to exceed_query_limit(control_count)
+    end
+
     it 'returns 404 when project does not exist' do
       get api('/projects/1000/issues', non_member)
 
@@ -988,7 +1000,7 @@ describe API::Issues, :mailer do
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
       allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
-      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
     end
 
     let(:params) do
@@ -1118,7 +1130,7 @@ describe API::Issues, :mailer do
 
     it "does not create a new project issue" do
       allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
-      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
 
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), params
 

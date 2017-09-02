@@ -12,7 +12,7 @@ feature 'Profile > Pipeline Quota' do
   it 'is linked within the profile page' do
     visit profile_path
 
-    page.within('.layout-nav') do
+    page.within('.nav-sidebar') do
       expect(page).to have_selector(:link_or_button, 'Pipeline quota')
     end
   end

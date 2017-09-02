@@ -79,6 +79,10 @@ class Repository
     @project = project
   end
 
+  def ==(other)
+    @disk_path == other.disk_path
+  end
+
   def raw_repository
     return nil unless full_path
 
@@ -92,6 +96,10 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(repository_storage_path, disk_path + '.git')
     )
+  end
+
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
   end
 
   #
@@ -982,7 +990,7 @@ class Repository
 
     if branch_commit
       same_head = branch_commit.id == root_ref_commit.id
-      !same_head && is_ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -1030,7 +1038,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      is_ancestor?(branch_commit.id, upstream_commit.id)
+      ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -1044,12 +1052,12 @@ class Repository
     nil
   end
 
-  def is_ancestor?(ancestor_id, descendant_id)
+  def ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
 
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
-        raw_repository.is_ancestor?(ancestor_id, descendant_id)
+        raw_repository.ancestor?(ancestor_id, descendant_id)
       else
         rugged_is_ancestor?(ancestor_id, descendant_id)
       end
@@ -1078,25 +1086,22 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
+    return yield nil if start_repository.empty_repo?
 
-    branch_name_or_sha =
-      if start_repository == self
-        start_branch_name
+    if start_repository == self
+      yield commit(start_branch_name)
+    else
+      sha = start_repository.commit(start_branch_name).sha
+
+      if branch_commit = commit(sha)
+        yield branch_commit
       else
-        tmp_ref = fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          "refs/tmp/#{SecureRandom.hex}/head"
-        )
-
-        start_repository.commit(start_branch_name).sha
+        with_repo_tmp_commit(
+          start_repository, start_branch_name, sha) do |tmp_commit|
+          yield tmp_commit
+        end
       end
-
-    yield(commit(branch_name_or_sha))
-
-  ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    end
   end
 
   def add_remote(name, url)
@@ -1113,7 +1118,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

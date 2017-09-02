@@ -17,4 +17,18 @@ describe Geo::MoveRepositoryService do
       expect(File.directory?("#{full_new_path}.git")).to be_truthy
     end
   end
+
+  describe '#async_execute' do
+    it 'starts the worker' do
+      expect(GeoRepositoryMoveWorker).to receive(:perform_async)
+
+      subject.async_execute
+    end
+
+    it 'returns job id' do
+      allow(GeoRepositoryMoveWorker).to receive(:perform_async).and_return('foo')
+
+      expect(subject.async_execute).to eq('foo')
+    end
+  end
 end

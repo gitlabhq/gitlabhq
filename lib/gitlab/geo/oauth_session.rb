@@ -7,7 +7,7 @@ module Gitlab
       attr_accessor :state
       attr_accessor :return_to
 
-      def is_oauth_state_valid?
+      def oauth_state_valid?
         return false unless state
         salt, hmac, return_to = state.split(':', 3)
 

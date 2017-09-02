@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Gitlab::SQL::Pattern
   include Avatarable
   include Referable
   include Sortable
@@ -317,7 +318,7 @@ class User < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search(query)
       table   = arel_table
-      pattern = "%#{query}%"
+      pattern = User.to_pattern(query)
 
       order = <<~SQL
         CASE

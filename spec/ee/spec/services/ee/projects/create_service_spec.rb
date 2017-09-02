@@ -33,12 +33,25 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
-  context 'repository mirror' do
+  context 'without repository mirror' do
+    before do
+      stub_licensed_features(repository_mirrors: true)
+      opts.merge!(import_url: 'http://foo.com')
+    end
+
+    it 'sets the mirror to false' do
+      project = create_project(user, opts)
+
+      expect(project).to be_persisted
+      expect(project.mirror).to be false
+    end
+  end
+
+  context 'with repository mirror' do
     before do
       opts.merge!(import_url: 'http://foo.com',
                   mirror: true,
-                  mirror_user_id: user.id,
-                  mirror_trigger_builds: true)
+                  mirror_user_id: user.id)
     end
 
     context 'when licensed' do
@@ -49,10 +62,22 @@ describe Projects::CreateService, '#execute' do
       it 'sets the correct attributes' do
         project = create_project(user, opts)
 
-        expect(project).to be_valid
+        expect(project).to be_persisted
         expect(project.mirror).to be true
         expect(project.mirror_user_id).to eq(user.id)
-        expect(project.mirror_trigger_builds).to be true
+      end
+
+      context 'with mirror trigger builds' do
+        before do
+          opts.merge!(mirror_trigger_builds: true)
+        end
+
+        it 'sets the mirror trigger builds' do
+          project = create_project(user, opts)
+
+          expect(project).to be_persisted
+          expect(project.mirror_trigger_builds).to be true
+        end
       end
     end
 
@@ -64,10 +89,22 @@ describe Projects::CreateService, '#execute' do
       it 'does not set mirror attributes' do
         project = create_project(user, opts)
 
-        expect(project).to be_valid
+        expect(project).to be_persisted
         expect(project.mirror).to be false
         expect(project.mirror_user_id).to be_nil
-        expect(project.mirror_trigger_builds).to be false
+      end
+
+      context 'with mirror trigger builds' do
+        before do
+          opts.merge!(mirror_trigger_builds: true)
+        end
+
+        it 'sets the mirror trigger builds' do
+          project = create_project(user, opts)
+
+          expect(project).to be_persisted
+          expect(project.mirror_trigger_builds).to be false
+        end
       end
     end
   end

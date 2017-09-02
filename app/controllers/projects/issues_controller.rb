@@ -205,7 +205,7 @@ class Projects::IssuesController < Projects::ApplicationController
       task_status: @issue.task_status
     }
 
-    if @issue.is_edited?
+    if @issue.edited?
       response[:updated_at] = @issue.updated_at
       response[:updated_by_name] = @issue.last_edited_by.name
       response[:updated_by_path] = user_path(@issue.last_edited_by)
