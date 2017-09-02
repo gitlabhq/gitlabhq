@@ -1131,12 +1131,12 @@ module API
             author: {
               name: commit.author_name,
               email: commit.author_email,
-              date: "2011-04-14T16:00:49Z"
+              date: commit.authored_date.iso8601(3)
             },
             committer: {
               name: commit.committer_name,
               email: commit.committer_email,
-              date: "2011-04-14T16:00:49Z"#commit.committed_date.iso8601(3)
+              date: commit.committed_date.iso8601(3)
             },
             message: commit.safe_message
           }

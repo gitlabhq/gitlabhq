@@ -17,6 +17,10 @@ module API
 
       resource :users do
         get ':namespace/repos' do
+          projs = ::API::Entities::Github::Repository.represent(current_user.authorized_projects).as_json
+
+          Rails.logger.info("PROJS JSON: #{projs}")
+
           present paginate(current_user.authorized_projects), with: ::API::Entities::Github::Repository
         end
       end
@@ -25,6 +29,7 @@ module API
         requires :namespace, type: String
         requires :project, type: String
       end
+
       resource :repos do
         get ':namespace/:project/branches' do
           namespace = params[:namespace]
@@ -49,12 +54,9 @@ module API
           requires :project, type: String
         end
         get ':namespace/:project/commits/:sha' do
-          Rails.logger.info("FETCHING COMMITS FOR #{params[:namespace]}/#{params[:project]} [hardcoded]")
           namespace = params[:namespace]
           project = params[:project]
           user_project = find_project!("#{namespace}/#{project}")
-
-          # sent :sha HAS to match with the returned sha on commit in order to succeed
 
           commit = user_project.commit(params[:sha])
 
@@ -67,7 +69,7 @@ module API
 
           # hash =
           #   {
-          #     "sha" => "357fb168fc667ef07a3303e4bb528fbcb2147430",
+          #     "sha" => "b0ee36f0a5356c092a5d4913f3523db93a1db565",
           #     "commit" => {
           #       "author" => {
           #         "name" => "oswaksd",
@@ -79,7 +81,7 @@ module API
           #         "email" => "oswluizf@gmail.com",
           #         "date" => "2011-04-14T16:00:49Z"
           #       },
-          #       "message" => "hardcoded GL-2",
+          #       "message" => "Fix all the bugs GL-2",
           #     },
           #     "author" => {
           #       "login" => "oswaldo",
@@ -91,7 +93,7 @@ module API
           #     },
           #     "parents" => [
           #       {
-          #         "sha" => "357fb168fc667ef07a3303e4bb528fbcb2147430"
+          #         "sha" => "e7d7eb49018d7bffa6be52586c518974778965c5"
           #       }
           #     ],
           #     "files" => [
@@ -106,7 +108,7 @@ module API
           #     ]
           #   }
 
-          #present hash
+          # present hash
         end
       end
     end
