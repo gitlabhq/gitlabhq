@@ -5,7 +5,7 @@ By submitting code as an individual you agree to the
 By submitting code as an entity you agree to the
 [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
-_This notice should stay as the first item in the CONTRIBUTING.MD file._
+_This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
 
@@ -21,7 +21,7 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
+  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
   - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design--ui-elements)
@@ -115,7 +115,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~CI, ~Discussion, ~Edge, ~Platform, etc.
+- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
 - Priority: ~Deliverable, ~Stretch
 
 All labels, their meaning and priority are defined on the
@@ -157,13 +157,13 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
+The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
 ~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
