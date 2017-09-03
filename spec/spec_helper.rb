@@ -136,12 +136,17 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.before(:context, :migration) do
-    schema_migrate_down!
+  config.before(:example, :migration) do
+    ActiveRecord::Migrator
+      .migrate(migrations_paths, previous_migration.version)
+
+    reset_column_in_migration_models
   end
 
-  config.after(:context, :migration) do
-    schema_migrate_up!
+  config.after(:example, :migration) do
+    ActiveRecord::Migrator.migrate(migrations_paths)
+
+    reset_column_in_migration_models
   end
 
   config.around(:each, :nested_groups) do |example|
