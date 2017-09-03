@@ -35,7 +35,7 @@ module IssuablesHelper
   def serialize_issuable(issuable)
     case issuable
     when Issue
-      IssueSerializer.new.represent(issuable).to_json
+      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
     when MergeRequest
       MergeRequestSerializer
         .new(current_user: current_user, project: issuable.project)
@@ -210,9 +210,9 @@ module IssuablesHelper
       canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
-      markdownPreviewUrl: preview_markdown_path(@project),
-      markdownDocs: help_page_path('user/markdown'),
-      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      markdownPreviewPath: preview_markdown_path(@project),
+      markdownDocsPath: help_page_path('user/markdown'),
+      projectsAutocompletePath: autocomplete_projects_path(project_id: @project.id),
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,
@@ -240,16 +240,9 @@ module IssuablesHelper
     }
   end
 
-  def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    cache_key = finder.state_counter_cache_key
-
-    @counts ||= {}
-    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      finder.count_by_state
-    end
-
-    @counts[cache_key][state]
+  def issuables_count_for_state(issuable_type, state)
+    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
+    finder.count_by_state[state]
   end
 
   def close_issuable_url(issuable)

@@ -20,10 +20,6 @@
   }
 }
 
-.new-note {
-  display: none;
-}
-
 .new-note,
 .note-edit-form {
   .note-form-actions {
@@ -202,6 +198,10 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+
+    &.is-replying {
+      padding-bottom: $gl-padding;
+    }
   }
 }
 

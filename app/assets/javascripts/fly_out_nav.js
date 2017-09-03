@@ -12,6 +12,7 @@ let sidebar;
 export const mousePos = [];
 
 export const setSidebar = (el) => { sidebar = el; };
+export const getOpenMenu = () => currentOpenMenu;
 export const setOpenMenu = (menu = null) => { currentOpenMenu = menu; };
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
@@ -141,6 +142,14 @@ export const documentMouseMove = (e) => {
   if (mousePos.length > 6) mousePos.shift();
 };
 
+export const subItemsMouseLeave = (relatedTarget) => {
+  clearTimeout(timeoutId);
+
+  if (!relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
+    hideMenu(currentOpenMenu);
+  }
+};
+
 export default () => {
   sidebar = document.querySelector('.nav-sidebar');
 
@@ -162,10 +171,7 @@ export default () => {
     const subItems = el.querySelector('.sidebar-sub-level-items');
 
     if (subItems) {
-      subItems.addEventListener('mouseleave', () => {
-        clearTimeout(timeoutId);
-        hideMenu(currentOpenMenu);
-      });
+      subItems.addEventListener('mouseleave', e => subItemsMouseLeave(e.relatedTarget));
     }
 
     el.addEventListener('mouseenter', e => mouseEnterTopItems(e.currentTarget));

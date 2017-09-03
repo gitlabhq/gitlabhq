@@ -75,7 +75,7 @@
   };
 </script>
 <template>
-  <div>
+  <div class="ci-job-component">
     <a
       v-tooltip
       v-if="job.status.details_path"

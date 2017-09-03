@@ -368,6 +368,10 @@
   transform: translateY(0);
 }
 
+.comment-type-dropdown.open .dropdown-menu {
+  display: block;
+}
+
 .filtered-search-box-input-container {
   .dropdown-menu,
   .dropdown-menu-nav {
@@ -729,6 +733,7 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     li {
+      display: block;
       padding: 0 1px;
 
       &:hover {
@@ -748,7 +753,8 @@
       }
 
       a,
-      button {
+      button,
+      .menu-item {
         border-radius: 0;
         padding: 8px 16px;
 

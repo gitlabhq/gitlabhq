@@ -23,13 +23,13 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I should see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).to have_link('Pages')
     end
   end
 
   step 'I should not see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).not_to have_link('Pages')
     end
   end
