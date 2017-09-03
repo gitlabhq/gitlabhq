@@ -18,7 +18,6 @@ constraints(ProjectUrlConstrainer.new) do
   # `:project_id`, or `*id`.
   #
   # See https://github.com/rails/rails/blob/v4.2.8/actionpack/lib/action_dispatch/routing/mapper.rb#L155
-
   scope(path: '*namespace_id',
         as: :namespace,
         namespace_id: Gitlab::PathRegex.full_namespace_route_regex) do
@@ -263,8 +262,8 @@ constraints(ProjectUrlConstrainer.new) do
             resources :artifacts, only: [] do
               collection do
                 get :latest_succeeded,
-                    path: '*ref_name_and_path',
-                    format: false
+                  path: '*ref_name_and_path',
+                  format: false
               end
             end
           end
@@ -304,12 +303,12 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resources :container_registry, only: [:index, :destroy],
-                controller: 'registry/repositories'
+                                     controller: 'registry/repositories'
 
       namespace :registry do
         resources :repository, only: [] do
           resources :tags, only: [:destroy],
-                    constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end
 
