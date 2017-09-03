@@ -23,8 +23,8 @@ module Gitlab
 
         @project_members = @tree_hash.delete('project_members')
 
-          ActiveRecord::Base.uncached do
-            ActiveRecord::Base.no_touching do
+        ActiveRecord::Base.uncached do
+          ActiveRecord::Base.no_touching do
             create_relations
           end
         end
@@ -62,21 +62,6 @@ module Gitlab
             relation_hash_list = @tree_hash[relation_key.to_s]
             save_relation_hash(relation_hash_list, relation_key)
           end
-
-
-          # relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
-          # relation_hash_list = @tree_hash[relation_key.to_s]
-          #
-          # next unless relation_hash_list
-          #
-          # if relation_hash_list.is_a?(Array)
-          #   [relation_hash_list].flatten.each_slice(15) do |relation_hash_batch|
-          #     save_relation_hash(relation_hash_batch, relation_key, saved)
-          #   end
-          # else
-          #   save_relation_hash(relation_hash_list, relation_key, saved)
-          # end
-
         end
         @saved.all?
       end
@@ -123,12 +108,14 @@ module Gitlab
         tree_array = [tree_hash[relation_key]].flatten
 
         while relation_item = tree_array.shift
+          Project.transaction do
             process_sub_relation(relation, relation_item)
 
             if save
               save_relation_hash([relation_item], relation_key)
               tree_hash[relation_key].delete(relation_item)
             end
+          end
         end
 
         tree_hash.delete(relation_key) if save
