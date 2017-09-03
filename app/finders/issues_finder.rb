@@ -14,6 +14,7 @@
 #     search: string
 #     label_name: string
 #     sort: string
+#     my_reaction_emoji: string
 #
 class IssuesFinder < IssuableFinder
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
