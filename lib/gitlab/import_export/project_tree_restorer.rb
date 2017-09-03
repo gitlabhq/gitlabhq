@@ -23,8 +23,10 @@ module Gitlab
 
         @project_members = @tree_hash.delete('project_members')
 
-        ActiveRecord::Base.no_touching do
-          create_relations
+          ActiveRecord::Base.uncached do
+            ActiveRecord::Base.no_touching do
+            create_relations
+          end
         end
       rescue => e
         @shared.error(e)
@@ -52,6 +54,7 @@ module Gitlab
         @saved = []
         default_relation_list.each do |relation|
           next unless relation.is_a?(Hash) || @tree_hash[relation.to_s].present?
+
           if relation.is_a?(Hash)
             create_sub_relations(relation, @tree_hash)
           else
@@ -82,6 +85,10 @@ module Gitlab
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
         @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+        @restored_project = nil
+        @project = nil
+        relation_hash = nil
+        relation_hash_batch = nil
         @restored_project = Project.find_by_id(@project_id)
       end
 
@@ -117,20 +124,28 @@ module Gitlab
         relation_key = relation.keys.first.to_s
         return if tree_hash[relation_key].blank?
 
-        [tree_hash[relation_key]].flatten.each do |relation_item|
-          relation.values.flatten.each do |sub_relation|
-            # We just use author to get the user ID, do not attempt to create an instance.
-            next if sub_relation == :author
+        tree_array = [tree_hash[relation_key]].flatten
 
-            create_sub_relations(sub_relation, relation_item, false) if sub_relation.is_a?(Hash)
+        while relation_item = tree_array.shift
+            relation.values.flatten.each do |sub_relation|
+              # We just use author to get the user ID, do not attempt to create an instance.
+              next if sub_relation == :author
 
-            relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
-            relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
-          end
+              create_sub_relations(sub_relation, relation_item, false) if sub_relation.is_a?(Hash)
 
-          save_relation_hash([relation_item], relation_key) if save
-          tree_hash.delete(relation_key) if save
+              relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
+              relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
+            end
+
+            if save
+              save_relation_hash([relation_item], relation_key)
+            end
+
+          tree_hash[relation_key].delete(relation_item) if save
+          relation_item = nil
         end
+
+        tree_hash.delete(relation_key) if save
       end
 
       def assign_relation_hash(relation_item, sub_relation)
