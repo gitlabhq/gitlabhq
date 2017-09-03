@@ -1868,6 +1868,36 @@ describe Ci::Build do
     end
   end
 
+  describe 'state transition: any => [:running]' do
+    let(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: options) }
+
+    context 'when "dependencies" keyword is not defined' do
+      let(:options) { {} }
+
+      it { expect { build.run! }.not_to raise_error }
+    end
+
+    context 'when "dependencies" keyword is empty' do
+      let(:options) { { dependencies: [] } }
+
+      it { expect { build.run! }.not_to raise_error }
+    end
+
+    context 'when "dependencies" keyword is specified' do
+      let(:options) { { dependencies: ['test'] } }
+
+      context 'when a depended job exists' do
+        let!(:pre_build) { create(:ci_build, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+        it { expect { build.run! }.not_to raise_error }
+      end
+
+      context 'when depended jobs do not exist' do
+        it { expect { build.run! }.to raise_error(Gitlab::Ci::Error::MissingDependencies) }
+      end
+    end
+  end
+
   describe 'state transition when build fails' do
     let(:service) { MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
 

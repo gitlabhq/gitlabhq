@@ -139,6 +139,12 @@ module Ci
           Ci::Build.retry(build, build.user)
         end
       end
+
+      before_transition any => [:running] do |build|
+        if !build.empty_dependencies? && build.dependencies.empty?
+          raise Gitlab::Ci::Error::MissingDependencies
+        end
+      end
     end
 
     def detailed_status(current_user)

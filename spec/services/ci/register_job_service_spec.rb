@@ -276,6 +276,34 @@ module Ci
         end
       end
 
+      context 'when "dependencies" keyword is specified' do
+        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: job_name, stage_idx: 0) }
+
+        let!(:pending_job) do
+          create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['spec'] } )
+        end
+
+        let(:picked_job) { execute(specific_runner) }
+
+        context 'when a depended job exists' do
+          let(:job_name) { 'spec' }
+
+          it "picks the build" do
+            expect(picked_job).to eq(pending_job)
+          end
+        end
+
+        context 'when depended jobs do not exist' do
+          let(:job_name) { 'robocop' }
+
+          it 'does not pick the build and drops the build' do
+            expect(picked_job).to be_nil
+            expect(pending_job.reload).to be_failed
+            expect(pending_job).to be_missing_dependency_failure
+          end
+        end
+      end
+
       def execute(runner)
         described_class.new(runner).execute.build
       end
