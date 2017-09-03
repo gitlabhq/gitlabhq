@@ -40,6 +40,18 @@ The same process is valid for merge requests. Navigate to your project's **Merge
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
+### Searching for specific terms
+
+You can filter issues by specific terms included in titles or descriptions.
+
+* Syntax
+    * Searches look for all the words in a query, in any order - e.g.: searching
+      issues for `display bug` will return all issues matching both those words, in any order.
+    * To find the exact term, use double quotes: `"display bug"`
+* Limitation
+    * For a performance reason, the terms shorter than 3 chars are ignored - e.g.: searching
+      issues for `included in titles` is same with `included titles`
+
 ### Issues and merge requests per group
 
 Similar to **Issues and merge requests per project**, you can also search for issues
