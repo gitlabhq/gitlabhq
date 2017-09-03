@@ -4,7 +4,7 @@ module Ci
   describe RegisterJobService do
     let!(:project) { FactoryGirl.create :project, shared_runners_enabled: false }
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
-    let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: pipeline }
+    let!(:pending_job) { FactoryGirl.create :ci_build, pipeline: pipeline }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
     let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
 
@@ -15,32 +15,32 @@ module Ci
     describe '#execute' do
       context 'runner follow tag list' do
         it "picks build with the same tag" do
-          pending_build.tag_list = ["linux"]
-          pending_build.save
+          pending_job.tag_list = ["linux"]
+          pending_job.save
           specific_runner.tag_list = ["linux"]
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(execute(specific_runner)).to eq(pending_job)
         end
 
         it "does not pick build with different tag" do
-          pending_build.tag_list = ["linux"]
-          pending_build.save
+          pending_job.tag_list = ["linux"]
+          pending_job.save
           specific_runner.tag_list = ["win32"]
           expect(execute(specific_runner)).to be_falsey
         end
 
         it "picks build without tag" do
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(execute(specific_runner)).to eq(pending_job)
         end
 
         it "does not pick build with tag" do
-          pending_build.tag_list = ["linux"]
-          pending_build.save
+          pending_job.tag_list = ["linux"]
+          pending_job.save
           expect(execute(specific_runner)).to be_falsey
         end
 
         it "pick build without tag" do
           specific_runner.tag_list = ["win32"]
-          expect(execute(specific_runner)).to eq(pending_build)
+          expect(execute(specific_runner)).to eq(pending_job)
         end
       end
 
@@ -76,7 +76,7 @@ module Ci
           let!(:pipeline2) { create :ci_pipeline, project: project2 }
           let!(:project3) { create :project, shared_runners_enabled: true }
           let!(:pipeline3) { create :ci_pipeline, project: project3 }
-          let!(:build1_project1) { pending_build }
+          let!(:build1_project1) { pending_job }
           let!(:build2_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
           let!(:build3_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
           let!(:build1_project2) { FactoryGirl.create :ci_build, pipeline: pipeline2 }
@@ -172,7 +172,7 @@ module Ci
 
       context 'when first build is stalled' do
         before do
-          pending_build.lock_version = 10
+          pending_job.lock_version = 10
         end
 
         subject { described_class.new(specific_runner).execute }
@@ -182,7 +182,7 @@ module Ci
 
           before do
             allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
-              .and_return([pending_build, other_build])
+              .and_return([pending_job, other_build])
           end
 
           it "receives second build from the queue" do
@@ -194,7 +194,7 @@ module Ci
         context 'when single build is in queue' do
           before do
             allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
-              .and_return([pending_build])
+              .and_return([pending_job])
           end
 
           it "does not receive any valid result" do
@@ -219,30 +219,30 @@ module Ci
         let!(:specific_runner) { create(:ci_runner, :specific) }
 
         context 'when a job is protected' do
-          let!(:protected_job) { create(:ci_build, :protected, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
 
-          it 'picks the protected job' do
-            expect(execute(specific_runner)).to eq(protected_job)
+          it 'picks the job' do
+            expect(execute(specific_runner)).to eq(pending_job)
           end
         end
 
         context 'when a job is unprotected' do
-          let!(:unprotected_job) { create(:ci_build, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
-          it 'picks the unprotected job' do
-            expect(execute(specific_runner)).to eq(unprotected_job)
+          it 'picks the job' do
+            expect(execute(specific_runner)).to eq(pending_job)
           end
         end
 
         context 'when protected attribute of a job is nil' do
-          let!(:legacy_job) { create(:ci_build, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
           before do
-            legacy_job.update_attribute(:protected, nil)
+            pending_job.update_attribute(:protected, nil)
           end
 
-          it 'picks the legacy job' do
-            expect(execute(specific_runner)).to eq(legacy_job)
+          it 'picks the job' do
+            expect(execute(specific_runner)).to eq(pending_job)
           end
         end
       end
@@ -251,29 +251,29 @@ module Ci
         let!(:specific_runner) { create(:ci_runner, :ref_protected, :specific) }
 
         context 'when a job is protected' do
-          let!(:protected_job) { create(:ci_build, :protected, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, :protected, pipeline: pipeline) }
 
-          it 'picks the protected job' do
-            expect(execute(specific_runner)).to eq(protected_job)
+          it 'picks the job' do
+            expect(execute(specific_runner)).to eq(pending_job)
           end
         end
 
         context 'when a job is unprotected' do
-          let!(:unprotected_job) { create(:ci_build, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
-          it 'does not pick the unprotected job' do
+          it 'does not pick the job' do
             expect(execute(specific_runner)).to be_nil
           end
         end
 
         context 'when protected attribute of a job is nil' do
-          let!(:legacy_job) { create(:ci_build, pipeline: pipeline) }
+          let!(:pending_job) { create(:ci_build, pipeline: pipeline) }
 
           before do
-            legacy_job.update_attribute(:protected, nil)
+            pending_job.update_attribute(:protected, nil)
           end
 
-          it 'does not pick the legacy job' do
+          it 'does not pick the job' do
             expect(execute(specific_runner)).to be_nil
           end
         end
