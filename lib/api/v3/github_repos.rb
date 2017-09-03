@@ -42,10 +42,6 @@ module API
           project = params[:project]
           user_project = find_project!("#{namespace}/#{project}")
 
-          branches = ::API::Entities::Github::Branch
-                       .represent(user_project.repository.branches.sort_by(&:name), project: user_project)
-                       .as_json
-
           branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
           present paginate(branches),
@@ -64,9 +60,6 @@ module API
           commit = user_project.commit(params[:sha])
 
           not_found! 'Commit' unless commit
-
-          json_commit = ::API::Entities::Github::RepoCommit.represent(commit).as_json
-          Rails.logger.info("JSON COMMIT: #{json_commit}")
 
           present commit, with: ::API::Entities::Github::RepoCommit
         end

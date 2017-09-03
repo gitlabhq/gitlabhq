@@ -64,11 +64,6 @@ module API
           end
         end
 
-        # desc ':org/repos' do
-        #   Rails.logger.info("Requesting /users/#{params[:org]}/repos with params #{params}")
-        #   Rails.logger.info("User: #{current_user.name}")
-        # end
-
         desc 'Get the SSH keys of a specified user. Available only for admins.' do
           success ::API::Entities::SSHKey
         end

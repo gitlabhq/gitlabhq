@@ -5,9 +5,6 @@ module API
     allow_access_with_scope :api
     prefix :api
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
@@ -15,8 +12,6 @@ module API
       helpers ::API::Helpers::CommonHelpers
 
       mount ::API::V3::AwardEmoji
-      mount ::API::V3::GithubRepos
-
       mount ::API::V3::Boards
       mount ::API::V3::Branches
       mount ::API::V3::BroadcastMessages
@@ -54,6 +49,11 @@ module API
       mount ::API::V3::Triggers
       mount ::API::V3::Users
       mount ::API::V3::Variables
+
+      # Although the following endpoints are kept behind V3 namespace, they're not
+      # deprecated neither should be removed when V3 get removed.
+      # They're needed as a layer to integrate with Jira development panel.
+      mount ::API::V3::GithubRepos
     end
 
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }
@@ -94,6 +94,9 @@ module API
     helpers ::SentryHelper
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
+
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
 
     # Keep in alphabetical order
     mount ::API::AccessRequests

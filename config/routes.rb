@@ -19,7 +19,6 @@ Rails.application.routes.draw do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
-
   end
 
   scope path: '/-/jira/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
