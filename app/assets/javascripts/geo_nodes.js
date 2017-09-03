@@ -24,7 +24,7 @@ class GeoNodeStatus {
     this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health', this.$status);
     this.endpoint = this.$el.data('status-url');
-    this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status)
+    this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status);
     this.$advancedStatus.on('click', this.toggleShowAdvancedStatus);
 
     this.statusInterval = new gl.SmartInterval({
@@ -39,7 +39,7 @@ class GeoNodeStatus {
 
   toggleShowAdvancedStatus(e) {
     const $element = $(e.currentTarget);
-    const $closestStatus = $element.siblings('.advanced-status')
+    const $closestStatus = $element.siblings('.advanced-status');
 
     $element.find('.fa').toggleClass('fa-angle-down').toggleClass('fa-angle-up');
     $closestStatus.toggleClass('hidden');
