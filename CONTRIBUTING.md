@@ -217,11 +217,11 @@ After adding the ~"Accepting Merge Requests" label, we try to estimate the
 [weight](#issue-weight) of the issue. We use issue weight to let contributors
 know how difficult the issue is. Additionally:
 
-- We advertise [~"Accepting Merge Requests" issues with weight < 5][up-for-grabs]
+- We advertise ["Accepting Merge Requests" issues with weight < 5][up-for-grabs]
   as suitable for people that have never contributed to GitLab before on the
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
-  look for [~"Accepting Merge Requests" issues with a weight of 1][firt-timers]
+  look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
 
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
