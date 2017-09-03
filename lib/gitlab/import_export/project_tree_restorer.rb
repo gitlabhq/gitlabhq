@@ -57,7 +57,7 @@ module Gitlab
           else
             relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
             relation_hash_list = @tree_hash[relation_key.to_s]
-            save_relation_hash(relation_hash_list, relation_key, saved)
+            save_relation_hash(relation_hash_list, relation_key, @saved)
           end
 
 
@@ -82,10 +82,7 @@ module Gitlab
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
         @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
-        @restored_project = nil
-        @project = nil
-
-        @project = Project.find_by_id(@project_id)
+        @restored_project = Project.find_by_id(@project_id)
       end
 
       def default_relation_list
@@ -117,7 +114,6 @@ module Gitlab
       #
       # Recursively calls this method if the sub-relation is a hash containing more sub-relations
       def create_sub_relations(relation, tree_hash, save = true)
-        tree_hash = tree_hash.dup
         relation_key = relation.keys.first.to_s
         return if tree_hash[relation_key].blank?
 
@@ -133,6 +129,7 @@ module Gitlab
           end
 
           save_relation_hash([relation_item], relation_key) if save
+          tree_hash.delete(relation_key) if save
         end
       end
 
