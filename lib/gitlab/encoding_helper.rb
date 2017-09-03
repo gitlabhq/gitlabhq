@@ -13,6 +13,8 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab_git/merge_requests/77#note_4754193
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
+    #
+    # 
     def encode!(message)
       return nil unless message.respond_to? :force_encoding
 
@@ -22,18 +24,24 @@ module Gitlab
 
       # return message if message type is binary
       detect = CharlockHolmes::EncodingDetector.detect(message)
-      return message.force_encoding("BINARY") if detect && detect[:type] == :binary
+      return message.force_encoding("BINARY") if binary?(message, detect)
 
-      # force detected encoding if we have sufficient confidence.
       if detect && detect[:encoding] && detect[:confidence] > ENCODING_CONFIDENCE_THRESHOLD
+        # force detected encoding if we have sufficient confidence.
         message.force_encoding(detect[:encoding])
       end
 
       # encode and clean the bad chars
       message.replace clean(message)
-    rescue
+    rescue => e
+      byebug
       encoding = detect ? detect[:encoding] : "unknown"
       "--broken encoding: #{encoding}"
+    end
+
+    def binary?(message, detect=nil)
+      detect ||= CharlockHolmes::EncodingDetector.detect(message)
+      detect && detect[:type] == :binary && detect[:confidence] == 100
     end
 
     def encode_utf8(message)
@@ -50,7 +58,7 @@ module Gitlab
         clean(message)
       end
     end
-
+      
     private
 
     def clean(message)

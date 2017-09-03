@@ -116,6 +116,13 @@ module Gitlab
 
           filtered_opts
         end
+
+        # Return a binary diff message like:
+        # 
+        # "Binary files a/file/path and b/file/path differ\n"
+        def binary_message(old_path, new_path)
+          "Binary files #{old_path} and #{new_path} differ\n"
+        end
       end
 
       def initialize(raw_diff, expanded: true)
@@ -214,7 +221,14 @@ module Gitlab
         # binary we're not going to display anything so we skip the size check.
         return if !patch.delta.binary? && prune_large_patch(patch)
 
-        @diff = encode!(strip_diff_headers(patch.to_s))
+        diff = strip_diff_headers(patch.to_s)
+        @diff = if binary?(diff)
+                  # the diff is binary, let's make a message for it
+                  Diff::binary_message(patch.delta.old_file[:path],
+                                       patch.delta.new_file[:path])
+                else
+                  encode!(diff)
+                end
       end
 
       def init_from_hash(hash)
