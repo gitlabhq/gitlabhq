@@ -48,7 +48,7 @@ describe Ci::RetryBuildService do
     describe 'clone accessors' do
       CLONE_ACCESSORS.each do |attribute|
         it "clones #{attribute} build attribute" do
-          expect(new_build.send(attribute)).to be_present
+          expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
       end
