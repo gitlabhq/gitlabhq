@@ -2013,4 +2013,65 @@ describe User do
       expect(user.projects_limit_left).to eq(5)
     end
   end
+
+  describe '#ensure_namespace_correct' do
+    context 'for a new user' do
+      let(:user) { build(:user) }
+
+      it 'creates the namespace' do
+        expect(user.namespace).to be_nil
+        user.save!
+        expect(user.namespace).not_to be_nil
+      end
+    end
+
+    context 'for an existing user' do
+      let(:username) { 'foo' }
+      let(:user) { create(:user, username: username) }
+
+      context 'when the user is updated' do
+        context 'when the username is changed' do
+          let(:new_username) { 'bar' }
+
+          it 'changes the namespace (just to compare to when username is not changed)' do
+            expect do
+              user.update_attributes!(username: new_username)
+            end.to change { user.namespace.updated_at }
+          end
+
+          it 'updates the namespace name' do
+            user.update_attributes!(username: new_username)
+            expect(user.namespace.name).to eq(new_username)
+          end
+
+          it 'updates the namespace path' do
+            user.update_attributes!(username: new_username)
+            expect(user.namespace.path).to eq(new_username)
+          end
+
+          context 'when there is a validation error (namespace name taken) while updating namespace' do
+            let!(:conflicting_namespace) { create(:group, name: new_username, path: 'quz') }
+
+            it 'causes the user save to fail' do
+              expect(user.update_attributes(username: new_username)).to be_falsey
+              expect(user.namespace.errors.messages[:name].first).to eq('has already been taken')
+            end
+
+            it 'adds the namespace errors to the user' do
+              user.update_attributes(username: new_username)
+              expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
+            end
+          end
+        end
+
+        context 'when the username is not changed' do
+          it 'does not change the namespace' do
+            expect do
+              user.update_attributes!(email: 'asdf@asdf.com')
+            end.not_to change { user.namespace.updated_at }
+          end
+        end
+      end
+    end
+  end
 end

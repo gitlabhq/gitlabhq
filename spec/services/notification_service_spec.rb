@@ -126,7 +126,18 @@ describe NotificationService, :mailer do
         project.add_master(issue.author)
         project.add_master(assignee)
         project.add_master(note.author)
-        create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
+
+        @u_custom_off = create_user_with_notification(:custom, 'custom_off')
+        project.add_guest(@u_custom_off)
+
+        create(
+          :note_on_issue,
+          author: @u_custom_off,
+          noteable: issue,
+          project_id: issue.project_id,
+          note: 'i think @subscribed_participant should see this'
+        )
+
         update_custom_notification(:new_note, @u_guest_custom, resource: project)
         update_custom_notification(:new_note, @u_custom_global)
       end
@@ -136,8 +147,7 @@ describe NotificationService, :mailer do
           add_users_with_subscription(note.project, issue)
           reset_delivered_emails!
 
-          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(9).times
 
           notification.new_note(note)
 
@@ -149,6 +159,7 @@ describe NotificationService, :mailer do
           should_email(@subscriber)
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
+          should_email(@u_custom_off)
           should_not_email(@u_guest_custom)
           should_not_email(@u_guest_watcher)
           should_not_email(note.author)

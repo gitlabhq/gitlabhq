@@ -53,12 +53,12 @@ describe 'Profile > Password' do
     context 'Regular user' do
       let(:user) { create(:user) }
 
-      it 'renders 404 when sign-in is disabled' do
+      it 'renders 200 when sign-in is disabled' do
         stub_application_setting(password_authentication_enabled: false)
 
         visit edit_profile_password_path
 
-        expect(page).to have_http_status(404)
+        expect(page).to have_http_status(200)
       end
     end
 

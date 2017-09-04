@@ -33,7 +33,6 @@ describe Commit do
 
   describe '#to_reference' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
-    let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id
@@ -47,7 +46,6 @@ describe Commit do
 
   describe '#reference_link_text' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
-    let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
       expect(commit.reference_link_text).to eq commit.short_id

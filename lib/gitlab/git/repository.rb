@@ -321,7 +321,7 @@ module Gitlab
         options[:limit] ||= 0
         options[:offset] ||= 0
 
-        raw_log(options).map { |c| Commit.decorate(c) }
+        raw_log(options).map { |c| Commit.decorate(self, c) }
       end
 
       def count_commits(options)

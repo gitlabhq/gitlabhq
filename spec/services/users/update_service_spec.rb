@@ -12,9 +12,22 @@ describe Users::UpdateService do
     end
 
     it 'returns an error result when record cannot be updated' do
+      result = {}
       expect do
-        update_user(user, { email: 'invalid' })
+        result = update_user(user, { email: 'invalid' })
       end.not_to change { user.reload.email }
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Email is invalid')
+    end
+
+    it 'includes namespace error messages' do
+      create(:group, name: 'taken', path: 'something_else')
+      result = {}
+      expect do
+        result = update_user(user, { username: 'taken' })
+      end.not_to change { user.reload.username }
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Namespace name has already been taken')
     end
 
     def update_user(user, opts)

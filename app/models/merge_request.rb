@@ -598,6 +598,8 @@ class MergeRequest < ActiveRecord::Base
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end

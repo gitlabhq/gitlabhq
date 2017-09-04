@@ -598,7 +598,7 @@ class User < ActiveRecord::Base
   end
 
   def require_personal_access_token_creation_for_git_auth?
-    return false if allow_password_authentication? || ldap_user?
+    return false if current_application_settings.password_authentication_enabled? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
@@ -834,7 +834,12 @@ class User < ActiveRecord::Base
     create_namespace!(path: username, name: username) unless namespace
 
     if username_changed?
-      namespace.update_attributes(path: username, name: username)
+      unless namespace.update_attributes(path: username, name: username)
+        namespace.errors.each do |attribute, message|
+          self.errors.add(:"namespace_#{attribute}", message)
+        end
+        raise ActiveRecord::RecordInvalid.new(namespace)
+      end
     end
   end
 
