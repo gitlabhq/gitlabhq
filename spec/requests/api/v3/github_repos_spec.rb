@@ -40,13 +40,21 @@ describe API::V3::GithubRepos do
   describe 'GET /users/:id/repos' do
     context 'authenticated' do
       it 'returns an array of projects with github format' do
+        group = create(:group)
+        create(:project, group: group)
+
+        group.add_master(user)
+
         get v3_api("/users/whatever/repos", user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an(Array)
-        expect(json_response.size).to eq(1)
+        expect(json_response.size).to eq(2)
+
         expect(json_response.first.keys).to contain_exactly('id', 'owner', 'name')
         expect(json_response.first['owner'].keys).to contain_exactly('login')
+        expect(json_response.second.keys).to contain_exactly('id', 'owner', 'name')
+        expect(json_response.second['owner'].keys).to contain_exactly('login')
       end
     end
 
