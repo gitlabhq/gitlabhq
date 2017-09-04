@@ -295,7 +295,7 @@ module API
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
-      expose :diff
+      expose :json_safe_diff, as: :diff
     end
 
     class ProtectedRefAccess < Grape::Entity

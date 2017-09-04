@@ -197,6 +197,13 @@ module Gitlab
         @collapsed = true
       end
 
+      def json_safe_diff
+        return @diff unless all_binary?(@diff)
+
+        # the diff is binary, let's make a message for it
+        Diff::binary_message(@old_path, @new_path)
+      end
+
       private
 
       def init_from_rugged(rugged)
@@ -221,14 +228,7 @@ module Gitlab
         # binary we're not going to display anything so we skip the size check.
         return if !patch.delta.binary? && prune_large_patch(patch)
 
-        diff = strip_diff_headers(patch.to_s)
-        @diff = if binary?(diff)
-                  # the diff is binary, let's make a message for it
-                  Diff::binary_message(patch.delta.old_file[:path],
-                                       patch.delta.new_file[:path])
-                else
-                  encode!(diff)
-                end
+        @diff = encode!(strip_diff_headers(patch.to_s))
       end
 
       def init_from_hash(hash)

@@ -24,7 +24,7 @@ module Gitlab
 
       # return message if message type is binary
       detect = CharlockHolmes::EncodingDetector.detect(message)
-      return message.force_encoding("BINARY") if binary?(message, detect)
+      return message.force_encoding("BINARY") if all_binary?(message, detect)
 
       if detect && detect[:encoding] && detect[:confidence] > ENCODING_CONFIDENCE_THRESHOLD
         # force detected encoding if we have sufficient confidence.
@@ -34,14 +34,21 @@ module Gitlab
       # encode and clean the bad chars
       message.replace clean(message)
     rescue => e
-      byebug
       encoding = detect ? detect[:encoding] : "unknown"
       "--broken encoding: #{encoding}"
     end
 
-    def binary?(message, detect=nil)
-      detect ||= CharlockHolmes::EncodingDetector.detect(message)
-      detect && detect[:type] == :binary && detect[:confidence] == 100
+    def all_binary?(data, detect=nil)
+      detect ||= CharlockHolmes::EncodingDetector.detect(data)
+      detect && detect[:type] == :binary
+    end
+
+    def libgit2_binary?(data)
+      # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
+      # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
+      # which is what we use below to keep a consistent behavior.
+      detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
+      all_binary?(data, detect)
     end
 
     def encode_utf8(message)
