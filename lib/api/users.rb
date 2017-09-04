@@ -329,7 +329,6 @@ module API
         email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -675,7 +674,6 @@ module API
         email = Emails::CreateService.new(current_user, declared_params).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)

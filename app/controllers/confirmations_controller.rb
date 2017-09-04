@@ -11,11 +11,12 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def after_confirmation_path_for(resource_name, resource)
-    if signed_in?(resource_name)
+    # incoming resource can either be a :user or an :email
+    if signed_in?(:user)
       after_sign_in_path_for(resource)
     else
       flash[:notice] += " Please sign in."
-      new_session_path(resource_name)
+      new_session_path(:user)
     end
   end
 end

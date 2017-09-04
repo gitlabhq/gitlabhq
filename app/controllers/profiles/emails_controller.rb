@@ -6,10 +6,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def create
     @email = Emails::CreateService.new(current_user, email_params).execute
-
-    if @email.errors.blank?
-      NotificationService.new.new_email(@email)
-    else
+    unless @email.errors.blank?
       flash[:alert] = @email.errors.full_messages.first
     end
 

@@ -7,6 +7,9 @@ class Email < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true, email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
+  devise :confirmable
+  self.reconfirmable = false  # currently email can't be changed, no need to reconfirm
+
   def email=(value)
     write_attribute(:email, value.downcase.strip)
   end
