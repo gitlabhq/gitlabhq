@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::PipelineSchedules do
   set(:developer) { create(:user) }
   set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository, public_builds: false) }
 
   before do
     project.add_developer(developer)
@@ -103,6 +103,18 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with invalid permissions' do
+      it 'does not return pipeline_schedules list' do
+        get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'authenticated user with insufficient permissions' do
+      before do
+        project.add_guest(user)
+      end
+
       it 'does not return pipeline_schedules list' do
         get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
 

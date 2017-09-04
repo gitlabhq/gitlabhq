@@ -167,7 +167,7 @@ module API
             .pipeline_schedules
             .preload(:owner, :last_pipeline)
             .find_by(id: params.delete(:pipeline_schedule_id)).tap do |pipeline_schedule|
-              unless pipeline_schedule || can?(current_user, :read_pipeline_schedule, pipeline_schedule)
+              unless can?(current_user, :read_pipeline_schedule, pipeline_schedule)
                 not_found!('Pipeline Schedule')
               end
             end
