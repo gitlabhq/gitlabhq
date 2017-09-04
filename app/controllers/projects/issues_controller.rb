@@ -10,6 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
+  before_action :set_issues_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -25,8 +26,6 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    set_issues_index
-
     if params[:assignee_id].present?
       assignee = User.find_by_id(params[:assignee_id])
       @users.push(assignee) if assignee
