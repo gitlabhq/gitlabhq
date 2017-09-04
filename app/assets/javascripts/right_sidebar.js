@@ -157,11 +157,16 @@ import SidebarHeightManager from './sidebar_height_manager';
     Sidebar.prototype.openDropdown = function(blockOrName) {
       var $block;
       $block = _.isString(blockOrName) ? this.getBlock(blockOrName) : blockOrName;
-      $block.find('.edit-link').trigger('click');
       if (!this.isOpen()) {
         this.setCollapseAfterUpdate($block);
-        return this.toggleSidebar('open');
+        this.toggleSidebar('open');
       }
+
+      // Wait for the sidebar to trigger('click') open
+      // so it doesn't cause our dropdown to close preemptively
+      setTimeout(() => {
+        $block.find('.js-sidebar-dropdown-toggle').trigger('click');
+      });
     };
 
     Sidebar.prototype.setCollapseAfterUpdate = function($block) {

@@ -21,7 +21,7 @@
       .title
         Start date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
       .value
         %span.value-content
           - if milestone.start_date
@@ -51,7 +51,7 @@
       .title.hide-collapsed
         Due date
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'edit-link pull-right'
+          = link_to 'Edit', edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link pull-right'
       .value.hide-collapsed
         %span.value-content
           - if milestone.due_date
