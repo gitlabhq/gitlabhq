@@ -14,8 +14,6 @@ the settings page with a default template. To configure the template, see the
 
 ## Requirements
 
-[supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html)
-
 Integration with Prometheus requires the following:
 
 1. GitLab 9.0 or higher
