@@ -29,7 +29,8 @@
           = render 'shared/allow_request_access', form: f
 
       .form-group
-        = f.label :share_with_group_lock, 'Share lock', class: 'control-label'
+        .control-label
+          Share lock
         .col-sm-10
           .checkbox
             = f.label :share_with_group_lock do
