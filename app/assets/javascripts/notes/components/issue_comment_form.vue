@@ -6,7 +6,7 @@
   import TaskList from '../../task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
-  import confidentialIssue from '../../vue_shared/components/issue/confidential_issue_warning.vue';
+  import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -25,7 +25,7 @@
       };
     },
     components: {
-      confidentialIssue,
+      issueWarning,
       issueNoteSignedOutWidget,
       markdownField,
       userAvatarLink,
@@ -89,8 +89,17 @@
       endpoint() {
         return this.getIssueData.create_note_path;
       },
-      isConfidentialIssue() {
-        return this.getIssueData.confidential;
+
+      isIssueConfidential() {
+        return !!this.getIssueData.confidential;
+      },
+
+      isIssueLocked() {
+        return !!this.getIssueData.discussion_locked;
+      },
+
+      isIssueWarning() {
+        return this.isIssueConfidential || this.isIssueLocked;
       },
     },
     methods: {
@@ -240,14 +249,14 @@
             <form
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
-              <confidentialIssue v-if="isConfidentialIssue" />
+              <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
               <div class="error-alert"></div>
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isConfidentialIssue">
+                :is-confidential-issue="isIssueWarning">
                 <textarea
                   id="note-body"
                   name="note[note]"

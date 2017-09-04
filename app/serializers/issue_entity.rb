@@ -3,6 +3,7 @@ class IssueEntity < IssuableEntity
 
   expose :branch_name
   expose :confidential
+  expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic
   expose :due_date
   expose :moved_to_id

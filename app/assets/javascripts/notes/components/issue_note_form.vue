@@ -1,7 +1,7 @@
 <script>
   import { mapGetters } from 'vuex';
   import eventHub from '../event_hub';
-  import confidentialIssue from '../../vue_shared/components/issue/confidential_issue_warning.vue';
+  import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
 
   export default {
@@ -39,7 +39,7 @@
       };
     },
     components: {
-      confidentialIssue,
+      issueWarning,
       markdownField,
     },
     computed: {
@@ -67,8 +67,17 @@
       isDisabled() {
         return !this.note.length || this.isSubmitting;
       },
-      isConfidentialIssue() {
-        return this.getIssueDataByProp('confidential');
+
+      isIssueConfidential() {
+        return !!this.getIssueData.confidential;
+      },
+
+      isIssueLocked() {
+        return !!this.getIssueData.discussion_locked;
+      },
+
+      isIssueWarning() {
+        return this.isIssueConfidential || this.isIssueLocked;
       },
     },
     methods: {
@@ -125,7 +134,7 @@
     <div class="flash-container timeline-content"></div>
     <form
       class="edit-note common-note-form js-quick-submit gfm-form">
-      <confidentialIssue v-if="isConfidentialIssue" />
+      <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
