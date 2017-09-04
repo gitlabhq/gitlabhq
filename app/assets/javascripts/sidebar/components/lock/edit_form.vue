@@ -27,7 +27,7 @@ export default {
 
 <template>
   <div class="dropdown open">
-    <div class="dropdown-menu lock-warning-message">
+    <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p v-if="isLocked">
           Unlock this issue?

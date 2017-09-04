@@ -24,7 +24,7 @@ export default {
 
 <template>
   <div class="dropdown open">
-    <div class="dropdown-menu confidential-warning-message">
+    <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p v-if="!isConfidential">
           You are going to turn on the confidentiality. This means that only team members with

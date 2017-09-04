@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="confidential-warning-message-actions">
+  <div class="sidebar-item-warning-message-actions">
     <button
       type="button"
       class="btn btn-default append-right-10"

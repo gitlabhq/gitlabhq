@@ -57,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <div class="block lock">
+  <div class="block issuable-sidebar-item">
     <div class="sidebar-collapsed-icon">
       <i class="fa" :class="faLock" aria-hidden="true" data-hidden="true"></i>
     </div>
@@ -66,7 +66,7 @@ export default {
       Lock issue
       <a
         v-if="isEditable"
-        class="pull-right lock-edit"
+        class="pull-right"
         href="#"
         @click.prevent="toggleForm"
       >
@@ -74,7 +74,7 @@ export default {
       </a>
     </div>
 
-    <div class="value lock-value hide-collapsed">
+    <div class="value sidebar-item-value hide-collapsed">
       <editForm
         v-if="edit"
         :toggle-form="toggleForm"
@@ -82,13 +82,13 @@ export default {
         :update-locked-attribute="updateLockedAttribute"
       />
 
-      <div v-if="isLocked" class="no-value lock-value">
-        <i class="fa fa-lock is-not-locked"></i>
+      <div v-if="isLocked" class="value sidebar-item-value">
+        <i class="fa fa-lock is-active"></i>
         Locked
       </div>
 
-      <div v-else class="value lock-value hide-collapsed">
-        <i aria-hidden="true" data-hidden="true" class="fa fa-unlock is-locked"></i>
+      <div v-else class="no-value sidebar-item-value hide-collapsed">
+        <i aria-hidden="true" data-hidden="true" class="fa fa-unlock is-not-active"></i>
         Unlocked
       </div>
     </div>
