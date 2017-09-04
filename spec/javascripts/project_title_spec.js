@@ -41,12 +41,13 @@ describe('Project Title', () => {
       window.gon.current_user_id = 1;
       $('.js-projects-dropdown-toggle').click();
       expect($menu).toHaveClass('open');
-      expect(reqUrl).toBe(`/api/${dummyApiVersion}/projects.json?simple=true`);
+      expect(reqUrl).toBe(`/api/${dummyApiVersion}/projects.json`);
       expect(reqData).toEqual({
         search: '',
         order_by: 'last_activity_at',
         per_page: 20,
         membership: true,
+        simple: true,
       });
       $menu.find('.dropdown-menu-close-icon').click();
       expect($menu).not.toHaveClass('open');
