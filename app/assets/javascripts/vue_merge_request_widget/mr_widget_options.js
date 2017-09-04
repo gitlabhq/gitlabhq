@@ -250,6 +250,19 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
+        <p
+          class="mr-info-list mr-links"
+          v-if="!mr.canRemoveSourceBranch && mr.shouldRemoveSourceBranch"
+        >
+          <strong>Removes</strong> source branch
+          <i
+            title=""
+            class="fa fa-question-circle"
+            aria-label="A user with write access to the source branch selected this option"
+            data-original-title="A user with write access to the source branch selected this option"
+          >
+          </i>
+        </p>
       </div>
       <div
         class="mr-widget-footer"
