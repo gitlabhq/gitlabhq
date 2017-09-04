@@ -207,12 +207,10 @@ module IssuablesHelper
       endpoint: project_issue_path(@project, issuable),
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
-      canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
       markdownPreviewPath: preview_markdown_path(@project),
       markdownDocsPath: help_page_path('user/markdown'),
-      projectsAutocompletePath: autocomplete_projects_path(project_id: @project.id),
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,
@@ -354,6 +352,8 @@ module IssuablesHelper
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
       endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
+      projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
       currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
       rootPath: root_path,

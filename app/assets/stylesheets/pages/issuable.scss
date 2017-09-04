@@ -473,7 +473,7 @@
     padding-top: 6px;
   }
 
-  .open .dropdown-menu {
+  .dropdown-menu {
     width: 100%;
   }
 }
@@ -484,6 +484,24 @@
   .issuable-sidebar {
     height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
+}
+
+.sidebar-move-issue-dropdown {
+  @include new-style-dropdown;
+}
+
+.sidebar-move-issue-confirmation-button {
+  width: 100%;
+
+  &.is-loading {
+    .sidebar-move-issue-confirmation-loading-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.sidebar-move-issue-confirmation-loading-icon {
+  display: none;
 }
 
 .detail-page-description {

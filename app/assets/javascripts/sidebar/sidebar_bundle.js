@@ -2,6 +2,7 @@ import Vue from 'vue';
 import sidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
 import sidebarAssignees from './components/assignees/sidebar_assignees';
 import confidential from './components/confidential/confidential_issue_sidebar.vue';
+import SidebarMoveIssue from './lib/sidebar_move_issue';
 
 import Mediator from './sidebar_mediator';
 
@@ -31,6 +32,12 @@ function domContentLoaded() {
         service: mediator.service,
       },
     }).$mount(confidentialEl);
+
+    new SidebarMoveIssue(
+      mediator,
+      $('.js-move-issue'),
+      $('.js-move-issue-confirmation-button'),
+    ).init();
   }
 
   new Vue(sidebarTimeTracking).$mount('#issuable-time-tracker');
