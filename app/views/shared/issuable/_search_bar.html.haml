@@ -137,6 +137,6 @@
                   = dropdown_loading
               - if @project
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project).to_s } }
-              #js-toggle-focus-btn.prepend-left-10
+            #js-toggle-focus-btn.prepend-left-10
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
