@@ -379,9 +379,7 @@ ul.notes {
 }
 
 .discussion-header,
-.note-header {
-  position: relative;
-
+.note-header-info {
   a {
     color: inherit;
 
@@ -471,6 +469,8 @@ ul.notes {
 }
 
 .note-actions {
+  @include new-style-dropdown;
+
   align-self: flex-start;
   flex-shrink: 0;
   display: inline-flex;
@@ -506,22 +506,6 @@ ul.notes {
 .more-actions-dropdown {
   width: 180px;
   min-width: 180px;
-  margin-top: $gl-btn-padding;
-
-  li > a,
-  li > .btn {
-    color: $gl-text-color;
-    padding: $gl-btn-padding;
-    width: 100%;
-    text-align: left;
-
-    &:hover,
-    &:focus {
-      color: $gl-text-color;
-      background-color: $blue-25;
-      border-radius: $border-radius-default;
-    }
-  }
 }
 
 .discussion-actions {
