@@ -54,7 +54,7 @@ module Ci
           # we still have to return 409 in the end,
           # to make sure that this is properly handled by runner.
           valid = false
-        rescue Gitlab::Ci::Error::MissingDependencies
+        rescue Ci::Build::MissingDependenciesError
           build.drop!(:missing_dependency_failure)
           valid = false
         end

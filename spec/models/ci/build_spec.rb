@@ -1893,7 +1893,7 @@ describe Ci::Build do
       end
 
       context 'when depended jobs do not exist' do
-        it { expect { build.run! }.to raise_error(Gitlab::Ci::Error::MissingDependencies) }
+        it { expect { build.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
       end
     end
   end
