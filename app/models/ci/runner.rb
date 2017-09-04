@@ -6,7 +6,7 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -36,10 +36,16 @@ module Ci
     end
 
     validate :tag_constraints
+    validates :access_level, presence: true
 
     acts_as_taggable
 
     after_destroy :cleanup_runner_queue
+
+    enum access_level: {
+      not_protected: 0,
+      ref_protected: 1
+    }
 
     # Searches for runners matching the given query.
     #
@@ -107,6 +113,8 @@ module Ci
     end
 
     def can_pick?(build)
+      return false if self.ref_protected? && !build.protected?
+
       assignable_for?(build.project) && accepting_tags?(build)
     end
 

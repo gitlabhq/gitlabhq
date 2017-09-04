@@ -48,6 +48,7 @@ module Ci
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
+    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
