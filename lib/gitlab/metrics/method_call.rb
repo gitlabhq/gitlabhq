@@ -10,7 +10,7 @@ module Gitlab
       def self.call_real_duration_histogram
         @call_real_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_real_duration_milliseconds,
                                                                     'Method calls real duration',
-                                                                    {},
+                                                                    {call_name: nil},
                                                                     [1, 2, 5, 10, 20, 50, 100, 1000])
 
       end
@@ -18,17 +18,16 @@ module Gitlab
       def self.call_cpu_duration_histogram
         @call_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_cpu_duration_milliseconds,
                                                                'Method calls cpu duration',
-                                                               {},
+                                                               {call_name: nil},
                                                                [1, 2, 5, 10, 20, 50, 100, 1000])
       end
 
 
-      def initialize(name, tags = {})
+      def initialize(name)
         @name = name
         @real_time = 0
         @cpu_time = 0
         @call_count = 0
-        @tags = tags
       end
 
       # Measures the real and CPU execution time of the supplied block.
@@ -42,23 +41,11 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          self.class.call_real_duration_histogram.observe(labels, @real_time)
-          self.class.call_cpu_duration_histogram.observe(labels, @cpu_time)
+          self.class.call_real_duration_histogram.observe({ call_name: @name }, @real_time)
+          self.class.call_cpu_duration_histogram.observe({ call_name: @name }, @cpu_time)
         end
 
         retval
-      end
-
-      def labels
-        @labels ||= @tags.merge(source_label).merge({ call_name: @name })
-      end
-
-      def source_label
-        if Sidekiq.server?
-          { source: 'sidekiq' }
-        else
-          { source: 'rails' }
-        end
       end
 
       # Returns a Metric instance of the current method call.

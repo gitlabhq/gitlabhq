@@ -43,18 +43,18 @@ module Gitlab
       def self.metric_transaction_duration_milliseconds
         @metrics_transaction_duration_milliseconds ||= Gitlab::Metrics.histogram(
           :gitlab_transaction_duration_milliseconds,
-          'Method duration milliseconds',
+          'Transaction duration milliseconds',
           {},
-          [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000]
+          [1, 2, 5, 10, 20, 50, 100, 500, 10000]
         )
       end
 
-      def self.metric_transaction_allocated_memory_bytes
-        @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
-          :gitlab_transaction_allocated_memory_bytes,
-          'Method duration milliseconds',
+      def self.metric_transaction_allocated_memory_megabytes
+        @metric_transaction_allocated_memory_megabytes ||= Gitlab::Metrics.histogram(
+          :gitlab_transaction_allocated_memory_megabytes,
+          'Transaction allocated memory bytes',
           {},
-          [1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 5000000]
+          [1, 2, 5, 10, 20, 100]
         )
       end
 
@@ -69,8 +69,8 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        self.class.metric_transaction_duration_milliseconds.observe({}, duration)
-        self.class.metric_transaction_allocated_memory_bytes.observe({}, allocated_memory)
+        Transaction.metric_transaction_duration_milliseconds.observe({}, duration)
+        Transaction.metric_transaction_allocated_memory_megabytes.observe({}, allocated_memory)
 
         Thread.current[THREAD_KEY] = nil
       end

@@ -1,4 +1,5 @@
 require 'logger'
+
 module Gitlab
   module Metrics
     module Samplers
@@ -43,11 +44,14 @@ module Gitlab
 
         private
 
+        attr_reader :running
+
         def start_working
           @running = true
           sleep(sleep_interval)
           while running
             safe_sample
+            sleep(sleep_interval)
           end
         end
 

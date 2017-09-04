@@ -32,7 +32,7 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:sampler_duration] = Gitlab::Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', source_label)
+          metrics[:sampler_duration] = Gitlab::Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', {})
           metrics[:total_time] = Gitlab::Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
             metrics[key] = Gitlab::Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
