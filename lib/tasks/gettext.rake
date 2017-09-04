@@ -1,4 +1,5 @@
 require "gettext_i18n_rails/tasks"
+require 'simple_po_parser'
 
 namespace :gettext do
   # Customize list of translatable files
