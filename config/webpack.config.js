@@ -30,7 +30,7 @@ var config = {
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
-    common_vue:           ['vue', './vue_shared/common_vue.js'],
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
