@@ -1,6 +1,4 @@
 class IssueAssignee < ActiveRecord::Base
-  extend Gitlab::CurrentSettings
-
   belongs_to :issue
   belongs_to :assignee, class_name: "User", foreign_key: :user_id
 
@@ -9,7 +7,7 @@ class IssueAssignee < ActiveRecord::Base
   # EE-specific
 
   def update_elasticsearch_index
-    if current_application_settings.elasticsearch_indexing?
+    if Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?
       ElasticIndexerWorker.perform_async(
         :update,
         'Issue',

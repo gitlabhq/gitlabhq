@@ -80,7 +80,7 @@ module LicenseHelper
     return @show_promotions if defined?(@show_promotions)
 
     @show_promotions =
-      if current_application_settings.should_check_namespace_plan?
+      if Gitlab::CurrentSettings.current_application_settings.should_check_namespace_plan?
         true
       else
         license = License.current
