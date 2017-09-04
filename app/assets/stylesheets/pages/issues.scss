@@ -143,8 +143,12 @@ ul.related-merge-requests > li {
   }
 }
 
-.issue-form .select2-container {
-  width: 250px !important;
+.issue-form {
+  @include new-style-dropdown;
+
+  .select2-container {
+    width: 250px !important;
+  }
 }
 
 .issues-footer {

@@ -728,6 +728,8 @@
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
+    margin-bottom: 24px;
+
     li {
       padding: 0 1px;
 
