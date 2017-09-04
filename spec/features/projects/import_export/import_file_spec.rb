@@ -18,23 +18,25 @@ feature 'Import/Export - project import integration test', js: true do
 
   context 'when selecting the namespace' do
     let(:user) { create(:admin) }
-    let!(:namespace) { create(:namespace, name: "asd", owner: user) }
+    let!(:namespace) { create(:namespace, name: "asd" + SecureRandom.hex, path: SecureRandom.hex, owner: user) }
+    let(:project_path) { 'test-project-path' + SecureRandom.hex }
 
     context 'prefilled the path' do
       scenario 'user imports an exported project successfully' do
         visit new_project_path
 
         select2(namespace.id, from: '#project_namespace_id')
-        fill_in :project_path, with: 'test-project-path', visible: true
+        fill_in :project_path, with: project_path, visible: true
         click_link 'GitLab export'
 
         expect(page).to have_content('Import an exported GitLab project')
-        expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
-        expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}_test-project-path\z/).and_call_original
+        expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=#{project_path}")
+        #expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}_test-project-path#{project_path}\z/).and_call_original
 
         attach_file('file', file)
+        click_on 'Import project'
 
-        expect { click_on 'Import project' }.to change { Project.count }.by(1)
+        expect(Project.count).to eq(1)
 
         project = Project.last
         expect(project).not_to be_nil
@@ -64,7 +66,7 @@ feature 'Import/Export - project import integration test', js: true do
   end
 
   scenario 'invalid project' do
-    namespace = create(:namespace, name: "asd", owner: user)
+    namespace = create(:namespace, name: "asd" + SecureRandom.hex, owner: user)
     project = create(:project, namespace: namespace)
 
     visit new_project_path
