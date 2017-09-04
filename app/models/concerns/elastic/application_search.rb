@@ -4,7 +4,7 @@ module Elastic
 
     included do
       include Elasticsearch::Model
-      extend Gitlab::CurrentSettings
+      include Gitlab::CurrentSettings
 
       index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
 
