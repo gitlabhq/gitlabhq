@@ -101,7 +101,7 @@
   }
 }
 
-.sidebar-item-issue-warning {
+.issuable-note-warning {
   color: $orange-600;
   background-color: $orange-50;
   border-radius: $border-radius-default $border-radius-default 0 0;
@@ -131,7 +131,7 @@
   }
 }
 
-.sidebar-item-issue-warning + .md-area {
+.issuable-note-warning + .md-area {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
