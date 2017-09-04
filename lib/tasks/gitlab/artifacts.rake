@@ -1,4 +1,5 @@
 require 'logger'
+require 'resolv-replace'
 
 desc "GitLab | Migrate files for artifacts to comply with new storage format"
 namespace :gitlab do
