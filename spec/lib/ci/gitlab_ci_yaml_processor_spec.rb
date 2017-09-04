@@ -171,8 +171,11 @@ module Ci
         let(:config) do
           YAML.dump(
             spinach: { stage: 'test', script: 'spinach' },
-            production: { stage: 'deploy', script: 'cap', only: {
-                          kubernetes: 'active' } }
+            production: {
+              stage: 'deploy',
+              script: 'cap',
+              only: { kubernetes: 'active' }
+            }
           )
         end
 
