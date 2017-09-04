@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         props: {
           canUpdate: this.canUpdate,
           canDestroy: this.canDestroy,
-          canMove: this.canMove,
           endpoint: this.endpoint,
           issuableRef: this.issuableRef,
           initialTitleHtml: this.initialTitleHtml,
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
           markdownDocs: this.markdownDocs,
           projectPath: this.projectPath,
           projectNamespace: this.projectNamespace,
-          projectsAutocompleteUrl: this.projectsAutocompleteUrl,
           updatedAt: this.updatedAt,
           updatedByName: this.updatedByName,
           updatedByPath: this.updatedByPath,
