@@ -18,14 +18,20 @@ class Subscription {
     }
     button.classList.add('disabled');
 
+    // hack to allow this to work with the issue boards Vue object
+    const isBoardsPage = document.querySelector('html').classList.contains('issue-boards-page');
+
     const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
-    const toggleActionUrl = this.containerElm.dataset.url.replace(':project_path', gl.issueBoards.BoardsStore.detail.issue.project.path);
+    let toggleActionUrl = this.containerElm.dataset.url;
+
+    if (isBoardsPage) {
+      toggleActionUrl = toggleActionUrl.replace(':project_path', gl.issueBoards.BoardsStore.detail.issue.project.path);
+    }
 
     $.post(toggleActionUrl, () => {
       button.classList.remove('disabled');
 
-      // hack to allow this to work with the issue boards Vue object
-      if (document.querySelector('html').classList.contains('issue-boards-page')) {
+      if (isBoardsPage) {
         gl.issueBoards.boardStoreIssueSet(
           'subscribed',
           !gl.issueBoards.BoardsStore.detail.issue.subscribed,
