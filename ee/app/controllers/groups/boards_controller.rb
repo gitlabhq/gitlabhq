@@ -1,6 +1,6 @@
 class Groups::BoardsController < Groups::ApplicationController
-  prepend ::EE::Boards::BoardsController
-  prepend ::EE::BoardsResponses
+  prepend EE::Boards::BoardsController
+  prepend EE::BoardsResponses
   include BoardsResponses
 
   before_action :check_group_issue_boards_available!

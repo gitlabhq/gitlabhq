@@ -41,8 +41,8 @@ module BoardsHelper
     current_board_parent.multiple_issue_boards_available?(current_user)
   end
 
-  def board_path(board)
-    @board_path ||= project_board_path(current_board_parent, board)
+  def current_board_path(board)
+    @current_board_path ||= project_board_path(current_board_parent, board)
   end
 
   def current_board_parent
