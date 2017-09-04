@@ -221,22 +221,12 @@ module Ci
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
       variables += secret_variables(environment: environment)
-      variables += trigger_variables
+      variables += trigger_request.user_variables if trigger_request
+      variables += pipeline.variables.map(&:to_runner_variable)
       variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
       variables += persisted_environment_variables if environment
 
       variables
-    end
-
-    def trigger_variables
-      return [] unless trigger_request # or pipeline.trigger?
-
-      @trigger_variables ||=
-        if pipeline.variables.any? # If it's swtiched to Ci::PipelineVariables
-          pipeline.variables.map(&:to_runner_variable)
-        else # else it's still using trigger_request.variables
-          trigger_request.user_variables # Deprecated
-        end
     end
 
     def merge_request

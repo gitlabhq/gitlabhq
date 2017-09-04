@@ -1690,44 +1690,6 @@ describe Ci::Build do
     end
   end
 
-  describe '#trigger_variables' do
-    let(:build) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
-    let(:trigger) { create(:ci_trigger, project: project) }
-    let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-
-    subject { build.trigger_variables }
-
-    it { is_expected.to eq(true) }
-
-    context 'when variable is stored in ci_pipeline_variables' do
-      let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
-
-      context 'when pipeline is triggered by trigger API' do
-        it 'returns variables' do
-          is_expected.to eq([pipeline_variable.to_runner_variable])
-        end
-      end
-
-      context 'when pipeline is not triggered by trigger API' do
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-
-        it 'does not return variables' do
-          is_expected.to eq([])
-        end
-      end
-    end
-
-    context 'when variable is stored in ci_trigger_requests.variables' do
-      before do
-        trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
-      end
-
-      it 'returns variables' do
-        is_expected.to eq(trigger_request.user_variables)
-      end
-    end
-  end
-
   describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 

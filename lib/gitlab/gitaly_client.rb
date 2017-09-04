@@ -23,7 +23,8 @@ module Gitlab
           klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
           addr = address(storage)
           addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-          klass.new(addr, :this_channel_is_insecure)
+          timeout = 10 if Rails.env.test?
+          klass.new(addr, :this_channel_is_insecure, timeout: timeout)
         end
       end
     end
