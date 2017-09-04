@@ -644,11 +644,15 @@
   }
 }
 
+@function hex-to-rgba-black-on-white($hex) {
+  @return rgba(0,0,0,(((255 - red($hex)) / 2.55) * .01))
+}
+
 .merge-request-tabs-holder {
   top: $header-height;
   z-index: 200;
   background-color: $white-light;
-  border-bottom: 1px solid $border-color;
+  box-shadow: 0 1px 0 hex-to-rgba-black-on-white($border-color);
 
   @media (min-width: $screen-sm-min) {
     position: sticky;
