@@ -132,6 +132,7 @@ import './project_new';
 import './project_select';
 import './project_show';
 import './project_variables';
+import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
 import './render_math';
