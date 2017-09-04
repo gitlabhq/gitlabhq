@@ -32,12 +32,12 @@ module API
             render_api_error!(result[:message], result[:http_status])
           else
             pipeline = result[:pipeline]
-            trigger_request = Ci::TriggerRequest.find_by(commit_id: pipeline.id)
 
             # We switched to Ci::PipelineVariable from Ci::TriggerRequest.variables.
             # Ci::TriggerRequest doesn't save variables anymore.
             # Here is copying Ci::PipelineVariable to Ci::TriggerRequest.variables for presenting the variables.
             # The same endpoint in v4 API pressents Pipeline instead of TriggerRequest, so it doesn't need such a process.
+            trigger_request = pipeline.trigger_requests.last
             trigger_request.variables = params[:variables]
 
             present trigger_request, with: ::API::V3::Entities::TriggerRequest
