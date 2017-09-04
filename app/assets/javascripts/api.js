@@ -186,7 +186,6 @@ const Api = {
     return Api.wrapAjaxCall({
       url,
       data: Object.assign({
-        private_token: gon.api_token,
         search: query,
         per_page: 20,
         active: true,

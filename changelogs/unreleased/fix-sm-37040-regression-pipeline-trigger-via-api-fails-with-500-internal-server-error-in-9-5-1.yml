@@ -1,5 +1,0 @@
----
-title: Fix pipeline trigger via API fails with 500 Internal Server Error in 9.5
-merge_request:
-author:
-type: fixed

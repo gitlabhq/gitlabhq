@@ -11,8 +11,6 @@ import ZenMode from './zen_mode';
 
 (function() {
   this.IssuableForm = (function() {
-    IssuableForm.prototype.issueMoveConfirmMsg = 'Are you sure you want to move this issue to another project?';
-
     IssuableForm.prototype.wipRegex = /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i;
 
     function IssuableForm(form) {
@@ -28,7 +26,6 @@ import ZenMode from './zen_mode';
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
       this.descriptionField = this.form.find("textarea[name*='[description]']");
-      this.issueMoveField = this.form.find("#move_to_project_id");
       if (!(this.titleField.length && this.descriptionField.length)) {
         return;
       }
@@ -36,7 +33,6 @@ import ZenMode from './zen_mode';
       this.form.on("submit", this.handleSubmit);
       this.form.on("click", ".btn-cancel", this.resetAutosave);
       this.initWip();
-      this.initMoveDropdown();
       $issuableDueDate = $('#issuable-due-date');
       if ($issuableDueDate.length) {
         calendar = new Pikaday({
@@ -58,12 +54,6 @@ import ZenMode from './zen_mode';
     };
 
     IssuableForm.prototype.handleSubmit = function() {
-      var fieldId = (this.issueMoveField != null) ? this.issueMoveField.val() : null;
-      if ((parseInt(fieldId, 10) || 0) > 0) {
-        if (!confirm(this.issueMoveConfirmMsg)) {
-          return false;
-        }
-      }
       return this.resetAutosave();
     };
 
@@ -113,48 +103,6 @@ import ZenMode from './zen_mode';
 
     IssuableForm.prototype.addWip = function() {
       return this.titleField.val("WIP: " + (this.titleField.val()));
-    };
-
-    IssuableForm.prototype.initMoveDropdown = function() {
-      var $moveDropdown, pageSize;
-      $moveDropdown = $('.js-move-dropdown');
-      if ($moveDropdown.length) {
-        pageSize = $moveDropdown.data('page-size');
-        return $('.js-move-dropdown').select2({
-          ajax: {
-            url: $moveDropdown.data('projects-url'),
-            quietMillis: 125,
-            data: function(term, page, context) {
-              return {
-                search: term,
-                offset_id: context
-              };
-            },
-            results: function(data) {
-              var context,
-                more;
-
-              if (data.length >= pageSize)
-                more = true;
-
-              if (data[data.length - 1])
-                context = data[data.length - 1].id;
-
-              return {
-                results: data,
-                more: more,
-                context: context
-              };
-            }
-          },
-          formatResult: function(project) {
-            return project.name_with_namespace;
-          },
-          formatSelection: function(project) {
-            return project.name_with_namespace;
-          }
-        });
-      }
     };
 
     return IssuableForm;

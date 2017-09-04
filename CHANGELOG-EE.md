@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.3 (2017-09-03)
+
+- [FIXED] Check if table exists before loading the current license. !2783
+- [FIXED] Extend early adopters feature set.
+
 ## 9.5.2 (2017-08-28)
 
 - [FIXED] Fix LDAP backwards-compatibility when using "method" or when "verify_certificates" is not defined. !2690

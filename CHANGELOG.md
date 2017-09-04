@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.3 (2017-09-03)
+
+- [SECURITY] Filter additional secrets from Rails logs.
+- [FIXED] Make username update fail if the namespace update fails. !13642
+- [FIXED] Fix failure when issue is authored by a deleted user. !13807
+- [FIXED] Reverts changes made to signin_enabled. !13956
+- [FIXED] Fix Merge when pipeline succeeds button dropdown caret icon horizontal alignment.
+- [FIXED] Fixed diff changes bar buttons from showing/hiding whilst scrolling.
+- [FIXED] Fix events error importing GitLab projects.
+- [FIXED] Fix pipeline trigger via API fails with 500 Internal Server Error in 9.5.
+- [FIXED] Fixed fly-out nav flashing in & out.
+- [FIXED] Remove closing external issues by reference error.
+- [FIXED] Re-allow appearances.description_html to be NULL.
+- [CHANGED] Update and fix resolvable note icons for easier recognition.
+- [OTHER] Eager load head pipeline projects for MRs index.
+- [OTHER] Instrument MergeRequest#fetch_ref.
+- [OTHER] Instrument MergeRequest#ensure_ref_fetched.
+
 ## 9.5.2 (2017-08-28)
 
 - [FIXED] Fix signing in using LDAP when attribute mapping uses simple strings instead of arrays.
