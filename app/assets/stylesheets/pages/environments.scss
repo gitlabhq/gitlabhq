@@ -12,6 +12,8 @@
 
 .environments-container {
   .ci-table {
+    @include new-style-dropdown;
+
     .deployment-column {
       > span {
         word-break: break-all;
