@@ -1395,7 +1395,8 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true },
+      { key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops.domain, public: true }
     ]
   end
 
