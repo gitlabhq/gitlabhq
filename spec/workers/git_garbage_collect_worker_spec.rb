@@ -143,7 +143,7 @@ describe GitGarbageCollectWorker do
       tree: old_commit.tree,
       parents: [old_commit]
     )
-    GitOperationService.new(nil, project.repository.raw_repository).send(
+    Gitlab::Git::OperationService.new(nil, project.repository.raw_repository).send(
       :update_ref,
       "refs/heads/#{SecureRandom.hex(6)}",
       new_commit_sha,
