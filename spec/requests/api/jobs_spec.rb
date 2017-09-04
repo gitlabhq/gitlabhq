@@ -188,6 +188,63 @@ describe API::Jobs do
     end
   end
 
+  describe 'GET /projects/:id/jobs/:job_id/artifacts/:artifact_path' do
+    context 'when job has artifacts' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      let(:artifact) do
+        'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
+      end
+
+      context 'when user is not unauthorized' do
+        let(:api_user) { nil }
+
+        it 'does not return specific job artifacts' do
+          get_artifact_file(artifact)
+
+          expect(response).to have_http_status(401)
+        end
+      end
+
+      context 'when user is authorized' do
+        it 'returns a specific artifact file for a valid path' do
+          expect(Gitlab::Workhorse)
+            .to receive(:send_artifacts_entry)
+            .and_call_original
+
+          get_artifact_file(artifact)
+
+          expect(response).to have_http_status(200)
+          expect(response.body)
+            .to include 'Gitlab-Workhorse-Send-Data', 'artifacts-entry'
+          expect(response.headers)
+            .to include('Content-Type' => 'application/json')
+        end
+      end
+
+      context 'when request path is invalid' do
+        it 'does not find artifact file' do
+          get_artifact_file('invalid/path')
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'when job does not have artifacts' do
+      it 'does not return job artifact file' do
+        get_artifact_file('some/artifact')
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def get_artifact_file(artifact_path)
+      get api("/projects/#{project.id}/jobs/#{job.id}/" \
+              "artifacts/#{artifact_path}", api_user)
+    end
+  end
+
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     before do
       get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)

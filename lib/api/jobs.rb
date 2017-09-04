@@ -85,6 +85,25 @@ module API
         present_artifacts!(build.artifacts_file)
       end
 
+      desc 'Download a specific file from artifacts archive' do
+        detail 'This feature was introduced in GitLab 10.0'
+      end
+      params do
+        requires :job_id, type: Integer, desc: 'The ID of a job'
+        requires :artifact_path, type: String, desc: 'Artifact path'
+      end
+      get ':id/jobs/:job_id/artifacts/*artifact_path', format: false do
+        authorize_read_builds!
+
+        build = get_build!(params[:job_id])
+        not_found! unless build.artifacts?
+
+        entry = build.artifacts_metadata_entry(params[:artifact_path])
+        not_found! unless entry.exists?
+
+        Gitlab::Workhorse.send_artifacts_entry(build, entry)
+      end
+
       desc 'Download the artifacts file from a job' do
         detail 'This feature was introduced in GitLab 8.10'
       end
