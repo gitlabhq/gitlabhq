@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe API::Jobs do
-  let!(:project) do
+  set(:project) do
     create(:project, :repository, public_builds: false)
   end
 
-  let!(:pipeline) do
+  set(:pipeline) do
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)
