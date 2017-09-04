@@ -468,7 +468,11 @@ class Project < ActiveRecord::Base
   end
 
   def auto_devops_enabled?
-    auto_devops&.enabled? || current_application_settings.auto_devops_enabled?
+    if auto_devops
+      auto_devops.enabled?
+    else
+      current_application_settings.auto_devops_enabled?
+    end
   end
 
   def repository_storage_path

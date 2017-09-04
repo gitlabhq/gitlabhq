@@ -14,6 +14,7 @@ module Gitlab
                     create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
+                    auto_devops: 'ProjectAutoDevops',
                     label: :project_label }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id].freeze

@@ -14,6 +14,6 @@ ActiveSupport::Inflector.inflections do |inflect|
     award_emoji
     project_statistics
     system_note_metadata
-    project_auto_devops
+    auto_devops
   )
 end
