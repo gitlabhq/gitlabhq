@@ -5,7 +5,6 @@ module EE
   # and be prepended in the `PostReceive` worker
   module PostReceive
     extend ActiveSupport::Concern
-    extend ::Gitlab::CurrentSettings
 
     private
 
@@ -28,7 +27,8 @@ module EE
     end
 
     def update_wiki_es_indexes(post_received)
-      return unless current_application_settings.elasticsearch_indexing?
+      return unless ::Gitlab::CurrentSettings.current_application_settings
+        .elasticsearch_indexing?
 
       post_received.project.wiki.index_blobs
     end
