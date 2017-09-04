@@ -51,7 +51,7 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   after_commit on: :update do
-    if current_application_settings.elasticsearch_indexing?
+    if Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?
       ElasticIndexerWorker.perform_async(:update, 'Project', project_id)
     end
   end
