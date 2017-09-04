@@ -26,7 +26,7 @@
           %li{ "v-for" => "board in boards" }
             %a{ ":href" => "'#{board_base_url}/' + board.id" }
               {{ board.name }}
-          - if !multiple_boards_available? && @boards.size > 1
+          - if !multiple_boards_available? && current_board_parent.boards.size > 1
             %li.small
               Some of your boards are hidden, activate a license to see them again.
       .dropdown-loading{ "v-if" => "loading" }
