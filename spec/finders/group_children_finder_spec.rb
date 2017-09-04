@@ -52,16 +52,16 @@ describe GroupChildrenFinder do
 
     describe '#total_count' do
       it 'counts the array children were already loaded' do
-        finder.instance_variable_set(:@children, [double])
+        finder.instance_variable_set(:@children, [build(:project)])
 
-        expect(finder).not_to receive(:child_groups)
+        expect(finder).not_to receive(:subgroups)
         expect(finder).not_to receive(:projects)
 
         expect(finder.total_count).to eq(1)
       end
 
       it 'performs a count without loading children when they are not loaded yet' do
-        expect(finder).to receive(:child_groups).and_call_original
+        expect(finder).to receive(:subgroups).and_call_original
         expect(finder).to receive(:projects).and_call_original
 
         expect(finder.total_count).to eq(2)

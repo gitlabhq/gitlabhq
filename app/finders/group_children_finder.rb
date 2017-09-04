@@ -16,27 +16,38 @@ class GroupChildrenFinder
   # This allows us to fetch only the count without loading the objects. Unless
   # the objects were already loaded.
   def total_count
-    @total_count ||= if defined?(@children)
-                       children.size
-                     else
-                       child_groups.count + projects.count
-                     end
+    @total_count ||= subgroup_count + project_count
+  end
+
+  def subgroup_count
+    @subgroup_count ||= if defined?(@children)
+                          children.count { |child| child.is_a?(Group) }
+                        else
+                          subgroups.count
+                        end
+  end
+
+  def project_count
+    @project_count ||= if defined?(@children)
+                         children.count { |child| child.is_a?(Project) }
+                       else
+                         projects.count
+                       end
   end
 
   private
 
   def children
-    @children ||= child_groups + projects
+    @children ||= subgroups + projects
   end
 
-  def child_groups
+  def subgroups
     return Group.none unless Group.supports_nested_groups?
     return Group.none unless can?(current_user, :read_group, parent_group)
 
     groups = GroupsFinder.new(current_user,
                               parent: parent_group,
-                              all_available: true,
-                              all_children_for_parent: params[:filter_groups].present?).execute
+                              all_available: true).execute
 
     groups = groups.search(params[:filter]) if params[:filter].present?
     groups = groups.includes(:route).includes(:children)

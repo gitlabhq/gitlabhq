@@ -8,7 +8,6 @@
 
 .groups-header{ class: container_class }
   .top-area
-    = render 'groups/show_nav'
     .nav-controls
       = render 'shared/projects/search_form'
       = render 'shared/projects/dropdown'
@@ -16,4 +15,4 @@
         = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
           New Project
 
-  = render "projects", projects: @projects
+  = render "children", children: @children

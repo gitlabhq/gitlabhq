@@ -45,18 +45,15 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    setup_projects
+    @children = GroupChildrenFinder.new(current_user, parent_group: @group, params: params).execute
+
+    @children = @children.page(params[:page])
 
     respond_to do |format|
       format.html
 
-      format.json do
-        render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
-        }
-      end
-
       format.atom do
+        setup_projects
         load_events
         render layout: 'xml.atom'
       end
