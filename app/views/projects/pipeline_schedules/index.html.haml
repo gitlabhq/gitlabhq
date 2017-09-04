@@ -11,8 +11,6 @@
   - content_for :breadcrumbs_extra do
     = link_to _('New schedule'), new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create'
 
-  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
-
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
