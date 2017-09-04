@@ -131,11 +131,11 @@ feature 'Project mirror', js: true do
     end
 
     describe 'host key management', use_clean_rails_memory_store_caching: true do
-      let(:key) { Gitlab::KeyFingerprint.new(SSHKeygen.generate) }
+      let(:key) { Gitlab::SSHPublicKey.new(SSHKeygen.generate) }
       let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 
       it 'fills fingerprints and host keys when detecting' do
-        stub_reactive_cache(cache, known_hosts: key.key)
+        stub_reactive_cache(cache, known_hosts: key.key_text)
 
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
@@ -146,7 +146,7 @@ feature 'Project mirror', js: true do
 
           click_on 'Show advanced'
 
-          expect(page).to have_field('SSH host keys', with: key.key)
+          expect(page).to have_field('SSH host keys', with: key.key_text)
         end
       end
 
@@ -167,7 +167,7 @@ feature 'Project mirror', js: true do
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
           click_on 'Show advanced'
-          fill_in 'SSH host keys', with: "example.com #{key.key}"
+          fill_in 'SSH host keys', with: "example.com #{key.key_text}"
           click_without_sidekiq 'Save changes'
 
           expect(page).to have_content(key.fingerprint)

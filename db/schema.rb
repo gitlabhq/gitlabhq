@@ -152,6 +152,10 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
   end
 
   create_table "approvals", force: :cascade do |t|

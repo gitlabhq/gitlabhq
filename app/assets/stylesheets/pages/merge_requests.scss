@@ -798,3 +798,7 @@
     }
   }
 }
+
+.merge-request-form {
+  @include new-style-dropdown;
+}
