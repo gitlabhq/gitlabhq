@@ -179,7 +179,7 @@ module IssuablesHelper
     content_tag(:span, class: 'fa-stack') do
       concat(icon('certificate', class: "fa-stack-2x"))
       concat(content_tag(:strong, '1', class: 'fa-inverse fa-stack-1x'))
-    end 
+    end
   end
 
   def assigned_issuables_count(issuable_type)
