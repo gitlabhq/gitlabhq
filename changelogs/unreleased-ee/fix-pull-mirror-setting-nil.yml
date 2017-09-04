@@ -1,0 +1,5 @@
+---
+title: Fix unsetting credentials data for pull mirrors
+merge_request: 2810
+author:
+type: fixed

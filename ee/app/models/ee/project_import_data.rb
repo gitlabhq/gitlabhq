@@ -5,6 +5,16 @@ module EE
       bits: 4096
     }.freeze
 
+    CREDENTIALS_FIELDS = %i[
+      auth_method
+      password
+      ssh_known_hosts
+      ssh_known_hosts_verified_at
+      ssh_known_hosts_verified_by_id
+      ssh_private_key
+      user
+    ].freeze
+
     extend ActiveSupport::Concern
 
     included do
@@ -26,14 +36,22 @@ module EE
       project&.import_url&.start_with?('ssh://')
     end
 
-    %i[auth_method user password ssh_private_key ssh_known_hosts ssh_known_hosts_verified_at ssh_known_hosts_verified_by_id].each do |name|
+    CREDENTIALS_FIELDS.each do |name|
       define_method(name) do
         credentials[name] if credentials.present?
       end
 
       define_method("#{name}=") do |value|
         self.credentials ||= {}
-        self.credentials[name] = value
+
+        # Removal of the password, username, etc, generally causes an update of
+        # the value to the empty string. Detect and gracefully handle this case.
+        if value.present?
+          self.credentials[name] = value
+        else
+          self.credentials.delete(name)
+          nil
+        end
       end
     end
 
