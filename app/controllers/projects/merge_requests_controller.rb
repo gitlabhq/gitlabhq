@@ -305,7 +305,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
-    merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
+    merge_request_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
 
     unless merge_request_service.hooks_validation_pass?(@merge_request)
       return :hook_validation_error
@@ -313,7 +313,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil, squash: merge_params[:squash])
+    @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
 
     if params[:merge_when_pipeline_succeeds].present?
       return :failed unless @merge_request.head_pipeline
