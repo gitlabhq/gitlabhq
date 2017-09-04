@@ -1,3 +1,10 @@
+- signature = local_assigns.fetch(:signature)
+- title = local_assigns.fetch(:title)
+- label = local_assigns.fetch(:label)
+- css_class = local_assigns.fetch(:css_class)
+- icon = local_assigns.fetch(:icon)
+- show_user = local_assigns.fetch(:show_user, false)
+
 - css_classes = commit_signature_badge_classes(css_class)
 
 - title = capture do
@@ -8,7 +15,7 @@
       = title
 
 - content = capture do
-  - if local_assigns.fetch(:show_user, false)
+  - if show_user
     .clearfix
       = render partial: 'projects/commit/signature_badge_user', locals: { signature: signature }
 
