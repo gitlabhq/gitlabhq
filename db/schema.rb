@@ -130,6 +130,10 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

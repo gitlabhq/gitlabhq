@@ -42,6 +42,10 @@ module API
         ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
       end
 
+      def merge_request_urls
+        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+      end
+
       private
 
       def set_project

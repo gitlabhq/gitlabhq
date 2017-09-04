@@ -1,5 +1,0 @@
----
-title: Make username update fail if the namespace update fails
-merge_request: 13642
-author:
-type: fixed

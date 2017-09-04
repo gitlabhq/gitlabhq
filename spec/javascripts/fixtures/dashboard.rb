@@ -17,6 +17,10 @@ describe Dashboard::ProjectsController, '(JavaScript fixtures)', type: :controll
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'dashboard/user-callout.html.raw' do |example|
     rendered = render_template('shared/_user_callout')
     store_frontend_fixture(rendered, example.description)

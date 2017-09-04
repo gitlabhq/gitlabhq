@@ -6,6 +6,8 @@ feature 'Merge requests > User posts diff notes', :js do
   let(:project) { merge_request.source_project }
 
   before do
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+
     project.add_developer(user)
     sign_in(user)
   end

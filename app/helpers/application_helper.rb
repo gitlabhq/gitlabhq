@@ -303,7 +303,7 @@ module ApplicationHelper
   end
 
   def show_new_nav?
-    cookies["new_nav"] == "true"
+    true
   end
 
   def collapsed_sidebar?
