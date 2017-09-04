@@ -276,7 +276,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_NAME/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -284,7 +284,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_STAGE/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -293,7 +293,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%/%CI_COMMIT_REF_NAME%"
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
   untracked: true
 ```
 
@@ -302,7 +302,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
