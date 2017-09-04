@@ -886,7 +886,7 @@ describe Repository, models: true do
     context 'when pre hooks were successful' do
       it 'runs without errors' do
         expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-          .with(committer, repository, old_rev, blank_sha, 'refs/heads/feature')
+          .with(committer, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -932,20 +932,20 @@ describe Repository, models: true do
         service = Gitlab::Git::HooksService.new
         expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, target_repository, old_rev, new_rev, updating_ref)
+          .with(committer, target_repository.raw_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          GitOperationService.new(committer, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
-        service = GitOperationService.new(committer, repository)
+        service = GitOperationService.new(committer, repository.raw_repository)
 
         expect(service).to receive(:update_autocrlf_option)
 
@@ -956,7 +956,7 @@ describe Repository, models: true do
         it 'updates the head' do
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
 
-          GitOperationService.new(committer, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository.raw_repository).with_branch('feature') do
             new_rev
           end
 
@@ -971,13 +971,13 @@ describe Repository, models: true do
         let(:updating_ref) { 'refs/heads/master' }
 
         it 'fetch_ref and create the branch' do
-          expect(target_project.repository).to receive(:fetch_ref)
+          expect(target_project.repository.raw_repository).to receive(:fetch_ref)
             .and_call_original
 
-          GitOperationService.new(committer, target_repository)
+          GitOperationService.new(committer, target_repository.raw_repository)
             .with_branch(
               'master',
-              start_project: project,
+              start_repository: project.repository.raw_repository,
               start_branch_name: 'feature') { new_rev }
 
           expect(target_repository.branch_names).to contain_exactly('master')
@@ -990,8 +990,8 @@ describe Repository, models: true do
         it 'does not fetch_ref and just pass the commit' do
           expect(target_repository).not_to receive(:fetch_ref)
 
-          GitOperationService.new(committer, target_repository)
-            .with_branch('feature', start_project: project) { new_rev }
+          GitOperationService.new(committer, target_repository.raw_repository)
+            .with_branch('feature', start_repository: project.repository.raw_repository) { new_rev }
         end
       end
     end
@@ -1000,7 +1000,7 @@ describe Repository, models: true do
       let(:target_project) { create(:project, :empty_repo) }
 
       before do
-        expect(target_project.repository).to receive(:run_git)
+        expect(target_project.repository.raw_repository).to receive(:run_git)
       end
 
       it 'raises Rugged::ReferenceError' do
@@ -1009,9 +1009,9 @@ describe Repository, models: true do
         end
 
         expect do
-          GitOperationService.new(committer, target_project.repository)
+          GitOperationService.new(committer, target_project.repository.raw_repository)
             .with_branch('feature',
-                         start_project: project,
+                         start_repository: project.repository.raw_repository,
                          &:itself)
         end.to raise_reference_error
       end
@@ -1031,7 +1031,7 @@ describe Repository, models: true do
         repository.add_branch(user, branch, old_rev)
 
         expect do
-          GitOperationService.new(committer, repository).with_branch(branch) do
+          GitOperationService.new(committer, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.not_to raise_error
@@ -1049,7 +1049,7 @@ describe Repository, models: true do
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
         expect do
-          GitOperationService.new(committer, repository).with_branch(branch) do
+          GitOperationService.new(committer, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.to raise_error(Repository::CommitError)
@@ -1061,7 +1061,7 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          GitOperationService.new(committer, repository).with_branch('feature') do
+          GitOperationService.new(committer, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
@@ -1079,10 +1079,9 @@ describe Repository, models: true do
         expect(repository).not_to receive(:expire_emptiness_caches)
         expect(repository).to     receive(:expire_branches_cache)
 
-        GitOperationService.new(committer, repository)
-          .with_branch('new-feature') do
-            new_rev
-          end
+        repository.with_branch(user, 'new-feature') do
+          new_rev
+        end
       end
     end
 
@@ -1139,7 +1138,7 @@ describe Repository, models: true do
 
     describe 'when there are no branches' do
       before do
-        allow(repository).to receive(:branch_count).and_return(0)
+        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
       end
 
       it { is_expected.to eq(false) }
@@ -1147,7 +1146,7 @@ describe Repository, models: true do
 
     describe 'when there are branches' do
       it 'returns true' do
-        expect(repository).to receive(:branch_count).and_return(3)
+        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
 
         expect(subject).to eq(true)
       end
@@ -1161,7 +1160,7 @@ describe Repository, models: true do
       end
 
       it 'sets autocrlf to :input' do
-        GitOperationService.new(nil, repository).send(:update_autocrlf_option)
+        GitOperationService.new(nil, repository.raw_repository).send(:update_autocrlf_option)
 
         expect(repository.raw_repository.autocrlf).to eq(:input)
       end
@@ -1176,7 +1175,7 @@ describe Repository, models: true do
         expect(repository.raw_repository).not_to receive(:autocrlf=)
           .with(:input)
 
-        GitOperationService.new(nil, repository).send(:update_autocrlf_option)
+        GitOperationService.new(nil, repository.raw_repository).send(:update_autocrlf_option)
       end
     end
   end
@@ -1762,14 +1761,14 @@ describe Repository, models: true do
 
   describe '#update_ref' do
     it 'can create a ref' do
-      GitOperationService.new(nil, repository).send(:update_ref, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+      GitOperationService.new(nil, repository.raw_repository).send(:update_ref, 'refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
 
       expect(repository.find_branch('foobar')).not_to be_nil
     end
 
     it 'raises CommitError when the ref update fails' do
       expect do
-        GitOperationService.new(nil, repository).send(:update_ref, 'refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+        GitOperationService.new(nil, repository.raw_repository).send(:update_ref, 'refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
       end.to raise_error(Repository::CommitError)
     end
   end
