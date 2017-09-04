@@ -220,10 +220,18 @@
 .commit,
 .generic_commit_status {
 
-  a:not(.label):not(.autodevops-link),
+  a,
   button {
     color: $gl-text-color;
     vertical-align: baseline;
+  }
+
+  a.autodevops-badge {
+    color: $white-light;
+  }
+
+  a.autodevops-link {
+    color: $gl-link-color;
   }
 
   .commit-row-description {

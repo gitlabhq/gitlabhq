@@ -27,7 +27,7 @@
         endpoint: pipelinesData.endpoint,
         cssClass: pipelinesData.cssClass,
         helpPagePath: pipelinesData.helpPagePath,
-        autoDevopsPath: pipelinesData.helpautoDevopsPath,
+        autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
         canCreatePipeline: pipelinesData.canCreatePipeline,
         allPath: pipelinesData.allPath,
