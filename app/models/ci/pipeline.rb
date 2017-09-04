@@ -305,6 +305,10 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def has_kubernetes_active?
+      project.kubernetes_service&.active?
+    end
+
     def has_stage_seeds?
       stage_seeds.any?
     end
