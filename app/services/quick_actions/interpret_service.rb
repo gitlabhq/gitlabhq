@@ -505,6 +505,24 @@ module QuickActions
       end
     end
 
+    desc 'Move this issue to another project.'
+    explanation do |path_to_project|
+      "Moves this issue to #{path_to_project}."
+    end
+    params 'path/to/project'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+    end
+    command :move do |target_project_path|
+      target_project = Project.find_by_full_path(target_project_path)
+
+      if target_project.present?
+        @updates[:target_project] = target_project
+      end
+    end
+
     def extract_users(params)
       return [] if params.nil?
 

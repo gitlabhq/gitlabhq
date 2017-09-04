@@ -43,6 +43,21 @@ feature 'Runners' do
         expect(page).not_to have_content(specific_runner.display_name)
       end
 
+      scenario 'user edits the runner to be protected' do
+        visit runners_path(project)
+
+        within '.activated-specific-runners' do
+          first('.edit-runner > a').click
+        end
+
+        expect(page.find_field('runner[access_level]')).not_to be_checked
+
+        check 'runner_access_level'
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Protected Yes'
+      end
+
       context 'when a runner has a tag' do
         background do
           specific_runner.update(tag_list: ['tag'])

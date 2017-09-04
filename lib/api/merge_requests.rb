@@ -21,7 +21,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
+          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels, :timelogs)
       end
 
       params :merge_requests_params do
@@ -72,7 +72,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
       helpers do

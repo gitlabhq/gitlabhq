@@ -16,6 +16,10 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   render_views
 
   it 'deploy_keys/keys.json' do |example|

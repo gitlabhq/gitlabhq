@@ -50,6 +50,6 @@ feature 'Dashboard shortcuts', :js do
   end
 
   def check_page_title(title)
-    expect(find('.header-content .title')).to have_content(title)
+    expect(find('.breadcrumbs-sub-title')).to have_content(title)
   end
 end

@@ -27,7 +27,7 @@ gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
 gem 'omniauth-azure-oauth2', '~> 0.0.6'
-gem 'omniauth-cas3', '~> 1.1.2'
+gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
@@ -126,12 +126,9 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
-gem 'truncato', '~> 0.7.8'
+gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-
-# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
-# and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
-gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
+gem 'nokogiri', '~> 1.8.0'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -245,7 +242,7 @@ gem 'uglifier', '~> 2.7.2'
 gem 'addressable', '~> 2.3.8'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
-gem 'gemojione', '~> 3.0'
+gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails', '~> 4.1.0'
@@ -352,6 +349,8 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '0.2'
 
   gem 'stackprof', '~> 0.2.10', require: false
+
+  gem 'simple_po_parser', '~> 1.1.2', require: false
 end
 
 group :test do

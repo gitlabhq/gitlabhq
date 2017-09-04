@@ -510,6 +510,26 @@ describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'move issue to another project' do
+      let(:target_project) { create(:project) }
+
+      context 'valid project' do
+        before do
+          target_project.team << [user, :master]
+        end
+
+        it 'calls the move service with the proper issue and project' do
+          move_stub = instance_double(Issues::MoveService)
+          allow(Issues::MoveService).to receive(:new).and_return(move_stub)
+          allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+
+          expect(move_stub).to receive(:execute).with(issue, target_project)
+
+          update_issue(target_project: target_project)
+        end
+      end
+    end
+
     include_examples 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }

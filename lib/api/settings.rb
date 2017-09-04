@@ -122,6 +122,13 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :polling_interval_multiplier, type: BigDecimal, desc: 'Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.'
 
+      ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+        optional :"#{type}_key_restriction",
+                 type: Integer,
+                 values: KeyRestrictionValidator.supported_key_restrictions(type),
+                 desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
+      end
+
       optional(*::ApplicationSettingsHelper.visible_attributes)
       at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)
     end

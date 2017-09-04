@@ -1,10 +1,5 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
 
-- if defined?(@issue) && @issue.confidential?
-  .confidential-issue-warning
-    = confidential_icon(@issue)
-    %span This is a confidential issue. Your comment will not be visible to the public.
-
 .md-area
   .md-header
     %ul.nav-links.clearfix

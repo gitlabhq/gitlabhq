@@ -9,7 +9,7 @@
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
-        = link_to project_path(@project), title: 'Project overview', class: 'shortcuts-project' do
+        = sidebar_link project_path(@project), title: _('Project overview'), css: 'shortcuts-project' do
           .nav-icon-container
             = custom_icon('project')
           %span.nav-item-name
@@ -31,7 +31,7 @@
 
       - if project_nav_tab? :files
         = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
-          = link_to project_tree_path(@project), title: 'Repository',  class: 'shortcuts-tree' do
+          = sidebar_link project_tree_path(@project), title: _('Repository'),  css: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('doc_text')
             %span.nav-item-name
@@ -72,7 +72,7 @@
 
       - if project_nav_tab? :container_registry
         = nav_link(controller: %w[projects/registry/repositories]) do
-          = link_to project_container_registry_index_path(@project), title: 'Container Registry', class: 'shortcuts-container-registry' do
+          = sidebar_link project_container_registry_index_path(@project), title: _('Container Registry'), css: 'shortcuts-container-registry' do
             .nav-icon-container
               = custom_icon('container_registry')
             %span.nav-item-name
@@ -80,7 +80,7 @@
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-          = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
+          = sidebar_link project_issues_path(@project), title: _('Issues'), css: 'shortcuts-issues' do
             .nav-icon-container
               = custom_icon('issues')
             %span.nav-item-name
@@ -112,7 +112,7 @@
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
-          = link_to project_merge_requests_path(@project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+          = sidebar_link project_merge_requests_path(@project), title: _('Merge Requests'), css: 'shortcuts-merge_requests' do
             .nav-icon-container
               = custom_icon('mr_bold')
             %span.nav-item-name
@@ -122,7 +122,7 @@
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
-          = link_to project_pipelines_path(@project), title: 'CI / CD', class: 'shortcuts-pipelines' do
+          = sidebar_link project_pipelines_path(@project), title: _('CI / CD'), css: 'shortcuts-pipelines' do
             .nav-icon-container
               = custom_icon('pipeline')
             %span.nav-item-name
@@ -161,7 +161,7 @@
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
-          = link_to get_project_wiki_path(@project), title: 'Wiki', class: 'shortcuts-wiki' do
+          = sidebar_link get_project_wiki_path(@project), title: _('Wiki'), css: 'shortcuts-wiki' do
             .nav-icon-container
               = custom_icon('wiki')
             %span.nav-item-name
@@ -169,7 +169,7 @@
 
       - if project_nav_tab? :snippets
         = nav_link(controller: :snippets) do
-          = link_to project_snippets_path(@project), title: 'Snippets', class: 'shortcuts-snippets' do
+          = sidebar_link project_snippets_path(@project), title: _('Snippets'), css: 'shortcuts-snippets' do
             .nav-icon-container
               = custom_icon('snippets')
             %span.nav-item-name
@@ -177,7 +177,7 @@
 
       - if project_nav_tab? :settings
         = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
-          = link_to edit_project_path(@project), title: 'Settings', class: 'shortcuts-tree' do
+          = sidebar_link edit_project_path(@project), title: _('Settings'), css: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('settings')
             %span.nav-item-name
@@ -208,7 +208,7 @@
                   = link_to project_settings_ci_cd_path(@project), title: 'CI / CD' do
                     %span
                       CI / CD
-              - if Gitlab.config.pages.enabled
+              - if @project.pages_available?
                 = nav_link(controller: :pages) do
                   = link_to project_pages_path(@project), title: 'Pages' do
                     %span

@@ -9,15 +9,23 @@ header.navbar-gitlab-new {
   border-bottom: 0;
 
   .header-content {
+    display: -webkit-flex;
+    display: flex;
     padding-left: 0;
 
     .title-container {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: stretch;
       align-items: stretch;
+      -webkit-flex: 1 1 auto;
+      flex: 1 1 auto;
       padding-top: 0;
       overflow: visible;
     }
 
     .title {
+      display: -webkit-flex;
       display: flex;
       padding-right: 0;
       color: currentColor;
@@ -28,6 +36,7 @@ header.navbar-gitlab-new {
       }
 
       > a {
+        display: -webkit-flex;
         display: flex;
         align-items: center;
         padding-right: $gl-padding;
@@ -178,6 +187,7 @@ header.navbar-gitlab-new {
 }
 
 .navbar-sub-nav {
+  display: -webkit-flex;
   display: flex;
   margin-bottom: 0;
   color: $indigo-200;

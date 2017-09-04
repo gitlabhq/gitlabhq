@@ -224,6 +224,7 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+- protected
 Ci::Stage:
 - id
 - name
@@ -276,6 +277,7 @@ CommitStatus:
 - coverage_regex
 - auto_canceled_by_id
 - retried
+- protected
 Ci::Variable:
 - id
 - project_id

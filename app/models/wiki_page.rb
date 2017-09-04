@@ -84,7 +84,7 @@ class WikiPage
   # The formatted title of this page.
   def title
     if @attributes[:title]
-      self.class.unhyphenize(@attributes[:title])
+      CGI.unescape_html(self.class.unhyphenize(@attributes[:title]))
     else
       ""
     end

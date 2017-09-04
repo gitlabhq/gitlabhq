@@ -1,48 +1,58 @@
 # Installing GitLab on Kubernetes
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
-
 > Officially supported cloud providers are Google Container Service and Azure Container Service.
 
 The easiest method to deploy GitLab in [Kubernetes](https://kubernetes.io/) is
-to take advantage of the official GitLab Helm charts. [Helm] is a package
+to take advantage of GitLab's Helm charts. [Helm] is a package
 management tool for Kubernetes, allowing apps to be easily managed via their
 Charts. A [Chart] is a detailed description of the application including how it
 should be deployed, upgraded, and configured.
 
-The GitLab Helm repository is located at https://charts.gitlab.io.
-You can report any issues related to GitLab's Helm Charts at
+GitLab provides [official Helm Charts](#official-gitlab-helm-charts-recommended) which are the recommended way to run GitLab within Kubernetes.
+
+There are also two other sets of charts:
+* Our [upcoming cloud native Charts](#upcoming-cloud-native-helm-charts), which are in development but will eventually replace the current official charts.
+* [Community contributed charts](#community-contributed-helm-charts). These charts should be considered deprecated, in favor of the official charts.
+
+## Official GitLab Helm Charts
+
+These charts utilize our [GitLab Omnibus Docker images](https://docs.gitlab.com/omnibus/docker/README.html). You can report any issues and feedback related to these charts at
 https://gitlab.com/charts/charts.gitlab.io/issues.
-Contributions and improvements are also very welcome.
 
-## Prerequisites
+### Deploying GitLab on Kubernetes
+> **Note**: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
 
-To use the charts, the Helm tool must be installed and initialized. The best
-place to start is by reviewing the [Helm Quick Start Guide][helm-quick].
+The best way to deploy GitLab on Kubernetes is to use the [gitlab-omnibus](gitlab_omnibus.md) chart.
 
-## Add the GitLab Helm repository
+It includes everything needed to run GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html#gitlab-container-registry), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and an [Ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being completed.
 
-Once Helm has been installed, the GitLab chart repository must be added:
+### Deploying just the GitLab Runner
 
-```bash
-helm repo add gitlab https://charts.gitlab.io
-```
+To deploy just the [GitLab Runner](https://docs.gitlab.com/runner/), utilize the [gitlab-runner](gitlab_runner_chart.md) chart.
 
-After adding the repository, Helm must be re-initialized:
+It offers a quick way to configure and deploy the Runner on Kubernetes, regardless of where your GitLab server may be running.
 
-```bash
-helm init
-```
+### Advanced deployment of GitLab
+> **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
 
-## Using the GitLab Helm Charts
+If advanced configuration of GitLab is required, the beta [gitlab](gitlab_chart.md) chart can be used which deploys the GitLab service along with optional Postgres and Redis. It offers extensive configuration, but requires deep knowledge of Kubernetes and Helm to use.
 
-GitLab makes available three Helm Charts.
+For most deployments we recommend using our [gitlab-omnibus](gitlab_omnibus.md) chart.
 
-- [gitlab-omnibus](gitlab_omnibus.md): **Recommended** and the easiest way to get started. Includes everything needed to run GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html#gitlab-container-registry), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and an [Ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx).
-- [gitlab](gitlab_chart.md): Just the GitLab service, with optional Postgres and Redis.
-- [gitlab-runner](gitlab_runner_chart.md): GitLab Runner, to process CI jobs.
+## Upcoming Cloud Native Helm Charts
 
-We are also working on a new set of [cloud native Charts](https://gitlab.com/charts/helm.gitlab.io) which will eventually replace these.
+GitLab is working towards a building a [cloud native deployment method](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). A key part of this effort is to isolate each service into it's [own Docker container and Helm chart](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420), rather than utilizing the all-in-one container image of the [current charts](#official-gitlab-helm-charts-recommended).
+
+By offering individual containers and charts, we will be able to provide a number of benefits:
+* Easier horizontal scaling of each service
+* Smaller more efficient images
+* Potential for rolling updates and canaries within a service
+* and plenty more.
+
+This is a large project and will be worked on over the span of multiple releases. For the most up to date status and release information, please see our [tracking issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420).
+
+## Community Contributed Helm Charts
+
+The community has also [contributed GitLab charts](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce) to the [Helm Stable Repository](https://github.com/kubernetes/charts#repository-structure). These charts should be considered [deprecated](https://github.com/kubernetes/charts/issues/1138) in favor of the [official Charts](#official-gitlab-helm-charts-recommended).
 
 [chart]: https://github.com/kubernetes/charts
-[helm-quick]: https://github.com/kubernetes/helm/blob/master/docs/quickstart.md
 [helm]: https://github.com/kubernetes/helm/blob/master/README.md

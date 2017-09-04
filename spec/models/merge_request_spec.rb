@@ -159,6 +159,7 @@ describe MergeRequest do
       before do
         subject.project.has_external_issue_tracker = true
         subject.project.save!
+        create(:jira_service, project: subject.project)
       end
 
       it 'does not cache issues from external trackers' do
@@ -166,6 +167,7 @@ describe MergeRequest do
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
         allow(subject).to receive(:commits).and_return([commit])
 
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to raise_error
         expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
       end
 
@@ -1698,6 +1700,18 @@ describe MergeRequest do
 
       expect { subject.destroy }
         .to change { project.open_merge_requests_count }.from(1).to(0)
+    end
+  end
+
+  describe '#update_project_counter_caches?' do
+    it 'returns true when the state changes' do
+      subject.state = 'closed'
+
+      expect(subject.update_project_counter_caches?).to eq(true)
+    end
+
+    it 'returns false when the state did not change' do
+      expect(subject.update_project_counter_caches?).to eq(false)
     end
   end
 end

@@ -23,13 +23,13 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I should see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).to have_link('Pages')
     end
   end
 
   step 'I should not see the "Pages" tab' do
-    page.within '.sub-nav' do
+    page.within '.nav-sidebar' do
       expect(page).not_to have_link('Pages')
     end
   end
@@ -37,7 +37,8 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   step 'pages are deployed' do
     pipeline = @project.pipelines.create(ref: 'HEAD',
                                          sha: @project.commit('HEAD').sha,
-                                         source: :push)
+                                         source: :push,
+                                         protected: false)
 
     build = build(:ci_build,
                   project: @project,

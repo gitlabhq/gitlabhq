@@ -45,7 +45,7 @@ msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 파이프라인"
+msgstr[0] "%d 파이프라인"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "지속적인 통합에 관한 그래프 모음"
