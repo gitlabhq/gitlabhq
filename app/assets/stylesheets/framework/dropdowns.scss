@@ -804,6 +804,15 @@
   #{$selector}.dropdown-menu-align-right {
     margin-top: 2px;
   }
+
+  .open {
+    #{$selector}.dropdown-menu,
+    #{$selector}.dropdown-menu-nav {
+      @media (max-width: $screen-xs-max) {
+        max-width: 100%;
+      }
+    }
+  }
 }
 
 @include new-style-dropdown('.js-namespace-select + ');
