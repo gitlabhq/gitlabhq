@@ -57,6 +57,10 @@ module Gitlab
           end
         end
 
+        def binary?(data)
+          EncodingHelper.libgit2_binary?(data)
+        end
+
         private
 
         # Recursive search of blob id by path
@@ -160,10 +164,6 @@ module Gitlab
               )
             end
           end
-        end
-
-        def binary?(data)
-          EncodingHelper.libgit2_binary?(data)
         end
       end
 

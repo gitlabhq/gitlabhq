@@ -118,7 +118,7 @@ module Gitlab
         end
 
         # Return a binary diff message like:
-        # 
+        #
         # "Binary files a/file/path and b/file/path differ\n"
         def binary_message(old_path, new_path)
           "Binary files #{old_path} and #{new_path} differ\n"
@@ -201,7 +201,7 @@ module Gitlab
         return @diff unless all_binary?(@diff)
 
         # the diff is binary, let's make a message for it
-        Diff::binary_message(@old_path, @new_path)
+        Diff.binary_message(@old_path, @new_path)
       end
 
       private

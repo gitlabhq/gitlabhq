@@ -14,7 +14,7 @@ module Gitlab
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
     #
-    # 
+    #
     def encode!(message)
       return nil unless message.respond_to? :force_encoding
 
@@ -33,12 +33,12 @@ module Gitlab
 
       # encode and clean the bad chars
       message.replace clean(message)
-    rescue => e
+    rescue
       encoding = detect ? detect[:encoding] : "unknown"
       "--broken encoding: #{encoding}"
     end
 
-    def all_binary?(data, detect=nil)
+    def all_binary?(data, detect = nil)
       detect ||= CharlockHolmes::EncodingDetector.detect(data)
       detect && detect[:type] == :binary
     end
@@ -65,7 +65,7 @@ module Gitlab
         clean(message)
       end
     end
-      
+
     private
 
     def clean(message)
