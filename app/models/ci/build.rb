@@ -37,7 +37,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
-    scope :codeclimate, ->() { where(name: 'codeclimate') }
+    scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -50,7 +50,10 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create :execute_hooks
+    after_create do |build|
+      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+    end
+
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 
@@ -394,7 +397,9 @@ module Ci
 
       [
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
+        { key: 'GITLAB_USER_NAME', value: user.name, public: true }
       ]
     end
 

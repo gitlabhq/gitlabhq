@@ -57,13 +57,18 @@ const Api = {
   // Return projects list. Filtered by query
   projects(query, options, callback) {
     const url = Api.buildUrl(Api.projectsPath);
+    const defaults = {
+      search: query,
+      per_page: 20,
+    };
+
+    if (gon.current_user_id) {
+      defaults.membership = true;
+    }
+
     return $.ajax({
       url,
-      data: Object.assign({
-        search: query,
-        per_page: 20,
-        membership: true,
-      }, options),
+      data: Object.assign(defaults, options),
       dataType: 'json',
     })
       .done(projects => callback(projects));
@@ -105,18 +110,17 @@ const Api = {
       .done(projects => callback(projects));
   },
 
-  commitMultiple(id, data, callback) {
+  commitMultiple(id, data) {
+    // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', id);
-    return $.ajax({
+    return this.wrapAjaxCall({
       url,
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data),
       dataType: 'json',
-    })
-      .done(commitData => callback(commitData))
-      .fail(message => callback(message.responseJSON));
+    });
   },
 
   // Return text for a specific license
@@ -190,7 +194,6 @@ const Api = {
     return Api.wrapAjaxCall({
       url,
       data: Object.assign({
-        private_token: gon.api_token,
         search: query,
         per_page: 20,
         active: true,

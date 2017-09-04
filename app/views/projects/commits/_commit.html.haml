@@ -41,13 +41,13 @@
 
 
       .commit-actions.hidden-xs
-        - if commit.status(ref)
-          = render_commit_status(commit, ref: ref)
-
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else
           = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
+
+        - if commit.status(ref)
+          = render_commit_status(commit, ref: ref)
 
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))

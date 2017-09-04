@@ -129,6 +129,11 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
+1. Reconfigure for the change to take effect.
+    ```
+    gitlab-ctl reconfigure
+    ```
+
 ### Step 4. Regenerating the authorized keys in the secondary node
 
 Regenerate the keys for `~/.ssh/authorized_keys`
@@ -201,6 +206,9 @@ Currently, this is what is synced:
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
 in your browser.
+
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
 
 ![GitLab Geo dashboard](img/geo-node-dashboard.png)
 

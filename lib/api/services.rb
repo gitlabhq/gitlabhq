@@ -704,12 +704,14 @@ module API
       delete ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
 
-        attrs = service_attributes(service).inject({}) do |hash, key|
-          hash.merge!(key => nil)
-        end
+        destroy_conditionally!(service) do
+          attrs = service_attributes(service).inject({}) do |hash, key|
+            hash.merge!(key => nil)
+          end
 
-        unless service.update_attributes(attrs.merge(active: false))
-          render_api_error!('400 Bad Request', 400)
+          unless service.update_attributes(attrs.merge(active: false))
+            render_api_error!('400 Bad Request', 400)
+          end
         end
       end
 

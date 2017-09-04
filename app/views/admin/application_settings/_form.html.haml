@@ -7,15 +7,15 @@
       = f.label :default_branch_protection, class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_group_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
@@ -106,7 +106,7 @@
             = f.check_box :user_default_external
             Newly registered users will by default be external
 
-    - if current_application_settings.should_check_namespace_plan?
+    - if ::Gitlab.dev_env_or_com?
       .form-group
         = f.label :check_namespace_plan, 'Check feature availability on namespace plan', class: 'control-label col-sm-2'
         .col-sm-10

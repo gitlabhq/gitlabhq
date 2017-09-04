@@ -52,7 +52,7 @@
     }
 
     strong {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
@@ -102,6 +102,8 @@
 }
 
 .member-search-form {
+  @include new-style-dropdown;
+
   position: relative;
 
   @media (min-width: $screen-sm-min) {
@@ -271,7 +273,7 @@
   }
 
   .member {
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     overflow-wrap: break-word;
     word-break: break-all;
   }

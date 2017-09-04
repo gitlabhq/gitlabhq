@@ -1778,10 +1778,18 @@ describe Project do
 
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
-      let(:housekeeping_service) { spy }
+      let(:after_import_service) { spy(:after_import_service) }
+      let(:housekeeping_service) { spy(:housekeeping_service) }
 
       before do
-        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+        allow(Projects::AfterImportService)
+          .to receive(:new) { after_import_service }
+
+        allow(after_import_service)
+          .to receive(:execute) { housekeeping_service.execute }
+
+        allow(Projects::HousekeepingService)
+          .to receive(:new) { housekeeping_service }
       end
 
       it 'resets project import_error' do
@@ -1796,6 +1804,7 @@ describe Project do
 
         project.import_finish
 
+        expect(after_import_service).to have_received(:execute)
         expect(housekeeping_service).to have_received(:execute)
       end
 

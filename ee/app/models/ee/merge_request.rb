@@ -14,7 +14,7 @@ module EE
     end
 
     def ff_merge_possible?
-      project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
+      project.repository.ancestor?(target_branch_sha, diff_head_sha)
     end
 
     def should_be_rebased?

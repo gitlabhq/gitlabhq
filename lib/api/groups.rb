@@ -2,12 +2,16 @@ module API
   class Groups < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers do
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the group'
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the group'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              default: Gitlab::VisibilityLevel.string_level(
+                                Gitlab::CurrentSettings.current_application_settings.default_group_visibility),
+                              desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
@@ -56,16 +60,8 @@ module API
         use :pagination
       end
       get do
-        groups = if params[:owned]
-                   current_user.owned_groups
-                 elsif current_user.admin
-                   Group.all
-                 elsif params[:all_available]
-                   GroupsFinder.new(current_user).execute
-                 else
-                   current_user.groups
-                 end
-
+        find_params = { all_available: params[:all_available], owned: params[:owned] }
+        groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
@@ -158,8 +154,10 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
+        destroy_conditionally!(group) do |group|
+          ::Groups::DestroyService.new(group, current_user).execute
+        end
         status 204
-        ::Groups::DestroyService.new(group, current_user).execute
       end
 
       desc 'Get a list of projects in this group.' do
@@ -206,6 +204,19 @@ module API
         else
           render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
+      end
+
+      desc 'Sync a group with LDAP.'
+      post ":id/ldap_sync" do
+        not_found! unless Gitlab::LDAP::Config.enabled_extras?
+
+        group = find_group!(params[:id])
+        authorize! :admin_group, group
+
+        if group.pending_ldap_sync
+          LdapGroupSyncWorker.perform_async(group.id)
+        end
+        status 202
       end
     end
   end

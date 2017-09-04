@@ -85,5 +85,25 @@ module Geo
     def type
       self.class.type
     end
+
+    def update_delay_in_seconds
+      # We don't track the last update time of repositories and Wiki
+      # separately in the main database
+      return unless project.last_repository_updated_at
+
+      (last_successful_sync_at.to_f - project.last_repository_updated_at.to_f).round(3)
+    end
+
+    def download_time_in_seconds
+      (last_successful_sync_at.to_f - last_synced_at.to_f).round(3)
+    end
+
+    def last_successful_sync_at
+      registry.public_send("last_#{type}_successful_sync_at") # rubocop:disable GitlabSecurity/PublicSend
+    end
+
+    def last_synced_at
+      registry.public_send("last_#{type}_synced_at") # rubocop:disable GitlabSecurity/PublicSend
+    end
   end
 end

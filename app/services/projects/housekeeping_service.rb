@@ -26,6 +26,8 @@ module Projects
       lease_uuid = try_obtain_lease
       raise LeaseTaken unless lease_uuid.present?
 
+      yield if block_given?
+
       execute_gitlab_shell_gc(lease_uuid)
     end
 

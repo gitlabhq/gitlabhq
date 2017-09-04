@@ -56,8 +56,7 @@ module API
         label = user_project.labels.find_by(title: params[:name])
         not_found!('Label') unless label
 
-        status 204
-        label.destroy
+        destroy_conditionally!(label)
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do

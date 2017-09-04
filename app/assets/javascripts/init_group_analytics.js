@@ -1,17 +1,17 @@
 /* global Chart */
 export default () => {
   const dataEl = document.getElementById('js-analytics-data');
-  const data = JSON.parse(dataEl.innerHTML);
-  const labels = data.labels;
-  const outputElIds = ['push', 'issues_closed', 'merge_requests_created'];
+  if (dataEl) {
+    const data = JSON.parse(dataEl.innerHTML);
+    const labels = data.labels;
+    const outputElIds = ['push', 'issues_closed', 'merge_requests_created'];
 
-  outputElIds.forEach((id) => {
-    const el = document.getElementById(id);
-    const ctx = el.getContext('2d');
-    const chart = new Chart(ctx);
+    outputElIds.forEach((id) => {
+      const el = document.getElementById(id);
+      const ctx = el.getContext('2d');
+      const chart = new Chart(ctx);
 
-    chart.Bar(
-      {
+      chart.Bar({
         labels,
         datasets: [{
           fillColor: 'rgba(220,220,220,0.5)',
@@ -22,13 +22,14 @@ export default () => {
           data: data[id].data,
         }],
       },
-      {
-        scaleOverlay: true,
-        responsive: true,
-        maintainAspectRatio: false,
-      },
-    );
-  });
+        {
+          scaleOverlay: true,
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      );
+    });
 
-  $('#event-stats').tablesorter();
+    $('#event-stats').tablesorter();
+  }
 };

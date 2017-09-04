@@ -65,12 +65,12 @@ describe Gitlab::Middleware::ReadonlyGeo do
       expect(subject).to disallow_request
     end
 
-    it 'expects a POST Geo request to be allowed after a disallowed request' do
+    it 'expects a internal POST request to be allowed after a disallowed request' do
       response = request.post('/test_request')
 
       expect(response).to be_a_redirect
 
-      response = request.post("/api/#{API::API.version}/geo/refresh_wikis")
+      response = request.post("/api/#{API::API.version}/internal")
 
       expect(response).not_to be_a_redirect
     end
@@ -97,8 +97,8 @@ describe Gitlab::Middleware::ReadonlyGeo do
         expect(subject).not_to disallow_request
       end
 
-      it 'expects a POST Geo request to be allowed' do
-        response = request.post("/api/#{API::API.version}/geo/refresh_wikis")
+      it 'expects a GET status request to be allowed' do
+        response = request.get("/api/#{API::API.version}/geo/status")
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request

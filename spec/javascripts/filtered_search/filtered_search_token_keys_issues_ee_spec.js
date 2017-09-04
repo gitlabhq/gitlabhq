@@ -8,6 +8,7 @@ import '~/filtered_search/filtered_search_token_keys_issues_ee';
       param: '',
       symbol: '',
       icon: 'balance-scale',
+      tag: 'weight',
     };
 
     describe('get', () => {

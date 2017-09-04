@@ -8,6 +8,8 @@ describe 'Board with milestone', :js do
   let!(:issue_milestone) { create(:closed_issue, project: project, milestone: milestone) }
 
   before do
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+
     project.team << [user, :master]
 
     sign_in(user)

@@ -85,9 +85,9 @@ class HipchatService < Service
     when "push", "tag_push"
       create_push_message(data)
     when "issue"
-      create_issue_message(data) unless is_update?(data)
+      create_issue_message(data) unless update?(data)
     when "merge_request"
-      create_merge_request_message(data) unless is_update?(data)
+      create_merge_request_message(data) unless update?(data)
     when "note"
       create_note_message(data)
     when "pipeline"
@@ -283,7 +283,7 @@ class HipchatService < Service
     "<a href=\"#{project_url}\">#{project_name}</a>"
   end
 
-  def is_update?(data)
+  def update?(data)
     data[:object_attributes][:action] == 'update'
   end
 

@@ -13,6 +13,27 @@ module API
       declared(params, options).to_h.symbolize_keys
     end
 
+    def check_unmodified_since!(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) rescue nil
+
+      if if_unmodified_since && last_modified && last_modified > if_unmodified_since
+        render_api_error!('412 Precondition Failed', 412)
+      end
+    end
+
+    def destroy_conditionally!(resource, last_updated: nil)
+      last_updated ||= resource.updated_at
+
+      check_unmodified_since!(last_updated)
+
+      status 204
+      if block_given?
+        yield resource
+      else
+        resource.destroy
+      end
+    end
+
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -138,13 +159,6 @@ module API
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
-        unauthorized!
-      end
-    end
-
-    def authenticate_by_gitlab_geo_token!
-      token = headers['X-Gitlab-Token'].try(:chomp)
-      unless token && Devise.secure_compare(geo_token, token)
         unauthorized!
       end
     end

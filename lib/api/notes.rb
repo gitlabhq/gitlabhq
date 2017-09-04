@@ -129,10 +129,12 @@ module API
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           note = user_project.notes.find(params[:note_id])
+
           authorize! :admin_note, note
 
-          status 204
-          ::Notes::DestroyService.new(user_project, current_user).execute(note)
+          destroy_conditionally!(note) do |note|
+            ::Notes::DestroyService.new(user_project, current_user).execute(note)
+          end
         end
       end
     end

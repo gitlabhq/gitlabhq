@@ -452,8 +452,13 @@ class FilteredSearchManager {
         const match = this.filteredSearchTokenKeys.searchByKeyParam(keyParam);
 
         if (match) {
-          const indexOf = keyParam.indexOf('_');
-          const sanitizedKey = indexOf !== -1 ? keyParam.slice(0, keyParam.indexOf('_')) : keyParam;
+          // Use lastIndexOf because the token key is allowed to contain underscore
+          // e.g. 'my_reaction' is the token key of 'my_reaction_emoji'
+          const lastIndexOf = keyParam.lastIndexOf('_');
+          let sanitizedKey = lastIndexOf !== -1 ? keyParam.slice(0, lastIndexOf) : keyParam;
+          // Replace underscore with hyphen in the sanitizedkey.
+          // e.g. 'my_reaction' => 'my-reaction'
+          sanitizedKey = sanitizedKey.replace('_', '-');
           const symbol = match.symbol;
           let quotationsToUse = '';
 
@@ -528,7 +533,10 @@ class FilteredSearchManager {
       const condition = this.filteredSearchTokenKeys
         .searchByConditionKeyValue(token.key, token.value.toLowerCase());
       const { param } = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
-      const keyParam = param ? `${token.key}_${param}` : token.key;
+      // Replace hyphen with underscore to use as request parameter
+      // e.g. 'my-reaction' => 'my_reaction'
+      const underscoredKey = token.key.replace('-', '_');
+      const keyParam = param ? `${underscoredKey}_${param}` : underscoredKey;
       let tokenPath = '';
 
       if (condition) {

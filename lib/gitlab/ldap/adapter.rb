@@ -79,7 +79,7 @@ module Gitlab
       private
 
       def user_options(field, value, limit)
-        options = { attributes: user_attributes }
+        options = { attributes: Gitlab::LDAP::Person.ldap_attributes(config).compact.uniq }
         options[:size] = limit if limit
 
         if field.to_sym == :dn
@@ -104,10 +104,6 @@ module Gitlab
         else
           filter
         end
-      end
-
-      def user_attributes
-        %W(#{config.uid} cn dn memberof) + config.attributes['username'] + config.attributes['email']
       end
     end
   end

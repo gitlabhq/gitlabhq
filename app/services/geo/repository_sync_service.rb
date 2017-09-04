@@ -18,6 +18,9 @@ module Geo
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
         update_registry(finished_at: DateTime.now)
+        log_info("Finished repository sync",
+                 update_delay_s: update_delay_in_seconds,
+                 download_time_s: download_time_in_seconds)
       rescue Gitlab::Shell::Error, Geo::EmptyCloneUrlPrefixError => e
         log_error('Error syncing repository', e)
       rescue Gitlab::Git::Repository::NoRepository => e

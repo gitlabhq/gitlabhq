@@ -50,12 +50,15 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - **Articles:**
   - [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
 
+### Code quality analysis
+
+- [Analyze code quality with the Code Climate CLI](code_climate.md)
+
 ### Other
 
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- [Analyze code quality with the Code Climate CLI](code_climate.md)
 - **Articles:**
   - [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
 

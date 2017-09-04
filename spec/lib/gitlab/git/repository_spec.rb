@@ -17,7 +17,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   describe "Respond to" do
     subject { repository }
@@ -56,14 +56,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "#rugged" do
     describe 'when storage is broken', broken_storage: true  do
       it 'raises a storage exception when storage is not available' do
-        broken_repo = described_class.new('broken', 'a/path.git')
+        broken_repo = described_class.new('broken', 'a/path.git', '')
 
         expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
       end
     end
 
     it 'raises a no repository exception when there is no repo' do
-      broken_repo = described_class.new('default', 'a/path.git')
+      broken_repo = described_class.new('default', 'a/path.git', '')
 
       expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
@@ -257,7 +257,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#submodule_url_for' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
     let(:ref) { 'master' }
 
     def submodule_url(path)
@@ -295,7 +295,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   context '#submodules' do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
     context 'where repo has submodules' do
       let(:submodules) { repository.send(:submodules, 'master') }
@@ -391,7 +391,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#delete_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.delete_branch("feature")
     end
 
@@ -407,7 +407,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#create_branch" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
     end
 
     it "should create a new branch" do
@@ -433,6 +433,40 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#delete_refs' do
+    before(:all) do
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+
+    it 'deletes the ref' do
+      @repo.delete_refs('refs/heads/feature')
+
+      expect(@repo.rugged.references['refs/heads/feature']).to be_nil
+    end
+
+    it 'deletes all refs' do
+      refs = %w[refs/heads/wip refs/tags/v1.1.0]
+      @repo.delete_refs(*refs)
+
+      refs.each do |ref|
+        expect(@repo.rugged.references[ref]).to be_nil
+      end
+    end
+
+    it 'raises an error if it failed' do
+      expect(Gitlab::Popen).to receive(:popen).and_return(['Error', 1])
+
+      expect do
+        @repo.delete_refs('refs/heads/fix')
+      end.to raise_error(Gitlab::Git::Repository::GitError)
+    end
+
+    after(:all) do
+      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+      ensure_seeds
+    end
+  end
+
   describe "#refs_hash" do
     let(:refs) { repository.refs_hash }
 
@@ -445,7 +479,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_delete" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_delete("expendable")
     end
 
@@ -461,7 +495,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_add" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
     end
 
@@ -477,7 +511,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#remote_update" do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.remote_update("expendable", url: TEST_NORMAL_REPO_PATH)
     end
 
@@ -506,7 +540,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
       @commit_with_old_name_id = new_commit_edit_old_file(repo)
       @rename_commit_id = new_commit_move_file(repo)
       @commit_with_new_name_id = new_commit_edit_new_file(repo)
@@ -514,7 +548,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     after(:context) do
       # Erase our commits so other tests get the original repo
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
+      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
 
@@ -849,7 +883,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.rugged.config['core.autocrlf'] = true
     end
 
@@ -864,7 +898,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#autocrlf=' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
       @repo.rugged.config['core.autocrlf'] = false
     end
 
@@ -933,7 +967,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with local and remote branches' do
       let(:repository) do
-        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
       end
 
       before do
@@ -976,6 +1010,36 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to eq(10)
+    end
+
+    context 'with local and remote branches' do
+      let(:repository) do
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
+      end
+
+      before do
+        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        repository.create_branch('local_branch', 'master')
+      end
+
+      after do
+        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+        ensure_seeds
+      end
+
+      it 'returns the count of local branches' do
+        expect(repository.branch_count).to eq(repository.local_branches.count)
+      end
+
+      context 'with Gitaly disabled' do
+        before do
+          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+        end
+
+        it 'returns the count of local branches' do
+          expect(repository.branch_count).to eq(repository.local_branches.count)
+        end
+      end
     end
   end
 
@@ -1080,6 +1144,34 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#ref_exists?' do
+    shared_examples 'checks the existence of refs' do
+      it 'returns true for an existing tag' do
+        expect(repository.ref_exists?('refs/heads/master')).to eq(true)
+      end
+
+      it 'returns false for a non-existing tag' do
+        expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to eq(false)
+      end
+
+      it 'raises an ArgumentError for an empty string' do
+        expect { repository.ref_exists?('') }.to raise_error(ArgumentError)
+      end
+
+      it 'raises an ArgumentError for an invalid ref' do
+        expect { repository.ref_exists?('INVALID') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when Gitaly ref_exists feature is enabled' do
+      it_behaves_like 'checks the existence of refs'
+    end
+
+    context 'when Gitaly ref_exists feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'checks the existence of refs'
+    end
+  end
+
   describe '#tag_exists?' do
     shared_examples 'checks the existence of tags' do
       it 'returns true for an existing tag' do
@@ -1128,7 +1220,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#local_branches' do
     before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+      @repo = Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
     end
 
     after(:all) do

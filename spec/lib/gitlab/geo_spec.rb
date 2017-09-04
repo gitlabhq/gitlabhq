@@ -176,7 +176,7 @@ describe Gitlab::Geo do
   end
 
   describe '.configure_cron_jobs!' do
-    JOBS = %w(ldap_test geo_bulk_notify_worker geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
+    JOBS = %w(ldap_test geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
 
     def init_cron_job(job_name, class_name)
       job = Sidekiq::Cron::Job.new(
@@ -202,7 +202,6 @@ describe Gitlab::Geo do
 
       described_class.configure_cron_jobs!
 
-      expect(described_class.bulk_notify_job).to be_enabled
       expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
@@ -215,7 +214,6 @@ describe Gitlab::Geo do
       described_class.configure_cron_jobs!
 
       expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
-      expect(described_class.bulk_notify_job).not_to be_enabled
       expect(described_class.repository_sync_job).to be_enabled
       expect(described_class.file_download_job).to be_enabled
     end
@@ -226,7 +224,6 @@ describe Gitlab::Geo do
 
       described_class.configure_cron_jobs!
 
-      expect(described_class.bulk_notify_job).not_to be_enabled
       expect(described_class.repository_sync_job).not_to be_enabled
       expect(described_class.file_download_job).not_to be_enabled
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled

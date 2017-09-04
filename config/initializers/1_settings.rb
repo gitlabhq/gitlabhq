@@ -186,18 +186,11 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['encryption'] = 'simple_tls' if server['encryption'] == 'ssl'
     server['encryption'] = 'start_tls' if server['encryption'] == 'tls'
 
-    # Certificates are not verified for backwards compatibility.
-    # This default should be flipped to true in 9.5.
-    if server['verify_certificates'].nil?
-      server['verify_certificates'] = false
-
-      message = <<-MSG.strip_heredoc
-        LDAP SSL certificate verification is disabled for backwards-compatibility.
-        Please add the "verify_certificates" option to gitlab.yml for each LDAP
-        server. Certificate verification will be enabled by default in GitLab 9.5.
-      MSG
-      Rails.logger.warn(message)
-    end
+    # Certificate verification was added in 9.4.2, and defaulted to false for
+    # backwards-compatibility.
+    #
+    # Since GitLab 10.0, verify_certificates defaults to true for security.
+    server['verify_certificates'] = true if server['verify_certificates'].nil?
 
     Settings.ldap['servers'][key] = server
   end
@@ -425,9 +418,6 @@ Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
 Settings.cron_jobs['ldap_group_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'
-Settings.cron_jobs['geo_bulk_notify_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
-Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
 Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/5 * * * *'
 Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'

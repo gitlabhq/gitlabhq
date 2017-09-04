@@ -21,10 +21,15 @@ describe API::Groups do
 
   describe "GET /groups" do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns public groups" do
         get api("/groups")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response)
+          .to satisfy_one { |group| group['name'] == group1.name }
       end
     end
 
@@ -179,6 +184,18 @@ describe API::Groups do
   end
 
   describe "GET /groups/:id" do
+    context 'when unauthenticated' do
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}")
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns 200 for a public group' do
+        get api("/groups/#{group1.id}")
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context "when authenticated as user" do
       it "returns one of user1's groups" do
         project = create(:project, namespace: group2, path: 'Foo')
@@ -471,6 +488,7 @@ describe API::Groups do
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
+        expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
       end
 
       it "creates a nested group", :nested_groups do
@@ -549,6 +567,10 @@ describe API::Groups do
         delete api("/groups/#{group1.id}", user1)
 
         expect(response).to have_http_status(204)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/groups/#{group1.id}", user1) }
       end
 
       it "does not remove a group if not an owner" do
@@ -647,6 +669,98 @@ describe API::Groups do
           end
         end
       end
+    end
+  end
+
+  describe 'POST /groups/:id/ldap_sync' do
+    context 'when LDAP config enabled_extras is true' do
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(true)
+      end
+
+      context 'when authenticated as the group owner' do
+        context 'when the group is ready to sync' do
+          it 'returns 202 Accepted' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(response).to have_http_status(202)
+          end
+
+          it 'queues a sync job' do
+            expect { ldap_sync(group1.id, user1, :fake!) }.to change(LdapGroupSyncWorker.jobs, :size).by(1)
+          end
+
+          it 'sets the ldap_sync state to pending' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(group1.reload.ldap_sync_pending?).to be_truthy
+          end
+        end
+
+        context 'when the group is already pending a sync' do
+          before do
+            group1.pending_ldap_sync!
+          end
+
+          it 'returns 202 Accepted' do
+            ldap_sync(group1.id, user1, :disable!)
+            expect(response).to have_http_status(202)
+          end
+
+          it 'does not queue a sync job' do
+            expect { ldap_sync(group1.id, user1, :fake!) }.not_to change(LdapGroupSyncWorker.jobs, :size)
+          end
+
+          it 'does not change the ldap_sync state' do
+            expect do
+              ldap_sync(group1.id, user1, :disable!)
+            end.not_to change { group1.reload.ldap_sync_status }
+          end
+        end
+
+        it 'returns 404 for a non existing group' do
+          ldap_sync(1328, user1, :disable!)
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when authenticated as the admin' do
+        it 'returns 202 Accepted' do
+          ldap_sync(group1.id, admin, :disable!)
+          expect(response).to have_http_status(202)
+        end
+      end
+
+      context 'when authenticated as a non-owner user that can see the group' do
+        it 'returns 403' do
+          ldap_sync(group1.id, user2, :disable!)
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'when authenticated as an user that cannot see the group' do
+        it 'returns 404' do
+          ldap_sync(group2.id, user1, :disable!)
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'when LDAP config enabled_extras is false' do
+      before do
+        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(false)
+      end
+
+      it 'returns 404 (same as CE would)' do
+        ldap_sync(group1.id, admin, :disable!)
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  def ldap_sync(group_id, user, sidekiq_testing_method)
+    Sidekiq::Testing.send(sidekiq_testing_method) do
+      post api("/groups/#{group_id}/ldap_sync", user)
     end
   end
 end

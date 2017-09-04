@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  set(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -160,6 +160,18 @@ describe Ci::Pipeline, :mailer do
 
     def create_build(name, status)
       create(:ci_build, name: name, status: status, pipeline: pipeline)
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { pipeline.predefined_variables }
+
+    it { is_expected.to be_an(Array) }
+
+    it 'includes the defined keys' do
+      keys = subject.map { |v| v[:key] }
+
+      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
     end
   end
 
@@ -1313,12 +1325,12 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#codeclimate_artifact' do
-    context 'has codeclimate build' do
+    context 'has codequality job' do
       let!(:build) do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {
             artifacts: {
@@ -1331,7 +1343,7 @@ describe Ci::Pipeline, :mailer do
       it { expect(pipeline.codeclimate_artifact).to eq(build) }
     end
 
-    context 'no codeclimate build' do
+    context 'no codequality job' do
       before do
         create(:ci_build, pipeline: pipeline)
       end

@@ -813,7 +813,7 @@ describe MergeRequest do
       request = build_stubbed(:merge_request)
 
       expect(request.merge_commit_message)
-        .to match("See merge request #{request.to_reference}")
+        .to match("See merge request #{request.to_reference(full: true)}")
     end
 
     it 'excludes multiple linebreak runs when description is blank' do
@@ -1137,6 +1137,23 @@ describe MergeRequest do
 
       expect(user1.assigned_open_merge_requests_count).to eq(0)
       expect(user2.assigned_open_merge_requests_count).to eq(1)
+    end
+  end
+
+  describe '#merge_async' do
+    it 'enqueues MergeWorker job and updates merge_jid' do
+      merge_request = create(:merge_request)
+      user_id = double(:user_id)
+      params = double(:params)
+      merge_jid = 'hash-123'
+
+      expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do
+        merge_jid
+      end
+
+      merge_request.merge_async(user_id, params)
+
+      expect(merge_request.reload.merge_jid).to eq(merge_jid)
     end
   end
 
@@ -1797,28 +1814,10 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
-    it 'returns true when merge process is ongoing for merge_jid' do
-      merge_request = create(:merge_request, merge_jid: 'foo')
-
-      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(1)
+    it 'returns true when merge_id is present and MR is not merged' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
 
       expect(merge_request.merge_ongoing?).to be(true)
-    end
-
-    it 'returns false when no merge process running for merge_jid' do
-      merge_request = build(:merge_request, merge_jid: 'foo')
-
-      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(0)
-
-      expect(merge_request.merge_ongoing?).to be(false)
-    end
-
-    it 'returns false when merge_jid is nil' do
-      merge_request = build(:merge_request, merge_jid: nil)
-
-      expect(Gitlab::SidekiqStatus).not_to receive(:num_running)
-
-      expect(merge_request.merge_ongoing?).to be(false)
     end
   end
 
@@ -2177,6 +2176,15 @@ describe MergeRequest do
         .and_return(false)
 
       expect(subject.ref_fetched?).to be_falsey
+    end
+  end
+
+  describe 'removing a merge request' do
+    it 'refreshes the number of open merge requests of the target project' do
+      project = subject.target_project
+
+      expect { subject.destroy }
+        .to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
 end

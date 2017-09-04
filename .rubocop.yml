@@ -608,13 +608,25 @@ Style/YodaCondition:
 Style/Proc:
   Enabled: true
 
+# Use `spam?` instead of `is_spam?`
+# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
+# NamePrefix: is_, has_, have_
+# NamePrefixBlacklist: is_, has_, have_
+# NameWhitelist: is_a?
+Style/PredicateName:
+  Enabled: true
+  NamePrefixBlacklist: is_
+  Exclude:
+    - 'spec/**/*'
+    - 'features/**/*'
+
 # Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 56.96
+  Max: 55.25
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -633,7 +645,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 16
+  Max: 15
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -655,7 +667,7 @@ Metrics/ParameterLists:
 # A complexity metric geared towards measuring complexity for a human reader.
 Metrics/PerceivedComplexity:
   Enabled: true
-  Max: 18
+  Max: 17
 
 # Lint ########################################################################
 
@@ -1185,6 +1197,10 @@ GitlabSecurity/DeepMunge:
   Exclude:
     - 'lib/**/*.rake'
     - 'spec/**/*'
+
+# To be enabled by https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13610
+GitlabSecurity/JsonSerialization:
+  Enabled: false
 
 GitlabSecurity/PublicSend:
   Enabled: true

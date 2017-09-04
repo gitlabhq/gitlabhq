@@ -1,6 +1,8 @@
 class ExpireJobCacheWorker
   include Sidekiq::Worker
-  include BuildQueue
+  include PipelineQueue
+
+  enqueue_in group: :cache
 
   def perform(job_id)
     job = CommitStatus.joins(:pipeline, :project).find_by(id: job_id)

@@ -18,6 +18,7 @@
 #     sort: string
 #     non_archived: boolean
 #     iids: integer[]
+#     my_reaction_emoji: string
 #
 class IssuableFinder
   include CreatedAtFilter
@@ -26,7 +27,7 @@ class IssuableFinder
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
-  ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
+  ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
 
   attr_accessor :current_user, :params
@@ -51,6 +52,7 @@ class IssuableFinder
     items = by_iids(items)
     items = by_milestone(items)
     items = by_label(items)
+    items = by_my_reaction_emoji(items)
 
     # Filtering by project HAS TO be the last because we use the project IDs yielded by the issuable query thus far
     items = by_project(items)
@@ -309,18 +311,6 @@ class IssuableFinder
     params[:sort] ? items.sort(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
   end
 
-  def by_assignee(items)
-    if assignee
-      items = items.where(assignee_id: assignee.id)
-    elsif no_assignee?
-      items = items.where(assignee_id: nil)
-    elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
-    end
-
-    items
-  end
-
   def by_author(items)
     if author
       items = items.where(author_id: author.id)
@@ -399,6 +389,14 @@ class IssuableFinder
 
   def filter_by_any_weight?
     params[:weight] == Issue::WEIGHT_ANY
+  end
+
+  def by_my_reaction_emoji(items)
+    if params[:my_reaction_emoji].present? && current_user
+      items = items.awarded(current_user, params[:my_reaction_emoji])
+    end
+
+    items
   end
 
   def by_due_date(items)

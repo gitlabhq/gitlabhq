@@ -16,7 +16,7 @@ feature 'Groups > Pipeline Quota' do
     it 'is not linked within the group settings dropdown' do
       visit group_path(group)
 
-      page.within('.layout-nav') do
+      page.within('.nav-sidebar') do
         expect(page).not_to have_selector(:link_or_button, 'Pipeline Quota')
       end
     end

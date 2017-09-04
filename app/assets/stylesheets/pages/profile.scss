@@ -83,7 +83,7 @@
   &::after {
     content: "\00B7"; // Middle Dot
     padding: 0 6px;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
@@ -277,7 +277,7 @@ table.u2f-registrations {
 
 .oauth-application-show {
   .scope-name {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 
   .scopes-list {
@@ -289,6 +289,7 @@ table.u2f-registrations {
   margin: 20px -5px 0;
 
   .bordered-box {
+    padding: 32px;
     border: 1px solid $blue-300;
     border-radius: $border-radius-default;
     background-color: $blue-25;
@@ -296,10 +297,6 @@ table.u2f-registrations {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .landing {
-    padding: 32px;
 
     .close {
       position: absolute;

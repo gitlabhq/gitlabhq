@@ -13,7 +13,9 @@ feature 'Create New Merge Request', js: true do
   it 'selects the source branch sha when a tag with the same name exists' do
     visit project_merge_requests_path(project)
 
-    click_link 'New merge request'
+    page.within '.content' do
+      click_link 'New merge request'
+    end
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
 
@@ -26,7 +28,9 @@ feature 'Create New Merge Request', js: true do
   it 'selects the target branch sha when a tag with the same name exists' do
     visit project_merge_requests_path(project)
 
-    click_link 'New merge request'
+    page.within '.content' do
+      click_link 'New merge request'
+    end
 
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
@@ -40,7 +44,9 @@ feature 'Create New Merge Request', js: true do
   it 'generates a diff for an orphaned branch' do
     visit project_merge_requests_path(project)
 
-    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
+    page.within '.content' do
+      click_link 'New merge request'
+    end
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
 

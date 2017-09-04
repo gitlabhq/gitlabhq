@@ -38,57 +38,6 @@ module API
 
         present GeoNodeStatus.new(id: Gitlab::Geo.current_node.id), with: Entities::GeoNodeStatus
       end
-
-      # Enqueue a batch of IDs of wiki's projects to have their
-      # wiki repositories updated
-      #
-      # Example request:
-      #   POST /geo/refresh_wikis
-      post 'refresh_wikis' do
-        authenticated_as_admin!
-        require_node_to_be_enabled!
-        required_attributes! [:projects]
-        ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
-      end
-
-      # Receive event streams from primary and enqueue changes
-      #
-      # Example request:
-      #   POST /geo/receive_events
-      post 'receive_events' do
-        authenticate_by_gitlab_geo_token!
-        require_node_to_be_enabled!
-        check_node_restricted_project_ids!
-
-        required_attributes! %w(event_name)
-
-        case params['event_name']
-        when 'key_create', 'key_destroy'
-          required_attributes! %w(key id)
-          ::Geo::ScheduleKeyChangeService.new(params).execute
-        when 'repository_update'
-          required_attributes! %w(event_name project_id project)
-          ::Geo::ScheduleRepoFetchService.new(params).execute
-        when 'push'
-          required_attributes! %w(event_name project_id project)
-          ::Geo::ScheduleRepoUpdateService.new(params).execute
-        when 'tag_push'
-          required_attributes! %w(event_name project_id project)
-          ::Geo::ScheduleWikiRepoUpdateService.new(params).execute
-        when 'project_create'
-          required_attributes! %w(event_name project_id)
-          ::Geo::ScheduleRepoCreateService.new(params).execute
-        when 'project_destroy'
-          required_attributes! %w(event_name project_id path_with_namespace)
-          ::Geo::ScheduleRepoDestroyService.new(params).execute
-        when 'project_rename'
-          required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
-          ::Geo::ScheduleRepoMoveService.new(params).execute
-        when 'project_transfer'
-          required_attributes! %w(event_name project_id path_with_namespace old_path_with_namespace)
-          ::Geo::ScheduleRepoMoveService.new(params).execute
-        end
-      end
     end
 
     helpers do
@@ -110,14 +59,6 @@ module API
 
       def require_node_to_be_secondary!
         forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
-      end
-
-      def check_node_restricted_project_ids!
-        return unless params.key?(:project_id)
-
-        unless Gitlab::Geo.current_node&.projects_include?(params[:project_id].to_i)
-          not_found!
-        end
       end
     end
   end

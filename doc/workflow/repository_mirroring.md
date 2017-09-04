@@ -86,7 +86,7 @@ this branch to prevent any changes from being lost.
 
 ### SSH authentication
 
-> [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.15
+> [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.5
 
 If you're mirroring over SSH (i.e., an `ssh://` URL), you can authenticate using
 password-based authentication, just as over HTTPS, but you can also use public
@@ -209,6 +209,23 @@ In case of a diverged branch, you will see an error indicated at the
 **Mirror repository** settings.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch_push.png)
+
+## Setting up a mirror from GitLab to GitHub
+
+To set up a mirror from GitLab to GitHub, you need to follow these steps:
+
+1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the "public_repo" box checked:
+    
+    ![edit personal access token GitHub](repository_mirroring/repository_mirroring_github_edit_personal_access_token.png)
+
+1. Fill in the "Git repository URL" with the personal access token replacing the password `https://GitHubUsername:GitHubPersonalAccessToken@github.com/group/project.git`:
+
+    ![push to remote repo](repository_mirroring/repository_mirroring_gitlab_push_to_a_remote_repository.png)
+
+1. Save
+1. And either wait or trigger the "Update Now" button:
+
+    ![update now](repository_mirroring/repository_mirroring_gitlab_push_to_a_remote_repository_update_now.png)
 
 ## Forcing an update
 

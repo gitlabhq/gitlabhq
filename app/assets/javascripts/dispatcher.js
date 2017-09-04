@@ -77,10 +77,11 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
-import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
+import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 
@@ -204,6 +205,7 @@ import initGroupAnalytics from './init_group_analytics';
           new ProjectSelect();
           break;
         case 'projects:milestones:show':
+          new UserCallout();
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
           new Milestone();
@@ -211,13 +213,13 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
+        case 'groups:merge_requests':
           if (filteredSearchEnabled) {
-            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
           new ProjectSelect();
@@ -290,6 +292,7 @@ import initGroupAnalytics from './init_group_analytics';
               action: mrNewSubmitNode.dataset.mrSubmitAction,
             });
           }
+          new UserCallout();
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
@@ -391,7 +394,8 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UsersSelect();
+          new UserCallout('js-service-desk-callout');
+          new UserCallout('js-mr-approval-callout');
           break;
         case 'projects:imports:show':
           new ProjectImport();
@@ -541,6 +545,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:settings:repository:show':
           new UsersSelect();
+          new UserCallout();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
@@ -653,6 +658,7 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();

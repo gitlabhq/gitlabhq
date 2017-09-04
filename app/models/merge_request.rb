@@ -34,6 +34,7 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -99,7 +100,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_pipeline_succeeds?, unless: :importing?
   validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validate :validate_fork, unless: :closed_without_fork?
-  validate :validate_approvals_before_merge
+  validate :validate_approvals_before_merge, unless: :importing?
   validate :validate_target_project, on: :create
 
   scope :by_source_or_target_branch, ->(branch_name) do
@@ -248,6 +249,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -391,9 +400,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    return false unless merge_jid
-
-    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+    !!merge_jid && !merged?
   end
 
   def closed_without_fork?
@@ -707,9 +714,8 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
-
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -822,7 +828,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?
@@ -844,7 +850,7 @@ class MergeRequest < ActiveRecord::Base
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 
@@ -963,6 +969,10 @@ class MergeRequest < ActiveRecord::Base
 
   def base_pipeline
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+  end
+
+  def update_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 
   private

@@ -349,7 +349,10 @@ module API
     end
 
     class IssueBasic < ProjectEntity
-      expose :label_names, as: :labels
+      expose :labels do |issue, options|
+        # Avoids an N+1 query since labels are preloaded
+        issue.labels.map(&:title).sort
+      end
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
 
@@ -358,13 +361,32 @@ module API
       end
 
       expose :user_notes_count
-      expose :upvotes, :downvotes
+      expose :upvotes do |issue, options|
+        if options[:issuable_metadata]
+          # Avoids an N+1 query when metadata is included
+          options[:issuable_metadata][issue.id].upvotes
+        else
+          issue.upvotes
+        end
+      end
+      expose :downvotes do |issue, options|
+        if options[:issuable_metadata]
+          # Avoids an N+1 query when metadata is included
+          options[:issuable_metadata][issue.id].downvotes
+        else
+          issue.downvotes
+        end
+      end
       expose :due_date
       expose :confidential
       expose :weight, if: ->(issue, _) { issue.supports_weight? }
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
+      end
+
+      expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
+        issue
       end
     end
 
@@ -404,10 +426,22 @@ module API
     end
 
     class IssuableTimeStats < Grape::Entity
+      format_with(:time_tracking_formatter) do |time_spent|
+        Gitlab::TimeTrackingFormatter.output(time_spent)
+      end
+
       expose :time_estimate
       expose :total_time_spent
       expose :human_time_estimate
-      expose :human_total_time_spent
+
+      with_options(format_with: :time_tracking_formatter) do
+        expose :total_time_spent, as: :human_total_time_spent
+      end
+
+      def total_time_spent
+        # Avoids an N+1 query since timelogs are preloaded
+        object.timelogs.map(&:time_spent).sum
+      end
     end
 
     class ExternalIssue < Grape::Entity
@@ -459,6 +493,10 @@ module API
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
+      end
+
+      expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |merge_request|
+        merge_request
       end
     end
 
@@ -947,6 +985,7 @@ module API
 
     class GeoNodeStatus < Grape::Entity
       expose :id
+      expose :db_replication_lag
       expose :health
       expose :healthy?, as: :healthy
       expose :repositories_count

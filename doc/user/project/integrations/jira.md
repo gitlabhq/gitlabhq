@@ -5,9 +5,6 @@ GitLab can be configured to interact with [JIRA], a project management platform.
 Once your GitLab project is connected to JIRA, you can reference and close the
 issues in JIRA directly from GitLab.
 
-For a use case, check out this article of [How and why to integrate GitLab with
-JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
-
 ## Configuration
 
 Each GitLab project can be configured to connect to a different JIRA instance. That

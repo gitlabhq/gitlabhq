@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Daemon do
+describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   describe '#run!' do
     let!(:geo_node) { create(:geo_node, :current) }
 
@@ -76,7 +76,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
                                  repository_deleted_event.deleted_path)
 
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(project_id, project_name, full_path)
+          .with(project_id, project_name, full_path, project.repository_storage)
 
         subject.run!
       end

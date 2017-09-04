@@ -305,7 +305,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return :failed
     end
 
-    merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
+    merge_request_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
 
     unless merge_request_service.hooks_validation_pass?(@merge_request)
       return :hook_validation_error
@@ -313,7 +313,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
 
-    @merge_request.update(merge_error: nil, squash: merge_params[:squash])
+    @merge_request.update(merge_error: nil, squash: merge_params.fetch(:squash, false))
 
     if params[:merge_when_pipeline_succeeds].present?
       return :failed unless @merge_request.head_pipeline
@@ -327,14 +327,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        @merge_request.merge_async(current_user.id, params)
 
         :success
       else
         :failed
       end
     else
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+      @merge_request.merge_async(current_user.id, params)
 
       :success
     end

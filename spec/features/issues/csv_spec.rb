@@ -14,7 +14,9 @@ describe 'Issues csv' do
 
   def request_csv(params = {})
     visit project_issues_path(project, params)
-    click_on 'Export as CSV'
+    page.within('.breadcrumbs') do
+      click_on 'Export as CSV'
+    end
     click_on 'Export issues'
   end
 

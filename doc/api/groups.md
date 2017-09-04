@@ -2,7 +2,8 @@
 
 ## List groups
 
-Get a list of groups. (As user: my groups or all available, as admin: all groups).
+Get a list of visible groups for the authenticated user. When accessed without
+authentication, only public groups are returned.
 
 Parameters:
 
@@ -43,7 +44,8 @@ You can search for groups by name or path, see below.
 
 ## List a group's projects
 
-Get a list of projects in this group.
+Get a list of projects in this group. When accessed without authentication, only
+public projects are returned.
 
 ```
 GET /groups/:id/projects
@@ -109,7 +111,8 @@ Example response:
 
 ## Details of a group
 
-Get all details of a group.
+Get all details of a group. This endpoint can be accessed without authentication
+if the group is publicly accessible.
 
 ```
 GET /groups/:id
@@ -392,7 +395,7 @@ Example response:
 
 ## Remove group
 
-Removes group with all projects inside.
+Removes group with all projects inside. Only available to group owners and administrators.
 
 ```
 DELETE /groups/:id
@@ -420,6 +423,18 @@ GET /groups?search=foobar
   }
 ]
 ```
+
+## Sync group with LDAP
+
+Syncs the group with its linked LDAP group. Only available to group owners and administrators.
+
+```
+POST /groups/:id/ldap_sync
+```
+
+Parameters:
+
+- `id` (required) - The ID or path of a user group
 
 ## Group members
 

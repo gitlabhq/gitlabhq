@@ -1,10 +1,7 @@
 module EE
   module ProjectsController
     def project_params_attributes
-      attrs = super + project_params_ee
-      attrs += repository_mirrors_params if project&.feature_available?(:repository_mirrors)
-
-      attrs
+      super + project_params_ee
     end
 
     private
@@ -21,11 +18,6 @@ module EE
         repository_size_limit
         reset_approvals_on_push
         service_desk_enabled
-      ]
-    end
-
-    def repository_mirrors_params
-      %i[
         mirror
         mirror_trigger_builds
         mirror_user_id

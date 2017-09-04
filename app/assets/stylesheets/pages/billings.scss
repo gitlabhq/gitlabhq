@@ -79,12 +79,12 @@
         padding-bottom: 0;
         justify-content: center;
         font-size: 50px;
-        font-weight: 700;
+        font-weight: $gl-font-weight-bold;
 
         .billing-conditions {
           list-style: none;
           font-size: 20px;
-          font-weight: 600;
+          font-weight: $gl-font-weight-bold;
           margin: auto 0;
           line-height: 20px;
           padding: 0;
@@ -95,7 +95,7 @@
         color: $blue-500;
         text-align: center;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: $gl-font-weight-bold;
         padding-bottom: 16px;
         height: 32px;
       }

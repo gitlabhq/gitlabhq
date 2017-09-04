@@ -6,7 +6,7 @@ describe 'Dropdown author', js: true do
   let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
-  let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
+  let!(:user_jacob) { create(:user, name: 'Jacob', username: 'ooter32') }
   let(:filtered_search) { find('.filtered-search') }
   let(:js_dropdown_author) { '#js-dropdown-author' }
 
@@ -82,31 +82,31 @@ describe 'Dropdown author', js: true do
     end
 
     it 'filters by name' do
-      send_keys_to_filtered_search('ja')
+      send_keys_to_filtered_search('jac')
 
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by case insensitive name' do
-      send_keys_to_filtered_search('Ja')
+      send_keys_to_filtered_search('Jac')
 
       expect(dropdown_author_size).to eq(1)
     end
 
     it 'filters by username with symbol' do
-      send_keys_to_filtered_search('@ot')
+      send_keys_to_filtered_search('@oot')
 
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by username without symbol' do
-      send_keys_to_filtered_search('ot')
+      send_keys_to_filtered_search('oot')
 
       expect(dropdown_author_size).to eq(2)
     end
 
     it 'filters by case insensitive username without symbol' do
-      send_keys_to_filtered_search('OT')
+      send_keys_to_filtered_search('OOT')
 
       expect(dropdown_author_size).to eq(2)
     end

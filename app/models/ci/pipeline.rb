@@ -406,7 +406,8 @@ module Ci
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
-        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true }
+        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true },
+        { key: 'CI_PIPELINE_SOURCE', value: source.to_s, public: true }
       ]
     end
 
@@ -441,7 +442,7 @@ module Ci
     end
 
     def codeclimate_artifact
-      artifacts.codeclimate.find(&:has_codeclimate_json?)
+      artifacts.codequality.find(&:has_codeclimate_json?)
     end
 
     private

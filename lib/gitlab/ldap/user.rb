@@ -7,6 +7,8 @@
 module Gitlab
   module LDAP
     class User < Gitlab::OAuth::User
+      prepend ::EE::Gitlab::LDAP::User
+
       class << self
         def find_by_uid_and_provider(uid, provider)
           # LDAP distinguished name is case-insensitive

@@ -19,8 +19,8 @@
       = fg.text_area :key, class: 'form-control thin_area', rows: 5, disabled: disable_key_edit
       - unless disable_key_edit
         %p.help-block
-          Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
-          = link_to 'here', help_page_path('ssh/README')
+          Paste the ssh public key used by the node you are adding. Read more about it
+          = link_to 'here', help_page_path('gitlab-geo/configuration.html', anchor: 'step-5-enabling-the-secondary-gitlab-node')
 
 .form-group.js-namespaces{ class: ('hidden' unless geo_node.new_record? || geo_node.secondary?) }
   = form.label :namespace_ids, 'Namespaces to replicate', class: 'control-label'

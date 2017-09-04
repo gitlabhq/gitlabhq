@@ -6,6 +6,7 @@ const weightTokenKey = {
   param: '',
   symbol: '',
   icon: 'balance-scale',
+  tag: 'weight',
 };
 
 const weightConditions = [{
@@ -16,6 +17,13 @@ const weightConditions = [{
   url: 'weight=Any+Weight',
   tokenKey: 'weight',
   value: 'any',
+}];
+
+const alternativeTokenKeys = [{
+  key: 'assignee',
+  type: 'string',
+  param: 'username',
+  symbol: '@',
 }];
 
 class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
@@ -30,6 +38,7 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
     if (this.availableFeatures && this.availableFeatures.multipleAssignees) {
       const assigneeTokenKey = tokenKeys.find(tk => tk.key === 'assignee');
       assigneeTokenKey.type = 'array';
+      assigneeTokenKey.param = 'username[]';
     }
 
     tokenKeys.push(weightTokenKey);
@@ -42,7 +51,7 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
   }
 
   static getAlternatives() {
-    return super.getAlternatives();
+    return alternativeTokenKeys.concat(super.getAlternatives());
   }
 
   static getConditions() {
@@ -62,11 +71,15 @@ class FilteredSearchTokenKeysIssuesEE extends gl.FilteredSearchTokenKeys {
 
   static searchByKeyParam(keyParam) {
     const tokenKeys = FilteredSearchTokenKeysIssuesEE.get();
-    const alternativeTokenKeys = FilteredSearchTokenKeysIssuesEE.getAlternatives();
-    const tokenKeysWithAlternative = tokenKeys.concat(alternativeTokenKeys);
+    const alternatives = FilteredSearchTokenKeysIssuesEE.getAlternatives();
+    const tokenKeysWithAlternative = tokenKeys.concat(alternatives);
 
     return tokenKeysWithAlternative.find((tokenKey) => {
       let tokenKeyParam = tokenKey.key;
+
+      // Replace hyphen with underscore to compare keyParam with tokenKeyParam
+      // e.g. 'my-reaction' => 'my_reaction'
+      tokenKeyParam = tokenKeyParam.replace('-', '_');
 
       if (tokenKey.param) {
         tokenKeyParam += `_${tokenKey.param}`;

@@ -177,7 +177,7 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.modules.map((m) => {
+      return chunk.mapModules((m) => {
         var chunkPath = m.request.split('!').pop();
         return path.relative(m.context, chunkPath);
       }).join('_');

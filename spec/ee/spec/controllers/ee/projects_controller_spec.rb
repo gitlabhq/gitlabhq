@@ -9,6 +9,49 @@ describe ProjectsController do
     sign_in(user)
   end
 
+  describe 'POST create' do
+    let!(:params) do
+      {
+        path: 'foo',
+        description: 'bar',
+        import_url: project.http_url_to_repo,
+        namespace_id: user.namespace.id,
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+        mirror: true,
+        mirror_user_id: user.id,
+        mirror_trigger_builds: true
+      }
+    end
+
+    context 'with licensed repository mirrors' do
+      before do
+        stub_licensed_features(repository_mirrors: true)
+      end
+
+      it 'has mirror enabled in new project' do
+        post :create, project: params
+
+        created_project = Project.find_by_path('foo')
+        expect(created_project.reload.mirror).to be true
+        expect(created_project.reload.mirror_user.id).to eq(user.id)
+      end
+    end
+
+    context 'with unlicensed repository mirrors' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'has mirror enabled in new project' do
+        post :create, project: params
+
+        created_project = Project.find_by_path('foo')
+        expect(created_project.reload.mirror).to be false
+        expect(created_project.reload.mirror_user).to be nil
+      end
+    end
+  end
+
   describe 'PUT #update' do
     before do
       controller.instance_variable_set(:@project, project)
@@ -115,48 +158,46 @@ describe ProjectsController do
       expect(project.service_desk_enabled).to eq(true)
     end
 
-    context 'repository mirrors licensed' do
-      before do
-        stub_licensed_features(repository_mirrors: true)
-      end
-
-      it 'updates repository mirror attributes' do
-        params = {
+    context 'repository mirrors' do
+      let(:params) do
+        {
           mirror: true,
           mirror_trigger_builds: true,
           mirror_user_id: user.id
         }
+      end
 
-        put :update,
+      context 'when licensed' do
+        before do
+          stub_licensed_features(repository_mirrors: true)
+        end
+
+        it 'updates repository mirror attributes' do
+          put :update,
             namespace_id: project.namespace,
             id: project.id,
             project: params
 
-        params.each do |param, value|
-          expect(project.public_send(param)).to eq(value)
+          params.each do |param, value|
+            expect(project.public_send(param)).to eq(value)
+          end
         end
       end
-    end
 
-    context 'repository mirrors unlicensed' do
-      before do
-        stub_licensed_features(repository_mirrors: false)
-      end
+      context 'when unlicensed' do
+        before do
+          stub_licensed_features(repository_mirrors: false)
+        end
 
-      it 'does not update repository mirror attributes' do
-        params = {
-          mirror: true,
-          mirror_trigger_builds: true,
-          mirror_user_id: user.id
-        }
-
-        params.each do |param, _value|
-          expect do
-            put :update,
+        it 'does not update repository mirror attributes' do
+          params.each do |param, _value|
+            expect do
+              put :update,
                 namespace_id: project.namespace,
                 id: project.id,
                 project: params
-          end.not_to change(project, param)
+            end.not_to change(project, param)
+          end
         end
       end
     end

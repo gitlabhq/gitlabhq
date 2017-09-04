@@ -53,19 +53,29 @@ screen.
 
 ## Communication
 
-Previous implementation (GitLab =< 8.6.x) used custom code to handle
+### Custom code (GitLab 8.6 and earlier)
+
+In GitLab versions before 8.6 custom code is used to handle
 notification from **Primary** to **Secondary** by HTTP requests.
 
-We decided to move away from custom code and integrate by using
-**System Webhooks**, as we have more people using them, so any
-improvements we make to this communication layer, many other will
-benefit from.
+### System hooks (GitLab 8.7 till 9.5)
+
+Later was decided to move away from custom code and integrate by using
+**System Webhooks**. More people are using them, so many would benefit from
+improvements made to this communication layer.
 
 There is a specific **internal** endpoint in our api code (Grape),
 that receives all requests from this System Hooks:
 `/api/v3/geo/receive_events`.
 
 We switch and filter from each event by the `event_name` field.
+
+### Geo Log Cursor (GitLab 10.0 and up)
+
+Since GitLab 10.0, **System Webhooks** are no longer used, and Geo Log
+Cursor is used instead. The Log Cursor traverses the `Geo::EventLog`
+to see if there are changes since the last time the log was checked
+and will handle repository updates, deletes, changes & renames.
 
 
 ## Readonly

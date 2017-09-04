@@ -49,7 +49,7 @@ class Deployment < ActiveRecord::Base
     # created before then could have a `sha` referring to a commit that no
     # longer exists in the repository, so just ignore those.
     begin
-      project.repository.is_ancestor?(commit.id, sha)
+      project.repository.ancestor?(commit.id, sha)
     rescue Rugged::OdbError
       false
     end

@@ -1,0 +1,72 @@
+.user-callout.promotion-callout {
+  margin: 20px 0 0;
+
+  &.prepend-top-10 {
+    margin-top: 10px;
+  }
+
+  &.append-bottom-20 {
+    margin-bottom: 20px;
+  }
+
+  .bordered-box {
+    padding: 20px;
+    border-color: $border-color;
+    background-color: $white-light;
+    align-items: flex-start;
+
+    .user-callout-copy {
+      max-width: 700px;
+    }
+
+    .close {
+
+      .dismiss-icon {
+        color: $gray-darkest;
+      }
+
+      &:hover {
+        .dismiss-icon {
+          color: $text-color;
+        }
+      }
+
+    }
+
+    .svg-container {
+      margin-right: 15px;
+    }
+
+  }
+}
+
+.promotion-modal {
+
+  .modal-dialog {
+    width: 540px;
+  }
+
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .modal-body {
+    margin-top: -20px;
+    padding: 16px 16px 32px;
+  }
+
+  .modal-footer {
+    border-top: none;
+  }
+
+}
+
+.promotion-backdrop {
+  background-color: $white-transparent;
+  position: absolute;
+  padding-top: 72px;
+
+  .user-callout-copy {
+    max-width: 700px;
+  }
+}

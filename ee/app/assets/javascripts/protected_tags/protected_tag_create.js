@@ -8,7 +8,7 @@ export default class ProtectedTagCreate {
   constructor() {
     this.$form = $('.js-new-protected-tag');
     this.buildDropdowns();
-    this.$branchTag = this.$form.find('input[name="protected_tag[name]"]');
+    this.$tagInput = this.$form.find('input[name="protected_tag[name]"]');
     this.bindEvents();
   }
 

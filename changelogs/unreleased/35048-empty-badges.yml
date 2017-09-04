@@ -1,0 +1,5 @@
+---
+title: Prevents rendering empty badges when request fails
+merge_request:
+author:
+type: fixed

@@ -160,7 +160,7 @@ describe "Search"  do
       fill_in 'search', with: 'gitlab'
       find('#search').native.send_keys(:enter)
 
-      page.within '.title' do
+      page.within '.breadcrumbs-sub-title' do
         expect(page).to have_content 'Search'
       end
     end
@@ -279,6 +279,32 @@ describe "Search"  do
       click_link 'Commits'
 
       expect(page).to have_selector('.commit-row-description', count: 9)
+    end
+  end
+
+  context 'anonymous user' do
+    let(:project) { create(:project, :public) }
+
+    before do
+      sign_out(user)
+    end
+
+    it 'preserves the group being searched in' do
+      visit search_path(group_id: project.namespace.id)
+
+      fill_in 'search', with: 'foo'
+      click_button 'Search'
+
+      expect(find('#group_id').value).to eq(project.namespace.id.to_s)
+    end
+
+    it 'preserves the project being searched in' do
+      visit search_path(project_id: project.id)
+
+      fill_in 'search', with: 'foo'
+      click_button 'Search'
+
+      expect(find('#project_id').value).to eq(project.id.to_s)
     end
   end
 end

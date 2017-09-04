@@ -2,7 +2,7 @@
   margin: -16px;
 
   .alert-link {
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
@@ -122,7 +122,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     font-size: 24px;
-    font-weight: 400;
+    font-weight: $gl-font-weight-normal;
     line-height: 1;
     word-wrap: break-word;
 
@@ -267,7 +267,7 @@
       border-width: 1px;
       border-style: solid;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       line-height: 13px;
       letter-spacing: .4px;
       padding: 6px 14px;
@@ -304,28 +304,6 @@
 
   > a {
     margin: -1px;
-  }
-}
-
-.project-visibility-level-holder {
-  .radio {
-    margin-bottom: 10px;
-
-    i {
-      margin: 2px 0;
-      font-size: 20px;
-    }
-
-    .option-title {
-      font-weight: normal;
-      display: inline-block;
-      color: $gl-text-color;
-    }
-
-    .option-descr {
-      margin-left: 29px;
-      color: $project-option-descr-color;
-    }
   }
 }
 
@@ -583,7 +561,7 @@ a.deploy-project-label {
       color: $gl-text-color-tertiary;
       transform: translateY(-50%);
       font-size: 12px;
-      font-weight: bold;
+      font-weight: $gl-font-weight-bold;
       line-height: 20px;
 
       // Mobile
@@ -839,7 +817,7 @@ a.allowed-to-push {
 .new-protected-tag {
   label {
     margin-top: 6px;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
@@ -873,7 +851,7 @@ a.allowed-to-push {
     }
 
     &.is-active {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
     }
   }
 
@@ -998,7 +976,7 @@ a.allowed-to-push {
 
     &::before {
       font-family: FontAwesome;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       font-style: normal;
     }
   }

@@ -1,5 +1,0 @@
----
-title: Fix LDAP backwards-compatibility when using "method" or when "verify_certificates" is not defined
-merge_request: 2690
-author:
-type: fixed
