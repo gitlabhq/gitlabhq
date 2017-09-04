@@ -191,7 +191,8 @@ describe API::Runners do
                                                  active: !active,
                                                  tag_list: ['ruby2.1', 'pgsql', 'mysql'],
                                                  run_untagged: 'false',
-                                                 locked: 'true')
+                                                 locked: 'true',
+                                                 access_level: 'ref_protected')
           shared_runner.reload
 
           expect(response).to have_http_status(200)
@@ -200,6 +201,7 @@ describe API::Runners do
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
           expect(shared_runner.run_untagged?).to be(false)
           expect(shared_runner.locked?).to be(true)
+          expect(shared_runner.ref_protected?).to be_truthy
           expect(shared_runner.ensure_runner_queue_value)
             .not_to eq(runner_queue_value)
         end

@@ -15,7 +15,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:edit, :update]
+  before_action :authorize_update_issue!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -91,9 +91,23 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: IssueSerializer.new.represent(@issue)
+        render json: serializer.represent(@issue)
       end
     end
+  end
+
+  def discussions
+    notes = @issue.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    prepare_notes_for_rendering(notes)
+
+    discussions = Discussion.build_collection(notes, @issue)
+
+    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
   end
 
   def create
@@ -128,25 +142,33 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
 
-    if params[:move_to_project_id].to_i > 0
-      new_project = Project.find(params[:move_to_project_id])
-      return render_404 unless issue.can_move?(current_user, new_project)
-
-      move_service = Issues::MoveService.new(project, current_user)
-      @issue = move_service.execute(@issue, new_project)
-    end
-
     respond_to do |format|
       format.html do
         recaptcha_check_with_fallback { render :edit }
       end
 
       format.json do
-        if @issue.valid?
-          render json: IssueSerializer.new.represent(@issue)
-        else
-          render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
-        end
+        render_issue_json
+      end
+    end
+
+  rescue ActiveRecord::StaleObjectError
+    render_conflict_response
+  end
+
+  def move
+    params.require(:move_to_project_id)
+
+    if params[:move_to_project_id].to_i > 0
+      new_project = Project.find(params[:move_to_project_id])
+      return render_404 unless issue.can_move?(current_user, new_project)
+
+      @issue = Issues::UpdateService.new(project, current_user, target_project: new_project).execute(issue)
+    end
+
+    respond_to do |format|
+      format.json do
+        render_issue_json
       end
     end
 
@@ -257,6 +279,14 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless @project.feature_available?(:issues, current_user)
   end
 
+  def render_issue_json
+    if @issue.valid?
+      render json: serializer.represent(@issue)
+    else
+      render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def issue_params
     params.require(:issue).permit(*issue_params_attributes)
   end
@@ -286,5 +316,9 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     redirect_to new_user_session_path, notice: notice
+  end
+
+  def serializer
+    IssueSerializer.new(current_user: current_user, project: issue.project)
   end
 end

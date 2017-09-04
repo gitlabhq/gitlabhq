@@ -181,7 +181,7 @@ describe Project do
       end
     end
 
-    context 'repository storages inclussion' do
+    context 'repository storages inclusion' do
       let(:project2) { build(:project, repository_storage: 'missing') }
 
       before do
@@ -2231,6 +2231,28 @@ describe Project do
 
         expect(projects).to eq([public_project])
       end
+    end
+  end
+
+  describe '#pages_available?' do
+    let(:project) { create(:project, group: group) }
+
+    subject { project.pages_available? }
+
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+    end
+
+    context 'when the project is in a top level namespace' do
+      let(:group) { create(:group) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the project is in a subgroup' do
+      let(:group) { create(:group, :nested) }
+
+      it { is_expected.to be(false) }
     end
   end
 

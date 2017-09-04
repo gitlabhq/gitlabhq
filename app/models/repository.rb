@@ -908,7 +908,7 @@ class Repository
 
       committer = user_to_committer(user)
 
-      create_commit(message: commit.message,
+      create_commit(message: commit.cherry_pick_message(user),
                     author: {
                         email: commit.author_email,
                         name: commit.author_name,
@@ -1044,7 +1044,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

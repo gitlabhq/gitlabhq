@@ -45,7 +45,7 @@ msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 条流水线"
+msgstr[0] "%d 条流水线"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持续集成数据图"

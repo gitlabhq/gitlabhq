@@ -4,15 +4,10 @@
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
   import descriptionTemplate from './fields/description_template.vue';
-  import projectMove from './fields/project_move.vue';
   import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
     props: {
-      canMove: {
-        type: Boolean,
-        required: true,
-      },
       canDestroy: {
         type: Boolean,
         required: true,
@@ -26,11 +21,11 @@
         required: false,
         default: () => [],
       },
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
@@ -42,10 +37,6 @@
         type: String,
         required: true,
       },
-      projectsAutocompleteUrl: {
-        type: String,
-        required: true,
-      },
     },
     components: {
       lockedWarning,
@@ -53,7 +44,6 @@
       descriptionField,
       descriptionTemplate,
       editActions,
-      projectMove,
       confidentialCheckbox,
     },
     computed: {
@@ -89,14 +79,10 @@
     </div>
     <description-field
       :form-state="formState"
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs" />
+      :markdown-preview-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath" />
     <confidential-checkbox
       :form-state="formState" />
-    <project-move
-      v-if="canMove"
-      :form-state="formState"
-      :projects-autocomplete-url="projectsAutocompleteUrl" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy" />

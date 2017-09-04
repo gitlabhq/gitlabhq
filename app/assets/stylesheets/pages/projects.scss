@@ -299,28 +299,6 @@
   }
 }
 
-.project-visibility-level-holder {
-  .radio {
-    margin-bottom: 10px;
-
-    i {
-      margin: 2px 0;
-      font-size: 20px;
-    }
-
-    .option-title {
-      font-weight: $gl-font-weight-normal;
-      display: inline-block;
-      color: $gl-text-color;
-    }
-
-    .option-descr {
-      margin-left: 29px;
-      color: $project-option-descr-color;
-    }
-  }
-}
-
 .save-project-loader {
   margin-top: 50px;
   margin-bottom: 50px;

@@ -1,9 +1,9 @@
 # GitLab Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
+> **Note:**
+* > **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
+* Officially supported cloud providers are Google Container Service and Azure Container Service.
 
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
-
-The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
+The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. For most deployments we recommended the [gitlab-omnibus](gitlab_omnibus.md) chart,
 
 This chart includes the following:
 
@@ -22,9 +22,7 @@ This chart includes the following:
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo [added to your Helm Client](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab
 
@@ -428,7 +426,7 @@ ingress:
 ## Installing GitLab using the Helm Chart
 > You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
-Ensure the GitLab repo has been added and re-initialize Helm:
+Add the GitLab Helm repository and initialize Helm:
 
 ```bash
 helm repo add gitlab https://charts.gitlab.io

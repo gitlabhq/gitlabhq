@@ -591,9 +591,10 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: #eaf3fc;
-$stage-hover-border: #d1e7fc;
-$action-icon-color: #d6d6d6;
+$stage-hover-bg: $gray-darker;
+$ci-action-icon-size: 22px;
+$pipeline-dropdown-line-height: 20px;
+$pipeline-dropdown-status-icon-size: 18px;
 
 /*
 Pipeline Schedules

@@ -660,6 +660,95 @@ describe API::Internal do
   #   end
   # end
 
+  describe 'POST /internal/post_receive' do
+    let(:gl_repository) { "project-#{project.id}" }
+    let(:identifier) { 'key-123' }
+    let(:reference_counter) { double('ReferenceCounter') }
+
+    let(:valid_params) do
+      {
+        gl_repository: gl_repository,
+        secret_token: secret_token,
+        identifier: identifier,
+        changes: changes
+      }
+    end
+
+    let(:changes) do
+      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch"
+    end
+
+    before do
+      project.team << [user, :developer]
+    end
+
+    it 'enqueues a PostReceive worker job' do
+      expect(PostReceive).to receive(:perform_async)
+        .with(gl_repository, identifier, changes)
+
+      post api("/internal/post_receive"), valid_params
+    end
+
+    it 'decreases the reference counter and returns the result' do
+      expect(Gitlab::ReferenceCounter).to receive(:new).with(gl_repository)
+        .and_return(reference_counter)
+      expect(reference_counter).to receive(:decrease).and_return(true)
+
+      post api("/internal/post_receive"), valid_params
+
+      expect(json_response['reference_counter_decreased']).to be(true)
+    end
+
+    it 'returns link to create new merge request' do
+      post api("/internal/post_receive"), valid_params
+
+      expect(json_response['merge_request_urls']).to match [{
+        "branch_name" => "new_branch",
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "new_merge_request" => true
+      }]
+    end
+
+    it 'returns empty array if printing_merge_request_link_enabled is false' do
+      project.update!(printing_merge_request_link_enabled: false)
+
+      post api("/internal/post_receive"), valid_params
+
+      expect(json_response['merge_request_urls']).to eq([])
+    end
+
+    context 'broadcast message exists' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
+
+      it 'returns one broadcast message'  do
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_http_status(200)
+        expect(json_response['broadcast_message']).to eq(broadcast_message.message)
+      end
+    end
+
+    context 'broadcast message does not exist' do
+      it 'returns empty string'  do
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_http_status(200)
+        expect(json_response['broadcast_message']).to eq(nil)
+      end
+    end
+
+    context 'nil broadcast message' do
+      it 'returns empty string' do
+        allow(BroadcastMessage).to receive(:current).and_return(nil)
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_http_status(200)
+        expect(json_response['broadcast_message']).to eq(nil)
+      end
+    end
+  end
+
   def project_with_repo_path(path)
     double().tap do |fake_project|
       allow(fake_project).to receive_message_chain('repository.path_to_repo' => path)

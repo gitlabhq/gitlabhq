@@ -181,7 +181,7 @@ feature 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -189,21 +189,20 @@ feature 'Task Lists' do
         expect(page).to have_selector('.note ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors' do
+      it 'contains the required selectors', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note .js-task-list-container')
         expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
-        expect(page).to have_selector('.note .js-task-list-container .js-task-list-field')
       end
 
-      it 'is only editable by author' do
+      it 'is only editable by author', :js do
         visit_issue(project, issue)
         expect(page).to have_selector('.js-task-list-container')
 
-        logout(:user)
+        gitlab_sign_out
 
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         expect(page).not_to have_selector('.js-task-list-container')
       end
@@ -215,7 +214,7 @@ feature 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -230,7 +229,7 @@ feature 'Task Lists' do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)

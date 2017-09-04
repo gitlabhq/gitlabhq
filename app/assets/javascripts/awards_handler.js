@@ -109,6 +109,7 @@ class AwardsHandler {
     }
 
     $thumbsBtn.toggleClass('disabled', $userAuthored);
+    $thumbsBtn.prop('disabled', $userAuthored);
   }
 
   // Create the emoji menu with the first category of emojis.
@@ -234,14 +235,33 @@ class AwardsHandler {
   }
 
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
+    const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
+
+    if (gl.utils.isInIssuePage() && !isMainAwardsBlock) {
+      const id = votesBlock.attr('id').replace('note_', '');
+
+      $('.emoji-menu').removeClass('is-visible');
+      $('.js-add-award.is-active').removeClass('is-active');
+      const toggleAwardEvent = new CustomEvent('toggleAward', {
+        detail: {
+          awardName: emoji,
+          noteId: id,
+        },
+      });
+
+      document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
+    }
+
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
     const $emojiButton = this.findEmojiIcon(votesBlock, normalizedEmoji).parent();
+
     this.postEmoji($emojiButton, awardUrl, normalizedEmoji, () => {
       this.addAwardToEmojiBar(votesBlock, normalizedEmoji, checkMutuality);
       return typeof callback === 'function' ? callback() : undefined;
     });
+
     $('.emoji-menu').removeClass('is-visible');
-    $('.js-add-award.is-active').removeClass('is-active');
+    return $('.js-add-award.is-active').removeClass('is-active');
   }
 
   addAwardToEmojiBar(votesBlock, emoji, checkForMutuality) {
@@ -268,6 +288,14 @@ class AwardsHandler {
   }
 
   getVotesBlock() {
+    if (gl.utils.isInIssuePage()) {
+      const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
+
+      if ($el.length) {
+        return $el;
+      }
+    }
+
     const currentBlock = $('.js-awards-block.current');
     let resultantVotesBlock = currentBlock;
     if (currentBlock.length === 0) {

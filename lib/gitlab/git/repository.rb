@@ -47,6 +47,9 @@ module Gitlab
       # Directory name of repo
       attr_reader :name
 
+      # Relative path of repo
+      attr_reader :relative_path
+
       # Rugged repo object
       attr_reader :rugged
 
@@ -247,11 +250,17 @@ module Gitlab
         branch_names + tag_names
       end
 
+      def delete_all_refs_except(prefixes)
+        delete_refs(*all_ref_names_except(prefixes))
+      end
+
       # Returns an Array of all ref names, except when it's matching pattern
       #
       # regexp - The pattern for ref names we don't want
-      def all_ref_names_except(regexp)
-        rugged.references.reject { |ref| ref.name =~ regexp }.map(&:name)
+      def all_ref_names_except(prefixes)
+        rugged.references.reject do |ref|
+          prefixes.any? { |p| ref.name.start_with?(p) }
+        end.map(&:name)
       end
 
       # Discovers the default branch based on the repository's available branches

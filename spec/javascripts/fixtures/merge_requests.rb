@@ -37,6 +37,10 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'merge_requests/merge_request_with_task_list.html.raw' do |example|
     create(:ci_build, :pending, pipeline: pipeline)
 
@@ -52,6 +56,11 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   it 'merge_requests/diff_comment.html.raw' do |example|
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
+    render_merge_request(example.description, merge_request)
+  end
+
+  it 'merge_requests/merge_request_with_comment.html.raw' do |example|
+    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request, note: '- [ ] Task List Item')
     render_merge_request(example.description, merge_request)
   end
 

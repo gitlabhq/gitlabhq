@@ -40,7 +40,7 @@
 
       .btn.btn-retry:hover,
       .btn.btn-retry:focus {
-        border-color: $gray-darkest;
+        border-color: $dropdown-toggle-active-border-color;
         background-color: $white-normal;
       }
 
@@ -206,8 +206,8 @@
 
 .stage-cell {
   .mini-pipeline-graph-dropdown-toggle svg {
-    height: 22px;
-    width: 22px;
+    height: $ci-action-icon-size;
+    width: $ci-action-icon-size;
     position: absolute;
     top: -1px;
     left: -1px;
@@ -219,7 +219,7 @@
     display: inline-block;
     position: relative;
     vertical-align: middle;
-    height: 22px;
+    height: $ci-action-icon-size;
     margin: 3px 0;
 
     + .stage-container {
@@ -257,6 +257,8 @@
 
 // Pipeline visualization
 .pipeline-actions {
+  @include new-style-dropdown;
+
   border-bottom: none;
 }
 
@@ -308,7 +310,7 @@
 
   a {
     text-decoration: none;
-    color: $gl-text-color-secondary;
+    color: $gl-text-color;
   }
 
   svg {
@@ -432,7 +434,11 @@
     width: 186px;
     margin-bottom: 10px;
     white-space: normal;
-    color: $gl-text-color-secondary;
+
+    // ensure .build-content has hover style when action-icon is hovered
+    .ci-job-dropdown-container:hover .build-content {
+      @extend .build-content:hover;
+    }
 
     // Action Icons in big pipeline-graph nodes
     .ci-action-icon-container .ci-action-icon-wrapper {
@@ -445,11 +451,11 @@
 
       &:hover {
         background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
       }
 
       svg {
-        fill: $border-color;
+        fill: $gl-text-color-secondary;
         position: relative;
         left: -1px;
         top: -1px;
@@ -475,18 +481,9 @@
       background-color: transparent;
       border: none;
       padding: 0;
-      color: $gl-text-color-secondary;
 
       &:focus {
         outline: none;
-      }
-
-      &:hover {
-        color: $gl-text-color;
-
-        .dropdown-counter-badge {
-          color: $gl-text-color;
-        }
       }
     }
 
@@ -502,8 +499,7 @@
     a.build-content:hover,
     button.build-content:hover {
       background-color: $stage-hover-bg;
-      border: 1px solid $stage-hover-border;
-      color: $gl-text-color;
+      border: 1px solid $dropdown-toggle-active-border-color;
     }
 
 
@@ -564,7 +560,6 @@
 
 // Triggers the dropdown in the big pipeline graph
 .dropdown-counter-badge {
-  color: $border-color;
   font-weight: 100;
   font-size: 15px;
   position: absolute;
@@ -606,8 +601,8 @@ button.mini-pipeline-graph-dropdown-toggle {
   background-color: $white-light;
   border-width: 1px;
   border-style: solid;
-  width: 22px;
-  height: 22px;
+  width: $ci-action-icon-size;
+  height: $ci-action-icon-size;
   margin: 0;
   padding: 0;
   transition: all 0.2s linear;
@@ -669,15 +664,14 @@ button.mini-pipeline-graph-dropdown-toggle {
   }
 }
 
+@include new-style-dropdown('.big-pipeline-graph-dropdown-menu');
+@include new-style-dropdown('.mini-pipeline-graph-dropdown-menu');
+
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
   width: 195px;
   max-width: 195px;
-
-  li {
-    padding: 2px 3px;
-  }
 
   .scrollable-menu {
     padding: 0;
@@ -685,89 +679,104 @@ button.mini-pipeline-graph-dropdown-toggle {
     overflow: auto;
   }
 
-  // Action icon on the right
-  a.ci-action-icon-wrapper {
-    color: $action-icon-color;
-    border: 1px solid $action-icon-color;
-    border-radius: 20px;
-    width: 22px;
-    height: 22px;
-    padding: 2px 0 0 5px;
-    cursor: pointer;
-    float: right;
-    margin: -26px 9px 0 0;
-    font-size: 12px;
-    background-color: $white-light;
+  li {
+    position: relative;
 
-    &:hover,
-    &:focus {
-      background-color: $stage-hover-bg;
-      border: 1px solid transparent;
+    // ensure .mini-pipeline-graph-dropdown-item has hover style when action-icon is hovered
+    &:hover > .mini-pipeline-graph-dropdown-item,
+    &:hover > .ci-job-component > .mini-pipeline-graph-dropdown-item {
+      @extend .mini-pipeline-graph-dropdown-item:hover;
     }
 
-    svg {
-      width: 22px;
-      height: 22px;
-      left: -6px;
-      position: relative;
-      top: -3px;
-      fill: $action-icon-color;
+    // Action icon on the right
+    a.ci-action-icon-wrapper {
+      border-radius: 50%;
+      border: 1px solid $border-color;
+      width: $ci-action-icon-size;
+      height: $ci-action-icon-size;
+      padding: 2px 0 0 5px;
+      font-size: 12px;
+      background-color: $white-light;
+      position: absolute;
+      top: 50%;
+      right: $gl-padding;
+      margin-top: -#{$ci-action-icon-size / 2};
+
+      &:hover,
+      &:focus {
+        background-color: $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
+      }
+
+      svg {
+        fill: $gl-text-color-secondary;
+        width: $ci-action-icon-size;
+        height: $ci-action-icon-size;
+        left: -6px;
+        position: relative;
+        top: -3px;
+      }
+
+      &:hover svg,
+      &:focus svg {
+        fill: $gl-text-color;
+      }
     }
 
-    &:hover svg,
-    &:focus svg {
-      fill: $gl-text-color;
-    }
-  }
-
-  // link to the build
-  .mini-pipeline-graph-dropdown-item {
-    padding: 3px 7px 4px;
-    clear: both;
-    font-weight: $gl-font-weight-normal;
-    line-height: 1.428571429;
-    white-space: nowrap;
-    margin: 0 5px;
-    border-radius: 3px;
-
-    // build name
-    .ci-build-text,
-    .ci-status-text {
-      font-weight: 200;
-      overflow: hidden;
+    // link to the build
+    .mini-pipeline-graph-dropdown-item {
+      padding: 3px 7px 4px;
+      align-items: center;
+      clear: both;
+      display: flex;
+      font-weight: normal;
+      line-height: $line-height-base;
       white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 70%;
-      color: $gl-text-color-secondary;
-      margin-left: 2px;
-      display: inline-block;
-      top: 1px;
-      vertical-align: text-bottom;
-      position: relative;
+      border-radius: 3px;
 
-      @media (max-width: $screen-xs-max) {
-        max-width: 60%;
+      .ci-job-name-component {
+        align-items: center;
+        display: flex;
+        flex: 1;
       }
-    }
 
-    // status icon on the left
-    .ci-status-icon {
-      top: 3px;
-      position: relative;
+      // build name
+      .ci-build-text,
+      .ci-status-text {
+        font-weight: 200;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 70%;
+        margin-left: 2px;
+        display: inline-block;
 
-      > svg {
-        overflow: visible;
-        width: 18px;
-        height: 18px;
+        @media (max-width: $screen-xs-max) {
+          max-width: 60%;
+        }
       }
-    }
 
-    &:hover,
-    &:focus {
-      outline: none;
-      text-decoration: none;
-      color: $gl-text-color;
-      background-color: $stage-hover-bg;
+      .ci-status-icon {
+        @extend .append-right-8;
+
+        position: relative;
+
+        > svg {
+          width: $pipeline-dropdown-status-icon-size;
+          height: $pipeline-dropdown-status-icon-size;
+          margin: 3px 0;
+          position: relative;
+          overflow: visible;
+          display: block;
+        }
+      }
+
+      &:hover,
+      &:focus {
+        outline: none;
+        text-decoration: none;
+        background-color: $stage-hover-bg;
+      }
     }
   }
 }
@@ -776,16 +785,9 @@ button.mini-pipeline-graph-dropdown-toggle {
 .big-pipeline-graph-dropdown-menu {
   width: 195px;
   min-width: 195px;
-  left: auto;
-  right: -195px;
-  top: -4px;
+  left: 100%;
+  top: -10px;
   box-shadow: 0 1px 5px $black-transparent;
-
-  .mini-pipeline-graph-dropdown-item {
-    .ci-status-icon {
-      top: -1px;
-    }
-  }
 }
 
 /**
@@ -806,15 +808,14 @@ button.mini-pipeline-graph-dropdown-toggle {
   }
 
   &::before {
-    left: -5px;
-    margin-top: -6px;
+    left: -6px;
+    margin-top: 3px;
     border-width: 7px 5px 7px 0;
     border-right-color: $border-color;
   }
 
   &::after {
-    left: -4px;
-    margin-top: -9px;
+    left: -5px;
     border-width: 10px 7px 10px 0;
     border-right-color: $white-light;
   }

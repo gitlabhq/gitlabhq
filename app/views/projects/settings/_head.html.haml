@@ -23,7 +23,7 @@
               = link_to project_settings_ci_cd_path(@project), title: 'Pipelines' do
                 %span
                   Pipelines
-          - if Gitlab.config.pages.enabled
+          - if @project.pages_available?
             = nav_link(controller: :pages) do
               = link_to project_pages_path(@project), title: 'Pages' do
                 %span

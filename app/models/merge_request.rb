@@ -605,6 +605,8 @@ class MergeRequest < ActiveRecord::Base
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
@@ -942,7 +944,13 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def update_project_counter_caches?
+    state_changed?
+  end
+
   def update_project_counter_caches
+    return unless update_project_counter_caches?
+
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 
