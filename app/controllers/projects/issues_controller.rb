@@ -25,21 +25,7 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @collection_type    = "Issue"
-    @issues             = issues_collection
-
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
-
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
-    end
-
-    if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    end
-
-    @users = []
+    set_issues_index
 
     if params[:assignee_id].present?
       assignee = User.find_by_id(params[:assignee_id])

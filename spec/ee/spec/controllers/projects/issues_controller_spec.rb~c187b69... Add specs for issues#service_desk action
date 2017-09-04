@@ -1,0 +1,53 @@
+require 'spec_helper'
+
+describe Projects::IssuesController do
+  let(:project) { create(:project, :public) }
+
+  describe 'GET service_desk' do
+    def get_service_desk(extra_params = {})
+      get :service_desk, extra_params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    context 'when Service Desk is available on the project' do
+      let(:support_bot) { User.support_bot }
+      let(:other_user) { create(:user) }
+      let!(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
+      let!(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
+      let!(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+      before do
+        stub_licensed_features(service_desk: true)
+      end
+
+      it 'adds an author filter for the support bot user' do
+        get_service_desk
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+      end
+
+      it 'does not allow any other author to be set' do
+        get_service_desk(author_username: other_user.username)
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+      end
+
+      it 'supports other filters' do
+        get_service_desk(assignee_username: other_user.username)
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_2)
+      end
+    end
+
+    context 'when Service Desk is not available on the project' do
+      before do
+        stub_licensed_features(service_desk: false)
+      end
+
+      it 'returns a 404' do
+        get_service_desk
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+end
