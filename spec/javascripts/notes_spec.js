@@ -770,17 +770,16 @@ import '~/notes';
       });
 
       it('should return a escaped user name', () => {
-        const currentUserNameXSS = 'Foo <script>alert("XSS")</script>';
+        const currentUserFullnameXSS = 'Foo <script>alert("XSS")</script>';
         const $tempNote = this.notes.createPlaceholderNote({
           formContent: sampleComment,
           uniqueId,
           isDiscussionNote: false,
           currentUsername,
-          currentUserNameXSS,
+          currentUserFullname: currentUserFullnameXSS,
           currentUserAvatar,
         });
         const $tempNoteHeader = $tempNote.find('.note-header');
-
         expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
       });
     });
