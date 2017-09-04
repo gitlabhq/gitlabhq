@@ -7,30 +7,36 @@ management tool for Kubernetes, allowing apps to be easily managed via their
 Charts. A [Chart] is a detailed description of the application including how it
 should be deployed, upgraded, and configured.
 
-GitLab provides [official Helm Charts](#official-gitlab-helm-charts-recommended) which is the recommended way to run GitLab with Kubernetes.
+GitLab provides [official Helm Charts](#official-gitlab-helm-charts-recommended) which are the recommended way to run GitLab within Kubernetes.
 
 There are also two other sets of charts:
 * Our [upcoming cloud native Charts](#upcoming-cloud-native-helm-charts), which are in development but will eventually replace the current official charts.
 * [Community contributed charts](#community-contributed-helm-charts). These charts should be considered deprecated, in favor of the official charts.
 
-## Official GitLab Helm Charts (Recommended)
+## Official GitLab Helm Charts
 
 These charts utilize our [GitLab Omnibus Docker images](https://docs.gitlab.com/omnibus/docker/README.html). You can report any issues and feedback related to these charts at
 https://gitlab.com/charts/charts.gitlab.io/issues.
 
-### Deploying GitLab on Kubernetes (Recommended)
-> *Note*: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
+### Deploying GitLab on Kubernetes
+> **Note**: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
 
-The best way to deploy GitLab on Kubernetes is to use the [gitlab-omnibus](gitlab_omnibus.md) chart. It includes everything needed to run GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html#gitlab-container-registry), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and an [Ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being completed.
+The best way to deploy GitLab on Kubernetes is to use the [gitlab-omnibus](gitlab_omnibus.md) chart.
+
+It includes everything needed to run GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html#gitlab-container-registry), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and an [Ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being completed.
 
 ### Deploying just the GitLab Runner
 
-To deploy just the GitLab Runner, utilize the [gitlab-runner](gitlab_runner_chart.md) chart. It offers a quick way to configure and deploy the Runner on Kubernetes, regardless of where your GitLab server may be running.
+To deploy just the [GitLab Runner](https://docs.gitlab.com/runner/), utilize the [gitlab-runner](gitlab_runner_chart.md) chart.
 
-### Advanced deployment of GitLab (Not recommended)
-> *Note*: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
+It offers a quick way to configure and deploy the Runner on Kubernetes, regardless of where your GitLab server may be running.
+
+### Advanced deployment of GitLab
+> **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
 
 If advanced configuration of GitLab is required, the beta [gitlab](gitlab_chart.md) chart can be used which deploys the GitLab service along with optional Postgres and Redis. It offers extensive configuration, but requires deep knowledge of Kubernetes and Helm to use.
+
+For most deployments we recommend using our [gitlab-omnibus](gitlab_omnibus.md) chart.
 
 ## Upcoming Cloud Native Helm Charts
 
