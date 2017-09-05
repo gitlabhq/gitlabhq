@@ -131,20 +131,3 @@
     - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}) * 100'
       label: Average
       unit: "%"
-  - title: "CPU usage by CPU"
-    required_metrics:
-     - container_cpu_usage_seconds_total
-    weight: 1
-    queries:
-    - query_range: 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) by (cpu) * 100'
-      unit: Average (%)
-      label: cpu
-      series:
-        - value: cpu00
-          color: red
-        - value: cpu01
-          color: blue
-        - value: cpu02
-          color: purple
-        - value: cpu03
-          color: orange

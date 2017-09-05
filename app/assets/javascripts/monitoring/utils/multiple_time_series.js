@@ -2,8 +2,8 @@ import d3 from 'd3';
 import _ from 'underscore';
 
 function pickColorFromNameNumber(colorName, colorNumber) {
-  let lineColor = '#1f78d1';
-  let areaColor = '#8fbce8';
+  let lineColor = '';
+  let areaColor = '';
   const color = colorName != null ? colorName : colorNumber;
   switch (color) {
     case 'blue':
@@ -55,13 +55,9 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
   const maxValueFromSeries = _.max(maxValues, val => val.maxValue);
 
   let timeSeriesNumber = 1;
-  let lineColor = '#1f78d1';
-  let areaColor = '#8fbce8';
-  const lineColors = ['#1f78d1', '#fc9403', '#db3b21', '#1aaa55', '#6666c4'];
-  const areaColors = ['#8fbce8', '#feca81', '#ed9d90', '#8dd5aa', '#d1d1f0'];
 
   return queryData.result.map((timeSeries, index) => {
-    let metricTag = 'series';
+    let metricTag = '';
     let pathColors = null;
     const timeSeriesScaleX = d3.time.scale()
       .range([0, graphWidth - 70]);
@@ -84,29 +80,27 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
       .y0(graphHeight - graphHeightOffset)
       .y1(d => timeSeriesScaleY(d.value));
 
-    lineColor = lineColors[timeSeriesNumber - 1];
-    areaColor = areaColors[timeSeriesNumber - 1];
-
     if (queryData.series != null) {
       const seriesCustomizationData = queryData.series[index];
-      metricTag = timeSeries.metric[Object.keys(timeSeries.metric)[0]] || '';
+      const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
       if (seriesCustomizationData != null) {
-        if (
-          seriesCustomizationData.value === metricTag &&
-          seriesCustomizationData.color != null
-        ) {
+        metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
+        if (seriesCustomizationData.color != null) {
           pathColors = pickColorFromNameNumber(seriesCustomizationData.color.toLowerCase(), null);
         }
+      } else {
+        metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber}`;
       }
     }
 
     if (pathColors == null) {
       pathColors = pickColorFromNameNumber(null, timeSeriesNumber);
-      if (timeSeriesNumber <= 5) {
-        timeSeriesNumber = timeSeriesNumber += 1;
-      } else {
-        timeSeriesNumber = 1;
-      }
+    }
+
+    if (timeSeriesNumber <= 5) {
+      timeSeriesNumber = timeSeriesNumber += 1;
+    } else {
+      timeSeriesNumber = 1;
     }
 
     return {

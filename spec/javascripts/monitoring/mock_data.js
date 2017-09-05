@@ -6346,7 +6346,13 @@ export const singleRowMetricsMultipleSeries = [
                             }
                         ]
                     },
-                ]
+                ],
+                'series': [
+                  {
+                    'value': 'hundred(s)',
+                    'color': 'green',
+                  },
+                ],
             }
         ]
     },

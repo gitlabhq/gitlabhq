@@ -38,7 +38,7 @@ function getTextFromNode(component, selector) {
   return component.$el.querySelector(selector).firstChild.nodeValue.trim();
 }
 
-fdescribe('GraphLegend', () => {
+describe('GraphLegend', () => {
   describe('Computed props', () => {
     it('textTransform', () => {
       const component = createComponent(defaultValuesComponent);
@@ -89,11 +89,12 @@ fdescribe('GraphLegend', () => {
     expect(component.$el.querySelectorAll('.rect-axis-text').length).toEqual(2);
   });
 
-  it('contains text to signal the usage, title and time', () => {
+  it('contains text to signal the usage, title and time with multiple time series', () => {
     const component = createComponent(defaultValuesComponent);
     const titles = component.$el.querySelectorAll('.legend-metric-title');
 
-    expect(titles[1].textContent.indexOf('series')).not.toEqual(-1);
+    expect(titles[0].textContent.indexOf('hundred(s)')).not.toEqual(-1);
+    expect(titles[1].textContent.indexOf('2xx')).not.toEqual(-1);
     expect(getTextFromNode(component, '.y-label-text')).toEqual(component.yAxisLabel);
   });
 
