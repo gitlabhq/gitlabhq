@@ -637,11 +637,15 @@ GitLabDropdown = (function() {
         value = this.options.id ? this.options.id(data) : data.id;
         fieldName = this.options.fieldName;
 
-        if (value) { value = value.toString().replace(/'/g, '\\\''); }
-
-        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
-        if (field.length) {
-          selected = true;
+        if (value) {
+          value = value.toString().replace(/'/g, '\\\'');
+          field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
+          if (field.length) {
+            selected = true;
+          }
+        } else {
+          field = this.dropdown.parent().find(`input[name='${fieldName}']`);
+          selected = !field.length;
         }
       }
       // Set URL
