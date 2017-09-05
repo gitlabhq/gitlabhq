@@ -15,6 +15,7 @@ describe('ProjectsService', () => {
 
   beforeEach(() => {
     gon.api_version = currentSession.apiVersion;
+    gon.current_user_id = 1;
     service = new ProjectsService(currentSession.username);
   });
 
@@ -35,7 +36,7 @@ describe('ProjectsService', () => {
       const queryParams = {
         simple: false,
         per_page: 20,
-        membership: false,
+        membership: true,
         order_by: 'last_activity_at',
         search: searchQuery,
       };
