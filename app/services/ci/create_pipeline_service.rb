@@ -16,9 +16,9 @@ module Ci
         protected: project.protected_for?(ref)
       )
 
-      result = validate(current_user,
-                        ignore_skip_ci: ignore_skip_ci,
-                        save_on_errors: save_on_errors)
+      result = validate_project_and_git_items ||
+        validate_pipeline(ignore_skip_ci: ignore_skip_ci,
+                          save_on_errors: save_on_errors)
 
       return result if result
 
@@ -47,13 +47,13 @@ module Ci
 
     private
 
-    def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
+    def validate_project_and_git_items
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
 
-      unless allowed_to_trigger_pipeline?(triggering_user)
-        if can?(triggering_user, :create_pipeline, project)
+      unless allowed_to_trigger_pipeline?
+        if can?(current_user, :create_pipeline, project)
           return error("Insufficient permissions for protected ref '#{ref}'")
         else
           return error('Insufficient permissions to create a new pipeline')
@@ -67,7 +67,9 @@ module Ci
       unless commit
         return error('Commit not found')
       end
+    end
 
+    def validate_pipeline(ignore_skip_ci:, save_on_errors:)
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
           return error("Missing #{pipeline.ci_yaml_file_path} file")
@@ -85,18 +87,18 @@ module Ci
       end
     end
 
-    def allowed_to_trigger_pipeline?(triggering_user)
-      if triggering_user
-        allowed_to_create?(triggering_user)
+    def allowed_to_trigger_pipeline?
+      if current_user
+        allowed_to_create?
       else # legacy triggers don't have a corresponding user
         !project.protected_for?(ref)
       end
     end
 
-    def allowed_to_create?(triggering_user)
-      access = Gitlab::UserAccess.new(triggering_user, project: project)
+    def allowed_to_create?
+      access = Gitlab::UserAccess.new(current_user, project: project)
 
-      can?(triggering_user, :create_pipeline, project) &&
+      can?(current_user, :create_pipeline, project) &&
         if branch?
           access.can_update_branch?(ref)
         elsif tag?
