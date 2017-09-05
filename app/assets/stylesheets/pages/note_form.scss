@@ -122,6 +122,10 @@
   line-height: 1.5;
   padding: 16px;
 
+  p {
+    color: $text-color;
+  }
+
   .sidebar-item-warning-message-actions {
     display: flex;
 
