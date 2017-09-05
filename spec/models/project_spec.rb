@@ -74,6 +74,7 @@ describe Project do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
+    it { is_expected.to have_many(:members_and_requesters) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -90,22 +91,8 @@ describe Project do
         project.team << [developer, :developer]
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = project.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = project.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { project }
       end
     end
 
