@@ -1,3 +1,3 @@
 @function hex-to-rgba-black-on-white($hex) {
-  @return rgba(0,0,0,(((255 - red($hex)) / 2.55) * .01))
+  @return rgba(0, 0, 0, (((255 - red($hex)) / 2.55) * .01))
 }
