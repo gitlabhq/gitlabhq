@@ -248,19 +248,45 @@ describe GroupPolicy do
       let(:group) { create(:group, parent: parent) }
 
       context 'when the parent share_with_group_lock is enabled' do
-        let(:parent) { create(:group, share_with_group_lock: true) }
         let(:current_user) { owner }
 
-        context 'when current_user owns the parent' do
-          before do
-            parent.add_owner(owner)
-          end
+        context 'when the group has a grandparent' do
+          let(:grandparent) { create(:group, share_with_group_lock: true) }
+          let(:parent) { create(:group, share_with_group_lock: true, parent: grandparent) }
 
-          it { expect_allowed(:change_share_with_group_lock) }
+          context 'and the grandparent share_with_group_lock is enabled' do
+            context 'when current_user owns the grandparent' do
+              before do
+                grandparent.add_owner(owner)
+              end
+
+              it { expect_allowed(:change_share_with_group_lock) }
+            end
+
+            context 'when current_user owns the parent but not the grandparent' do
+              before do
+                parent.add_owner(owner)
+              end
+
+              it { expect_disallowed(:change_share_with_group_lock) }
+            end
+          end
         end
 
-        context 'when current_user owns the group but not the parent' do
-          it { expect_disallowed(:change_share_with_group_lock) }
+        context 'when the group does not have a grandparent' do
+          let(:parent) { create(:group, share_with_group_lock: true) }
+
+          context 'when current_user owns the parent' do
+            before do
+              parent.add_owner(owner)
+            end
+
+            it { expect_allowed(:change_share_with_group_lock) }
+          end
+
+          context 'when current_user owns the group but not the parent' do
+            it { expect_disallowed(:change_share_with_group_lock) }
+          end
         end
       end
 
