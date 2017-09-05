@@ -208,7 +208,7 @@ update-tests-metadata:
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - rm -f rspec_flaky/${CI_PROJECT_NAME}/all_node_*.json
+    - rm -f rspec_flaky/${CI_PROJECT_NAME}/*_node_*.json
 
 flaky-examples-check:
   <<: *dedicated-runner
