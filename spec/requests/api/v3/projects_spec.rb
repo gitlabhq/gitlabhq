@@ -394,7 +394,6 @@ describe API::V3::Projects do
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
-        resolve_outdated_diff_discussions: false,
         only_allow_merge_if_build_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false
@@ -454,18 +453,6 @@ describe API::V3::Projects do
       post v3_api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
-      project = attributes_for(:project, { resolve_outdated_diff_discussions: false })
-      post v3_api('/projects', user), project
-      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
-    end
-
-    it 'sets a project as allowing outdated diff discussions to automatically resolve if resolve_outdated_diff_discussions' do
-      project = attributes_for(:project, { resolve_outdated_diff_discussions: true })
-      post v3_api('/projects', user), project
-      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -610,18 +597,6 @@ describe API::V3::Projects do
       post v3_api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
-    end
-
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
-      project = attributes_for(:project, { resolve_outdated_diff_discussions: false })
-      post v3_api("/projects/user/#{user.id}", admin), project
-      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
-    end
-
-    it 'sets a project as allowing outdated diff discussions to automatically resolve only if resolve_outdated_diff_discussions' do
-      project = attributes_for(:project, { resolve_outdated_diff_discussions: true })
-      post v3_api("/projects/user/#{user.id}", admin), project
-      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if build fails' do
