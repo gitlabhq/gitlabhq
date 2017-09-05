@@ -58,15 +58,19 @@ module ResolvableNote
     self.resolved_at = Time.now
     self.resolved_by = current_user
     self.resolved_by_push = resolved_by_push
+
+    true
   end
 
   # If you update this method remember to also update `.unresolve!`
-  def unresolve_without_save(current_user)
+  def unresolve_without_save
     return false unless resolvable?
     return false unless resolved?
 
     self.resolved_at = nil
     self.resolved_by = nil
+
+    true
   end
 
   def resolve!(current_user, resolved_by_push: false)
@@ -75,6 +79,6 @@ module ResolvableNote
   end
 
   def unresolve!
-    unresolve_without_save(current_user) && save
+    unresolve_without_save && save!
   end
 end

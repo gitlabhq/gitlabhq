@@ -65,6 +65,7 @@ Note:
 - change_position
 - resolved_at
 - resolved_by_id
+- resolved_by_push
 - discussion_id
 - original_discussion_id
 LabelLink:
@@ -407,6 +408,7 @@ Project:
 - only_allow_merge_if_all_discussions_are_resolved
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
+- resolve_outdated_diff_discussions
 - build_allow_git_fetch
 - last_repository_updated_at
 - ci_config_path
