@@ -18,7 +18,9 @@ module Gitlab
         attributes = @attributes_finder.find(:project)
         project_attributes = attributes.is_a?(Hash) ? attributes[:project] : {}
 
-        project_attributes.merge(include: build_hash(@tree))
+        build_hash(@tree).each do |sub_hash|
+          yield(project_attributes.merge(include: sub_hash))
+        end
       rescue => e
         @shared.error(e)
         false
