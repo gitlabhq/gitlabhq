@@ -59,6 +59,10 @@ following locations:
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
 
+## Road to GraphQL
+
+After reviewing the GraphQL license, we have changed our plans to move our API to GraphQL. Anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
+
 ## Basic usage
 
 API requests should be prefixed with `api` and the API version. The API version
