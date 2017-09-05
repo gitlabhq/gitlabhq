@@ -134,7 +134,9 @@
     <div class="flash-container timeline-content"></div>
     <form
       class="edit-note common-note-form js-quick-submit gfm-form">
+
       <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
+
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"

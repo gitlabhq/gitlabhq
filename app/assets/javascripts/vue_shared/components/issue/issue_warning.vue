@@ -34,14 +34,17 @@
     :class="iconClass"
     v-if="!isLockedAndConfidential">
     </i>
+
     <span v-if="isLockedAndConfidential">
       This issue is confidential and locked.
       People without permission will never get a notification and not be able to comment.
     </span>
+
     <span v-else-if="confidential">
       This is a confidential issue.
       Your comment will not be visible to the public.
     </span>
+
     <span v-else-if="locked">
       This issue is locked.
       Only project members can comment.

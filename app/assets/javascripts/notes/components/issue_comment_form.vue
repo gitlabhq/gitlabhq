@@ -249,7 +249,9 @@
             <form
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
+
               <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
+
               <div class="error-alert"></div>
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
