@@ -1297,6 +1297,9 @@ export default class Notes {
       </li>`
     );
 
+    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(_.escape(currentUsername));
+
     return $tempNote;
   }
 
