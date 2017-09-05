@@ -2,10 +2,12 @@ class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
 
-  expose :id, :name, :description, :visibility, :full_name, :full_path, :web_url,
-         :created_at, :updated_at, :star_count, :can_edit, :type, :parent_id,
-         :children_count, :leave_path, :edit_path, :number_projects_with_delimiter,
-         :number_users_with_delimiter, :permissions, :star_count
+  expose :id, :name, :path, :description, :visibility, :full_name, :full_path, :web_url,
+         :created_at, :updated_at, :can_edit, :type, :avatar_url, :permission, :edit_path
+
+  def project?
+    object.is_a?(Project)
+  end
 
   def type
     object.class.name.downcase
@@ -14,7 +16,63 @@ class GroupChildEntity < Grape::Entity
   def can_edit
     return false unless request.respond_to?(:current_user)
 
-    can?(request.current_user, "edit_{type}", object)
+    if project?
+      can?(request.current_user, :admin_project, object)
+    else
+      can?(request.current_user, :admin_group, object)
+    end
   end
-  expose
+
+  def edit_path
+    if project?
+      edit_project_path(object)
+    else
+      edit_group_path(object)
+    end
+  end
+
+  def permission
+    if project?
+      object.project_members.find_by(user_id: request.current_user)&.human_access
+    else
+      object.group_members.find_by(user_id: request.current_user)&.human_access
+    end
+  end
+
+  # Project only attributes
+  expose :star_count,
+         if: lambda { |_instance, _options| project? }
+
+  # Group only attributes
+  expose :children_count, :leave_path, :parent_id, :number_projects_with_delimiter,
+         :number_users_with_delimiter, :project_count, :subgroup_count,
+         unless: lambda { |_instance, _options| project? }
+
+  def children_finder
+    @children_finder ||= GroupChildrenFinder.new(request.current_user, parent_group: object)
+  end
+
+  def children_count
+    @children_count ||= children_finder.total_count
+  end
+
+  def project_count
+    @project_count ||= children_finder.project_count
+  end
+
+  def subgroup_count
+    @subgroup_count ||= children_finder.subgroup_count
+  end
+
+  def leave_path
+    leave_group_group_members_path(object)
+  end
+
+  def number_projects_with_delimiter
+    number_with_delimiter(project_count)
+  end
+
+  def number_users_with_delimiter
+    number_with_delimiter(object.users.count)
+  end
 end
