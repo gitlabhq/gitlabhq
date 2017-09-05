@@ -11,7 +11,15 @@ Prometheus::Client.configure do |config|
     config.multiprocess_files_dir ||= Rails.root.join('tmp/prometheus_multiproc_dir')
   end
 
-  config.pid_provider = Prometheus::Client::Support::Unicorn.method(:worker_pid_provider)
+  config.pid_provider = -> do
+    wid = Prometheus::Client::Support::Unicorn.worker_id
+    wid = Process.pid if wid.nil?
+    if wid.nil?
+      "process_pid_#{Process.pid}"
+    else
+      "worker_id_#{wid}"
+    end
+  end
 end
 
 Sidekiq.configure_server do |config|
@@ -20,6 +28,7 @@ Sidekiq.configure_server do |config|
   end
 end
 
-# if Gitlab::Metrics.prometheus_metrics_enabled?
-Gitlab::Metrics::Samplers::RubySampler.initialize_instance(60.second).start
-# end
+if Gitlab::Metrics.prometheus_metrics_enabled?
+  Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+end

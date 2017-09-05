@@ -40,21 +40,21 @@ module Gitlab
         @memory_after - @memory_before
       end
 
-      def self.metric_transaction_duration_milliseconds
-        @metrics_transaction_duration_milliseconds ||= Gitlab::Metrics.histogram(
-          :gitlab_transaction_duration_milliseconds,
-          'Transaction duration milliseconds',
+      def self.metric_transaction_duration_seconds
+        @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
+          :gitlab_transaction_duration_seconds,
+          'Transaction duration seconds',
           {},
-          [1, 2, 5, 10, 20, 50, 100, 500, 10000]
+          [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
         )
       end
 
-      def self.metric_transaction_allocated_memory_megabytes
-        @metric_transaction_allocated_memory_megabytes ||= Gitlab::Metrics.histogram(
-          :gitlab_transaction_allocated_memory_megabytes,
+      def self.metric_transaction_allocated_memory_bytes
+        @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
+          :gitlab_transaction_allocated_memory_bytes,
           'Transaction allocated memory bytes',
           {},
-          [1, 2, 5, 10, 20, 100]
+          [500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
         )
       end
 
@@ -69,8 +69,8 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        Transaction.metric_transaction_duration_milliseconds.observe({}, duration)
-        Transaction.metric_transaction_allocated_memory_megabytes.observe({}, allocated_memory)
+        Transaction.metric_transaction_duration_seconds.observe({}, duration * 1000)
+        Transaction.metric_transaction_allocated_memory_bytes.observe({}, allocated_memory / 2 ^ 20)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -100,13 +100,15 @@ module Gitlab
         method
       end
 
-      def increment(name, value)
-        Gitlab::Metrics.counter("gitlab_transaction_#{name}_total".to_sym, "Transaction counter #{name}", {}).increment({}, value)
+      def increment(name, value, compat = true)
+        Gitlab::Metrics.counter("gitlab_transaction_#{name}_total".to_sym, "Transaction counter #{name}", {})
+          .increment({}, value) if compat
         @values[name] += value
       end
 
-      def set(name, value)
-        Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", {}, :livesum).set({}, value)
+      def set(name, value, compat = true)
+        Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", {}, :livesum)
+          .set({}, value) if compat
         @values[name] = value
       end
 

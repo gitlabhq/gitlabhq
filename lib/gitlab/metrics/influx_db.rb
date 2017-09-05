@@ -102,9 +102,12 @@ module Gitlab
         real_time = (real_stop - real_start) * 1000.0
         cpu_time = cpu_stop - cpu_start
 
-        trans.increment("#{name}_real_time", real_time)
-        trans.increment("#{name}_cpu_time", cpu_time)
-        trans.increment("#{name}_call_count", 1)
+        Gitlab::Metrics.histogram("gitlab_#{name}_real_duration".to_sym, "Measure #{name}", {}, [1, 2, 5, 10, 20, 50, 100, 1000]).observe({}, real_time)
+        Gitlab::Metrics.histogram("gitlab_#{name}_cpu_duration".to_sym, "Measure #{name}",  {}, [1, 2, 5, 10, 20, 50, 100, 1000]).observe({}, cpu_time)
+
+        trans.increment("#{name}_real_time", real_time, false)
+        trans.increment("#{name}_cpu_time", cpu_time, false)
+        trans.increment("#{name}_call_count", 1, false)
 
         retval
       end
