@@ -61,7 +61,7 @@ following locations:
 
 ## Road to GraphQL
 
-After reviewing the GraphQL license, we have changed our plans to move our API to GraphQL. Anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
+We have changed our plans to move to GraphQL. After reviewing the GraphQL license, anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
 
 ## Basic usage
 
