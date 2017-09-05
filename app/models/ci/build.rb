@@ -4,10 +4,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Importable
-<<<<<<< HEAD
     prepend EE::Build
-=======
->>>>>>> ce-com/master
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -42,10 +39,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
-<<<<<<< HEAD
     scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
-=======
->>>>>>> ce-com/master
     scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
