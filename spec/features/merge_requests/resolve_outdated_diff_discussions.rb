@@ -1,80 +1,78 @@
 require 'spec_helper'
 
 feature 'Resolve outdated diff discussions', js: true do
-  let(:merge_request) { create(:merge_request, importing: true) }
-  let(:project) { merge_request.source_project }
+  let(:project) { create(:project, :repository, :public) }
 
-  let!(:outdated_discussion) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: outdated_position).to_discussion }
-  let!(:active_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+  let(:merge_request) do
+    create(:merge_request, source_project: project, source_branch: 'csv', target_branch: 'master')
+  end
+
+  let(:outdated_diff_refs) { project.commit('926c6595b263b2a40da6b17f3e3b7ea08344fad6').diff_refs }
+  let(:current_diff_refs) { merge_request.diff_refs }
 
   let(:outdated_position) do
     Gitlab::Diff::Position.new(
-      old_path: "files/ruby/popen.rb",
-      new_path: "files/ruby/popen.rb",
+      old_path: 'files/csv/Book1.csv',
+      new_path: 'files/csv/Book1.csv',
       old_line: nil,
       new_line: 9,
       diff_refs: outdated_diff_refs
     )
   end
 
-  let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
+  let(:current_position) do
+    Gitlab::Diff::Position.new(
+      old_path: 'files/csv/Book1.csv',
+      new_path: 'files/csv/Book1.csv',
+      old_line: nil,
+      new_line: 1,
+      diff_refs: current_diff_refs
+    )
+  end
+
+  let!(:outdated_discussion) do
+    create(:diff_note_on_merge_request,
+           project: project,
+           noteable: merge_request,
+           position: outdated_position).to_discussion
+  end
+
+  let!(:current_discussion) do
+    create(:diff_note_on_merge_request,
+           noteable: merge_request,
+           project: project,
+           position: current_position).to_discussion
+  end
 
   before do
-    sign_in(create(:admin))
+    sign_in(merge_request.author)
   end
 
-  context 'when project.resolve_outdated_diff_discussions == true' do
+  context 'when a discussion was resolved by a push' do
     before do
-      project.update_column(:resolve_outdated_diff_discussions, true)
+      project.update!(resolve_outdated_diff_discussions: true)
+
+      merge_request.update_diff_discussion_positions(
+        old_diff_refs: outdated_diff_refs,
+        new_diff_refs: current_diff_refs,
+        current_user: merge_request.author
+      )
+
+      visit project_merge_request_path(project, merge_request)
     end
 
-    context 'with unresolved outdated discussions' do
-      it 'does not show outdated discussion' do
-        visit_merge_request(merge_request)
-        within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
-          expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: false)
-          expect(page).to have_content('Automatically resolved')
-        end
+    it 'shows that as automatically resolved' do
+      within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
+        expect(page).to have_css('.discussion-body', visible: false)
+        expect(page).to have_content('Automatically resolved')
       end
     end
 
-    context 'with unresolved active discussions' do
-      it 'shows active discussion' do
-        visit_merge_request(merge_request)
-        within(".discussion[data-discussion-id='#{active_discussion.id}']") do
-          expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
-          expect(page).not_to have_content('Automatically resolved')
-        end
+    it 'does not show that for active discussions' do
+      within(".discussion[data-discussion-id='#{current_discussion.id}']") do
+        expect(page).to have_css('.discussion-body', visible: true)
+        expect(page).not_to have_content('Automatically resolved')
       end
     end
-  end
-
-  context 'when project.resolve_outdated_diff_discussions == false' do
-    before do
-      project.update_column(:resolve_outdated_diff_discussions, false)
-    end
-
-    context 'with unresolved outdated discussions' do
-      it 'shows outdated discussion' do
-        visit_merge_request(merge_request)
-        within(".discussion[data-discussion-id='#{outdated_discussion.id}']") do
-          expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
-          expect(page).not_to have_content('Automatically resolved')
-        end
-      end
-    end
-
-    context 'with unresolved active discussions' do
-      it 'shows active discussion' do
-        visit_merge_request(merge_request)
-        within(".discussion[data-discussion-id='#{active_discussion.id}']") do
-          expect(page).to have_css('.discussion-body .hide .js-toggle-content', visible: true)
-          expect(page).not_to have_content('Automatically resolved')
-        end
-      end
-    end
-  end
-  def visit_merge_request(merge_request)
-    visit project_merge_request_path(project, merge_request)
   end
 end
