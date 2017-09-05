@@ -29,6 +29,12 @@ module API
             email: commit.author_email
           }
         end
+        expose :committer do |commit|
+          {
+            login: commit.author&.username,
+            email: commit.committer_email
+          }
+        end
         expose :commit do |commit|
           {
             author: {

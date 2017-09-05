@@ -2,7 +2,10 @@
 # flow routes for Jira DVCS integration.
 # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2381
 #
-class Oauth::Jira::AuthorizationsController < ActionController::Base
+class Oauth::Jira::AuthorizationsController < ApplicationController
+  skip_before_action :authenticate_user!
+  skip_before_action :verify_authenticity_token
+
   # 1. Rewire Jira OAuth initial request to our stablished OAuth authorization URL.
   def new
     session[:redirect_uri] = params['redirect_uri']
