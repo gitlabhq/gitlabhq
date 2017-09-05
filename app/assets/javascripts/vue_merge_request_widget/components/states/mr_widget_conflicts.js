@@ -10,7 +10,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="failed" showDisabledButton />
+      <status-icon status="warning" showDisabledButton />
       <div class="media-body space-children">
         <span class="bold">
           There are merge conflicts<span v-if="!mr.canMerge">.</span>

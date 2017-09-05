@@ -1,0 +1,5 @@
+---
+title: Lessen severity of merge request status icons for states that are not a failure
+merge_request:
+author:
+type: changed
