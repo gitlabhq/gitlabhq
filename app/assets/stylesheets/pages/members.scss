@@ -58,6 +58,8 @@
 }
 
 .member-form-control {
+  @include new-style-dropdown;
+
   @media (max-width: $screen-xs-max) {
     padding-bottom: 5px;
     margin-left: 0;
@@ -280,8 +282,4 @@
       margin-left: 0;
     }
   }
-}
-
-.member-form-control {
-  @include new-style-dropdown;
 }
