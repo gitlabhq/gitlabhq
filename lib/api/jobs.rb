@@ -98,10 +98,11 @@ module API
         build = get_build!(params[:job_id])
         not_found! unless build.artifacts?
 
-        entry = build.artifacts_metadata_entry(params[:artifact_path])
-        not_found! unless entry.exists?
+        path = Gitlab::Ci::Build::Artifacts::Path
+          .new(params[:artifact_path])
+        not_found! unless path.valid?
 
-        send_artifacts_entry(build, entry)
+        send_artifacts_entry(build, path)
       end
 
       desc 'Download the artifacts file from a job' do

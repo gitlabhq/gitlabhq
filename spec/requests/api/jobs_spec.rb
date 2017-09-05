@@ -220,14 +220,6 @@ describe API::Jobs do
                         'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
         end
       end
-
-      context 'when request path is invalid' do
-        it 'does not find artifact file' do
-          get_artifact_file('invalid/path')
-
-          expect(response).to have_http_status(404)
-        end
-      end
     end
 
     context 'when job does not have artifacts' do
