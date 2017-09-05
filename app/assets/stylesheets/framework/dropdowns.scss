@@ -768,7 +768,7 @@
 
         // make sure the text color is not overriden
         &.text-danger {
-          @extend .text-danger;
+          color: $brand-danger;
         }
 
         &.is-focused,
@@ -777,6 +777,11 @@
         &:focus {
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
+
+          // make sure the text color is not overriden
+          &.text-danger {
+            color: $brand-danger;
+          }
         }
 
         &.is-active {
