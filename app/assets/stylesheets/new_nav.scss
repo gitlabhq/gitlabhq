@@ -9,7 +9,6 @@
 
 header.navbar-gitlab-new {
   color: $white-light;
-  background: linear-gradient(to right, $indigo-900, $indigo-800);
   border-bottom: 0;
   min-height: $new-navbar-height;
 
@@ -65,11 +64,6 @@ header.navbar-gitlab-new {
             fill: $white-light;
           }
         }
-
-        &:hover,
-        &:focus {
-          background-color: rgba($indigo-200, .2);
-        }
       }
     }
 
@@ -106,7 +100,6 @@ header.navbar-gitlab-new {
 
   .navbar-collapse {
     padding-left: 0;
-    color: $indigo-200;
     box-shadow: 0;
 
     @media (max-width: $screen-xs-max) {
@@ -132,7 +125,6 @@ header.navbar-gitlab-new {
       font-size: 14px;
       text-align: center;
       color: currentColor;
-      border-left: 1px solid lighten($indigo-700, 10%);
 
       &:hover,
       &:focus,
@@ -167,23 +159,35 @@ header.navbar-gitlab-new {
         will-change: color;
         margin: 4px 2px;
         padding: 6px 8px;
-        color: $indigo-200;
         height: 32px;
 
         @media (max-width: $screen-xs-max) {
           padding: 0;
         }
 
-        svg {
-          fill: $indigo-200;
-        }
-
         &.header-user-dropdown-toggle {
           margin-left: 2px;
 
           .header-user-avatar {
-            border-color: $indigo-200;
             margin-right: 0;
+          }
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+          outline: 0;
+          opacity: 1;
+          color: $white-light;
+
+          svg {
+            fill: currentColor;
+          }
+
+          &.header-user-dropdown-toggle {
+            .header-user-avatar {
+              border-color: $white-light;
+            }
           }
         }
       }
@@ -192,38 +196,12 @@ header.navbar-gitlab-new {
         margin-right: 0;
       }
 
-      > a:hover,
-      > a:focus {
-        text-decoration: none;
-        outline: 0;
-        opacity: 1;
-        color: $white-light;
-
-        @media (min-width: $screen-sm-min) {
-          background-color: rgba($indigo-200, .2);
-        }
-
-        svg {
-          fill: currentColor;
-        }
-
-        &.header-user-dropdown-toggle {
-          .header-user-avatar {
-            border-color: $white-light;
-          }
-        }
-      }
-
       .impersonated-user,
       .impersonated-user:hover {
         margin-right: 1px;
         background-color: $white-light;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
-
-        svg {
-          fill: $indigo-900;
-        }
       }
 
       .impersonation-btn,
@@ -241,7 +219,6 @@ header.navbar-gitlab-new {
 
       &.active > a,
       &.dropdown.open > a {
-        color: $indigo-900;
         background-color: $white-light;
 
         svg {
@@ -273,17 +250,6 @@ header.navbar-gitlab-new {
         text-decoration: none;
         outline: 0;
         color: $white-light;
-        background-color: rgba($indigo-200, .2);
-
-        svg {
-          fill: currentColor;
-        }
-      }
-
-      &.active > a,
-      &.dropdown.open > a {
-        color: $indigo-900;
-        background-color: $white-light;
 
         svg {
           fill: currentColor;
@@ -308,7 +274,6 @@ header.navbar-gitlab-new {
       }
 
       &.line-separator {
-        border-left: 1px solid rgba($indigo-200, .2);
         margin: 8px;
       }
     }
@@ -338,17 +303,14 @@ header.navbar-gitlab-new {
     height: 32px;
     border: 0;
     border-radius: $border-radius-default;
-    background-color: rgba($indigo-200, .2);
     transition: border-color ease-in-out 0.15s, background-color ease-in-out 0.15s;
 
     &:hover {
-      background-color: rgba($indigo-200, .3);
       box-shadow: none;
     }
   }
 
   &.search-active form {
-    background-color: $white-light;
     box-shadow: none;
 
     .search-input {
@@ -376,43 +338,26 @@ header.navbar-gitlab-new {
   }
 
   .search-input::placeholder {
-    color: rgba($indigo-200, .8);
     transition: color ease-in-out 0.15s;
   }
 
   .location-badge {
     font-size: 12px;
-    color: $indigo-100;
-    background-color: rgba($indigo-200, .1);
-    will-change: color;
     margin: -4px 4px -4px -4px;
     line-height: 25px;
     padding: 4px 8px;
     border-radius: 2px 0 0 2px;
-    border-right: 1px solid $indigo-800;
     height: 32px;
     transition: border-color ease-in-out 0.15s;
   }
 
-  .search-input-wrap {
-    .search-icon,
-    .clear-icon {
-      color: rgba($indigo-200, .8);
-    }
-  }
-
   &.search-active {
     .location-badge {
-      color: $gl-text-color;
       background-color: $nav-badge-bg;
       border-color: $border-color;
     }
 
     .search-input-wrap {
-      .search-icon {
-        color: rgba($indigo-200, .8);
-      }
-
       .clear-icon {
         color: $white-light;
       }
@@ -526,8 +471,6 @@ header.navbar-gitlab-new {
 
 .btn-sign-in {
   margin-top: 3px;
-  background-color: $indigo-100;
-  color: $indigo-900;
   font-weight: $gl-font-weight-bold;
 
   &:hover {
