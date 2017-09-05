@@ -28,9 +28,6 @@ module Projects
         return @project
       end
 
-      # EE-only: Repository size limit comes as MB from the view
-      set_repository_size_limit_as_bytes
-
       set_project_name_from_path
 
       # get namespace id
@@ -154,11 +151,6 @@ module Projects
         service = Service.build_from_template(project.id, template)
         service.save!
       end
-    end
-
-    def set_repository_size_limit_as_bytes
-      limit = params.delete(:repository_size_limit)
-      @project.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
     end
 
     def set_project_name_from_path

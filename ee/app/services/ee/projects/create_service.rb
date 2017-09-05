@@ -4,11 +4,15 @@ module EE
       def execute
         raise NotImplementedError unless defined?(super)
 
+        limit = params.delete(:repository_size_limit)
         mirror = params.delete(:mirror)
         mirror_user_id = params.delete(:mirror_user_id)
         mirror_trigger_builds = params.delete(:mirror_trigger_builds)
 
         super do |project|
+          # Repository size limit comes as MB from the view
+          project.repository_size_limit = ::Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
+
           if mirror && project.feature_available?(:repository_mirrors)
             project.mirror = mirror unless mirror.nil?
             project.mirror_trigger_builds = mirror_trigger_builds unless mirror_trigger_builds.nil?
