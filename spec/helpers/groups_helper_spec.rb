@@ -93,7 +93,6 @@ describe GroupsHelper do
     it 'outputs the groups in the correct order' do
       expect(helper.group_title(very_deep_nested_group))
         .to match(/<li style="text-indent: 16px;"><a.*>#{deep_nested_group.name}.*<\/li>.*<a.*>#{very_deep_nested_group.name}<\/a>/m)
-      # expect(helper.group_title(very_deep_nested_group)).to match(/<\/li>.*<a.*>#{very_deep_nested_group.name}<\/a>/)
     end
   end
 end
