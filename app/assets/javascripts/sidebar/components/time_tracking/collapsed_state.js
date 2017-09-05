@@ -1,6 +1,5 @@
 import stopwatchSvg from 'icons/_icon_stopwatch.svg';
-
-import '../../../lib/utils/pretty_time';
+import { abbreviateTime } from '../../../lib/utils/pretty_time';
 
 export default {
   name: 'time-tracking-collapsed-state',
@@ -79,7 +78,7 @@ export default {
   },
   methods: {
     abbreviateTime(timeStr) {
-      return gl.utils.prettyTime.abbreviateTime(timeStr);
+      return abbreviateTime(timeStr);
     },
   },
   template: `
