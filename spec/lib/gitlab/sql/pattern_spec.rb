@@ -52,4 +52,124 @@ describe Gitlab::SQL::Pattern do
       end
     end
   end
+
+  describe '.select_fuzzy_words' do
+    subject(:select_fuzzy_words) { Issue.select_fuzzy_words(query) }
+
+    context 'with a word equal to 3 chars' do
+      let(:query) { 'foo' }
+
+      it 'returns array cotaining a word' do
+        expect(select_fuzzy_words).to match_array(['foo'])
+      end
+    end
+
+    context 'with a word shorter than 3 chars' do
+      let(:query) { 'fo' }
+
+      it 'returns empty array' do
+        expect(select_fuzzy_words).to match_array([])
+      end
+    end
+
+    context 'with two words both equal to 3 chars' do
+      let(:query) { 'foo baz' }
+
+      it 'returns array containing two words' do
+        expect(select_fuzzy_words).to match_array(%w[foo baz])
+      end
+    end
+
+    context 'with two words divided by two spaces both equal to 3 chars' do
+      let(:query) { 'foo  baz' }
+
+      it 'returns array containing two words' do
+        expect(select_fuzzy_words).to match_array(%w[foo baz])
+      end
+    end
+
+    context 'with two words equal to 3 chars and shorter than 3 chars' do
+      let(:query) { 'foo ba' }
+
+      it 'returns array containing a word' do
+        expect(select_fuzzy_words).to match_array(['foo'])
+      end
+    end
+
+    context 'with a multi-word surrounded by double quote' do
+      let(:query) { '"really bar"' }
+
+      it 'returns array containing a multi-word' do
+        expect(select_fuzzy_words).to match_array(['really bar'])
+      end
+    end
+
+    context 'with a multi-word surrounded by double quote and two words' do
+      let(:query) { 'foo "really bar" baz' }
+
+      it 'returns array containing a multi-word and tow words' do
+        expect(select_fuzzy_words).to match_array(['foo', 'really bar', 'baz'])
+      end
+    end
+
+    context 'with a multi-word surrounded by double quote missing a spece before the first double quote' do
+      let(:query) { 'foo"really bar"' }
+
+      it 'returns array containing two words with double quote' do
+        expect(select_fuzzy_words).to match_array(['foo"really', 'bar"'])
+      end
+    end
+
+    context 'with a multi-word surrounded by double quote missing a spece after the second double quote' do
+      let(:query) { '"really bar"baz' }
+
+      it 'returns array containing two words with double quote' do
+        expect(select_fuzzy_words).to match_array(['"really', 'bar"baz'])
+      end
+    end
+
+    context 'with two multi-word surrounded by double quote and two words' do
+      let(:query) { 'foo "really bar" baz "awesome feature"' }
+
+      it 'returns array containing two multi-words and tow words' do
+        expect(select_fuzzy_words).to match_array(['foo', 'really bar', 'baz', 'awesome feature'])
+      end
+    end
+  end
+
+  describe '.to_fuzzy_arel' do
+    subject(:to_fuzzy_arel) { Issue.to_fuzzy_arel(:title, query) }
+
+    context 'with a word equal to 3 chars' do
+      let(:query) { 'foo' }
+
+      it 'returns a single ILIKE condition' do
+        expect(to_fuzzy_arel.to_sql).to match(/title.*I?LIKE '\%foo\%'/)
+      end
+    end
+
+    context 'with a word shorter than 3 chars' do
+      let(:query) { 'fo' }
+
+      it 'returns nil' do
+        expect(to_fuzzy_arel).to be_nil
+      end
+    end
+
+    context 'with two words both equal to 3 chars' do
+      let(:query) { 'foo baz' }
+
+      it 'returns a joining LIKE condition using a AND' do
+        expect(to_fuzzy_arel.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%'/)
+      end
+    end
+
+    context 'with a multi-word surrounded by double quote and two words' do
+      let(:query) { 'foo "really bar" baz' }
+
+      it 'returns a joining LIKE condition using a AND' do
+        expect(to_fuzzy_arel.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%' AND .*title.*I?LIKE '\%really bar\%'/)
+      end
+    end
+  end
 end

@@ -1041,6 +1041,10 @@ class User < ActiveRecord::Base
     ensure_rss_token!
   end
 
+  def verified_email?(email)
+    self.email == email
+  end
+
   protected
 
   # override, from Devise::Validatable

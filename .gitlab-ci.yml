@@ -212,7 +212,6 @@ update-tests-metadata:
 
 flaky-examples-check:
   <<: *dedicated-runner
-  <<: *except-docs
   image: ruby:2.3-alpine
   services: []
   before_script: []
@@ -227,6 +226,7 @@ flaky-examples-check:
     - branches
   except:
     - master
+    - /(^docs[\/-].*|.*-docs$)/
   artifacts:
     expire_in: 30d
     paths:

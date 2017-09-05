@@ -247,6 +247,7 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.boolean "retried"
     t.integer "stage_id"
     t.boolean "protected"
+    t.integer "failure_reason"
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
@@ -608,11 +609,11 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "gpg_key_id"
-    t.boolean "valid_signature"
     t.binary "commit_sha"
     t.binary "gpg_key_primary_keyid"
     t.text "gpg_key_user_name"
     t.text "gpg_key_user_email"
+    t.integer "verification_status", limit: 2, default: 0, null: false
   end
 
   add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree

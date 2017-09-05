@@ -95,49 +95,6 @@ feature 'Project' do
     end
   end
 
-  describe 'project title' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
-
-    before do
-      sign_in(user)
-      project.add_user(user, Gitlab::Access::MASTER)
-      visit project_path(project)
-    end
-
-    it 'clicks toggle and shows dropdown', js: true do
-      find('.js-projects-dropdown-toggle').click
-      expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 1)
-    end
-  end
-
-  describe 'project title' do
-    let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
-    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
-    let(:issue) { create(:issue, project: project) }
-
-    context 'on issues page', js: true do
-      before do
-        sign_in(user)
-        project.add_user(user, Gitlab::Access::MASTER)
-        project2.add_user(user, Gitlab::Access::MASTER)
-        visit project_issue_path(project, issue)
-      end
-
-      it 'clicks toggle and shows dropdown' do
-        find('.js-projects-dropdown-toggle').click
-        expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 2)
-
-        page.within '.dropdown-menu-projects' do
-          click_link project.name_with_namespace
-        end
-
-        expect(page).to have_content project.name
-      end
-    end
-  end
-
   describe 'tree view (default view is set to Files)' do
     let(:user) { create(:user, project_view: 'files') }
     let(:project) { create(:forked_project_with_submodules) }
