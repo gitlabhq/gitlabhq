@@ -107,11 +107,6 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       setup_authorizations
-
-      # EE-only
-      create_predefined_push_rule
-
-      @project.group&.refresh_members_authorized_projects
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -177,17 +172,6 @@ module Projects
         # For compatibility - set path from name
         # TODO: remove this in 8.0
         @project.path = @project.name.dup.parameterize
-      end
-    end
-
-    def create_predefined_push_rule
-      return unless project.feature_available?(:push_rules)
-
-      predefined_push_rule = PushRule.find_by(is_sample: true)
-
-      if predefined_push_rule
-        push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
-        project.push_rule = push_rule
       end
     end
   end

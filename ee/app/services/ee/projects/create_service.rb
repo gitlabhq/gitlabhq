@@ -16,6 +16,29 @@ module EE
           end
         end
       end
+
+      private
+
+      def after_create_actions
+        raise NotImplementedError unless defined?(super)
+
+        super
+
+        create_predefined_push_rule
+
+        @project.group&.refresh_members_authorized_projects
+      end
+
+      def create_predefined_push_rule
+        return unless project.feature_available?(:push_rules)
+
+        predefined_push_rule = PushRule.find_by(is_sample: true)
+
+        if predefined_push_rule
+          push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
+          project.push_rule = push_rule
+        end
+      end
     end
   end
 end
