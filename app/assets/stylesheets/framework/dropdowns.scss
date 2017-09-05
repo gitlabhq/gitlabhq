@@ -757,6 +757,7 @@
       button {
         border-radius: 0;
         padding: 8px 16px;
+        white-space: normal;
 
         // make sure the text color is not overriden
         &.text-danger {
