@@ -19,6 +19,10 @@ describe 'Labels (JavaScript fixtures)' do
     clean_frontend_fixtures('labels/')
   end
 
+  after do
+    remove_repository(project)
+  end
+
   describe Groups::LabelsController, '(JavaScript fixtures)', type: :controller do
     render_views
 

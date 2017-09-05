@@ -1,6 +1,9 @@
 module FormHelper
+<<<<<<< HEAD
   prepend ::EE::FormHelper
 
+=======
+>>>>>>> ce-com/master
   def form_errors(model, type: 'form')
     return unless model.errors.any?
 

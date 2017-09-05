@@ -303,6 +303,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def discussions_rendered_on_frontend?
+    true
+  end
+
   def update_project_counter_caches?
     state_changed? || confidential_changed?
   end

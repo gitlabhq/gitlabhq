@@ -103,7 +103,7 @@ module API
           when 'success'
             status.success!
           when 'failed'
-            status.drop!
+            status.drop!(:api_failure)
           when 'canceled'
             status.cancel!
           else

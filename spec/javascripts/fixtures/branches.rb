@@ -17,6 +17,10 @@ describe Projects::BranchesController, '(JavaScript fixtures)', type: :controlle
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'branches/new_branch.html.raw' do |example|
     get :new,
       namespace_id: project.namespace.to_param,

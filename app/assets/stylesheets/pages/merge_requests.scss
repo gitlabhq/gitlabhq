@@ -173,17 +173,6 @@
     vertical-align: top;
   }
 
-  .mini-pipeline-graph-dropdown-menu .mini-pipeline-graph-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    .ci-status-text,
-    .ci-status-icon {
-      top: 0;
-      margin-right: 10px;
-    }
-  }
-
   .normal {
     line-height: 28px;
   }
@@ -767,6 +756,7 @@
   }
 }
 
+<<<<<<< HEAD
 .mr-widget-icon {
   font-size: 22px;
   margin: 0 10px 0 0;
@@ -799,6 +789,8 @@
   }
 }
 
+=======
+>>>>>>> ce-com/master
 .merge-request-form {
   @include new-style-dropdown;
 }

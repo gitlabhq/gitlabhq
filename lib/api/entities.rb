@@ -1,11 +1,11 @@
 module API
   module Entities
     class UserSafe < Grape::Entity
-      expose :name, :username
+      expose :id, :name, :username
     end
 
     class UserBasic < UserSafe
-      expose :id, :state
+      expose :state
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
@@ -914,6 +914,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+<<<<<<< HEAD
       expose :protected?, as: :protected
 
       # EE
@@ -922,6 +923,9 @@ module API
           variable.project.feature_available?(:variable_environment_scope)
         end
       }
+=======
+      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
+>>>>>>> ce-com/master
     end
 
     class Pipeline < PipelineBasic
@@ -942,6 +946,7 @@ module API
 
     class PipelineScheduleDetails < PipelineSchedule
       expose :last_pipeline, using: Entities::PipelineBasic
+      expose :variables, using: Entities::Variable
     end
 
     class EnvironmentBasic < Grape::Entity

@@ -46,14 +46,14 @@
             %span.build-light-text Token:
             #{@build.trigger_request.trigger.short_token}
 
-          - if @build.trigger_request.variables
+          - if @build.trigger_variables.any?
             %p
               %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
-              - @build.trigger_request.variables.each do |key, value|
-                %dt.js-build-variable.trigger-build-variable= key
-                %dd.js-build-value.trigger-build-value= value
+              - @build.trigger_variables.each do |trigger_variable|
+                %dt.js-build-variable.trigger-build-variable= trigger_variable[:key]
+                %dd.js-build-value.trigger-build-value= trigger_variable[:value]
 
       %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
         %p

@@ -76,11 +76,11 @@ export default {
       type: Boolean,
       required: true,
     },
-    markdownPreviewUrl: {
+    markdownPreviewPath: {
       type: String,
       required: true,
     },
-    markdownDocs: {
+    markdownDocsPath: {
       type: String,
       required: true,
     },
@@ -222,8 +222,8 @@ export default {
       :form-state="formState"
       :can-destroy="canDestroy"
       :issuable-templates="issuableTemplates"
-      :markdown-docs="markdownDocs"
-      :markdown-preview-url="markdownPreviewUrl"
+      :markdown-docs-path="markdownDocsPath"
+      :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
     />

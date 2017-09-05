@@ -72,7 +72,7 @@
   };
 </script>
 <template>
-  <div>
+  <div class="ci-job-dropdown-container">
     <button
       v-tooltip
       type="button"

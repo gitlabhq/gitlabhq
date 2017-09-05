@@ -21,13 +21,6 @@ The deployment includes:
 
 A video demonstration of GitLab utilizing this chart [is available](https://about.gitlab.com/handbook/sales/demo/).
 
-Terms:
-
--  Google Cloud Platform (**GCP**)
--  Google Container Engine (**GKE**)
--  Azure Container Service (**ACS**)
--  Kubernetes (**k8s**)
-
 ## Prerequisites
 
 - _At least_ 4 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
@@ -64,14 +57,14 @@ For production deployments of GitLab, we strongly recommend using an [External I
 ## Configuring and Installing GitLab
 
 For most installations, only two parameters are required:
-- `baseDomain`: the [base domain](#networking-prerequisites) with the wildcard host entry resolving to the `baseIP`. For example, `mycompany.io`.
-- `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt
+- `baseDomain`: the [base domain](#networking-prerequisites) of the wildcard host entry. For example, `mycompany.io` if the wild card entry is `*.mycompany.io`.
+- `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt.
 
 Other common configuration options:
-- `baseIP`: the desired [external IP address](#networking-prerequisites)
+- `baseIP`: the desired [external IP address](#external-ip-recommended)
 - `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
-- `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for GCP, with `acs` also supported for Azure.
+- `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Container Engine](https://cloud.google.com/container-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 
 For additional configuration options, consult the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
 
@@ -82,20 +75,16 @@ the value of the corresponding helm setting: `gitlabCEImage` or `gitabEEImage`.
 
 ```yaml
 gitlab: CE
-gitlabCEImage: gitlab/gitlab-ce:9.1.2-ce.0
-gitlabEEImage: gitlab/gitlab-ee:9.1.2-ee.0
+gitlabCEImage: gitlab/gitlab-ce:9.5.2-ce.0
+gitlabEEImage: gitlab/gitlab-ee:9.5.2-ee.0
 ```
 
 The different images can be found in the [gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce/tags/) and [gitlab-ee](https://hub.docker.com/r/gitlab/gitlab-ee/tags/)
 repositories on Docker Hub.
 
-> **Note:**
-There is no guarantee that other release versions of GitLab, other than what are
-used by default in the chart, will be supported by a chart install.
-
 ### Persistent storage
 > **Note:**
-If you are using a machine type with support for less than 4 attached disks, like an Azure trial, you should disable dedicated storage for [Postgres and Redis](#persistent-storage).
+If you are using a machine type with support for less than 4 attached disks, like an Azure trial, you should disable dedicated storage for Postgres and Redis.
 
 By default, persistent storage is enabled for GitLab and the charts it depends
 on (Redis and PostgreSQL).

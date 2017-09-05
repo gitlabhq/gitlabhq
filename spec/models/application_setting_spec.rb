@@ -469,6 +469,7 @@ describe ApplicationSetting do
     end
   end
 
+<<<<<<< HEAD
   describe '#repository_size_limit column' do
     it 'support values up to 8 exabytes' do
       setting.update_column(:repository_size_limit, 8.exabytes - 1)
@@ -554,6 +555,8 @@ describe ApplicationSetting do
     end
   end
 
+=======
+>>>>>>> ce-com/master
   describe '#allowed_key_types' do
     it 'includes all key types by default' do
       expect(setting.allowed_key_types).to contain_exactly(*described_class::SUPPORTED_KEY_TYPES)

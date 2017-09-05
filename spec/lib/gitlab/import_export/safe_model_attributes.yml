@@ -284,6 +284,10 @@ CommitStatus:
 - auto_canceled_by_id
 - retried
 - protected
+<<<<<<< HEAD
+=======
+- failure_reason
+>>>>>>> ce-com/master
 Ci::Variable:
 - id
 - project_id

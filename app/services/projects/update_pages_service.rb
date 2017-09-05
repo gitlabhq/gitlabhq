@@ -53,7 +53,7 @@ module Projects
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
-      @status.drop
+      @status.drop(:script_failure)
       super
     end
 

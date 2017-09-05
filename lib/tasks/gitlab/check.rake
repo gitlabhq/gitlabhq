@@ -33,6 +33,7 @@ namespace :gitlab do
         SystemCheck::App::RedisVersionCheck,
         SystemCheck::App::RubyVersionCheck,
         SystemCheck::App::GitVersionCheck,
+        SystemCheck::App::GitUserDefaultSSHConfigCheck,
         SystemCheck::App::ActiveUsersCheck
       ]
 
