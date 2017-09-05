@@ -63,7 +63,7 @@ module ProjectsHelper
     project_link = link_to project_path(project), { class: ("project-item-select-holder" unless show_new_nav?) } do
       output =
         if show_new_nav? && project.avatar_url && !Rails.env.test?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
         else
           ""
         end
