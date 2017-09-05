@@ -46,7 +46,6 @@ class GroupsController < Groups::ApplicationController
 
   def show
     @children = GroupChildrenFinder.new(current_user, parent_group: @group, params: params).execute
-
     @children = @children.page(params[:page])
 
     respond_to do |format|
@@ -71,6 +70,7 @@ class GroupsController < Groups::ApplicationController
     end
 
     @children = GroupChildrenFinder.new(current_user, parent_group: parent, params: params).execute
+    @children = @children.page(params[:page])
 
     respond_to do |format|
       format.json do

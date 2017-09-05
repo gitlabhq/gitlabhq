@@ -466,6 +466,24 @@ describe GroupsController do
           end
         end
       end
+
+      context 'pagination' do
+        let!(:other_subgroup) { create(:group, :public, parent: group) }
+        let!(:project) { create(:project, :public, namespace: group) }
+        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
+
+        it 'contains all subgroups' do
+          get :children, id: group.to_param, sort: 'id', format: :json
+
+          expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
+        end
+
+        it 'contains the project and group on the second page' do
+          get :children, id: group.to_param, sort: 'id', page: 2, format: :json
+
+          expect(assigns(:children)).to contain_exactly(other_subgroup, project)
+        end
+      end
     end
 
     context 'for a POST request' do
