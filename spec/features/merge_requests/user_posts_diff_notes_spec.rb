@@ -97,6 +97,16 @@ feature 'Merge requests > User posts diff notes', :js do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
+    context 'after deleteing a note' do
+      it 'allows commenting' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+
+        first('.js-note-delete', visible: false).trigger('click')
+
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+      end
+    end
+
     context 'with a new line' do
       it 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
