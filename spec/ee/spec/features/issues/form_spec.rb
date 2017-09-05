@@ -179,12 +179,10 @@ describe 'New/edit issue', :js do
         end
       end
 
-      page.within '.issuable-meta' do
+      page.within '.breadcrumbs' do
         issue = Issue.find_by(title: 'title')
 
-        expect(page).to have_text("Issue #{issue.to_reference}")
-        # compare paths because the host differ in test
-        expect(find_link(issue.to_reference)[:href]).to end_with(issue_path(issue))
+        expect(page).to have_text("Issues #{issue.to_reference}")
       end
     end
 

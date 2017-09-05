@@ -54,25 +54,30 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        group_title(project.group)
+        group_title(project.group, nil, nil)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+    project_link = link_to project_path(project), { class: ("project-item-select-holder" unless show_new_nav?) } do
       output =
-        if !Rails.env.test?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        if project.avatar_url && !Rails.env.test?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
         else
           ""
         end
 
-      output << simple_sanitize(project.name)
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-project-name")
       output.html_safe
     end
 
-    "#{namespace_link} / #{project_link}".html_safe
+    if show_new_nav?
+      namespace_link = breadcrumb_list_item(namespace_link) if project.group.nil?
+      project_link = breadcrumb_list_item project_link
+    end
+
+    "#{namespace_link} #{('/' unless show_new_nav?)} #{project_link}".html_safe
   end
 
   def remove_project_message(project)

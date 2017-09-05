@@ -15,17 +15,35 @@ module GroupsHelper
     @has_group_title = true
     full_title = ''
 
-    group.ancestors.reverse.each do |parent|
-      full_title += group_title_link(parent, hidable: true)
-
-      full_title += '<span class="hidable"> / </span>'.html_safe
+    group.ancestors.reverse.each_with_index do |parent, index|
+      if show_new_nav? && index > 0
+        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true), location: :before)
+      else
+        full_title += if show_new_nav?
+                        breadcrumb_list_item group_title_link(parent, hidable: false)
+                      else
+                        "#{group_title_link(parent, hidable: true)} <span class='hidable'> / </span>".html_safe
+                      end
+      end
     end
 
-    full_title += group_title_link(group)
+    if show_new_nav?
+      full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
+    end
+
+    full_title += if show_new_nav?
+                    breadcrumb_list_item group_title_link(group)
+                  else
+                    group_title_link(group)
+                  end
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
 
-    content_tag :span, class: 'group-title' do
+    if show_new_nav?
       full_title.html_safe
+    else
+      content_tag :span, class: 'group-title' do
+        full_title.html_safe
+      end
     end
   end
 
@@ -71,11 +89,11 @@ module GroupsHelper
 
   private
 
-  def group_title_link(group, hidable: false)
+  def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
       output =
-        if !Rails.env.test?
-          image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
+        if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
+          image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
         else
           ""
         end
