@@ -1,41 +1,36 @@
-# This template uses the java:8 docker image because there isn't any
-# official Gradle image at this moment
-#
 # This is the Gradle build system for JVM applications
 # https://gradle.org/
 # https://github.com/gradle/gradle
-image: java:8
+image: gradle:alpine
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
 # runtime for each build is more reliable since the runtime is completely
 # isolated from any previous builds.
 variables:
-    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-# Make the gradle wrapper executable. This essentially downloads a copy of
-# Gradle to build the project with.
-# https://docs.gradle.org/current/userguide/gradle_wrapper.html
-# It is expected that any modern gradle project has a wrapper
 before_script:
-    - chmod +x gradlew
+  - export GRADLE_USER_HOME=`pwd`/.gradle
 
-# We redirect the gradle user home using -g so that it caches the
-# wrapper and dependencies.
-# https://docs.gradle.org/current/userguide/gradle_command_line.html
-#
-# Unfortunately it also caches the build output so
-# cleaning removes reminants of any cached builds.
-# The assemble task actually builds the project.
-# If it fails here, the tests can't run.
 build:
   stage: build
-  script:
-    - ./gradlew -g /cache/.gradle clean assemble
-  allow_failure: false
+  script: gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
 
-# Use the generated build output to run the tests.
+
 test:
   stage: test
-  script:
-    - ./gradlew -g /cache/.gradle check
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
