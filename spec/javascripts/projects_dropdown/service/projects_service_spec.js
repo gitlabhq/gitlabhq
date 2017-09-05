@@ -12,10 +12,19 @@ FREQUENT_PROJECTS.MAX_COUNT = 3;
 
 describe('ProjectsService', () => {
   let service;
+  let originalGon;
 
   beforeEach(() => {
-    gon.api_version = currentSession.apiVersion;
+    originalGon = window.gon;
+
+    window.gon = Object.assign({}, {
+      api_version: currentSession.apiVersion,
+    });
     service = new ProjectsService(currentSession.username);
+  });
+
+  afterEach(() => {
+    window.gon = originalGon;
   });
 
   describe('contructor', () => {
