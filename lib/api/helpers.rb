@@ -432,6 +432,10 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
 
+    def send_artifacts_entry(build, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+    end
+
     # The Grape Error Middleware only has access to env but no params. We workaround this by
     # defining a method that returns the right value.
     def define_params_for_grape_middleware

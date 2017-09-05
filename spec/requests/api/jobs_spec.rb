@@ -215,10 +215,9 @@ describe API::Jobs do
           get_artifact_file(artifact)
 
           expect(response).to have_http_status(200)
-          expect(response.body)
-            .to include 'Gitlab-Workhorse-Send-Data', 'artifacts-entry'
           expect(response.headers)
-            .to include('Content-Type' => 'application/json')
+            .to include('Content-Type' => 'application/json',
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
         end
       end
 

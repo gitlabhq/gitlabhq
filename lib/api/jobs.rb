@@ -101,7 +101,7 @@ module API
         entry = build.artifacts_metadata_entry(params[:artifact_path])
         not_found! unless entry.exists?
 
-        Gitlab::Workhorse.send_artifacts_entry(build, entry)
+        send_artifacts_entry(build, entry)
       end
 
       desc 'Download the artifacts file from a job' do
