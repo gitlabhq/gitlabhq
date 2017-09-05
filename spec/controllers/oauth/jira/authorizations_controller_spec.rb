@@ -13,6 +13,14 @@ describe Oauth::Jira::AuthorizationsController do
 
   describe 'GET callback' do
     it 'redirects to redirect_uri on session with code param' do
+      session['redirect_uri'] = 'http://example.com'
+
+      get :callback, code: 'hash-123'
+
+      expect(response).to redirect_to('http://example.com?code=hash-123')
+    end
+
+    it 'redirects to redirect_uri on session with code param preserving existing query' do
       session['redirect_uri'] = 'http://example.com?foo=bar'
 
       get :callback, code: 'hash-123'
@@ -27,7 +35,7 @@ describe Oauth::Jira::AuthorizationsController do
                                'client_id' => 'client-123',
                                'client_secret' => 'secret-123',
                                'grant_type' => 'authorization_code',
-                               'redirect_uri' => 'http://test.host/jira/login/oauth/callback' }
+                               'redirect_uri' => 'http://test.host/-/jira/login/oauth/callback' }
 
       expect(HTTParty).to receive(:post).with(oauth_token_url, body: expected_auth_params) do
         { 'access_token' => 'fake-123', 'scope' => 'foo', 'token_type' => 'bar' }

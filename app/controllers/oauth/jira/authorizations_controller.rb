@@ -14,8 +14,12 @@ class Oauth::Jira::AuthorizationsController < ActionController::Base
 
   # 2. Handle the callback call as we were a Github Enterprise instance client.
   def callback
-    # TODO: join url params in a better way
-    redirect_to(session['redirect_uri'] + '&code=' + params[:code])
+    # Handling URI query params concatenation.
+    redirect_uri = URI.parse(session['redirect_uri'])
+    new_query = URI.decode_www_form(String(redirect_uri.query)) << ['code', params[:code]]
+    redirect_uri.query = URI.encode_www_form(new_query)
+
+    redirect_to redirect_uri.to_s
   end
 
   # 3. Rewire and adjust access_token request accordingly.
@@ -25,13 +29,8 @@ class Oauth::Jira::AuthorizationsController < ActionController::Base
                     .merge(grant_type: 'authorization_code', redirect_uri: oauth_jira_callback_url)
 
     auth_response = HTTParty.post(oauth_token_url, body: auth_params)
+    token_type, scope, token = auth_response['token_type'], auth_response['scope'], auth_response['access_token']
 
-    # TODO: join url params in a better way
-    token = "access_token=" +
-            auth_response['access_token'] + "&scope=" +
-            auth_response['scope'] + "&token_type=" +
-            auth_response['token_type']
-
-    render text: token
+    render text: "access_token=#{token}&scope=#{scope}&token_type=#{token_type}"
   end
 end
