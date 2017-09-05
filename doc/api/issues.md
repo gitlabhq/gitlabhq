@@ -138,21 +138,6 @@ GET /groups/:id/issues?assignee_id=5
 GET /groups/:id/issues?my_reaction_emoji=star
 ```
 
-<<<<<<< HEAD
-| Attribute   | Type           | Required | Description                                                                                                                 |
-|-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user               |
-| `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
-| `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `iids[]`    | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
-| `milestone` | string         | no       | The milestone title                                                                                                         |
-| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
-| `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
-| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
-| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
-| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
-| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                 |
-=======
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                 |
@@ -167,7 +152,6 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                         |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                              |
 | `search`            | string           | no         | Search group issues against their `title` and `description`                                                                   |
->>>>>>> ce-com/master
 
 
 ```bash
