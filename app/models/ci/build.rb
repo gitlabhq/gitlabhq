@@ -3,6 +3,7 @@ module Ci
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
+    include Importable
     prepend EE::Build
 
     belongs_to :runner
@@ -29,6 +30,7 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
+    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -38,6 +40,7 @@ module Ci
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
+    scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader

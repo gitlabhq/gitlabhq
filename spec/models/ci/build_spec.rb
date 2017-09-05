@@ -44,6 +44,32 @@ describe Ci::Build do
     it { is_expected.not_to include(manual_but_created) }
   end
 
+  describe '.ref_protected' do
+    subject { described_class.ref_protected }
+
+    context 'when protected is true' do
+      let!(:job) { create(:ci_build, :protected) }
+
+      it { is_expected.to include(job) }
+    end
+
+    context 'when protected is false' do
+      let!(:job) { create(:ci_build) }
+
+      it { is_expected.not_to include(job) }
+    end
+
+    context 'when protected is nil' do
+      let!(:job) { create(:ci_build) }
+
+      before do
+        job.update_attribute(:protected, nil)
+      end
+
+      it { is_expected.not_to include(job) }
+    end
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do
