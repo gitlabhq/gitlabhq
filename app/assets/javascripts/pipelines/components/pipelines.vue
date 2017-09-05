@@ -144,7 +144,7 @@
     :class="cssClass">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
-      v-if="!isLoading && !shouldRenderEmptyState">
+      v-if="!isLoading">
       <div class="fade-left">
         <i
           class="fa fa-angle-left"
