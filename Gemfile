@@ -397,7 +397,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.32.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
