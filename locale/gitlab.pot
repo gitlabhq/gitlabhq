@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-24 09:29+0200\n"
-"PO-Revision-Date: 2017-08-24 09:29+0200\n"
+"POT-Creation-Date: 2017-08-31 17:34+0530\n"
+"PO-Revision-Date: 2017-08-31 17:34+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -427,6 +427,9 @@ msgstr ""
 msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
+msgid "Explore projects"
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -837,6 +840,27 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
+msgid "ProjectsDropdown|Frequently visited"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|No projects matched your query"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -948,6 +972,9 @@ msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
 msgid "StarProject|Star"
+msgstr ""
+
+msgid "Starred projects"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
@@ -1269,6 +1296,9 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your projects"
 msgstr ""
 
 msgid "day"
