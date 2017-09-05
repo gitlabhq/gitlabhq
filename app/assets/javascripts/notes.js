@@ -1304,8 +1304,11 @@ const normalizeNewlines = function(str) {
         </li>`
       );
 
-      return $tempNote;
-    };
+    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(_.escape(currentUsername));
+
+    return $tempNote;
+  }
 
     /**
      * Create Placeholder System Note DOM element populated with slash command description
