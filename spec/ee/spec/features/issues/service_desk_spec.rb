@@ -72,8 +72,10 @@ describe 'Service Desk Issue Tracker' do
       end
 
       context 'when there are issues' do
-        let(:regular_issue) { create(:issue, project: project, title: 'My invisible issue', author: user) }
-        let(:service_desk_issue) { create(:issue, project: project, title: 'My visible issue', author: User.support_bot) }
+        let(:support_bot) { User.support_bot }
+        let(:other_user) { create(:user) }
+        let!(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
+        let!(:other_user_issue) { create(:issue, project: project, author: other_user) }
 
         describe 'service desk info content' do
           it 'displays the small info box' do
