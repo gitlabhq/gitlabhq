@@ -1,0 +1,4 @@
+---
+title: Don't put the password in the SSH remote if using public-key authentication
+merge_request: 2837
+author:
