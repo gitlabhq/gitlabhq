@@ -167,9 +167,6 @@
 }
 
 
-
-
-
 body {
   &.ui_indigo {
     @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900);
@@ -177,5 +174,9 @@ body {
 
   &.ui_dark {
     @include gitlab-theme($dark-100, $dark-200, $dark-500, $dark-700, $dark-800, $dark-900);
+  }
+
+  &.ui_blue {
+    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900);
   }
 }
