@@ -3,7 +3,7 @@
 = render "projects/pipelines/head"
 
 %div{ 'class' => container_class }
-  -if show_callout?('auto_devops_settings_dismissed')
+  - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'
 
   #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
