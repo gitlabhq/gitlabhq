@@ -38,7 +38,7 @@ module NavHelper
   end
 
   def layout_nav_class
-    return [] if show_new_nav?
+    return 'page-with-new-nav' if show_new_nav?
 
     class_names = []
     class_names << 'page-with-layout-nav' if defined?(nav) && nav
@@ -49,5 +49,13 @@ module NavHelper
 
   def nav_control_class
     "nav-control" if current_user
+  end
+
+  def user_dropdown_class
+    class_names = []
+    class_names << 'header-user-dropdown-toggle'
+    class_names << 'impersonated-user' if session[:impersonator_id]
+
+    class_names
   end
 end
