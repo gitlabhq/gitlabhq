@@ -1202,7 +1202,6 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.boolean "public_builds", default: true, null: false
     t.boolean "last_repository_check_failed"
     t.datetime "last_repository_check_at"
-    t.boolean "resolve_outdated_diff_discussions", default: false, null: false
     t.boolean "container_registry_enabled"
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
@@ -1220,6 +1219,7 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.string "ci_config_path"
     t.text "delete_error"
     t.integer "storage_version", limit: 2
+    t.boolean "resolve_outdated_diff_discussions"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
