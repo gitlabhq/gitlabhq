@@ -61,16 +61,7 @@ following locations:
 
 ## Road to GraphQL
 
-Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
-controller-specific endpoints. GraphQL has a number of benefits:
-
-1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
-
-It will co-exist with the current v4 REST API. If we have a v5 API, this should
-be a compatibility layer on top of GraphQL.
+We have changed our plans to move to GraphQL. After reviewing the GraphQL license, anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
 
 ## Basic usage
 
