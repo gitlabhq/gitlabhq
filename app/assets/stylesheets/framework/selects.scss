@@ -272,6 +272,7 @@ body[data-page="projects:new"] #select2-drop,
 body[data-page="projects:merge_requests:edit"] #select2-drop,
 body[data-page="projects:blob:new"] #select2-drop,
 body[data-page="profiles:show"] #select2-drop,
+body[data-page="projects:issues:show"] #select2-drop,
 body[data-page="projects:blob:edit"] #select2-drop {
   &.select2-drop {
     border: 1px solid $dropdown-border-color;

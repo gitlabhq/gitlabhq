@@ -557,17 +557,36 @@ describe API::Runner do
                { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]
             end
 
+            let(:trigger) { create(:ci_trigger, project: project) }
+            let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, builds: [job], trigger: trigger) }
+
             before do
-              trigger = create(:ci_trigger, project: project)
-              create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [job], trigger: trigger)
               project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
             end
 
-            it 'returns variables for triggers' do
-              request_job
+            shared_examples 'expected variables behavior' do
+              it 'returns variables for triggers' do
+                request_job
 
-              expect(response).to have_http_status(201)
-              expect(json_response['variables']).to include(*expected_variables)
+                expect(response).to have_http_status(201)
+                expect(json_response['variables']).to include(*expected_variables)
+              end
+            end
+
+            context 'when variables are stored in trigger_request' do
+              before do
+                trigger_request.update_attribute(:variables, { TRIGGER_KEY_1: 'TRIGGER_VALUE_1' } )
+              end
+
+              it_behaves_like 'expected variables behavior'
+            end
+
+            context 'when variables are stored in pipeline_variables' do
+              before do
+                create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
+              end
+
+              it_behaves_like 'expected variables behavior'
             end
           end
 
@@ -626,13 +645,34 @@ describe API::Runner do
         it 'mark job as succeeded' do
           update_job(state: 'success')
 
-          expect(job.reload.status).to eq 'success'
+          job.reload
+          expect(job).to be_success
         end
 
         it 'mark job as failed' do
           update_job(state: 'failed')
 
-          expect(job.reload.status).to eq 'failed'
+          job.reload
+          expect(job).to be_failed
+          expect(job).to be_unknown_failure
+        end
+
+        context 'when failure_reason is script_failure' do
+          before do
+            update_job(state: 'failed', failure_reason: 'script_failure')
+            job.reload
+          end
+
+          it { expect(job).to be_script_failure }
+        end
+
+        context 'when failure_reason is runner_system_failure' do
+          before do
+            update_job(state: 'failed', failure_reason: 'runner_system_failure')
+            job.reload
+          end
+
+          it { expect(job).to be_runner_system_failure }
         end
       end
 
