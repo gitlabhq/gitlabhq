@@ -50,7 +50,6 @@
             = f.check_box :project_export_enabled
             Project export enabled
 
-<<<<<<< HEAD
     -# EE-only
     - if ldap_enabled?
       .form-group
@@ -64,8 +63,6 @@
             If checked, group owners can manage LDAP group links and LDAP member overrides
             = link_to icon('question-circle'), help_page_path('administration/auth/ldap-ee')
 
-=======
->>>>>>> ce-com/master
     .form-group
       %label.control-label.col-sm-2 Enabled Git access protocols
       .col-sm-10
@@ -80,10 +77,6 @@
         .col-sm-10
           = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ce-com/master
   %fieldset
     %legend Account and Limit Settings
     .form-group
@@ -582,28 +575,8 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
-<<<<<<< HEAD
   = render partial: 'elasticsearch_form', locals: { f: f }
 
-  %fieldset
-    %legend Koding
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :koding_enabled do
-            = f.check_box :koding_enabled
-            Enable Koding
-    .form-group
-      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
-        .help-block
-          Koding has integration enabled out of the box for the
-          %strong gitlab
-          team, and you need to provide that team's URL here. Learn more in the
-          = succeed "." do
-            = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
-=======
   - if koding_enabled?
     %fieldset
       %legend Koding
@@ -625,7 +598,6 @@
             team, and you need to provide that team's URL here. Learn more in the
             = succeed "." do
               = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
->>>>>>> ce-com/master
 
   %fieldset
     %legend PlantUML
