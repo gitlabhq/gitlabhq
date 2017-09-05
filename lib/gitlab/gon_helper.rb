@@ -28,5 +28,9 @@ module Gitlab
         gon.current_user_avatar_url = current_user.avatar_url
       end
     end
+
+    def add_gon_project_variables
+      gon.project_url = project_url(project)
+    end
   end
 end

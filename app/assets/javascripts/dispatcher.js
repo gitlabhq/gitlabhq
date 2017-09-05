@@ -156,7 +156,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new UsersSelect();
           break;
         case 'projects:merge_requests:index':
-          new UserCallout();
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
@@ -346,7 +346,7 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new UserCallout();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -367,7 +367,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:index':
-          new UserCallout();
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -426,7 +426,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-          new UserCallout();
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });

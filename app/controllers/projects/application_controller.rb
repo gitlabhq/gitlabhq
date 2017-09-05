@@ -5,6 +5,7 @@ class Projects::ApplicationController < ApplicationController
   before_action :redirect_git_extension
   before_action :project
   before_action :repository
+  before_action :add_gon_project_variables
   layout 'project'
 
   helper_method :repository, :can_collaborate_with_project?
