@@ -117,7 +117,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['pipelines'].first['statuses'].count { |hash| hash['type'] == 'Ci::Build' }).to eq(1)
       end
 
-      it 'builds do not call the attributes for retrieving when' do
+      it 'has no when YML attributes but only the DB column' do
         allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return(File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')))
         expect_any_instance_of(Ci::GitlabCiYamlProcessor).not_to receive(:build_attributes)
 
