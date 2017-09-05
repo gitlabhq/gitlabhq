@@ -42,15 +42,17 @@ milestone, and label.
 
 ### Searching for specific terms
 
-You can filter issues by specific terms included in titles or descriptions.
+You can filter issues and merge requests by specific terms included in titles or descriptions.
 
 * Syntax
-    * Searches look for all the words in a query, in any order - e.g.: searching
+    * Searches look for all the words in a query, in any order. E.g.: searching
       issues for `display bug` will return all issues matching both those words, in any order.
     * To find the exact term, use double quotes: `"display bug"`
 * Limitation
-    * For a performance reason, the terms shorter than 3 chars are ignored - e.g.: searching
-      issues for `included in titles` is same with `included titles`
+    * For performance reasons, terms shorter than 3 chars are ignored. E.g.: searching
+      issues for `included in titles` is same as `included titles`
+
+![filter issues by specific terms](img/issue_search_by_term.png)
 
 ### Issues and merge requests per group
 
