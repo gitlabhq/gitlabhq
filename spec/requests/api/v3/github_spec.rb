@@ -50,6 +50,7 @@ describe API::V3::Github do
         get v3_api('/users/foo/repos', user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
 
@@ -81,6 +82,7 @@ describe API::V3::Github do
       get v3_api('/users/foo/repos', user)
 
       expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
       expect(json_response.size).to eq(1)
       expect(json_response.first['id']).to eq(licensed_project.id)
     end
@@ -94,6 +96,7 @@ describe API::V3::Github do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
 
         expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.first.keys).to contain_exactly('name', 'commit')
         expect(json_response.first['commit'].keys).to contain_exactly('sha', 'type')

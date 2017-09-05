@@ -1,9 +1,11 @@
 module API
   module V3
     class Github < Grape::API
+      include PaginationParams
+
       before do
-        authenticate!
         authorize_jira_user_agent!(request)
+        authenticate!
       end
 
       helpers do
@@ -36,6 +38,9 @@ module API
       end
 
       resource :users do
+        params do
+          use :pagination
+        end
         get ':namespace/repos' do
           projects = current_user.authorized_projects.select { |project| project.feature_available?(:jira_dev_panel_integration) }
           projects = ::Kaminari.paginate_array(projects)
@@ -50,6 +55,7 @@ module API
 
         params do
           use :project_full_path
+          use :pagination
         end
         get ':namespace/:project/branches' do
           namespace = params[:namespace]

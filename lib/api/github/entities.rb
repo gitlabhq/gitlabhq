@@ -16,7 +16,7 @@ module API
 
       class BranchCommit < Grape::Entity
         expose :id, as: :sha
-        expose :type do |model|
+        expose :type do |_|
           'commit'
         end
       end
@@ -36,7 +36,6 @@ module API
           }
         end
         expose :commit do |commit|
-          # TODO: export to entity
           {
             author: {
               name: commit.author_name,
@@ -54,7 +53,6 @@ module API
           }
         end
         expose :parents do |commit|
-          # TODO: export to entity
           commit.parent_ids.map { |id| { sha: id } }
         end
         expose :files do |commit|
