@@ -491,6 +491,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
