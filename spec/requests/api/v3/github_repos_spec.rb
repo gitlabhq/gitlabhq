@@ -100,9 +100,6 @@ describe API::V3::GithubRepos do
     end
 
     context 'unauthenticated' do
-      before do
-      end
-
       it 'returns 401' do
         stub_licensed_features(jira_dev_panel_integration: true)
 
@@ -113,23 +110,14 @@ describe API::V3::GithubRepos do
     end
 
     context 'unauthorized' do
-      it 'returns 403 when lower access level' do
-        unauthorized_user = create(:user)
-        project.add_guest(unauthorized_user)
-
-        get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", unauthorized_user)
-
-        expect(response).to have_http_status(403)
-      end
-
-      it 'returns 403 when not licensed' do
+      it 'returns 404 when not licensed' do
         stub_licensed_features(jira_dev_panel_integration: false)
         unauthorized_user = create(:user)
         project.add_reporter(unauthorized_user)
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", unauthorized_user)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -178,17 +166,17 @@ describe API::V3::GithubRepos do
     end
 
     context 'unauthorized' do
-      it 'returns 403 when lower access level' do
+      it 'returns 404 when lower access level' do
         unauthorized_user = create(:user)
         project.add_guest(unauthorized_user)
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}",
                    unauthorized_user)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(404)
       end
 
-      it 'returns 403 when not licensed' do
+      it 'returns 404 when not licensed' do
         stub_licensed_features(jira_dev_panel_integration: false)
         unauthorized_user = create(:user)
         project.add_reporter(unauthorized_user)
@@ -196,7 +184,7 @@ describe API::V3::GithubRepos do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}",
                    unauthorized_user)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(404)
       end
     end
   end

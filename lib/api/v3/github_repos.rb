@@ -9,9 +9,9 @@ module API
           requires :project, type: String
         end
 
-        def find_project_with_access(full_path, access_level = :integrate_to_jira_dev_panel)
+        def find_project_with_access(full_path)
           project = find_project!(full_path)
-          authorize! access_level, project
+          not_found! unless project.feature_available?(:jira_dev_panel_integration)
           project
         end
       end
@@ -30,7 +30,7 @@ module API
 
       resource :users do
         get ':namespace/repos' do
-          projects = current_user.authorized_projects.select { |project| can?(current_user, :integrate_to_jira_dev_panel, project) }
+          projects = current_user.authorized_projects.select { |project| project.feature_available?(:jira_dev_panel_integration) }
           projects = ::Kaminari.paginate_array(projects)
           present paginate(projects), with: ::API::Entities::Github::Repository
         end
