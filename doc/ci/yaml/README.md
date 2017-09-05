@@ -427,16 +427,16 @@ a "key: value" pair. Be careful when using special characters:
 are executed in `parallel`. For more info about the use of `stage` please check
 [stages](#stages).
 
-### only and except
+### only and except (simplified)
 
-`only` and `except` are two parameters that set a refs policy to limit when
-jobs are built:
+`only` and `except` are two parameters that set a job policy to limit when
+jobs are created:
 
 1. `only` defines the names of branches and tags for which the job will run.
 2. `except` defines the names of branches and tags for which the job will
     **not** run.
 
-There are a few rules that apply to the usage of refs policy:
+There are a few rules that apply to the usage of job policy:
 
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
@@ -496,6 +496,36 @@ job:
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except master.
+
+### only and except (complex)
+
+> Introduced in GitLab 10.0
+
+> This an _alpha_ feature, and it it subject to change at any time without
+  prior notice!
+
+Since GitLab 10.0 it is possible to define a more elaborate only/except job
+policy configuration.
+
+GitLab now supports both, simple and complex strategies, so it is possible to
+use an array and a hash configuration scheme.
+
+Two keys are now available: `refs` and `kubernetes`. Refs strategy equals to
+simplified only/except configuration, whereas kubernetes strategy accepts only
+`active` keyword.
+
+See the example below. Job is going to be created only when pipeline has been
+scheduled or runs for a `master` branch, and only if kubernetes service is
+active in the project.
+
+```yaml
+job:
+  only:
+    refs:
+      - master
+      - schedules
+    kubernetes: active
+```
 
 ### Job variables
 

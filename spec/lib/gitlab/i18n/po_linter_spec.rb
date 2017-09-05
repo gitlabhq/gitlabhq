@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'simple_po_parser'
 
 describe Gitlab::I18n::PoLinter do
   let(:linter) { described_class.new(po_path) }

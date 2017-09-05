@@ -68,7 +68,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
