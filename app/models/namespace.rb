@@ -200,6 +200,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def subgroup?
+    has_parent?
+  end
+
   def soft_delete_without_removing_associations
     # We can't use paranoia's `#destroy` since this will hard-delete projects.
     # Project uses `pending_delete` instead of the acts_as_paranoia gem.

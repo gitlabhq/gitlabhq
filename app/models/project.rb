@@ -22,6 +22,7 @@ class Project < ActiveRecord::Base
   prepend EE::Project
 
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
@@ -1229,6 +1230,10 @@ class Project < ActiveRecord::Base
 
   def public_pages_path
     File.join(pages_path, 'public')
+  end
+
+  def pages_available?
+    Gitlab.config.pages.enabled && !namespace.subgroup?
   end
 
   def remove_private_deploy_keys

@@ -1,6 +1,6 @@
 module Gitlab
   module Mirror
-    include Gitlab::CurrentSettings
+    extend Gitlab::CurrentSettings
 
     # Runs scheduler every minute
     SCHEDULER_CRON = '* * * * *'.freeze

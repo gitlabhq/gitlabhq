@@ -1,10 +1,10 @@
 module Elastic
   module ApplicationSearch
     extend ActiveSupport::Concern
-    extend Gitlab::CurrentSettings
 
     included do
       include Elasticsearch::Model
+      include Gitlab::CurrentSettings
 
       index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
 

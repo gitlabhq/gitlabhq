@@ -7,7 +7,8 @@ module EE
       condition(:ldap_synced) { @subject.ldap_synced? }
 
       condition(:can_owners_manage_ldap, scope: :global) do
-        current_application_settings.allow_group_owners_to_manage_ldap
+        ::Gitlab::CurrentSettings.current_application_settings
+          .allow_group_owners_to_manage_ldap
       end
 
       rule { auditor }.enable :read_group

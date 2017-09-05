@@ -1,6 +1,7 @@
 module Users
   class BuildService < BaseService
     prepend ::EE::Users::BuildService
+    include Gitlab::CurrentSettings
 
     def initialize(current_user, params = {})
       @current_user = current_user
