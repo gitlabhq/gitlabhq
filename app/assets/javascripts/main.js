@@ -248,7 +248,10 @@ $(function () {
   // Initialize popovers
   $body.popover({
     selector: '[data-toggle="popover"]',
-    trigger: 'focus'
+    trigger: 'focus',
+    // set the viewport to the main content, excluding the navigation bar, so
+    // the navigation can't overlap the popover
+    viewport: '.page-with-sidebar'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
