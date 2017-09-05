@@ -60,7 +60,22 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
+  def children
+    parent = Group.find_by(parent_id: params[:parent_id]) || @group
+    if parent.nil? || !can?(current_user, :read_group, parent)
+      render_404
+    end
 
+    @children = GroupChildrenFinder.new(current_user, parent_group: parent, params: params).execute
+
+    respond_to do |format|
+      format.json do
+        render json: GroupChildrenSerializer
+                 .new(current_user: current_user)
+                 .with_pagination(request, response)
+                 .represent(@children)
+      end
+    end
   end
 
   def activity
