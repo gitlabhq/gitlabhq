@@ -37,7 +37,7 @@ class GeoNodeStatus {
     });
   }
 
-  toggleShowAdvancedStatus(e) {
+  static toggleShowAdvancedStatus(e) {
     const $element = $(e.currentTarget);
     const $closestStatus = $element.siblings('.advanced-status');
 
