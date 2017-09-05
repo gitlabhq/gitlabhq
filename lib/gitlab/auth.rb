@@ -50,10 +50,6 @@ module Gitlab
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
 
-        # Nothing to do here if internal auth is disabled and LDAP is
-        # not configured
-        return unless current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
-
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 

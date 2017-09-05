@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Admin::Hooks' do
+describe 'Admin::Hooks', :js do
   before do
     @project = create(:project)
     sign_in(create(:admin))
@@ -12,7 +12,7 @@ describe 'Admin::Hooks' do
     it 'is ok' do
       visit admin_root_path
 
-      page.within '.layout-nav' do
+      page.within '.nav-sidebar' do
         click_on 'Hooks'
       end
 

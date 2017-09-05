@@ -14,12 +14,4 @@
     :javascript
       window.uploads_path = "#{project_uploads_path(project)}";
 
-- content_for :header_content do
-  .js-dropdown-menu-projects
-    .dropdown-menu.dropdown-select.dropdown-menu-projects
-      = dropdown_title("Go to a project")
-      = dropdown_filter("Search your projects")
-      = dropdown_content
-      = dropdown_loading
-
 = render template: "layouts/application"

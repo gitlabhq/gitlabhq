@@ -274,9 +274,7 @@ session -  and even a multiplexer like `screen` or `tmux`!
 >**Note:**
 Container-based deployments often lack basic tools (like an editor), and may
 be stopped or restarted at any time. If this happens, you will lose all your
-changes! Treat this as a debugging tool, not a comprehensive online IDE. You
-can use [Koding](../administration/integration/koding.md) for online
-development.
+changes! Treat this as a debugging tool, not a comprehensive online IDE.
 
 ---
 

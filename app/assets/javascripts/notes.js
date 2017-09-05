@@ -464,7 +464,6 @@ export default class Notes {
   }
 
   renderDiscussionAvatar(diffAvatarContainer, noteEntity) {
-    var commentButton = diffAvatarContainer.find('.js-add-diff-note-button');
     var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
 
     if (!avatarHolder.length) {
@@ -474,10 +473,6 @@ export default class Notes {
       diffAvatarContainer.append(avatarHolder);
 
       gl.diffNotesCompileComponents();
-    }
-
-    if (commentButton.length) {
-      commentButton.remove();
     }
   }
 
@@ -767,6 +762,7 @@ export default class Notes {
         var $note, $notes;
         $note = $(el);
         $notes = $note.closest('.discussion-notes');
+        const discussionId = $('.notes', $notes).data('discussion-id');
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           if (gl.diffNoteApps[noteElId]) {
@@ -782,6 +778,8 @@ export default class Notes {
 
           // "Discussions" tab
           $notes.closest('.timeline-entry').remove();
+
+          $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
 
           // The notes tr can contain multiple lists of notes, like on the parallel diff
           if (notesTr.find('.discussion-notes').length > 1) {

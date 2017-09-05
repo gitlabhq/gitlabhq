@@ -292,26 +292,44 @@ feature 'Jobs' do
     end
 
     feature 'Variables' do
-      let(:trigger_request) { create(:ci_trigger_request_with_variables) }
+      let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do
         create :ci_build, pipeline: pipeline, trigger_request: trigger_request
       end
 
-      before do
-        visit project_job_path(project, job)
+      shared_examples 'expected variables behavior' do
+        it 'shows variable key and value after click', js: true do
+          expect(page).to have_css('.reveal-variables')
+          expect(page).not_to have_css('.js-build-variable')
+          expect(page).not_to have_css('.js-build-value')
+
+          click_button 'Reveal Variables'
+
+          expect(page).not_to have_css('.reveal-variables')
+          expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+          expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        end
       end
 
-      it 'shows variable key and value after click', js: true do
-        expect(page).to have_css('.reveal-variables')
-        expect(page).not_to have_css('.js-build-variable')
-        expect(page).not_to have_css('.js-build-value')
+      context 'when variables are stored in trigger_request' do
+        before do
+          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
 
-        click_button 'Reveal Variables'
+          visit project_job_path(project, job)
+        end
 
-        expect(page).not_to have_css('.reveal-variables')
-        expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
-        expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+        it_behaves_like 'expected variables behavior'
+      end
+
+      context 'when variables are stored in pipeline_variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+
+          visit project_job_path(project, job)
+        end
+
+        it_behaves_like 'expected variables behavior'
       end
     end
 

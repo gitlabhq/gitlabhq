@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824162758) do
+ActiveRecord::Schema.define(version: 20170831195038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,10 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.boolean "password_authentication_enabled"
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -242,6 +246,8 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
+    t.boolean "protected"
+    t.integer "failure_reason"
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
@@ -250,6 +256,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
+  add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
@@ -332,6 +339,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
+    t.boolean "protected"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -367,6 +375,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.string "architecture"
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
+    t.integer "access_level", default: 0, null: false
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -600,11 +609,11 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.datetime "updated_at", null: false
     t.integer "project_id"
     t.integer "gpg_key_id"
-    t.boolean "valid_signature"
     t.binary "commit_sha"
     t.binary "gpg_key_primary_keyid"
     t.text "gpg_key_user_name"
     t.text "gpg_key_user_email"
+    t.integer "verification_status", limit: 2, default: 0, null: false
   end
 
   add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree

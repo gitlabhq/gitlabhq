@@ -42,5 +42,9 @@ module Gitlab
         'No'
       end
     end
+
+    def random_string
+      Random.rand(Float::MAX.to_i).to_s(36)
+    end
   end
 end

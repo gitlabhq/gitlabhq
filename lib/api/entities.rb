@@ -1,11 +1,11 @@
 module API
   module Entities
     class UserSafe < Grape::Entity
-      expose :name, :username
+      expose :id, :name, :username
     end
 
     class UserBasic < UserSafe
-      expose :id, :state
+      expose :state
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
@@ -491,6 +491,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -775,6 +779,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
@@ -818,7 +823,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
-      expose :protected?, as: :protected
+      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
     end
 
     class Pipeline < PipelineBasic
@@ -839,6 +844,7 @@ module API
 
     class PipelineScheduleDetails < PipelineSchedule
       expose :last_pipeline, using: Entities::PipelineBasic
+      expose :variables, using: Entities::Variable
     end
 
     class EnvironmentBasic < Grape::Entity

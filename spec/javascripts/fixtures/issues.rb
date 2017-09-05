@@ -17,6 +17,10 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'issues/open-issue.html.raw' do |example|
     render_issue(example.description, create(:issue, project: project))
   end

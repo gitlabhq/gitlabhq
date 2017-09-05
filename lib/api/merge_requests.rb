@@ -40,6 +40,7 @@ module API
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
       end
     end
@@ -72,7 +73,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
       helpers do

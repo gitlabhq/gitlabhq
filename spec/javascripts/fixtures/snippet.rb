@@ -18,6 +18,10 @@ describe SnippetsController, '(JavaScript fixtures)', type: :controller do
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'snippets/show.html.raw' do |example|
     get(:show, id: snippet.to_param)
 

@@ -68,7 +68,7 @@ module API
       end
 
       get "/merge_request_urls" do
-        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+        merge_request_urls
       end
 
       #
@@ -154,6 +154,21 @@ module API
         # rescue GRPC::Unavailable => e
         #   render_api_error!(e, 500)
         # end
+      end
+
+      post '/post_receive' do
+        status 200
+
+        PostReceive.perform_async(params[:gl_repository], params[:identifier],
+          params[:changes])
+        broadcast_message = BroadcastMessage.current&.last&.message
+        reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
+
+        {
+          merge_request_urls: merge_request_urls,
+          broadcast_message: broadcast_message,
+          reference_counter_decreased: reference_counter_decreased
+        }
       end
     end
   end

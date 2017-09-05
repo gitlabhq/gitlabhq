@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Utils do
-  delegate :to_boolean, :boolean_to_yes_no, :slugify, to: :described_class
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, :random_string, to: :described_class
 
   describe '.slugify' do
     {
@@ -51,6 +51,12 @@ describe Gitlab::Utils do
     it 'converts booleans to Yes or No' do
       expect(boolean_to_yes_no(true)).to eq('Yes')
       expect(boolean_to_yes_no(false)).to eq('No')
+    end
+  end
+
+  describe '.random_string' do
+    it 'generates a string' do
+      expect(random_string).to be_kind_of(String)
     end
   end
 end

@@ -349,6 +349,8 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '0.2'
 
   gem 'stackprof', '~> 0.2.10', require: false
+
+  gem 'simple_po_parser', '~> 1.1.2', require: false
 end
 
 group :test do
@@ -395,7 +397,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.32.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
