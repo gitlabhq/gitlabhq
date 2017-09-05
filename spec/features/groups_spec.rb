@@ -90,7 +90,10 @@ feature 'Group' do
 
     context 'as admin' do
       before do
-        visit subgroups_group_path(group)
+        visit group_path(group)
+
+        pending('use the new subgroup button')
+
         click_link 'New Subgroup'
       end
 
@@ -111,23 +114,16 @@ feature 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit subgroups_group_path(group)
+        visit group_path(group)
+
+        pending('use the new subgroup button')
+
         click_link 'New Subgroup'
         fill_in 'Group path', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))
         expect(page).to have_content("Group 'bar' was successfully created.")
-      end
-    end
-
-    context 'when nested group feature is disabled' do
-      it 'renders 404' do
-        allow(Group).to receive(:supports_nested_groups?).and_return(false)
-
-        visit subgroups_group_path(group)
-
-        expect(page.status_code).to eq(404)
       end
     end
   end
@@ -213,8 +209,8 @@ feature 'Group' do
     let!(:path)  { group_path(group) }
 
     it 'has nested groups tab with nested groups inside' do
+      pending('the child should be visible on the show page')
       visit path
-      click_link 'Subgroups'
 
       expect(page).to have_content(nested_group.name)
     end

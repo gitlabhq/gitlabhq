@@ -157,6 +157,7 @@ describe GroupsController do
     context 'as a user' do
       before do
         sign_in(user)
+        pending('spec the children path instead')
       end
 
       it 'shows all subgroups' do
