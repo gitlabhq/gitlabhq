@@ -1492,10 +1492,12 @@ describe Ci::Build do
 
     context 'when build is for triggers' do
       let(:trigger) { create(:ci_trigger, project: project) }
-      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+      let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
+
       let(:user_trigger_variable) do
-        { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
+        { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1', public: false }
       end
+
       let(:predefined_trigger_variable) do
         { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true }
       end
@@ -1504,8 +1506,26 @@ describe Ci::Build do
         build.trigger_request = trigger_request
       end
 
-      it { is_expected.to include(user_trigger_variable) }
-      it { is_expected.to include(predefined_trigger_variable) }
+      shared_examples 'returns variables for triggers' do
+        it { is_expected.to include(user_trigger_variable) }
+        it { is_expected.to include(predefined_trigger_variable) }
+      end
+
+      context 'when variables are stored in trigger_request' do
+        before do
+          trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+        end
+
+        it_behaves_like 'returns variables for triggers'
+      end
+
+      context 'when variables are stored in pipeline_variables' do
+        before do
+          create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+        end
+
+        it_behaves_like 'returns variables for triggers'
+      end
     end
 
     context 'when pipeline has a variable' do
