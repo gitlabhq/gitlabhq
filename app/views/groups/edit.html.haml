@@ -34,7 +34,7 @@
         .col-sm-10
           .checkbox
             = f.label :share_with_group_lock do
-              = f.check_box :share_with_group_lock, disabled: share_with_group_lock_disabled
+              = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
               %strong
                 - group_link = link_to @group.name, group_path(@group)
                 = s_("GroupSettings|Prevent sharing a project within %{group} with other groups").html_safe % { group: group_link }

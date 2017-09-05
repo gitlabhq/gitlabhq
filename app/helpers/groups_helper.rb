@@ -3,6 +3,10 @@ module GroupsHelper
     can?(current_user, :change_visibility_level, group)
   end
 
+  def can_change_share_with_group_lock?(group)
+    can?(current_user, :change_share_with_group_lock, group)
+  end
+
   def group_icon(group)
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
@@ -63,14 +67,6 @@ module GroupsHelper
   def remove_group_message(group)
     _("You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?") %
       { group_name: group.name }
-  end
-
-  def share_with_group_lock_disabled
-    return false unless @group.has_parent?
-    return false unless @group.parent.share_with_group_lock?
-    return false unless @group.share_with_group_lock?
-    return false if     @group.has_owner?(current_user)
-    return true
   end
 
   def share_with_group_lock_help_text
