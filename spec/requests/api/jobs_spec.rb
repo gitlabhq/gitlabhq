@@ -196,13 +196,43 @@ describe API::Jobs do
         'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
       end
 
-      context 'when user is not unauthorized' do
+      context 'when user is anonymous' do
         let(:api_user) { nil }
 
-        it 'does not return specific job artifacts' do
-          get_artifact_file(artifact)
+        context 'when project is public' do
+          it 'allows to access artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, true)
 
-          expect(response).to have_http_status(401)
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context 'when project is public with builds access disabled' do
+          it 'rejects access to artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, false)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        context 'when project is private' do
+          it 'rejects access and hides existence of artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PRIVATE)
+            project.update_column(:public_builds, true)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(404)
+          end
         end
       end
 
@@ -257,11 +287,12 @@ describe API::Jobs do
         end
       end
 
-      context 'unauthorized user' do
+      context 'when anonymous user is accessing private artifacts' do
         let(:api_user) { nil }
 
-        it 'does not return specific job artifacts' do
-          expect(response).to have_http_status(401)
+        it 'hides artifacts and rejects request' do
+          expect(project).to be_private
+          expect(response).to have_http_status(404)
         end
       end
     end

@@ -2,12 +2,12 @@ module API
   class Jobs < Grape::API
     include PaginationParams
 
-    before { authenticate! }
-
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      before { authenticate! }
+
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -69,40 +69,6 @@ module API
         build = get_build!(params[:job_id])
 
         present build, with: Entities::Job
-      end
-
-      desc 'Download the artifacts file from a job' do
-        detail 'This feature was introduced in GitLab 8.5'
-      end
-      params do
-        requires :job_id, type: Integer, desc: 'The ID of a job'
-      end
-      get ':id/jobs/:job_id/artifacts' do
-        authorize_read_builds!
-
-        build = get_build!(params[:job_id])
-
-        present_artifacts!(build.artifacts_file)
-      end
-
-      desc 'Download a specific file from artifacts archive' do
-        detail 'This feature was introduced in GitLab 10.0'
-      end
-      params do
-        requires :job_id, type: Integer, desc: 'The ID of a job'
-        requires :artifact_path, type: String, desc: 'Artifact path'
-      end
-      get ':id/jobs/:job_id/artifacts/*artifact_path', format: false do
-        authorize_read_builds!
-
-        build = get_build!(params[:job_id])
-        not_found! unless build.artifacts?
-
-        path = Gitlab::Ci::Build::Artifacts::Path
-          .new(params[:artifact_path])
-        not_found! unless path.valid?
-
-        send_artifacts_entry(build, path)
       end
 
       desc 'Download the artifacts file from a job' do
@@ -232,6 +198,47 @@ module API
 
         status 200
         present build, with: Entities::Job
+      end
+    end
+
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      before { authenticate_non_get! }
+
+      desc 'Download the artifacts file from a job' do
+        detail 'This feature was introduced in GitLab 8.5'
+      end
+      params do
+        requires :job_id, type: Integer, desc: 'The ID of a job'
+      end
+      get ':id/jobs/:job_id/artifacts' do
+        authorize_read_builds!
+
+        build = get_build!(params[:job_id])
+
+        present_artifacts!(build.artifacts_file)
+      end
+
+      desc 'Download a specific file from artifacts archive' do
+        detail 'This feature was introduced in GitLab 10.0'
+      end
+      params do
+        requires :job_id, type: Integer, desc: 'The ID of a job'
+        requires :artifact_path, type: String, desc: 'Artifact path'
+      end
+      get ':id/jobs/:job_id/artifacts/*artifact_path', format: false do
+        authorize_read_builds!
+
+        build = get_build!(params[:job_id])
+        not_found! unless build.artifacts?
+
+        path = Gitlab::Ci::Build::Artifacts::Path
+          .new(params[:artifact_path])
+        not_found! unless path.valid?
+
+        send_artifacts_entry(build, path)
       end
     end
 
