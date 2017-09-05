@@ -217,13 +217,8 @@ module IssuablesHelper
       canDestroy: can?(current_user, :destroy_issue, issuable),
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
-<<<<<<< HEAD
-      markdownPreviewUrl: preview_markdown_path(@project),
-      markdownDocs: help_page_path('user/markdown'),
-=======
       markdownPreviewPath: preview_markdown_path(@project),
       markdownDocsPath: help_page_path('user/markdown'),
->>>>>>> ce-com/master
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,

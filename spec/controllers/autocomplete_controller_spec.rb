@@ -331,7 +331,6 @@ describe AutocompleteController do
         it 'returns no projects' do
           expect(json_response).to be_kind_of(Array)
           expect(json_response.size).to eq(0)
-<<<<<<< HEAD
         end
       end
     end
@@ -370,8 +369,6 @@ describe AutocompleteController do
           expect(json_response[1]).to match('name' => 'thumbsup')
           expect(json_response[2]).to match('name' => 'tea')
           expect(json_response[3]).to match('name' => 'thumbsdown')
-=======
->>>>>>> ce-com/master
         end
       end
     end

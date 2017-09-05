@@ -17,13 +17,8 @@ describe('Inline edit form component', () => {
           description: 'a',
           lockedWarningVisible: false,
         },
-<<<<<<< HEAD
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
-=======
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
->>>>>>> ce-com/master
         projectPath: '/',
         projectNamespace: '/',
       },

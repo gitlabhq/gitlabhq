@@ -40,13 +40,8 @@ describe('Issuable output', () => {
         initialTitleText: '',
         initialDescriptionHtml: '',
         initialDescriptionText: '',
-<<<<<<< HEAD
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
-=======
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
->>>>>>> ce-com/master
         isConfidential: false,
         projectNamespace: '/',
         projectPath: '/',
