@@ -384,7 +384,8 @@ module EE
     def username_only_import_url=(value)
       unless ::Gitlab::UrlSanitizer.valid?(value)
         self.import_url = value
-        return
+        self.import_data&.user = nil
+        return value
       end
 
       url = ::Gitlab::UrlSanitizer.new(value)
