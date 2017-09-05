@@ -6,12 +6,10 @@
     .svg-container
       = custom_icon('icon_autodevops')
     .user-callout-copy
-      %h4
-        Auto DevOps (Beta)
+      %h4= _('Auto DevOps (Beta)')
+      %p= _('Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
       %p
-        Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.
-      %p
-        Learn more in the
-        = link_to 'Auto DevOps documentation', help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+        #{s_('Learn more in the')}
+        = link_to _('Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
 
-      = link_to 'Enable in settings', project_settings_ci_cd_path(@project), class: 'btn btn-primary js-close-callout'
+      = link_to _('Enable in settings'), project_settings_ci_cd_path(@project), class: 'btn btn-primary js-close-callout'

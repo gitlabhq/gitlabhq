@@ -30,7 +30,7 @@ module Gitlab
     end
 
     def add_gon_project_variables
-      gon.project_url = project_url(project)
+      gon.project_path = project_path(project)
     end
   end
 end

@@ -22,7 +22,7 @@ export default class UserCallout {
     const $currentTarget = $(e.currentTarget);
 
     if (this.options.setCalloutPerProject) {
-      Cookies.set(this.cookieName, 'true', { expires: 365, path: gon.project_url });
+      Cookies.set(this.cookieName, 'true', { expires: 365, path: gon.project_path });
     } else {
       Cookies.set(this.cookieName, 'true', { expires: 365 });
     }
