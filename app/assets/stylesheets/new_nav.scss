@@ -307,6 +307,7 @@ header.navbar-gitlab-new {
 }
 
 .breadcrumbs-container {
+  display: -webkit-flex;
   display: flex;
   width: 100%;
   position: relative;
@@ -317,6 +318,7 @@ header.navbar-gitlab-new {
 }
 
 .breadcrumbs-links {
+  -webkit-flex: 1;
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -341,6 +343,7 @@ header.navbar-gitlab-new {
 }
 
 .breadcrumbs-list {
+  display: -webkit-flex;
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 0;
