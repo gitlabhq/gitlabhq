@@ -116,7 +116,7 @@ describe Projects::UpdatePagesService do
 
         expect(deploy_status.description)
           .to match(/artifacts for pages are too large/)
-        expect(deploy_status).to be_job_failure
+        expect(deploy_status).to be_script_failure
       end
     end
 

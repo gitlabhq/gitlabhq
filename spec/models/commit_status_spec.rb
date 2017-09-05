@@ -458,10 +458,10 @@ describe CommitStatus do
       it { is_expected.to be_unknown_failure }
     end
 
-    context 'when failure_reason is job_failure' do
-      let(:reason) { :job_failure }
+    context 'when failure_reason is script_failure' do
+      let(:reason) { :script_failure }
 
-      it { is_expected.to be_job_failure }
+      it { is_expected.to be_script_failure }
     end
   end
 end

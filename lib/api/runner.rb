@@ -129,8 +129,7 @@ module API
         when 'success'
           job.success
         when 'failed'
-          failure_reason = params[:failure_reason] ? params[:failure_reason].to_sym : :unknown_failure
-          job.drop(failure_reason)
+          job.drop(params[:failure_reason] || :unknown_failure)
         end
       end
 

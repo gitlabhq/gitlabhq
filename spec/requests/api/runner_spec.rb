@@ -626,24 +626,34 @@ describe API::Runner do
         it 'mark job as succeeded' do
           update_job(state: 'success')
 
-          expect(job.reload.status).to eq 'success'
-          expect(job).to be_unknown_failure
+          job.reload
+          expect(job).to be_success
         end
 
         it 'mark job as failed' do
           update_job(state: 'failed')
 
-          expect(job.reload.status).to eq 'failed'
-          expect(job).to be_job_failure
+          job.reload
+          expect(job).to be_failed
+          expect(job).to be_unknown_failure
         end
 
-        context 'when failure_reason is given' do
-          it 'mark job as failed' do
-            update_job(state: 'failed', failure_reason: 'stuck_or_timeout_failure')
-
-            expect(job.reload.status).to eq 'failed'
-            expect(job).to be_stuck_or_timeout_failure
+        context 'when failure_reason is script_failure' do
+          before do
+            update_job(state: 'failed', failure_reason: 'script_failure')
+            job.reload
           end
+
+          it { expect(job).to be_script_failure }
+        end
+
+        context 'when failure_reason is runner_system_failure' do
+          before do
+            update_job(state: 'failed', failure_reason: 'runner_system_failure')
+            job.reload
+          end
+
+          it { expect(job).to be_runner_system_failure }
         end
       end
 

@@ -40,9 +40,10 @@ class CommitStatus < ActiveRecord::Base
 
   enum failure_reason: {
     unknown_failure: nil,
-    job_failure: 1,
+    script_failure: 1,
     api_failure: 2,
-    stuck_or_timeout_failure: 3
+    stuck_or_timeout_failure: 3,
+    runner_system_failure: 4
   }
 
   state_machine :status do
