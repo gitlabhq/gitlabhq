@@ -17,7 +17,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   end
 
   step 'I should see project "Community" home page' do
-    expect(Gitlab.config.gitlab).to receive(:host).and_return("www.example.com")
+    Gitlab.config.gitlab.should_receive(:host).and_return("www.example.com")
     page.within '.breadcrumbs .title' do
       expect(page).to have_content 'Community'
     end

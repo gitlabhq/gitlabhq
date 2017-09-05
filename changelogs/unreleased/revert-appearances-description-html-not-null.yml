@@ -1,5 +1,0 @@
----
-title: Re-allow appearances.description_html to be NULL
-merge_request:
-author:
-type: fixed

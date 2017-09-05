@@ -62,6 +62,34 @@ describe ProjectImportData do
     end
   end
 
+  describe 'credential fields accessors' do
+    let(:accessors) { %i[auth_method password ssh_known_hosts ssh_known_hosts_verified_at ssh_known_hosts_verified_by_id ssh_private_key user] }
+
+    it { expect(described_class::CREDENTIALS_FIELDS).to contain_exactly(*accessors) }
+
+    where(:field) { described_class::CREDENTIALS_FIELDS }
+
+    with_them do
+      it 'sets the value in the credentials hash' do
+        import_data.send("#{field}=", 'foo')
+
+        expect(import_data.credentials[field]).to eq('foo')
+      end
+
+      it 'sets a not-present value to nil' do
+        import_data.send("#{field}=", '')
+
+        expect(import_data.credentials[field]).to be_nil
+      end
+
+      it 'returns the data in the credentials hash' do
+        import_data.credentials[field] = 'foo'
+
+        expect(import_data.send(field)).to eq('foo')
+      end
+    end
+  end
+
   describe '#ssh_import?' do
     where(:import_url, :expected) do
       'ssh://example.com'   | true

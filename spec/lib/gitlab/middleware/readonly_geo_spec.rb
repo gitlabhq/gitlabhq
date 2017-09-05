@@ -35,6 +35,7 @@ describe Gitlab::Middleware::ReadonlyGeo do
   end
 
   subject { described_class.new(fake_app) }
+
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
   context 'normal requests to a secondary Gitlab Geo' do
@@ -99,6 +100,13 @@ describe Gitlab::Middleware::ReadonlyGeo do
 
       it 'expects a GET status request to be allowed' do
         response = request.get("/api/#{API::API.version}/geo/status")
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST LFS request to batch URL to be allowed' do
+        response = request.post('/root/rouge.git/info/lfs/objects/batch')
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request

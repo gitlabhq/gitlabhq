@@ -82,4 +82,18 @@ describe('Sidebar store', () => {
     expect(this.store.humanTimeEstimate).toEqual(Mock.time.human_time_estimate);
     expect(this.store.humanTotalTimeSpent).toEqual(Mock.time.human_total_time_spent);
   });
+
+  it('set autocomplete projects', () => {
+    const projects = [{ id: 0 }];
+    this.store.setAutocompleteProjects(projects);
+
+    expect(this.store.autocompleteProjects).toEqual(projects);
+  });
+
+  it('set move to project ID', () => {
+    const projectId = 7;
+    this.store.setMoveToProjectId(projectId);
+
+    expect(this.store.moveToProjectId).toEqual(projectId);
+  });
 });

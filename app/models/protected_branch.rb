@@ -3,6 +3,8 @@ class ProtectedBranch < ActiveRecord::Base
   include ProtectedRef
   prepend EE::ProtectedRef
 
+  extend Gitlab::CurrentSettings
+
   protected_ref_access_levels :merge, :push
 
   # Check if branch name is marked as protected in the system

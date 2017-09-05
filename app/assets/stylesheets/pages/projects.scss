@@ -815,6 +815,8 @@ a.allowed-to-push {
 
 .new-protected-branch,
 .new-protected-tag {
+  @include new-style-dropdown;
+
   label {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
@@ -841,19 +843,9 @@ a.allowed-to-push {
 
 .protected-branches-list,
 .protected-tags-list {
+  @include new-style-dropdown;
+
   margin-bottom: 30px;
-
-  a {
-    color: $gl-text-color;
-
-    &:hover {
-      color: $gl-link-color;
-    }
-
-    &.is-active {
-      font-weight: $gl-font-weight-bold;
-    }
-  }
 
   .settings-message {
     margin: 0;

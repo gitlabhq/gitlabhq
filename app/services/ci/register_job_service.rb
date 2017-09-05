@@ -78,7 +78,9 @@ module Ci
     end
 
     def new_builds
-      Ci::Build.pending.unstarted
+      builds = Ci::Build.pending.unstarted
+      builds = builds.ref_protected if runner.ref_protected?
+      builds
     end
 
     def shared_runner_build_limits_feature_enabled?

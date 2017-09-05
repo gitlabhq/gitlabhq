@@ -20,6 +20,7 @@ module Gitlab
 
     class << self
       prepend EE::Gitlab::Auth
+      include Gitlab::CurrentSettings
 
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
@@ -49,10 +50,6 @@ module Gitlab
       def find_with_user_password(login, password)
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
-
-        # Nothing to do here if internal auth is disabled and LDAP is
-        # not configured
-        return unless current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)

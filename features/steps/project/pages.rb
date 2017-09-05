@@ -37,7 +37,8 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   step 'pages are deployed' do
     pipeline = @project.pipelines.create(ref: 'HEAD',
                                          sha: @project.commit('HEAD').sha,
-                                         source: :push)
+                                         source: :push,
+                                         protected: false)
 
     build = build(:ci_build,
                   project: @project,

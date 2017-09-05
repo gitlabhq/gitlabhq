@@ -193,7 +193,7 @@
   min-width: 240px;
   max-width: 500px;
   margin-top: 2px;
-  margin-bottom: 0;
+  margin-bottom: 2px;
   font-size: 14px;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
@@ -618,6 +618,11 @@
   border-top: 1px solid $dropdown-divider-color;
 }
 
+.dropdown-footer-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .dropdown-due-date-footer {
   padding-top: 0;
   margin-left: 10px;
@@ -729,6 +734,7 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     li {
+      display: block;
       padding: 0 1px;
 
       &:hover {

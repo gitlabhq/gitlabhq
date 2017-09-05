@@ -42,12 +42,7 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
-    .form-group
-      %label.control-label.col-sm-2 Enabled Git access protocols
-      .col-sm-10
-        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
-        %span.help-block#clone-protocol-help
-          Allow only the selected protocols to be used for Git access.
+
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -55,6 +50,7 @@
             = f.check_box :project_export_enabled
             Project export enabled
 
+    -# EE-only
     - if ldap_enabled?
       .form-group
         = f.label :allow_group_owners_to_manage_ldap, 'LDAP settings', class: 'control-label col-sm-2'
@@ -66,6 +62,21 @@
           %span.help-block
             If checked, group owners can manage LDAP group links and LDAP member overrides
             = link_to icon('question-circle'), help_page_path('administration/auth/ldap-ee')
+
+    .form-group
+      %label.control-label.col-sm-2 Enabled Git access protocols
+      .col-sm-10
+        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
+        %span.help-block#clone-protocol-help
+          Allow only the selected protocols to be used for Git access.
+
+    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      - field_name = :"#{type}_key_restriction"
+      .form-group
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
+
 
   %fieldset
     %legend Account and Limit Settings
@@ -180,7 +191,7 @@
         .checkbox
           = f.label :password_authentication_enabled do
             = f.check_box :password_authentication_enabled
-            Password authentication enabled
+            Sign-in enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'

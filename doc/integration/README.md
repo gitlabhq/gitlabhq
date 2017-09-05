@@ -14,7 +14,6 @@ See the documentation below for details on how to configure these services.
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [JIRA](../user/project/integrations/jira.md) Integrate with the JIRA issue tracker
 - [Kerberos](kerberos.md) Integrate with Kerberos
-- [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd, Azure and Authentiq ID

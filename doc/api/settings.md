@@ -48,7 +48,11 @@ Example response:
    "plantuml_enabled": false,
    "plantuml_url": null,
    "terminal_max_session_time": 0,
-   "polling_interval_multiplier": 1.0
+   "polling_interval_multiplier": 1.0,
+   "rsa_key_restriction": 0,
+   "dsa_key_restriction": 0,
+   "ecdsa_key_restriction": 0,
+   "ed25519_key_restriction": 0,
 }
 ```
 
@@ -122,6 +126,10 @@ PUT /application/settings
 | `plantuml_enabled`                       | boolean          | no                                            | Enable PlantUML integration. Default is `false`.                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `plantuml_url`                           | string           | yes (if `plantuml_enabled` is `true`)         | The PlantUML instance URL for integration.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `polling_interval_multiplier`            | decimal          | no                                            | Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling.                                                                                                                                                                                                                                                                                                                                                                  |
+| `rsa_key_restriction`                    | integer          | no                                            | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys.
+| `dsa_key_restriction`                    | integer          | no                                            | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys.
+| `ecdsa_key_restriction`                  | integer          | no                                            | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys.
+| `ed25519_key_restriction`                | integer          | no                                            | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys.
 | `project_export_enabled`                 | boolean          | no                                            | Enable project export                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `prometheus_metrics_enabled`             | boolean          | no                                            | Enable prometheus metrics                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `recaptcha_enabled`                      | boolean          | no                                            | Enable recaptcha                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -193,6 +201,10 @@ Example response:
   "plantuml_enabled": false,
   "plantuml_url": null,
   "terminal_max_session_time": 0,
-  "polling_interval_multiplier": 1.0
+  "polling_interval_multiplier": 1.0,
+  "rsa_key_restriction": 0,
+  "dsa_key_restriction": 0,
+  "ecdsa_key_restriction": 0,
+  "ed25519_key_restriction": 0,
 }
 ```

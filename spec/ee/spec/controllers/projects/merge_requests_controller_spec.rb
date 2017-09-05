@@ -293,6 +293,13 @@ describe Projects::MergeRequestsController do
 
           expect(merge_request.reload.squash).to be_truthy
         end
+
+        it 'merges even when squash is unavailable' do
+          stub_licensed_features(merge_request_squash: false)
+          merge_with_sha(squash: '1')
+
+          expect(merge_request.reload.squash).to be_falsey
+        end
       end
 
       context 'when squash is passed as 0' do

@@ -1224,6 +1224,16 @@ describe QuickActions::InterpretService do
       end
     end
 
+    describe 'move issue to another project command' do
+      let(:content) { '/move test/project' }
+
+      it 'includes the project name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Moves this issue to test/project."])
+      end
+    end
+
     # EE-specific tests
 
     describe 'weight command' do
@@ -1232,6 +1242,16 @@ describe QuickActions::InterpretService do
       it 'includes the number' do
         _, explanations = service.explain(content, issue)
         expect(explanations).to eq(['Sets weight to 4.'])
+      end
+    end
+
+    describe 'move issue to another project command' do
+      let(:content) { '/move test/project' }
+
+      it 'includes the project name' do
+        _, explanations = service.explain(content, issue)
+
+        expect(explanations).to eq(["Moves this issue to test/project."])
       end
     end
   end

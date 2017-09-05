@@ -1,6 +1,6 @@
 module Gitlab
   class PollingInterval
-    include Gitlab::CurrentSettings
+    extend Gitlab::CurrentSettings
 
     HEADER_NAME = 'Poll-Interval'.freeze
 

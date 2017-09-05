@@ -1,6 +1,6 @@
 # Detected SSH host keys are transiently stored in Redis
 class SshHostKey
-  class Fingerprint < Gitlab::KeyFingerprint
+  class Fingerprint < Gitlab::SSHPublicKey
     attr_reader :index
 
     def initialize(key, index: nil)
@@ -125,5 +125,7 @@ class SshHostKey
     raise ArgumentError.new("Invalid URL") unless full_url&.scheme == 'ssh'
 
     Addressable::URI.parse("ssh://#{full_url.host}:#{full_url.inferred_port}")
+  rescue Addressable::URI::InvalidURIError
+    raise ArgumentError.new("Invalid URL")
   end
 end

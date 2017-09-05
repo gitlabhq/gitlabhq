@@ -2,6 +2,7 @@ module API
   module Helpers
     module Runner
       prepend EE::API::Helpers::Runner
+      include Gitlab::CurrentSettings
 
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
       JOB_TOKEN_PARAM = :token

@@ -707,6 +707,8 @@
 }
 
 .boards-switcher {
+  @include new-style-dropdown;
+
   padding-right: 10px;
 }
 

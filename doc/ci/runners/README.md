@@ -107,6 +107,26 @@ To lock/unlock a Runner:
 1. Check the **Lock to current projects** option
 1. Click **Save changes** for the changes to take effect
 
+## Protected Runners
+
+>**Notes:**
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+in GitLab 10.0.
+
+You can protect Runners from revealing sensitive information.
+Whenever a Runner is protected, the Runner picks only jobs created on
+[protected branches] or [protected tags], and ignores other jobs.
+
+To protect/unprotect Runners:
+
+1. Visit your project's **Settings ➔ Pipelines**
+1. Find a Runner you want to protect/unprotect and make sure it's enabled
+1. Click the pencil button besides the Runner name
+1. Check the **Protected** option
+1. Click **Save changes** for the changes to take effect
+
+![specific Runners edit icon](img/protected_runners_check_box.png)
+
 ## How shared Runners pick jobs
 
 Shared Runners abide to a process queue we call fair usage. The fair usage
@@ -218,3 +238,5 @@ We're always looking for contributions that can mitigate these
 [install]: http://docs.gitlab.com/runner/install/
 [fifo]: https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
 [register]: http://docs.gitlab.com/runner/register/
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md

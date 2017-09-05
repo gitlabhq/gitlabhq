@@ -77,15 +77,14 @@ module LicenseHelper
 
   def show_promotions?(selected_user = current_user)
     return false unless selected_user
-    return @show_promotions if defined?(@show_promotions)
 
-    @show_promotions =
-      if current_application_settings.should_check_namespace_plan?
-        true
-      else
-        license = License.current
-        license.nil? || license.expired?
-      end
+    if Gitlab::CurrentSettings.current_application_settings
+      .should_check_namespace_plan?
+      true
+    else
+      license = License.current
+      license.nil? || license.expired?
+    end
   end
 
   def show_project_feature_promotion?(project_feature, callout_id = nil)

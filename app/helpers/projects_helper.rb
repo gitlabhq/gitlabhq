@@ -1,4 +1,6 @@
 module ProjectsHelper
+  include Gitlab::CurrentSettings
+
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -68,12 +70,6 @@ module ProjectsHelper
 
       output << simple_sanitize(project.name)
       output.html_safe
-    end
-
-    if current_user
-      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
-        icon("chevron-down")
-      end
     end
 
     "#{namespace_link} / #{project_link}".html_safe
