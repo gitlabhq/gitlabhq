@@ -294,8 +294,13 @@ module Ci
 
           context 'when "artifacts" keyword is specified on depended job' do
             let!(:pre_stage_job) do
-              create(:ci_build, :success, :artifacts, pipeline: pipeline, name: job_name, stage_idx: 0,
-                                options: { artifacts: { paths: ['binaries/'] } } )
+              create(:ci_build,
+                     :success,
+                     :artifacts,
+                     pipeline: pipeline,
+                     name: job_name,
+                     stage_idx: 0,
+                     options: { artifacts: { paths: ['binaries/'] } } )
             end
 
             context 'when artifacts of depended job has existsed' do
