@@ -55,10 +55,12 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def ensure_commit_shas
-    merge_request.fetch_ref
+    merge_request.fetch_ref if need_fetch?
+
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
+
     save
   end
 
@@ -228,6 +230,13 @@ class MergeRequestDiff < ActiveRecord::Base
     return false unless raw.respond_to?(:each)
 
     raw.any? { |element| VALID_CLASSES.include?(element.class) }
+  end
+
+  def need_fetch?
+    !merge_request.ref_fetched? ||
+      (merge_request.source_branch_sha &&
+         merge_request.target_project.repository
+           .commit(merge_request.source_branch_sha).nil?)
   end
 
   def create_merge_request_diff_files(diffs)

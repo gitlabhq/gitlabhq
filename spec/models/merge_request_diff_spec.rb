@@ -13,6 +13,54 @@ describe MergeRequestDiff do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
 
+  describe 'fetching ref for diff' do
+    let(:merge_request) do
+      create(:merge_request, :with_diffs,
+              source_project: source_project, target_project: target_project)
+    end
+
+    before do
+      allow(merge_request).to receive(:fetch_ref).and_call_original
+    end
+
+    context 'when target project is the same project' do
+      let(:source_project) { create(:project) }
+      let(:target_project) { source_project }
+
+      it 'does not fetch ref when source head is already available' do
+        merge_request.reload_diff
+
+        expect(merge_request).not_to have_received(:fetch_ref)
+      end
+    end
+
+    context 'when target project is a forked project' do
+      let(:fork_link) { create(:forked_project_link) }
+      let(:source_project) { fork_link.forked_to_project }
+      let(:target_project) { fork_link.forked_from_project }
+
+      it 'does not fetch ref when source head is already available' do
+        merge_request.reload_diff
+
+        expect(merge_request).not_to have_received(:fetch_ref)
+      end
+
+      context 'when there are new commits in source project' do
+        before do
+          source_project.repository.create_file(
+            source_project.creator, 'test-merge-request-diff', 'test',
+            branch_name: merge_request.source_branch, message: 'test')
+        end
+
+        it 'fetches ref' do
+          merge_request.reload_diff
+
+          expect(merge_request).to have_received(:fetch_ref).once
+        end
+      end
+    end
+  end
+
   describe '#latest' do
     let!(:mr) { create(:merge_request, :with_diffs) }
     let!(:first_diff) { mr.merge_request_diff }

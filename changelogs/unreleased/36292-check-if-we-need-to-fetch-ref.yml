@@ -1,0 +1,5 @@
+---
+title: Only fetch ref if needed for merge request diffs
+merge_request: 14052
+author:
+type: other
