@@ -65,7 +65,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || sidekiq_route
+        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
       end
 
       def logout_route
@@ -78,6 +78,10 @@ module Gitlab
 
       def grack_route
         request.path.end_with?('.git/git-upload-pack')
+      end
+
+      def lfs_route
+        request.path.end_with?('/info/lfs/objects/batch')
       end
     end
   end
