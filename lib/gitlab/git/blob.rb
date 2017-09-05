@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def binary?(data)
-          EncodingHelper.libgit2_binary?(data)
+          EncodingHelper.detect_libgit2_binary?(data)
         end
 
         private
