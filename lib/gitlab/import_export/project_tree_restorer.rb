@@ -10,6 +10,7 @@ module Gitlab
         @shared = shared
         @project = project
         @project_id = project.id
+        @saved = []
       end
 
       def restore
@@ -51,7 +52,6 @@ module Gitlab
       # the configuration yaml file too.
       # Finally, it updates each attribute in the newly imported project.
       def create_relations
-        @saved = []
         default_relation_list.each do |relation|
           next unless relation.is_a?(Hash) || @tree_hash[relation.to_s].present?
 
@@ -59,10 +59,10 @@ module Gitlab
             create_sub_relations(relation, @tree_hash)
           else
             relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
-            relation_hash_list = @tree_hash[relation_key.to_s]
-            save_relation_hash(relation_hash_list, relation_key)
+            save_relation_hash(@tree_hash[relation_key.to_s], relation_key)
           end
         end
+
         @saved.all?
       end
 
@@ -70,6 +70,8 @@ module Gitlab
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
         @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+
+        # Restore the project again, extra query but let us skip holding the AR objects in memory
         @restored_project = Project.find_by_id(@project_id)
       end
 
@@ -107,10 +109,17 @@ module Gitlab
 
         tree_array = [tree_hash[relation_key]].flatten
 
+        # Avoid keeping a possible heavy object in memory once we are done with it
         while relation_item = tree_array.shift
+          # The transaction at this level is less speedy than one single transaction
+          # But we can't have it in the upper level or GC won't get rid of the AR objects
+          # after we save the batch.
           Project.transaction do
             process_sub_relation(relation, relation_item)
 
+            # For every subrelation that hangs from Project, save the associated records alltogether
+            # This effectively batches all records per subrelation item, only keeping those in memory
+            # We have to keep in mind that more batch granularity << Memory, but >> Slowness
             if save
               save_relation_hash([relation_item], relation_key)
               tree_hash[relation_key].delete(relation_item)

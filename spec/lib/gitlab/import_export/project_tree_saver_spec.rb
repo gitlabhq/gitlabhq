@@ -261,7 +261,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
     ci_build = create(:ci_build, project: project, when: nil)
     ci_build.pipeline.update(project: project)
-    commit_status = create(:commit_status, project: project, pipeline: ci_build.pipeline)
+    create(:commit_status, project: project, pipeline: ci_build.pipeline)
 
     create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
