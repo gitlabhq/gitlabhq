@@ -303,14 +303,10 @@ ActiveRecord::Schema.define(version: 20170830125940) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
-<<<<<<< HEAD
     t.integer "artifacts_file_store"
     t.integer "artifacts_metadata_store"
     t.boolean "protected"
-=======
-    t.boolean "protected"
     t.integer "failure_reason"
->>>>>>> ce-com/master
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
