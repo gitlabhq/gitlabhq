@@ -16,7 +16,7 @@
 
 - support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
 
-%div{ class: "#{container_class} service-desk-issues", data: { support_bot: support_bot_attrs }}
+%div{ class: "#{container_class} service-desk-issues", data: { support_bot: support_bot_attrs } }
   .top-area
     = render 'shared/issuable/nav', type: :issues
     .nav-controls{ class: ("visible-xs" if show_new_nav?) }

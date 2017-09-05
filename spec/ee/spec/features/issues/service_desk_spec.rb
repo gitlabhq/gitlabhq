@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Service Desk Issue Tracker', focus: true do
+describe 'Service Desk Issue Tracker' do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
   let(:user) { create(:user) }
 
