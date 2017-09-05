@@ -37,7 +37,7 @@ export default {
 
         <p v-else>
           Lock this issue? Only
-          <strong>project memebers</strong>
+          <strong>project members</strong>
           will be able to comment.
         </p>
 
