@@ -72,6 +72,57 @@ There are a few gotchas with it:
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE.
+- when the original implementation contains a guard clause (e.g.
+  `return unless condition`), we cannot easily extend the behaviour by
+  overriding the method, because we can't know when the overridden method
+  (i.e. calling super in the overriding method) would want to stop early.
+  In this case, we shouldn't just override it, but update the original method
+  to make it call the other method we want to extend, like a [template method
+  pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
+  For example, given this base:
+
+  ``` ruby
+    class Base
+      def execute
+        return unless enabled?
+
+        # ...
+        # ...
+      end
+    end
+  ```
+
+  Instead of just overriding `Base#execute`, we should update it and extract
+  the behaviour into another method:
+
+  ``` ruby
+    class Base
+      def execute
+        return unless enabled?
+
+        do_something
+      end
+
+      private
+
+      def do_something
+        # ...
+        # ...
+      end
+    end
+  ```
+
+  Then we're free to override that `do_something` without worrying the guards:
+
+  ``` ruby
+    module EE::Base
+      def do_something
+        # Follow the above pattern to call super and extend it
+      end
+    end
+  ```
+
+  This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
