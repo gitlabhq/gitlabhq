@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import GraphRow from '~/monitoring/components/graph_row.vue';
 import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
-import { deploymentData, singleRowMetrics } from './mock_data';
+import { deploymentData, convertDatesMultipleSeries, singleRowMetricsMultipleSeries } from './mock_data';
 
 const createComponent = (propsData) => {
   const Component = Vue.extend(GraphRow);
@@ -11,15 +11,15 @@ const createComponent = (propsData) => {
   }).$mount();
 };
 
+const convertedMetrics = convertDatesMultipleSeries(singleRowMetricsMultipleSeries);
 describe('GraphRow', () => {
   beforeEach(() => {
     spyOn(MonitoringMixins.methods, 'formatDeployments').and.returnValue({});
   });
-
   describe('Computed props', () => {
     it('bootstrapClass is set to col-md-6 when rowData is higher/equal to 2', () => {
       const component = createComponent({
-        rowData: singleRowMetrics,
+        rowData: convertedMetrics,
         updateAspectRatio: false,
         deploymentData,
       });
@@ -29,7 +29,7 @@ describe('GraphRow', () => {
 
     it('bootstrapClass is set to col-md-12 when rowData is lower than 2', () => {
       const component = createComponent({
-        rowData: [singleRowMetrics[0]],
+        rowData: [convertedMetrics[0]],
         updateAspectRatio: false,
         deploymentData,
       });
@@ -40,7 +40,7 @@ describe('GraphRow', () => {
 
   it('has one column', () => {
     const component = createComponent({
-      rowData: singleRowMetrics,
+      rowData: convertedMetrics,
       updateAspectRatio: false,
       deploymentData,
     });
@@ -51,7 +51,7 @@ describe('GraphRow', () => {
 
   it('has two columns', () => {
     const component = createComponent({
-      rowData: singleRowMetrics,
+      rowData: convertedMetrics,
       updateAspectRatio: false,
       deploymentData,
     });
