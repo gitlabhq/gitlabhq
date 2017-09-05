@@ -15,7 +15,7 @@ describe('Project move field component', () => {
     vm = new Component({
       propsData: {
         formState,
-        projectsAutocompleteUrl: '/autocomplete',
+        projectsAutocompletePath: '/autocomplete',
       },
     }).$mount();
 

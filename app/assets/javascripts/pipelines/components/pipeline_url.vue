@@ -25,17 +25,21 @@
       user() {
         return this.pipeline.user;
       },
-      autoDevOpsTitle() {
-        return '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>';
-      },
-      autoDevOpsContent() {
-        return `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`;
+      popoverOptions() {
+        return {
+          html: true,
+          delay: { hide: 600 },
+          trigger: 'hover',
+          placement: 'top',
+          title: '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>',
+          content: `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`,
+        };
       },
     },
   };
 </script>
 <template>
-  <div class="table-section section-15 hidden-xs hidden-sm">
+  <div class="table-section section-15 hidden-xs hidden-sm pipeline-tags">
     <a
       :href="pipeline.path"
       class="js-pipeline-url-link">
@@ -71,14 +75,9 @@
       </span>
       <a
         v-if="pipeline.flags.auto_devops"
-        class="js-pipeline-url-autodevops label label-info"
-        v-popover:html
-        tabindex="0"
-        role="button"
-        data-trigger="focus"
-        data-placement="top"
-        :title="autoDevOpsTitle"
-        :data-content="autoDevOpsContent">
+        class="js-pipeline-url-autodevops label label-info autodevops-badge"
+        v-popover="popoverOptions"
+        role="button">
         Auto DevOps
       </a>
       <span

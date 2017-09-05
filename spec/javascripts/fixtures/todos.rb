@@ -15,6 +15,10 @@ describe 'Todos (JavaScript fixtures)' do
     clean_frontend_fixtures('todos/')
   end
 
+  after do
+    remove_repository(project)
+  end
+
   describe Dashboard::TodosController, '(JavaScript fixtures)', type: :controller do
     render_views
 

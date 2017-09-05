@@ -250,6 +250,10 @@ ul.related-merge-requests > li {
   }
 }
 
+.discussion-reply-holder .note-edit-form {
+  display: block;
+}
+
 @media (min-width: $screen-sm-min) {
   .emoji-block .row {
     display: flex;

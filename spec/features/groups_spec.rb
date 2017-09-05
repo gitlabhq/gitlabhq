@@ -158,7 +158,7 @@ feature 'Group' do
       expect(page).to have_content 'successfully updated'
       expect(find('#group_name').value).to eq(new_name)
 
-      page.within ".navbar-gitlab" do
+      page.within ".breadcrumbs" do
         expect(page).to have_content new_name
       end
     end

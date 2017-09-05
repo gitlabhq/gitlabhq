@@ -67,10 +67,11 @@ module Ci
         return error('Commit not found')
       end
 
+      unless pipeline.detect_ci_yaml_file
+        return error("Missing #{pipeline.ci_yaml_file_path} file")
+      end
+
       unless pipeline.config_processor
-        unless pipeline.ci_yaml_file
-          return error("Missing #{pipeline.ci_yaml_file_path} file")
-        end
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
 

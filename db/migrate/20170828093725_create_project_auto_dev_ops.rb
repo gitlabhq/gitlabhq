@@ -7,9 +7,9 @@ class CreateProjectAutoDevOps < ActiveRecord::Migration
 
   def up
     create_table :project_auto_devops do |t|
-      t.belongs_to :project, index: true
+      t.belongs_to :project, null: false, index: { unique: true }
       t.boolean :enabled, default: nil, null: true
-      t.string :domain
+      t.string :domain, null: false
     end
 
     add_timestamps_with_timezone(:project_auto_devops, null: false)

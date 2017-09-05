@@ -51,8 +51,9 @@ module Ci
     }
 
     enum config_source: {
-      repository: nil,
-      auto_devops: 1
+      unknown_source: nil,
+      repository_source: 1,
+      auto_devops_source: 2
     }
 
     state_machine :status, initial: :created do
@@ -317,6 +318,11 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
+    def detect_ci_yaml_file
+      ci_yaml_from_repo&.tap { self.repository_source! } ||
+        implied_ci_yaml_file&.tap { self.auto_devops_source! }
+    end
+
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -343,8 +349,13 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = ci_yaml_from_repo
-      @ci_yaml_file ||= implied_ci_yaml_file&.tap { self.auto_devops! }
+      @ci_yaml_file =
+        case config_source
+        when :repository_source, :unknown_source
+          ci_yaml_from_repo
+        when :auto_devops_source
+          implied_ci_yaml_file
+        end
 
       if @ci_yaml_file
         @ci_yaml_file
@@ -437,16 +448,16 @@ module Ci
 
     private
 
-    def implied_ci_yaml_file
-      if project.auto_devops_enabled?
-        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
-      end
-    end
-
     def ci_yaml_from_repo
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
     rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
       nil
+    end
+
+    def implied_ci_yaml_file
+      if project.auto_devops_enabled?
+        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
+      end
     end
 
     def pipeline_data

@@ -130,6 +130,10 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1119,14 +1123,14 @@ ActiveRecord::Schema.define(version: 20170831092813) do
   add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
 
   create_table "project_auto_devops", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.boolean "enabled"
-    t.string "domain"
+    t.string "domain", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end
 
-  add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", using: :btree
+  add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
@@ -1211,6 +1215,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.string "repository_storage", default: "default", null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
+    t.string "ci_config_path"
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"

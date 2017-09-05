@@ -13,6 +13,8 @@ describe 'Issue Boards', js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+
     sign_in(user)
   end
 
@@ -144,6 +146,8 @@ describe 'Issue Boards', js: true do
     it 'removes checkmark in new list dropdown after deleting' do
       click_button 'Add list'
       wait_for_requests
+
+      find('.dropdown-menu-close').click
 
       page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click

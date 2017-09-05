@@ -13,6 +13,11 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
+  # Setting a key restriction to `-1` means that all keys of this type are
+  # forbidden.
+  FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
+  SUPPORTED_KEY_TYPES = %i[rsa dsa ecdsa ed25519].freeze
+
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
   serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
@@ -146,6 +151,12 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  SUPPORTED_KEY_TYPES.each do |type|
+    validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
+  end
+
+  validates :allowed_key_types, presence: true
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)
@@ -171,6 +182,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   before_validation :ensure_uuid!
+
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
@@ -221,6 +233,9 @@ class ApplicationSetting < ActiveRecord::Base
       default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       disabled_oauth_sign_in_sources: [],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
+      dsa_key_restriction: 0,
+      ecdsa_key_restriction: 0,
+      ed25519_key_restriction: 0,
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
       help_page_hide_commercial_content: false,
@@ -239,6 +254,7 @@ class ApplicationSetting < ActiveRecord::Base
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
       performance_bar_allowed_group_id: nil,
+      rsa_key_restriction: 0,
       plantuml_enabled: false,
       plantuml_url: nil,
       project_export_enabled: true,
@@ -411,6 +427,18 @@ class ApplicationSetting < ActiveRecord::Base
 
   def usage_ping_enabled
     usage_ping_can_be_configured? && super
+  end
+
+  def allowed_key_types
+    SUPPORTED_KEY_TYPES.select do |type|
+      key_restriction_for(type) != FORBIDDEN_KEY_VALUE
+    end
+  end
+
+  def key_restriction_for(type)
+    attr_name = "#{type}_key_restriction"
+
+    has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
   end
 
   private

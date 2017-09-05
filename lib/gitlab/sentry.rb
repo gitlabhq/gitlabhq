@@ -9,6 +9,8 @@ module Gitlab
     def self.context(current_user = nil)
       return unless self.enabled?
 
+      Raven.tags_context(locale: I18n.locale)
+
       if current_user
         Raven.user_context(
           id: current_user.id,

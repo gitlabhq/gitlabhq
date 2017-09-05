@@ -26,11 +26,11 @@
         required: false,
         default: () => [],
       },
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
@@ -42,7 +42,7 @@
         type: String,
         required: true,
       },
-      projectsAutocompleteUrl: {
+      projectsAutocompletePath: {
         type: String,
         required: true,
       },
@@ -89,14 +89,14 @@
     </div>
     <description-field
       :form-state="formState"
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs" />
+      :markdown-preview-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath" />
     <confidential-checkbox
       :form-state="formState" />
     <project-move
       v-if="canMove"
       :form-state="formState"
-      :projects-autocomplete-url="projectsAutocompleteUrl" />
+      :projects-autocomplete-path="projectsAutocompletePath" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy" />

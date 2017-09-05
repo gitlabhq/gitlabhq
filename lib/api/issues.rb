@@ -81,7 +81,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: { id: %r{[^/]+} } do
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a list of group issues' do
         success Entities::IssueBasic
       end
@@ -108,7 +108,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
       desc 'Get a list of project issues' do

@@ -908,7 +908,7 @@ class Repository
 
       committer = user_to_committer(user)
 
-      create_commit(message: commit.message,
+      create_commit(message: commit.cherry_pick_message(user),
                     author: {
                         email: commit.author_email,
                         name: commit.author_name,

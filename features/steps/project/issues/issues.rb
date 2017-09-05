@@ -62,7 +62,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New issue"' do
-    page.within '#content-body' do
+    page.within '.breadcrumbs' do
       page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
     end
   end
@@ -168,6 +168,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first,
            description: "# Description header"
           )
+    wait_for_requests
   end
 
   step 'project "Shop" have "Tweet control" open issue' do
