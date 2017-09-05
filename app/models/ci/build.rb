@@ -143,9 +143,7 @@ module Ci
       end
 
       before_transition any => [:running] do |build|
-        if build.specified_dependencies? && build.dependencies.empty?
-          raise MissingDependenciesError
-        end
+        build.validates_dependencies!
       end
     end
 
@@ -486,8 +484,20 @@ module Ci
       options[:dependencies]&.empty?
     end
 
-    def specified_dependencies?
-      options.has_key?(:dependencies) && options[:dependencies].any?
+    def validates_dependencies!
+      dependencies.tap do |deps|
+        # When `dependencies` keyword is given and depended jobs are skipped by `only` keyword
+        if options[:dependencies]&.any? && deps.empty?
+          raise MissingDependenciesError
+        end
+
+        # When artifacts of depended jobs have not existsed
+        deps.each do |dep|
+          if dep.options[:artifacts]&.any? && !dep.artifacts?
+            raise MissingDependenciesError
+          end
+        end
+      end
     end
 
     def hide_secrets(trace)

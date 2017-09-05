@@ -291,6 +291,31 @@ module Ci
           it "picks the build" do
             expect(picked_job).to eq(pending_job)
           end
+
+          context 'when "artifacts" keyword is specified on depended job' do
+            let!(:pre_stage_job) do
+              create(:ci_build, :success, :artifacts, pipeline: pipeline, name: job_name, stage_idx: 0,
+                                options: { artifacts: { paths: ['binaries/'] } } )
+            end
+
+            context 'when artifacts of depended job has existsed' do
+              it "picks the build" do
+                expect(picked_job).to eq(pending_job)
+              end
+            end
+
+            context 'when artifacts of depended job has not existsed' do
+              before do
+                pre_stage_job.erase_artifacts!
+              end
+
+              it 'does not pick the build and drops the build' do
+                expect(picked_job).to be_nil
+                expect(pending_job.reload).to be_failed
+                expect(pending_job).to be_missing_dependency_failure
+              end
+            end
+          end
         end
 
         context 'when depended jobs do not exist' do

@@ -1887,9 +1887,28 @@ describe Ci::Build do
       let(:options) { { dependencies: ['test'] } }
 
       context 'when a depended job exists' do
-        let!(:pre_build) { create(:ci_build, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
         it { expect { build.run! }.not_to raise_error }
+
+        context 'when "artifacts" keyword is specified on depended job' do
+          let!(:pre_stage_job) do
+            create(:ci_build, :artifacts, pipeline: pipeline, name: 'test', stage_idx: 0,
+                              options: { artifacts: { paths: ['binaries/'] } } )
+          end
+
+          context 'when artifacts of depended job has existsed' do
+            it { expect { build.run! }.not_to raise_error }
+          end
+
+          context 'when artifacts of depended job has not existsed' do
+            before do
+              pre_stage_job.erase_artifacts!
+            end
+
+            it { expect { build.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+          end
+        end
       end
 
       context 'when depended jobs do not exist' do
