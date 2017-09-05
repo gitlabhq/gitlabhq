@@ -1,6 +1,6 @@
 %ul.list-unstyled.navbar-sub-nav
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown" }) do
-    %a.dashboard-shortcuts-projects{ href: '#', title: 'Projects', data: { toggle: 'dropdown' } }
+    %a{ href: '#', title: 'Projects', data: { toggle: 'dropdown' } }
       Projects
       = icon("chevron-down", class: "dropdown-chevron")
     .dropdown-menu.projects-dropdown-menu
@@ -34,3 +34,8 @@
         %li.divider
         %li
           = link_to "Help", help_path, title: 'About GitLab CE'
+
+  -# Shortcut to Dashboard > Projects
+  %li.hidden
+    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+      Projects
