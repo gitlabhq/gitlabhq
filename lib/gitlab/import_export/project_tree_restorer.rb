@@ -72,7 +72,7 @@ module Gitlab
         @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
 
         # Restore the project again, extra query but let us skip holding the AR objects in memory
-        @restored_project = Project.find_by_id(@project_id)
+        @restored_project = Project.find(@project_id)
       end
 
       def default_relation_list
@@ -153,14 +153,12 @@ module Gitlab
       end
 
       def create_relation(relation, relation_hash_list)
-        relation_type = relation.to_sym
-
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
-          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation_type,
-                                                       relation_hash: parsed_relation_hash(relation_hash, relation_type),
+          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
+                                                       relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project: restored_project)
+                                                       project: @restored_project)
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
