@@ -12,6 +12,11 @@ module EE
       with_scope :subject
       condition(:deploy_board_disabled) { !@subject.feature_available?(:deploy_board) }
 
+      with_scope :subject
+      condition(:jira_dev_panel_integration_disabled) do
+        !@subject.feature_available?(:jira_dev_panel_integration)
+      end
+
       with_scope :global
       condition(:is_development) { Rails.env.development? }
 
@@ -34,12 +39,17 @@ module EE
         prevent :admin_issue_link
       end
 
+      rule { jira_dev_panel_integration_disabled }.policy do
+        prevent :integrate_to_jira_dev_panel
+      end
+
       rule { can?(:read_issue) }.enable :read_issue_link
 
       rule { can?(:reporter_access) }.policy do
         enable :admin_board
         enable :read_deploy_board
         enable :admin_issue_link
+        enable :integrate_to_jira_dev_panel
       end
 
       rule { can?(:developer_access) }.enable :admin_board

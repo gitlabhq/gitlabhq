@@ -20,6 +20,7 @@ class License < ActiveRecord::Base
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
+  JIRA_DEV_PANEL_INTEGRATION_FEATURE = 'GitLab_JiraDevelopmentPanelIntegration'.freeze
   LDAP_EXTRAS_FEATURE = 'GitLab_LdapExtras'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
@@ -63,6 +64,7 @@ class License < ActiveRecord::Base
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
     jenkins_integration: JENKINS_INTEGRATION_FEATURE,
+    jira_dev_panel_integration: JIRA_DEV_PANEL_INTEGRATION_FEATURE,
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
@@ -114,6 +116,7 @@ class License < ActiveRecord::Base
     { FILE_LOCKS_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { OBJECT_STORAGE_FEATURE => 1 },
+    { JIRA_DEV_PANEL_INTEGRATION_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
     { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
   ].freeze

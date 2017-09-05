@@ -8,6 +8,12 @@ module API
           requires :namespace, type: String
           requires :project, type: String
         end
+
+        def find_project_with_access(full_path, access_level = :integrate_to_jira_dev_panel)
+          project = find_project!(full_path)
+          authorize! access_level, project
+          project
+        end
       end
 
       resource :orgs do
@@ -24,8 +30,9 @@ module API
 
       resource :users do
         get ':namespace/repos' do
-          present paginate(current_user.authorized_projects),
-                  with: ::API::Entities::Github::Repository
+          projects = current_user.authorized_projects.select { |project| can?(current_user, :integrate_to_jira_dev_panel, project) }
+          projects = ::Kaminari.paginate_array(projects)
+          present paginate(projects), with: ::API::Entities::Github::Repository
         end
       end
 
@@ -40,7 +47,7 @@ module API
         get ':namespace/:project/branches' do
           namespace = params[:namespace]
           project = params[:project]
-          user_project = find_project!("#{namespace}/#{project}")
+          user_project = find_project_with_access("#{namespace}/#{project}")
 
           branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
@@ -55,7 +62,7 @@ module API
         get ':namespace/:project/commits/:sha' do
           namespace = params[:namespace]
           project = params[:project]
-          user_project = find_project!("#{namespace}/#{project}")
+          user_project = find_project_with_access("#{namespace}/#{project}")
 
           commit = user_project.commit(params[:sha])
 

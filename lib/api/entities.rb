@@ -1113,13 +1113,13 @@ module API
         expose :id, as: :sha
         expose :author do |commit|
           {
-            login: commit.author.username,
+            login: commit.author&.username,
             email: commit.author_email
           }
         end
         expose :committer do |commit|
           {
-            login: commit.author.username,
+            login: commit.author&.username,
             email: commit.committer_email
           }
         end
