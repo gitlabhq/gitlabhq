@@ -192,17 +192,20 @@ describe ProjectsHelper do
   end
 
   describe '#link_to_member_avatar' do
-    let(:user) { create(:user) }
+    let(:user) { build_stubbed(:user) }
 
     it 'returns image tag for member avatar' do
-      expect(helper.link_to_member_avatar(user)).to eq("<img width=\"16\" class=\"avatar avatar-inline s16  lazy\" alt=\"\" data-src=\"http://www.gravatar.com/avatar/a763e4acc6bc22cbabeae2638cfd4db4?s=32&amp;d=identicon\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" />")
+      allow(helper).to receive(:image_tag).with(nil, {width: 16, class: ["avatar", "avatar-inline", "s16"], alt: ""})
+      allow(helper).to receive(:avatar_icon).with(user, 16)
+
+      helper.link_to_member_avatar(user)
     end
   end
 
   describe '#link_to_member' do
-    let(:group)   { create(:group) }
-    let(:project) { create(:project, group: group) }
-    let(:user)    { create(:user) }
+    let(:group)   { build_stubbed(:group) }
+    let(:project) { build_stubbed(:project, group: group) }
+    let(:user)    { build_stubbed(:user) }
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
