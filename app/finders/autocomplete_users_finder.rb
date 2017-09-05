@@ -1,4 +1,4 @@
-class YetAnotherUsersFinder
+class AutocompleteUsersFinder
   attr_reader :current_user, :users, :search, :skip_users, :page,
               :per_page, :author_id, :params
 

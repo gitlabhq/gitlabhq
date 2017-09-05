@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe YetAnotherUsersFinder do
+describe AutocompleteUsersFinder do
   describe '#execute' do
     let!(:user1) { create(:user, username: 'johndoe') }
     let!(:user2) { create(:user, :blocked, username: 'notsorandom') }

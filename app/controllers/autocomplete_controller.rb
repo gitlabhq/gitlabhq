@@ -6,7 +6,7 @@ class AutocompleteController < ApplicationController
   before_action :find_users, only: [:users]
 
   def users
-    @users = YetAnotherUsersFinder.new(params: params, current_user: current_user, users: @users).execute
+    @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, users: @users).execute
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
