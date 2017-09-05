@@ -80,7 +80,7 @@ describe Gitlab::SQL::Pattern do
       end
     end
 
-    context 'with two words divided by two speces both equal to 3 chars' do
+    context 'with two words divided by two spaces both equal to 3 chars' do
       let(:query) { 'foo  baz' }
 
       it 'returns array containing two words' do
