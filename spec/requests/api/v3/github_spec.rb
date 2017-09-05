@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe API::V3::GithubRepos do
+describe API::V3::Github do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user) }
 
   before do
+    allow(Gitlab::Jira::Middleware).to receive(:jira_dvcs_connector?) { true }
     project.add_master(user)
   end
 

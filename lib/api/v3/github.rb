@@ -1,12 +1,19 @@
 module API
   module V3
-    class GithubRepos < Grape::API
-      before { authenticate! }
+    class Github < Grape::API
+      before do
+        authenticate!
+        authorize_jira_user_agent!(request)
+      end
 
       helpers do
         params :project_full_path do
           requires :namespace, type: String
           requires :project, type: String
+        end
+
+        def authorize_jira_user_agent!(request)
+          not_found! unless Gitlab::Jira::Middleware.jira_dvcs_connector?(request.env)
         end
 
         def find_project_with_access(full_path)
@@ -32,7 +39,7 @@ module API
         get ':namespace/repos' do
           projects = current_user.authorized_projects.select { |project| project.feature_available?(:jira_dev_panel_integration) }
           projects = ::Kaminari.paginate_array(projects)
-          present paginate(projects), with: ::API::Entities::Github::Repository
+          present paginate(projects), with: ::API::Github::Entities::Repository
         end
       end
 
@@ -51,9 +58,7 @@ module API
 
           branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
-          present paginate(branches),
-                  with: ::API::Entities::Github::Branch,
-                  project: user_project
+          present paginate(branches), with: ::API::Github::Entities::Branch, project: user_project
         end
 
         params do
@@ -68,7 +73,7 @@ module API
 
           not_found! 'Commit' unless commit
 
-          present commit, with: ::API::Entities::Github::RepoCommit
+          present commit, with: ::API::Github::Entities::RepoCommit
         end
       end
     end

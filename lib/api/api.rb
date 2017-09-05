@@ -52,8 +52,8 @@ module API
 
       # Although the following endpoints are kept behind V3 namespace, they're not
       # deprecated neither should be removed when V3 get removed.
-      # They're needed as a layer to integrate with Jira development panel.
-      mount ::API::V3::GithubRepos
+      # They're needed as a layer to integrate with Jira Development Panel.
+      mount ::API::V3::Github
     end
 
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }
