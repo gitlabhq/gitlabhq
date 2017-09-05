@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824162758) do
+ActiveRecord::Schema.define(version: 20170905202320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -671,6 +671,9 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "repositories_changed_event_id", limit: 8
   end
 
+  add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
+  add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
+  add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
 
   create_table "geo_node_namespace_links", force: :cascade do |t|
