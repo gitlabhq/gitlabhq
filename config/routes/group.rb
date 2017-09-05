@@ -41,6 +41,9 @@ scope(path: 'groups/*id',
   get :merge_requests, as: :merge_requests_group
   get :projects, as: :projects_group
   get :activity, as: :activity_group
+  scope(path: '-') do
+    get :children, as: :group_children
+  end
   get '/', action: :show, as: :group_canonical
 end
 

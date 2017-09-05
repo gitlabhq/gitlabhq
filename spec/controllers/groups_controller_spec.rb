@@ -150,39 +150,79 @@ describe GroupsController do
     end
   end
 
-  describe 'GET #subgroups', :nested_groups do
-    let!(:public_subgroup) { create(:group, :public, parent: group) }
-    let!(:private_subgroup) { create(:group, :private, parent: group) }
+  describe 'GET #children' do
+    context 'for projects' do
+      let!(:public_project) { create(:project, :public, namespace: group) }
+      let!(:private_project) { create(:project, :private, namespace: group) }
 
-    context 'as a user' do
-      before do
-        sign_in(user)
-        pending('spec the children path instead')
+      context 'as a user' do
+        before do
+          sign_in(user)
+        end
+
+        it 'shows all children' do
+          get :children, id: group.to_param, format: :json
+
+          expect(assigns(:children)).to contain_exactly(public_project, private_project)
+        end
+
+        context 'being member of private subgroup' do
+          it 'shows public and private children the user is member of' do
+            group_member.destroy!
+            private_project.add_guest(user)
+
+            get :children, id: group.to_param, format: :json
+
+            expect(assigns(:children)).to contain_exactly(public_project, private_project)
+          end
+        end
       end
 
-      it 'shows all subgroups' do
-        get :subgroups, id: group.to_param
+      context 'as a guest' do
+        it 'shows the public children' do
+          get :children, id: group.to_param, format: :json
 
-        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
-      end
-
-      context 'being member of private subgroup' do
-        it 'shows public and private subgroups the user is member of' do
-          group_member.destroy!
-          private_subgroup.add_guest(user)
-
-          get :subgroups, id: group.to_param
-
-          expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
+          expect(assigns(:children)).to contain_exactly(public_project)
         end
       end
     end
 
-    context 'as a guest' do
-      it 'shows the public subgroups' do
-        get :subgroups, id: group.to_param
+    context 'for subgroups', :nested_groups do
+      let!(:public_subgroup) { create(:group, :public, parent: group) }
+      let!(:private_subgroup) { create(:group, :private, parent: group) }
+      let!(:public_project) { create(:project, :public, namespace: group) }
+      let!(:private_project) { create(:project, :private, namespace: group) }
 
-        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+      context 'as a user' do
+        before do
+          sign_in(user)
+        end
+
+        it 'shows all children' do
+          get :children, id: group.to_param, format: :json
+
+          expect(assigns(:children)).to contain_exactly(public_subgroup, private_subgroup, public_project, private_project)
+        end
+
+        context 'being member of private subgroup' do
+          it 'shows public and private children the user is member of' do
+            group_member.destroy!
+            private_subgroup.add_guest(user)
+            private_project.add_guest(user)
+
+            get :children, id: group.to_param, format: :json
+
+            expect(assigns(:children)).to contain_exactly(public_subgroup, private_subgroup, public_project, private_project)
+          end
+        end
+      end
+
+      context 'as a guest' do
+        it 'shows the public children' do
+          get :children, id: group.to_param, format: :json
+
+          expect(assigns(:children)).to contain_exactly(public_subgroup, public_project)
+        end
       end
     end
   end

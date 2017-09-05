@@ -61,7 +61,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def children
-    parent = Group.find_by(parent_id: params[:parent_id]) || @group
+    parent = if params[:parent_id].present?
+               Group.find(params[:parent_id])
+             else
+               @group
+             end
     if parent.nil? || !can?(current_user, :read_group, parent)
       render_404
     end
@@ -70,7 +74,7 @@ class GroupsController < Groups::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: GroupChildrenSerializer
+        render json: GroupChildSerializer
                  .new(current_user: current_user)
                  .with_pagination(request, response)
                  .represent(@children)
