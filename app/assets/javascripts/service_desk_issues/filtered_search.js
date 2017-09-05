@@ -12,7 +12,8 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
   customRemovalValidator(token) {
     const tokenValue = token.querySelector('.value-container');
 
-    return tokenValue ? tokenValue.getAttribute('data-original-value') !== `@${this.supportBotAttrs.username}` : true;
+    return tokenValue ?
+      tokenValue.getAttribute('data-original-value') !== `@${this.supportBotAttrs.username}` : true;
   }
 
   canEdit(tokenName) {
