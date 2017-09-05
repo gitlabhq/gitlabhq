@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:test_trace) { 'This is a test' }
+  set(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
 
-  let(:pipeline) do
+  set(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
                          ref: project.default_branch,
                          status: 'success')
   end
+
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
@@ -1096,9 +1096,6 @@ describe Ci::Build do
   end
 
   describe '#repo_url' do
-    let(:build) { create(:ci_build) }
-    let(:project) { build.project }
-
     subject { build.repo_url }
 
     it { is_expected.to be_a(String) }
