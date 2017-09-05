@@ -97,19 +97,23 @@ module GroupsHelper
     end
   end
 
+  def parent_group_link
+    link_to @group.parent.name, group_path(@group.parent)
+  end
+
   def default_help
-    "This setting will be applied to all subgroups unless overridden by a group owner."
+    s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner.")
   end
 
   def parent_locked_but_you_can_override
-    "This setting is applied on #{@group.parent.name}. You can override the setting or remove the share lock from the parent group."
+    s_("GroupSettings|This setting is applied on %{parent_group}. You can override the setting or remove the share lock from the parent group.") % { parent_group: parent_group_link }
   end
 
   def parent_locked_so_ask_the_owner
-    "This setting is applied on #{@group.parent.name}. To share this group with another group, ask the owner to override the setting or remove the share lock from the parent group."
+    s_("GroupSettings|This setting is applied on %{parent_group}. To share this group with another group, ask the owner to override the setting or remove the share lock from the parent group.") % { parent_group: parent_group_link }
   end
 
   def parent_locked_and_has_been_overridden
-    "This setting is applied on #{@group.parent.name} and has been overridden on this subgroup."
+    s_("GroupSettings|This setting is applied on %{parent_group} and has been overridden on this subgroup.") % { parent_group: parent_group_link }
   end
 end

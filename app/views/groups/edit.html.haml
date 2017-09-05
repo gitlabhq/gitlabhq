@@ -30,15 +30,14 @@
 
       .form-group
         %h5.control-label
-          Share lock
+          = s_("GroupSettings|Share lock")
         .col-sm-10
           .checkbox
             = f.label :share_with_group_lock do
               = f.check_box :share_with_group_lock, disabled: share_with_group_lock_disabled
               %strong
-                Prevent sharing a project within
-                = @group.name
-                with other groups
+                - group_link = link_to @group.name, group_path(@group)
+                = s_("GroupSettings|Prevent sharing a project within %{group} with other groups").html_safe % { group: group_link }
               %br
               %span.descr= share_with_group_lock_help_text
 
