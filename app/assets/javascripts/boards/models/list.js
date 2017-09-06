@@ -112,6 +112,7 @@ class List {
       .then((data) => {
         issue.id = data.id;
         issue.iid = data.iid;
+        issue.project = data.project;
 
         if (this.issuesSize > 1) {
           const moveBeforeId = this.issues[1].id;
