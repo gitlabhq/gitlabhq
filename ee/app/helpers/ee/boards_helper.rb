@@ -25,8 +25,8 @@ module EE
       end
     end
 
-    def board_path(board)
-      @board_path ||= begin
+    def current_board_path(board)
+      @current_board_path ||= begin
         if board.group_board?
           group_board_path(current_board_parent, board)
         else

@@ -26,7 +26,7 @@
           %li{ "v-for" => "board in boards" }
             %a{ ":href" => "'#{board_base_url}/' + board.id" }
               {{ board.name }}
-          - if !multiple_boards_available? && @boards.size > 1
+          - if !multiple_boards_available? && current_board_parent.boards.size > 1
             %li.small
               Some of your boards are hidden, activate a license to see them again.
       .dropdown-loading{ "v-if" => "loading" }
@@ -40,7 +40,7 @@
           %p
             Are you sure you want to delete this board?
           .board-delete-btns.clearfix
-            = link_to board_path(board),
+            = link_to current_board_path(board),
               class: "btn btn-danger pull-left",
               method: :delete do
               Delete
