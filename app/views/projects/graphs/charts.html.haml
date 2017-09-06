@@ -1,7 +1,6 @@
 - @no_container = true
 - page_title "Charts"
-- if show_new_nav?
-  - add_to_breadcrumbs("Repository", project_tree_path(@project))
+- add_to_breadcrumbs("Repository", project_tree_path(@project))
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_d3')
   = webpack_bundle_tag('graphs')
