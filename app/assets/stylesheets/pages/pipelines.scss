@@ -20,7 +20,7 @@
 
   &:hover {
     background-color: $stage-hover-bg;
-    border: 1px solid $$dropdown-toggle-active-border-color;
+    border: 1px solid $dropdown-toggle-active-border-color;
     color: $gl-text-color;
   }
 }
