@@ -38,6 +38,9 @@ describe MergeRequest do
   end
 
   describe '#rebase_in_progress?' do
+    # Create merge request and project before we stub file calls
+    before { subject }
+
     it 'returns true when there is a current rebase directory' do
       allow(File).to receive(:exist?).and_return(true)
       allow(File).to receive(:mtime).and_return(Time.now)
@@ -69,6 +72,9 @@ describe MergeRequest do
   end
 
   describe '#squash_in_progress?' do
+    # Create merge request and project before we stub file calls
+    before { subject }
+
     it 'returns true when there is a current squash directory' do
       allow(File).to receive(:exist?).and_return(true)
       allow(File).to receive(:mtime).and_return(Time.now)
