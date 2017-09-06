@@ -27,7 +27,6 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -47,6 +46,7 @@ module Ci
 
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_save :ensure_token
+    before_save :set_protected
     before_destroy { unscoped_project }
 
     after_create do |build|
@@ -459,6 +459,10 @@ module Ci
                             else
                               nil
                             end
+    end
+
+    def set_protected
+      self.protected = pipeline.protected
     end
 
     def erase_trace!

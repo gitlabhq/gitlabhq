@@ -52,6 +52,17 @@ describe Ci::RetryBuildService do
           expect(new_build.send(attribute)).to eq build.send(attribute)
         end
       end
+
+      context 'when job has nullified protected' do
+        before do
+          build.update_attribute(:protected, nil)
+        end
+
+        it "clones protected build attribute" do
+          expect(new_build.protected).not_to be_nil
+          expect(new_build.protected).to eq build.protected
+        end
+      end
     end
 
     describe 'reject acessors' do
