@@ -10,6 +10,7 @@ describe 'Filter issues', js: true do
   # When the name is longer, the filtered search input can end up scrolling
   # horizontally, and PhantomJS can't handle it.
   let(:user) { create(:user, name: 'Ann') }
+  let(:user2) { create(:user, name: 'jane') }
 
   let!(:bug_label) { create(:label, project: project, title: 'bug') }
   let!(:caps_sensitive_label) { create(:label, project: project, title: 'CaPs') }
@@ -33,8 +34,6 @@ describe 'Filter issues', js: true do
 
   before do
     project.add_master(user)
-
-    user2 = create(:user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
     create(:issue, project: project, author: user2, title: "Bug report 2")
