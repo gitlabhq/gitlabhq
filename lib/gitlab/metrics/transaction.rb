@@ -43,8 +43,8 @@ module Gitlab
       def self.metric_transaction_duration_seconds
         @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
           :gitlab_transaction_duration_seconds,
-          'Transaction duration seconds',
-          {},
+          'Transaction duration',
+          { action: nil },
           [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
         )
       end
@@ -53,7 +53,7 @@ module Gitlab
         @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
           :gitlab_transaction_allocated_memory_bytes,
           'Transaction allocated memory bytes',
-          {},
+          { action: nil },
           [500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
         )
       end
@@ -69,8 +69,8 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        Transaction.metric_transaction_duration_seconds.observe({}, duration * 1000)
-        Transaction.metric_transaction_allocated_memory_bytes.observe({}, allocated_memory / 2 ^ 20)
+        Transaction.metric_transaction_duration_seconds.observe({ action: action }, duration * 1000)
+        Transaction.metric_transaction_allocated_memory_bytes.observe({ action: action }, allocated_memory / 2 ^ 20)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -94,7 +94,7 @@ module Gitlab
       # Returns a MethodCall object for the given name.
       def method_call_for(name)
         unless method = @methods[name]
-          @methods[name] = method = MethodCall.new(name)
+          @methods[name] = method = MethodCall.new(name, action)
         end
 
         method

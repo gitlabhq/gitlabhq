@@ -4,26 +4,29 @@ module Gitlab
     class MethodCall
       attr_reader :real_time, :cpu_time, :call_count
 
-      # name - The full name of the method (including namespace) such as
-      #        `User#sign_in`.
-      #
       def self.call_real_duration_histogram
-        @call_real_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_real_duration_milliseconds,
-                                                                    'Method calls real duration',
-                                                                    {call_name: nil},
-                                                                    [1, 2, 5, 10, 20, 50, 100, 1000])
-
+        @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
+          :gitlab_method_call_real_duration_seconds,
+          'Method calls real duration',
+          { action: nil, call_name: nil },
+          [1000, 2000, 5000, 10000, 20000, 50000, 100000, 1000000]
+        )
       end
 
       def self.call_cpu_duration_histogram
-        @call_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_cpu_duration_milliseconds,
-                                                               'Method calls cpu duration',
-                                                               {call_name: nil},
-                                                               [1, 2, 5, 10, 20, 50, 100, 1000])
+        @call_duration_histogram ||= Gitlab::Metrics.histogram(
+          :gitlab_method_call_cpu_duration_seconds,
+          'Method calls cpu duration',
+          { action: nil, call_name: nil },
+          [1000, 2000, 5000, 10000, 20000, 50000, 100000, 1000000]
+        )
       end
 
-
-      def initialize(name)
+      # name - The full name of the method (including namespace) such as
+      #        `User#sign_in`.
+      #
+      def initialize(name, action)
+        @action = action
         @name = name
         @real_time = 0
         @cpu_time = 0
@@ -41,8 +44,8 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          self.class.call_real_duration_histogram.observe({ call_name: @name }, @real_time)
-          self.class.call_cpu_duration_histogram.observe({ call_name: @name }, @cpu_time)
+          self.class.call_real_duration_histogram.observe({ call_name: @name, action: @action }, @real_time)
+          self.class.call_cpu_duration_histogram.observe({ call_name: @name, action: @action }, @cpu_time)
         end
 
         retval
