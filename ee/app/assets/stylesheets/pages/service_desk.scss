@@ -6,20 +6,20 @@
 
   .non-empty-state {
     text-align: left;
-    padding-bottom: 10px;
+    padding-bottom: $gl-padding-top;
     border-bottom: 1px solid $border-color;
 
     .service-desk-graphic {
-      margin-top: 20px;
+      margin-top: $gl-padding;
     }
 
     .media-body {
-      margin-top: 10px;
-      margin-left: 20px;
+      margin-top: $gl-padding-top;
+      margin-left: $gl-padding;
     }
   }
 
   .turn-on-btn-container {
-    margin-top: 10px;
+    margin-top: $gl-padding-top;
   }
 }
