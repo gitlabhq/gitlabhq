@@ -944,7 +944,7 @@ describe Gitlab::GitAccess do
   end
 
   context 'when the repository is read only' do
-    let(:project) { create(:project, :repository, :read_only_repository) }
+    let(:project) { create(:project, :repository, :readonly) }
 
     it 'denies push access' do
       project.add_master(user)
