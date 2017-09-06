@@ -9,7 +9,7 @@ module Gitlab
     end
 
     def self.valid?(url)
-      return false unless url
+      return false unless url.present?
 
       Addressable::URI.parse(url.strip)
 
@@ -29,13 +29,13 @@ module Gitlab
 
     def masked_url
       url = @url.dup
-      url.password = "*****" unless url.password.nil?
-      url.user = "*****" unless url.user.nil?
+      url.password = "*****" if url.password.present?
+      url.user = "*****" if url.user.present?
       url.to_s
     end
 
     def credentials
-      @credentials ||= { user: @url.user, password: @url.password }
+      @credentials ||= { user: @url.user.presence, password: @url.password.presence }
     end
 
     def full_url
@@ -47,8 +47,8 @@ module Gitlab
     def generate_full_url
       return @url unless valid_credentials?
       @full_url = @url.dup
-      @full_url.user = credentials[:user]
-      @full_url.password = credentials[:password]
+      @full_url.user = credentials[:user].presence
+      @full_url.password = credentials[:password].presence
       @full_url
     end
 
