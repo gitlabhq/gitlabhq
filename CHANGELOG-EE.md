@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.4 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
+
 ## 9.5.3 (2017-09-03)
 
 - [FIXED] Check if table exists before loading the current license. !2783
