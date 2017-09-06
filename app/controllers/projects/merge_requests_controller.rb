@@ -60,11 +60,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
 
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
-
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
+
+        @discussions = @merge_request.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
         labels
 

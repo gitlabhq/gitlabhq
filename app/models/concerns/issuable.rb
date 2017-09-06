@@ -334,4 +334,11 @@ module Issuable
     metrics = self.metrics || create_metrics
     metrics.record!
   end
+
+  ##
+  # Override in issuable specialization
+  #
+  def first_contribution?
+    false
+  end
 end
