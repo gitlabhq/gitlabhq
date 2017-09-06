@@ -65,11 +65,11 @@ module Gitlab
             next unless can_replay?(event_log)
 
             if event_log.repository_updated_event
-              handle_repository_update(event_log)
+              handle_repository_updated(event_log)
             elsif event_log.repository_created_event
               handle_repository_created(event_log)
             elsif event_log.repository_deleted_event
-              handle_repository_delete(event_log)
+              handle_repository_deleted(event_log)
             elsif event_log.repositories_changed_event
               handle_repositories_changed(event_log.repositories_changed_event)
             elsif event_log.repository_renamed_event
@@ -107,93 +107,91 @@ module Gitlab
         end
 
         def handle_repository_created(event_log)
-          created_event = event_log.repository_created_event
-          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: created_event.project_id)
-          registry.resync_repository = true
-          registry.resync_wiki = created_event.wiki_path.present?
+          event = event_log.repository_created_event
+          registry = find_or_initialize_registry(event.project_id, resync_repository: true, resync_wiki: event.wiki_path.present?)
 
           log_event_info(
             event_log.created_at,
             message: 'Repository created',
-            project_id: created_event.project_id,
-            repo_path: created_event.repo_path,
-            wiki_path: created_event.wiki_path,
+            project_id: event.project_id,
+            repo_path: event.repo_path,
+            wiki_path: event.wiki_path,
             resync_repository: registry.resync_repository,
             resync_wiki: registry.resync_wiki)
 
           registry.save!
+
         end
 
-        def handle_repository_update(event)
-          updated_event = event.repository_updated_event
-          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: updated_event.project_id)
-
-          case updated_event.source
-          when 'repository'
-            registry.resync_repository = true
-          when 'wiki'
-            registry.resync_wiki = true
-          end
+        def handle_repository_updated(event_log)
+          event = event_log.repository_updated_event
+          registry = find_or_initialize_registry(event.project_id, "resync_#{event.source}" => true)
 
           log_event_info(
-            event.created_at,
-            message: "Repository update",
-            project_id: updated_event.project_id,
-            source: updated_event.source,
+            event_log.created_at,
+            message: 'Repository update',
+            project_id: event.project_id,
+            source: event.source,
             resync_repository: registry.resync_repository,
             resync_wiki: registry.resync_wiki)
 
           registry.save!
         end
 
-        def handle_repository_delete(event)
-          deleted_event = event.repository_deleted_event
-          full_path = File.join(deleted_event.repository_storage_path,
-                                deleted_event.deleted_path)
+        def handle_repository_deleted(event_log)
+          event = event_log.repository_deleted_event
+
+          full_path = File.join(event.repository_storage_path, event.deleted_path)
+
           job_id = ::Geo::RepositoryDestroyService
-                     .new(deleted_event.project_id,
-                          deleted_event.deleted_project_name,
-                          full_path,
-                          deleted_event.repository_storage_name)
+                     .new(event.project_id, event.deleted_project_name, full_path, event.repository_storage_name)
                      .async_execute
-          log_event_info(event.created_at,
-                         message: "Deleted project",
-                         project_id: deleted_event.project_id,
+
+          log_event_info(event_log.created_at,
+                         message: 'Deleted project',
+                         project_id: event.project_id,
                          full_path: full_path,
                          job_id: job_id)
+
           # No need to create a project entry if it doesn't exist
-          ::Geo::ProjectRegistry.where(project_id: deleted_event.project_id).delete_all
+          ::Geo::ProjectRegistry.where(project_id: event.project_id).delete_all
         end
 
-        def handle_repositories_changed(changed_event)
-          return unless Gitlab::Geo.current_node.id == changed_event.geo_node_id
+        def handle_repositories_changed(event)
+          return unless Gitlab::Geo.current_node.id == event.geo_node_id
 
-          job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, changed_event.geo_node_id)
+          job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, event.geo_node_id)
 
           if job_id
-            log_info('Scheduled repositories clean up for Geo node', geo_node_id: changed_event.geo_node_id, job_id: job_id)
+            log_info('Scheduled repositories clean up for Geo node', geo_node_id: event.geo_node_id, job_id: job_id)
           else
-            log_error('Could not schedule repositories clean up for Geo node', geo_node_id: changed_event.geo_node_id)
+            log_error('Could not schedule repositories clean up for Geo node', geo_node_id: event.geo_node_id)
           end
         end
 
-        def handle_repository_rename(event)
-          renamed_event = event.repository_renamed_event
-          return unless renamed_event.project_id
+        def handle_repository_rename(event_log)
+          event = event_log.repository_renamed_event
+          return unless event.project_id
 
-          old_path = renamed_event.old_path_with_namespace
-          new_path = renamed_event.new_path_with_namespace
+          old_path = event.old_path_with_namespace
+          new_path = event.new_path_with_namespace
 
           job_id = ::Geo::MoveRepositoryService
-                     .new(renamed_event.project_id, "", old_path, new_path)
+                     .new(event.project_id, '', old_path, new_path)
                      .async_execute
 
-          log_event_info(event.created_at,
-                         message: "Renaming project",
-                         project_id: renamed_event.project_id,
+          log_event_info(event_log.created_at,
+                         message: 'Renaming project',
+                         project_id: event.project_id,
                          old_path: old_path,
                          new_path: new_path,
                          job_id: job_id)
+        end
+
+        def find_or_initialize_registry(project_id, attrs)
+          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
+          registry.assign_attributes(attrs)
+          registry
         end
 
         def cursor_delay(created_at)

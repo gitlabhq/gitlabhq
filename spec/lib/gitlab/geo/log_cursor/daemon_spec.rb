@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   include ::EE::GeoHelpers
 
