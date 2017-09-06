@@ -6,7 +6,7 @@ feature 'Project > Members > Share with Group', :js do
 
   let(:master) { create(:user) }
 
-  describe 'Share Lock' do
+  describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
       scenario 'the "Share with group" tab exists' do
         visit project_settings_members_path(project)
@@ -31,7 +31,7 @@ feature 'Project > Members > Share with Group', :js do
         sign_in(master)
       end
 
-      context 'when the group has "Share lock" disabled' do
+      context 'when the group has "Share with group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
         scenario 'the project can be shared with another group' do
@@ -49,7 +49,7 @@ feature 'Project > Members > Share with Group', :js do
         end
       end
 
-      context 'when the group has "Share lock" enabled' do
+      context 'when the group has "Share with group lock" enabled' do
         before do
           project.namespace.update_column(:share_with_group_lock, true)
         end
@@ -69,12 +69,12 @@ feature 'Project > Members > Share with Group', :js do
         sign_in(master)
       end
 
-      context 'when the root_group has "Share lock" disabled' do
-        context 'when the subgroup has "Share lock" disabled' do
+      context 'when the root_group has "Share with group lock" disabled' do
+        context 'when the subgroup has "Share with group lock" disabled' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Share lock" enabled' do
+        context 'when the subgroup has "Share with group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end
@@ -83,16 +83,16 @@ feature 'Project > Members > Share with Group', :js do
         end
       end
 
-      context 'when the root_group has "Share lock" enabled' do
+      context 'when the root_group has "Share with group lock" enabled' do
         before do
           root_group.update_column(:share_with_group_lock, true)
         end
 
-        context 'when the subgroup has "Share lock" disabled (parent overridden)' do
+        context 'when the subgroup has "Share with group lock" disabled (parent overridden)' do
           it_behaves_like 'the project can be shared with groups'
         end
 
-        context 'when the subgroup has "Share lock" enabled' do
+        context 'when the subgroup has "Share with group lock" enabled' do
           before do
             subgroup.update_column(:share_with_group_lock, true)
           end

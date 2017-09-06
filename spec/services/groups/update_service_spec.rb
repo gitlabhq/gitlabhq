@@ -128,7 +128,7 @@ describe Groups::UpdateService do
           result = described_class.new(subgroup, subgroup_owner, share_with_group_lock: false).execute
 
           expect(result).to be_falsey
-          expect(subgroup.errors.full_messages.first).to match(/cannot be disabled when the parent group Share lock is enabled, except by the owner of the parent group/)
+          expect(subgroup.errors.full_messages.first).to match(/cannot be disabled when the parent group "Share with group lock" is enabled, except by the owner of the parent group/)
           expect(subgroup.reload.share_with_group_lock).to be_truthy
         end
       end

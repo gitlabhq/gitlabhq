@@ -411,51 +411,51 @@ describe Namespace do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}
 
-      context 'under a parent with share lock enabled' do
+      context 'under a parent with "Share with group lock" enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
 
-        it 'enables share lock on the subgroup' do
+        it 'enables "Share with group lock" on the subgroup' do
           expect(subgroup.share_with_group_lock).to be_truthy
         end
       end
 
-      context 'under a parent with share lock disabled' do
+      context 'under a parent with "Share with group lock" disabled' do
         let(:root_group) { create(:group) }
 
-        it 'does not enable share lock on the subgroup' do
+        it 'does not enable "Share with group lock" on the subgroup' do
           expect(subgroup.share_with_group_lock).to be_falsey
         end
       end
     end
 
-    context 'when enabling the parent group share lock' do
+    context 'when enabling the parent group "Share with group lock"' do
       let(:root_group) { create(:group) }
       let!(:subgroup) { create(:group, parent: root_group )}
 
-      it 'the subgroup share lock becomes enabled' do
+      it 'the subgroup "Share with group lock" becomes enabled' do
         root_group.update!(share_with_group_lock: true)
 
         expect(subgroup.reload.share_with_group_lock).to be_truthy
       end
     end
 
-    context 'when disabling the parent group share lock (which was already enabled)' do
+    context 'when disabling the parent group "Share with group lock" (which was already enabled)' do
       let(:root_group) { create(:group, share_with_group_lock: true) }
 
-      context 'and the subgroup share lock is enabled' do
+      context 'and the subgroup "Share with group lock" is enabled' do
         let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
 
-        it 'the subgroup share lock does not change' do
+        it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
 
           expect(subgroup.reload.share_with_group_lock).to be_truthy
         end
       end
 
-      context 'but the subgroup share lock is disabled' do
+      context 'but the subgroup "Share with group lock" is disabled' do
         let(:subgroup) { create(:group, parent: root_group )}
 
-        it 'the subgroup share lock does not change' do
+        it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
 
           expect(subgroup.reload.share_with_group_lock?).to be_falsey
@@ -465,13 +465,13 @@ describe Namespace do
 
     # Note: Group transfers are not yet implemented
     context 'when a group is transferred into a root group' do
-      context 'when the root group share lock is enabled' do
+      context 'when the root group "Share with group lock" is enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
 
-        context 'when the subgroup share lock is enabled' do
+        context 'when the subgroup "Share with group lock" is enabled' do
           let(:subgroup) { create(:group, share_with_group_lock: true )}
 
-          it 'the subgroup share lock does not change' do
+          it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 
@@ -479,10 +479,10 @@ describe Namespace do
           end
         end
 
-        context 'when the subgroup share lock is disabled' do
+        context 'when the subgroup "Share with group lock" is disabled' do
           let(:subgroup) { create(:group)}
 
-          it 'the subgroup share lock becomes enabled' do
+          it 'the subgroup "Share with group lock" becomes enabled' do
             subgroup.parent = root_group
             subgroup.save!
 
@@ -491,13 +491,13 @@ describe Namespace do
         end
       end
 
-      context 'when the root group share lock is disabled' do
+      context 'when the root group "Share with group lock" is disabled' do
         let(:root_group) { create(:group) }
 
-        context 'when the subgroup share lock is enabled' do
+        context 'when the subgroup "Share with group lock" is enabled' do
           let(:subgroup) { create(:group, share_with_group_lock: true )}
 
-          it 'the subgroup share lock does not change' do
+          it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 
@@ -505,10 +505,10 @@ describe Namespace do
           end
         end
 
-        context 'when the subgroup share lock is disabled' do
+        context 'when the subgroup "Share with group lock" is disabled' do
           let(:subgroup) { create(:group)}
 
-          it 'the subgroup share lock does not change' do
+          it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
             subgroup.save!
 

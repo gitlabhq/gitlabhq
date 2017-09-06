@@ -108,7 +108,7 @@ describe GroupsHelper do
       {
         default_help: "This setting will be applied to all subgroups unless overridden by a group owner",
         ancestor_locked_but_you_can_override: /This setting is applied on <a .+>.+<\/a>\. You can override the setting or .+/,
-        ancestor_locked_so_ask_the_owner: /This setting is applied on .+\. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from .+/,
+        ancestor_locked_so_ask_the_owner: /This setting is applied on .+\. To share projects in this group with another group, ask the owner to override the setting or remove the share with group lock from .+/,
         ancestor_locked_and_has_been_overridden: /This setting is applied on .+ and has been overridden on this subgroup/
       }
     end
@@ -127,7 +127,7 @@ describe GroupsHelper do
     end
     subject { helper.share_with_group_lock_help_text(sub_subgroup) }
 
-    where(:root_share_locked, :subgroup_share_locked, :sub_subgroup_share_locked, :current_user, :help_text, :linked_ancestor) do
+    where(:root_share_with_group_locked, :subgroup_share_with_group_locked, :sub_subgroup_share_with_group_locked, :current_user, :help_text, :linked_ancestor) do
       [
         [false , false , false , :root_owner     , :default_help                            , nil],
         [false , false , false , :sub_owner      , :default_help                            , nil],
@@ -162,9 +162,9 @@ describe GroupsHelper do
         subgroup.add_owner(sub_owner)
         sub_subgroup.add_owner(sub_sub_owner)
 
-        root_group.update_column(:share_with_group_lock, true) if root_share_locked
-        subgroup.update_column(:share_with_group_lock, true) if subgroup_share_locked
-        sub_subgroup.update_column(:share_with_group_lock, true) if sub_subgroup_share_locked
+        root_group.update_column(:share_with_group_lock, true) if root_share_with_group_locked
+        subgroup.update_column(:share_with_group_lock, true) if subgroup_share_with_group_locked
+        sub_subgroup.update_column(:share_with_group_lock, true) if sub_subgroup_share_with_group_locked
 
         allow(helper).to receive(:current_user).and_return(users[current_user])
         allow(helper).to receive(:can?)
