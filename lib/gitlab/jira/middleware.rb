@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def call(env)
-        env['HTTP_AUTHORIZATION'].sub!('token', 'Bearer') if self.class.jira_dvcs_connector?(env)
+        env['HTTP_AUTHORIZATION']&.sub!('token', 'Bearer') if self.class.jira_dvcs_connector?(env)
 
         @app.call(env)
       end
