@@ -205,9 +205,12 @@ module Issuable
 
     def labels_hash
       issue_labels = Hash.new { |h, k| h[k] = [] }
-      eager_load(:labels).pluck(:id, 'labels.title').each do |issue_id, label|
+
+      relation = unscoped.where(id: self.select(:id)).eager_load(:labels)
+      relation.pluck(:id, 'labels.title').each do |issue_id, label|
         issue_labels[issue_id] << label
       end
+
       issue_labels
     end
 
