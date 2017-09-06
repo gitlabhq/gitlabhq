@@ -16,7 +16,7 @@ module Gitlab
       Theme.new(2, 'Dark', 'ui_dark'),
       Theme.new(3, 'Light', 'ui_light'),
       Theme.new(4, 'Blue', 'ui_blue'),
-      Theme.new(5, 'Green', 'ui_green'),
+      Theme.new(5, 'Green', 'ui_green')
     ].freeze
 
     # Convenience method to get a space-separated String of all the theme
