@@ -249,4 +249,19 @@ describe 'Promotions', js: true do
       expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution Analytics.'
     end
   end
+
+  describe 'for group webhooks' do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    it 'should appear on the page' do
+      visit group_hooks_path(group)
+      expect(find('.user-callout-copy')).to have_content 'Add Group Webhooks'
+    end
+  end
 end
