@@ -107,9 +107,9 @@ describe GroupsHelper do
     let(:possible_help_texts) do
       {
         default_help: "This setting will be applied to all subgroups unless overridden by a group owner",
-        ancestor_locked_but_you_can_override: /This setting is applied on [\w\s<>="\/]+\. You can override the setting or remove the share lock from [\w\s<>="\/]+/,
-        ancestor_locked_so_ask_the_owner: /This setting is applied on [\w\s<>="\/]+\. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from [\w\s<>="\/]+/,
-        ancestor_locked_and_has_been_overridden: /This setting is applied on [\w\s<>="\/]+ and has been overridden on this subgroup/
+        ancestor_locked_but_you_can_override: /This setting is applied on <a .+>.+<\/a>\. You can override the setting or <a .+>remove the share lock from .+<\/a>/,
+        ancestor_locked_so_ask_the_owner: /This setting is applied on <a .+>.+<\/a>\. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from <a .+>.+<\/a>/,
+        ancestor_locked_and_has_been_overridden: /This setting is applied on <a .+>.+<\/a> and has been overridden on this subgroup/
       }
     end
     let(:possible_linked_ancestors) do

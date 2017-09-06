@@ -104,6 +104,12 @@ module GroupsHelper
     link_to ancestor.name, group_path(ancestor)
   end
 
+  def remove_the_share_lock_from_ancestor_link(group)
+    ancestor = oldest_consecutively_locked_ancestor(group)
+    link_text = s_("GroupSettings|remove the share lock from %{ancestor_group_name}") % { ancestor_group_name: ancestor.name }
+    link_to link_text, edit_group_path(ancestor)
+  end
+
   def oldest_consecutively_locked_ancestor(group)
     group.ancestors.find do |group|
       !group.has_parent? || !group.parent.share_with_group_lock?
@@ -115,7 +121,7 @@ module GroupsHelper
   end
 
   def ancestor_locked_but_you_can_override(group)
-    s_("GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or remove the share lock from %{ancestor_group}.") % { ancestor_group: ancestor_group_link(group) }
+    s_("GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_lock}.") % { ancestor_group: ancestor_group_link(group), remove_ancestor_share_lock: remove_the_share_lock_from_ancestor_link(group) }
   end
 
   def ancestor_locked_so_ask_the_owner(group)
