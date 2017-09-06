@@ -82,6 +82,8 @@ class Note < ActiveRecord::Base
   scope :common, -> { where(noteable_type: ["", nil]) }
   scope :fresh, -> { order(created_at: :asc, id: :asc) }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
+  scope :after_id, -> (id) { where('id > ?', id) }
+  scope :before_id, -> (id) { where('id < ?', id) }
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do

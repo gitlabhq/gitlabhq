@@ -100,7 +100,11 @@ class Projects::IssuesController < Projects::ApplicationController
     notes = @issue.notes
       .limit(limit)
       .inc_relations_for_view
-      .includes(:noteable)
+
+    notes = notes.after_id(params[:after]) if params.has_key?('after')
+    notes = notes.before_id(params[:before]) if params.has_key?('before')
+
+    notes = notes.includes(:noteable)
       .fresh
       .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
