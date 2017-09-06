@@ -17,6 +17,4 @@
         = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
         %li
           %h2.breadcrumbs-sub-title= @breadcrumb_title
-    - if content_for?(:breadcrumbs_extra)
-      .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
     = yield :header_content
