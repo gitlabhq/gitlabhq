@@ -60,7 +60,7 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: ("project-item-select-holder" unless show_new_nav?) } do
+    project_link = link_to project_path(project) do
       output =
         if project.avatar_url && !Rails.env.test?
           project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
@@ -72,12 +72,10 @@ module ProjectsHelper
       output.html_safe
     end
 
-    if show_new_nav?
-      namespace_link = breadcrumb_list_item(namespace_link) unless project.group
-      project_link = breadcrumb_list_item project_link
-    end
+    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
+    project_link = breadcrumb_list_item project_link
 
-    "#{namespace_link} #{('/' unless show_new_nav?)} #{project_link}".html_safe
+    "#{namespace_link} #{project_link}".html_safe
   end
 
   def remove_project_message(project)

@@ -82,11 +82,7 @@ module PageLayoutHelper
     else
       return @header_title unless @header_title_url
 
-      if show_new_nav?
-        breadcrumb_list_item(link_to(@header_title, @header_title_url))
-      else
-        link_to(@header_title, @header_title_url)
-      end
+      breadcrumb_list_item(link_to(@header_title, @header_title_url))
     end
   end
 

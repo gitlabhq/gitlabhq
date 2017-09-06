@@ -16,35 +16,19 @@ module GroupsHelper
     full_title = ''
 
     group.ancestors.reverse.each_with_index do |parent, index|
-      if show_new_nav? && index > 0
+      if index > 0
         add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true), location: :before)
       else
-        full_title += if show_new_nav?
-                        breadcrumb_list_item group_title_link(parent, hidable: false)
-                      else
-                        "#{group_title_link(parent, hidable: true)} <span class='hidable'> / </span>".html_safe
-                      end
+        full_title += breadcrumb_list_item group_title_link(parent, hidable: false)
       end
     end
 
-    if show_new_nav?
-      full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
-    end
+    full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
 
-    full_title += if show_new_nav?
-                    breadcrumb_list_item group_title_link(group)
-                  else
-                    group_title_link(group)
-                  end
+    full_title += breadcrumb_list_item group_title_link(group)
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
 
-    if show_new_nav?
-      full_title.html_safe
-    else
-      content_tag :span, class: 'group-title' do
-        full_title.html_safe
-      end
-    end
+    full_title.html_safe
   end
 
   def projects_lfs_status(group)
@@ -86,7 +70,7 @@ module GroupsHelper
   def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path breadcrumb-item-text js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
-        if (group.try(:avatar_url) || show_avatar)) && !Rails.env.test?
+        if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
           image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
         else
           ""

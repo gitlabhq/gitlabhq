@@ -127,20 +127,7 @@ module IssuablesHelper
 
   def issuable_meta(issuable, project, text)
     output = ""
-
-    unless show_new_nav?
-      output << content_tag(:strong, class: "identifier") do
-        concat("#{text} ")
-        concat(to_url_reference(issuable))
-      end
-    end
-
-    opened_text = if show_new_nav?
-                    "Opened"
-                  else
-                    " opened"
-                  end
-    output << "#{opened_text} #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+    output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
