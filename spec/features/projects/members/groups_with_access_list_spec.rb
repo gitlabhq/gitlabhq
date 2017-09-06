@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Anonymous user sees members', js: true do
+feature 'Projects > Members > Groups with access list', js: true do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public) }
@@ -13,7 +13,7 @@ feature 'Projects > Members > Anonymous user sees members', js: true do
     visit project_settings_members_path(project)
   end
 
-  it 'updates group access level' do
+  scenario 'updates group access level' do
     click_button @group_link.human_access
 
     page.within '.dropdown-menu' do
@@ -27,7 +27,7 @@ feature 'Projects > Members > Anonymous user sees members', js: true do
     expect(first('.group_member')).to have_content('Guest')
   end
 
-  it 'updates expiry date' do
+  scenario 'updates expiry date' do
     tomorrow = Date.today + 3
 
     fill_in "member_expires_at_#{group.id}", with: tomorrow.strftime("%F")
@@ -38,7 +38,7 @@ feature 'Projects > Members > Anonymous user sees members', js: true do
     end
   end
 
-  it 'deletes group link' do
+  scenario 'deletes group link' do
     page.within(first('.group_member')) do
       find('.btn-remove').click
     end
@@ -47,8 +47,8 @@ feature 'Projects > Members > Anonymous user sees members', js: true do
     expect(page).not_to have_selector('.group_member')
   end
 
-  context 'search' do
-    it 'finds no results' do
+  context 'search in existing members (yes, this filters the groups list as well)' do
+    scenario 'finds no results' do
       page.within '.member-search-form' do
         fill_in 'search', with: 'testing 123'
         find('.member-search-btn').click
@@ -57,7 +57,7 @@ feature 'Projects > Members > Anonymous user sees members', js: true do
       expect(page).not_to have_selector('.group_member')
     end
 
-    it 'finds results' do
+    scenario 'finds results' do
       page.within '.member-search-form' do
         fill_in 'search', with: group.name
         find('.member-search-btn').click
