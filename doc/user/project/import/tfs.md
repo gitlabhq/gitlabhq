@@ -5,6 +5,12 @@ which also includes a centralized version control system (TFVC) similar to Git.
 
 In this document, we emphasize on the TFVC to Git migration.
 
+## Why migrate
+
+CVS is old with no new release since 2008. Git provides more tools to work
+with (`git bisect` for one) which makes for a more productive workflow.
+Migrating to Git/GitLab there is:
+
 ## TFVC vs Git
 
 The following list illustrates the main differences between TFVC and Git:
@@ -14,10 +20,9 @@ The following list illustrates the main differences between TFVC and Git:
   your working area is a copy of the entire repository. This decreases the
   overhead when switching branches or merging for example, since you don't have
   to communicate with a remote server.
-- **Changesets.** Changes in CVS are per file, while changes (commits) in Git
-  they always refer to the whole project. One of the consequences of this is that
-  it is very easy in Git to revert (create a change that undoes) or undo a whole
-  change.
+- **Storage method.** Changes in CVS are per file (changeset), while in Git
+  a committed file(s) is stored in its entirety (snapshot). That means that's
+  very easy in Git to revert or undo a whole change.
 
 _Check also Microsoft's documentation on the
 [comparison of Git and TFVC](https://www.visualstudio.com/en-us/docs/tfvc/comparison-git-tfvc)
@@ -30,7 +35,7 @@ Migrating to Git/GitLab there is:
 
 - **No licensing costs**, Git is GPL while TFVC is proprietary.
 - **Shorter learning curve**, Git has a big community and a vast number of
-  tutorials to get you started.
+  tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).
 - **Integration with modern tools**, migrating to Git and GitLab you can have
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.
