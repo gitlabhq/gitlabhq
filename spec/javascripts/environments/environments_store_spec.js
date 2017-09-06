@@ -31,7 +31,7 @@ describe('Store', () => {
       updated_at: '2017-01-31T10:53:46.894Z',
       rollout_status_path: '/path',
       hasDeployBoard: true,
-      isDeployBoardVisible: true,
+      isDeployBoardVisible: false,
       deployBoardData: {},
       isLoadingDeployBoard: false,
       hasErrorDeployBoard: false,
@@ -70,7 +70,7 @@ describe('Store', () => {
 
       store.storeEnvironments([environment]);
       expect(store.state.environments[0].hasDeployBoard).toEqual(true);
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
       expect(store.state.environments[0].deployBoardData).toEqual({});
     });
 
@@ -201,7 +201,7 @@ describe('Store', () => {
     it('should toggle deploy board property for given environment id', () => {
       store.toggleDeployBoard(1);
 
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
     });
 
     it('should store deploy board data for given environment id', () => {
@@ -248,8 +248,7 @@ describe('Store', () => {
 
       store.storeEnvironments([environment]);
 
-      expect(store.getOpenDeployBoards().length).toEqual(1);
-      expect(store.getOpenDeployBoards()[0].id).toEqual(environment.latest.id);
+      expect(store.getOpenDeployBoards().length).toEqual(0);
     });
   });
 });
