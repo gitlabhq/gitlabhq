@@ -47,6 +47,20 @@ describe GroupChildrenFinder do
 
           expect(finder.execute).to contain_exactly(matching_subgroup, matching_project)
         end
+
+        context 'with matching children' do
+          it 'includes a group that has a subgroup matching the query' do
+            matching_subgroup = create(:group, name: 'testgroup', parent: subgroup)
+
+            expect(finder.execute).to contain_exactly(matching_subgroup)
+          end
+
+          it 'includes a group that has a project matching the query' do
+            matching_project = create(:project, namespace: subgroup, name: 'Testproject')
+
+            expect(finder.execute).to contain_exactly(matching_project)
+          end
+        end
       end
     end
 

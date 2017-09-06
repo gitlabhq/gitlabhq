@@ -41,25 +41,52 @@ class GroupChildrenFinder
     @children ||= subgroups + projects
   end
 
+  def base_groups
+    GroupsFinder.new(current_user,
+                     parent: parent_group,
+                     all_available: true).execute
+  end
+
+  def all_subgroups
+    Gitlab::GroupHierarchy.new(Group.where(id: parent_group)).all_groups
+  end
+
+  def subgroups_matching_filter
+    all_subgroups.search(params[:filter])
+  end
+
   def subgroups
     return Group.none unless Group.supports_nested_groups?
     return Group.none unless can?(current_user, :read_group, parent_group)
 
-    groups = GroupsFinder.new(current_user,
-                              parent: parent_group,
-                              all_available: true).execute
-
-    groups = groups.search(params[:filter]) if params[:filter].present?
+    groups = if params[:filter]
+               subgroups_matching_filter
+             else
+               base_groups
+             end
     groups = groups.includes(:route).includes(:children)
     groups.sort(params[:sort])
+  end
+
+  def base_projects
+    GroupProjectsFinder.new(group: parent_group, params: params, current_user: current_user).execute
+  end
+
+  def projects_matching_filter
+    ProjectsFinder.new(current_user: current_user).execute
+      .search(params[:filter])
+      .where(namespace: all_subgroups)
   end
 
   def projects
     return Project.none unless can?(current_user, :read_group, parent_group)
 
-    projects = GroupProjectsFinder.new(group: parent_group, params: params, current_user: current_user).execute
+    projects = if params[:filter]
+                 projects_matching_filter
+               else
+                 base_projects
+               end
     projects = projects.includes(:route)
-    projects = projects.search(params[:filter]) if params[:filter].present?
     projects.sort(params[:sort])
   end
 end
