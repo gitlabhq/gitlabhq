@@ -389,6 +389,10 @@ $new-sidebar-collapsed-width: 50px;
     }
   }
 
+  .nav-icon-container {
+    margin-right: 0;
+  }
+
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
     padding: 16px 18px;
