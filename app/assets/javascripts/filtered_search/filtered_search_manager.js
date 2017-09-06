@@ -334,19 +334,20 @@ class FilteredSearchManager {
     this.clearSearch();
   }
 
-  removalValidator(token) {
-    const isToken = token.classList.contains('js-visual-token');
-
-    return this.customRemovalValidator ? (this.customRemovalValidator(token) && isToken) : isToken;
-  }
-
   clearSearch() {
     this.filteredSearchInput.value = '';
 
     const removeElements = [];
 
     [].forEach.call(this.tokensContainer.children, (t) => {
-      if (this.removalValidator(t)) {
+      let canClearToken = t.classList.contains('js-visual-token');
+
+      if (canClearToken) {
+        const tokenKey = t.querySelector('.name').textContent.trim();
+        canClearToken = this.canEdit && this.canEdit(tokenKey);
+      }
+
+      if (canClearToken) {
         removeElements.push(t);
       }
     });

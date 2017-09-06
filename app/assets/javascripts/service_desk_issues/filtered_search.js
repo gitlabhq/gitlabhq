@@ -9,13 +9,6 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
     this.supportBotData = supportBotData;
   }
 
-  customRemovalValidator(token) {
-    const tokenValue = token.querySelector('.value-container');
-
-    return tokenValue ?
-      tokenValue.getAttribute('data-original-value') !== `@${this.supportBotData.username}` : true;
-  }
-
   canEdit(tokenName) {
     return tokenName !== 'author';
   }

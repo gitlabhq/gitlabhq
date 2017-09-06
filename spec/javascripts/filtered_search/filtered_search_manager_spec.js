@@ -412,31 +412,6 @@ describe('Filtered Search Manager', () => {
     });
   });
 
-  describe('removalValidator', () => {
-    beforeEach(() => {
-      Object.assign(gl.FilteredSearchManager.prototype, {
-        customRemovalValidator: () => true,
-      });
-
-      spyOn(gl.FilteredSearchManager.prototype, 'removalValidator').and.callThrough();
-      spyOn(gl.FilteredSearchManager.prototype, 'customRemovalValidator').and.callThrough();
-
-      initializeManager();
-    });
-
-    it('is called on clearSearch', () => {
-      manager.clearSearch();
-
-      expect(manager.removalValidator).toHaveBeenCalled();
-    });
-
-    it('calls the customRemovalValidator when present', () => {
-      manager.clearSearch();
-
-      expect(manager.customRemovalValidator).toHaveBeenCalled();
-    });
-  });
-
   describe('getAllParams', () => {
     beforeEach(() => {
       this.paramsArr = ['key=value', 'otherkey=othervalue'];
