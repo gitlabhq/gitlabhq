@@ -1283,12 +1283,12 @@ const normalizeNewlines = function(str) {
             </div>
             <div class="timeline-content ${discussionClass}">
               <div class="note-header">
-                  <div class="note-header-info">
-                    <a href="/${_.escape(currentUsername)}">
-                      <span class="hidden-xs">${_.escape(currentUsername)}</span>
-                      <span class="note-headline-light">${_.escape(currentUsername)}</span>
-                    </a>
-                  </div>
+                <div class="note-header-info">
+                  <a href="/${_.escape(currentUsername)}">
+                    <span class="hidden-xs">${_.escape(currentUsername)}</span>
+                    <span class="note-headline-light">${_.escape(currentUsername)}</span>
+                  </a>
+                </div>
               </div>
               <div class="note-body">
                 <div class="note-text">
@@ -1296,8 +1296,9 @@ const normalizeNewlines = function(str) {
                 </div>
               </div>
             </div>
-          </li>`
-        );
+          </div>
+        </li>`
+      );
 
       $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
       $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
