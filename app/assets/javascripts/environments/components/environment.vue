@@ -148,8 +148,6 @@ export default {
     },
 
     fetchChildEnvironments(folder, showLoader = false) {
-      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
-
       this.service.getFolderContent(folder.folder_path)
         .then(resp => resp.json())
         .then((response) => {
