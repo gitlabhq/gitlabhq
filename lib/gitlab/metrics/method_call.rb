@@ -8,7 +8,7 @@ module Gitlab
         @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
           :gitlab_method_call_real_duration_seconds,
           'Method calls real duration',
-          { action: nil, call_name: nil },
+          Transaction::BASE_LABELS.merge({ call_name: nil }),
           [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
@@ -17,7 +17,7 @@ module Gitlab
         @call_duration_histogram ||= Gitlab::Metrics.histogram(
           :gitlab_method_call_cpu_duration_seconds,
           'Method calls cpu duration',
-          { action: nil, call_name: nil },
+          Transaction::BASE_LABELS.merge({ call_name: nil }),
           [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
@@ -25,8 +25,8 @@ module Gitlab
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.
       #
-      def initialize(name, action)
-        @action = action
+      def initialize(name, transaction)
+        @transaction = transaction
         @name = name
         @real_time = 0
         @cpu_time = 0
@@ -44,8 +44,8 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          self.class.call_real_duration_histogram.observe({ call_name: @name, action: @action }, @real_time / 1000.0)
-          self.class.call_cpu_duration_histogram.observe({ call_name: @name, action: @action }, @cpu_time / 1000.0)
+          self.class.call_real_duration_histogram.observe(@transaction.labels.merge({ call_name: @name }), @real_time / 1000.0)
+          self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge({ call_name: @name }), @cpu_time / 1000.0)
         end
 
         retval

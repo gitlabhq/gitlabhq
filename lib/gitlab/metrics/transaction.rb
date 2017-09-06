@@ -107,7 +107,7 @@ module Gitlab
       # Returns a MethodCall object for the given name.
       def method_call_for(name)
         unless method = @methods[name]
-          @methods[name] = method = MethodCall.new(name, action)
+          @methods[name] = method = MethodCall.new(name, transaction)
         end
 
         method
