@@ -66,7 +66,7 @@ export default {
       Lock issue
       <a
         v-if="isEditable"
-        class="pull-right"
+        class="pull-right lock-edit"
         href="#"
         @click.prevent="toggleForm"
       >
