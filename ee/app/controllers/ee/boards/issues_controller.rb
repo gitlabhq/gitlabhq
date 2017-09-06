@@ -8,7 +8,13 @@ module EE
       end
 
       def project
-        @project ||= board.group_board? ? super : board.parent
+        @project ||= begin
+          if board.group_board?
+            ::Project.find(issue_params[:project_id])
+          else
+            super
+          end
+        end
       end
     end
   end
