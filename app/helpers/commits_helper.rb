@@ -133,7 +133,7 @@ module CommitsHelper
 
     text =
       if options[:avatar]
-        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        content_tag(:span, person_name, class: "commit-#{options[:source]}-name")
       else
         person_name
       end
@@ -144,9 +144,9 @@ module CommitsHelper
     }
 
     if user.nil?
-      mail_to(source_email, text.html_safe, options)
+      mail_to(source_email, text, options)
     else
-      link_to(text.html_safe, user_path(user), options)
+      link_to(text, user_path(user), options)
     end
   end
 
