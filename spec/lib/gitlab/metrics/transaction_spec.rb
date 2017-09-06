@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Transaction do
-  let(:transaction) { described_class.new }
+  let(:env) { {} }
+  let(:transaction) { described_class.new(env) }
 
   describe '#duration' do
     it 'returns the duration of a transaction in seconds' do
@@ -48,7 +49,7 @@ describe Gitlab::Metrics::Transaction do
 
   describe '#method_call_for' do
     it 'returns a MethodCall' do
-      method = transaction.method_call_for('Foo#bar')
+      method = transaction.method_call_for('Foo#bar', :Foo, '#bar')
 
       expect(method).to be_an_instance_of(Gitlab::Metrics::MethodCall)
     end
@@ -119,7 +120,7 @@ describe Gitlab::Metrics::Transaction do
     end
 
     it 'adds the action as a tag for every metric' do
-      transaction.action = 'Foo#bar'
+      allow(transaction).to receive(:labels).and_return(controller: 'Foo', action: 'bar')
       transaction.track_self
 
       hash = {
@@ -136,7 +137,8 @@ describe Gitlab::Metrics::Transaction do
     end
 
     it 'does not add an action tag for events' do
-      transaction.action = 'Foo#bar'
+      allow(transaction).to receive(:labels).and_return(controller: 'Foo', action: 'bar')
+
       transaction.add_event(:meow)
 
       hash = {
