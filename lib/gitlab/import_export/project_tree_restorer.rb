@@ -72,7 +72,7 @@ module Gitlab
         @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
         # Restore the project again, extra query that skips holding the AR objects in memory
-        @restored_project.reload
+        @restored_project = Project.find(@project_id)
       end
 
       def default_relation_list
