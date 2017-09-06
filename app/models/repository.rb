@@ -20,7 +20,6 @@ class Repository
 
   delegate :ref_name_for_sha, to: :raw_repository
 
-  CommitError = Class.new(StandardError)
   CreateTreeError = Class.new(StandardError)
 
   # Methods that cache data from the Git repository.
@@ -95,19 +94,6 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  #
-  # Git repository can contains some hidden refs like:
-  #   /refs/notes/*
-  #   /refs/git-as-svn/*
-  #   /refs/pulls/*
-  # This refs by default not visible in project page and not cloned to client side.
-  #
-  # This method return true if repository contains some content visible in project page.
-  #
-  def has_visible_content?
-    branch_count > 0
-  end
-
   def commit(ref = 'HEAD')
     return nil unless exists?
 
@@ -180,32 +166,25 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    newrev = commit(ref).try(:sha)
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_branch(branch_name, newrev)
+    branch = raw_repository.add_branch(branch_name, committer: user, target: ref)
 
     after_create_branch
-    find_branch(branch_name)
+
+    branch
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    newrev = commit(target).try(:id)
-    options = { message: message, tagger: user_to_committer(user) } if message
-
-    return false unless newrev
-
-    GitOperationService.new(user, self).add_tag(tag_name, newrev, options)
-
-    find_tag(tag_name)
+    raw_repository.add_tag(tag_name, committer: user, target: target, message: message)
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-    branch = find_branch(branch_name)
 
-    GitOperationService.new(user, self).rm_branch(branch)
+    raw_repository.rm_branch(branch_name, committer: user)
 
     after_remove_branch
     true
@@ -213,9 +192,8 @@ class Repository
 
   def rm_tag(user, tag_name)
     before_remove_tag
-    tag = find_tag(tag_name)
 
-    GitOperationService.new(user, self).rm_tag(tag)
+    raw_repository.rm_tag(tag_name, committer: user)
 
     after_remove_tag
     true
@@ -784,16 +762,30 @@ class Repository
     multi_action(**options)
   end
 
+  def with_branch(user, *args)
+    result = Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
+      yield start_commit
+    end
+
+    newrev, should_run_after_create, should_run_after_create_branch = result
+
+    after_create if should_run_after_create
+    after_create_branch if should_run_after_create_branch
+
+    newrev
+  end
+
   # rubocop:disable Metrics/ParameterLists
   def multi_action(
     user:, branch_name:, message:, actions:,
     author_email: nil, author_name: nil,
     start_branch_name: nil, start_project: project)
 
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       index = Gitlab::Git::Index.new(raw_repository)
 
@@ -846,7 +838,8 @@ class Repository
   end
 
   def merge(user, source, merge_request, options = {})
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       merge_request.target_branch) do |start_commit|
       our_commit = start_commit.sha
       their_commit = source
@@ -866,17 +859,18 @@ class Repository
       merge_request.update(in_progress_merge_commit_sha: commit_id)
       commit_id
     end
-  rescue Repository::CommitError # when merge_index.conflicts?
+  rescue Gitlab::Git::CommitError # when merge_index.conflicts?
     false
   end
 
   def revert(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       revert_tree_id = check_revert_content(commit, start_commit.sha)
       unless revert_tree_id
@@ -896,10 +890,11 @@ class Repository
   def cherry_pick(
     user, commit, branch_name,
     start_branch_name: nil, start_project: project)
-    GitOperationService.new(user, self).with_branch(
+    with_branch(
+      user,
       branch_name,
       start_branch_name: start_branch_name,
-      start_project: start_project) do |start_commit|
+      start_repository: start_project.repository.raw_repository) do |start_commit|
 
       cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
       unless cherry_pick_tree_id
@@ -921,7 +916,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch_name, params)
-    GitOperationService.new(user, self).with_branch(branch_name) do
+    with_branch(user, branch_name) do
       committer = user_to_committer(user)
 
       create_commit(params.merge(author: committer, committer: committer))
@@ -1011,25 +1006,6 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield nil if start_repository.empty_repo?
-
-    if start_repository == self
-      yield commit(start_branch_name)
-    else
-      sha = start_repository.commit(start_branch_name).sha
-
-      if branch_commit = commit(sha)
-        yield branch_commit
-      else
-        with_repo_tmp_commit(
-          start_repository, start_branch_name, sha) do |tmp_commit|
-          yield tmp_commit
-        end
-      end
-    end
-  end
-
   def add_remote(name, url)
     raw_repository.remote_add(name, url)
   rescue Rugged::ConfigError
@@ -1047,14 +1023,12 @@ class Repository
     gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
   end
 
-  def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    message, status = run_git(args)
+  def fetch_source_branch(source_repository, source_branch, local_ref)
+    raw_repository.fetch_source_branch(source_repository.raw_repository, source_branch, local_ref)
+  end
 
-    # Make sure ref was created, and raise Rugged::ReferenceError when not
-    raise Rugged::ReferenceError, message if status != 0
-
-    target_ref
+  def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+    raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
 
   def create_ref(ref, ref_path)
@@ -1134,12 +1108,6 @@ class Repository
   end
 
   private
-
-  def run_git(args)
-    circuit_breaker.perform do
-      Gitlab::Popen.popen([Gitlab.config.git.bin_path, *args], path_to_repo)
-    end
-  end
 
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
@@ -1235,17 +1203,5 @@ class Repository
       .gitaly_commit_client
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
-  end
-
-  def with_repo_tmp_commit(start_repository, start_branch_name, sha)
-    tmp_ref = fetch_ref(
-      start_repository.path_to_repo,
-      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-      "refs/tmp/#{SecureRandom.hex}/head"
-    )
-
-    yield commit(sha)
-  ensure
-    delete_refs(tmp_ref) if tmp_ref
   end
 end

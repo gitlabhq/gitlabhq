@@ -73,8 +73,8 @@ describe 'ci/lints/show' do
       render
 
       expect(rendered).to have_content('Tag list: dotnet')
-      expect(rendered).to have_content('Refs only: test@dude/repo')
-      expect(rendered).to have_content('Refs except: deploy')
+      expect(rendered).to have_content('Only policy: refs, test@dude/repo')
+      expect(rendered).to have_content('Except policy: refs, deploy')
       expect(rendered).to have_content('Environment: testing')
       expect(rendered).to have_content('When: on_success')
     end

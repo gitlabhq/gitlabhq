@@ -240,7 +240,8 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state)
     finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    finder.count_by_state[state]
+
+    Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
   def close_issuable_url(issuable)
@@ -294,14 +295,6 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
-  end
-
-  def issuable_state_scope(issuable)
-    if issuable.respond_to?(:merged?) && issuable.merged?
-      :merged
-    else
-      issuable.open? ? :opened : :closed
-    end
   end
 
   def issuable_templates(issuable)

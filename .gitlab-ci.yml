@@ -125,6 +125,7 @@ stages:
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
     - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
@@ -207,11 +208,10 @@ update-tests-metadata:
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - rm -f rspec_flaky/${CI_PROJECT_NAME}/all_node_*.json
+    - rm -f rspec_flaky/${CI_PROJECT_NAME}/*_node_*.json
 
 flaky-examples-check:
   <<: *dedicated-runner
-  <<: *except-docs
   image: ruby:2.3-alpine
   services: []
   before_script: []
@@ -226,6 +226,7 @@ flaky-examples-check:
     - branches
   except:
     - master
+    - /(^docs[\/-].*|.*-docs$)/
   artifacts:
     expire_in: 30d
     paths:

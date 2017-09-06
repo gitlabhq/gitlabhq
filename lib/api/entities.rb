@@ -491,6 +491,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -819,7 +823,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
-      expose :protected?, as: :protected
+      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
     end
 
     class Pipeline < PipelineBasic
@@ -840,6 +844,7 @@ module API
 
     class PipelineScheduleDetails < PipelineSchedule
       expose :last_pipeline, using: Entities::PipelineBasic
+      expose :variables, using: Entities::Variable
     end
 
     class EnvironmentBasic < Grape::Entity

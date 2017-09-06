@@ -14,6 +14,14 @@ module Gitlab
             end
           end
 
+          class AllowedValuesValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              unless options[:in].include?(value.to_s)
+                record.errors.add(attribute, "unknown value: #{value}")
+              end
+            end
+          end
+
           class ArrayOfStringsValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 

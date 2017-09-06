@@ -68,7 +68,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
@@ -145,6 +144,7 @@ class Project < ActiveRecord::Base
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
