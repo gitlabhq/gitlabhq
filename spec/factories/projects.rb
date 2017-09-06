@@ -143,7 +143,13 @@ FactoryGirl.define do
       end
     end
 
-    trait :read_only_repository do
+    trait :wiki_repo do
+      after(:create) do |project|
+        raise 'Failed to create wiki repository!' unless project.create_wiki
+      end
+    end
+
+    trait :readonly do
       repository_read_only true
     end
 
