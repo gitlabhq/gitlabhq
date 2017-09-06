@@ -2,20 +2,6 @@ module Gitlab
   module Metrics
     # Rack middleware for tracking Rails and Grape requests.
     class RackMiddleware
-      CONTROLLER_KEY = 'action_controller.instance'.freeze
-      ENDPOINT_KEY   = 'api.endpoint'.freeze
-      CONTENT_TYPES = {
-        'text/html' => :html,
-        'text/plain' => :txt,
-        'application/json' => :json,
-        'text/js' => :js,
-        'application/atom+xml' => :atom,
-        'image/png' => :png,
-        'image/jpeg' => :jpeg,
-        'image/gif' => :gif,
-        'image/svg+xml' => :svg
-      }.freeze
-
       def initialize(app)
         @app = app
       end
@@ -42,47 +28,12 @@ module Gitlab
       end
 
       def transaction_from_env(env)
-        trans = Transaction.new
+        trans = Transaction.new(env)
 
         trans.set(:request_uri, filtered_path(env), false)
         trans.set(:request_method, env['REQUEST_METHOD'], false)
 
-        if env[CONTROLLER_KEY]
-          tag_controller(trans, env)
-        elsif env[ENDPOINT_KEY]
-          tag_endpoint(trans, env)
-        end
-
         trans
-      end
-
-      def tag_controller(trans, env)
-        controller = env[CONTROLLER_KEY]
-        action = "#{controller.class.name}##{controller.action_name}"
-        suffix = CONTENT_TYPES[controller.content_type]
-
-        if suffix && suffix != :html
-          action += ".#{suffix}"
-        end
-
-        trans.action = action
-      end
-
-      def tag_endpoint(trans, env)
-        endpoint = env[ENDPOINT_KEY]
-
-        begin
-          route = endpoint.route
-        rescue
-          # endpoint.route is calling env[Grape::Env::GRAPE_ROUTING_ARGS][:route_info]
-          # but env[Grape::Env::GRAPE_ROUTING_ARGS] is nil in the case of a 405 response
-          # so we're rescuing exceptions and bailing out
-        end
-
-        if route
-          path = endpoint_paths_cache[route.request_method][route.path]
-          trans.action = "Grape##{route.request_method} #{path}"
-        end
       end
 
       private
