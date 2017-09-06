@@ -46,6 +46,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix rebase button when merge request is created from a fork.
 - Skip oAuth authorization for trusted applications.
 
+## 9.4.6 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
+
 ## 9.4.5 (2017-08-14)
 
 - Ensure artifacts are moved locally within the filesystem to prevent timeouts. !2572
