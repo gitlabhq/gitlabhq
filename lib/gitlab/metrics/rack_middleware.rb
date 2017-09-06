@@ -35,12 +35,6 @@ module Gitlab
         # Even in the event of an error we want to submit any metrics we
         # might've gathered up to this point.
         ensure
-          if env[CONTROLLER_KEY]
-            tag_controller(trans, env)
-          elsif env[ENDPOINT_KEY]
-            tag_endpoint(trans, env)
-          end
-
           trans.finish
         end
 
@@ -50,8 +44,14 @@ module Gitlab
       def transaction_from_env(env)
         trans = Transaction.new
 
-        trans.set(:request_uri, filtered_path(env))
-        trans.set(:request_method, env['REQUEST_METHOD'])
+        trans.set(:request_uri, filtered_path(env), false)
+        trans.set(:request_method, env['REQUEST_METHOD'], false)
+
+        if env[CONTROLLER_KEY]
+          tag_controller(trans, env)
+        elsif env[ENDPOINT_KEY]
+          tag_endpoint(trans, env)
+        end
 
         trans
       end

@@ -67,7 +67,7 @@ module Gitlab
         def observe(key, duration)
           return unless current_transaction
 
-          metric_cache_duration_seconds.observe({ operation: key, action: action }, duration / 1000.1)
+          self.class.metric_cache_duration_seconds.observe({ operation: key, action: action }, duration / 1000.0)
           current_transaction.increment(:cache_duration, duration, false)
           current_transaction.increment(:cache_count, 1, false)
           current_transaction.increment("#{key}_duration".to_sym, duration, false)

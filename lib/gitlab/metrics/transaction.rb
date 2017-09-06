@@ -54,7 +54,7 @@ module Gitlab
           :gitlab_transaction_allocated_memory_bytes,
           'Transaction allocated memory bytes',
           { action: nil },
-          [500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
+          [1000, 10000, 20000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
         )
       end
 
@@ -70,7 +70,7 @@ module Gitlab
         @finished_at = System.monotonic_time
 
         Transaction.metric_transaction_duration_seconds.observe({ action: action }, duration * 1000)
-        Transaction.metric_transaction_allocated_memory_bytes.observe({ action: action }, allocated_memory / 2 ^ 20)
+        Transaction.metric_transaction_allocated_memory_bytes.observe({ action: action }, allocated_memory * 1024.0)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -100,13 +100,13 @@ module Gitlab
         method
       end
 
-      def increment(name, value, compat = true)
-        self.class.metric_transaction_counter(name).increment({ action: action }, value) if compat
+      def increment(name, value, use_prometheus = true)
+        self.class.metric_transaction_counter(name).increment({ action: action }, value) if use_prometheus
         @values[name] += value
       end
 
-      def set(name, value, compat = true)
-        self.class.metric_transaction_gauge(name).set({ action: action }, value) if compat
+      def set(name, value, use_prometheus = true)
+        self.class.metric_transaction_gauge(name).set({ action: action }, value) if use_prometheus
         @values[name] = value
       end
 

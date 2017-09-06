@@ -9,7 +9,7 @@ module Gitlab
           :gitlab_method_call_real_duration_seconds,
           'Method calls real duration',
           { action: nil, call_name: nil },
-          [1000, 2000, 5000, 10000, 20000, 50000, 100000, 1000000]
+          [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
 
@@ -18,7 +18,7 @@ module Gitlab
           :gitlab_method_call_cpu_duration_seconds,
           'Method calls cpu duration',
           { action: nil, call_name: nil },
-          [1000, 2000, 5000, 10000, 20000, 50000, 100000, 1000000]
+          [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
 
@@ -44,8 +44,8 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          self.class.call_real_duration_histogram.observe({ call_name: @name, action: @action }, @real_time)
-          self.class.call_cpu_duration_histogram.observe({ call_name: @name, action: @action }, @cpu_time)
+          self.class.call_real_duration_histogram.observe({ call_name: @name, action: @action }, @real_time / 1000.0)
+          self.class.call_cpu_duration_histogram.observe({ call_name: @name, action: @action }, @cpu_time / 1000.0)
         end
 
         retval
