@@ -1,19 +1,19 @@
 /* eslint-disable class-methods-use-this */
 
+const AUTHOR_PARAM_KEY = 'author_username';
+
 export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager {
-  constructor() {
+  constructor(supportBotData) {
     super('service_desk');
 
-    this.supportBotAttrs = JSON.parse(
-      document.querySelector('.service-desk-issues').dataset.supportBot,
-    );
+    this.supportBotData = supportBotData;
   }
 
   customRemovalValidator(token) {
     const tokenValue = token.querySelector('.value-container');
 
     return tokenValue ?
-      tokenValue.getAttribute('data-original-value') !== `@${this.supportBotAttrs.username}` : true;
+      tokenValue.getAttribute('data-original-value') !== `@${this.supportBotData.username}` : true;
   }
 
   canEdit(tokenName) {
@@ -21,9 +21,8 @@ export default class FilteredSearchServiceDesk extends gl.FilteredSearchManager 
   }
 
   modifyUrlParams(paramsArray) {
-    const authorParamKey = 'author_username';
-    const supportBotParamPair = `${authorParamKey}=${this.supportBotAttrs.username}`;
-    const onlyValidParams = paramsArray.filter(param => param.indexOf(authorParamKey) === -1);
+    const supportBotParamPair = `${AUTHOR_PARAM_KEY}=${this.supportBotData.username}`;
+    const onlyValidParams = paramsArray.filter(param => param.indexOf(AUTHOR_PARAM_KEY) === -1);
 
     // unshift ensures author param is always first token element
     onlyValidParams.unshift(supportBotParamPair);
