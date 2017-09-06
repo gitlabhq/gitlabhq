@@ -38,6 +38,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
+    after_initialize :set_config_source, if: :new_record?
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -318,9 +319,16 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
-    def detect_ci_yaml_file
-      ci_yaml_from_repo&.tap { self.repository_source! } ||
-        implied_ci_yaml_file&.tap { self.auto_devops_source! }
+    def set_config_source
+      self.config_source =
+        if project
+          case
+          when ci_yaml_from_repo then :repository_source
+          when implied_ci_yaml_file then :auto_devops_source
+          end
+        else
+          :unknown_source
+        end
     end
 
     def config_processor
@@ -350,11 +358,10 @@ module Ci
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
       @ci_yaml_file =
-        case config_source
-        when "repository_source", "unknown_source"
-          ci_yaml_from_repo
-        when "auto_devops_source"
+        if auto_devops_source?
           implied_ci_yaml_file
+        else
+          ci_yaml_from_repo
         end
 
       if @ci_yaml_file

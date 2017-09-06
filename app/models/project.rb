@@ -469,10 +469,10 @@ class Project < ActiveRecord::Base
   end
 
   def auto_devops_enabled?
-    if auto_devops && auto_devops.enabled.present?
-      auto_devops.enabled?
-    else
+    if auto_devops&.enabled.nil?
       current_application_settings.auto_devops_enabled?
+    else
+      auto_devops.enabled?
     end
   end
 
@@ -1389,15 +1389,20 @@ class Project < ActiveRecord::Base
   end
 
   def predefined_variables
-    [
+    variables = [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true },
-      { key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops.domain, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
+
+    if auto_devops_enabled? && auto_devops&.domain
+      variables << { key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops.domain, public: true }
+    end
+
+    variables
   end
 
   def container_registry_variables
