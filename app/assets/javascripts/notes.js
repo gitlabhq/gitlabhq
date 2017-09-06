@@ -1269,16 +1269,16 @@ export default class Notes {
       `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
          <div class="timeline-entry-inner">
             <div class="timeline-icon">
-               <a href="/${currentUsername}">
-                 <img class="avatar s40" src="${currentUserAvatar}">
+               <a href="/${_.escape(currentUsername)}">
+                 <img class="avatar s40" src="${currentUserAvatar}" />
                </a>
             </div>
             <div class="timeline-content ${discussionClass}">
                <div class="note-header">
                   <div class="note-header-info">
-                     <a href="/${currentUsername}">
-                       <span class="hidden-xs">${currentUserFullname}</span>
-                       <span class="note-headline-light">@${currentUsername}</span>
+                     <a href="/${_.escape(currentUsername)}">
+                       <span class="hidden-xs">${_.escape(currentUsername)}</span>
+                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
                      </a>
                   </div>
                </div>
@@ -1291,6 +1291,9 @@ export default class Notes {
          </div>
       </li>`
     );
+
+    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
 
     return $tempNote;
   }
