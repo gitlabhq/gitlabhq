@@ -18,6 +18,7 @@ class MigrateIssuesToGhostUser < ActiveRecord::Migration
     ActiveRecord::Base.clear_cache!
 
     ::User.reset_column_information
+    ::Namespace.reset_column_information
   end
 
   def up
