@@ -128,6 +128,10 @@ module API
       merge_request
     end
 
+    def find_build!(id)
+      user_project.builds.find(id.to_i)
+    end
+
     def authenticate!
       unauthorized! unless current_user && can?(initial_current_user, :access_api)
     end
@@ -158,6 +162,14 @@ module API
 
     def authorize_admin_project
       authorize! :admin_project, user_project
+    end
+
+    def authorize_read_builds!
+      authorize! :read_build, user_project
+    end
+
+    def authorize_update_builds!
+      authorize! :update_build, user_project
     end
 
     def require_gitlab_workhorse!

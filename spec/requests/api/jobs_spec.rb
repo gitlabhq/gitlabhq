@@ -321,8 +321,9 @@ describe API::Jobs do
         get_for_ref
       end
 
-      it 'gives 401' do
-        expect(response).to have_http_status(401)
+      it 'does not find a resource in a private project' do
+        expect(project).to be_private
+        expect(response).to have_http_status(404)
       end
     end
 
