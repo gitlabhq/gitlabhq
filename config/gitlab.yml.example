@@ -273,9 +273,8 @@ production: &base
         encryption: 'plain'
 
         # Enables SSL certificate verification if encryption method is
-        # "start_tls" or "simple_tls". (Defaults to false for backward-
-        # compatibility)
-        verify_certificates: false
+        # "start_tls" or "simple_tls". Defaults to true.
+        verify_certificates: true
 
         # Specifies the path to a file containing a PEM-format CA certificate,
         # e.g. if you need to use an internal CA.
@@ -509,7 +508,7 @@ production: &base
         failure_count_threshold: 10 # number of failures before stopping attempts
         failure_wait_time: 30 # Seconds after an access failure before allowing access again
         failure_reset_time: 1800 # Time in seconds to expire failures
-        storage_timeout: 5 # Time in seconds to wait before aborting a storage access attempt
+        storage_timeout: 30 # Time in seconds to wait before aborting a storage access attempt
 
 
   ## Backup settings

@@ -2,9 +2,11 @@ require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Gitlab::SQL::Pattern
   include Avatarable
   include Referable
   include Sortable
@@ -303,7 +305,7 @@ class User < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search(query)
       table   = arel_table
-      pattern = "%#{query}%"
+      pattern = User.to_pattern(query)
 
       order = <<~SQL
         CASE
@@ -601,7 +603,7 @@ class User < ActiveRecord::Base
   end
 
   def require_personal_access_token_creation_for_git_auth?
-    return false if allow_password_authentication? || ldap_user?
+    return false if current_application_settings.password_authentication_enabled? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
@@ -642,11 +644,6 @@ class User < ActiveRecord::Base
     @personal_projects_count ||= personal_projects.count
   end
 
-  def projects_limit_percent
-    return 100 if projects_limit.zero?
-    (personal_projects.count.to_f / projects_limit) * 100
-  end
-
   def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
@@ -662,10 +659,6 @@ class User < ActiveRecord::Base
 
       merge_requests.empty?
     end
-  end
-
-  def projects_sorted_by_activity
-    authorized_projects.sorted_by_activity
   end
 
   def several_namespaces?
@@ -1046,6 +1039,10 @@ class User < ActiveRecord::Base
   # solution.
   def rss_token
     ensure_rss_token!
+  end
+
+  def verified_email?(email)
+    self.email == email
   end
 
   protected

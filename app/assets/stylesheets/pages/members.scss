@@ -55,6 +55,10 @@
       display: -webkit-flex;
       display: flex;
     }
+
+    .dropdown-menu.dropdown-menu-align-right {
+      margin-top: -2px;
+    }
   }
 
   .form-horizontal {
@@ -96,6 +100,8 @@
 }
 
 .member-search-form {
+  @include new-style-dropdown;
+
   position: relative;
 
   @media (min-width: $screen-sm-min) {
@@ -303,4 +309,8 @@
       margin-left: 0;
     }
   }
+}
+
+.member-form-control {
+  @include new-style-dropdown;
 }

@@ -5,6 +5,7 @@ FactoryGirl.define do
     platform  "darwin"
     is_shared false
     active    true
+    access_level :not_protected
 
     trait :online do
       contacted_at Time.now
@@ -20,6 +21,10 @@ FactoryGirl.define do
 
     trait :inactive do
       active false
+    end
+
+    trait :ref_protected do
+      access_level :ref_protected
     end
   end
 end

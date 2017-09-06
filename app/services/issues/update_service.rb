@@ -6,7 +6,7 @@ module Issues
       handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
-      update(issue)
+      move_issue_to_new_project(issue) || update(issue)
     end
 
     def before_update(issue)
@@ -72,6 +72,17 @@ module Issues
       if canonical_issue
         Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
       end
+    end
+
+    def move_issue_to_new_project(issue)
+      target_project = params.delete(:target_project)
+
+      return unless target_project &&
+          issue.can_move?(current_user, target_project) &&
+          target_project != issue.project
+
+      update(issue)
+      Issues::MoveService.new(project, current_user).execute(issue, target_project)
     end
 
     private

@@ -174,17 +174,6 @@
     vertical-align: top;
   }
 
-  .mini-pipeline-graph-dropdown-menu .mini-pipeline-graph-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    .ci-status-text,
-    .ci-status-icon {
-      top: 0;
-      margin-right: 10px;
-    }
-  }
-
   .normal {
     line-height: 28px;
   }
@@ -291,6 +280,7 @@
 
     .dropdown-toggle {
       .fa {
+        margin-left: 0;
         color: inherit;
       }
     }
@@ -489,6 +479,8 @@
 }
 
 .mr-source-target {
+  @include new-style-dropdown;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -610,6 +602,8 @@
 }
 
 .mr-version-controls {
+  @include new-style-dropdown;
+
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
@@ -726,4 +720,8 @@
     margin-right: 10px;
     font-size: 16px;
   }
+}
+
+.merge-request-form {
+  @include new-style-dropdown;
 }

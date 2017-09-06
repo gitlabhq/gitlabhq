@@ -17,7 +17,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of the project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       before { authorize_admin_project }
 
       desc "Get a specific project's deploy keys" do
@@ -125,8 +125,7 @@ module API
         key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
         not_found!('Deploy Key') unless key
 
-        status 204
-        key.destroy
+        destroy_conditionally!(key)
       end
     end
   end

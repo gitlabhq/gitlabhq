@@ -35,6 +35,7 @@ module Gitlab
 
     def check(cmd, changes)
       check_protocol!
+      check_valid_actor!
       check_active_user!
       check_project_accessibility!
       check_project_moved!
@@ -69,6 +70,14 @@ module Gitlab
     end
 
     private
+
+    def check_valid_actor!
+      return unless actor.is_a?(Key)
+
+      unless actor.valid?
+        raise UnauthorizedError, "Your SSH key #{actor.errors[:key].first}."
+      end
+    end
 
     def check_protocol!
       unless protocol_allowed?

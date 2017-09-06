@@ -36,6 +36,7 @@ module Ci
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
+    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
@@ -302,6 +303,10 @@ module Ci
       return [] unless config_processor
 
       @stage_seeds ||= config_processor.stage_seeds(self)
+    end
+
+    def has_kubernetes_active?
+      project.kubernetes_service&.active?
     end
 
     def has_stage_seeds?

@@ -1,11 +1,13 @@
 class BaseMailer < ActionMailer::Base
+  include Gitlab::CurrentSettings
+
   around_action :render_with_default_locale
 
   helper ApplicationHelper
   helper MarkupHelper
 
   attr_accessor :current_user
-  helper_method :current_user, :can?
+  helper_method :current_user, :can?, :current_application_settings
 
   default from:     proc { default_sender_address.format }
   default reply_to: proc { default_reply_to_address.format }

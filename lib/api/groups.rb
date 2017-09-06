@@ -7,7 +7,11 @@ module API
     helpers do
       params :optional_params_ce do
         optional :description, type: String, desc: 'The description of the group'
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the group'
+        optional :visibility, type: String,
+                              values: Gitlab::VisibilityLevel.string_values,
+                              default: Gitlab::VisibilityLevel.string_level(
+                                Gitlab::CurrentSettings.current_application_settings.default_group_visibility),
+                              desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
@@ -85,7 +89,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: { id: %r{[^/]+} } do
+    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Update a group. Available only for users who can administrate groups.' do
         success Entities::Group
       end
@@ -118,8 +122,9 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        status 204
-        ::Groups::DestroyService.new(group, current_user).execute
+        destroy_conditionally!(group) do |group|
+          ::Groups::DestroyService.new(group, current_user).execute
+        end
       end
 
       desc 'Get a list of projects in this group.' do

@@ -35,7 +35,7 @@ module IssuablesHelper
   def serialize_issuable(issuable)
     case issuable
     when Issue
-      IssueSerializer.new.represent(issuable).to_json
+      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
     when MergeRequest
       MergeRequestSerializer
         .new(current_user: current_user, project: issuable.project)
@@ -207,12 +207,10 @@ module IssuablesHelper
       endpoint: project_issue_path(@project, issuable),
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
-      canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
-      markdownPreviewUrl: preview_markdown_path(@project),
-      markdownDocs: help_page_path('user/markdown'),
-      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
+      markdownPreviewPath: preview_markdown_path(@project),
+      markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,
@@ -229,7 +227,7 @@ module IssuablesHelper
   end
 
   def updated_at_by(issuable)
-    return {} unless issuable.is_edited?
+    return {} unless issuable.edited?
 
     {
       updatedAt: issuable.updated_at.to_time.iso8601,
@@ -240,16 +238,10 @@ module IssuablesHelper
     }
   end
 
-  def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    cache_key = finder.state_counter_cache_key
+  def issuables_count_for_state(issuable_type, state)
+    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
 
-    @counts ||= {}
-    @counts[cache_key] ||= Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      finder.count_by_state
-    end
-
-    @counts[cache_key][state]
+    Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
   def close_issuable_url(issuable)
@@ -303,14 +295,6 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
-  end
-
-  def issuable_state_scope(issuable)
-    if issuable.respond_to?(:merged?) && issuable.merged?
-      :merged
-    else
-      issuable.open? ? :opened : :closed
-    end
   end
 
   def issuable_templates(issuable)
@@ -369,6 +353,8 @@ module IssuablesHelper
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
       endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
+      projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
       currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
       rootPath: root_path,

@@ -22,7 +22,7 @@
   - if group
     .pull-right
       - if can?(current_user, :admin_milestones, group)
-        - if milestone.is_group_milestone?
+        - if milestone.group_milestone?
           = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do
             Edit
         - if milestone.active?
@@ -33,7 +33,7 @@
 .detail-page-description.milestone-detail
   %h2.title
     = markdown_field(milestone, :title)
-  - if @milestone.is_group_milestone? && @milestone.description.present?
+  - if @milestone.group_milestone? && @milestone.description.present?
     %div
       .description
         .wiki
@@ -44,7 +44,7 @@
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
 
-- if @milestone.is_legacy_group_milestone? || @milestone.is_dashboard_milestone?
+- if @milestone.legacy_group_milestone? || @milestone.dashboard_milestone?
   .table-holder
     %table.table
       %thead
@@ -67,7 +67,7 @@
               Open
           %td
             = ms.expires_at
-- elsif @milestone.is_group_milestone?
+- elsif @milestone.group_milestone?
   %br
   View
   = link_to 'Issues', issues_group_path(@group, milestone_title: milestone.title)

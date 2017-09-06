@@ -25,8 +25,8 @@ describe('Description field component', () => {
     vm = new Component({
       el,
       propsData: {
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
+        markdownPreviewPath: '/',
+        markdownDocsPath: '/',
         formState: store.formState,
       },
     }).$mount();

@@ -74,6 +74,7 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
@@ -98,7 +99,7 @@ import initChangesDropdown from './init_changes_dropdown';
       path = page.split(':');
       shortcut_handler = null;
 
-      $('.js-gfm-input').each((i, el) => {
+      $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
         const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
@@ -171,7 +172,6 @@ import initChangesDropdown from './init_changes_dropdown';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -575,6 +575,7 @@ import initChangesDropdown from './init_changes_dropdown';
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();

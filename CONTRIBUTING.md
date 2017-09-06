@@ -164,7 +164,7 @@ Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
 The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
-~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
+~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.

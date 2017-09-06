@@ -99,6 +99,30 @@
     .blob-viewer-container {
       flex: 1;
       overflow: auto;
+
+      > div,
+      .file-content {
+        display: flex;
+      }
+
+      > div,
+      .file-content,
+      .blob-viewer,
+      .line-number,
+      .blob-content,
+      .code {
+        min-height: 100%;
+        width: 100%;
+      }
+
+      .line-numbers {
+        min-width: 44px;
+      }
+
+      .blob-content {
+        flex: 1;
+        overflow-x: auto;
+      }
     }
 
     #tabs {

@@ -61,16 +61,7 @@ following locations:
 
 ## Road to GraphQL
 
-Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
-controller-specific endpoints. GraphQL has a number of benefits:
-
-1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
-
-It will co-exist with the current v4 REST API. If we have a v5 API, this should
-be a compatibility layer on top of GraphQL.
+We have changed our plans to move to GraphQL. After reviewing the GraphQL license, anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
 
 ## Basic usage
 
@@ -263,6 +254,7 @@ The following table shows the possible return codes for API requests.
 | `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
 | `405 Method Not Allowed` | The request is not supported. |
 | `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `412` | Indicates the request was denied. May happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable` | The entity could not be processed. |
 | `500 Server Error` | While handling the request something went wrong server-side. |
 

@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import bp from './breakpoints';
 
 const HIDE_INTERVAL_TIMEOUT = 300;
@@ -8,9 +7,12 @@ const IS_SHOWING_FLY_OUT_CLASS = 'is-showing-fly-out';
 let currentOpenMenu = null;
 let menuCornerLocs;
 let timeoutId;
+let sidebar;
 
 export const mousePos = [];
 
+export const setSidebar = (el) => { sidebar = el; };
+export const getOpenMenu = () => currentOpenMenu;
 export const setOpenMenu = (menu = null) => { currentOpenMenu = menu; };
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
@@ -20,10 +22,8 @@ let headerHeight = 50;
 export const getHeaderHeight = () => headerHeight;
 
 export const canShowActiveSubItems = (el) => {
-  const isHiddenByMedia = bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md';
-
-  if (el.classList.contains('active') && !isHiddenByMedia) {
-    return Cookies.get('sidebar_collapsed') === 'true';
+  if (el.classList.contains('active') && (sidebar && !sidebar.classList.contains('sidebar-icons-only'))) {
+    return false;
   }
 
   return true;
@@ -142,14 +142,22 @@ export const documentMouseMove = (e) => {
   if (mousePos.length > 6) mousePos.shift();
 };
 
+export const subItemsMouseLeave = (relatedTarget) => {
+  clearTimeout(timeoutId);
+
+  if (!relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
+    hideMenu(currentOpenMenu);
+  }
+};
+
 export default () => {
-  const sidebar = document.querySelector('.sidebar-top-level-items');
+  sidebar = document.querySelector('.nav-sidebar');
 
   if (!sidebar) return;
 
   const items = [...sidebar.querySelectorAll('.sidebar-top-level-items > li')];
 
-  sidebar.addEventListener('mouseleave', () => {
+  sidebar.querySelector('.sidebar-top-level-items').addEventListener('mouseleave', () => {
     clearTimeout(timeoutId);
 
     timeoutId = setTimeout(() => {
@@ -163,10 +171,7 @@ export default () => {
     const subItems = el.querySelector('.sidebar-sub-level-items');
 
     if (subItems) {
-      subItems.addEventListener('mouseleave', () => {
-        clearTimeout(timeoutId);
-        hideMenu(currentOpenMenu);
-      });
+      subItems.addEventListener('mouseleave', e => subItemsMouseLeave(e.relatedTarget));
     }
 
     el.addEventListener('mouseenter', e => mouseEnterTopItems(e.currentTarget));

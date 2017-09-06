@@ -178,7 +178,7 @@ module ApplicationHelper
   end
 
   def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
-    return unless object.is_edited?
+    return unless object.edited?
 
     content_tag :small, class: 'edited-text' do
       output = content_tag(:span, 'Edited ')
@@ -202,7 +202,7 @@ module ApplicationHelper
   end
 
   def support_url
-    current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
   def page_filter_path(options = {})
@@ -303,7 +303,7 @@ module ApplicationHelper
   end
 
   def show_new_nav?
-    cookies["new_nav"] == "true"
+    true
   end
 
   def collapsed_sidebar?

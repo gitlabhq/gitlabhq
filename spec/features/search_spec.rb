@@ -160,7 +160,7 @@ describe "Search"  do
       fill_in 'search', with: 'gitlab'
       find('#search').native.send_keys(:enter)
 
-      page.within '.title' do
+      page.within '.breadcrumbs-sub-title' do
         expect(page).to have_content 'Search'
       end
     end

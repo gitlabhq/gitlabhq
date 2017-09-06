@@ -12,10 +12,11 @@ module Ci
         tag: tag?,
         trigger_requests: Array(trigger_request),
         user: current_user,
-        pipeline_schedule: schedule
+        pipeline_schedule: schedule,
+        protected: project.protected_for?(ref)
       )
 
-      result = validate(current_user || trigger_request.trigger.owner,
+      result = validate(current_user,
                         ignore_skip_ci: ignore_skip_ci,
                         save_on_errors: save_on_errors)
 

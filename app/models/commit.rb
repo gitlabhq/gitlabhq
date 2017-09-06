@@ -251,6 +251,28 @@ class Commit
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
+  def cherry_pick_description(user)
+    message_body = "(cherry picked from commit #{sha})"
+
+    if merged_merge_request?(user)
+      commits_in_merge_request = merged_merge_request(user).commits
+
+      if commits_in_merge_request.present?
+        message_body << "\n"
+
+        commits_in_merge_request.reverse.each do |commit_in_merge|
+          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+        end
+      end
+    end
+
+    message_body
+  end
+
+  def cherry_pick_message(user)
+    %Q{#{message}\n\n#{cherry_pick_description(user)}}
+  end
+
   def revert_description(user)
     if merged_merge_request?(user)
       "This reverts merge request #{merged_merge_request(user).to_reference}"
@@ -383,6 +405,6 @@ class Commit
   end
 
   def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.for_commit(self)
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

@@ -486,7 +486,7 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.shouldPropagate = function(e) {
     var $target;
-    if (this.options.multiSelect) {
+    if (this.options.multiSelect || this.options.shouldPropagate === false) {
       $target = $(e.target);
       if ($target && !$target.hasClass('dropdown-menu-close') &&
                      !$target.hasClass('dropdown-menu-close-icon') &&
@@ -546,10 +546,10 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.positionMenuAbove = function() {
-    var $button = $(this.el);
     var $menu = this.dropdown.find('.dropdown-menu');
 
-    $menu.css('top', ($button.height() + $menu.height()) * -1);
+    $menu.css('top', 'initial');
+    $menu.css('bottom', '100%');
   };
 
   GitLabDropdown.prototype.hidden = function(e) {
@@ -637,11 +637,15 @@ GitLabDropdown = (function() {
         value = this.options.id ? this.options.id(data) : data.id;
         fieldName = this.options.fieldName;
 
-        if (value) { value = value.toString().replace(/'/g, '\\\''); }
-
-        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
-        if (field.length) {
-          selected = true;
+        if (value) {
+          value = value.toString().replace(/'/g, '\\\'');
+          field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
+          if (field.length) {
+            selected = true;
+          }
+        } else {
+          field = this.dropdown.parent().find(`input[name='${fieldName}']`);
+          selected = !field.length;
         }
       }
       // Set URL
@@ -698,7 +702,7 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.noResults = function() {
     var html;
-    return html = "<li class='dropdown-menu-empty-link'> <a href='#' class='is-focused'> No matching results. </a> </li>";
+    return html = '<li class="dropdown-menu-empty-link"><a href="#" class="is-focused">No matching results</a></li>';
   };
 
   GitLabDropdown.prototype.rowClicked = function(el) {

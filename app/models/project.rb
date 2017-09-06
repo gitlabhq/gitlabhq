@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   include Routable
 
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
@@ -67,7 +68,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
@@ -222,6 +222,7 @@ class Project < ActiveRecord::Base
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
+  validate :can_create_repository?, on: [:create, :update], if: ->(project) { !project.persisted? || project.renamed? }
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -372,11 +373,7 @@ class Project < ActiveRecord::Base
 
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
         project.run_after_commit do
-          begin
-            Projects::HousekeepingService.new(project).execute
-          rescue Projects::HousekeepingService::LeaseTaken => e
-            Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
-          end
+          Projects::AfterImportService.new(project).execute
         end
       end
     end
@@ -468,7 +465,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]['path']
+    Gitlab.config.repositories.storages[repository_storage].try(:[], 'path')
   end
 
   def team
@@ -583,7 +580,7 @@ class Project < ActiveRecord::Base
   end
 
   def valid_import_url?
-    valid? || errors.messages[:import_url].nil?
+    valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
@@ -1000,6 +997,20 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # Check if repository already exists on disk
+  def can_create_repository?
+    return false unless repository_storage_path
+
+    expires_full_path_cache # we need to clear cache to validate renames correctly
+
+    if gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+      errors.add(:base, 'There is already a repository with that name on disk')
+      return false
+    end
+
+    true
+  end
+
   def create_repository(force: false)
     # Forked import is handled asynchronously
     return if forked? && !force
@@ -1233,6 +1244,10 @@ class Project < ActiveRecord::Base
 
   def public_pages_path
     File.join(pages_path, 'public')
+  end
+
+  def pages_available?
+    Gitlab.config.pages.enabled && !namespace.subgroup?
   end
 
   def remove_private_deploy_keys
@@ -1492,6 +1507,10 @@ class Project < ActiveRecord::Base
 
   def legacy_storage?
     self.storage_version.nil?
+  end
+
+  def renamed?
+    persisted? && path_changed?
   end
 
   private

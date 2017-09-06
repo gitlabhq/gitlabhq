@@ -18,10 +18,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_requests     = @merge_requests.page(params[:page])
     @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
+    @total_pages        = merge_requests_page_count(@merge_requests)
 
-    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
-    end
+    return if redirect_out_of_range(@merge_requests, @total_pages)
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -318,14 +317,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        @merge_request.merge_async(current_user.id, params)
 
         :success
       else
         :failed
       end
     else
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+      @merge_request.merge_async(current_user.id, params)
 
       :success
     end
