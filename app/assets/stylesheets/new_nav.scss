@@ -12,6 +12,17 @@ header.navbar-gitlab-new {
   border-bottom: 0;
   min-height: $new-navbar-height;
 
+  .logo-text {
+    line-height: initial;
+
+    svg {
+      width: 55px;
+      height: 14px;
+      margin: 0;
+      fill: $white-light;
+    }
+  }
+
   .header-content {
     display: -webkit-flex;
     display: flex;
@@ -37,10 +48,10 @@ header.navbar-gitlab-new {
 
       img {
         height: 28px;
-        margin-right: 10px;
+        margin-right: 8px;
       }
 
-      > a {
+      a {
         display: -webkit-flex;
         display: flex;
         align-items: center;
@@ -51,17 +62,6 @@ header.navbar-gitlab-new {
         svg {
           @media (min-width: $screen-sm-min) {
             margin-right: 8px;
-          }
-        }
-
-        .logo-text {
-          line-height: initial;
-
-          svg {
-            width: 55px;
-            height: 14px;
-            margin: 0;
-            fill: $white-light;
           }
         }
       }

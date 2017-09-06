@@ -118,7 +118,7 @@
       border-right: 1px solid $color-800;
     }
 
-    .search-input::placeholder  {
+    .search-input::placeholder {
       color: rgba($color-200, .8);
     }
 
@@ -173,10 +173,27 @@ body {
   }
 
   &.ui_dark {
-    @include gitlab-theme($dark-100, $dark-200, $dark-500, $dark-700, $dark-800, $dark-900);
+    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900);
+  }
+
+  &.ui_light {
+    @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-500, $theme-gray-200, $theme-gray-100);
+
+    header.navbar-gitlab-new {
+      background: linear-gradient(to right, $theme-gray-100, $theme-gray-100);
+      box-shadow: 0 2px 0 0 $border-color;
+
+      .logo-text svg {
+        fill: $theme-gray-900;
+      }
+    }
   }
 
   &.ui_blue {
     @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900);
+  }
+
+  &.ui_green {
+    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900);
   }
 }

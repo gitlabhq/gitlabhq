@@ -31,7 +31,7 @@ describe PreferencesHelper do
       it "returns user's theme's css_class" do
         stub_user(theme_id: 3)
 
-        expect(helper.user_application_theme).to eq 'ui_green'
+        expect(helper.user_application_theme).to eq 'ui_light'
       end
 
       it 'returns the default when id is invalid' do
@@ -39,7 +39,7 @@ describe PreferencesHelper do
 
         allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(2)
 
-        expect(helper.user_application_theme).to eq 'ui_charcoal'
+        expect(helper.user_application_theme).to eq 'ui_dark'
       end
     end
 

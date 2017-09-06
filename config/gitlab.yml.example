@@ -79,7 +79,9 @@ production: &base
     ## Default theme ID
     ##   1 - Indigo
     ##   2 - Dark
-    ##   3 - Blue
+    ##   3 - Light
+    ##   4 - Blue
+    ##   5 - Green
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing
