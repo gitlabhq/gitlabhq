@@ -2,6 +2,10 @@ module Geo
   class EventLog < ActiveRecord::Base
     include Geo::Model
 
+    belongs_to :repository_created_event,
+      class_name: 'Geo::RepositoryCreatedEvent',
+      foreign_key: :repository_created_event_id
+
     belongs_to :repository_updated_event,
       class_name: 'Geo::RepositoryUpdatedEvent',
       foreign_key: :repository_updated_event_id
@@ -19,7 +23,8 @@ module Geo
       foreign_key: :repositories_changed_event_id
 
     def event
-      repository_updated_event ||
+      repository_created_event ||
+        repository_updated_event ||
         repository_deleted_event ||
         repository_renamed_event ||
         repositories_changed_event

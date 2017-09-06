@@ -2,15 +2,23 @@ require 'spec_helper'
 
 RSpec.describe Geo::EventLog, type: :model do
   describe 'relationships' do
-    it { is_expected.to belong_to(:repository_updated_event).class_name('Geo::RepositoryUpdatedEvent').with_foreign_key('repository_updated_event_id') }
+    it { is_expected.to belong_to(:repositories_changed_event).class_name('Geo::RepositoriesChangedEvent').with_foreign_key('repositories_changed_event_id') }
+    it { is_expected.to belong_to(:repository_created_event).class_name('Geo::RepositoryCreatedEvent').with_foreign_key('repository_created_event_id') }
     it { is_expected.to belong_to(:repository_deleted_event).class_name('Geo::RepositoryDeletedEvent').with_foreign_key('repository_deleted_event_id') }
     it { is_expected.to belong_to(:repository_renamed_event).class_name('Geo::RepositoryRenamedEvent').with_foreign_key('repository_renamed_event_id') }
-    it { is_expected.to belong_to(:repositories_changed_event).class_name('Geo::RepositoriesChangedEvent').with_foreign_key('repositories_changed_event_id') }
+    it { is_expected.to belong_to(:repository_updated_event).class_name('Geo::RepositoryUpdatedEvent').with_foreign_key('repository_updated_event_id') }
   end
 
   describe '#event' do
     it 'returns nil when having no event associated' do
       expect(subject.event).to be_nil
+    end
+
+    it 'returns repository_created_event when set' do
+      repository_created_event = build(:geo_repository_created_event)
+      subject.repository_created_event = repository_created_event
+
+      expect(subject.event).to eq repository_created_event
     end
 
     it 'returns repository_updated_event when set' do

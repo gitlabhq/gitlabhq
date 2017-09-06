@@ -23,6 +23,38 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
     end
 
+    context 'when replaying a repository created event' do
+      let(:repository_created_event) { create(:geo_repository_created_event) }
+      let(:event_log) { create(:geo_event_log, repository_created_event: repository_created_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        allow(subject).to receive(:exit?).and_return(false, true)
+      end
+
+      it 'creates a new project registry' do
+        expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+      end
+
+      it 'sets resync attributes to true' do
+        subject.run!
+
+        registry = Geo::ProjectRegistry.last
+
+        expect(registry).to have_attributes(resync_repository: true, resync_wiki: true)
+      end
+
+      it 'sets resync_wiki to false if wiki_path is nil' do
+        repository_created_event.update_attribute(:wiki_path, nil)
+
+        subject.run!
+
+        registry = Geo::ProjectRegistry.last
+
+        expect(registry).to have_attributes(resync_repository: true, resync_wiki: false)
+      end
+    end
+
     context 'when replaying a repository updated event' do
       let(:event_log) { create(:geo_event_log, :updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }

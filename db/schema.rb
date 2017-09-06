@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905202320) do
+ActiveRecord::Schema.define(version: 20170906160132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -669,9 +669,11 @@ ActiveRecord::Schema.define(version: 20170905202320) do
     t.integer "repository_deleted_event_id", limit: 8
     t.integer "repository_renamed_event_id", limit: 8
     t.integer "repositories_changed_event_id", limit: 8
+    t.integer "repository_created_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
+  add_index "geo_event_log", ["repository_created_event_id"], name: "index_geo_event_log_on_repository_created_event_id", using: :btree
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
   add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
@@ -710,6 +712,17 @@ ActiveRecord::Schema.define(version: 20170905202320) do
   end
 
   add_index "geo_repositories_changed_events", ["geo_node_id"], name: "index_geo_repositories_changed_events_on_geo_node_id", using: :btree
+
+  create_table "geo_repository_created_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "repo_path", null: false
+    t.text "wiki_path"
+    t.text "project_name", null: false
+  end
+
+  add_index "geo_repository_created_events", ["project_id"], name: "index_geo_repository_created_events_on_project_id", using: :btree
 
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
@@ -2057,12 +2070,14 @@ ActiveRecord::Schema.define(version: 20170905202320) do
   add_foreign_key "events_for_migration", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repositories_changed_events", column: "repositories_changed_event_id", name: "fk_4a99ebfd60", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_repository_created_events", column: "repository_created_event_id", name: "fk_9b9afb1916", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
   add_foreign_key "geo_repositories_changed_events", "geo_nodes", on_delete: :cascade
+  add_foreign_key "geo_repository_created_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
