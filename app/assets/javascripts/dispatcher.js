@@ -488,6 +488,8 @@ import initChangesDropdown from './init_changes_dropdown';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
         case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
