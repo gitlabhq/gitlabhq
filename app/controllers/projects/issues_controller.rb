@@ -96,7 +96,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def discussions
+    limit = params.has_key?('limit') ? params[:limit] : 3
     notes = @issue.notes
+      .limit(limit)
       .inc_relations_for_view
       .includes(:noteable)
       .fresh
