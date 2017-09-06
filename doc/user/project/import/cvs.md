@@ -7,7 +7,7 @@ control system similar to [SVN](svn.md).
 
 The following list illustrates the main differences between CVS and Git:
 
-- **Git is distributed** while CVS is centralized using a client-server
+- **Git is distributed.** On the other hand, CVS is centralized using a client-server
   architecture. This translates to Git having a more flexible workflow since
   your working area is a copy of the entire repository. This decreases the
   overhead when switching branches or merging for example, since you don't have
@@ -17,17 +17,16 @@ The following list illustrates the main differences between CVS and Git:
   whole, or they fail without any changes. In CVS, commits (and other operations)
   are not atomic. If an operation on the repository is interrupted in the middle,
   the repository can be left in an inconsistent state.
-- **Changesets.** Changes in CVS are per file, while changes (commits) in Git
-  they always refer to the whole project. One of the consequences of this is that
-  it is very easy in Git to revert (create a change that undoes) or undo a whole
-  change.
+- **Storage method.** Changes in CVS are per file (changeset), while in Git
+  a committed file(s) is stored in its entirety (snapshot). That means that's
+  very easy in Git to revert or undo a whole change.
 - **Revision IDs.** The fact that in CVS changes are per files, the revision ID
   is depicted by version numbers, for example `1.4` reflects how many time a
   given file has been changed. In Git, each version of a project as a whole
   (each commit) has its unique name given by SHA-1.
 - **Merge tracking.** Git uses a commit-before-merge approach rather than
   merge-before-commit (or update-then-commit) like CVS. If while you were
-  preparing to create a new commit (new revision) somebody other created a
+  preparing to create a new commit (new revision) somebody created a
   new commit on the same branch and pushed to the central repository, CVS would
   force you to first update your working directory and resolve conflicts before
   allowing you to commit. This is not the case with Git. You first commit, save
@@ -51,7 +50,7 @@ with (`git bisect` for one) which makes for a more productive workflow.
 Migrating to Git/GitLab there is:
 
 - **Shorter learning curve**, Git has a big community and a vast number of
-  tutorials to get you started.
+  tutorials to get you started (see our [Git topic](../../../topics/git/index.md)).
 - **Integration with modern tools**, migrating to Git and GitLab you can have
   an open source end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.
