@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 10:14-0400\n"
+"POT-Creation-Date: 2017-08-24 09:29+0200\n"
+"PO-Revision-Date: 2017-09-06 02:28-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -45,7 +45,7 @@ msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 個のパイプライン"
+msgstr[0] "%d 個のパイプライン"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "CIについてのグラフ"
@@ -507,15 +507,6 @@ msgstr "サイクル分析のご紹介"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "先月のジョブ"
-
-msgid "Jobs for last week"
-msgstr "先週のジョブ"
-
-msgid "Jobs for last year"
-msgstr "昨年のジョブ"
-
 msgid "LFSStatus|Disabled"
 msgstr "無効"
 
@@ -752,6 +743,15 @@ msgstr "パイプライン"
 
 msgid "Pipelines charts"
 msgstr "パイプラインチャート"
+
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
 
 msgid "Pipeline|all"
 msgstr "全件"
@@ -1268,3 +1268,4 @@ msgstr "メール通知"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "親"
+

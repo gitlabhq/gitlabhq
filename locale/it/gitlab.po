@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 10:25-0400\n"
+"POT-Creation-Date: 2017-08-24 09:29+0200\n"
+"PO-Revision-Date: 2017-09-06 02:28-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -515,15 +515,6 @@ msgstr "Introduzione delle Analisi Cicliche"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Jobs dell'ultimo mese"
-
-msgid "Jobs for last week"
-msgstr "Jobs dell'ultima settimana"
-
-msgid "Jobs for last year"
-msgstr "Jobs dell'ultimo anno"
-
 msgid "LFSStatus|Disabled"
 msgstr "Disabilitato"
 
@@ -763,6 +754,15 @@ msgstr "Pipeline"
 
 msgid "Pipelines charts"
 msgstr "Grafici pipeline"
+
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
 
 msgid "Pipeline|all"
 msgstr "tutto"
@@ -1285,3 +1285,4 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
+

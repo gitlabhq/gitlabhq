@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 09:49-0400\n"
+"POT-Creation-Date: 2017-08-24 09:29+0200\n"
+"PO-Revision-Date: 2017-09-06 02:28-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -523,15 +523,6 @@ msgstr "Представляємо аналітику циклу"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Кількість завдань за останній місяць"
-
-msgid "Jobs for last week"
-msgstr "Кількість завдань за останній тиждень"
-
-msgid "Jobs for last year"
-msgstr "Кількість завдань за останній рік"
-
 msgid "LFSStatus|Disabled"
 msgstr "Вимкнено"
 
@@ -774,6 +765,15 @@ msgstr "Конвеєри"
 
 msgid "Pipelines charts"
 msgstr "Чарти Конвеєрів"
+
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
 
 msgid "Pipeline|all"
 msgstr "всі"
@@ -1302,3 +1302,4 @@ msgid_plural "parents"
 msgstr[0] "джерело"
 msgstr[1] "джерела"
 msgstr[2] "джерел"
+
