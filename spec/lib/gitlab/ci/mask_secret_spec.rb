@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::MaskSecret do
+describe Gitlab::Ci::MaskSecret do
   subject { described_class }
 
   describe '#mask' do
