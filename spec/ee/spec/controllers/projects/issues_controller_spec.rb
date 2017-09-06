@@ -1,13 +1,13 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:namespace) { create(:namespace) }
-  let(:project)   { create(:project_empty_repo, namespace: namespace) }
-  let(:user)      { create(:user) }
-  let(:viewer)    { user }
-  let(:issue)     { create(:issue, project: project) }
+  let(:namespace) { create(:group, :public) }
+  let(:project)   { create(:project_empty_repo, :public, namespace: namespace) }
 
   describe 'POST export_csv' do
+    let(:user)              { create(:user) }
+    let(:viewer)            { user }
+    let(:issue)             { create(:issue, project: project) }
     let(:globally_licensed) { false }
 
     before do
@@ -61,6 +61,7 @@ describe Projects::IssuesController do
     context 'licensed by namespace' do
       let(:globally_licensed) { true }
       let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+      let(:project) { create(:project, namespace: namespace) }
 
       before do
         stub_application_setting(check_namespace_plan: true)
@@ -189,6 +190,54 @@ describe Projects::IssuesController do
           issue = Issue.first
           expect(issue.read_attribute(:weight)).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'GET service_desk' do
+    def get_service_desk(extra_params = {})
+      get :service_desk, extra_params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    context 'when Service Desk is available on the project' do
+      let(:support_bot) { User.support_bot }
+      let(:other_user) { create(:user) }
+      let!(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
+      let!(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
+      let!(:other_user_issue) { create(:issue, project: project, author: other_user) }
+
+      before do
+        stub_licensed_features(service_desk: true)
+      end
+
+      it 'adds an author filter for the support bot user' do
+        get_service_desk
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+      end
+
+      it 'does not allow any other author to be set' do
+        get_service_desk(author_username: other_user.username)
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_1, service_desk_issue_2)
+      end
+
+      it 'supports other filters' do
+        get_service_desk(assignee_username: other_user.username)
+
+        expect(assigns(:issues)).to contain_exactly(service_desk_issue_2)
+      end
+    end
+
+    context 'when Service Desk is not available on the project' do
+      before do
+        stub_licensed_features(service_desk: false)
+      end
+
+      it 'returns a 404' do
+        get_service_desk
+
+        expect(response).to have_http_status(404)
       end
     end
   end
