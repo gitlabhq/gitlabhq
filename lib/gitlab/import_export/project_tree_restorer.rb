@@ -53,11 +53,9 @@ module Gitlab
       # Finally, it updates each attribute in the newly imported project.
       def create_relations
         default_relation_list.each do |relation|
-          next unless relation.is_a?(Hash) || @tree_hash[relation.to_s].present?
-
           if relation.is_a?(Hash)
             create_sub_relations(relation, @tree_hash)
-          else
+          elsif @tree_hash[relation.to_s].present?
             relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
             save_relation_hash(@tree_hash[relation_key.to_s], relation_key)
           end

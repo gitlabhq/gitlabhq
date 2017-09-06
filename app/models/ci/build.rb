@@ -452,7 +452,7 @@ module Ci
     end
 
     def serializable_hash(options = {})
-      super(options.merge(when: read_attribute(:when)))
+      super(options).merge(when: read_attribute(:when))
     end
 
     private
