@@ -10,6 +10,7 @@
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
     name: 'issueCommentForm',
@@ -88,18 +89,6 @@
       },
       endpoint() {
         return this.getIssueData.create_note_path;
-      },
-
-      isIssueConfidential() {
-        return !!this.getIssueData.confidential;
-      },
-
-      isIssueLocked() {
-        return !!this.getIssueData.discussion_locked;
-      },
-
-      isIssueWarning() {
-        return this.isIssueConfidential || this.isIssueLocked;
       },
     },
     methods: {
@@ -215,6 +204,11 @@
         });
       },
     },
+
+    mixins: [
+      issuableStateMixin,
+    ],
+
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
       $(document).on('issuable:change', (e, isClosed) => {
@@ -250,7 +244,7 @@
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
 
-              <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
+              <issue-warning v-if="hasIssueWarning" :is-locked="isIssueLocked" :is-confidential="isIssueConfidential" />
 
               <div class="error-alert"></div>
               <markdown-field
@@ -258,7 +252,7 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isIssueWarning">
+                :is-confidential-issue="hasIssueWarning">
                 <textarea
                   id="note-body"
                   name="note[note]"

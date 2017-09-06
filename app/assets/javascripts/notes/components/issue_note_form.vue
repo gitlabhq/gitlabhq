@@ -3,6 +3,7 @@
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
     name: 'issueNoteForm',
@@ -67,18 +68,6 @@
       isDisabled() {
         return !this.note.length || this.isSubmitting;
       },
-
-      isIssueConfidential() {
-        return !!this.getIssueData.confidential;
-      },
-
-      isIssueLocked() {
-        return !!this.getIssueData.discussion_locked;
-      },
-
-      isIssueWarning() {
-        return this.isIssueConfidential || this.isIssueLocked;
-      },
     },
     methods: {
       handleUpdate() {
@@ -104,6 +93,11 @@
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.note);
       },
     },
+
+    mixins: [
+      issuableStateMixin,
+    ],
+
     mounted() {
       this.$refs.textarea.focus();
     },
@@ -135,7 +129,7 @@
     <form
       class="edit-note common-note-form js-quick-submit gfm-form">
 
-      <issue-warning v-if="isIssueWarning" :locked="isIssueLocked" :confidential="isIssueConfidential" />
+      <issue-warning v-if="hasIssueWarning" :is-locked="isIssueLocked" :is-confidential="isIssueConfidential" />
 
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"

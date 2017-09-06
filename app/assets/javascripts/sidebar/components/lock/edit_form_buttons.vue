@@ -19,7 +19,7 @@ export default {
 
   computed: {
     onOrOff() {
-      return this.isLocked ? 'Unlock' : 'Lock';
+      return this.isLocked ? this.__('Unlock') : this.__('Lock');
     },
 
     updateLockedBool() {
@@ -36,7 +36,7 @@ export default {
       class="btn btn-default append-right-10"
       @click="toggleForm"
     >
-      Cancel
+      {{ __('Cancel') }}
     </button>
 
     <button

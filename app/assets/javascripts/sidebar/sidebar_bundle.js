@@ -3,11 +3,14 @@ import sidebarTimeTracking from './components/time_tracking/sidebar_time_trackin
 import sidebarAssignees from './components/assignees/sidebar_assignees';
 import confidential from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
-import lock from './components/lock/lock_issue_sidebar.vue';
+import lockBlock from './components/lock/lock_issue_sidebar.vue';
+import Translate from '../vue_shared/translate';
 
 import Mediator from './sidebar_mediator';
 
-function mountConfidential(mediator) {
+Vue.use(Translate);
+
+function mountConfidentialComponent(mediator) {
   const el = document.querySelector('#js-confidential-entry-point');
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
@@ -23,7 +26,7 @@ function mountConfidential(mediator) {
   }).$mount(el);
 }
 
-function mountLock(mediator) {
+function mountLockComponent(mediator) {
   const el = document.querySelector('#js-lock-entry-point');
 
   if (!el) return;
@@ -31,7 +34,7 @@ function mountLock(mediator) {
   const dataNode = document.getElementById('js-lock-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const LockComp = Vue.extend(lock);
+  const LockComp = Vue.extend(lockBlock);
 
   new LockComp({
     propsData: {
@@ -54,8 +57,8 @@ function domContentLoaded() {
     new Vue(sidebarAssignees).$mount(sidebarAssigneesEl);
   }
 
-  mountConfidential(mediator);
-  mountLock(mediator);
+  mountConfidentialComponent(mediator);
+  mountLockComponent(mediator);
 
   new SidebarMoveIssue(
     mediator,

@@ -1,12 +1,12 @@
 <script>
   export default {
     props: {
-      locked: {
+      isLocked: {
         type: Boolean,
         default: false,
       },
 
-      confidential: {
+      isConfidential: {
         type: Boolean,
         default: false,
       },
@@ -15,13 +15,13 @@
     computed: {
       iconClass() {
         return {
-          'fa-eye-slash': this.confidential,
-          'fa-lock': this.locked,
+          'fa-eye-slash': this.isConfidential,
+          'fa-lock': this.isLocked,
         };
       },
 
       isLockedAndConfidential() {
-        return this.confidential && this.locked;
+        return this.isConfidential && this.isLocked;
       },
     },
   };
@@ -36,18 +36,18 @@
     </i>
 
     <span v-if="isLockedAndConfidential">
-      This issue is confidential and locked.
-      People without permission will never get a notification and not be able to comment.
+      {{ __('This issue is confidential and locked.') }}
+      {{ __('People without permission will never get a notification and not be able to comment.') }}
     </span>
 
-    <span v-else-if="confidential">
-      This is a confidential issue.
-      Your comment will not be visible to the public.
+    <span v-else-if="isConfidential">
+      {{ __('This is a confidential issue.') }}
+      {{ __('Your comment will not be visible to the public.') }}
     </span>
 
-    <span v-else-if="locked">
-      This issue is locked.
-      Only project members can comment.
+    <span v-else-if="isLocked">
+      {{ __('This issue is locked.') }}
+      {{ __('Only project members can comment.') }}
     </span>
   </div>
 </template>

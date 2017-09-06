@@ -11,14 +11,15 @@
   background-color: $orange-50;
   border-radius: $border-radius-default;
   padding: 5px;
-  margin: 0 10px 0 0;
-  width: 24px;
-  height: 24px;
+  margin: 0 $btn-side-margin 0 0;
+  width: $issuable-warning-size;
+  height: $issuable-warning-size;
   text-align: center;
 }
 
 .issuable-sidebar-item {
-  .is-not-active {
+  .is-not-active,
+  .is-active {
     margin: auto;
     border-radius: $border-radius-default;
     padding: 5px;
@@ -26,12 +27,8 @@
   }
 
   .is-active {
-    margin: auto;
     color: $orange-600;
     background-color: $orange-50;
-    border-radius: $border-radius-default;
-    padding: 5px;
-    margin: 0 3px 0 -4px;
   }
 }
 

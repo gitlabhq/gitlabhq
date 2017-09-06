@@ -26,23 +26,19 @@ export default {
 
   data() {
     return {
-      edit: false,
+      isEditing: false,
     };
   },
 
   computed: {
-    faLock() {
-      const lock = this.isLocked ? 'fa-lock' : 'fa-unlock';
-
-      return {
-        [lock]: true,
-      };
+    lockIconClass() {
+      return this.isLocked ? 'fa-lock' : 'fa-unlock';
     },
   },
 
   methods: {
     toggleForm() {
-      this.edit = !this.edit;
+      this.isEditing = !this.isEditing;
     },
 
     updateLockedAttribute(locked) {
@@ -50,7 +46,7 @@ export default {
         discussion_locked: locked,
       })
       .then(() => location.reload())
-      .catch(() => new Flash('Something went wrong trying to change the locked state of this issue'));
+      .catch(() => Flash(this.__('Something went wrong trying to change the locked state of this issue')));
     },
   },
 };
@@ -59,24 +55,24 @@ export default {
 <template>
   <div class="block issuable-sidebar-item">
     <div class="sidebar-collapsed-icon">
-      <i class="fa" :class="faLock" aria-hidden="true" data-hidden="true"></i>
+      <i class="fa" :class="lockIconClass" aria-hidden="true" data-hidden="true"></i>
     </div>
 
     <div class="title hide-collapsed">
-      Lock issue
+      {{ __('Lock issue') }}
       <a
         v-if="isEditable"
         class="pull-right lock-edit"
         href="#"
         @click.prevent="toggleForm"
       >
-        Edit
+        {{ __('Edit') }}
       </a>
     </div>
 
     <div class="value sidebar-item-value hide-collapsed">
       <editForm
-        v-if="edit"
+        v-if="isEditing"
         :toggle-form="toggleForm"
         :is-locked="isLocked"
         :update-locked-attribute="updateLockedAttribute"
@@ -84,12 +80,12 @@ export default {
 
       <div v-if="isLocked" class="value sidebar-item-value">
         <i class="fa fa-lock is-active"></i>
-        Locked
+        {{ __('Locked') }}
       </div>
 
       <div v-else class="no-value sidebar-item-value hide-collapsed">
         <i aria-hidden="true" data-hidden="true" class="fa fa-unlock is-not-active"></i>
-        Unlocked
+        {{ __('Unlocked') }}
       </div>
     </div>
   </div>

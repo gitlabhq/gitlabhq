@@ -30,15 +30,15 @@ export default {
     <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p v-if="isLocked">
-          Unlock this issue?
-          <strong>everyone</strong>
-          will be able to comment.
+          {{ __('Unlock this issue?') }}
+          <strong>{{ __('Everyone') }}</strong>
+          {{ __('will be able to comment.') }}
         </p>
 
         <p v-else>
-          Lock this issue? Only
-          <strong>project members</strong>
-          will be able to comment.
+          {{ __('Lock this issue? Only') }}
+          <strong>{{ __('project members') }}</strong>
+          {{ __('will be able to comment.') }}
         </p>
 
         <edit-form-buttons
