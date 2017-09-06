@@ -1125,7 +1125,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
   create_table "project_auto_devops", force: :cascade do |t|
     t.integer "project_id", null: false
     t.boolean "enabled"
-    t.string "domain", null: false
+    t.string "domain"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end

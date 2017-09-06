@@ -469,7 +469,7 @@ class Project < ActiveRecord::Base
   end
 
   def auto_devops_enabled?
-    if auto_devops && !auto_devops.enabled.nil?
+    if auto_devops && auto_devops.enabled.present?
       auto_devops.enabled?
     else
       current_application_settings.auto_devops_enabled?

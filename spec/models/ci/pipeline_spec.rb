@@ -783,10 +783,44 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#detect_ci_yaml_file' do
+    context 'when the repo has a config file' do
+      it 'returns that configuration' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.detect_ci_yaml_file).to be_a(String)
+        expect(pipeline.repository_source?).to be(true)
+      end
+    end
+
+    context 'when the repo does not have a config file' do
+      let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
+
+      context 'auto devops enabled' do
+        before do
+          allow_any_instance_of(ApplicationSetting)
+            .to receive(:auto_devops_enabled?) { true }
+        end
+
+        it 'returns the implied ci file' do
+          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+          expect(pipeline.detect_ci_yaml_file).to eq(implied_yml)
+          expect(pipeline.auto_devops_source?).to be(true)
+        end
+      end
+    end
+  end
+
   describe '#ci_yaml_file' do
     let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-    context 'when AutoDevops is enabled' do
+    before { pipeline.detect_ci_yaml_file }
+
+    context 'the source is unknown' do
+      before { pipeline.unknown_source! }
+
       it 'returns the configuration if found' do
         allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
           .and_return('config')
@@ -794,49 +828,37 @@ describe Ci::Pipeline, :mailer do
         expect(pipeline.ci_yaml_file).to be_a(String)
         expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
         expect(pipeline.yaml_errors).to be_nil
-        expect(pipeline.repository?).to be(true)
       end
 
-      context 'when the implied configuration will be used' do
-        before do
-          allow_any_instance_of(ApplicationSetting)
-            .to receive(:auto_devops_enabled?) { true }
-        end
-
-        it 'returns the implied configuration when its not found' do
-          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
-
-          expect(pipeline.ci_yaml_file).to eq(implied_yml)
-        end
-
-        it 'sets the config source' do
-          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
-
-          expect(pipeline.ci_yaml_file).to eq(implied_yml)
-          expect(pipeline.auto_devops?).to be(true)
-        end
+      it 'sets yaml errors if not found' do
+        expect(pipeline.ci_yaml_file).to be_nil
+        expect(pipeline.yaml_errors)
+            .to start_with('Failed to load CI/CD config file')
       end
     end
 
-    context 'when AudoDevOps is disabled' do
-      context 'when an invalid path is given' do
-        it 'sets the yaml errors' do
-          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+    context 'the source is the repository' do
+      before { pipeline.repository_source! }
 
-          expect(pipeline.ci_yaml_file).to be_nil
-          expect(pipeline.yaml_errors)
-            .to start_with('Failed to load CI/CD config file')
-        end
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
       end
+    end
 
-      context 'when the config file can be found' do
-        it 'has no yaml_errors' do
-          allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
-            .and_return('config')
+    context 'when the source is auto_devops_source' do
+      before { pipeline.auto_devops_source! }
 
-          expect(pipeline.ci_yaml_file).to eq('config')
-          expect(pipeline.yaml_errors).to be_nil
-        end
+      it 'finds the implied config' do
+        allow_any_instance_of(ApplicationSetting)
+          .to receive(:auto_devops_enabled?) { true }
+
+        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
       end
     end
   end

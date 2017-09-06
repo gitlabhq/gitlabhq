@@ -351,9 +351,9 @@ module Ci
 
       @ci_yaml_file =
         case config_source
-        when :repository_source, :unknown_source
+        when "repository_source", "unknown_source"
           ci_yaml_from_repo
-        when :auto_devops_source
+        when "auto_devops_source"
           implied_ci_yaml_file
         end
 
