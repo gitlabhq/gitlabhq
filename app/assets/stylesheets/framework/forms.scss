@@ -38,6 +38,8 @@ label {
 
 .control-label {
   @extend .col-sm-2;
+
+  margin-top: 0;
 }
 
 .inline-input-group {
