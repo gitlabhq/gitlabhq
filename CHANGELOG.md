@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.4 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Fixes race condition in project uploads.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Disallow the `name` attribute on all user-provided markup.
+
 ## 9.5.3 (2017-09-03)
 
 - [SECURITY] Filter additional secrets from Rails logs.
