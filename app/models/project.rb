@@ -1389,6 +1389,10 @@ class Project < ActiveRecord::Base
     Gitlab::Utils.slugify(full_path.to_s)
   end
 
+  def has_ci?
+    @repository.gitlab_ci_yml || @project.auto_devops_enabled?
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
