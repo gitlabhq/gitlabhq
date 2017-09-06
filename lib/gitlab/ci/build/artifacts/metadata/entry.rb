@@ -113,7 +113,7 @@ module Gitlab
             end
 
             def inspect
-              "#{self.class.name}: #{self.to_s}"
+              "#{self.class.name}: #{self}"
             end
 
             private
