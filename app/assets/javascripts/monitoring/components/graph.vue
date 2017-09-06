@@ -19,10 +19,6 @@
         type: Object,
         required: true,
       },
-      classType: {
-        type: String,
-        required: true,
-      },
       updateAspectRatio: {
         type: Boolean,
         required: true,
@@ -207,12 +203,11 @@
     },
   };
 </script>
+
 <template>
-  <div
-    :class="classType">
-    <h5
-      class="text-center graph-title">
-        {{graphData.title}}
+  <div class="prometheus-graph">
+    <h5 class="text-center graph-title">
+      {{graphData.title}}
     </h5>
     <div
       class="prometheus-svg-container"
@@ -243,7 +238,7 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <monitoring-paths 
+            <monitoring-paths
               v-for="(path, index) in timeSeries"
               :key="index"
               :generated-line-path="path.linePath"
