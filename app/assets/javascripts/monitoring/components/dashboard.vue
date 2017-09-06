@@ -8,6 +8,7 @@
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
+  import { backOff } from '../../lib/utils/common_utils';
 
   export default {
 
@@ -41,7 +42,7 @@
       getGraphsData() {
         const maxNumberOfRequests = 3;
         this.state = 'loading';
-        gl.utils.backOff((next, stop) => {
+        backOff((next, stop) => {
           this.service.get().then((resp) => {
             if (resp.status === statusCodes.NO_CONTENT) {
               this.backOffRequestCounter = this.backOffRequestCounter += 1;

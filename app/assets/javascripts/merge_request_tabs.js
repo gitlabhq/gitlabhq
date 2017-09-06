@@ -7,6 +7,7 @@ import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
+import parseUrlPathname from './lib/utils/common_utils';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -260,7 +261,7 @@ import bp from './breakpoints';
 
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
-      const urlPathname = gl.utils.parseUrlPathname(source);
+      const urlPathname = parseUrlPathname(source);
 
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
