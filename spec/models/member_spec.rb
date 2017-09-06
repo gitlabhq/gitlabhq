@@ -409,6 +409,15 @@ describe Member do
           expect(members).to be_a Array
           expect(members).to be_empty
         end
+
+        it 'supports differents formats' do
+          list = ['joe@local.test', admin, user1.id, user2.id.to_s]
+
+          members = described_class.add_users(source, list, :master)
+
+          expect(members.size).to eq(4)
+          expect(members.first).to be_invite
+        end
       end
     end
   end

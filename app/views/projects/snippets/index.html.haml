@@ -1,6 +1,6 @@
 - page_title "Snippets"
 
-- if show_new_nav? && can?(current_user, :create_project_snippet, @project)
+- if can?(current_user, :create_project_snippet, @project)
   - content_for :breadcrumbs_extra do
     = link_to "New snippet", new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New snippet"
 
@@ -9,7 +9,7 @@
     - include_private = @project.team.member?(current_user) || current_user.admin?
     = render partial: 'snippets/snippets_scope_menu', locals: { subject: @project, include_private: include_private }
 
-    .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+    .nav-controls.visible-xs
       - if can?(current_user, :create_project_snippet, @project)
         = link_to "New snippet", new_project_snippet_path(@project), class: "btn btn-new", title: "New snippet"
 

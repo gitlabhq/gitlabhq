@@ -134,15 +134,19 @@ module Gitlab
       # This is to work around a bug in libgit2 that causes in-memory refs to
       # be stale/invalid when packed-refs is changed.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/474
       def find_branch(name, force_reload = false)
-        reload_rugged if force_reload
+        gitaly_migrate(:find_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_branch(name)
+          else
+            reload_rugged if force_reload
 
-        rugged_ref = rugged.branches[name]
-        if rugged_ref
-          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            rugged_ref = rugged.branches[name]
+            if rugged_ref
+              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            end
+          end
         end
       end
 

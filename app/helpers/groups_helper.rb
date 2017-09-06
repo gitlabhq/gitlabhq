@@ -86,7 +86,7 @@ module GroupsHelper
   def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path breadcrumb-item-text js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
-        if (show_new_nav? && group.try(:avatar_url) || (show_new_nav? && show_avatar)) && !Rails.env.test?
+        if (group.try(:avatar_url) || show_avatar)) && !Rails.env.test?
           image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
         else
           ""

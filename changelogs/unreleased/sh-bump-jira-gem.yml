@@ -1,0 +1,5 @@
+---
+title: Bump jira-ruby gem to 1.4.1 to fix issues with HTTP proxies
+merge_request:
+author:
+type: fixed

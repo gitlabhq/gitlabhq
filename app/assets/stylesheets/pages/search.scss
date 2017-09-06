@@ -190,6 +190,8 @@ input[type="checkbox"]:hover {
 }
 
 .search-holder {
+  @include new-style-dropdown;
+
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
     display: flex;

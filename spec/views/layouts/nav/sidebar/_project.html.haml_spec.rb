@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe 'layouts/nav/_project' do
+describe 'layouts/nav/sidebar/_project' do
   describe 'container registry tab' do
     before do
+      project = create(:project, :repository)
       stub_container_registry_config(enabled: true)
 
-      assign(:project, create(:project, :repository))
+      assign(:project, project)
+      assign(:repository, project.repository)
       allow(view).to receive(:current_ref).and_return('master')
 
       allow(view).to receive(:can?).and_return(true)
