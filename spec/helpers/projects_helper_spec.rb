@@ -195,7 +195,7 @@ describe ProjectsHelper do
     let(:user) { build_stubbed(:user) }
 
     it 'returns image tag for member avatar' do
-      allow(helper).to receive(:image_tag).with(nil, {width: 16, class: ["avatar", "avatar-inline", "s16"], alt: ""})
+      allow(helper).to receive(:image_tag).with(nil, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
       allow(helper).to receive(:avatar_icon).with(user, 16)
 
       helper.link_to_member_avatar(user)
