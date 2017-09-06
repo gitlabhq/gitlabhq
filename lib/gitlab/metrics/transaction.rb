@@ -87,7 +87,7 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
-        Gitlab::Metrics.counter("gitlab_transaction_event_#{event_name}_total".to_sym, "Transaction event #{event_name}", tags).increment({})
+        self.class.metric_event_counter(event_name, tags).increment(tags.merge({ action: action }))
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, tags, :event)
       end
 
@@ -101,14 +101,12 @@ module Gitlab
       end
 
       def increment(name, value, compat = true)
-        Gitlab::Metrics.counter("gitlab_transaction_#{name}_total".to_sym, "Transaction counter #{name}", {})
-          .increment({}, value) if compat
+        self.class.metric_transaction_counter(name).increment({ action: action }, value) if compat
         @values[name] += value
       end
 
       def set(name, value, compat = true)
-        Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", {}, :livesum)
-          .set({}, value) if compat
+        self.class.metric_transaction_gauge(name).set({ action: action }, value) if compat
         @values[name] = value
       end
 
@@ -143,6 +141,31 @@ module Gitlab
         end
 
         Metrics.submit_metrics(submit_hashes)
+      end
+
+      private
+
+      def self.metric_event_counter(event_name, tags)
+        @metric_event_counters ||= {}
+        @metric_event_counters[event_name] ||= Gitlab::Metrics.counter(
+          "gitlab_transaction_event_#{event_name}_total".to_sym,
+          "Transaction event #{event_name} counter",
+          tags.merge({ action: nil })
+        )
+      end
+
+      def self.metric_transaction_counter(name)
+        @metric_transaction_counters ||= {}
+        @metric_transaction_counters[name] ||= Gitlab::Metrics.counter(
+          "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", action: nil
+        )
+      end
+
+      def self.metric_transaction_gauge(name)
+        @metric_transaction_gauges ||= {}
+        @metric_transaction_gauges[name] ||= Gitlab::Metrics.gauge(
+          "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", { action: nil }, :livesum
+        )
       end
     end
   end
