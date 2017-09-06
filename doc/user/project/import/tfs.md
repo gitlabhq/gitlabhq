@@ -5,12 +5,6 @@ which also includes a centralized version control system (TFVC) similar to Git.
 
 In this document, we emphasize on the TFVC to Git migration.
 
-## Why migrate
-
-CVS is old with no new release since 2008. Git provides more tools to work
-with (`git bisect` for one) which makes for a more productive workflow.
-Migrating to Git/GitLab there is:
-
 ## TFVC vs Git
 
 The following list illustrates the main differences between TFVC and Git:
