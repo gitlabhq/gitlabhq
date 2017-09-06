@@ -143,6 +143,7 @@ module API
     mount ::API::Variables
     mount ::API::GroupVariables
     mount ::API::Version
+    mount ::API::Wikis
 
     route :any, '*path' do
       error!('404 Not Found', 404)
