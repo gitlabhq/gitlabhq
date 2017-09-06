@@ -66,9 +66,7 @@
 <template>
   <div class="js-deploy-board deploy-board">
 
-    <div v-if="isLoading">
-      <loading-icon />
-    </div>
+    <loading-icon v-if="isLoading" />
 
     <div v-if="canRenderDeployBoard">
 

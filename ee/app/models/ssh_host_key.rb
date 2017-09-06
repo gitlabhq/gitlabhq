@@ -125,5 +125,7 @@ class SshHostKey
     raise ArgumentError.new("Invalid URL") unless full_url&.scheme == 'ssh'
 
     Addressable::URI.parse("ssh://#{full_url.host}:#{full_url.inferred_port}")
+  rescue Addressable::URI::InvalidURIError
+    raise ArgumentError.new("Invalid URL")
   end
 end

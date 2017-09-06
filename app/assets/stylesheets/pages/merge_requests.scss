@@ -713,7 +713,14 @@
   .approvers-list {
     display: flex;
     align-items: center;
-    margin-right: 5px;
+  }
+
+  .approvers-list {
+    .link-to-member-avatar:not(:first-child) {
+      img {
+        margin-left: 0;
+      }
+    }
   }
 
   .unapprove-btn {

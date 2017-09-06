@@ -1,0 +1,5 @@
+---
+title: Fix a 500 error in the SSH host keys lookup action
+merge_request: 2827
+author:
+type: fixed

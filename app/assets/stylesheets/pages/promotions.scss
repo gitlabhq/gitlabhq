@@ -9,15 +9,17 @@
     margin-bottom: 20px;
   }
 
+  .user-callout-copy {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .bordered-box {
     padding: 20px;
     border-color: $border-color;
     background-color: $white-light;
     align-items: flex-start;
-
-    .user-callout-copy {
-      max-width: 700px;
-    }
 
     .close {
 
@@ -38,6 +40,10 @@
     }
 
   }
+}
+
+.user-callout.promotion-callout.promotion-empty-page {
+  margin-top: 56px;
 }
 
 .promotion-modal {

@@ -1,0 +1,14 @@
+.center.user-callout.promotion-callout.promotion-empty-page
+  .svg-container
+    = custom_icon('icon_group_webhook')
+  .user-callout-copy
+    %h4
+      - if current_application_settings.should_check_namespace_plan?
+        = _('Upgrade your plan to activate Group Webhooks.')
+      - else
+        = _('Add Group Webhooks and GitLab Enterprise Edition.')
+    %p
+      = _('Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group.')
+      = link_to _('Read more'), help_page_path('user/project/integrations/webhooks.html'), target: '_blank'
+    .prepend-top-15
+      = render 'shared/promotions/promotion_link_project'

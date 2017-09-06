@@ -29,9 +29,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   private
 
   def valid_url?(value)
-    return false unless value
-
-    valid_protocol?(value) && valid_uri?(value)
+    valid_uri?(value) && valid_protocol?(value)
   end
 
   def valid_uri?(value)

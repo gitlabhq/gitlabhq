@@ -1,4 +1,4 @@
-- if show_new_nav? && current_user
+- if current_user
   - content_for :breadcrumbs_extra do
     = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"
 
@@ -10,7 +10,3 @@
     = nav_link(page: explore_snippets_path) do
       = link_to explore_snippets_path, title: 'Explore snippets', data: {placement: 'right'} do
         Explore Snippets
-
-  - if current_user
-    .nav-controls.hidden-xs{ class: ("hidden-sm hidden-md hidden-lg" if show_new_nav?) }
-      = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"

@@ -59,43 +59,48 @@ export default {
         })
         .catch(() => {
           this.unapproving = false;
-          new Flash('An error occured while removing your approval.'); // eslint-disable-line
+          Flash('An error occured while removing your approval.');
         });
     },
   },
   template: `
-    <div v-if="approvedBy.length" class="approved-by-users approvals-footer clearfix mr-info-list">
-      <div class="approvers-prefix space-children">
+    <div
+      v-if="approvedBy.length"
+      class="approved-by-users approvals-footer clearfix mr-info-list">
+      <div class="approvers-prefix">
         <p>Approved by</p>
         <div class="approvers-list">
-          <span v-for="approver in approvedBy">
-            <link-to-member-avatar
-              :avatarSize="20"
-              :avatar-url="approver.user.avatar_url"
-              extra-link-class="approver-avatar"
-              :display-name="approver.user.name"
-              :profile-url="approver.user.web_url"
-              :show-tooltip="true" />
-          </span>
-          <span class="potential-approvers-list" v-for="n in approvalsLeft">
-            <link-to-member-avatar
-              :avatarSize="20"
-              :clickable="false"
-              :show-tooltip="false" />
-          </span>
+          <link-to-member-avatar
+            v-for="(approver, index) in approvedBy"
+            :key="index"
+            :avatar-size="20"
+            :avatar-url="approver.user.avatar_url"
+            extra-link-class="approver-avatar"
+            :display-name="approver.user.name"
+            :profile-url="approver.user.web_url"
+            :show-tooltip="true"
+            />
+          <link-to-member-avatar
+            v-for="n in approvalsLeft"
+            :key="n"
+            :avatar-size="20"
+            :clickable="false"
+            :show-tooltip="false"
+            />
         </div>
-        <span class="unapprove-btn-wrap" v-if="showUnapproveButton">
-          <button
-            :disabled="unapproving"
-            @click="unapproveMergeRequest"
-            class="btn btn-xs">
-            <i
-              v-if="unapproving"
-              class="fa fa-spinner fa-spin"
-              aria-hidden="true" />
-            Remove your approval
-          </button>
-        </span>
+        <button
+          v-if="showUnapproveButton"
+          type="button"
+          :disabled="unapproving"
+          @click="unapproveMergeRequest"
+          class="btn btn-small unapprove-btn-wrap">
+          <i
+            v-if="unapproving"
+            class="fa fa-spinner fa-spin"
+            aria-hidden="true">
+          </i>
+          Remove your approval
+        </button>
       </div>
     </div>
   `,

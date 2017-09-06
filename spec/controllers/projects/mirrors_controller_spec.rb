@@ -223,12 +223,16 @@ describe Projects::MirrorsController do
       sign_in(project.owner)
     end
 
-    context 'invalid URL' do
-      it 'returns an error with a 400 response' do
-        do_get(project, 'INVALID URL')
+    context 'invalid URLs' do
+      where(url: %w[INVALID git@example.com:foo/bar.git ssh://git@example.com:foo/bar.git])
 
-        expect(response).to have_http_status(400)
-        expect(json_response).to eq('message' => 'Invalid URL')
+      with_them do
+        it 'returns an error with a 400 response' do
+          do_get(project, url)
+
+          expect(response).to have_http_status(400)
+          expect(json_response).to eq('message' => 'Invalid URL')
+        end
       end
     end
 
