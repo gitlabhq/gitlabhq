@@ -284,7 +284,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def render_issue_json
     if @issue.valid?
-      render json: IssueSerializer.new.represent(@issue)
+      render json: serializer.represent(@issue)
     else
       render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
     end
