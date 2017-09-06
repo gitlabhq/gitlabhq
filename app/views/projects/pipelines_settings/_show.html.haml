@@ -60,8 +60,21 @@
               = f.check_box :public_builds
               %strong Public pipelines
             .help-block
-              Allow everyone to access pipelines for public and internal projects
+              Allow public access to pipelines and job details, including output logs and artifacts
               = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'visibility-of-pipelines'), target: '_blank'
+            .bs-callout.bs-callout-info
+              %p If enabled:
+              %ul
+                %li
+                  For public projects, anyone can view pipelines and access job details (output logs and artifacts)
+                %li
+                  For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)
+                %li
+                  For private projects, any member (guest or higher) can view pipelines and access job details (output logs and artifacts)
+              %p
+                If disabled, the access level will depend on the user's
+                permissions in the project.
+
         %hr
         .form-group
           .checkbox
