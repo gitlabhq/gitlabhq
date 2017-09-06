@@ -1,5 +1,7 @@
 export const addTooltipToEl = (el) => {
-  if (el.scrollWidth > el.offsetWidth) {
+  const textEl = el.querySelector('.js-breadcrumb-item-text');
+
+  if (textEl && textEl.scrollWidth > textEl.offsetWidth) {
     el.setAttribute('title', el.textContent);
     el.setAttribute('data-container', 'body');
     el.classList.add('has-tooltip');
@@ -7,10 +9,12 @@ export const addTooltipToEl = (el) => {
 };
 
 export default () => {
-  const breadcrumbs = document.querySelector('.breadcrumbs-list');
+  const breadcrumbs = document.querySelector('.js-breadcrumbs-list');
 
   if (breadcrumbs) {
-    const topLevelLinks = breadcrumbs.querySelectorAll('.breadcrumbs-list > li > a');
+    const topLevelLinks = [...breadcrumbs.children].filter(el => !el.classList.contains('dropdown'))
+      .map(el => el.querySelector('a'))
+      .filter(el => el);
     const $expander = $('.js-breadcrumbs-collapsed-expander');
 
     topLevelLinks.forEach(el => addTooltipToEl(el));
