@@ -1,3 +1,8 @@
+# These endpoints partially mimic Github API behavior in order to successfully
+# integrate with Jira Development Panel.
+# Endpoints returning an empty list were temporarily added to avoid 404's
+# during Jira's DVCS integration.
+#
 module API
   module V3
     class Github < Grape::API
