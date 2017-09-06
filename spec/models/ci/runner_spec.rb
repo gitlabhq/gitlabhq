@@ -49,64 +49,62 @@ describe Ci::Runner do
     end
   end
 
-  describe 'scopes' do
-    describe 'owned_or_shared' do
-      it 'returns the specific project runner' do
-        # own
-        specific_project = create :project
-        specific_runner = create :ci_runner, :specific, projects: [specific_project]
+  describe '.owned_or_shared' do
+    it 'returns the specific project runner' do
+      # own
+      specific_project = create :project
+      specific_runner = create :ci_runner, :specific, projects: [specific_project]
 
-        # other
-        other_project = create :project
-        create :ci_runner, :specific, projects: [other_project]
+      # other
+      other_project = create :project
+      create :ci_runner, :specific, projects: [other_project]
 
-        expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
-      end
+      expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
+    end
 
-      it 'returns the shared project runner' do
-        project = create :project
-        runner = create :ci_runner, :shared, projects: [project]
+    it 'returns the shared project runner' do
+      project = create :project
+      runner = create :ci_runner, :shared, projects: [project]
 
-        expect(described_class.owned_or_shared(0)).to eq [runner]
-      end
+      expect(described_class.owned_or_shared(0)).to eq [runner]
+    end
 
-      it 'returns the specific group runner' do
-        # own
-        specific_group = create :group
-        specific_project = create :project, group: specific_group
-        specific_runner = create :ci_runner, :specific, groups: [specific_group]
+    it 'returns the specific group runner' do
+      # own
+      specific_group = create :group
+      specific_project = create :project, group: specific_group
+      specific_runner = create :ci_runner, :specific, groups: [specific_group]
 
-        # other
-        other_group = create :group
-        create :project, group: other_group
-        create :ci_runner, :specific, groups: [other_group]
+      # other
+      other_group = create :group
+      create :project, group: other_group
+      create :ci_runner, :specific, groups: [other_group]
 
-        expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
-      end
+      expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
+    end
 
-      it 'returns the shared group runner' do
-        group = create :group
-        runner = create :ci_runner, :shared, groups: [group]
+    it 'returns the shared group runner' do
+      group = create :group
+      runner = create :ci_runner, :shared, groups: [group]
 
-        expect(described_class.owned_or_shared(0)).to eq [runner]
-      end
+      expect(described_class.owned_or_shared(0)).to eq [runner]
+    end
 
-      it 'returns a globally shared, a project specific and a group specific runner' do
-        # group specific
-        group = create :group
-        project = create :project, group: group
-        group_runner = create :ci_runner, :specific, groups: [group]
+    it 'returns a globally shared, a project specific and a group specific runner' do
+      # group specific
+      group = create :group
+      project = create :project, group: group
+      group_runner = create :ci_runner, :specific, groups: [group]
 
-        # project specific
-        project_runner = create :ci_runner, :specific, projects: [project]
+      # project specific
+      project_runner = create :ci_runner, :specific, projects: [project]
 
-        # globally shared
-        shared_runner = create :ci_runner, :shared
+      # globally shared
+      shared_runner = create :ci_runner, :shared
 
-        expect(described_class.owned_or_shared(project.id)).to match_array [
-          group_runner, project_runner, shared_runner
-        ]
-      end
+      expect(described_class.owned_or_shared(project.id)).to match_array [
+        group_runner, project_runner, shared_runner
+      ]
     end
   end
 
