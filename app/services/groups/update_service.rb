@@ -30,7 +30,7 @@ module Groups
       return true unless changing_share_with_group_lock?
       return true if can?(current_user, :change_share_with_group_lock, group)
 
-      group.errors.add(:share_with_group_lock, 'cannot be disabled when the parent group Share lock is enabled, except by the owner of the parent group')
+      group.errors.add(:share_with_group_lock, s_('GroupSettings|cannot be disabled when the parent group Share with group lock is enabled, except by the owner of the parent group'))
       false
     end
 
