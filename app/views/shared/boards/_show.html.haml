@@ -5,8 +5,7 @@
 - breadcrumb_title "Issue Boards"
 - page_title "Boards"
 
-- if show_new_nav?
-  - add_to_breadcrumbs("Issues", @issues_path)
+- add_to_breadcrumbs("Issues", @issues_path)
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
