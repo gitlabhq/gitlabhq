@@ -13,8 +13,6 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab_git/merge_requests/77#note_4754193
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
-    #
-    #
     def encode!(message)
       return nil unless message.respond_to? :force_encoding
 
