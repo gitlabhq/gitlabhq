@@ -32,6 +32,10 @@ module EE
       ssh_import? && auth_method == 'ssh_public_key'
     end
 
+    def password_auth?
+      auth_method == 'password'
+    end
+
     def ssh_import?
       project&.import_url&.start_with?('ssh://')
     end
