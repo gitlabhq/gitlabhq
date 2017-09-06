@@ -441,32 +441,21 @@ describe('Filtered Search Manager', () => {
     beforeEach(() => {
       this.paramsArr = ['key=value', 'otherkey=othervalue'];
 
-      Object.assign(gl.FilteredSearchManager.prototype, {
-        modifyUrlParams: paramsArr => paramsArr.reverse(),
-      });
-
-      spyOn(gl.FilteredSearchManager.prototype, 'modifyUrlParams').and.callThrough();
-
       initializeManager();
     });
 
-    it('calls modifyUrlParams when present', () => {
-      manager.getAllParams(this.paramsArr);
-
-      expect(manager.modifyUrlParams).toHaveBeenCalled();
-    });
-
     it('correctly modifies params when custom modifier is passed', () => {
-      const modifedParams = manager.getAllParams(this.paramsArr);
+      const modifedParams = manager.getAllParams.call({
+        modifyUrlParams: paramsArr => paramsArr.reverse(),
+      }, [].concat(this.paramsArr));
 
-      expect(modifedParams[0]).toBe('otherkey=othervalue');
+      expect(modifedParams[0]).toBe(this.paramsArr[1]);
     });
 
     it('does not modify params when no custom modifier is passed', () => {
-      Object.assign(gl.FilteredSearchManager.prototype, { modifyUrlParams: undefined });
-      const modifedParams = manager.getAllParams(this.paramsArr);
+      const modifedParams = manager.getAllParams.call({}, this.paramsArr);
 
-      expect(modifedParams[1]).toBe('otherkey=othervalue');
+      expect(modifedParams[1]).toBe(this.paramsArr[1]);
     });
   });
 });
