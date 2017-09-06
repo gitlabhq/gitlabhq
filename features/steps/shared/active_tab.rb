@@ -7,7 +7,7 @@ module SharedActiveTab
   end
 
   def ensure_active_main_tab(content)
-    expect(first('.sidebar-top-level-items > li.active')).to have_content(content)
+    expect(find('.sidebar-top-level-items > li.active')).to have_content(content)
   end
 
   def ensure_active_sub_tab(content)
