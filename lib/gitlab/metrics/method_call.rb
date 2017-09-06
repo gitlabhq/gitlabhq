@@ -42,14 +42,16 @@ module Gitlab
         start_cpu = System.cpu_time
         retval = yield
 
-        @real_time += System.monotonic_time - start_real
+        real_time = System.monotonic_time - start_real
+        cpu_time = System.cpu_time - start_cpu
+
+        @real_time += real_time
+
         @cpu_time += System.cpu_time - start_cpu
         @call_count += 1
 
-        if above_threshold?
-          self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), @real_time / 1000.0)
-          self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), @cpu_time / 1000.0)
-        end
+        self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
+        self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), cpu_time / 1000.0)
 
         retval
       end

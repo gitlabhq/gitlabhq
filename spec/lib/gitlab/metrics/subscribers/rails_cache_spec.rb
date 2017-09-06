@@ -64,7 +64,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
         end
 
         it 'increments the cache_read_miss total' do
-          expect(described_class.metric_cache_read_miss_total).to receive(:increment)
+          expect(described_class.metric_cache_read_miss_total).to receive(:increment).with({})
 
           subscriber.cache_read(event)
         end
@@ -75,6 +75,12 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
           it 'does not increment cache read miss' do
             expect(transaction).not_to receive(:increment)
                                          .with(:cache_read_miss_count, 1)
+
+            subscriber.cache_read(event)
+          end
+
+          it 'does not increment cache_read_miss total' do
+            expect(described_class.metric_cache_read_miss_total).not_to receive(:increment).with({})
 
             subscriber.cache_read(event)
           end
@@ -131,6 +137,12 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
 
         subscriber.cache_fetch_hit(event)
       end
+
+      it 'increments the cache_read_hit total' do
+        expect(described_class.metric_cache_read_hit_total).to receive(:increment).with({})
+
+        subscriber.cache_fetch_hit(event)
+      end
     end
   end
 
@@ -152,6 +164,12 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       it 'increments the cache_fetch_miss count' do
         expect(transaction).to receive(:increment)
                                  .with(:cache_read_miss_count, 1)
+
+        subscriber.cache_generate(event)
+      end
+
+      it 'increments the cache_read_miss total' do
+        expect(described_class.metric_cache_read_miss_total).to receive(:increment).with({})
 
         subscriber.cache_generate(event)
       end
@@ -185,6 +203,14 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
 
         expect(transaction).to receive(:increment)
                                  .with(:cache_delete_count, 1, false)
+
+        subscriber.observe(:delete, event.duration)
+      end
+
+      it 'observes cache metric' do
+        expect(described_class.metric_cache_operation_duration_seconds)
+          .to receive(:observe)
+                .with(transaction.labels.merge(operation: :delete), event.duration/1000.0)
 
         subscriber.observe(:delete, event.duration)
       end
