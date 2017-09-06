@@ -36,9 +36,9 @@ module Ci
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
+    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
     validate :valid_commit_sha, unless: :importing?
 
-    before_save :set_protected
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -443,10 +443,6 @@ module Ci
       return 'failed' unless yaml_errors.blank?
 
       statuses.latest.status || 'skipped'
-    end
-
-    def set_protected
-      self.protected = project.protected_for?(self.ref)
     end
 
     def keep_around_commits
