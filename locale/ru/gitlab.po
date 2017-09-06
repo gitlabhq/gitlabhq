@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 09:41-0400\n"
+"POT-Creation-Date: 2017-08-24 09:29+0200\n"
+"PO-Revision-Date: 2017-09-06 02:28-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -95,7 +95,7 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Вы действительно хотите удалить это расписание конвейера?"
 
 msgid "Are you sure you want to discard your changes?"
-msgstr ""
+msgstr "Вы уверены, что Вы хотите отменить Ваши изменения?"
 
 msgid "Are you sure you want to reset registration token?"
 msgstr ""
@@ -104,7 +104,7 @@ msgid "Are you sure you want to reset the health check token?"
 msgstr ""
 
 msgid "Are you sure?"
-msgstr ""
+msgstr "Вы уверены?"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Приложить файл через drag &amp; drop или %{upload_link}"
@@ -149,7 +149,7 @@ msgid "Cancel"
 msgstr "Отмена"
 
 msgid "Cancel edit"
-msgstr ""
+msgstr "Отменить редактирование"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "Выбрать в ветке"
@@ -230,7 +230,7 @@ msgid "CiStatus|running"
 msgstr "выполняется"
 
 msgid "Comments"
-msgstr ""
+msgstr "Комментарии"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -281,7 +281,7 @@ msgid "Create New Directory"
 msgstr "Создать директорию"
 
 msgid "Create a new branch"
-msgstr ""
+msgstr "Создать новую ветку"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Создать личный токен на аккаунте для получения или отправки через %{protocol}."
@@ -368,7 +368,7 @@ msgid "Directory name"
 msgstr "Каталог"
 
 msgid "Discard changes"
-msgstr ""
+msgstr "Отменить изменения"
 
 msgid "Don't show again"
 msgstr "Не показывать снова"
@@ -476,7 +476,7 @@ msgid "Git storage health information has been reset"
 msgstr ""
 
 msgid "GitLab Runner section"
-msgstr ""
+msgstr "Секция Gitlab Runner"
 
 msgid "Go to your fork"
 msgstr "Перейти к вашему форку"
@@ -512,7 +512,7 @@ msgid "Import repository"
 msgstr "Импорт репозитория"
 
 msgid "Install a Runner compatible with GitLab CI"
-msgstr ""
+msgstr "Установите Gitlab Runner совместимый с Gitlab CI"
 
 msgid "Interval Pattern"
 msgstr "Шаблон интервала"
@@ -522,15 +522,6 @@ msgstr "Внедрение Цикла Аналитик"
 
 msgid "Issue events"
 msgstr ""
-
-msgid "Jobs for last month"
-msgstr "Работы за прошлый месяц"
-
-msgid "Jobs for last week"
-msgstr "Работы за прошлую неделю"
-
-msgid "Jobs for last year"
-msgstr "Работы за прошлый год"
 
 msgid "LFSStatus|Disabled"
 msgstr "Отключено"
@@ -774,6 +765,15 @@ msgstr "Конвейер"
 
 msgid "Pipelines charts"
 msgstr "Диаграмма конвейера"
+
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
 
 msgid "Pipeline|all"
 msgstr "все"
@@ -1302,3 +1302,4 @@ msgid_plural "parents"
 msgstr[0] "источник"
 msgstr[1] "источники"
 msgstr[2] "источники"
+

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 09:59-0400\n"
+"POT-Creation-Date: 2017-08-24 09:29+0200\n"
+"PO-Revision-Date: 2017-09-06 02:28-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -28,24 +28,24 @@ msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交于 %{commit_timeago}"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
-msgstr ""
+msgstr "已失败 %{number_of_failures} 次/最多允许失败失败 %{maximum_failures} 次，GitLab 将继续重试。"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
-msgstr ""
+msgstr "已失败 %{number_of_failures} 次/最多允许失败 %{maximum_failures} 次，GitLab 将在 %{number_of_seconds} 秒后重试。"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
+msgstr "已失败 %{number_of_failures} 次/最多允许失败 %{maximum_failures} 次，GitLab 不会继续自动重试。请在问题解决后重置存储健康信息。"
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
+msgstr[0] "%{storage_name}：已 %{failed_attempts} 次尝试访问存储失败："
 
 msgid "(checkout the %{link} for information on how to install it)."
-msgstr ""
+msgstr "(如需了解更多的安装信息，请查看 %{link})"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 条流水线"
+msgstr[0] "%d 条流水线"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持续集成数据图"
@@ -54,7 +54,7 @@ msgid "About auto deploy"
 msgstr "关于自动部署"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
+msgstr "为方便修复挂载问题，访问故障存储已被暂时禁用。在问题解决后请重置存储健康信息，以允许再次访问。"
 
 msgid "Active"
 msgstr "启用"
@@ -78,7 +78,7 @@ msgid "Add new directory"
 msgstr "添加目录"
 
 msgid "All"
-msgstr ""
+msgstr "全部"
 
 msgid "Archived project! Repository is read-only"
 msgstr "项目已归档！存储库为只读状态"
@@ -87,16 +87,16 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "确定要删除此流水线计划吗？"
 
 msgid "Are you sure you want to discard your changes?"
-msgstr ""
+msgstr "确定要放弃修改吗？"
 
 msgid "Are you sure you want to reset registration token?"
-msgstr ""
+msgstr "确定要重置注册令牌吗？"
 
 msgid "Are you sure you want to reset the health check token?"
-msgstr ""
+msgstr "确定要重置健康检查令牌吗？"
 
 msgid "Are you sure?"
-msgstr ""
+msgstr "确定吗？"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放文件到此处或者 %{upload_link}"
@@ -139,7 +139,7 @@ msgid "Cancel"
 msgstr "取消"
 
 msgid "Cancel edit"
-msgstr ""
+msgstr "取消编辑"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "选择分支"
@@ -220,7 +220,7 @@ msgid "CiStatus|running"
 msgstr "运行中"
 
 msgid "Comments"
-msgstr ""
+msgstr "评论"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -269,7 +269,7 @@ msgid "Create New Directory"
 msgstr "创建新目录"
 
 msgid "Create a new branch"
-msgstr ""
+msgstr "创建一个新分支"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "在帐户上创建个人访问令牌，以通过 %{protocol} 来拉取或推送。"
@@ -348,13 +348,13 @@ msgid "Description"
 msgstr "描述"
 
 msgid "Details"
-msgstr ""
+msgstr "详情"
 
 msgid "Directory name"
 msgstr "目录名称"
 
 msgid "Discard changes"
-msgstr ""
+msgstr "放弃更改"
 
 msgid "Don't show again"
 msgstr "不再显示"
@@ -393,22 +393,22 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "编辑 %{id} 流水线计划"
 
 msgid "EventFilterBy|Filter by all"
-msgstr ""
+msgstr "全部"
 
 msgid "EventFilterBy|Filter by comments"
-msgstr ""
+msgstr "只显示评论事件"
 
 msgid "EventFilterBy|Filter by issue events"
-msgstr ""
+msgstr "只显示议题事件"
 
 msgid "EventFilterBy|Filter by merge events"
-msgstr ""
+msgstr "只显示合并事件"
 
 msgid "EventFilterBy|Filter by push events"
-msgstr ""
+msgstr "只显示推送事件"
 
 msgid "EventFilterBy|Filter by team"
-msgstr ""
+msgstr "只显示团队事件"
 
 msgid "Every day (at 4:00am)"
 msgstr "每日执行（凌晨 4 点）"
@@ -457,10 +457,10 @@ msgid "From merge request merge until deploy to production"
 msgstr "从合并请求被合并后到部署至生产环境"
 
 msgid "Git storage health information has been reset"
-msgstr ""
+msgstr "Git 存储健康信息已重置"
 
 msgid "GitLab Runner section"
-msgstr ""
+msgstr "GitLab Runner"
 
 msgid "Go to your fork"
 msgstr "跳转到派生项目"
@@ -469,22 +469,22 @@ msgid "GoToYourFork|Fork"
 msgstr "跳转到派生项目"
 
 msgid "Health Check"
-msgstr ""
+msgstr "健康检查"
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
-msgstr ""
+msgstr "健康信息可以从以下API路径获取。如需了解更多信息，请查看"
 
 msgid "HealthCheck|Access token is"
-msgstr ""
+msgstr "访问令牌是"
 
 msgid "HealthCheck|Healthy"
-msgstr ""
+msgstr "健康"
 
 msgid "HealthCheck|No Health Problems Detected"
-msgstr ""
+msgstr "没有检测到健康问题"
 
 msgid "HealthCheck|Unhealthy"
-msgstr ""
+msgstr "非健康"
 
 msgid "Home"
 msgstr "首页"
@@ -496,7 +496,7 @@ msgid "Import repository"
 msgstr "导入存储库"
 
 msgid "Install a Runner compatible with GitLab CI"
-msgstr ""
+msgstr "安装一个与 GitLab CI 兼容的 Runner"
 
 msgid "Interval Pattern"
 msgstr "循环周期"
@@ -505,16 +505,7 @@ msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
 
 msgid "Issue events"
-msgstr ""
-
-msgid "Jobs for last month"
-msgstr "上个月的作业"
-
-msgid "Jobs for last week"
-msgstr "上个星期的作业"
-
-msgid "Jobs for last year"
-msgstr "去年的作业"
+msgstr "议题事件"
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -536,10 +527,10 @@ msgid "Last commit"
 msgstr "最后提交"
 
 msgid "LastPushEvent|You pushed to"
-msgstr ""
+msgstr "您推送了"
 
 msgid "LastPushEvent|at"
-msgstr ""
+msgstr "于"
 
 msgid "Learn more in the"
 msgstr "了解更多"
@@ -561,13 +552,13 @@ msgid "Median"
 msgstr "中位数"
 
 msgid "Merge events"
-msgstr ""
+msgstr "合并事件"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新建 SSH 公钥"
 
 msgid "More information is available|here"
-msgstr ""
+msgstr "帮助文档"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -753,6 +744,15 @@ msgstr "流水线"
 msgid "Pipelines charts"
 msgstr "流水线统计图"
 
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
+
 msgid "Pipeline|all"
 msgstr "所有"
 
@@ -766,7 +766,7 @@ msgid "Pipeline|with stages"
 msgstr "于阶段"
 
 msgid "Project"
-msgstr ""
+msgstr "项目"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "项目 '%{project_name}' 已进入删除队列。"
@@ -784,7 +784,7 @@ msgid "Project access must be granted explicitly to each user."
 msgstr "项目访问权限必须明确授权给每个用户。"
 
 msgid "Project details"
-msgstr ""
+msgstr "项目详情"
 
 msgid "Project export could not be deleted."
 msgstr "无法删除项目导出。"
@@ -802,7 +802,7 @@ msgid "Project home"
 msgstr "项目首页"
 
 msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
+msgstr "订阅"
 
 msgid "ProjectFeature|Disabled"
 msgstr "停用"
@@ -826,7 +826,7 @@ msgid "ProjectNetworkGraph|Graph"
 msgstr "分支图"
 
 msgid "Push events"
-msgstr ""
+msgstr "推送事件"
 
 msgid "Read more"
 msgstr "了解更多"
@@ -865,19 +865,19 @@ msgid "Remove project"
 msgstr "删除项目"
 
 msgid "Repository"
-msgstr ""
+msgstr "存储库"
 
 msgid "Request Access"
 msgstr "申请权限"
 
 msgid "Reset git storage health information"
-msgstr ""
+msgstr "重置 Git 存储的健康信息"
 
 msgid "Reset health check access token"
-msgstr ""
+msgstr "重置健康检查访问令牌"
 
 msgid "Reset runners registration token"
-msgstr ""
+msgstr "重置 Runner 注册令牌"
 
 msgid "Revert this commit"
 msgstr "还原此提交"
@@ -904,7 +904,7 @@ msgid "Select a timezone"
 msgstr "选择时区"
 
 msgid "Select existing branch"
-msgstr ""
+msgstr "选择现有分支"
 
 msgid "Select target branch"
 msgstr "选择目标分支"
@@ -932,7 +932,7 @@ msgid "Source code"
 msgstr "源代码"
 
 msgid "Specify the following URL during the Runner setup:"
-msgstr ""
+msgstr "在 Runner 设置时指定以下 URL："
 
 msgid "StarProject|Star"
 msgstr "星标"
@@ -941,7 +941,7 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr "由此更改 %{new_merge_request}"
 
 msgid "Start the Runner!"
-msgstr ""
+msgstr "启动 Runner!"
 
 msgid "Switch branch/tag"
 msgstr "切换分支/标签"
@@ -957,7 +957,7 @@ msgid "Target Branch"
 msgstr "目标分支"
 
 msgid "Team"
-msgstr ""
+msgstr "团队"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "编码阶段概述了从第一次提交到创建合并请求的时间。创建第一个合并请求后，数据将自动添加到此处。"
@@ -1008,7 +1008,7 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "中位数是一个数列中最中间的值。例如在 3、5、9 之间，中位数是 5。在 3、5、7、8 之间，中位数是 （5 + 7）/ 2 = 6。"
 
 msgid "There are problems accessing Git storage: "
-msgstr ""
+msgstr "访问 Git 存储时出现问题："
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "在创建一个空的存储库或导入现有存储库之前，将无法推送代码。"
@@ -1178,7 +1178,7 @@ msgid "UploadLink|click to upload"
 msgstr "点击上传"
 
 msgid "Use the following registration token during setup:"
-msgstr ""
+msgstr "在安装过程中使用以下注册令牌："
 
 msgid "Use your global notification setting"
 msgstr "使用全局通知设置"
@@ -1268,3 +1268,4 @@ msgstr "通知邮件"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "父级"
+
