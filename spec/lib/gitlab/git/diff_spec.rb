@@ -273,7 +273,7 @@ EOT
     end
   end
 
-  describe '.json_safe_diff' do
+  describe '#json_safe_diff' do
     let(:project) { create(:project, :repository) }
 
     it 'fake binary message when it detects binary' do
