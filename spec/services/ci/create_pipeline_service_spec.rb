@@ -489,7 +489,7 @@ describe Ci::CreatePipelineService do
 
     subject do
       described_class.new(project, user, ref: ref)
-        .send(:allowed_to_create?, user)
+        .send(:allowed_to_create?)
     end
 
     context 'when user is a developer' do
