@@ -1390,7 +1390,7 @@ class Project < ActiveRecord::Base
   end
 
   def predefined_variables
-    variables = [
+    [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
@@ -1398,12 +1398,6 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
-
-    if auto_devops_enabled? && auto_devops&.domain
-      variables << { key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops.domain, public: true }
-    end
-
-    variables
   end
 
   def container_registry_variables
@@ -1438,6 +1432,12 @@ class Project < ActiveRecord::Base
     return [] unless deployment_service
 
     deployment_service.predefined_variables
+  end
+
+  def auto_devops_variables
+    return [] unless auto_devops_enabled?
+
+    auto_devops&.variables || []
   end
 
   def append_or_update_attribute(name, value)

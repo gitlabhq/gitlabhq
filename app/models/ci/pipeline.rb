@@ -325,15 +325,11 @@ module Ci
     end
 
     def set_config_source
-      self.config_source =
-        if project
-          case
-          when ci_yaml_from_repo then :repository_source
-          when implied_ci_yaml_file then :auto_devops_source
-          end
-        else
-          :unknown_source
-        end
+      if ci_yaml_from_repo
+        self.config_source = :repository_source
+      elsif implied_ci_yaml_file
+        self.config_source = :auto_devops_source
+      end
     end
 
     def config_processor
@@ -461,12 +457,17 @@ module Ci
     private
 
     def ci_yaml_from_repo
+      return unless project
+      return unless sha
+
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
     rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
       nil
     end
 
     def implied_ci_yaml_file
+      return unless project
+
       if project.auto_devops_enabled?
         Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
       end

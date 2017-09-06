@@ -832,10 +832,10 @@ describe Ci::Pipeline, :mailer do
   describe '#ci_yaml_file' do
     let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-    before { pipeline.detect_ci_yaml_file }
-
     context 'the source is unknown' do
-      before { pipeline.unknown_source! }
+      before do
+        pipeline.unknown_source!
+      end
 
       it 'returns the configuration if found' do
         allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
@@ -854,7 +854,9 @@ describe Ci::Pipeline, :mailer do
     end
 
     context 'the source is the repository' do
-      before { pipeline.repository_source! }
+      before do
+        pipeline.repository_source!
+      end
 
       it 'returns the configuration if found' do
         allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
@@ -867,7 +869,9 @@ describe Ci::Pipeline, :mailer do
     end
 
     context 'when the source is auto_devops_source' do
-      before { pipeline.auto_devops_source! }
+      before do
+        pipeline.auto_devops_source!
+      end
 
       it 'finds the implied config' do
         allow_any_instance_of(ApplicationSetting)
