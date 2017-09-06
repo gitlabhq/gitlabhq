@@ -129,6 +129,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixed edit issue boards milestone action buttons not sticking to bottom of dropdown.
 - Respect the external user setting in Elasticsearch.
 
+## 9.3.11 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.3.10 (2017-08-09)
 
 - No changes.
