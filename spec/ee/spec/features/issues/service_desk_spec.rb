@@ -15,8 +15,8 @@ describe 'Service Desk Issue Tracker', js: true do
   describe 'navigation to service desk' do
     before do
       visit project_path(project)
-      find('.sidebar-top-level-items .shortcuts-issues').trigger('click')
-      find('a[title="Service Desk"]').trigger('click')
+      find('.sidebar-top-level-items .shortcuts-issues').click
+      find('a[title="Service Desk"]').click
     end
 
     it 'can navigate to the service desk from link in the sidebar' do
