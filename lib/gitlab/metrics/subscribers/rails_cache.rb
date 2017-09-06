@@ -6,9 +6,9 @@ module Gitlab
       class RailsCache < ActiveSupport::Subscriber
         attach_to :active_support
 
-        def self.metric_cache_duration_seconds
-          @metric_cache_duration_seconds ||= Gitlab::Metrics.histogram(
-            :gitlab_cache_duration_seconds,
+        def self.metric_cache_operation_duration_seconds
+          @metric_cache_operation_duration_seconds ||= Gitlab::Metrics.histogram(
+            :gitlab_cache_operation_duration_seconds,
             'Cache access time',
             { action: nil, operation: nil },
             [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
@@ -31,10 +31,10 @@ module Gitlab
 
           if event.payload[:hit]
             self.class.metric_cache_read_hit_total.increment({ action: action })
-            current_transaction.increment(:cache_read_hit_count, 1)
+            current_transaction.increment(:cache_read_hit_count, 1, false)
           else
             self.class.metric_cache_read_miss_total.increment({ action: action })
-            current_transaction.increment(:cache_read_miss_count, 1)
+            current_transaction.increment(:cache_read_miss_count, 1, false)
           end
         end
 
@@ -67,11 +67,11 @@ module Gitlab
         def observe(key, duration)
           return unless current_transaction
 
-          self.class.metric_cache_duration_seconds.observe({ operation: key, action: action }, duration / 1000.0)
+          self.class.metric_cache_operation_duration_seconds.observe({ operation: key, action: action }, duration / 1000.0)
           current_transaction.increment(:cache_duration, duration, false)
           current_transaction.increment(:cache_count, 1, false)
-          current_transaction.increment("#{key}_duration".to_sym, duration, false)
-          current_transaction.increment("#{key}_count".to_sym, 1, false)
+          current_transaction.increment("cache_#{key}_duration".to_sym, duration, false)
+          current_transaction.increment("cache_#{key}_count".to_sym, 1, false)
         end
 
         private
