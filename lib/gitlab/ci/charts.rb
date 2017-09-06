@@ -4,7 +4,7 @@ module Gitlab
       module DailyInterval
         def grouped_count(query)
           query
-            .group("DATE(#{Ci::Pipeline.table_name}.created_at)")
+            .group("DATE(#{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
             .transform_keys { |date| date.strftime(@format) }
         end
@@ -18,12 +18,12 @@ module Gitlab
         def grouped_count(query)
           if Gitlab::Database.postgresql?
             query
-              .group("to_char(#{Ci::Pipeline.table_name}.created_at, '01 Month YYYY')")
+              .group("to_char(#{::Ci::Pipeline.table_name}.created_at, '01 Month YYYY')")
               .count(:created_at)
               .transform_keys(&:squish)
           else
             query
-              .group("DATE_FORMAT(#{Ci::Pipeline.table_name}.created_at, '01 %M %Y')")
+              .group("DATE_FORMAT(#{::Ci::Pipeline.table_name}.created_at, '01 %M %Y')")
               .count(:created_at)
           end
         end
@@ -48,7 +48,7 @@ module Gitlab
 
         def collect
           query = project.pipelines
-            .where("? > #{Ci::Pipeline.table_name}.created_at AND #{Ci::Pipeline.table_name}.created_at > ?", @to, @from) # rubocop:disable GitlabSecurity/SqlInjection
+            .where("? > #{::Ci::Pipeline.table_name}.created_at AND #{::Ci::Pipeline.table_name}.created_at > ?", @to, @from) # rubocop:disable GitlabSecurity/SqlInjection
 
           totals_count  = grouped_count(query)
           success_count = grouped_count(query.success)
