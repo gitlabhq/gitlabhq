@@ -43,6 +43,7 @@ stages:
 
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
+  retry: 1
   tags:
     - gitlab-org
 
