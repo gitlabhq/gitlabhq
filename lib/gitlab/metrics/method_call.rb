@@ -2,13 +2,14 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
+      BASE_LABELS = { module: nil, method: nil }
       attr_reader :real_time, :cpu_time, :call_count
 
       def self.call_real_duration_histogram
         @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
           :gitlab_method_call_real_duration_seconds,
           'Method calls real duration',
-          Transaction::BASE_LABELS.merge({ call_name: nil }),
+          Transaction::BASE_LABELS.merge(BASE_LABELS),
           [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
@@ -17,7 +18,7 @@ module Gitlab
         @call_duration_histogram ||= Gitlab::Metrics.histogram(
           :gitlab_method_call_cpu_duration_seconds,
           'Method calls cpu duration',
-          Transaction::BASE_LABELS.merge({ call_name: nil }),
+          Transaction::BASE_LABELS.merge(BASE_LABELS),
           [0.1, 0.2, 0.5, 1, 2, 5, 10]
         )
       end
@@ -25,7 +26,9 @@ module Gitlab
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.
       #
-      def initialize(name, transaction)
+      def initialize(name, module_name, method_name, transaction)
+        @module_name = module_name
+        @method_name = method_name
         @transaction = transaction
         @name = name
         @real_time = 0
@@ -44,11 +47,15 @@ module Gitlab
         @call_count += 1
 
         if above_threshold?
-          self.class.call_real_duration_histogram.observe(@transaction.labels.merge({ call_name: @name }), @real_time / 1000.0)
-          self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge({ call_name: @name }), @cpu_time / 1000.0)
+          self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), @real_time / 1000.0)
+          self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), @cpu_time / 1000.0)
         end
 
         retval
+      end
+
+      def labels
+        @labels ||= { module: @module_name, method: @method_name }
       end
 
       # Returns a Metric instance of the current method call.

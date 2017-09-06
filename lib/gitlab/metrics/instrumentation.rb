@@ -153,7 +153,8 @@ module Gitlab
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             if trans = Gitlab::Metrics::Instrumentation.transaction
-              trans.method_call_for(#{label.to_sym.inspect}).measure { super }
+              trans.method_call_for(#{label.to_sym.inspect}, #{mod.name.to_sym.inspect}, #{name.to_sym.inspect})
+                .measure { super }
             else
               super
             end
