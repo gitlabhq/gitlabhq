@@ -1262,53 +1262,48 @@ const normalizeNewlines = function(str) {
         tempFormContent = 'Applying command';
       }
 
-    return tempFormContent;
-  }
+      return tempFormContent;
+    };
 
-  /**
-   * Create placeholder note DOM element populated with comment body
-   * that we will show while comment is being posted.
-   * Once comment is _actually_ posted on server, we will have final element
-   * in response that we will show in place of this temporary element.
-   */
-  createPlaceholderNote({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar }) {
-    const discussionClass = isDiscussionNote ? 'discussion' : '';
-    const $tempNote = $(
-      `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
-         <div class="timeline-entry-inner">
+    /**
+     * Create placeholder note DOM element populated with comment body
+     * that we will show while comment is being posted.
+     * Once comment is _actually_ posted on server, we will have final element
+     * in response that we will show in place of this temporary element.
+     */
+    Notes.prototype.createPlaceholderNote = function ({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar }) {
+      const discussionClass = isDiscussionNote ? 'discussion' : '';
+      const $tempNote = $(
+        `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
+          <div class="timeline-entry-inner">
             <div class="timeline-icon">
-               <a href="/${_.escape(currentUsername)}">
-                 <img class="avatar s40" src="${currentUserAvatar}" />
-               </a>
+              <a href="/${_.escape(currentUsername)}">
+                <img class="avatar s40" src="${currentUserAvatar}" />
+              </a>
             </div>
             <div class="timeline-content ${discussionClass}">
-               <div class="note-header">
+              <div class="note-header">
                   <div class="note-header-info">
-                     <a href="/${_.escape(currentUsername)}">
-                       <span class="hidden-xs">${_.escape(currentUsername)}</span>
-                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
-                     </a>
+                    <a href="/${_.escape(currentUsername)}">
+                      <span class="hidden-xs">${_.escape(currentUsername)}</span>
+                      <span class="note-headline-light">${_.escape(currentUsername)}</span>
+                    </a>
                   </div>
-               </div>
-               <div class="note-body">
-                 <div class="note-text">
-                   <p>${formContent}</p>
-                 </div>
-                 <div class="note-body">
-                   <div class="note-text">
-                     <p>${formContent}</p>
-                   </div>
-                 </div>
               </div>
-           </div>
-        </li>`
-      );
+              <div class="note-body">
+                <div class="note-text">
+                  <p>${formContent}</p>
+                </div>
+              </div>
+            </div>
+          </li>`
+        );
 
-    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
-    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
+      $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+      $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
 
-    return $tempNote;
-  }
+      return $tempNote;
+    };
 
     /**
      * Create Placeholder System Note DOM element populated with slash command description
