@@ -20,22 +20,6 @@ function normalizeMetrics(metrics) {
   }));
 }
 
-function collate(array, rows = 2) {
-  const collatedArray = [];
-  let row = [];
-  array.forEach((value, index) => {
-    row.push(value);
-    if ((index + 1) % rows === 0) {
-      collatedArray.push(row);
-      row = [];
-    }
-  });
-  if (row.length > 0) {
-    collatedArray.push(row);
-  }
-  return collatedArray;
-}
-
 export default class MonitoringStore {
   constructor() {
     this.groups = [];
@@ -45,7 +29,7 @@ export default class MonitoringStore {
   storeMetrics(groups = []) {
     this.groups = groups.map(group => ({
       ...group,
-      metrics: collate(normalizeMetrics(sortMetrics(group.metrics))),
+      metrics: normalizeMetrics(sortMetrics(group.metrics)),
     }));
   }
 
@@ -54,12 +38,6 @@ export default class MonitoringStore {
   }
 
   getMetricsCount() {
-    let metricsCount = 0;
-    this.groups.forEach((group) => {
-      group.metrics.forEach((metric) => {
-        metricsCount = metricsCount += metric.length;
-      });
-    });
-    return metricsCount;
+    return this.groups.reduce((count, group) => count + group.metrics.length, 0);
   }
 }
