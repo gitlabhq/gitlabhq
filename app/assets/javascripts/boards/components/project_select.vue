@@ -49,11 +49,6 @@ export default {
       required: true,
       default: 0,
     },
-    listId: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
   },
   data() {
     return {

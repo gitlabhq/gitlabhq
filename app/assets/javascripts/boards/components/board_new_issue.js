@@ -20,9 +20,8 @@ export default {
   data() {
     return {
       title: '',
-      loading: true,
-      selectedProject: {},
       error: false,
+      selectedProject: {},
     };
   },
   components: {
