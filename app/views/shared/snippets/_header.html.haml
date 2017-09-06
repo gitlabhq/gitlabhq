@@ -3,14 +3,8 @@
     %span.sr-only
       = visibility_level_label(@snippet.visibility_level)
     = visibility_level_icon(@snippet.visibility_level, fw: false)
-  - unless show_new_nav?
-    %strong.item-title
-      Snippet #{@snippet.to_reference}
   %span.creator
-    - if show_new_nav?
-      Authored
-    - else
-      authored
+    Authored
     = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
     by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "hidden-xs")}
 
