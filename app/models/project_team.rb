@@ -150,7 +150,7 @@ class ProjectTeam
   end
 
   def human_max_access(user_id)
-    Gitlab::Access.options_with_owner.key(max_member_access(user_id))
+    Gitlab::Access.human_access(max_member_access(user_id))
   end
 
   # Determine the maximum access level for a group of users in bulk.

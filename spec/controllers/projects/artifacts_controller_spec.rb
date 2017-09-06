@@ -81,14 +81,6 @@ describe Projects::ArtifactsController do
         expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
       end
     end
-
-    context 'when the file does not exist' do
-      it 'responds Not Found' do
-        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
-
-        expect(response).to be_not_found
-      end
-    end
   end
 
   describe 'GET latest_succeeded' do

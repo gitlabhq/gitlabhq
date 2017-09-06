@@ -1,28 +1,22 @@
-- breadcrumb_link = breadcrumb_title_link
 - container = @no_breadcrumb_container ? 'container-fluid' : container_class
 - hide_top_links = @hide_top_links || false
 
-%nav.breadcrumbs{ role: "navigation" }
+%nav.breadcrumbs{ role: "navigation", class: [container, @content_class] }
   .breadcrumbs-container{ class: [container, @content_class] }
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only Open sidebar
         = icon ('bars')
     .breadcrumbs-links.js-title-container
-      - unless hide_top_links
-        .title
-          = link_to "GitLab", root_path
-          \/
-          - if content_for?(:header_title_before)
-            = yield :header_title_before
-            \/
+      %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list
+        - unless hide_top_links
           = header_title
-      %h2.breadcrumbs-sub-title
-        %ul.list-unstyled
-          - if @breadcrumbs_extra_links
-            - @breadcrumbs_extra_links.each do |extra|
-              %li= link_to extra[:text], extra[:link]
-          %li= link_to @breadcrumb_title, breadcrumb_link
+        - if @breadcrumbs_extra_links
+          - @breadcrumbs_extra_links.each do |extra|
+            = breadcrumb_list_item link_to(extra[:text], extra[:link])
+        = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
+        %li
+          %h2.breadcrumbs-sub-title= @breadcrumb_title
     - if content_for?(:breadcrumbs_extra)
       .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
     = yield :header_content

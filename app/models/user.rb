@@ -15,10 +15,12 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
+  include IgnorableColumn
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
-  ignore_column :authorized_projects_populated
+  ignore_column :external_email
+  ignore_column :email_provider
 
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
@@ -85,6 +87,7 @@ class User < ActiveRecord::Base
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :user_synced_attributes_metadata, autosave: true
 
   # Groups
   has_many :members, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -161,6 +164,7 @@ class User < ActiveRecord::Base
   after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
+  before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   after_save :ensure_namespace_correct
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
   after_initialize :set_projects_limit
@@ -1043,6 +1047,22 @@ class User < ActiveRecord::Base
 
   def verified_email?(email)
     self.email == email
+  end
+
+  def sync_attribute?(attribute)
+    return true if ldap_user? && attribute == :email
+
+    attributes = Gitlab.config.omniauth.sync_profile_attributes
+
+    if attributes.is_a?(Array)
+      attributes.include?(attribute.to_s)
+    else
+      attributes
+    end
+  end
+
+  def read_only_attribute?(attribute)
+    user_synced_attributes_metadata&.read_only?(attribute)
   end
 
   protected

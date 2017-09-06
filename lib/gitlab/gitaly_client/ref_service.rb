@@ -79,7 +79,7 @@ module Gitlab
       end
 
       def find_branch(branch_name)
-        request = Gitaly::DeleteBranchRequest.new(
+        request = Gitaly::FindBranchRequest.new(
           repository: @gitaly_repo,
           name: GitalyClient.encode(branch_name)
         )
@@ -90,6 +90,40 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
+      end
+
+      def create_branch(ref, start_point)
+        request = Gitaly::CreateBranchRequest.new(
+          repository: @gitaly_repo,
+          name: GitalyClient.encode(ref),
+          start_point: GitalyClient.encode(start_point)
+        )
+
+        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
+
+        case response.status
+        when :OK
+          branch = response.branch
+          target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+          Gitlab::Git::Branch.new(@repository, branch.name, branch.target_commit.id, target_commit)
+        when :ERR_INVALID
+          invalid_ref!("Invalid ref name")
+        when :ERR_EXISTS
+          invalid_ref!("Branch #{ref} already exists")
+        when :ERR_INVALID_START_POINT
+          invalid_ref!("Invalid reference #{start_point}")
+        else
+          raise "Unknown response status: #{response.status}"
+        end
+      end
+
+      def delete_branch(branch_name)
+        request = Gitaly::DeleteBranchRequest.new(
+          repository: @gitaly_repo,
+          name: GitalyClient.encode(branch_name)
+        )
+
+        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
       private
@@ -162,6 +196,10 @@ module Gitlab
         }
 
         Gitlab::Git::Commit.decorate(@repository, hash)
+      end
+
+      def invalid_ref!(message)
+        raise Gitlab::Git::Repository::InvalidRef.new(message)
       end
     end
   end

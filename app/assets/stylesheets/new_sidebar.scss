@@ -45,7 +45,6 @@ $new-sidebar-collapsed-width: 50px;
   margin-right: 2px;
 
   a {
-    border-bottom: 1px solid $border-color;
     font-weight: $gl-font-weight-bold;
     display: flex;
     align-items: center;
@@ -387,6 +386,10 @@ $new-sidebar-collapsed-width: 50px;
         display: none;
       }
     }
+  }
+
+  .nav-icon-container {
+    margin-right: 0;
   }
 
   .toggle-sidebar-button {

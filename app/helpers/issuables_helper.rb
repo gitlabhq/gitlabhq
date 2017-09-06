@@ -126,22 +126,20 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = content_tag(:strong, class: "identifier") do
-      concat("#{text} ")
-      concat(to_url_reference(issuable))
-    end
-
-    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+    output = ""
+    output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
 
     output << "&ensp;".html_safe
+    output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip', title: _('1st contribution!'))
+
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
 
-    output
+    output.html_safe
   end
 
   def issuable_todo(issuable)
@@ -171,6 +169,13 @@ module IssuablesHelper
     html << " " << content_tag(:span, number_with_delimiter(count), class: 'badge')
 
     html.html_safe
+  end
+
+  def issuable_first_contribution_icon
+    content_tag(:span, class: 'fa-stack') do
+      concat(icon('certificate', class: "fa-stack-2x"))
+      concat(content_tag(:strong, '1', class: 'fa-inverse fa-stack-1x'))
+    end
   end
 
   def assigned_issuables_count(issuable_type)

@@ -2,6 +2,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleSubscriptionAction
   include IssuableActions
   include RendersNotes
+  include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
 
@@ -60,11 +61,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
 
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
-
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
+
+        @discussions = @merge_request.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
         labels
 
@@ -94,7 +95,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def commits
     # Get commits from repository
     # or from cache if already merged
-    @commits = @merge_request.commits
+    @commits = prepare_commits_for_rendering(@merge_request.commits)
     @note_counts = Note.where(commit_id: @commits.map(&:id))
       .group(:commit_id).count
 

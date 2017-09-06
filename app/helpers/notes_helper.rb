@@ -73,7 +73,7 @@ module NotesHelper
   end
 
   def note_max_access_for_user(note)
-    note.project.team.human_max_access(note.author_id)
+    note.project.team.max_member_access(note.author_id)
   end
 
   def discussion_path(discussion)

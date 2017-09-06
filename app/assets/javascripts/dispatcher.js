@@ -41,7 +41,6 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
@@ -489,6 +488,8 @@ import initChangesDropdown from './init_changes_dropdown';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
         case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
@@ -554,9 +555,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'root':
           new UserCallout();
           break;
-        case 'groups':
-          new GroupName();
-          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -564,7 +562,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects':
           new Project();
           new ProjectAvatar();
-          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

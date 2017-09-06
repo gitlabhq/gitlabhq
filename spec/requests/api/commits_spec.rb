@@ -673,6 +673,12 @@ describe API::Commits do
           it_behaves_like 'ref diff'
         end
       end
+
+      context 'when binary diff are treated as text' do
+        let(:commit_id) { TestEnv::BRANCH_SHA['add-pdf-text-binary'] }
+
+        it_behaves_like 'ref diff'
+      end
     end
   end
 

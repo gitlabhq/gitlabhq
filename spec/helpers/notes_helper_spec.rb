@@ -23,10 +23,10 @@ describe NotesHelper do
   end
 
   describe "#notes_max_access_for_users" do
-    it 'returns human access levels' do
-      expect(helper.note_max_access_for_user(owner_note)).to eq('Owner')
-      expect(helper.note_max_access_for_user(master_note)).to eq('Master')
-      expect(helper.note_max_access_for_user(reporter_note)).to eq('Reporter')
+    it 'returns access levels' do
+      expect(helper.note_max_access_for_user(owner_note)).to eq(Gitlab::Access::OWNER)
+      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(reporter_note)).to eq(Gitlab::Access::REPORTER)
     end
 
     it 'handles access in different projects' do
@@ -34,8 +34,8 @@ describe NotesHelper do
       second_project.team << [master, :reporter]
       other_note = create(:note, author: master, project: second_project)
 
-      expect(helper.note_max_access_for_user(master_note)).to eq('Master')
-      expect(helper.note_max_access_for_user(other_note)).to eq('Reporter')
+      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(other_note)).to eq(Gitlab::Access::REPORTER)
     end
   end
 
