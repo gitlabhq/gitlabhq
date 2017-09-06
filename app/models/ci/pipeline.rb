@@ -1,6 +1,6 @@
 module Ci
   class Pipeline < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasStatus
     include Importable
     include AfterCommitQueue
