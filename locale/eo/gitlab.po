@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 09:53-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:21-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Esperanto\n"
 "Language: eo_UY\n"
@@ -57,7 +57,16 @@ msgstr "Aro da diagramoj pri la seninterrompa integrado"
 msgid "About auto deploy"
 msgstr "Pri la aŭtomata disponigado"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -84,6 +93,12 @@ msgstr "Aldoni novan dosierujon"
 msgid "All"
 msgstr ""
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "Arkivita projekto! La deponejo permesas nur legadon"
 
@@ -104,6 +119,63 @@ msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Alkroĉu dosieron per ŝovmetado aŭ %{upload_link}"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -137,6 +209,9 @@ msgstr "Elekti dosierojn"
 msgid "ByAuthor|by"
 msgstr "de"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "Agordoj de seninterrompa integrado"
 
@@ -163,6 +238,9 @@ msgstr "Listo de ŝanĝoj"
 
 msgid "Charts"
 msgstr "Diagramoj"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "Precize elekti ĉi tiun kunmetadon"
@@ -259,11 +337,17 @@ msgstr "Enmetita de"
 msgid "Compare"
 msgstr "Kompari"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "Gvidlinioj por kontribuado"
 
 msgid "Contributors"
 msgstr "Kontribuantoj"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "Kopii la adreson en la kopibufron"
@@ -351,6 +435,9 @@ msgid_plural "Deploys"
 msgstr[0] "Disponigado"
 msgstr[1] "Disponigadoj"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "Priskribo"
 
@@ -398,6 +485,9 @@ msgstr "Redakti"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Redakti ĉenstablan planon %{id}"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr ""
@@ -464,6 +554,12 @@ msgstr "De la kreado de la problemo ĝis la disponigado en la publika versio"
 msgid "From merge request merge until deploy to production"
 msgstr "De la kunfandado de la peto pri kunfando ĝis la disponigado en la publika versio"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -475,6 +571,9 @@ msgstr "Al via disbranĉigo"
 
 msgid "GoToYourFork|Fork"
 msgstr "Disbranĉigo"
+
+msgid "Group overview"
+msgstr ""
 
 msgid "Health Check"
 msgstr ""
@@ -497,6 +596,9 @@ msgstr ""
 msgid "Home"
 msgstr "Hejmo"
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr "La refreŝigo komenciĝis sukcese"
 
@@ -515,20 +617,17 @@ msgstr "Ni prezentas al vi la ciklan analizon"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Taskoj po la lasta monato"
-
-msgid "Jobs for last week"
-msgstr "Taskoj po la lasta semajno"
-
-msgid "Jobs for last year"
-msgstr "Taskoj po la lasta jaro"
+msgid "Issues"
+msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr "Malŝaltita"
 
 msgid "LFSStatus|Enabled"
 msgstr "Ŝaltita"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -562,19 +661,37 @@ msgstr "Forlasi la grupon"
 msgid "Leave project"
 msgstr "Forlasi la projekton"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "Limigita al montrado de ne pli ol %d evento"
 msgstr[1] "Limigita al montrado de ne pli ol %d eventoj"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "Mediano"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "aldonos SSH-ŝlosilon"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr ""
@@ -677,6 +794,9 @@ msgstr "Partoprenado"
 msgid "NotificationLevel|Watch"
 msgstr "Rigardado"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtrilo"
 
@@ -686,8 +806,14 @@ msgstr "Malfermita"
 msgid "Options"
 msgstr "Opcioj"
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "Posedanto"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr "Ĉenstablo"
@@ -700,6 +826,9 @@ msgstr "Ĉenstabla plano"
 
 msgid "Pipeline Schedules"
 msgstr "Ĉenstablaj planoj"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Malsukcesaj:"
@@ -764,6 +893,15 @@ msgstr "Ĉenstabloj"
 msgid "Pipelines charts"
 msgstr "Ĉenstablaj diagramoj"
 
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
+
 msgid "Pipeline|all"
 msgstr "ĉiuj"
 
@@ -775,6 +913,12 @@ msgstr "kun etapo"
 
 msgid "Pipeline|with stages"
 msgstr "kun etapoj"
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
 
 msgid "Project"
 msgstr ""
@@ -812,6 +956,9 @@ msgstr "La elporto de la projekto komenciĝis. Vi ricevos ligilon per retpoŝto 
 msgid "Project home"
 msgstr "Hejmo de la projekto"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -835,6 +982,9 @@ msgstr "Etapo"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Grafeo"
+
+msgid "Push Rules"
+msgstr ""
 
 msgid "Push events"
 msgstr ""
@@ -896,6 +1046,9 @@ msgstr "Malfari ĉi tiun enmetadon"
 msgid "Revert this merge request"
 msgstr "Malfari ĉi tiun peton pri kunfando"
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "Konservi ĉenstablan planon"
 
@@ -920,6 +1073,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr "Elektu celan branĉon"
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Kreu pasvorton por via konto por ebligi al vi eltiri kaj alpuŝi per %{protocol}."
 
@@ -935,13 +1091,22 @@ msgstr "Agordi aŭtomatan disponigadon"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "kreos pasvorton"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "Estas montrata %d evento"
 msgstr[1] "Estas montrataj %d eventoj"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "Kodo"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
@@ -1219,6 +1384,9 @@ msgstr "Ĉu vi volas vidi la datenojn? Bonvolu peti atingeblon de administranto.
 msgid "We don't have enough data to show this stage."
 msgstr "Ne estas sufiĉe da datenoj por montri ĉi tiun etapon."
 
+msgid "Wiki"
+msgstr ""
+
 msgid "Withdraw Access Request"
 msgstr "Nuligi la peton pri atingeblo"
 
@@ -1285,3 +1453,4 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] "patro"
 msgstr[1] "patroj"
+

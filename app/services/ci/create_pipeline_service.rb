@@ -12,7 +12,8 @@ module Ci
         tag: tag?,
         trigger_requests: Array(trigger_request),
         user: current_user,
-        pipeline_schedule: schedule
+        pipeline_schedule: schedule,
+        protected: project.protected_for?(ref)
       )
 
       result = validate(current_user,
@@ -67,11 +68,10 @@ module Ci
         return error('Commit not found')
       end
 
-      unless pipeline.detect_ci_yaml_file
-        return error("Missing #{pipeline.ci_yaml_file_path} file")
-      end
-
       unless pipeline.config_processor
+        unless pipeline.ci_yaml_file
+          return error("Missing #{pipeline.ci_yaml_file_path} file")
+        end
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
 

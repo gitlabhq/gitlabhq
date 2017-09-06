@@ -2,9 +2,6 @@
 - page_title "Branches"
 = render "projects/commits/head"
 
-- if show_new_nav?
-  - add_to_breadcrumbs("Repository", project_tree_path(@project))
-
 %div{ class: container_class }
   .top-area.adjust
     - if can?(current_user, :admin_project, @project)

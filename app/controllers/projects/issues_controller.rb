@@ -15,7 +15,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:edit, :update]
+  before_action :authorize_update_issue!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -27,10 +27,9 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues             = issues_collection
     @issues             = @issues.page(params[:page])
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+    @total_pages        = issues_page_count(@issues)
 
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
-    end
+    return if redirect_out_of_range(@issues, @total_pages)
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
@@ -86,7 +85,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @note     = @project.notes.new(noteable: @issue)
 
     @discussions = @issue.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html
@@ -142,25 +141,33 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
 
-    if params[:move_to_project_id].to_i > 0
-      new_project = Project.find(params[:move_to_project_id])
-      return render_404 unless issue.can_move?(current_user, new_project)
-
-      move_service = Issues::MoveService.new(project, current_user)
-      @issue = move_service.execute(@issue, new_project)
-    end
-
     respond_to do |format|
       format.html do
         recaptcha_check_with_fallback { render :edit }
       end
 
       format.json do
-        if @issue.valid?
-          render json: serializer.represent(@issue)
-        else
-          render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
-        end
+        render_issue_json
+      end
+    end
+
+  rescue ActiveRecord::StaleObjectError
+    render_conflict_response
+  end
+
+  def move
+    params.require(:move_to_project_id)
+
+    if params[:move_to_project_id].to_i > 0
+      new_project = Project.find(params[:move_to_project_id])
+      return render_404 unless issue.can_move?(current_user, new_project)
+
+      @issue = Issues::UpdateService.new(project, current_user, target_project: new_project).execute(issue)
+    end
+
+    respond_to do |format|
+      format.json do
+        render_issue_json
       end
     end
 
@@ -269,6 +276,14 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
+  end
+
+  def render_issue_json
+    if @issue.valid?
+      render json: serializer.represent(@issue)
+    else
+      render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def issue_params

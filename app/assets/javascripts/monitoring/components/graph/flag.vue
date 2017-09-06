@@ -7,10 +7,6 @@
         type: Number,
         required: true,
       },
-      currentYCoordinate: {
-        type: Number,
-        required: true,
-      },
       currentFlagPosition: {
         type: Number,
         required: true,
@@ -60,16 +56,7 @@
       :y2="calculatedHeight"
       transform="translate(-5, 20)">
     </line>
-    <circle
-      class="circle-metric"
-      :fill="circleColorRgb"
-      stroke="#000"
-      :cx="currentXCoordinate"
-      :cy="currentYCoordinate"
-      r="5"
-      transform="translate(-5, 20)">
-    </circle>
-    <svg
+    <svg 
       class="rect-text-metric"
       :x="currentFlagPosition"
       y="0">

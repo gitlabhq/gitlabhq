@@ -119,6 +119,7 @@ module API
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
+      expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -290,10 +291,11 @@ module API
     end
 
     class RepoDiff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+      expose :json_safe_diff, as: :diff
     end
 
     class ProtectedRefAccess < Grape::Entity
@@ -489,6 +491,10 @@ module API
 
     class SSHKeyWithUser < SSHKey
       expose :user, using: Entities::UserPublic
+    end
+
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
     end
 
     class Note < Grape::Entity
@@ -775,6 +781,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
@@ -818,7 +825,7 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
-      expose :protected?, as: :protected
+      expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
     end
 
     class Pipeline < PipelineBasic
@@ -839,6 +846,7 @@ module API
 
     class PipelineScheduleDetails < PipelineSchedule
       expose :last_pipeline, using: Entities::PipelineBasic
+      expose :variables, using: Entities::Variable
     end
 
     class EnvironmentBasic < Grape::Entity

@@ -38,6 +38,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
+    after_initialize :set_config_source, if: :new_record?
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -310,6 +311,10 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def has_kubernetes_active?
+      project.kubernetes_service&.active?
+    end
+
     def has_stage_seeds?
       stage_seeds.any?
     end
@@ -318,9 +323,12 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
-    def detect_ci_yaml_file
-      ci_yaml_from_repo&.tap { self.repository_source! } ||
-        implied_ci_yaml_file&.tap { self.auto_devops_source! }
+    def set_config_source
+      if ci_yaml_from_repo
+        self.config_source = :repository_source
+      elsif implied_ci_yaml_file
+        self.config_source = :auto_devops_source
+      end
     end
 
     def config_processor
@@ -350,11 +358,10 @@ module Ci
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
       @ci_yaml_file =
-        case config_source
-        when :repository_source, :unknown_source
-          ci_yaml_from_repo
-        when :auto_devops_source
+        if auto_devops_source?
           implied_ci_yaml_file
+        else
+          ci_yaml_from_repo
         end
 
       if @ci_yaml_file
@@ -449,12 +456,17 @@ module Ci
     private
 
     def ci_yaml_from_repo
+      return unless project
+      return unless sha
+
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
     rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
       nil
     end
 
     def implied_ci_yaml_file
+      return unless project
+
       if project.auto_devops_enabled?
         Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
       end

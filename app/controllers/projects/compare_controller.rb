@@ -3,6 +3,7 @@ require 'addressable/uri'
 class Projects::CompareController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
+  include RendersCommits
 
   # Authorize
   before_action :require_non_empty_project
@@ -50,7 +51,7 @@ class Projects::CompareController < Projects::ApplicationController
       .execute(@project, @start_ref)
 
     if @compare
-      @commits = @compare.commits
+      @commits = prepare_commits_for_rendering(@compare.commits)
       @diffs = @compare.diffs(diff_options)
 
       environment_params = @repository.branch_exists?(@head_ref) ? { ref: @head_ref } : { commit: @compare.commit }

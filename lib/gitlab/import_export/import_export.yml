@@ -117,6 +117,7 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
+    - :when
   push_event_payload:
     - :event_id
 

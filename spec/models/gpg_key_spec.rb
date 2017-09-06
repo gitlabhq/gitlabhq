@@ -99,18 +99,44 @@ describe GpgKey do
   end
 
   describe '#verified?' do
-    it 'returns true one of the email addresses in the key belongs to the user' do
+    it 'returns true if one of the email addresses in the key belongs to the user' do
       user = create :user, email: 'bette.cartwright@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
 
       expect(gpg_key.verified?).to be_truthy
     end
 
-    it 'returns false if one of the email addresses in the key does not belong to the user' do
+    it 'returns false if none of the email addresses in the key does not belong to the user' do
       user = create :user, email: 'someone.else@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
 
       expect(gpg_key.verified?).to be_falsey
+    end
+  end
+
+  describe 'verified_and_belongs_to_email?' do
+    it 'returns false if none of the email addresses in the key does not belong to the user' do
+      user = create :user, email: 'someone.else@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_falsey
+      expect(gpg_key.verified_and_belongs_to_email?('someone.else@example.com')).to be_falsey
+    end
+
+    it 'returns false if one of the email addresses in the key belongs to the user and does not match the provided email' do
+      user = create :user, email: 'bette.cartwright@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?('bette.cartwright@example.net')).to be_falsey
+    end
+
+    it 'returns true if one of the email addresses in the key belongs to the user and matches the provided email' do
+      user = create :user, email: 'bette.cartwright@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?('bette.cartwright@example.com')).to be_truthy
     end
   end
 
@@ -129,15 +155,15 @@ describe GpgKey do
   describe '#revoke' do
     it 'invalidates all associated gpg signatures and destroys the key' do
       gpg_key = create :gpg_key
-      gpg_signature = create :gpg_signature, valid_signature: true, gpg_key: gpg_key
+      gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: gpg_key
 
       unrelated_gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key
-      unrelated_gpg_signature = create :gpg_signature, valid_signature: true, gpg_key: unrelated_gpg_key
+      unrelated_gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: unrelated_gpg_key
 
       gpg_key.revoke
 
       expect(gpg_signature.reload).to have_attributes(
-        valid_signature: false,
+        verification_status: 'unknown_key',
         gpg_key: nil
       )
 
@@ -145,7 +171,7 @@ describe GpgKey do
 
       # unrelated signature is left untouched
       expect(unrelated_gpg_signature.reload).to have_attributes(
-        valid_signature: true,
+        verification_status: 'verified',
         gpg_key: unrelated_gpg_key
       )
 

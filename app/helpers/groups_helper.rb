@@ -15,18 +15,20 @@ module GroupsHelper
     @has_group_title = true
     full_title = ''
 
-    group.ancestors.reverse.each do |parent|
-      full_title += group_title_link(parent, hidable: true)
-
-      full_title += '<span class="hidable"> / </span>'.html_safe
+    group.ancestors.reverse.each_with_index do |parent, index|
+      if index > 0
+        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true), location: :before)
+      else
+        full_title += breadcrumb_list_item group_title_link(parent, hidable: false)
+      end
     end
 
-    full_title += group_title_link(group)
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
+    full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
 
-    content_tag :span, class: 'group-title' do
-      full_title.html_safe
-    end
+    full_title += breadcrumb_list_item group_title_link(group)
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
+
+    full_title.html_safe
   end
 
   def projects_lfs_status(group)
@@ -65,11 +67,11 @@ module GroupsHelper
 
   private
 
-  def group_title_link(group, hidable: false)
-    link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
+  def group_title_link(group, hidable: false, show_avatar: false)
+    link_to(group_path(group), class: "group-path breadcrumb-item-text js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
-        if show_new_nav? && !Rails.env.test?
-          image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
+        if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
+          image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
         else
           ""
         end

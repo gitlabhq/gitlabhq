@@ -1,4 +1,6 @@
 <script>
+  import { formatRelevantDigits } from '../../../lib/utils/number_utils';
+
   export default {
     props: {
       graphWidth: {
@@ -17,10 +19,6 @@
         type: Object,
         required: true,
       },
-      areaColorRgb: {
-        type: String,
-        required: true,
-      },
       legendTitle: {
         type: String,
         required: true,
@@ -29,8 +27,16 @@
         type: String,
         required: true,
       },
-      metricUsage: {
+      timeSeries: {
+        type: Array,
+        required: true,
+      },
+      unitOfDisplay: {
         type: String,
+        required: true,
+      },
+      currentDataIndex: {
+        type: Number,
         required: true,
       },
     },
@@ -38,6 +44,8 @@
       return {
         yLabelWidth: 0,
         yLabelHeight: 0,
+        seriesXPosition: 0,
+        metricUsageXPosition: 0,
       };
     },
     computed: {
@@ -63,10 +71,28 @@
       yPosition() {
         return ((this.graphHeight - this.margin.top) + this.measurements.axisLabelLineOffset) || 0;
       },
+
+    },
+    methods: {
+      translateLegendGroup(index) {
+        return `translate(0, ${12 * (index)})`;
+      },
+
+      formatMetricUsage(series) {
+        return `${formatRelevantDigits(series.values[this.currentDataIndex].value)} ${this.unitOfDisplay}`;
+      },
     },
     mounted() {
       this.$nextTick(() => {
         const bbox = this.$refs.ylabel.getBBox();
+        this.metricUsageXPosition = 0;
+        this.seriesXPosition = 0;
+        if (this.$refs.legendTitleSvg != null) {
+          this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
+        }
+        if (this.$refs.seriesTitleSvg != null) {
+          this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
+        }
         this.yLabelWidth = bbox.width + 10; // Added some padding
         this.yLabelHeight = bbox.height + 5;
       });
@@ -121,24 +147,33 @@
       dy=".35em">
       Time
     </text>
-    <rect
-      :fill="areaColorRgb"
-      :width="measurements.legends.width"
-      :height="measurements.legends.height"
-      x="20"
-      :y="graphHeight - measurements.legendOffset">
-    </rect>
-    <text
-      class="text-metric-title"
-      x="50"
-      :y="graphHeight - 25">
-      {{legendTitle}}
-    </text>
-    <text
-      class="text-metric-usage"
-      x="50"
-      :y="graphHeight - 10">
-      {{metricUsage}}
-    </text>
+    <g class="legend-group"
+      v-for="(series, index) in timeSeries"
+      :key="index"
+      :transform="translateLegendGroup(index)">
+      <rect
+        :fill="series.areaColor"
+        :width="measurements.legends.width"
+        :height="measurements.legends.height"
+        x="20"
+        :y="graphHeight - measurements.legendOffset">
+      </rect>
+      <text
+        v-if="timeSeries.length > 1"
+        class="legend-metric-title"
+        ref="legendTitleSvg"
+        x="38"
+        :y="graphHeight - 30">
+        {{legendTitle}} Series {{index + 1}} {{formatMetricUsage(series)}}
+      </text>
+      <text
+        v-else
+        class="legend-metric-title"
+        ref="legendTitleSvg"
+        x="38"
+        :y="graphHeight - 30">
+        {{legendTitle}} {{formatMetricUsage(series)}}
+      </text>
+    </g>
   </g>
 </template>

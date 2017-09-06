@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170831092813) do
+ActiveRecord::Schema.define(version: 20170905112933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,6 +419,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.integer "pipeline_schedule_id"
     t.boolean "protected"
     t.integer "config_source"
+    t.boolean "protected"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -785,11 +786,11 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id"
     t.integer "gpg_key_id"
-    t.boolean "valid_signature"
     t.binary "commit_sha"
     t.binary "gpg_key_primary_keyid"
     t.text "gpg_key_user_name"
     t.text "gpg_key_user_email"
+    t.integer "verification_status", limit: 2, default: 0, null: false
   end
 
   add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree
@@ -1258,6 +1259,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.text "note_html"
     t.integer "cached_markdown_version"
     t.text "change_position"
+    t.boolean "resolved_by_push"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -1405,7 +1407,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
   create_table "project_auto_devops", force: :cascade do |t|
     t.integer "project_id", null: false
     t.boolean "enabled"
-    t.string "domain", null: false
+    t.string "domain"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
   end
@@ -1543,6 +1545,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
     t.boolean "disable_overriding_approvers_per_merge_request"
     t.text "delete_error"
     t.integer "storage_version", limit: 2
+    t.boolean "resolve_outdated_diff_discussions"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1942,6 +1945,16 @@ ActiveRecord::Schema.define(version: 20170831092813) do
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
+  create_table "user_synced_attributes_metadata", force: :cascade do |t|
+    t.boolean "name_synced", default: false
+    t.boolean "email_synced", default: false
+    t.boolean "location_synced", default: false
+    t.integer "user_id", null: false
+    t.string "provider"
+  end
+
+  add_index "user_synced_attributes_metadata", ["user_id"], name: "index_user_synced_attributes_metadata_on_user_id", unique: true, using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -2148,6 +2161,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
   add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
+  add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
@@ -2208,6 +2222,7 @@ ActiveRecord::Schema.define(version: 20170831092813) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade

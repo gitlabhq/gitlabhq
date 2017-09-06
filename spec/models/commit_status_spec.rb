@@ -443,4 +443,25 @@ describe CommitStatus do
       end
     end
   end
+
+  describe 'set failure_reason when drop' do
+    let(:commit_status) { create(:commit_status, :created) }
+
+    subject do
+      commit_status.drop!(reason)
+      commit_status
+    end
+
+    context 'when failure_reason is nil' do
+      let(:reason) { }
+
+      it { is_expected.to be_unknown_failure }
+    end
+
+    context 'when failure_reason is script_failure' do
+      let(:reason) { :script_failure }
+
+      it { is_expected.to be_script_failure }
+    end
+  end
 end

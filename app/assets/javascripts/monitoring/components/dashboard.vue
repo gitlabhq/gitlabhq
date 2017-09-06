@@ -4,7 +4,7 @@
   import statusCodes from '../../lib/utils/http_status';
   import MonitoringService from '../services/monitoring_service';
   import GraphGroup from './graph_group.vue';
-  import GraphRow from './graph_row.vue';
+  import Graph from './graph.vue';
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
@@ -32,8 +32,8 @@
     },
 
     components: {
+      Graph,
       GraphGroup,
-      GraphRow,
       EmptyState,
     },
 
@@ -127,10 +127,10 @@
       :key="index"
       :name="groupData.group"
     >
-      <graph-row
-        v-for="(row, index) in groupData.metrics"
+      <graph
+        v-for="(graphData, index) in groupData.metrics"
         :key="index"
-        :row-data="row"
+        :graph-data="graphData"
         :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
       />

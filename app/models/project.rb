@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
@@ -68,7 +69,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable
 
-  attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
@@ -145,6 +145,7 @@ class Project < ActiveRecord::Base
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -469,10 +470,10 @@ class Project < ActiveRecord::Base
   end
 
   def auto_devops_enabled?
-    if auto_devops && !auto_devops.enabled.nil?
-      auto_devops.enabled?
-    else
+    if auto_devops&.enabled.nil?
       current_application_settings.auto_devops_enabled?
+    else
+      auto_devops.enabled?
     end
   end
 
@@ -1388,6 +1389,10 @@ class Project < ActiveRecord::Base
     Gitlab::Utils.slugify(full_path.to_s)
   end
 
+  def has_ci?
+    repository.gitlab_ci_yml || auto_devops_enabled?
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
@@ -1395,8 +1400,7 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true },
-      { key: 'AUTO_DEVOPS_DOMAIN', value: auto_devops.domain, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
   end
 
@@ -1432,6 +1436,12 @@ class Project < ActiveRecord::Base
     return [] unless deployment_service
 
     deployment_service.predefined_variables
+  end
+
+  def auto_devops_variables
+    return [] unless auto_devops_enabled?
+
+    auto_devops&.variables || []
   end
 
   def append_or_update_attribute(name, value)
