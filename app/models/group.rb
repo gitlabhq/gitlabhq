@@ -9,6 +9,7 @@ class Group < Namespace
   include SelectForProjectAuthorization
   include LoadedInGroupList
   include GroupDescendant
+  include TokenAuthenticatable
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -42,6 +43,9 @@ class Group < Namespace
   validates :variables, variable_duplicates: true
 
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
