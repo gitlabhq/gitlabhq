@@ -14,9 +14,8 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
-- if show_new_nav?
-  - content_for :breadcrumbs_extra do
-    = render "projects/issues/nav_btns"
+- content_for :breadcrumbs_extra do
+  = render "projects/issues/nav_btns"
 
 - if project_issues(@project).exists?
 
@@ -25,7 +24,7 @@
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
-      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+      .nav-controls.visible-xs
         = render "projects/issues/nav_btns"
     = render 'shared/issuable/search_bar', type: :issues
 

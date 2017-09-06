@@ -1,25 +1,20 @@
 = render "layouts/header/ee_license_banner"
-%header.navbar.navbar-gitlab.js-navbar-gitlab{ class: nav_header_class }
-  .navbar-border
+
+%header.navbar.navbar-gitlab.navbar-gitlab-new
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
-      .dropdown.global-dropdown
-        %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
-          %span.sr-only Toggle navigation
-          = icon('bars')
-        .dropdown-menu-nav.global-dropdown-menu
-          - if current_user
-            = render 'layouts/nav/dashboard'
-          - else
-            = render 'layouts/nav/explore'
+      .title-container
+        %h1.title
+          = link_to root_path, title: 'Dashboard', id: 'logo' do
+            = brand_header_logo
+            %span.logo-text.hidden-xs
+              = render 'shared/logo_type.svg'
 
-      .header-logo
-        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
-          = brand_header_logo
-
-      .title-container.js-title-container
-        %h1.title{ class: ('initializing' if @has_group_title) }= title
+        - if current_user
+          = render "layouts/nav/dashboard"
+        - else
+          = render "layouts/nav/explore"
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -44,13 +39,13 @@
                   data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                   = icon('tachometer fw')
             %li
-              = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = custom_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
             %li
-              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = custom_icon('mr_bold')
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
@@ -75,7 +70,7 @@
             %li.header-user.dropdown
               = link_to current_user, class: "header-user-dropdown-toggle", data: { toggle: "dropdown" } do
                 = image_tag avatar_icon(current_user, 26), width: 26, height: 26, class: "header-user-avatar"
-                = icon('caret-down')
+                = icon('chevron-down')
               .dropdown-menu-nav.dropdown-menu-align-right
                 %ul
                   %li.current-user
@@ -95,10 +90,9 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
-      %button.navbar-toggle{ type: 'button' }
+      %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
-        = icon('ellipsis-v')
-
-      = yield :header_content
+        = icon('ellipsis-v', class: 'js-navbar-toggle-right')
+        = icon('times', class: 'js-navbar-toggle-left')
 
 = render 'shared/outdated_browser'

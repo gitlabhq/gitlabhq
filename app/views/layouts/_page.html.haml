@@ -1,26 +1,14 @@
-.page-with-sidebar.js-page-with-sidebar{ class: page_with_sidebar_class }
-  - if show_new_nav?
-    - if defined?(nav) && nav
-      = render "layouts/nav/#{nav}"
-  - else
-    - if defined?(nav) && nav
-      .layout-nav
-        .container-fluid
-          = render "layouts/nav/#{nav}"
-    - if content_for?(:sub_nav)
-      = yield :sub_nav
-  .content-wrapper{ class: layout_nav_class }
-    - if show_new_nav?
-      .mobile-overlay
+.page-with-sidebar{ class: page_with_sidebar_class }
+  - if defined?(nav) && nav
+    = render "layouts/nav/sidebar/#{nav}"
+  .content-wrapper
+    .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
-      - if show_new_nav?
-        - if content_for?(:new_global_flash)
-          = yield :new_global_flash
-        - unless @hide_breadcrumbs
-          = render "layouts/nav/breadcrumbs"
-      = render "layouts/flash"
       = yield :flash_message
+      - unless @hide_breadcrumbs
+        = render "layouts/nav/breadcrumbs"
+      = render "layouts/flash"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield
