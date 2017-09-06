@@ -453,6 +453,22 @@ entry.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
 
+## 9.3.11 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Improve support for external issue references. !12485
+- Use uploads/system directory for personal snippets.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+- Fix XSS issue in go-get handling.
+- Fix an infinite loop when handling user-supplied regular expressions.
+- Fixes race condition in project uploads.
+- Fixes race condition in project uploads.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+
 ## 9.3.10 (2017-08-09)
 
 - Remove hidden symlinks from project import files.
