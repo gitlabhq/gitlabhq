@@ -28,9 +28,6 @@ module Projects
         return @project
       end
 
-      # EE-only: Repository size limit comes as MB from the view
-      set_repository_size_limit_as_bytes
-
       set_project_name_from_path
 
       # get namespace id
@@ -107,11 +104,6 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       setup_authorizations
-
-      # EE-only
-      create_predefined_push_rule
-
-      @project.group&.refresh_members_authorized_projects
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -161,11 +153,6 @@ module Projects
       end
     end
 
-    def set_repository_size_limit_as_bytes
-      limit = params.delete(:repository_size_limit)
-      @project.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
-    end
-
     def set_project_name_from_path
       # Set project name from path
       if @project.name.present? && @project.path.present?
@@ -177,17 +164,6 @@ module Projects
         # For compatibility - set path from name
         # TODO: remove this in 8.0
         @project.path = @project.name.dup.parameterize
-      end
-    end
-
-    def create_predefined_push_rule
-      return unless project.feature_available?(:push_rules)
-
-      predefined_push_rule = PushRule.find_by(is_sample: true)
-
-      if predefined_push_rule
-        push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
-        project.push_rule = push_rule
       end
     end
   end
