@@ -365,7 +365,7 @@ header.navbar-gitlab-new {
   }
 }
 
-.breadcrumb-item-project-name {
+.breadcrumb-item-text {
   @include str-truncated(128px);
 }
 

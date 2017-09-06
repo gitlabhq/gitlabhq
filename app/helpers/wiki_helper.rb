@@ -17,7 +17,7 @@ module WikiHelper
     current_slug = ""
     page_slug_split
       .map do |dir_or_page|
-        current_slug = "#{current_slug}/#{dir_or_page}"
+        current_slug = "#{current_slug}#{dir_or_page}/"
         add_to_breadcrumb_dropdown link_to(WikiPage.unhyphenize(dir_or_page).capitalize, project_wiki_path(@project, current_slug)), location: :after
       end
   end

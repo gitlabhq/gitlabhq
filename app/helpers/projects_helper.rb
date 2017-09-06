@@ -68,12 +68,12 @@ module ProjectsHelper
           ""
         end
 
-      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-project-name")
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
       output.html_safe
     end
 
     if show_new_nav?
-      namespace_link = breadcrumb_list_item(namespace_link) if project.group.nil?
+      namespace_link = breadcrumb_list_item(namespace_link) unless project.group
       project_link = breadcrumb_list_item project_link
     end
 

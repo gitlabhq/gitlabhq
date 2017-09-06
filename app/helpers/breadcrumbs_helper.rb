@@ -25,15 +25,13 @@ module BreadcrumbsHelper
 
   def breadcrumb_list_item(link)
     content_tag "li" do
-      output = link
-      output << icon("angle-right", class: "breadcrumbs-list-angle")
-      output
+      link + icon("angle-right", class: "breadcrumbs-list-angle")
     end
   end
 
   def add_to_breadcrumb_dropdown(link, location: :before)
     @breadcrumb_dropdown_links ||= {}
-    @breadcrumb_dropdown_links[location] = [] unless @breadcrumb_dropdown_links[location]
+    @breadcrumb_dropdown_links[location] ||= []
     @breadcrumb_dropdown_links[location] << link
   end
 end
