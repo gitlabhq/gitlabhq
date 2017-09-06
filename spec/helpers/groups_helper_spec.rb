@@ -107,9 +107,9 @@ describe GroupsHelper do
     let(:possible_help_texts) do
       {
         default_help: "This setting will be applied to all subgroups unless overridden by a group owner",
-        ancestor_locked_but_you_can_override: /This setting is applied on <a .+>.+<\/a>\. You can override the setting or <a .+>remove the share lock from .+<\/a>/,
-        ancestor_locked_so_ask_the_owner: /This setting is applied on <a .+>.+<\/a>\. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from <a .+>.+<\/a>/,
-        ancestor_locked_and_has_been_overridden: /This setting is applied on <a .+>.+<\/a> and has been overridden on this subgroup/
+        ancestor_locked_but_you_can_override: /This setting is applied on <a .+>.+<\/a>\. You can override the setting or .+/,
+        ancestor_locked_so_ask_the_owner: /This setting is applied on .+\. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from .+/,
+        ancestor_locked_and_has_been_overridden: /This setting is applied on .+ and has been overridden on this subgroup/
       }
     end
     let(:possible_linked_ancestors) do
@@ -170,6 +170,16 @@ describe GroupsHelper do
         allow(helper).to receive(:can?)
                            .with(users[current_user], :change_share_with_group_lock, subgroup)
                            .and_return(Ability.allowed?(users[current_user], :change_share_with_group_lock, subgroup))
+
+        ancestor = possible_linked_ancestors[linked_ancestor]
+        if ancestor
+          allow(helper).to receive(:can?)
+                             .with(users[current_user], :read_group, ancestor)
+                             .and_return(Ability.allowed?(users[current_user], :read_group, ancestor))
+          allow(helper).to receive(:can?)
+                             .with(users[current_user], :admin_group, ancestor)
+                             .and_return(Ability.allowed?(users[current_user], :admin_group, ancestor))
+        end
       end
 
       it 'has the correct help text with correct ancestor links' do
