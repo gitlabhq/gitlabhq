@@ -2,6 +2,7 @@ module Gitlab
   module Metrics
     # Class for storing metrics information of a single transaction.
     class Transaction
+      BASE_LABELS = { controller: nil, action: nil }.freeze
       CONTROLLER_KEY = 'action_controller.instance'.freeze
       ENDPOINT_KEY = 'api.endpoint'.freeze
 
@@ -54,11 +55,20 @@ module Gitlab
       end
 
       def action
-        @action ||= if @env[CONTROLLER_KEY]
-                      action_from_controller(@env) || ''
-                    elsif @env[ENDPOINT_KEY]
-                      action_from_endpoint(@env) || ''
-                    end
+        "#{labels[:controller]}##{labels[:action]}" if labels
+      end
+
+      def labels
+        return @labels if @labels
+
+        # memoize transaction labels only source env variables were present
+        @labels = if @env[CONTROLLER_KEY]
+                    labels_from_controller(@env) || {}
+                  elsif @env[ENDPOINT_KEY]
+                    labels_from_endpoint(@env) || {}
+                  end
+
+        @labels || {}
       end
 
       def run
@@ -72,8 +82,8 @@ module Gitlab
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
-        Transaction.metric_transaction_duration_seconds.observe({ action: action }, duration * 1000)
-        Transaction.metric_transaction_allocated_memory_bytes.observe({ action: action }, allocated_memory * 1024.0)
+        Transaction.metric_transaction_duration_seconds.observe(labels, duration * 1000)
+        Transaction.metric_transaction_allocated_memory_bytes.observe(labels, allocated_memory * 1024.0)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -90,7 +100,7 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
-        self.class.metric_event_counter(event_name, tags).increment(tags.merge({ action: action }))
+        self.class.metric_event_counter(event_name, tags).increment(tags.merge(labels))
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, tags, :event)
       end
 
@@ -104,12 +114,12 @@ module Gitlab
       end
 
       def increment(name, value, use_prometheus = true)
-        self.class.metric_transaction_counter(name).increment({ action: action }, value) if use_prometheus
+        self.class.metric_transaction_counter(name).increment(labels, value) if use_prometheus
         @values[name] += value
       end
 
       def set(name, value, use_prometheus = true)
-        self.class.metric_transaction_gauge(name).set({ action: action }, value) if use_prometheus
+        self.class.metric_transaction_gauge(name).set(labels, value) if use_prometheus
         @values[name] = value
       end
 
@@ -152,7 +162,7 @@ module Gitlab
         @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
           :gitlab_transaction_duration_seconds,
           'Transaction duration',
-          { action: nil },
+          BASE_LABELS,
           [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
         )
       end
@@ -161,7 +171,7 @@ module Gitlab
         @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
           :gitlab_transaction_allocated_memory_bytes,
           'Transaction allocated memory bytes',
-          { action: nil },
+          BASE_LABELS,
           [1000, 10000, 20000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
         )
       end
@@ -171,38 +181,38 @@ module Gitlab
         @metric_event_counters[event_name] ||= Gitlab::Metrics.counter(
           "gitlab_transaction_event_#{event_name}_total".to_sym,
           "Transaction event #{event_name} counter",
-          tags.merge({ action: nil })
+          tags.merge(BASE_LABELS)
         )
       end
 
       def self.metric_transaction_counter(name)
         @metric_transaction_counters ||= {}
         @metric_transaction_counters[name] ||= Gitlab::Metrics.counter(
-          "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", action: nil
+          "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", BASE_LABELS
         )
       end
 
       def self.metric_transaction_gauge(name)
         @metric_transaction_gauges ||= {}
         @metric_transaction_gauges[name] ||= Gitlab::Metrics.gauge(
-          "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", { action: nil }, :livesum
+          "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", BASE_LABELS, :livesum
         )
       end
 
-      def action_from_controller(env)
+      def labels_from_controller(env)
         controller = env[CONTROLLER_KEY]
 
-        action = "#{controller.class.name}##{controller.action_name}"
+        action = "#{controller.action_name}"
         suffix = CONTENT_TYPES[controller.content_type]
 
         if suffix && suffix != :html
           action += ".#{suffix}"
         end
 
-        action
+        { controller: controller.class.name, action: action }
       end
 
-      def action_from_endpoint(env)
+      def labels_from_endpoint(env)
         endpoint = env[ENDPOINT_KEY]
 
         begin
@@ -215,7 +225,7 @@ module Gitlab
 
         if route
           path = endpoint_paths_cache[route.request_method][route.path]
-          "Grape##{route.request_method} #{path}"
+          { controller: 'Grape', action: "#{route.request_method} #{path}" }
         end
       end
     end
