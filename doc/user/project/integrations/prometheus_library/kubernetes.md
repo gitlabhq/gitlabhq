@@ -23,4 +23,4 @@ Prometheus server up and running. You have two options here:
 In order to isolate and only display relevant metrics for a given environment
 however, GitLab needs a method to detect which labels are associated. To do this, GitLab will [look for an `environment` label](metrics.md#identifying-environments).
 
-If you are using [GitLab Auto-Deploy][autodeploy] and one of the two [provided Kubernetes monitoring solutions](../prometheus.md#getting-started-with-prometheus-monitoring), the `environment` label will be automatically added.
+If you are using [GitLab Auto-Deploy][../../../ci/autodeploy/index.html] and one of the two [provided Kubernetes monitoring solutions](../prometheus.md#getting-started-with-prometheus-monitoring), the `environment` label will be automatically added.
