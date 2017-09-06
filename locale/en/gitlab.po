@@ -82,9 +82,6 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
-msgid "All"
-msgstr ""
-
 msgid "Archived project! Repository is read-only"
 msgstr ""
 
@@ -223,9 +220,6 @@ msgid "CiStatusText|skipped"
 msgstr ""
 
 msgid "CiStatus|running"
-msgstr ""
-
-msgid "Comments"
 msgstr ""
 
 msgid "Commit"
@@ -400,24 +394,6 @@ msgstr ""
 msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
-msgid "EventFilterBy|Filter by all"
-msgstr ""
-
-msgid "EventFilterBy|Filter by comments"
-msgstr ""
-
-msgid "EventFilterBy|Filter by issue events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by merge events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by push events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by team"
-msgstr ""
-
 msgid "Every day (at 4:00am)"
 msgstr ""
 
@@ -513,9 +489,6 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Issue events"
-msgstr ""
-
 msgid "Jobs for last month"
 msgstr ""
 
@@ -545,12 +518,6 @@ msgstr ""
 msgid "Last commit"
 msgstr ""
 
-msgid "LastPushEvent|You pushed to"
-msgstr ""
-
-msgid "LastPushEvent|at"
-msgstr ""
-
 msgid "Learn more in the"
 msgstr ""
 
@@ -569,9 +536,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Median"
-msgstr ""
-
-msgid "Merge events"
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
@@ -777,9 +741,6 @@ msgstr ""
 msgid "Pipeline|with stages"
 msgstr ""
 
-msgid "Project"
-msgstr ""
-
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -813,9 +774,6 @@ msgstr ""
 msgid "Project home"
 msgstr ""
 
-msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
-
 msgid "ProjectFeature|Disabled"
 msgstr ""
 
@@ -835,9 +793,6 @@ msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectNetworkGraph|Graph"
-msgstr ""
-
-msgid "Push events"
 msgstr ""
 
 msgid "Read more"
@@ -968,9 +923,6 @@ msgid "Tags"
 msgstr ""
 
 msgid "Target Branch"
-msgstr ""
-
-msgid "Team"
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
