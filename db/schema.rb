@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170901071411) do
+ActiveRecord::Schema.define(version: 20170905112933) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1002,6 +1002,7 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.text "note_html"
     t.integer "cached_markdown_version"
     t.text "change_position"
+    t.boolean "resolved_by_push"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -1219,6 +1220,7 @@ ActiveRecord::Schema.define(version: 20170901071411) do
     t.string "ci_config_path"
     t.text "delete_error"
     t.integer "storage_version", limit: 2
+    t.boolean "resolve_outdated_diff_discussions"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

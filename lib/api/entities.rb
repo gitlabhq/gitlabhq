@@ -119,6 +119,7 @@ module API
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
+      expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible

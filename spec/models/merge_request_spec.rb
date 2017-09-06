@@ -1262,7 +1262,6 @@ describe MergeRequest do
 
   describe "#reload_diff" do
     let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
-
     let(:commit) { subject.project.commit(sample_commit.id) }
 
     it "does not change existing merge request diff" do
@@ -1280,9 +1279,19 @@ describe MergeRequest do
       subject.reload_diff
     end
 
-    it "updates diff discussion positions" do
-      old_diff_refs = subject.diff_refs
+    it "calls update_diff_discussion_positions" do
+      expect(subject).to receive(:update_diff_discussion_positions)
 
+      subject.reload_diff
+    end
+  end
+
+  describe '#update_diff_discussion_positions' do
+    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
+    let(:commit) { subject.project.commit(sample_commit.id) }
+    let(:old_diff_refs) { subject.diff_refs }
+
+    before do
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
       allow(subject).to receive(:create_merge_request_diff) do
         subject.merge_request_diffs.create(
@@ -1293,7 +1302,9 @@ describe MergeRequest do
 
         subject.merge_request_diff(true)
       end
+    end
 
+    it "updates diff discussion positions" do
       expect(Discussions::UpdateDiffPositionService).to receive(:new).with(
         subject.project,
         subject.author,
@@ -1305,7 +1316,26 @@ describe MergeRequest do
       expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
       expect_any_instance_of(DiffNote).to receive(:save).once
 
-      subject.reload_diff(subject.author)
+      subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                               new_diff_refs: commit.diff_refs,
+                                               current_user: subject.author)
+    end
+
+    context 'when resolve_outdated_diff_discussions is set' do
+      before do
+        discussion
+
+        subject.project.update!(resolve_outdated_diff_discussions: true)
+      end
+
+      it 'calls MergeRequests::ResolvedDiscussionNotificationService' do
+        expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService)
+          .to receive(:execute).with(subject)
+
+        subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                                 new_diff_refs: commit.diff_refs,
+                                                 current_user: subject.author)
+      end
     end
   end
 
