@@ -36,6 +36,34 @@ module IssuableCollections
     @merge_requests_finder ||= issuable_finder_for(MergeRequestsFinder)
   end
 
+  def redirect_out_of_range(relation, total_pages)
+    return false if total_pages.zero?
+
+    out_of_range = relation.current_page > total_pages
+
+    if out_of_range
+      redirect_to(url_for(params.merge(page: total_pages, only_path: true)))
+    end
+
+    out_of_range
+  end
+
+  def issues_page_count(relation)
+    page_count_for_relation(relation, issues_finder.row_count)
+  end
+
+  def merge_requests_page_count(relation)
+    page_count_for_relation(relation, merge_requests_finder.row_count)
+  end
+
+  def page_count_for_relation(relation, row_count)
+    limit = relation.limit_value.to_f
+
+    return 1 if limit.zero?
+
+    (row_count.to_f / limit).ceil
+  end
+
   def issuable_finder_for(finder_class)
     finder_class.new(current_user, filter_params)
   end

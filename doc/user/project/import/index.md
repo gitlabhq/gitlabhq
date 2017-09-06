@@ -9,6 +9,7 @@
 1. [From ClearCase](clearcase.md)
 1. [From Perforce](perforce.md)
 1. [From TFS](tfs.md)
+1. [From CVS](cvs.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the

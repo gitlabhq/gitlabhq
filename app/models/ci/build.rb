@@ -451,6 +451,10 @@ module Ci
       trace
     end
 
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
+    end
+
     private
 
     def update_artifacts_size

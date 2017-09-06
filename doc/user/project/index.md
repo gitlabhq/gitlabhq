@@ -67,8 +67,6 @@ website with GitLab Pages
 **Other features:**
 
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
-- [Koding integration](koding.md) (not available on GitLab.com): Integrate
-with Koding to have access to a web terminal right from the GitLab UI
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
 

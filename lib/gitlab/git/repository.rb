@@ -134,15 +134,19 @@ module Gitlab
       # This is to work around a bug in libgit2 that causes in-memory refs to
       # be stale/invalid when packed-refs is changed.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/474
       def find_branch(name, force_reload = false)
-        reload_rugged if force_reload
+        gitaly_migrate(:find_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_branch(name)
+          else
+            reload_rugged if force_reload
 
-        rugged_ref = rugged.branches[name]
-        if rugged_ref
-          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            rugged_ref = rugged.branches[name]
+            if rugged_ref
+              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            end
+          end
         end
       end
 
@@ -603,6 +607,49 @@ module Gitlab
         strategies.push(:remove_ignored) if options[:x]
 
         # TODO: implement this method
+      end
+
+      def add_branch(branch_name, committer:, target:)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        OperationService.new(committer, self).add_branch(branch_name, target_object.oid)
+        find_branch(branch_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      end
+
+      def add_tag(tag_name, committer:, target:, message: nil)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        committer = Committer.from_user(committer) if committer.is_a?(User)
+
+        options = nil # Use nil, not the empty hash. Rugged cares about this.
+        if message
+          options = {
+            message: message,
+            tagger: Gitlab::Git.committer_hash(email: committer.email, name: committer.name)
+          }
+        end
+
+        OperationService.new(committer, self).add_tag(tag_name, target_object.oid, options)
+
+        find_tag(tag_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      end
+
+      def rm_branch(branch_name, committer:)
+        OperationService.new(committer, self).rm_branch(find_branch(branch_name))
+      end
+
+      def rm_tag(tag_name, committer:)
+        OperationService.new(committer, self).rm_tag(find_tag(tag_name))
+      end
+
+      def find_tag(name)
+        tags.find { |tag| tag.name == name }
       end
 
       # Delete the specified branch from the repository

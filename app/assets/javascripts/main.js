@@ -132,6 +132,7 @@ import './project_new';
 import './project_select';
 import './project_show';
 import './project_variables';
+import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
 import './render_math';
@@ -143,6 +144,7 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
+import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
 
@@ -179,6 +181,8 @@ $(function () {
   var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
+
+  initBreadcrumbs();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
@@ -249,7 +253,10 @@ $(function () {
   // Initialize popovers
   $body.popover({
     selector: '[data-toggle="popover"]',
-    trigger: 'focus'
+    trigger: 'focus',
+    // set the viewport to the main content, excluding the navigation bar, so
+    // the navigation can't overlap the popover
+    viewport: '.page-with-sidebar'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();

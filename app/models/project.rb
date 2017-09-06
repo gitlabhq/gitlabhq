@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
@@ -144,6 +145,7 @@ class Project < ActiveRecord::Base
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects

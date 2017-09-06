@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 09:49-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:20-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -61,7 +61,16 @@ msgstr "Це набір графічних елементів для безпе�
 msgid "About auto deploy"
 msgstr "Про авто розгортання"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -88,6 +97,12 @@ msgstr "Додати новий каталог"
 msgid "All"
 msgstr "Всі"
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "Заархівований проект! Репозиторій доступний лише для читання"
 
@@ -108,6 +123,63 @@ msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Прикріпити файл за допомогою перетягування або %{upload_link}"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -142,6 +214,9 @@ msgstr "Перегляд файлів"
 msgid "ByAuthor|by"
 msgstr "від"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "Налаштування CI"
 
@@ -168,6 +243,9 @@ msgstr "Список змін (Changelog)"
 
 msgid "Charts"
 msgstr "Графіки"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "Cherry-pick в цьому комміті"
@@ -265,11 +343,17 @@ msgstr "Комміт від"
 msgid "Compare"
 msgstr "Порівняти"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "Керівництво контриб’юторів"
 
 msgid "Contributors"
 msgstr "Контриб’ютори"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "Скопіювати URL в буфер обміну"
@@ -358,6 +442,9 @@ msgstr[0] "Розгортання"
 msgstr[1] "Розгортання"
 msgstr[2] "Розгортань"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "Опис"
 
@@ -405,6 +492,9 @@ msgstr "Редагувати"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Редагувати Розклад Конвеєра %{id}"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr ""
@@ -472,6 +562,12 @@ msgstr "З моменту створення проблеми до розгор�
 msgid "From merge request merge until deploy to production"
 msgstr "З об'єднання запиту злиття до розгортання на ПРОД"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -483,6 +579,9 @@ msgstr "Перейти до вашого форку"
 
 msgid "GoToYourFork|Fork"
 msgstr "Форк"
+
+msgid "Group overview"
+msgstr ""
 
 msgid "Health Check"
 msgstr ""
@@ -505,6 +604,9 @@ msgstr ""
 msgid "Home"
 msgstr "Головна"
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr "Очищення успішно розпочато"
 
@@ -523,20 +625,17 @@ msgstr "Представляємо аналітику циклу"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Кількість завдань за останній місяць"
-
-msgid "Jobs for last week"
-msgstr "Кількість завдань за останній тиждень"
-
-msgid "Jobs for last year"
-msgstr "Кількість завдань за останній рік"
+msgid "Issues"
+msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr "Вимкнено"
 
 msgid "LFSStatus|Enabled"
 msgstr "Увімкнено"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -571,20 +670,38 @@ msgstr "Залишити групу"
 msgid "Leave project"
 msgstr "Залишити проект"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "Обмеження %d події"
 msgstr[1] "Обмеження %d подій"
 msgstr[2] "Обмеження %d подій"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "Медіана"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "не додасте SSH ключ"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr ""
@@ -688,6 +805,9 @@ msgstr "Берете участь"
 msgid "NotificationLevel|Watch"
 msgstr "Відстежувати"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "Фільтр"
 
@@ -697,8 +817,14 @@ msgstr "Відкрито"
 msgid "Options"
 msgstr "Параметри"
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "Власник"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr "Конвеєр"
@@ -711,6 +837,9 @@ msgstr "Розклад Конвеєра"
 
 msgid "Pipeline Schedules"
 msgstr "Розклади Конвеєрів"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Не вдалося:"
@@ -775,6 +904,15 @@ msgstr "Конвеєри"
 msgid "Pipelines charts"
 msgstr "Чарти Конвеєрів"
 
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
+
 msgid "Pipeline|all"
 msgstr "всі"
 
@@ -786,6 +924,12 @@ msgstr "зі стадією"
 
 msgid "Pipeline|with stages"
 msgstr "зі стадіями"
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
 
 msgid "Project"
 msgstr ""
@@ -823,6 +967,9 @@ msgstr "Розпочато експорт проекту. Посилання д�
 msgid "Project home"
 msgstr "Домашня сторінка проекту"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -846,6 +993,9 @@ msgstr "Етап"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Історія"
+
+msgid "Push Rules"
+msgstr ""
 
 msgid "Push events"
 msgstr ""
@@ -907,6 +1057,9 @@ msgstr "Скасувати цей комміт"
 msgid "Revert this merge request"
 msgstr "Скасувати цей запит на злиття"
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "Зберегти Розклад Конвеєра"
 
@@ -931,6 +1084,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr "Вибір цільової гілки"
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Встановіть пароль свого облікового запису, щоб відправляти або отримувати код через %{protocol}."
 
@@ -946,14 +1102,23 @@ msgstr "Налаштування автоматичне розгортання"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "встановити пароль"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "Показано %d подію"
 msgstr[1] "Показано %d події"
 msgstr[2] "Показано %d подій"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "Код"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
@@ -1234,6 +1399,9 @@ msgstr "Хочете побачити дані? Будь ласка, попро�
 msgid "We don't have enough data to show this stage."
 msgstr "Ми не маємо достатньо даних для показу цього етапу."
 
+msgid "Wiki"
+msgstr ""
+
 msgid "Withdraw Access Request"
 msgstr "Скасувати запит доступу"
 
@@ -1302,3 +1470,4 @@ msgid_plural "parents"
 msgstr[0] "джерело"
 msgstr[1] "джерела"
 msgstr[2] "джерел"
+

@@ -8,7 +8,7 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-- if show_new_nav? && group_issues_exists
+- if group_issues_exists
   - content_for :breadcrumbs_extra do
     = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10' do
       = icon('rss')
@@ -19,7 +19,7 @@
 - if group_issues_exists
   .top-area
     = render 'shared/issuable/nav', type: :issues
-    .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+    .nav-controls.visible-xs
       = link_to params.merge(rss_url_options), class: 'btn' do
         = icon('rss')
         %span.icon-label
