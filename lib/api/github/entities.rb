@@ -56,7 +56,49 @@ module API
           commit.parent_ids.map { |id| { sha: id } }
         end
         expose :files do |commit|
-          []
+          commit.diffs.diff_files.flat_map do |diff|
+            additions = diff.added_lines
+            deletions = diff.removed_lines
+
+            if diff.new_file?
+              {
+                status: 'added',
+                filename: diff.new_path,
+                additions: additions,
+                changes: additions
+              }
+            elsif diff.deleted_file?
+              {
+                status: 'removed',
+                filename: diff.old_path,
+                deletions: deletions,
+                changes: deletions
+              }
+            elsif diff.renamed_file?
+              [
+                {
+                  status: 'removed',
+                  filename: diff.old_path,
+                  deletions: deletions,
+                  changes: deletions
+                },
+                {
+                  status: 'added',
+                  filename: diff.new_path,
+                  additions: additions,
+                  changes: additions
+                }
+              ]
+            else
+              {
+                status: 'modified',
+                filename: diff.new_path,
+                additions: additions,
+                deletions: deletions,
+                changes: (additions + deletions)
+              }
+            end
+          end
         end
       end
 
