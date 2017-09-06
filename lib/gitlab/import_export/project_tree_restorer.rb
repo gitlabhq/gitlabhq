@@ -10,7 +10,7 @@ module Gitlab
         @shared = shared
         @project = project
         @project_id = project.id
-        @saved = []
+        @saved = true
       end
 
       def restore
@@ -63,16 +63,16 @@ module Gitlab
           end
         end
 
-        @saved.all?
+        @saved
       end
 
       def save_relation_hash(relation_hash_batch, relation_key)
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
-        @saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
+        @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
-        # Restore the project again, extra query but let us skip holding the AR objects in memory
-        @restored_project = Project.find(@project_id)
+        # Restore the project again, extra query that skips holding the AR objects in memory
+        @restored_project.reload
       end
 
       def default_relation_list
