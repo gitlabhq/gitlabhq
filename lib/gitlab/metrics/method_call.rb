@@ -2,7 +2,7 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
-      BASE_LABELS = { module: nil, method: nil }
+      BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count
 
       def self.call_real_duration_histogram
