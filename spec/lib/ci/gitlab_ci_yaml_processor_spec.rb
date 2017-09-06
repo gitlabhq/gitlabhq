@@ -164,9 +164,46 @@ module Ci
           expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
         end
       end
+
+      context 'when kubernetes policy is specified' do
+        let(:pipeline) { create(:ci_empty_pipeline) }
+
+        let(:config) do
+          YAML.dump(
+            spinach: { stage: 'test', script: 'spinach' },
+            production: {
+              stage: 'deploy',
+              script: 'cap',
+              only: { kubernetes: 'active' }
+            }
+          )
+        end
+
+        context 'when kubernetes is active' do
+          let(:project) { create(:kubernetes_project) }
+          let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+          it 'returns seeds for kubernetes dependent job' do
+            seeds = subject.stage_seeds(pipeline)
+
+            expect(seeds.size).to eq 2
+            expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+            expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+          end
+        end
+
+        context 'when kubernetes is not active' do
+          it 'does not return seeds for kubernetes dependent job' do
+            seeds = subject.stage_seeds(pipeline)
+
+            expect(seeds.size).to eq 1
+            expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+          end
+        end
+      end
     end
 
-    describe "#builds_for_ref" do
+    describe "#builds_for_stage_and_ref" do
       let(:type) { 'test' }
 
       it "returns builds if no branch specified" do

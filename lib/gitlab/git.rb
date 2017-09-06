@@ -5,6 +5,7 @@ module Gitlab
     BRANCH_REF_PREFIX = "refs/heads/".freeze
 
     CommandError = Class.new(StandardError)
+    CommitError = Class.new(StandardError)
 
     class << self
       include Gitlab::EncodingHelper

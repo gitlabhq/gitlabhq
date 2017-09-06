@@ -17,10 +17,6 @@ export default {
       required: true,
       type: String,
     },
-    canMove: {
-      required: true,
-      type: Boolean,
-    },
     canUpdate: {
       required: true,
       type: Boolean,
@@ -96,10 +92,6 @@ export default {
       type: String,
       required: true,
     },
-    projectsAutocompletePath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     const store = new Store({
@@ -142,7 +134,6 @@ export default {
           confidential: this.isConfidential,
           description: this.state.descriptionText,
           lockedWarningVisible: false,
-          move_to_project_id: 0,
           updateLoading: false,
         });
       }
@@ -151,16 +142,6 @@ export default {
       this.showForm = false;
     },
     updateIssuable() {
-      const canPostUpdate = this.store.formState.move_to_project_id !== 0 ?
-        confirm('Are you sure you want to move this issue to another project?') : true; // eslint-disable-line no-alert
-
-      if (!canPostUpdate) {
-        this.store.setFormState({
-          updateLoading: false,
-        });
-        return;
-      }
-
       this.service.updateIssuable(this.store.formState)
         .then(res => res.json())
         .then((data) => {
@@ -239,14 +220,12 @@ export default {
     <form-component
       v-if="canUpdate && showForm"
       :form-state="formState"
-      :can-move="canMove"
       :can-destroy="canDestroy"
       :issuable-templates="issuableTemplates"
       :markdown-docs-path="markdownDocsPath"
       :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
-      :projects-autocomplete-path="projectsAutocompletePath"
     />
     <div v-else>
       <title-component

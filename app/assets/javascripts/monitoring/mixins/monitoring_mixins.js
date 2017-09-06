@@ -21,9 +21,9 @@ const mixins = {
     formatDeployments() {
       this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
         const time = new Date(deployment.created_at);
-        const xPos = Math.floor(this.xScale(time));
+        const xPos = Math.floor(this.timeSeries[0].timeSeriesScaleX(time));
 
-        time.setSeconds(this.data[0].time.getSeconds());
+        time.setSeconds(this.timeSeries[0].values[0].time.getSeconds());
 
         if (xPos >= 0) {
           deploymentDataArray.push({

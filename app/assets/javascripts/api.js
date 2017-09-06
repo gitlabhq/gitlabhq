@@ -5,7 +5,7 @@ const Api = {
   groupPath: '/api/:version/groups/:id.json',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
-  projectsPath: '/api/:version/projects.json?simple=true',
+  projectsPath: '/api/:version/projects.json',
   labelsPath: '/:namespace_path/:project_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
@@ -58,6 +58,7 @@ const Api = {
     const defaults = {
       search: query,
       per_page: 20,
+      simple: true,
     };
 
     if (gon.current_user_id) {

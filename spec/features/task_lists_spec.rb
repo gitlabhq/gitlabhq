@@ -200,9 +200,9 @@ feature 'Task Lists' do
         visit_issue(project, issue)
         expect(page).to have_selector('.js-task-list-container')
 
-        logout(:user)
+        gitlab_sign_out
 
-        login_as(user2)
+        gitlab_sign_in(user2)
         visit current_path
         expect(page).not_to have_selector('.js-task-list-container')
       end

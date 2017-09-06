@@ -86,6 +86,10 @@ Read through the [documentation on creating issues](create_new_issue.md).
 
 Learn distinct ways to [close issues](closing_issues.md) in GitLab.
 
+## Moving issues
+
+Read through the [documentation on moving issues](moving_issues.md).
+
 ## Create a merge request from an issue
 
 Learn more about it on the [GitLab Issues Functionalities documentation](issues_functionalities.md#18-new-merge-request).

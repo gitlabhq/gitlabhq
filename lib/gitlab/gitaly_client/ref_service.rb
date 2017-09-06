@@ -78,6 +78,20 @@ module Gitlab
         raise ArgumentError, e.message
       end
 
+      def find_branch(branch_name)
+        request = Gitaly::DeleteBranchRequest.new(
+          repository: @gitaly_repo,
+          name: GitalyClient.encode(branch_name)
+        )
+
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
+        branch = response.branch
+        return unless branch
+
+        target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+        Gitlab::Git::Branch.new(@repository, encode!(branch.name.dup), branch.target_commit.id, target_commit)
+      end
+
       private
 
       def consume_refs_response(response)

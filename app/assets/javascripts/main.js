@@ -102,6 +102,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
@@ -131,6 +132,7 @@ import './project_new';
 import './project_select';
 import './project_show';
 import './project_variables';
+import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
 import './render_math';
@@ -248,7 +250,10 @@ $(function () {
   // Initialize popovers
   $body.popover({
     selector: '[data-toggle="popover"]',
-    trigger: 'focus'
+    trigger: 'focus',
+    // set the viewport to the main content, excluding the navigation bar, so
+    // the navigation can't overlap the popover
+    viewport: '.page-with-sidebar'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();

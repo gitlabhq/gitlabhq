@@ -80,7 +80,8 @@ module CycleAnalyticsHelpers
         sha: project.repository.commit('master').sha,
         ref: 'master',
         source: :push,
-        project: project)
+        project: project,
+        protected: false)
   end
 
   def new_dummy_job(environment)
@@ -93,7 +94,8 @@ module CycleAnalyticsHelpers
       ref: 'master',
       tag: false,
       name: 'dummy',
-      pipeline: dummy_pipeline)
+      pipeline: dummy_pipeline,
+      protected: false)
   end
 end
 

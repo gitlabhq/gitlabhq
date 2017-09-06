@@ -22,13 +22,24 @@ GitLab uses its own keyring to verify the GPG signature. It does not access any
 public key server.
 
 In order to have a commit verified on GitLab the corresponding public key needs
-to be uploaded to GitLab. For a signature to be verified two prerequisites need
+to be uploaded to GitLab. For a signature to be verified three conditions need
 to be met:
 
 1. The public key needs to be added your GitLab account
 1. One of the emails in the GPG key matches your **primary** email
+1. The committer's email matches the verified email from the gpg key
 
 ## Generating a GPG key
+
+>**Notes:**
+- If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
+  the following commands.
+- If Git is using `gpg` and you get errors like `secret key not available` or
+  `gpg: signing failed: secret key not available`, run the following command to
+  change to `gpg2`:
+    ```
+    git config --global gpg.program gpg2
+    ```
 
 If you don't already have a GPG key, the following steps will help you get
 started:

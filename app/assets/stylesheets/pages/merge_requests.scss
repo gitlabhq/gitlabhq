@@ -721,3 +721,7 @@
     font-size: 16px;
   }
 }
+
+.merge-request-form {
+  @include new-style-dropdown;
+}

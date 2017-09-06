@@ -74,7 +74,8 @@ module API
             source: :external,
             sha: commit.sha,
             ref: ref,
-            user: current_user)
+            user: current_user,
+            protected: @project.protected_for?(ref))
         end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
@@ -82,7 +83,8 @@ module API
           pipeline: pipeline,
           name: name,
           ref: ref,
-          user: current_user
+          user: current_user,
+          protected: @project.protected_for?(ref)
         )
 
         optional_attributes =
@@ -101,7 +103,7 @@ module API
           when 'success'
             status.success!
           when 'failed'
-            status.drop!
+            status.drop!(:api_failure)
           when 'canceled'
             status.cancel!
           else

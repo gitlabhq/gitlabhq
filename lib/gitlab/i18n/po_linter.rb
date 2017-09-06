@@ -1,5 +1,3 @@
-require 'simple_po_parser'
-
 module Gitlab
   module I18n
     class PoLinter

@@ -265,6 +265,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- members_and_requesters
 award_emoji:
 - awardable
 - user

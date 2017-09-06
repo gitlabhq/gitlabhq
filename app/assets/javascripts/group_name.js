@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import _ from 'underscore';
 
 export default class GroupName {
@@ -39,17 +38,9 @@ export default class GroupName {
     this.toggle.setAttribute('type', 'button');
     this.toggle.className = 'text-expander group-name-toggle';
     this.toggle.setAttribute('aria-label', 'Toggle full path');
-    if (Cookies.get('new_nav') === 'true') {
-      this.toggle.innerHTML = '<i class="fa fa-ellipsis-h" aria-hidden="true"></i>';
-    } else {
-      this.toggle.innerHTML = '...';
-    }
+    this.toggle.innerHTML = '<i class="fa fa-ellipsis-h" aria-hidden="true"></i>';
     this.toggle.addEventListener('click', this.toggleGroups.bind(this));
-    if (Cookies.get('new_nav') === 'true') {
-      this.title.insertBefore(this.toggle, this.groupTitle);
-    } else {
-      this.titleContainer.insertBefore(this.toggle, this.title);
-    }
+    this.title.insertBefore(this.toggle, this.groupTitle);
     this.toggleGroups();
   }
 

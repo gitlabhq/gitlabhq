@@ -322,14 +322,13 @@
   }
 
   .build-dropdown {
-    padding: $gl-padding 0;
+    @include new-style-dropdown;
+
+    margin: $gl-padding 0;
+    padding: 0;
 
     .dropdown-menu-toggle {
-      margin-top: 8px;
-    }
-
-    .dropdown-menu {
-      margin-top: -$gl-padding;
+      margin-top: #{$gl-padding / 2};
     }
 
     svg {

@@ -414,6 +414,7 @@ describe API::Projects do
         jobs_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
+        resolve_outdated_diff_discussions: false,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
         only_allow_merge_if_all_discussions_are_resolved: false,
@@ -477,20 +478,40 @@ describe API::Projects do
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
-    it 'sets a project as allowing merge even if build fails' do
-      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+      project = attributes_for(:project, resolve_outdated_diff_discussions: false)
+
       post api('/projects', user), project
+
+      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
+    end
+
+    it 'sets a project as allowing outdated diff discussions to automatically resolve if resolve_outdated_diff_discussions' do
+      project = attributes_for(:project, resolve_outdated_diff_discussions: true)
+
+      post api('/projects', user), project
+
+      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
+    end
+
+    it 'sets a project as allowing merge even if build fails' do
+      project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
+
+      post api('/projects', user), project
+
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
     it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
-      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: true })
+      project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: true)
+
       post api('/projects', user), project
+
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
-      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: false)
 
       post api('/projects', user), project
 
@@ -506,7 +527,7 @@ describe API::Projects do
     end
 
     it 'sets a project as allowing merge only if all discussions are resolved' do
-      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: true)
 
       post api('/projects', user), project
 
@@ -514,7 +535,7 @@ describe API::Projects do
     end
 
     it 'ignores import_url when it is nil' do
-      project = attributes_for(:project, { import_url: nil })
+      project = attributes_for(:project, import_url: nil)
 
       post api('/projects', user), project
 
@@ -642,20 +663,36 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+      project = attributes_for(:project, resolve_outdated_diff_discussions: false)
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
+    end
+
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+      project = attributes_for(:project, resolve_outdated_diff_discussions: true)
+
+      post api("/projects/user/#{user.id}", admin), project
+
+      expect(json_response['resolve_outdated_diff_discussions']).to be_truthy
+    end
+
     it 'sets a project as allowing merge even if build fails' do
-      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: false })
+      project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: false)
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_falsey
     end
 
-    it 'sets a project as allowing merge only if merge_when_pipeline_succeeds' do
-      project = attributes_for(:project, { only_allow_merge_if_pipeline_succeeds: true })
+    it 'sets a project as allowing merge only if pipeline succeeds' do
+      project = attributes_for(:project, only_allow_merge_if_pipeline_succeeds: true)
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['only_allow_merge_if_pipeline_succeeds']).to be_truthy
     end
 
     it 'sets a project as allowing merge even if discussions are unresolved' do
-      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: false })
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: false)
 
       post api("/projects/user/#{user.id}", admin), project
 
@@ -663,7 +700,7 @@ describe API::Projects do
     end
 
     it 'sets a project as allowing merge only if all discussions are resolved' do
-      project = attributes_for(:project, { only_allow_merge_if_all_discussions_are_resolved: true })
+      project = attributes_for(:project, only_allow_merge_if_all_discussions_are_resolved: true)
 
       post api("/projects/user/#{user.id}", admin), project
 
@@ -732,6 +769,7 @@ describe API::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present

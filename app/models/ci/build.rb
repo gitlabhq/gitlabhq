@@ -3,6 +3,7 @@ module Ci
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
+    include Importable
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -26,6 +27,7 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
+    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -34,6 +36,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
+    scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -446,6 +449,10 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
     end
 
     private
