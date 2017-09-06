@@ -69,12 +69,18 @@ module GroupsHelper
       { group_name: group.name }
   end
 
-  def share_with_group_lock_help_text
-    return default_help                          unless @group.has_parent?
-    return default_help                          unless @group.parent.share_with_group_lock?
-    return parent_locked_and_has_been_overridden unless @group.share_with_group_lock?
-    return parent_locked_but_you_can_override    if     @group.has_owner?(current_user)
-    return parent_locked_so_ask_the_owner
+  def share_with_group_lock_help_text(group)
+    return default_help unless group.parent&.share_with_group_lock?
+
+    if group.share_with_group_lock?
+      if can?(current_user, :change_share_with_group_lock, group.parent)
+        ancestor_locked_but_you_can_override(group)
+      else
+        ancestor_locked_so_ask_the_owner(group)
+      end
+    else
+      ancestor_locked_and_has_been_overridden(group)
+    end
   end
 
   private
@@ -93,23 +99,30 @@ module GroupsHelper
     end
   end
 
-  def parent_group_link
-    link_to @group.parent.name, group_path(@group.parent)
+  def ancestor_group_link(group)
+    ancestor = oldest_consecutively_locked_ancestor(group)
+    link_to ancestor.name, group_path(ancestor)
+  end
+
+  def oldest_consecutively_locked_ancestor(group)
+    group.ancestors.find do |group|
+      !group.has_parent? || !group.parent.share_with_group_lock?
+    end
   end
 
   def default_help
     s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner.")
   end
 
-  def parent_locked_but_you_can_override
-    s_("GroupSettings|This setting is applied on %{parent_group}. You can override the setting or remove the share lock from the parent group.") % { parent_group: parent_group_link }
+  def ancestor_locked_but_you_can_override(group)
+    s_("GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or remove the share lock from %{ancestor_group}.") % { ancestor_group: ancestor_group_link(group) }
   end
 
-  def parent_locked_so_ask_the_owner
-    s_("GroupSettings|This setting is applied on %{parent_group}. To share this group with another group, ask the owner to override the setting or remove the share lock from the parent group.") % { parent_group: parent_group_link }
+  def ancestor_locked_so_ask_the_owner(group)
+    s_("GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or remove the share lock from %{ancestor_group}.") % { ancestor_group: ancestor_group_link(group) }
   end
 
-  def parent_locked_and_has_been_overridden
-    s_("GroupSettings|This setting is applied on %{parent_group} and has been overridden on this subgroup.") % { parent_group: parent_group_link }
+  def ancestor_locked_and_has_been_overridden(group)
+    s_("GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup.") % { ancestor_group: ancestor_group_link(group) }
   end
 end
