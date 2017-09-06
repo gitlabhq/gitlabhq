@@ -1,12 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
-<<<<<<< HEAD
   include StubConfiguration
-
-=======
   let(:gitlab_shell) { Gitlab::Shell.new }
->>>>>>> ce-com/master
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
