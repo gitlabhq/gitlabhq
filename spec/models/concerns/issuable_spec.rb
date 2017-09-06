@@ -487,4 +487,71 @@ describe Issuable do
       end
     end
   end
+
+  describe '#first_contribution?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, namespace: group) }
+    let(:other_project) { create(:project) }
+    let(:owner) { create(:owner) }
+    let(:master) { create(:user) }
+    let(:reporter) { create(:user) }
+    let(:guest) { create(:user) }
+
+    let(:contributor) { create(:user) }
+    let(:first_time_contributor) { create(:user) }
+
+    before do
+      group.add_owner(owner)
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+      project.add_guest(contributor)
+      project.add_guest(first_time_contributor)
+    end
+
+    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+
+    context "for merge requests" do
+      it "is false for MASTER" do
+        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for OWNER" do
+        mr = create(:merge_request, author: owner, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for REPORTER" do
+        mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is true when you don't have any merged MR" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr).not_to be_first_contribution
+      end
+
+      it "handles multiple projects separately" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr_other_project).not_to be_first_contribution
+      end
+    end
+
+    context "for issues" do
+      let(:contributor_issue) { create(:issue, author: contributor, project: project) }
+      let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
+
+      it "is false even without merged MR" do
+        expect(merged_mr).to be
+        expect(first_time_contributor_issue).not_to be_first_contribution
+        expect(contributor_issue).not_to be_first_contribution
+      end
+    end
+  end
 end

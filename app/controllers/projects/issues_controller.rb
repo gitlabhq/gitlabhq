@@ -89,7 +89,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @note     = @project.notes.new(noteable: @issue)
 
     @discussions = @issue.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
     respond_to do |format|
       format.html
