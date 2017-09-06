@@ -1,6 +1,7 @@
 @import "framework/variables";
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
+@import "framework/mixins";
 
 header.navbar-gitlab-new {
   color: $white-light;
@@ -301,115 +302,79 @@ header.navbar-gitlab-new {
 
 .breadcrumbs {
   display: flex;
-  min-height: 61px;
+  min-height: 48px;
   color: $gl-text-color;
-  border-bottom: 1px solid $border-color;
-
-  .dropdown-toggle-caret {
-    position: relative;
-    top: -1px;
-    padding: 0 5px;
-    color: $gl-text-color-secondary;
-    font-size: 10px;
-    line-height: 1;
-    background: none;
-    border: 0;
-
-    &:focus {
-      outline: 0;
-    }
-  }
-
-  // TODO: fallback to global style
-  .dropdown-menu {
-    .divider {
-      margin: 6px 0;
-    }
-
-    li {
-      padding: 0 1px;
-
-      a {
-        border-radius: 0;
-        padding: 8px 16px;
-
-        &.is-focused,
-        &:hover,
-        &:active,
-        &:focus {
-          background-color: $gray-darker;
-        }
-      }
-    }
-  }
 }
 
 .breadcrumbs-container {
+  display: -webkit-flex;
   display: flex;
   width: 100%;
   position: relative;
+  padding-top: $gl-padding;
+  padding-bottom: $gl-padding;
   align-items: center;
-
-  .dropdown-menu-projects {
-    margin-top: -$gl-padding;
-    margin-left: $gl-padding;
-  }
+  border-bottom: 1px solid $border-color;
 }
 
 .breadcrumbs-links {
+  -webkit-flex: 1;
   flex: 1;
   min-width: 0;
   align-self: center;
-  color: $gl-text-color-quaternary;
-
-  a {
-    color: $gl-text-color-secondary;
-
-    &:not(:first-child),
-    &.group-path {
-      margin-left: 4px;
-    }
-
-    &:not(:last-of-type),
-    &.group-path {
-      margin-right: 3px;
-    }
-  }
-
-  .title {
-    display: inline-block;
-
-    > a {
-      &:last-of-type:not(:first-child) {
-        font-weight: $gl-font-weight-bold;
-      }
-    }
-  }
+  color: $gl-text-color-secondary;
 
   .avatar-tile {
-    margin-right: 5px;
+    margin-right: 4px;
     border: 1px solid $border-color;
     border-radius: 50%;
     vertical-align: sub;
-
-    &.identicon {
-      float: left;
-      width: 16px;
-      height: 16px;
-      margin-top: 2px;
-      font-size: 10px;
-    }
   }
 
   .text-expander {
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 0;
+    margin-right: 2px;
 
     > i {
       position: relative;
       top: 1px;
     }
   }
+}
+
+.breadcrumbs-list {
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  line-height: 16px;
+
+  > li {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &:not(:last-child) {
+      margin-right: 20px;
+    }
+
+    > a {
+      font-size: 12px;
+      color: currentColor;
+    }
+  }
+}
+
+.breadcrumb-item-text {
+  @include str-truncated(128px);
+}
+
+.breadcrumbs-list-angle {
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  color: $gl-text-color-tertiary;
+  transform: translateY(-50%);
 }
 
 .breadcrumbs-extra {
@@ -419,30 +384,10 @@ header.navbar-gitlab-new {
 }
 
 .breadcrumbs-sub-title {
-  margin: 2px 0;
-  font-size: 16px;
-  font-weight: $gl-font-weight-normal;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1;
-
-  ul {
-    margin: 0;
-  }
-
-  li {
-    display: inline-block;
-
-    &:not(:last-child) {
-      &::after {
-        content: "/";
-        margin: 0 2px 0 5px;
-        color: rgba($black, .65);
-      }
-    }
-
-    &:last-child a {
-      font-weight: $gl-font-weight-bold;
-    }
-  }
 
   a {
     color: $gl-text-color;

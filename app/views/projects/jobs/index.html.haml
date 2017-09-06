@@ -2,8 +2,6 @@
 - page_title "Jobs"
 = render "projects/pipelines/head"
 
-- add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
-
 %div{ class: container_class }
   .top-area
     - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }

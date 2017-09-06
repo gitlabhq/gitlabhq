@@ -134,7 +134,24 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when running on a primary node' do
+    let!(:geo_node) { create(:geo_node, :primary, :current) }
+
+    it 'logs an event to the Geo event log' do
+      expect { create_project(user, opts) }.to change(Geo::RepositoryCreatedEvent, :count).by(1)
+    end
+
+    it 'does not log event to the Geo log if project creation fails' do
+      failing_opts = {
+        name: nil,
+        namespace: user.namespace
+      }
+
+      expect { create_project(user, failing_opts) }.not_to change(Geo::RepositoryCreatedEvent, :count)
+    end
+  end
+
   def create_project(user, opts)
-    Projects::CreateService.new(user, opts).execute
+    described_class.new(user, opts).execute
   end
 end

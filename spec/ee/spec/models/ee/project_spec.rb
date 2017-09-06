@@ -198,6 +198,24 @@ describe Project do
     end
   end
 
+  describe '#fetch_mirror' do
+    where(:import_url, :auth_method, :expected) do
+      'http://foo:bar@example.com' | 'password'       | 'http://foo:bar@example.com'
+      'ssh://foo:bar@example.com'  | 'password'       | 'ssh://foo:bar@example.com'
+      'ssh://foo:bar@example.com'  | 'ssh_public_key' | 'ssh://foo@example.com'
+    end
+
+    with_them do
+      let(:project) { build(:project, :mirror, import_url: import_url, import_data_attributes: { auth_method: auth_method } ) }
+
+      it do
+        expect(project.repository).to receive(:fetch_upstream).with(expected)
+
+        project.fetch_mirror
+      end
+    end
+  end
+
   describe '#mirror_waiting_duration' do
     it 'returns in seconds the time spent in the queue' do
       project = create(:project, :mirror, :import_scheduled)
