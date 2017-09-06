@@ -11,7 +11,7 @@ module SharedActiveTab
   end
 
   def ensure_active_sub_tab(content)
-    expect(first('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)')).to have_content(content)
+    expect(find('.sidebar-sub-level-items > li.active:not(.fly-out-top-item)')).to have_content(content)
   end
 
   def ensure_active_sub_nav(content)
