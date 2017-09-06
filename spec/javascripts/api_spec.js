@@ -145,7 +145,7 @@ describe('Api', () => {
     });
   });
 
-  fdescribe('newLabel', () => {
+  describe('newLabel', () => {
     it('creates a new label', (done) => {
       const namespace = 'some namespace';
       const project = 'some project';

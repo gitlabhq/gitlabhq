@@ -37,6 +37,7 @@ describe('Issue card component', () => {
     list = listObj;
     issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [list.label],
@@ -238,65 +239,63 @@ describe('Issue card component', () => {
   });
 
   describe('labels', () => {
-    describe('exists', () => {
-      beforeEach((done) => {
-        component.issue.addLabel(label1);
+    beforeEach((done) => {
+      component.issue.addLabel(label1);
 
-        Vue.nextTick(() => done());
+      Vue.nextTick(() => done());
+    });
+
+    it('renders list label', () => {
+      expect(
+        component.$el.querySelectorAll('.label').length,
+      ).toBe(2);
+    });
+
+    it('renders label', () => {
+      const nodes = [];
+      component.$el.querySelectorAll('.label').forEach((label) => {
+        nodes.push(label.title);
       });
 
-      it('renders list label', () => {
-        expect(
-          component.$el.querySelectorAll('.label').length,
-        ).toBe(2);
+      expect(
+        nodes.includes(label1.description),
+      ).toBe(true);
+    });
+
+    it('sets label description as title', () => {
+      expect(
+        component.$el.querySelector('.label').getAttribute('title'),
+      ).toContain(label1.description);
+    });
+
+    it('sets background color of button', () => {
+      const nodes = [];
+      component.$el.querySelectorAll('.label').forEach((label) => {
+        nodes.push(label.style.backgroundColor);
       });
 
-      it('renders label', () => {
-        const nodes = [];
-        component.$el.querySelectorAll('.label').forEach((label) => {
-          nodes.push(label.title);
-        });
+      expect(
+        nodes.includes(label1.color),
+      ).toBe(true);
+    });
 
-        expect(
-          nodes.includes(label1.description),
-        ).toBe(true);
-      });
+    it('does not render label if label does not have an ID', (done) => {
+      component.issue.addLabel(new ListLabel({
+        title: 'closed',
+      }));
 
-      it('sets label description as title', () => {
-        expect(
-          component.$el.querySelector('.label').getAttribute('title'),
-        ).toContain(label1.description);
-      });
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el.querySelectorAll('.label').length,
+          ).toBe(2);
+          expect(
+            component.$el.textContent,
+          ).not.toContain('closed');
 
-      it('sets background color of button', () => {
-        const nodes = [];
-        component.$el.querySelectorAll('.label').forEach((label) => {
-          nodes.push(label.style.backgroundColor);
-        });
-
-        expect(
-          nodes.includes(label1.color),
-        ).toBe(true);
-      });
-
-      it('does not render label if label does not have an ID', (done) => {
-        component.issue.addLabel(new ListLabel({
-          title: 'closed',
-        }));
-
-        Vue.nextTick()
-          .then(() => {
-            expect(
-              component.$el.querySelectorAll('.label').length,
-            ).toBe(2);
-            expect(
-              component.$el.textContent,
-            ).not.toContain('closed');
-
-            done();
-          })
-          .catch(done.fail);
-      });
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });
