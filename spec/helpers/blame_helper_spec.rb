@@ -35,25 +35,32 @@ describe BlameHelper do
   end
 
   describe '#age_map_class' do
-    let(:dates) do
-      [Time.zone.local(2014, 3, 17, 0, 0, 0)]
-    end
-    let(:blame_groups) do
-      [
-        { commit: double(committed_date: dates[0]) }
-      ]
-    end
+    let(:date) { Time.zone.local(2014, 3, 17, 0, 0, 0) }
+    let(:blame_groups) { [{ commit: double(committed_date: date) }] }
     let(:duration) do
-      project = double(created_at: dates[0])
+      project = double(created_at: date)
       helper.age_map_duration(blame_groups, project)
     end
 
     it 'returns blame-commit-age-9 when oldest' do
-      expect(helper.age_map_class(dates[0], duration)).to eq 'blame-commit-age-9'
+      expect(helper.age_map_class(date, duration)).to eq 'blame-commit-age-9'
     end
 
     it 'returns blame-commit-age-0 class when newest' do
       expect(helper.age_map_class(duration[:now], duration)).to eq 'blame-commit-age-0'
+    end
+
+    context 'when called on the same day as project creation' do
+      let(:same_day_duration) do
+        project = double(created_at: now)
+        helper.age_map_duration(today_blame_groups, project)
+      end
+      let(:today_blame_groups) { [{ commit: double(committed_date: now) }] }
+      let(:now) { Time.zone.now }
+
+      it 'returns blame-commit-age-0 class' do
+        expect(helper.age_map_class(duration[:now], same_day_duration)).to eq 'blame-commit-age-0'
+      end
     end
   end
 end
