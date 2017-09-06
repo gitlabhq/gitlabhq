@@ -38,7 +38,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
-    # before_save :set_protected
+    before_save :set_protected
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
