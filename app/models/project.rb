@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include GroupHierarchy
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
