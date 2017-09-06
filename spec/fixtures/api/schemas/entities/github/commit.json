@@ -1,0 +1,61 @@
+{
+    "type": "object",
+    "properties" : {
+        "sha": { "type": "string" },
+        "parents": {
+            "type": "array",
+            "properties": {
+                "sha": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "author": {
+            "type": "object",
+            "required": ["login", "email"],
+            "properties" : {
+                "login": { "type": ["string", "null"] },
+                "email": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "committer": {
+            "type": "object",
+            "required": ["login", "email"],
+            "properties" : {
+                "login": { "type": ["string", "null"] },
+                "email": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "commit": {
+            "type": "object",
+            "properties": {
+                "message": { "type": "string" },
+                "author": {
+                    "type": "object",
+                    "required": ["name", "email", "date", "type"],
+                    "properties" : {
+                        "name": { "type": "string" },
+                        "email": { "type": "string" },
+                        "date": { "type": "date" },
+                        "type": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                },
+                "committer": {
+                    "type": "object",
+                    "required": ["name", "email", "date", "type"],
+                    "properties" : {
+                        "name": { "type": "string" },
+                        "email": { "type": "string" },
+                        "date": { "type": "date" },
+                        "type": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                },
+                "additionalProperties": false
+            }
+        },
+        "additionalProperties": false
+    }
+}

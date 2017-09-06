@@ -38,7 +38,7 @@ describe API::V3::Github do
     end
   end
 
-  describe 'GET /users/:id/repos' do
+  describe 'GET /users/:namespace/repos' do
     context 'authenticated' do
       it 'returns an array of projects with github format' do
         stub_licensed_features(jira_dev_panel_integration: true)
@@ -54,10 +54,7 @@ describe API::V3::Github do
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
 
-        expect(json_response.first.keys).to contain_exactly('id', 'owner', 'name')
-        expect(json_response.first['owner'].keys).to contain_exactly('login')
-        expect(json_response.second.keys).to contain_exactly('id', 'owner', 'name')
-        expect(json_response.second['owner'].keys).to contain_exactly('login')
+        expect(response).to match_response_schema('entities/github/repositories')
       end
     end
 
@@ -98,8 +95,8 @@ describe API::V3::Github do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
-        expect(json_response.first.keys).to contain_exactly('name', 'commit')
-        expect(json_response.first['commit'].keys).to contain_exactly('sha', 'type')
+
+        expect(response).to match_response_schema('entities/github/branches')
       end
     end
 
@@ -136,28 +133,8 @@ describe API::V3::Github do
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
 
-        commit_author = {
-          'name' => commit.author_name,
-          'email' => commit.author_email,
-          'date' => commit.authored_date.iso8601,
-          'type' => 'User'
-        }
-
-        commit_committer = {
-          'name' => commit.committer_name,
-          'email' => commit.committer_email,
-          'date' => commit.committed_date.iso8601,
-          'type' => 'User'
-        }
-
-        parent_commits = commit.parent_ids.map { |id| { 'sha' => id } }
-
         expect(response).to have_http_status(200)
-        expect(json_response['sha']).to eq(commit.id)
-        expect(json_response['parents']).to eq(parent_commits)
-        expect(json_response.dig('commit', 'author')).to eq(commit_author)
-        expect(json_response.dig('commit', 'committer')).to eq(commit_committer)
-        expect(json_response.dig('commit', 'message')).to eq(commit.safe_message)
+        expect(response).to match_response_schema('entities/github/commit')
       end
     end
 
