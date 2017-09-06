@@ -1,6 +1,6 @@
-<%= @resource.user.name %>, you've added a secondary email!
+<%= @resource.user.name %>, you've added an additional email!
 
-You can confirm your email (<%= @resource.email %>) through the link below:
+Use the link below to confirm your email address (<%= @resource.email %>)
 
 <%= confirmation_url(@resource, confirmation_token: @token) %>
 

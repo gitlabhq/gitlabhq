@@ -1,13 +1,5 @@
-<% if @resource.is_a?(Email) %>
+<% if @resource.is_a?(User) %>
+<%= render partial: 'confirmation_instructions_account' %>
+<% else %>
 <%= render partial: 'confirmation_instructions_secondary' %>
-<% else %>
-Welcome, <%= @resource.name %>!
-
-<% if @resource.unconfirmed_email.present? %>
-You can confirm your email (<%= @resource.unconfirmed_email %>) through the link below:
-<% else %>
-You can confirm your account through the link below:
-<% end %>
-
-<%= confirmation_url(@resource, confirmation_token: @token) %>
 <% end %>
