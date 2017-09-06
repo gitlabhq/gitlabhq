@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.6 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Remove hidden symlinks from project import files.
+- Fixes race condition in project uploads.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
+
 ## 9.4.5 (2017-08-14)
 
 - Fix deletion of deploy keys linked to other projects. !13162
