@@ -52,7 +52,7 @@ module API
 
         path = Gitlab::Ci::Build::Artifacts::Path
           .new(params[:artifact_path])
-        not_found! unless path.valid?
+        bad_request! unless path.valid?
 
         send_artifacts_entry(build, path)
       end
