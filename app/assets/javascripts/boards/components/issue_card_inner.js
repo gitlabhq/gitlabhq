@@ -64,7 +64,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.id}`;
+      return `${this.issueLinkBase}/${this.issue.iid}`;
     },
     issueId() {
       if (this.issue.iid) {

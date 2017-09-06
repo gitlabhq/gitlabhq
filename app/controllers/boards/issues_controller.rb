@@ -61,7 +61,7 @@ module Boards
     end
 
     def project
-      @project ||= Project.find(issue_params[:project_id])
+      board_parent
     end
 
     def move_params
