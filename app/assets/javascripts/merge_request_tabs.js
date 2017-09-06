@@ -7,7 +7,11 @@ import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
-import parseUrlPathname from './lib/utils/common_utils';
+import {
+  parseUrlPathname,
+  handleLocationHash,
+  isMetaClick,
+} from './lib/utils/common_utils';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -115,7 +119,7 @@ import parseUrlPathname from './lib/utils/common_utils';
     }
 
     clickTab(e) {
-      if (e.currentTarget && gl.utils.isMetaClick(e)) {
+      if (e.currentTarget && isMetaClick(e)) {
         const targetLink = e.currentTarget.getAttribute('href');
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -310,7 +314,7 @@ import parseUrlPathname from './lib/utils/common_utils';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
-            window.gl.utils.handleLocationHash();
+            handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');

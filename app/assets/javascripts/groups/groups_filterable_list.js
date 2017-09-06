@@ -1,5 +1,6 @@
 import FilterableList from '~/filterable_list';
 import eventHub from './event_hub';
+import { getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
   constructor({ form, filter, holder, filterEndpoint, pagePath }) {
@@ -54,7 +55,7 @@ export default class GroupFilterableList extends FilterableList {
     e.preventDefault();
 
     const queryData = {};
-    const sortParam = gl.utils.getParameterByName('sort', e.currentTarget.href);
+    const sortParam = getParameterByName('sort', e.currentTarget.href);
 
     if (sortParam) {
       queryData.sort = sortParam;

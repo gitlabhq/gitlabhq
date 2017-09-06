@@ -18,26 +18,22 @@ describe('common_utils', () => {
   });
 
   describe('parseUrlPathname', () => {
-    beforeEach(() => {
-      spyOn(gl.utils, 'parseUrl').and.callFake(url => ({
-        pathname: url,
-      }));
-    });
     it('returns an absolute url when given an absolute url', () => {
       expect(commonUtils.parseUrlPathname('/some/absolute/url')).toEqual('/some/absolute/url');
     });
+
     it('returns an absolute url when given a relative url', () => {
       expect(commonUtils.parseUrlPathname('some/relative/url')).toEqual('/some/relative/url');
     });
   });
 
-  describe('gl.utils.getUrlParamsArray', () => {
+  describe('getUrlParamsArray', () => {
     it('should return params array', () => {
-      expect(gl.utils.getUrlParamsArray() instanceof Array).toBe(true);
+      expect(commonUtils.getUrlParamsArray() instanceof Array).toBe(true);
     });
 
     it('should remove the question mark from the search params', () => {
-      const paramsArray = gl.utils.getUrlParamsArray();
+      const paramsArray = commonUtils.getUrlParamsArray();
       expect(paramsArray[0][0] !== '?').toBe(true);
     });
 
@@ -45,7 +41,7 @@ describe('common_utils', () => {
       history.pushState('', '', '?label_name%5B%5D=test');
 
       expect(
-        gl.utils.getUrlParamsArray()[0],
+        commonUtils.getUrlParamsArray()[0],
       ).toBe('label_name[]=test');
 
       history.pushState('', '', '?');
@@ -90,7 +86,7 @@ describe('common_utils', () => {
     });
   });
 
-  describe('gl.utils.setParamInURL', () => {
+  describe('setParamInURL', () => {
     afterEach(() => {
       window.history.pushState({}, null, '');
     });
@@ -98,40 +94,40 @@ describe('common_utils', () => {
     it('should return the parameter', () => {
       window.history.replaceState({}, null, '');
 
-      expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
-      expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
+      expect(commonUtils.setParamInURL('page', 156)).toBe('?page=156');
+      expect(commonUtils.setParamInURL('page', '156')).toBe('?page=156');
     });
 
     it('should update the existing parameter when its a number', () => {
       window.history.pushState({}, null, '?page=15');
 
-      expect(gl.utils.setParamInURL('page', 16)).toBe('?page=16');
-      expect(gl.utils.setParamInURL('page', '16')).toBe('?page=16');
-      expect(gl.utils.setParamInURL('page', true)).toBe('?page=true');
+      expect(commonUtils.setParamInURL('page', 16)).toBe('?page=16');
+      expect(commonUtils.setParamInURL('page', '16')).toBe('?page=16');
+      expect(commonUtils.setParamInURL('page', true)).toBe('?page=true');
     });
 
     it('should update the existing parameter when its a string', () => {
       window.history.pushState({}, null, '?scope=all');
 
-      expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
+      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
     });
 
     it('should update the existing parameter when more than one parameter exists', () => {
       window.history.pushState({}, null, '?scope=all&page=15');
 
-      expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
+      expect(commonUtils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
     });
 
     it('should add a new parameter to the end of the existing ones', () => {
       window.history.pushState({}, null, '?scope=all');
 
-      expect(gl.utils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
-      expect(gl.utils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
-      expect(gl.utils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+      expect(commonUtils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
+      expect(commonUtils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
+      expect(commonUtils.setParamInURL('page', true)).toBe('?scope=all&page=true');
     });
   });
 
-  describe('gl.utils.getParameterByName', () => {
+  describe('getParameterByName', () => {
     beforeEach(() => {
       window.history.pushState({}, null, '?scope=all&p=2');
     });
@@ -141,33 +137,33 @@ describe('common_utils', () => {
     });
 
     it('should return valid parameter', () => {
-      const value = gl.utils.getParameterByName('scope');
-      expect(gl.utils.getParameterByName('p')).toEqual('2');
+      const value = commonUtils.getParameterByName('scope');
+      expect(commonUtils.getParameterByName('p')).toEqual('2');
       expect(value).toBe('all');
     });
 
     it('should return invalid parameter', () => {
-      const value = gl.utils.getParameterByName('fakeParameter');
+      const value = commonUtils.getParameterByName('fakeParameter');
       expect(value).toBe(null);
     });
 
     it('should return valid paramentes if URL is provided', () => {
-      let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+      let value = commonUtils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
       expect(value).toBe('bar');
 
-      value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+      value = commonUtils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
       expect(value).toBe('canchu');
     });
   });
 
-  describe('gl.utils.normalizedHeaders', () => {
+  describe('normalizedHeaders', () => {
     it('should upperCase all the header keys to keep them consistent', () => {
       const apiHeaders = {
         'X-Something-Workhorse': { workhorse: 'ok' },
         'x-something-nginx': { nginx: 'ok' },
       };
 
-      const normalized = gl.utils.normalizeHeaders(apiHeaders);
+      const normalized = commonUtils.normalizeHeaders(apiHeaders);
 
       const WORKHORSE = 'X-SOMETHING-WORKHORSE';
       const NGINX = 'X-SOMETHING-NGINX';
@@ -177,14 +173,11 @@ describe('common_utils', () => {
     });
   });
 
-  describe('gl.utils.normalizeCRLFHeaders', () => {
+  describe('normalizeCRLFHeaders', () => {
     beforeEach(function () {
       this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
-
       spyOn(String.prototype, 'split').and.callThrough();
-      spyOn(gl.utils, 'normalizeHeaders').and.callThrough();
-
-      this.normalizeCRLFHeaders = gl.utils.normalizeCRLFHeaders(this.CLRFHeaders);
+      this.normalizeCRLFHeaders = commonUtils.normalizeCRLFHeaders(this.CLRFHeaders);
     });
 
     it('should split by newline', function () {
@@ -193,10 +186,6 @@ describe('common_utils', () => {
 
     it('should split by colon+space for each header', function () {
       expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
-    });
-
-    it('should call gl.utils.normalizeHeaders with a parsed headers object', function () {
-      expect(gl.utils.normalizeHeaders).toHaveBeenCalledWith(jasmine.any(Object));
     });
 
     it('should return a normalized headers object', function () {
@@ -208,7 +197,7 @@ describe('common_utils', () => {
     });
   });
 
-  describe('gl.utils.parseIntPagination', () => {
+  describe('parseIntPagination', () => {
     it('should parse to integers all string values and return pagination object', () => {
       const pagination = {
         'X-PER-PAGE': 10,
@@ -228,11 +217,11 @@ describe('common_utils', () => {
         previousPage: 1,
       };
 
-      expect(gl.utils.parseIntPagination(pagination)).toEqual(expectedPagination);
+      expect(commonUtils.parseIntPagination(pagination)).toEqual(expectedPagination);
     });
   });
 
-  describe('gl.utils.isMetaClick', () => {
+  describe('isMetaClick', () => {
     it('should identify meta click on Windows/Linux', () => {
       const e = {
         metaKey: false,
@@ -240,7 +229,7 @@ describe('common_utils', () => {
         which: 1,
       };
 
-      expect(gl.utils.isMetaClick(e)).toBe(true);
+      expect(commonUtils.isMetaClick(e)).toBe(true);
     });
 
     it('should identify meta click on macOS', () => {
@@ -250,7 +239,7 @@ describe('common_utils', () => {
         which: 1,
       };
 
-      expect(gl.utils.isMetaClick(e)).toBe(true);
+      expect(commonUtils.isMetaClick(e)).toBe(true);
     });
 
     it('should identify as meta click on middle-click or Mouse-wheel click', () => {
@@ -260,7 +249,14 @@ describe('common_utils', () => {
         which: 2,
       };
 
-      expect(gl.utils.isMetaClick(e)).toBe(true);
+      expect(commonUtils.isMetaClick(e)).toBe(true);
+    });
+  });
+
+  describe('convertPermissionToBoolean', () => {
+    it('should convert a boolean in a string to a boolean', () => {
+      expect(commonUtils.convertPermissionToBoolean('true')).toEqual(true);
+      expect(commonUtils.convertPermissionToBoolean('false')).toEqual(false);
     });
   });
 
@@ -333,53 +329,76 @@ describe('common_utils', () => {
     });
   });
 
-  describe('gl.utils.setFavicon', () => {
+  describe('setFavicon', () => {
+    beforeEach(() => {
+      const favicon = document.createElement('link');
+      favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('href', 'default/favicon');
+      document.body.appendChild(favicon);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(document.getElementById('favicon'));
+    });
     it('should set page favicon to provided favicon', () => {
       const faviconPath = '//custom_favicon';
-      const fakeLink = {
-        setAttribute() {},
-      };
+      commonUtils.setFavicon(faviconPath);
 
-      spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
-      spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
-        expect(attr).toEqual('href');
-        expect(val.indexOf(faviconPath) > -1).toBe(true);
-      });
-      gl.utils.setFavicon(faviconPath);
+      expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconPath);
     });
   });
 
-  describe('gl.utils.resetFavicon', () => {
+  describe('resetFavicon', () => {
+    beforeEach(() => {
+      const favicon = document.createElement('link');
+      favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('href', 'default/favicon');
+      document.body.appendChild(favicon);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(document.getElementById('favicon'));
+    });
+
     it('should reset page favicon to tanuki', () => {
-      const fakeLink = {
-        setAttribute() {},
-      };
-
-      spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
-      spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
-        expect(attr).toEqual('href');
-        expect(val).toMatch(/favicon/);
-      });
-      gl.utils.resetFavicon();
+      commonUtils.resetFavicon();
+      expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
     });
   });
 
-  describe('gl.utils.setCiStatusFavicon', () => {
+  describe('setCiStatusFavicon', () => {
+    const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
+
+    beforeEach(() => {
+      const favicon = document.createElement('link');
+      favicon.setAttribute('id', 'favicon');
+      document.body.appendChild(favicon);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(document.getElementById('favicon'));
+    });
+
+    it('should reset favicon in case of error', () => {
+      const favicon = document.getElementById('favicon');
+      spyOn($, 'ajax').and.callFake(function (options) {
+        options.error();
+        expect(favicon.getAttribute('href')).toEqual('null');
+      });
+
+      commonUtils.setCiStatusFavicon(BUILD_URL);
+    });
+
     it('should set page favicon to CI status favicon based on provided status', () => {
-      const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
       const FAVICON_PATH = '//icon_status_success';
-      const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
-      const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();
+      const favicon = document.getElementById('favicon');
+
       spyOn($, 'ajax').and.callFake(function (options) {
         options.success({ favicon: FAVICON_PATH });
-        expect(spySetFavicon).toHaveBeenCalledWith(FAVICON_PATH);
-        options.success();
-        expect(spyResetFavicon).toHaveBeenCalled();
-        options.error();
-        expect(spyResetFavicon).toHaveBeenCalled();
+        expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
       });
 
-      gl.utils.setCiStatusFavicon(BUILD_URL);
+      commonUtils.setCiStatusFavicon(BUILD_URL);
     });
   });
 

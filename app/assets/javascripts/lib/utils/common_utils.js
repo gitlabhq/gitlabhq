@@ -1,4 +1,5 @@
-/* eslint-disable no-param-reassing */
+window.gl = window.gl || {};
+window.gl.utils = window.gl.utils || {};
 
 export const getPagePath = (index = 0) => $('body').data('page').split(':')[index];
 window.gl.utils.getPagePath = getPagePath;
@@ -48,7 +49,7 @@ export const ajaxPost = (url, data) => $.ajax({
 window.gl.utils.ajaxPost = ajaxPost;
 
 // TODO: This function seems not to be used anywhere
-window.gl.utils.extractLast = term => this.split(term).pop();
+// window.gl.utils.extractLast = term => this.split(term).pop();
 
 export const rstrip = function rstrip(val) {
   if (val) {
@@ -145,10 +146,11 @@ window.gl.utils.parseUrlPathname = parseUrlPathname;
 
 // We can trust that each param has one & since values containing & will be encoded
 // Remove the first character of search as it is always ?
-window.gl.utils.getUrlParamsArray = () => window.location.search.slice(1).split('&').map((param) => {
+export const getUrlParamsArray = () => window.location.search.slice(1).split('&').map((param) => {
   const split = param.split('=');
   return [decodeURI(split[0]), split[1]].join('=');
 });
+window.gl.utils.getUrlParamsArray = getUrlParamsArray;
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 window.gl.utils.isMetaKey = isMetaKey;
@@ -178,8 +180,8 @@ window.gl.utils.scrollToElement = scrollToElement;
 */
 export const getParameterByName = (name, urlToParse) => {
   const url = urlToParse || window.location.href;
-  name = name.replace(/[[\]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const parsedName = name.replace(/[[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${parsedName}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
@@ -200,6 +202,7 @@ export const getSelectedFragment = () => {
 };
 window.gl.utils.getSelectedFragment = getSelectedFragment;
 
+// TODO: Update this name, there is a gl.text.insertText function.
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
   const selectionStart = target.selectionStart;
@@ -212,7 +215,9 @@ export const insertText = (target, text) => {
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
   const newText = textBefore + insertedText + textAfter;
 
+  // eslint-disable-next-line no-param-reassign
   target.value = newText;
+  // eslint-disable-next-line no-param-reassign
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
@@ -242,6 +247,7 @@ export const nodeMatchesSelector = (node, selector) => {
   let parentNode = node.parentNode;
   if (!parentNode) {
     parentNode = document.createElement('div');
+    // eslint-disable-next-line no-param-reassign
     node = node.cloneNode(true);
     parentNode.appendChild(node);
   }
@@ -264,7 +270,6 @@ export const normalizeHeaders = (headers) => {
 
   return upperCaseHeaders;
 };
-window.gl.utils.normalizeHeaders = normalizeHeaders;
 
 /**
   this will take in the getAllResponseHeaders result and normalize them
@@ -281,7 +286,6 @@ export const normalizeCRLFHeaders = (headers) => {
 
   return normalizeHeaders(headersObject);
 };
-window.gl.utils.normalizeCRLFHeaders = normalizeCRLFHeaders;
 
 /**
  * Parses pagination object string values into numbers.
@@ -297,7 +301,6 @@ export const parseIntPagination = paginationInformation => ({
   nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
   previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
 });
-window.gl.utils.parseIntPagination = parseIntPagination;
 
 /**
  * Updates the search parameter of a URL given the parameter and value provided.
@@ -320,6 +323,7 @@ export const setParamInURL = (param, value) => {
       .split('&')
       .reduce((acc, element) => {
         const val = element.split('=');
+        // eslint-disable-next-line no-param-reassign
         acc[val[0]] = decodeURIComponent(val[1]);
         return acc;
       }, {});
@@ -337,7 +341,6 @@ export const setParamInURL = (param, value) => {
 
   return search;
 };
-window.gl.utils.setParamInURL = setParamInURL;
 
 /**
  * Converts permission provided as strings to booleans.
@@ -346,7 +349,6 @@ window.gl.utils.setParamInURL = setParamInURL;
  * @returns {Boolean}
  */
 export const convertPermissionToBoolean = permission => permission === 'true';
-window.gl.utils.convertPermissionToBoolean = convertPermissionToBoolean;
 
 /**
  * Back Off exponential algorithm
@@ -400,7 +402,6 @@ export const backOff = (fn, timeout = 60000) => {
     fn(next, stop);
   });
 };
-window.gl.utils.backOff = backOff;
 
 export const setFavicon = (faviconPath) => {
   const faviconEl = document.getElementById('favicon');
@@ -408,7 +409,6 @@ export const setFavicon = (faviconPath) => {
     faviconEl.setAttribute('href', faviconPath);
   }
 };
-window.gl.utils.setFavicon = setFavicon;
 
 export const resetFavicon = () => {
   const faviconEl = document.getElementById('favicon');
@@ -417,7 +417,6 @@ export const resetFavicon = () => {
     faviconEl.setAttribute('href', originalFavicon);
   }
 };
-window.gl.utils.resetFavicon = resetFavicon;
 
 export const setCiStatusFavicon = (pageUrl) => {
   $.ajax({
@@ -425,14 +424,13 @@ export const setCiStatusFavicon = (pageUrl) => {
     dataType: 'json',
     success: (data) => {
       if (data && data.favicon) {
-        gl.utils.setFavicon(data.favicon);
+        setFavicon(data.favicon);
       } else {
-        gl.utils.resetFavicon();
+        resetFavicon();
       }
     },
     error: () => {
-      gl.utils.resetFavicon();
+      resetFavicon();
     },
   });
 };
-window.gl.utils.setCiStatusFavicon = setCiStatusFavicon;

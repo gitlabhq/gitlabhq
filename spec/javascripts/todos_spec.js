@@ -26,9 +26,10 @@ describe('Todos', () => {
 
     describe('meta click', () => {
       let visitUrlSpy;
+      let metakeyEvent;
 
       beforeEach(() => {
-        spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
+        metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
         visitUrlSpy = spyOn(gl.utils, 'visitUrl').and.callFake(() => {});
       });
 
@@ -41,7 +42,7 @@ describe('Todos', () => {
           done();
         });
 
-        todoItem.click();
+        $('.todos-list .todo').trigger(metakeyEvent);
         expect(visitUrlSpy).not.toHaveBeenCalled();
       });
 

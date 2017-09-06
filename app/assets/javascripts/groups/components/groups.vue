@@ -1,6 +1,7 @@
 <script>
 import tablePagination from '~/vue_shared/components/table_pagination.vue';
 import eventHub from '../event_hub';
+import { getParameterByName } from '../../lib/utils/common_utils';
 
 export default {
   props: {
@@ -18,8 +19,8 @@ export default {
   },
   methods: {
     change(page) {
-      const filterGroupsParam = gl.utils.getParameterByName('filter_groups');
-      const sortParam = gl.utils.getParameterByName('sort');
+      const filterGroupsParam = getParameterByName('filter_groups');
+      const sortParam = getParameterByName('sort');
       eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam);
     },
   },

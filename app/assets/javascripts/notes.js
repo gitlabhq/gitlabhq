@@ -23,7 +23,7 @@ import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
-import { ajaxPost, isInViewport, getPagePath } from './lib/utils/common_utils';
+import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -176,7 +176,7 @@ export default class Notes {
 
   keydownNoteText(e) {
     var $textarea, discussionNoteForm, editNote, myLastNote, myLastNoteEditBtn, newText, originalText;
-    if (gl.utils.isMetaKey(e)) {
+    if (isMetaKey(e)) {
       return;
     }
 
@@ -1482,7 +1482,7 @@ export default class Notes {
    *
    * 1) Get Form metadata
    * 2) Update note element with new content
-   * 3) Perform network request to submit the updated note using `gl.utils.ajaxPost`
+   * 3) Perform network request to submit the updated note using `ajaxPost`
    *    a) If request is successfully completed
    *        1. Show submitted Note element
    *    b) If request failed

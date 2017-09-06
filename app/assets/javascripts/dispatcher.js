@@ -77,7 +77,7 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
-import { ajaxGet } from './lib/utils/common_utils';
+import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 
 (function() {
   var Dispatcher;
@@ -101,7 +101,7 @@ import { ajaxGet } from './lib/utils/common_utils';
 
       $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
           emojis: true,
           members: enableGFM,

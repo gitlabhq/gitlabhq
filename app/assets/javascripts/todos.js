@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
 
 import UsersSelect from './users_select';
+import { isMetaClick } from './lib/utils/common_utils';
 
 export default class Todos {
   constructor() {
@@ -141,7 +142,7 @@ export default class Todos {
       return;
     }
 
-    if (gl.utils.isMetaClick(e)) {
+    if (isMetaClick(e)) {
       const windowTarget = '_blank';
       const selected = e.target;
       e.stopPropagation();
