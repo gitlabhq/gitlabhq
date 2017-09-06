@@ -62,9 +62,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New issue"' do
-    page.within '.nav-controls' do
-      page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
-    end
+    page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
   end
 
   step 'I click "author" dropdown' do
