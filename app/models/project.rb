@@ -1390,7 +1390,7 @@ class Project < ActiveRecord::Base
   end
 
   def has_ci?
-    @repository.gitlab_ci_yml || @project.auto_devops_enabled?
+    repository.gitlab_ci_yml || auto_devops_enabled?
   end
 
   def predefined_variables

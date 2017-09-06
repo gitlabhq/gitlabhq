@@ -2509,4 +2509,133 @@ describe Project do
       end
     end
   end
+
+  describe '#has_ci?' do
+    set(:project) { create(:project) }
+    let(:repository) { double }
+
+    before do
+      expect(project).to receive(:repository) { repository }
+    end
+
+    context 'when has .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { 'content' }
+      end
+
+      it "CI is available" do
+        expect(project).to have_ci
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { nil }
+      end
+
+      it "CI is not available" do
+        expect(project).not_to have_ci
+      end
+
+      context 'when auto devops is enabled' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it "CI is available" do
+          expect(project).to have_ci
+        end
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_enabled? }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly enabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it "auto devops is disabled" do
+          expect(project).not_to be_auto_devops_enabled
+        end
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).not_to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+    end
+  end
+
+  context '#auto_devops_variables' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_variables }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      context 'when domain is empty' do
+        before do
+          create(:project_auto_devops, project: project, domain: nil)
+        end
+
+        it 'variables are empty' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          create(:project_auto_devops, project: project, domain: 'example.com')
+        end
+
+        it "variables are not empty" do
+          is_expected.not_to be_empty
+        end
+      end
+    end
+  end
 end
