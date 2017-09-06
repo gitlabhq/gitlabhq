@@ -10,6 +10,7 @@ module SearchHelper
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
+    generic_results.concat(default_autocomplete_admin) if current_user.admin?
     generic_results.select! { |result| result[:label] =~ search_pattern }
 
     [
@@ -41,8 +42,14 @@ module SearchHelper
     [
       { category: "Settings", label: "User settings",    url: profile_path },
       { category: "Settings", label: "SSH Keys",         url: profile_keys_path },
-      { category: "Settings", label: "Dashboard",        url: root_path },
-      { category: "Settings", label: "Admin Section",    url: admin_root_path }
+      { category: "Settings", label: "Dashboard",        url: root_path }
+    ]
+  end
+
+  # Autocomplete results for settings pages, for admins
+  def default_autocomplete_admin
+    [
+      { category: "Settings", label: "Admin Section", url: admin_root_path }
     ]
   end
 
