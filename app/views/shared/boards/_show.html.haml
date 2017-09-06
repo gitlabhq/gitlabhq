@@ -11,7 +11,7 @@
   = webpack_bundle_tag 'filtered_search'
   = webpack_bundle_tag 'boards'
 
-  %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
+  %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
 = render "projects/issues/head"
@@ -32,7 +32,7 @@
       ":root-path" => "rootPath",
       ":board-id" => "boardId",
       ":key" => "_uid" }
-  = render "projects/boards/components/sidebar"
+  = render "shared/boards/components/sidebar"
   %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
     "new-issue-path" => new_project_issue_path(@project),
     "milestone-path" => milestones_filter_dropdown_path,
