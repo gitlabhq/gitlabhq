@@ -143,6 +143,10 @@ FactoryGirl.define do
       end
     end
 
+    trait :read_only_repository do
+      repository_read_only true
+    end
+
     trait :broken_repo do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
