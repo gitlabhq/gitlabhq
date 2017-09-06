@@ -10,7 +10,7 @@
             %br/
             %span
               = precede "#" do
-                {{ issue.id }}
+                {{ issue.iid }}
           %a.gutter-toggle.pull-right{ role: "button",
             href: "#",
             "@click.prevent" => "closeSidebar",
@@ -23,5 +23,6 @@
           = render "shared/boards/components/sidebar/labels"
           = render "shared/boards/components/sidebar/notifications"
           %remove-btn{ ":issue" => "issue",
+            ":issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'",
             ":list" => "list",
             "v-if" => "canRemove" }
