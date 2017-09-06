@@ -115,7 +115,7 @@ describe Gitlab::Metrics do
     end
 
     context 'with a transaction' do
-      let(:transaction) { Gitlab::Metrics::Transaction.new }
+      let(:transaction) { Gitlab::Metrics::Transaction.new({}) }
 
       before do
         allow(described_class).to receive(:current_transaction)
@@ -124,13 +124,13 @@ describe Gitlab::Metrics do
 
       it 'adds a metric to the current transaction' do
         expect(transaction).to receive(:increment)
-          .with('foo_real_time', a_kind_of(Numeric))
+                                 .with('foo_real_time', a_kind_of(Numeric), false)
 
         expect(transaction).to receive(:increment)
-          .with('foo_cpu_time', a_kind_of(Numeric))
+                                 .with('foo_cpu_time', a_kind_of(Numeric), false)
 
         expect(transaction).to receive(:increment)
-          .with('foo_call_count', 1)
+                                 .with('foo_call_count', 1, false)
 
         described_class.measure(:foo) { 10 }
       end
@@ -155,7 +155,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'sets the action of a transaction' do
-        trans = Gitlab::Metrics::Transaction.new
+        trans = Gitlab::Metrics::Transaction.new({})
 
         expect(described_class).to receive(:current_transaction)
           .and_return(trans)
@@ -185,7 +185,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'adds an event' do
-        transaction = Gitlab::Metrics::Transaction.new
+        transaction = Gitlab::Metrics::Transaction.new({})
 
         expect(transaction).to receive(:add_event).with(:meow)
 
