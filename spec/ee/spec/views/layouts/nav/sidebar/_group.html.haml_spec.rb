@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'layouts/nav/_group' do
+describe 'layouts/nav/sidebar/_group' do
   before do
     assign(:group, create(:group))
   end
