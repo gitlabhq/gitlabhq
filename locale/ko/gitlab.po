@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-24 09:29+0200\n"
-"PO-Revision-Date: 2017-09-06 02:28-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:20-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -38,7 +38,7 @@ msgstr "%{number_of_failures} / %{maximum_failures} 실패. GitLab 은 자동으
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] "%{storage_name}: 다음 호스트의 storage 접근에 실패:"
+msgstr[0] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
 msgstr "설치 방법에 대한 정보를 얻기 위해 %{link} 를 체크아웃하세요."
@@ -53,8 +53,17 @@ msgstr "지속적인 통합에 관한 그래프 모음"
 msgid "About auto deploy"
 msgstr "자동 배포 정보"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "오동작중인 저장공간에 대한 접근이 복구 작업을 위해 마운트할 수 있도록 임시로 허용되었습니다. 문제가 해결된 후 다시 접근을 허용할 수 있게 저장공간 정보를 리셋 해주세요."
+
+msgid "Account"
+msgstr ""
 
 msgid "Active"
 msgstr "활성"
@@ -80,6 +89,12 @@ msgstr "새 디렉토리 추가"
 msgid "All"
 msgstr "전체"
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "프로젝트가 보관되었습니다! 저장소는 읽기만 가능합니다."
 
@@ -100,6 +115,63 @@ msgstr "확실합니까?"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "드래그 &amp; 드롭 또는 %{upload_link}"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -132,6 +204,9 @@ msgstr "파일 찾아보기"
 msgid "ByAuthor|by"
 msgstr "작성자"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "CI 설정"
 
@@ -158,6 +233,9 @@ msgstr "변경사항"
 
 msgid "Charts"
 msgstr "차트"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "이 커밋을 Cherry-pick"
@@ -253,11 +331,17 @@ msgstr "커밋한 사용자"
 msgid "Compare"
 msgstr "비교"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "기여에 대한 안내"
 
 msgid "Contributors"
 msgstr "기여해 주신 분들"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "URL을 클립보드에 복사"
@@ -344,6 +428,9 @@ msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "배포"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "설명"
 
@@ -391,6 +478,9 @@ msgstr "편집"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "파이프라인 스케줄 편집 %{id}"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr "모든 값을 기준으로 필터"
@@ -456,6 +546,12 @@ msgstr "이슈 생성에서 프로덕션 배포까지"
 msgid "From merge request merge until deploy to production"
 msgstr "머지 리퀘스트 머지에서 프로덕션 환경에 배포까지"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr "git storage 상태 정보가 초기화되었습니다."
 
@@ -468,12 +564,14 @@ msgstr "당신의 포크로 이동하세요"
 msgid "GoToYourFork|Fork"
 msgstr "포크"
 
+msgid "Group overview"
+msgstr ""
+
 msgid "Health Check"
 msgstr "헬스 체크"
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
-msgstr "헬스 정보는 다음의 경로를 통해 조회할 수 있습니다.\n"
-"더 많은 정보를 이용할 수 있습니다."
+msgstr "헬스 정보는 다음의 경로를 통해 조회할 수 있습니다. 더 많은 정보를 이용할 수 있습니다."
 
 msgid "HealthCheck|Access token is"
 msgstr "엑세스 토큰: "
@@ -489,6 +587,9 @@ msgstr "비정상"
 
 msgid "Home"
 msgstr "홈"
+
+msgid "Hooks"
+msgstr ""
 
 msgid "Housekeeping successfully started"
 msgstr "Housekeeping이 성공적으로 시작되었습니다"
@@ -508,11 +609,17 @@ msgstr "Cycle Analytics 소개"
 msgid "Issue events"
 msgstr "이슈 이벤트"
 
+msgid "Issues"
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr "Disabled"
 
 msgid "LFSStatus|Enabled"
 msgstr "Enabled"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -545,18 +652,36 @@ msgstr "그룹 떠나기"
 msgid "Leave project"
 msgstr "프로젝트에서 나가기"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "최대 %d 이벤트 만 표시하는 것으로 제한됩니다."
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "중앙값"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr "머지 이벤트"
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "SSH 키 추가"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr "여기"
@@ -658,6 +783,9 @@ msgstr "참여"
 msgid "NotificationLevel|Watch"
 msgstr "Watch"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "필터"
 
@@ -667,8 +795,14 @@ msgstr "열린"
 msgid "Options"
 msgstr "옵션 "
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "소유자"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr "파이프라인"
@@ -681,6 +815,9 @@ msgstr "파이프라인 스케쥴"
 
 msgid "Pipeline Schedules"
 msgstr "파이프라인 스케쥴"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "실패 :"
@@ -766,6 +903,12 @@ msgstr "스테이징"
 msgid "Pipeline|with stages"
 msgstr "스테이징"
 
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
@@ -802,6 +945,9 @@ msgstr "프로젝트 내보내기가 시작되었습니다. 다운로드 링크�
 msgid "Project home"
 msgstr "프로젝트 홈"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "구독"
 
@@ -825,6 +971,9 @@ msgstr "스테이징"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "그래프"
+
+msgid "Push Rules"
+msgstr ""
 
 msgid "Push events"
 msgstr "푸쉬 이벤트"
@@ -886,6 +1035,9 @@ msgstr "이 커밋 되돌리기"
 msgid "Revert this merge request"
 msgstr "이 머지 리퀘스트 되돌리기"
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "파이프라인  스케줄 저장"
 
@@ -910,6 +1062,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr "대상 브랜치 선택"
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "%{protocol} 프로토콜을 통해 Pull 하거나 Push하려면 계정에 패스워드를 설정하십시오."
 
@@ -925,12 +1080,21 @@ msgstr "자동 배포 설정"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "패스워드 설정"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "%d 개의 이벤트 표시 중"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "소스 코드"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr "Runner 설정 중 다음 URL을 지정하세요."
@@ -1204,6 +1368,9 @@ msgstr "이 데이터를 보고 싶은가요? 관리자에게 액세스 권한�
 
 msgid "We don't have enough data to show this stage."
 msgstr "이 단계를 보여주기에 충분한 데이터가 없습니다."
+
+msgid "Wiki"
+msgstr ""
 
 msgid "Withdraw Access Request"
 msgstr "액세스 요청 철회"

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-24 09:29+0200\n"
-"PO-Revision-Date: 2017-09-06 02:28-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:20-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -53,7 +53,16 @@ msgstr "CIについてのグラフ"
 msgid "About auto deploy"
 msgstr "自動デプロイについて"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -80,6 +89,12 @@ msgstr "新規ディレクトリを追加"
 msgid "All"
 msgstr ""
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "アーカイブ済みプロジェクト！（レポジトリーは読み取り専用です）"
 
@@ -100,6 +115,63 @@ msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "ドラッグ＆ドロップまたは %{upload_link} でファイルを添付"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -132,6 +204,9 @@ msgstr "ファイルを表示"
 msgid "ByAuthor|by"
 msgstr "作者"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "CI 設定"
 
@@ -158,6 +233,9 @@ msgstr "変更履歴"
 
 msgid "Charts"
 msgstr "チャート"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "このコミットをチェリーピック"
@@ -253,11 +331,17 @@ msgstr "コミット担当者: "
 msgid "Compare"
 msgstr "比較"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "貢献者向けガイド"
 
 msgid "Contributors"
 msgstr "貢献者"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "クリップボードにURLをコピー"
@@ -344,6 +428,9 @@ msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "デプロイ"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "説明"
 
@@ -391,6 +478,9 @@ msgstr "編集"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "パイプラインスケジュール %{id} を編集"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr ""
@@ -456,6 +546,12 @@ msgstr "課題が登録されてからプロダクションにデプロイされ
 msgid "From merge request merge until deploy to production"
 msgstr "マージリクエストがマージされてからプロダクションにデプロイされるまで"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -467,6 +563,9 @@ msgstr "自分のフォークへ移動"
 
 msgid "GoToYourFork|Fork"
 msgstr "フォーク"
+
+msgid "Group overview"
+msgstr ""
 
 msgid "Health Check"
 msgstr ""
@@ -489,6 +588,9 @@ msgstr ""
 msgid "Home"
 msgstr "ホーム"
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr "ハウスキーピングは正常に起動しました。"
 
@@ -507,11 +609,17 @@ msgstr "サイクル分析のご紹介"
 msgid "Issue events"
 msgstr ""
 
+msgid "Issues"
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr "無効"
 
 msgid "LFSStatus|Enabled"
 msgstr "有効"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -544,18 +652,36 @@ msgstr "グループを離脱"
 msgid "Leave project"
 msgstr "プロジェクトを離脱"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "イベント表示数を最大 %d 個に制限"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "中央値"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "SSH 鍵を追加"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr ""
@@ -657,6 +783,9 @@ msgstr "参加"
 msgid "NotificationLevel|Watch"
 msgstr "すべて通知"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "フィルター"
 
@@ -666,8 +795,14 @@ msgstr "オープンされたのは"
 msgid "Options"
 msgstr "オプション"
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "オーナー"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr "パイプライン"
@@ -680,6 +815,9 @@ msgstr "パイプラインスケジュール"
 
 msgid "Pipeline Schedules"
 msgstr "パイプラインスケジュール"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "失敗:"
@@ -765,6 +903,12 @@ msgstr "ステージあり"
 msgid "Pipeline|with stages"
 msgstr "ステージあり"
 
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
@@ -801,6 +945,9 @@ msgstr "プロジェクトのエクスポートを開始しました。ダウン
 msgid "Project home"
 msgstr "プロジェクトホーム"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -824,6 +971,9 @@ msgstr "ステージ"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "ネットワークグラフ"
+
+msgid "Push Rules"
+msgstr ""
 
 msgid "Push events"
 msgstr ""
@@ -885,6 +1035,9 @@ msgstr "このコミットをリバート"
 msgid "Revert this merge request"
 msgstr "このマージリクエストをリバート"
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "パイプラインスケジュールを保存"
 
@@ -909,6 +1062,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr "ターゲットブランチを選択"
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "%{protocol} プロコトル経由でプル、プッシュするためにアカウントのパスワードを設定。"
 
@@ -924,12 +1080,21 @@ msgstr "自動デプロイを設定"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "パスワードを設定"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "%d のイベントを表示中"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "ソースコード"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
@@ -1203,6 +1368,9 @@ msgstr "このデータを参照したいですか？アクセスするには管
 
 msgid "We don't have enough data to show this stage."
 msgstr "データ不足のため、このステージの表示はできません。"
+
+msgid "Wiki"
+msgstr ""
 
 msgid "Withdraw Access Request"
 msgstr "アクセスリクエストを取り消す"

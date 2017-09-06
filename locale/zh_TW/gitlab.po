@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-24 09:29+0200\n"
-"PO-Revision-Date: 2017-09-06 02:28-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:20-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -34,7 +34,7 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block 
 msgstr "已失敗 %{number_of_failures} 次，在失敗 %{maximum_failures} 次前 GitLab 會在 %{number_of_seconds} 秒後重試。"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr "已失敗 %{number_of_failures} 次，GitLab 將不再自動重試。請在確認問題解決後手動重置儲存空間健康指數。"
+msgstr ""
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
@@ -53,8 +53,17 @@ msgstr "持續整合 (CI) 相關的圖表"
 msgid "About auto deploy"
 msgstr "關於自動部署"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "已暫時停用失敗的 Git 儲存空間。當儲存空間恢復正常後，請重置儲存空間健康指數。"
+
+msgid "Account"
+msgstr ""
 
 msgid "Active"
 msgstr "啟用"
@@ -80,6 +89,12 @@ msgstr "新增目錄"
 msgid "All"
 msgstr "全部"
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "此專案已封存！檔案庫 (repository) 為唯讀狀態"
 
@@ -100,6 +115,63 @@ msgstr "確定嗎？"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放檔案到此處或者 %{upload_link}"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -132,6 +204,9 @@ msgstr "瀏覽檔案"
 msgid "ByAuthor|by"
 msgstr "作者："
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "CI 組態"
 
@@ -158,6 +233,9 @@ msgstr "更新日誌"
 
 msgid "Charts"
 msgstr "統計圖"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "挑選此更動記錄 (commit) "
@@ -253,11 +331,17 @@ msgstr "送交者為 "
 msgid "Compare"
 msgstr "比較"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "協作指南"
 
 msgid "Contributors"
 msgstr "協作者"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "複製網址到剪貼簿"
@@ -344,6 +428,9 @@ msgid "Deploy"
 msgid_plural "Deploys"
 msgstr[0] "部署"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "描述"
 
@@ -391,6 +478,9 @@ msgstr "編輯"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線 (pipeline) 排程"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr "顯示全部"
@@ -456,6 +546,12 @@ msgstr "從議題 (issue) 建立直到部署至營運環境"
 msgid "From merge request merge until deploy to production"
 msgstr "從請求被合併後 (merge request merged) 直到部署至營運環境"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr "Git 儲存空間健康指數已重置"
 
@@ -467,6 +563,9 @@ msgstr "前往您的分支 (fork) "
 
 msgid "GoToYourFork|Fork"
 msgstr "前往您的分支 (fork) "
+
+msgid "Group overview"
+msgstr ""
 
 msgid "Health Check"
 msgstr "健康檢查"
@@ -489,6 +588,9 @@ msgstr "不良"
 msgid "Home"
 msgstr "首頁"
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr "已開始維護"
 
@@ -507,11 +609,17 @@ msgstr "週期分析簡介"
 msgid "Issue events"
 msgstr "議題 (issue) 事件"
 
+msgid "Issues"
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr "停用"
 
 msgid "LFSStatus|Enabled"
 msgstr "啟用"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -544,18 +652,36 @@ msgstr "退出群組"
 msgid "Leave project"
 msgstr "退出專案"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "限制最多顯示 %d 個事件"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "中位數"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr "合併 (merge) 事件"
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新增 SSH 金鑰"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr "健康檢查"
@@ -657,6 +783,9 @@ msgstr "參與"
 msgid "NotificationLevel|Watch"
 msgstr "關注"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "篩選"
 
@@ -666,8 +795,14 @@ msgstr "開始於"
 msgid "Options"
 msgstr "選項"
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "所有權"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr "流水線 (pipeline) "
@@ -680,6 +815,9 @@ msgstr "流水線 (pipeline) 排程"
 
 msgid "Pipeline Schedules"
 msgstr "流水線 (pipeline) 排程"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "失敗："
@@ -765,6 +903,12 @@ msgstr "於階段"
 msgid "Pipeline|with stages"
 msgstr "於階段"
 
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Project"
 msgstr "專案"
 
@@ -801,6 +945,9 @@ msgstr "專案導出已開始。完成後下載連結會送到您的信箱。"
 msgid "Project home"
 msgstr "專案首頁"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "訂閱"
 
@@ -824,6 +971,9 @@ msgstr "階段"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "分支圖"
+
+msgid "Push Rules"
+msgstr ""
 
 msgid "Push events"
 msgstr "推送 (push) 事件"
@@ -885,6 +1035,9 @@ msgstr "還原此更動記錄 (commit)"
 msgid "Revert this merge request"
 msgstr "還原此合併請求 (merge request) "
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "儲存流水線 (pipeline) 排程"
 
@@ -909,6 +1062,9 @@ msgstr "選擇現有分支 (branch)"
 msgid "Select target branch"
 msgstr "選擇目標分支 (branch) "
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "請先設定密碼，才能使用 %{protocol} 來上傳 (push) 或下載 (pull) 。"
 
@@ -924,12 +1080,21 @@ msgstr "設定自動部署"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "設定密碼"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "顯示 %d 個事件"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "原始碼"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr "在安裝 Runner 時指定以下 URL："
@@ -1203,6 +1368,9 @@ msgstr "權限不足。如需查看相關資料，請向管理員申請權限。
 
 msgid "We don't have enough data to show this stage."
 msgstr "因該階段的資料不足而無法顯示相關資訊"
+
+msgid "Wiki"
+msgstr ""
 
 msgid "Withdraw Access Request"
 msgstr "取消權限申請"
