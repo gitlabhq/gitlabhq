@@ -768,6 +768,20 @@ import '~/notes';
         expect($tempNote.prop('nodeName')).toEqual('LI');
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
       });
+
+      it('should return a escaped user name', () => {
+        const currentUserFullnameXSS = 'Foo <script>alert("XSS")</script>';
+        const $tempNote = this.notes.createPlaceholderNote({
+          formContent: sampleComment,
+          uniqueId,
+          isDiscussionNote: false,
+          currentUsername,
+          currentUserFullname: currentUserFullnameXSS,
+          currentUserAvatar,
+        });
+        const $tempNoteHeader = $tempNote.find('.note-header');
+        expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
+      });
     });
 
     describe('createPlaceholderSystemNote', () => {
