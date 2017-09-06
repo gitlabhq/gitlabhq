@@ -145,7 +145,7 @@ describe('Api', () => {
     });
   });
 
-  describe('newLabel', () => {
+  fdescribe('newLabel', () => {
     it('creates a new label', (done) => {
       const namespace = 'some namespace';
       const project = 'some project';
@@ -163,6 +163,27 @@ describe('Api', () => {
       });
 
       Api.newLabel(namespace, project, labelData, (response) => {
+        expect(response).toBe(dummyResponse);
+        done();
+      });
+    });
+
+    it('creates a new group label', (done) => {
+      const namespace = 'some namespace';
+      const labelData = { some: 'data' };
+      const expectedUrl = `${dummyUrlRoot}/${namespace}/labels`;
+      const expectedData = {
+        label: labelData,
+      };
+      spyOn(jQuery, 'ajax').and.callFake((request) => {
+        expect(request.url).toEqual(expectedUrl);
+        expect(request.dataType).toEqual('json');
+        expect(request.type).toEqual('POST');
+        expect(request.data).toEqual(expectedData);
+        return sendDummyResponse();
+      });
+
+      Api.newLabel(namespace, null, labelData, (response) => {
         expect(response).toBe(dummyResponse);
         done();
       });
