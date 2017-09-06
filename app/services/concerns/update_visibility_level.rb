@@ -1,5 +1,5 @@
 module UpdateVisibilityLevel
-  def visibility_level_allowed?(target, new_visibility)
+  def valid_visibility_level_change?(target, new_visibility)
     # check that user is allowed to set specified visibility_level
     if new_visibility && new_visibility.to_i != target.visibility_level
       unless can?(current_user, :change_visibility_level, target) &&

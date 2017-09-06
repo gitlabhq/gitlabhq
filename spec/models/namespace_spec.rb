@@ -433,7 +433,7 @@ describe Namespace do
       let!(:subgroup) { create(:group, parent: root_group )}
 
       it 'the subgroup share lock becomes enabled' do
-        root_group.update(share_with_group_lock: true)
+        root_group.update!(share_with_group_lock: true)
 
         expect(subgroup.reload.share_with_group_lock).to be_truthy
       end
@@ -446,7 +446,7 @@ describe Namespace do
         let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
 
         it 'the subgroup share lock does not change' do
-          root_group.update(share_with_group_lock: false)
+          root_group.update!(share_with_group_lock: false)
 
           expect(subgroup.reload.share_with_group_lock).to be_truthy
         end
@@ -456,7 +456,7 @@ describe Namespace do
         let(:subgroup) { create(:group, parent: root_group )}
 
         it 'the subgroup share lock does not change' do
-          root_group.update(share_with_group_lock: false)
+          root_group.update!(share_with_group_lock: false)
 
           expect(subgroup.reload.share_with_group_lock?).to be_falsey
         end

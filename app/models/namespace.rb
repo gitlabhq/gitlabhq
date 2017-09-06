@@ -46,7 +46,7 @@ class Namespace < ActiveRecord::Base
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
-  after_commit :force_share_with_group_lock_on_descendants, on: :update, if: -> { previous_changes.key?('share_with_group_lock') && share_with_group_lock? }
+  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
 
   # Legacy Storage specific hooks
 
@@ -225,7 +225,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def sync_share_with_group_lock_with_parent
-    if has_parent? && parent.share_with_group_lock?
+    if parent&.share_with_group_lock?
       self.share_with_group_lock = true
     end
   end

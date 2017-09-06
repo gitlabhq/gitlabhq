@@ -15,7 +15,7 @@ class GroupPolicy < BasePolicy
 
   condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
 
-  condition(:parent_share_locked) { @subject.has_parent? && @subject.parent.share_with_group_lock? }
+  condition(:parent_share_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { @subject.has_parent? && can?(:change_share_with_group_lock, @subject.parent) }
 
   condition(:has_projects) do

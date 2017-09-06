@@ -5,7 +5,7 @@ module Groups
     def execute
       reject_parent_id!
 
-      return false unless visibility_level_allowed?(group, params[:visibility_level])
+      return false unless valid_visibility_level_change?(group, params[:visibility_level])
 
       return false unless valid_share_with_group_lock_change?
 

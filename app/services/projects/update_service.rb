@@ -3,7 +3,7 @@ module Projects
     include UpdateVisibilityLevel
 
     def execute
-      unless visibility_level_allowed?(project, params[:visibility_level])
+      unless valid_visibility_level_change?(project, params[:visibility_level])
         return error('New visibility level not allowed!')
       end
 
