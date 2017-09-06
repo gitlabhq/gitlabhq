@@ -119,7 +119,7 @@ export default {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, true);
+        this.fetchChildEnvironments(folder);
       }
     },
 
@@ -147,7 +147,7 @@ export default {
         .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, showLoader = false) {
+    fetchChildEnvironments(folder) {
       this.service.getFolderContent(folder.folder_path)
         .then(resp => resp.json())
         .then((response) => {
