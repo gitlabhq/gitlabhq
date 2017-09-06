@@ -193,12 +193,24 @@ describe ProjectsHelper do
 
   describe '#link_to_member_avatar' do
     let(:user) { build_stubbed(:user) }
+    let(:expected) { double }
 
     it 'returns image tag for member avatar' do
-      allow(helper).to receive(:image_tag).with(nil, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
-      allow(helper).to receive(:avatar_icon).with(user, 16)
+      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
 
       helper.link_to_member_avatar(user)
+    end
+
+    it 'returns image tag with avatar class' do
+      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+
+      helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
+    end
+
+    it 'returns no image tag if avatar is nil' do
+      expect(helper.link_to_member_avatar(user, avatar: nil)).to eq(nil)
     end
   end
 
