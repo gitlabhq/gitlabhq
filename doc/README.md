@@ -189,7 +189,6 @@ have access to GitLab administration tools and settings.
 ### Integrations
 
 - [Integrations](integration/README.md): How to integrate with systems such as JIRA, Redmine, Twitter.
-- [Koding](administration/integration/koding.md): Set up Koding to use with GitLab.
 - [Mattermost](user/project/integrations/mattermost.md): Set up GitLab with Mattermost.
 - **(EES/EEP)** [Jenkins](integration/jenkins.md): Set up GitLab with Jenkins.
 

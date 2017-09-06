@@ -35,6 +35,8 @@ module Geo
 
             Array([message, details].compact.join("\n"))
           end
+        rescue OpenSSL::Cipher::CipherError
+          ['Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.']
         rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
           [e.message]
         end

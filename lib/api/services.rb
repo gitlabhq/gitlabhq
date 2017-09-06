@@ -649,7 +649,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -739,7 +739,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: { id: %r{[^/]+} } do
+      resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end

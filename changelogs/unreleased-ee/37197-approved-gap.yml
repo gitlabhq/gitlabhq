@@ -1,0 +1,5 @@
+---
+title: Fix the gap in approvals in merge request widget
+merge_request:
+author:
+type: fixed

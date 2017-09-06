@@ -1,9 +1,7 @@
 - @no_container = true
 - page_title "Branches"
+- add_to_breadcrumbs("Repository", project_tree_path(@project))
 = render "projects/commits/head"
-
-- if show_new_nav?
-  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 
 %div{ class: container_class }
   .top-area.adjust

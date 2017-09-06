@@ -71,31 +71,24 @@ module Gitlab
     # Configure sensitive parameters which will be filtered from the log file.
     #
     # Parameters filtered:
-    # - Password (:password, :password_confirmation)
-    # - Private tokens
+    # - Any parameter ending with `_token`
+    # - Any parameter containing `password`
+    # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
     # - Repo/Project Import URLs (:import_url)
     # - Build variables (:variables)
     # - GitLab Pages SSL cert/key info (:certificate, :encrypted_key)
     # - Webhook URLs (:hook)
-    # - GitLab-shell secret token (:secret_token)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
+    config.filter_parameters += [/_token$/, /password/, /secret/]
     config.filter_parameters += %i(
-      authentication_token
       certificate
       encrypted_key
       hook
       import_url
-      incoming_email_token
-      rss_token
       key
       otp_attempt
-      password
-      password_confirmation
-      private_token
-      runners_token
-      secret_token
       sentry_dsn
       variables
     )

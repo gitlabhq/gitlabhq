@@ -15,11 +15,11 @@ feature 'issue move to another project' do
     background do
       old_project.team << [user, :guest]
 
-      edit_issue(issue)
+      visit issue_path(issue)
     end
 
     scenario 'moving issue to another project not allowed' do
-      expect(page).to have_no_selector('#move_to_project_id')
+      expect(page).to have_no_selector('.js-sidebar-move-issue-block')
     end
   end
 
@@ -34,12 +34,14 @@ feature 'issue move to another project' do
       old_project.team << [user, :reporter]
       new_project.team << [user, :reporter]
 
-      edit_issue(issue)
+      visit issue_path(issue)
     end
 
     scenario 'moving issue to another project', js: true do
-      find('#issuable-move', visible: false).set(new_project.id)
-      click_button('Save changes')
+      find('.js-move-issue').trigger('click')
+      wait_for_requests
+      all('.js-move-issue-dropdown-item')[0].click
+      find('.js-move-issue-confirmation-button').click
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
@@ -50,13 +52,12 @@ feature 'issue move to another project' do
     scenario 'searching project dropdown', js: true do
       new_project_search.team << [user, :reporter]
 
-      page.within '.detail-page-description' do
-        first('.select2-choice').click
-      end
+      find('.js-move-issue').trigger('click')
+      wait_for_requests
 
-      fill_in('s2id_autogen1_search', with: new_project_search.name)
+      page.within '.js-sidebar-move-issue-block' do
+        fill_in('sidebar-move-issue-dropdown-search', with: new_project_search.name)
 
-      page.within '.select2-drop' do
         expect(page).to have_content(new_project_search.name)
         expect(page).not_to have_content(new_project.name)
       end
@@ -68,10 +69,10 @@ feature 'issue move to another project' do
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        click_link 'Move to a different project'
+        find('.js-move-issue').trigger('click')
+        wait_for_requests
 
-        page.within '.select2-results' do
-          expect(page).to have_content 'No project'
+        page.within '.js-sidebar-move-issue-block' do
           expect(page).to have_content new_project.name_with_namespace
         end
       end
@@ -87,11 +88,6 @@ feature 'issue move to another project' do
         expect(page).to have_no_selector('#move_to_project_id')
       end
     end
-  end
-
-  def edit_issue(issue)
-    visit issue_path(issue)
-    page.within('.issuable-actions') { first(:link, 'Edit').click }
   end
 
   def issue_path(issue)

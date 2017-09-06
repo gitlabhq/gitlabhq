@@ -24,7 +24,7 @@ module Geo
 
     def find_project_ids_not_synced
       current_node.projects
-                  .where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
+                  .where.not(id: Geo::ProjectRegistry.pluck(:project_id))
                   .order(last_repository_updated_at: :desc)
                   .limit(db_retrieve_batch_size)
                   .pluck(:id)

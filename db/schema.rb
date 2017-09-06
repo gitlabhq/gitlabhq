@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824162758) do
+ActiveRecord::Schema.define(version: 20170905202320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -152,6 +152,10 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -303,6 +307,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "stage_id"
     t.integer "artifacts_file_store"
     t.integer "artifacts_metadata_store"
+    t.boolean "protected"
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
@@ -311,6 +316,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
+  add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
   add_index "ci_builds", ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id", using: :btree
@@ -393,6 +399,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
+    t.boolean "protected"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -428,6 +435,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.string "architecture"
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
+    t.integer "access_level", default: 0, null: false
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
@@ -665,6 +673,9 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "repositories_changed_event_id", limit: 8
   end
 
+  add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
+  add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
+  add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
 
   create_table "geo_node_namespace_links", force: :cascade do |t|
@@ -2067,6 +2078,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
   add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
+  add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :cascade
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade

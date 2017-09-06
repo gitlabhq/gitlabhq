@@ -1,0 +1,5 @@
+---
+title: Upgrade brace-expansion NPM package due to security issue
+merge_request: 13665
+author: Markus Koller
+type: security

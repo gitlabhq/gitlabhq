@@ -4,7 +4,7 @@
       %span
         LDAP Group
 
-- if @group.feature_available?(:group_webhooks)
+- if @group.feature_available?(:group_webhooks) || show_promotions?
   = nav_link(path: 'hooks#index') do
     = link_to group_hooks_path(@group), title: 'Webhooks' do
       %span

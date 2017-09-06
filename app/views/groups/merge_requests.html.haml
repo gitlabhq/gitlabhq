@@ -4,7 +4,7 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-- if show_new_nav? && current_user
+- if current_user
   - content_for :breadcrumbs_extra do
     = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
 
@@ -14,7 +14,7 @@
   .top-area
     = render 'shared/issuable/nav', type: :merge_requests
     - if current_user
-      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+      .nav-controls.visible-xs
         = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
 
   = render 'shared/issuable/search_bar', type: :merge_requests

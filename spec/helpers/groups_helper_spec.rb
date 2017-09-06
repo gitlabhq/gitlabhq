@@ -111,7 +111,8 @@ describe GroupsHelper do
     let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
 
     it 'outputs the groups in the correct order', :postgresql do
-      expect(helper.group_title(very_deep_nested_group)).to match(/>#{group.name}<\/a>.*>#{nested_group.name}<\/a>.*>#{deep_nested_group.name}<\/a>/)
+      expect(helper.group_title(very_deep_nested_group))
+        .to match(/<li style="text-indent: 16px;"><a.*>#{deep_nested_group.name}.*<\/li>.*<a.*>#{very_deep_nested_group.name}<\/a>/m)
     end
   end
 end

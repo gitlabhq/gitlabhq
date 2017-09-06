@@ -53,7 +53,7 @@ describe SshHostKey do
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 
       expected = [key1, key2]
-        .map { |data| Gitlab::KeyFingerprint.new(data) }
+        .map { |data| Gitlab::SSHPublicKey.new(data) }
         .each_with_index
         .map { |key, i| { bits: key.bits, fingerprint: key.fingerprint, type: key.type, index: i } }
 
@@ -71,8 +71,8 @@ describe SshHostKey do
 
       expect(ssh_host_key.fingerprints.as_json).to eq(
         [
-          { bits: 2048, fingerprint: Gitlab::KeyFingerprint.new(key1).fingerprint, type: 'RSA', index: 0 },
-          { bits: 2048, fingerprint: Gitlab::KeyFingerprint.new(key2).fingerprint, type: 'RSA', index: 1 }
+          { bits: 2048, fingerprint: Gitlab::SSHPublicKey.new(key1).fingerprint, type: :rsa, index: 0 },
+          { bits: 2048, fingerprint: Gitlab::SSHPublicKey.new(key2).fingerprint, type: :rsa, index: 1 }
         ]
       )
     end

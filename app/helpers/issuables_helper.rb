@@ -126,12 +126,8 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = content_tag(:strong, class: "identifier") do
-      concat("#{text} ")
-      concat(to_url_reference(issuable))
-    end
-
-    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+    output = ""
+    output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
@@ -141,7 +137,7 @@ module IssuablesHelper
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
 
-    output
+    output.html_safe
   end
 
   def issuable_todo(issuable)
@@ -215,12 +211,10 @@ module IssuablesHelper
       endpoint: project_issue_path(@project, issuable),
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
-      canMove: current_user ? issuable.can_move?(current_user) : false,
       issuableRef: issuable.to_reference,
       isConfidential: issuable.confidential,
       markdownPreviewUrl: preview_markdown_path(@project),
       markdownDocs: help_page_path('user/markdown'),
-      projectsAutocompleteUrl: autocomplete_projects_path(project_id: @project.id),
       issuableTemplates: issuable_templates(issuable),
       projectPath: ref_project.path,
       projectNamespace: ref_project.namespace.full_path,
@@ -377,6 +371,8 @@ module IssuablesHelper
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
       endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
+      projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
       currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
       rootPath: root_path,

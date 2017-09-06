@@ -1,7 +1,7 @@
 module Gitlab
   module Metrics
     module InfluxDb
-      extend Gitlab::CurrentSettings
+      include Gitlab::CurrentSettings
       extend self
 
       MUTEX = Mutex.new

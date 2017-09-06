@@ -1,7 +1,6 @@
 module Projects
   class AfterImportService
-    RESERVED_REFS_REGEXP =
-      %r{\Arefs/(?:#{Regexp.union(*Repository::RESERVED_REFS_NAMES)})/}
+    RESERVED_REF_PREFIXES = Repository::RESERVED_REFS_NAMES.map { |n| File.join('refs', n, '/') }
 
     def initialize(project)
       @project = project
@@ -9,7 +8,7 @@ module Projects
 
     def execute
       Projects::HousekeepingService.new(@project).execute do
-        repository.delete_refs(*garbage_refs)
+        repository.delete_all_refs_except(RESERVED_REF_PREFIXES)
       end
     rescue Projects::HousekeepingService::LeaseTaken => e
       Rails.logger.info(
@@ -17,10 +16,6 @@ module Projects
     end
 
     private
-
-    def garbage_refs
-      @garbage_refs ||= repository.all_ref_names_except(RESERVED_REFS_REGEXP)
-    end
 
     def repository
       @repository ||= @project.repository

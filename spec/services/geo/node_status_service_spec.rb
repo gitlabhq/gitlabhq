@@ -52,5 +52,15 @@ describe Geo::NodeStatusService do
 
       expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
     end
+
+    it 'returns meaningful error message when primary uses incorrect db key' do
+      secondary # create it before mocking GeoNode#secret_access_key
+
+      allow_any_instance_of(GeoNode).to receive(:secret_access_key).and_raise(OpenSSL::Cipher::CipherError)
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.')
+    end
   end
 end
