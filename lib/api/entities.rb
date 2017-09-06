@@ -119,6 +119,7 @@ module API
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
+      expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -290,10 +291,11 @@ module API
     end
 
     class RepoDiff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+      expose :json_safe_diff, as: :diff
     end
 
     class ProtectedRefAccess < Grape::Entity

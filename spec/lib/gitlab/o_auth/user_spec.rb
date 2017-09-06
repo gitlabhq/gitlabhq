@@ -10,7 +10,11 @@ describe Gitlab::OAuth::User do
     {
       nickname: '-john+gitlab-ETC%.git@gmail.com',
       name: 'John',
-      email: 'john@mail.com'
+      email: 'john@mail.com',
+      address: {
+        locality: 'locality',
+        country: 'country'
+      }
     }
   end
   let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
@@ -422,11 +426,12 @@ describe Gitlab::OAuth::User do
     end
   end
 
-  describe 'updating email' do
+  describe 'ensure backwards compatibility with with sync email from provider option' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
       stub_omniauth_config(sync_email_from_provider: 'my-provider')
+      stub_omniauth_config(sync_profile_from_provider: ['my-provider'])
     end
 
     context "when provider sets an email" do
@@ -434,12 +439,12 @@ describe Gitlab::OAuth::User do
         expect(gl_user.email).to eq(info_hash[:email])
       end
 
-      it "has external_email set to true" do
-        expect(gl_user.external_email?).to be(true)
+      it "has external_attributes set to true" do
+        expect(gl_user.user_synced_attributes_metadata).not_to be_nil
       end
 
-      it "has email_provider set to provider" do
-        expect(gl_user.email_provider).to eql 'my-provider'
+      it "has attributes_provider set to my-provider" do
+        expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
       end
     end
 
@@ -452,8 +457,9 @@ describe Gitlab::OAuth::User do
         expect(gl_user.email).not_to eq(info_hash[:email])
       end
 
-      it "has external_email set to false" do
-        expect(gl_user.external_email?).to be(false)
+      it "has user_synced_attributes_metadata set to nil" do
+        expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
       end
     end
   end
@@ -484,6 +490,174 @@ describe Gitlab::OAuth::User do
 
       it 'generates the username with a counter' do
         expect(gl_user.username).to eq('admin1')
+      end
+    end
+  end
+
+  describe 'updating email with sync profile' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    before do
+      stub_omniauth_config(sync_profile_from_provider: ['my-provider'])
+      stub_omniauth_config(sync_profile_attributes: true)
+    end
+
+    context "when provider sets an email" do
+      it "updates the user email" do
+        expect(gl_user.email).to eq(info_hash[:email])
+      end
+
+      it "has email_synced_attribute set to true" do
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(true)
+      end
+
+      it "has my-provider as attributes_provider" do
+        expect(gl_user.user_synced_attributes_metadata.provider).to eql 'my-provider'
+      end
+    end
+
+    context "when provider doesn't set an email" do
+      before do
+        info_hash.delete(:email)
+      end
+
+      it "does not update the user email" do
+        expect(gl_user.email).not_to eq(info_hash[:email])
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(false)
+      end
+    end
+  end
+
+  describe 'updating name' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    before do
+      stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
+      stub_omniauth_setting(sync_profile_attributes: true)
+    end
+
+    context "when provider sets a name" do
+      it "updates the user name" do
+        expect(gl_user.name).to eq(info_hash[:name])
+      end
+    end
+
+    context "when provider doesn't set a name" do
+      before do
+        info_hash.delete(:name)
+      end
+
+      it "does not update the user name" do
+        expect(gl_user.name).not_to eq(info_hash[:name])
+        expect(gl_user.user_synced_attributes_metadata.name_synced).to be(false)
+      end
+    end
+  end
+
+  describe 'updating location' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    before do
+      stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
+      stub_omniauth_setting(sync_profile_attributes: true)
+    end
+
+    context "when provider sets a location" do
+      it "updates the user location" do
+        expect(gl_user.location).to eq(info_hash[:address][:locality] + ', ' + info_hash[:address][:country])
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(true)
+      end
+    end
+
+    context "when provider doesn't set a location" do
+      before do
+        info_hash[:address].delete(:country)
+        info_hash[:address].delete(:locality)
+      end
+
+      it "does not update the user location" do
+        expect(gl_user.location).to be_nil
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(false)
+      end
+    end
+  end
+
+  describe 'updating user info' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    context "update all info" do
+      before do
+        stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
+        stub_omniauth_setting(sync_profile_attributes: true)
+      end
+
+      it "updates the user email" do
+        expect(gl_user.email).to eq(info_hash[:email])
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(true)
+      end
+
+      it "updates the user name" do
+        expect(gl_user.name).to eq(info_hash[:name])
+        expect(gl_user.user_synced_attributes_metadata.name_synced).to be(true)
+      end
+
+      it "updates the user location" do
+        expect(gl_user.location).to eq(info_hash[:address][:locality] + ', ' + info_hash[:address][:country])
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(true)
+      end
+
+      it "sets my-provider as the attributes provider" do
+        expect(gl_user.user_synced_attributes_metadata.provider).to eql('my-provider')
+      end
+    end
+
+    context "update only requested info" do
+      before do
+        stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
+        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+      end
+
+      it "updates the user name" do
+        expect(gl_user.name).to eq(info_hash[:name])
+        expect(gl_user.user_synced_attributes_metadata.name_synced).to be(true)
+      end
+
+      it "updates the user location" do
+        expect(gl_user.location).to eq(info_hash[:address][:locality] + ', ' + info_hash[:address][:country])
+        expect(gl_user.user_synced_attributes_metadata.location_synced).to be(true)
+      end
+
+      it "does not update the user email" do
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(false)
+      end
+    end
+
+    context "update default_scope" do
+      before do
+        stub_omniauth_setting(sync_profile_from_provider: ['my-provider'])
+      end
+
+      it "updates the user email" do
+        expect(gl_user.email).to eq(info_hash[:email])
+        expect(gl_user.user_synced_attributes_metadata.email_synced).to be(true)
+      end
+    end
+
+    context "update no info when profile sync is nil" do
+      it "does not have sync_attribute" do
+        expect(gl_user.user_synced_attributes_metadata).to be(nil)
+      end
+
+      it "does not update the user email" do
+        expect(gl_user.email).not_to eq(info_hash[:email])
+      end
+
+      it "does not update the user name" do
+        expect(gl_user.name).not_to eq(info_hash[:name])
+      end
+
+      it "does not update the user location" do
+        expect(gl_user.location).not_to eq(info_hash[:address][:country])
       end
     end
   end

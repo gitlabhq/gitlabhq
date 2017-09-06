@@ -18,6 +18,7 @@ module Gitlab
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
+      DeleteBranchError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -653,10 +654,16 @@ module Gitlab
       end
 
       # Delete the specified branch from the repository
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
-        rugged.branches.delete(branch_name)
+        gitaly_migrate(:delete_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.delete_branch(branch_name)
+          else
+            rugged.branches.delete(branch_name)
+          end
+        end
+      rescue Rugged::ReferenceError, CommandError => e
+        raise DeleteBranchError, e
       end
 
       def delete_refs(*ref_names)
@@ -681,15 +688,14 @@ module Gitlab
       # Examples:
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def create_branch(ref, start_point = "HEAD")
-        rugged_ref = rugged.branches.create(ref, start_point)
-        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-      rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
-        raise InvalidRef.new("Invalid reference #{start_point}")
+        gitaly_migrate(:create_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.create_branch(ref, start_point)
+          else
+            rugged_create_branch(ref, start_point)
+          end
+        end
       end
 
       # Delete the specified remote from this repository.
@@ -1224,6 +1230,15 @@ module Gitlab
       # exist when it has an invalid name).
       rescue Rugged::ReferenceError
         false
+      end
+
+      def rugged_create_branch(ref, start_point)
+        rugged_ref = rugged.branches.create(ref, start_point)
+        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+      rescue Rugged::ReferenceError => e
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
       def gitaly_copy_gitattributes(revision)

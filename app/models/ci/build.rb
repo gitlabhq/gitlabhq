@@ -27,7 +27,6 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -449,6 +448,10 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
     end
 
     private

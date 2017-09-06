@@ -108,6 +108,7 @@ module API
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Jobs
+    mount ::API::JobArtifacts
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint

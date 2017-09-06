@@ -63,7 +63,7 @@ export default class NewNavSidebar {
     if (breakpoint === 'sm' || breakpoint === 'md') {
       this.toggleCollapsedSidebar(true);
     } else if (breakpoint === 'lg') {
-      const collapse = Cookies.get('sidebar_collapsed') === 'true';
+      const collapse = this.$sidebar.hasClass('sidebar-icons-only');
       this.toggleCollapsedSidebar(collapse);
     }
   }

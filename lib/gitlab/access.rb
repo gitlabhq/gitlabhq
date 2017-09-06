@@ -67,10 +67,14 @@ module Gitlab
       def protection_values
         protection_options.values
       end
+
+      def human_access(access)
+        options_with_owner.key(access)
+      end
     end
 
     def human_access
-      Gitlab::Access.options_with_owner.key(access_field)
+      Gitlab::Access.human_access(access_field)
     end
 
     def owner?
