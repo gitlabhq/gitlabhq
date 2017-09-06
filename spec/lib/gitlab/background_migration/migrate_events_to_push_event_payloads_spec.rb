@@ -222,6 +222,7 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migrati
   end
 
   let(:migration) { described_class.new }
+  let(:user_class) { table(:users) }
   let(:author) { build(:user).becomes(user_class).tap(&:save!).becomes(User) }
   let(:namespace) { create(:namespace, owner: author) }
   let(:project) { create(:project_empty_repo, namespace: namespace, creator: author) }
