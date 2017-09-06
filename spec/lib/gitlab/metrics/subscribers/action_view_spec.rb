@@ -32,7 +32,6 @@ describe Gitlab::Metrics::Subscribers::ActionView do
     end
 
     it 'observes view rendering time' do
-
       expect(described_class.metric_view_rendering_duration_seconds)
         .to receive(:observe)
               .with({ view: 'app/views/x.html.haml' }, 2.1)

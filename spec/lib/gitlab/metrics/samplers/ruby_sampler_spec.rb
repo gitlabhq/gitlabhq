@@ -50,7 +50,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     it 'adds a metric containing garbage collection time statistics' do
       expect(GC::Profiler).to receive(:total_time).and_return(0.24)
 
-
       expect(sampler.metrics[:total_time]).to receive(:set)
                                                 .with({}, 240)
                                                 .and_call_original
@@ -80,7 +79,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
 
       it 'ignores classes without a name' do
         expect(Allocations).to receive(:to_hash).and_return({ Class.new => 4 })
-
 
         expect(sampler.metrics[:objects_total]).not_to receive(:set)
                                                          .with(include(class: 'object_counts'), anything)
