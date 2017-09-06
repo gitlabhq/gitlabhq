@@ -100,16 +100,16 @@ module Ci
     end
 
     def allowed_to_create?
-      access = Gitlab::UserAccess.new(current_user, project: project)
+      return unless can?(current_user, :create_pipeline, project)
 
-      can?(current_user, :create_pipeline, project) &&
-        if branch?
-          access.can_update_branch?(ref)
-        elsif tag?
-          access.can_create_tag?(ref)
-        else
-          true # Allow it for now and we'll reject when we check ref existence
-        end
+      access = Gitlab::UserAccess.new(current_user, project: project)
+      if branch?
+        access.can_update_branch?(ref)
+      elsif tag?
+        access.can_create_tag?(ref)
+      else
+        true # Allow it for now and we'll reject when we check ref existence
+      end
     end
 
     def update_merge_requests_head_pipeline
