@@ -25,7 +25,6 @@
 
       return {
         endpoint: pipelinesData.endpoint,
-        cssClass: pipelinesData.cssClass,
         helpPagePath: pipelinesData.helpPagePath,
         autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
@@ -140,9 +139,7 @@
   };
 </script>
 <template>
-  <div
-    class="pipelines-container"
-    :class="cssClass">
+  <div class="pipelines-container">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
       v-if="!isLoading && !shouldRenderEmptyState">
