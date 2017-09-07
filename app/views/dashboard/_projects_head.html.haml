@@ -1,10 +1,6 @@
 = content_for :flash_message do
   = render 'shared/project_limit'
 
-- if current_user.can_create_project?
-  - content_for :breadcrumbs_extra do
-    = link_to "New project", new_project_path, class: 'btn btn-new'
-
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
@@ -19,8 +15,8 @@
       = link_to explore_root_path, title: 'Explore', data: {placement: 'right'} do
         Explore projects
 
-  .nav-controls.nav-controls-new-nav
+  .nav-controls
     = render 'shared/projects/search_form'
     = render 'shared/projects/dropdown'
     - if current_user.can_create_project?
-      = link_to "New project", new_project_path, class: "btn btn-new visible-xs"
+      = link_to "New project", new_project_path, class: "btn btn-new"
