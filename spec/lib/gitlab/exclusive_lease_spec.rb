@@ -47,6 +47,18 @@ describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '.get_uuid' do
+    it 'gets the uuid if lease with the key associated exists' do
+      uuid = described_class.new(unique_key, timeout: 3600).try_obtain
+
+      expect(described_class.get_uuid(unique_key)).to eq(uuid)
+    end
+
+    it 'returns false if the lease does not exist' do
+      expect(described_class.get_uuid(unique_key)).to be false
+    end
+  end
+
   describe '.cancel' do
     it 'can cancel a lease' do
       uuid = new_lease(unique_key)
