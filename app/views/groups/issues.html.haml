@@ -10,17 +10,9 @@
   = webpack_bundle_tag 'issues'
 
 - if group_issues_exists
-  - content_for :breadcrumbs_extra do
-    = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10' do
-      = icon('rss')
-      %span.icon-label
-        Subscribe
-    = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues
-
-- if group_issues_exists
   .top-area
     = render 'shared/issuable/nav', type: :issues
-    .nav-controls.visible-xs
+    .nav-controls
       = link_to params.merge(rss_url_options), class: 'btn' do
         = icon('rss')
         %span.icon-label

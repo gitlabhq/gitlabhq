@@ -62,7 +62,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New issue"' do
-    page.within '.breadcrumbs' do
+    page.within '#content-body' do
       page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
     end
   end
