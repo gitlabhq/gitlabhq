@@ -58,6 +58,7 @@ following locations:
 - [Validate CI configuration](lint.md)
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
+- [Wikis](wikis.md)
 
 ## Road to GraphQL
 
