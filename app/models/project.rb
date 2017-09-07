@@ -477,6 +477,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def has_auto_devops_implicitly_disabled?
+    auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
+  end
+
   def repository_storage_path
     Gitlab.config.repositories.storages[repository_storage].try(:[], 'path')
   end
