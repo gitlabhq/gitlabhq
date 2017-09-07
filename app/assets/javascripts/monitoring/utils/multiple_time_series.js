@@ -10,25 +10,27 @@ const defaultColorPalette = {
 };
 
 const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
-let usedColors = [];
-function pickColor(name) {
-  let pick;
-  if (name && defaultColorPalette[name]) {
-    pick = name;
-  } else {
-    const unusedColors = _.difference(defaultColorOrder, usedColors);
-    if (unusedColors.length > 0) {
-      pick = unusedColors[0];
-    } else {
-      usedColors = [];
-      pick = defaultColorOrder[0];
-    }
-  }
-  usedColors.push(pick);
-  return defaultColorPalette[pick];
-}
 
 export default function createTimeSeries(queryData, graphWidth, graphHeight, graphHeightOffset) {
+  let usedColors = [];
+
+  function pickColor(name) {
+    let pick;
+    if (name && defaultColorPalette[name]) {
+      pick = name;
+    } else {
+      const unusedColors = _.difference(defaultColorOrder, usedColors);
+      if (unusedColors.length > 0) {
+        pick = unusedColors[0];
+      } else {
+        usedColors = [];
+        pick = defaultColorOrder[0];
+      }
+    }
+    usedColors.push(pick);
+    return defaultColorPalette[pick];
+  }
+
   const maxValues = queryData.result.map((timeSeries, index) => {
     const maxValue = d3.max(timeSeries.values.map(d => d.value));
     return {
@@ -45,6 +47,7 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
     let metricTag = '';
     let lineColor = '#1f78d1';
     let areaColor = '#8fbce8';
+
     const timeSeriesScaleX = d3.time.scale()
       .range([0, graphWidth - 70]);
 
