@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
+    t.boolean "auto_devops_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -340,6 +341,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
+    t.integer "config_source"
     t.boolean "protected"
   end
 
@@ -1108,6 +1110,16 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_index "project_authorizations", ["project_id"], name: "index_project_authorizations_on_project_id", using: :btree
   add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
 
+  create_table "project_auto_devops", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled"
+    t.string "domain"
+  end
+
+  add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
+
   create_table "project_features", force: :cascade do |t|
     t.integer "project_id"
     t.integer "merge_requests_access_level"
@@ -1596,6 +1608,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
     t.string "rss_token"
+    t.integer "theme_id", limit: 2
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1723,6 +1736,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
+  add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade

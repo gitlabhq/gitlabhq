@@ -734,6 +734,11 @@
   overflow: hidden;
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+}
+
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
@@ -760,6 +765,10 @@
         padding: 8px 16px;
       }
 
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
       a,
       button,
       .menu-item {
@@ -779,6 +788,8 @@
         &:hover,
         &:active,
         &:focus {
+          @include dropdown-item-hover;
+
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
 
@@ -837,17 +848,30 @@
   }
 }
 
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+}
+
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
 header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;
-
-  @media (max-width: $screen-xs-max) {
-    display: table;
-    left: -50px;
-    min-width: 300px;
-  }
 }
 
 .projects-dropdown-container {

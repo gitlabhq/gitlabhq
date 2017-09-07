@@ -7,7 +7,7 @@ require 'gitlab'
 # in order to avoid conflicts
 #
 @docs_branch = "#{ENV["CI_COMMIT_REF_SLUG"]}-built-from-ce-ee"
-GITLAB_DOCS_REPO = 'gitlab-com/gitlab-docs'
+GITLAB_DOCS_REPO = 'gitlab-com/gitlab-docs'.freeze
 
 #
 # Configure credentials to be used with gitlab gem
@@ -20,8 +20,8 @@ end
 #
 # Dummy way to find out in which repo we are, CE or EE
 #
-def is_ee?
-  File.exists?('CHANGELOG-EE.md')
+def ee?
+  File.exist?('CHANGELOG-EE.md')
 end
 
 #
@@ -30,7 +30,7 @@ end
 def create_remote_branch
   Gitlab.create_branch(GITLAB_DOCS_REPO, @docs_branch, 'master')
   puts "Remote branch '#{@docs_branch}' created"
-rescue Gitlab::Error::BadRequest => e
+rescue Gitlab::Error::BadRequest
   puts "Remote branch '#{@docs_branch}' already exists"
 end
 
@@ -47,10 +47,10 @@ end
 #
 def trigger_pipeline
   # Overriding vars in https://gitlab.com/gitlab-com/gitlab-docs/blob/master/.gitlab-ci.yml
-  param_name = is_ee? ? 'BRANCH_EE' : 'BRANCH_CE'
+  param_name = ee? ? 'BRANCH_EE' : 'BRANCH_CE'
 
   # The review app URL
-  app_url = "http://#{@docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{is_ee? ? 'ee' : 'ce'}"
+  app_url = "http://#{@docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{ee? ? 'ee' : 'ce'}"
 
   # Create the pipeline
   puts "=> Triggering a pipeline..."

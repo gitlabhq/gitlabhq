@@ -987,6 +987,24 @@ msgstr ""
 msgid "Push Rules"
 msgstr ""
 
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 

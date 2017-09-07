@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
   default_value_for :project_view, :files
   default_value_for :notified_of_own_activity, false
   default_value_for :preferred_language, I18n.default_locale
+  default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -72,7 +73,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -259,11 +260,13 @@ class User < ActiveRecord::Base
     end
 
     def sort(method)
-      case method.to_s
+      order_method = method || 'id_desc'
+
+      case order_method.to_s
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
       else
-        order_by(method)
+        order_by(order_method)
       end
     end
 
@@ -371,7 +374,7 @@ class User < ActiveRecord::Base
 
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
-      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+      Key.find_by(id: key_id)&.user
     end
 
     def find_by_full_path(path, follow_redirects: false)

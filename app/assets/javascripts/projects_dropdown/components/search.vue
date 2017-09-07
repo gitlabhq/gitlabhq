@@ -53,7 +53,7 @@ export default {
       class="form-control"
       ref="search"
       v-model="searchQuery"
-      :placeholder="s__('ProjectsDropdown|Search projects')"
+      :placeholder="s__('ProjectsDropdown|Search your projects')"
     />
     <i
       v-if="!searchQuery"

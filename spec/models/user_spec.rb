@@ -716,6 +716,7 @@ describe User do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
+        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
@@ -726,6 +727,7 @@ describe User do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
+        expect(user.theme_id).to eq(1)
       end
     end
 
@@ -1517,7 +1519,7 @@ describe User do
       developer_project = create(:project) { |p| p.add_developer(user) }
       master_project    = create(:project) { |p| p.add_master(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
+      expect(user.projects_where_can_admin_issues.to_a).to match_array([master_project, developer_project, reporter_project])
       expect(user.can?(:admin_issue, master_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)

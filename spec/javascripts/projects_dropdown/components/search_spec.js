@@ -94,7 +94,7 @@ describe('SearchComponent', () => {
       expect(vm.$el.classList.contains('search-input-container')).toBeTruthy();
       expect(vm.$el.classList.contains('hidden-xs')).toBeTruthy();
       expect(inputEl).not.toBe(null);
-      expect(inputEl.getAttribute('placeholder')).toBe('Search projects');
+      expect(inputEl.getAttribute('placeholder')).toBe('Search your projects');
       expect(vm.$el.querySelector('.search-icon')).toBeDefined();
     });
   });

@@ -15,9 +15,13 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { size: 16 }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+
+    classes = %W[avatar avatar-inline s#{opts[:size]}]
+    classes << opts[:avatar_class] if opts[:avatar_class]
+
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: classes, alt: '')
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -29,7 +33,7 @@ module ProjectsHelper
     author_html = ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
+    author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -539,6 +543,43 @@ module ProjectsHelper
     return [] if current_user.admin?
 
     current_application_settings.restricted_visibility_levels || []
+  end
+
+  def project_permissions_settings(project)
+    feature = project.project_feature
+    {
+      visibilityLevel: project.visibility_level,
+      requestAccessEnabled: !!project.request_access_enabled,
+      issuesAccessLevel: feature.issues_access_level,
+      repositoryAccessLevel: feature.repository_access_level,
+      mergeRequestsAccessLevel: feature.merge_requests_access_level,
+      buildsAccessLevel: feature.builds_access_level,
+      wikiAccessLevel: feature.wiki_access_level,
+      snippetsAccessLevel: feature.snippets_access_level,
+      containerRegistryEnabled: !!project.container_registry_enabled,
+      lfsEnabled: !!project.lfs_enabled
+    }
+  end
+
+  def project_permissions_panel_data(project)
+    data = {
+      currentSettings: project_permissions_settings(project),
+      canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
+      allowedVisibilityOptions: project_allowed_visibility_levels(project),
+      visibilityHelpPath: help_page_path('public_access/public_access'),
+      registryAvailable: Gitlab.config.registry.enabled,
+      registryHelpPath: help_page_path('user/project/container_registry'),
+      lfsAvailable: Gitlab.config.lfs.enabled && current_user.admin?,
+      lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+    }
+
+    data.to_json.html_safe
+  end
+
+  def project_allowed_visibility_levels(project)
+    Gitlab::VisibilityLevel.values.select do |level|
+      project.visibility_level_allowed?(level) && !restricted_levels.include?(level)
+    end
   end
 
   def find_file_path
