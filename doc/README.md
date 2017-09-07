@@ -24,7 +24,7 @@ plus premium features available in each version: **Enterprise Edition Starter**
 
 Shortcuts to GitLab's most visited docs:
 
-| [GitLab CI](ci/README.md) | Other |
+| [GitLab CI/CD](ci/README.md) | Other |
 | :----- | :----- |
 | [Quick start guide](ci/quick_start/README.md) | [API](api/README.md) |
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) | [SSH authentication](ssh/README.md) |
@@ -41,6 +41,7 @@ Shortcuts to GitLab's most visited docs:
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
 - [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [Auto DevOps](topics/autodevops/index.md)
 
 ### User account
 
