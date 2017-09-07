@@ -53,7 +53,7 @@ module Gitlab
         return metric if metric
 
         PROVIDER_MUTEX.synchronize do
-          provide_metric(name) || registry.send(method, *args)
+          provide_metric(name) || registry.send(method, name, *args)
         end
       end
 

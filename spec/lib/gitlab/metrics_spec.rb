@@ -199,7 +199,7 @@ describe Gitlab::Metrics do
 
   shared_examples 'prometheus metrics API' do
     describe '#counter' do
-      subject { described_class.counter(:couter, 'doc') }
+      subject { described_class.counter(:counter, 'doc') }
 
       describe '#increment' do
         it 'successfully calls #increment without arguments' do
@@ -255,7 +255,7 @@ describe Gitlab::Metrics do
     it_behaves_like 'prometheus metrics API'
 
     describe '#null_metric' do
-      subject { described_class.provide_metric(:test) }
+      subject { described_class.send(:provide_metric, :test) }
 
       it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
     end
@@ -296,7 +296,7 @@ describe Gitlab::Metrics do
     it_behaves_like 'prometheus metrics API'
 
     describe '#null_metric' do
-      subject { described_class.provide_metric(:test) }
+      subject { described_class.send(:provide_metric, :test) }
 
       it { is_expected.to be_nil }
     end

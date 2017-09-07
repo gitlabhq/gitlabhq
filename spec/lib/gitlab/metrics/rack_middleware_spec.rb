@@ -18,20 +18,6 @@ describe Gitlab::Metrics::RackMiddleware do
       expect(middleware.call(env)).to eq('yay')
     end
 
-    xit 'tags a transaction with the name and action of a controller' do
-      klass      = double(:klass, name: 'TestController')
-      controller = double(:controller, class: klass, action_name: 'show', content_type: 'text/html')
-
-      env['action_controller.instance'] = controller
-
-      allow(app).to receive(:call).with(env)
-
-      expect(middleware).to receive(:tag_controller)
-        .with(an_instance_of(Gitlab::Metrics::Transaction), env)
-
-      middleware.call(env)
-    end
-
     it 'tracks any raised exceptions' do
       expect(app).to receive(:call).with(env).and_raise(RuntimeError)
 
