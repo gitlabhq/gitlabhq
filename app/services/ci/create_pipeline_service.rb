@@ -34,6 +34,9 @@ module Ci
         end
       rescue ActiveRecord::RecordInvalid => e
         return error("Failed to persist the pipeline: #{e}")
+      rescue InternalId2::FailedToSaveInternalIdError
+        # TODO: We need to roolback!!!!!!
+        return error("Failed to persist the pipeline: #{e}")
       end
 
       update_merge_requests_head_pipeline

@@ -1,6 +1,8 @@
 module InternalId2
   extend ActiveSupport::Concern
 
+  FailedToSaveInternalIdError = Class.new(StandardError)
+
   included do
     after_commit :set_iid, on: :create
   end
@@ -14,17 +16,17 @@ module InternalId2
       retries ||= 0
       max_iid = records.maximum(:iid) || -1
       update_columns(iid: max_iid.to_i + 1) # Avoid infinite loop
-    rescue ActiveRecord::RecordNotUnique => e
+    rescue ActiveRecord::RecordNotUnique
       if (retries += 1) < 3
         retry
       else
-        raise ActiveRecord::RecordInvalid
+        raise FailedToSaveInternalIdError
       end
     end
   end
 
   def table_name
     self.class.name.deconstantize.split("::").map(&:underscore).join('_')
-      + self.class.name.demodulize.tableize
+    + self.class.name.demodulize.tableize
   end
 end

@@ -481,6 +481,18 @@ describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'when failed to set_iid' do
+      before do
+        allow_any_instance_of(Ci::Pipeline).to receive(:set_iid).and_raise(InternalId2::FailedToSaveInternalIdError)
+      end
+
+      let(:pipeline) { execute_service }
+
+      it 'does not create a new pipeline' do
+        expect(pipeline).not_to be_persisted
+      end
+    end
   end
 
   describe '#allowed_to_create?' do

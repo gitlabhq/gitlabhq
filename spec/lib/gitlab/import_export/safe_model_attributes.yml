@@ -206,6 +206,7 @@ MergeRequestDiffFile:
 - binary
 Ci::Pipeline:
 - id
+- iid
 - project_id
 - source
 - ref

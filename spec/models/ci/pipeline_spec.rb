@@ -183,7 +183,7 @@ describe Ci::Pipeline, :mailer do
     it 'includes the defined keys' do
       keys = subject.map { |v| v[:key] }
 
-      expect(keys).to eq(['CI_PIPELINE_ID', 'CI_PIPELINE_IID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE'])
+      expect(keys).to eq(%w[CI_PIPELINE_ID CI_PIPELINE_IID CI_CONFIG_PATH CI_PIPELINE_SOURCE])
     end
 
     context 'when iid is nil' do
