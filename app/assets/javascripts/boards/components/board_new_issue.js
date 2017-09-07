@@ -1,18 +1,39 @@
 /* global ListIssue */
 import eventHub from '../eventhub';
+import ProjectSelect from './project_select.vue';
 
 const Store = gl.issueBoards.BoardsStore;
 
 export default {
   name: 'BoardNewIssue',
   props: {
-    list: Object,
+    groupId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    list: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
       title: '',
       error: false,
+      selectedProject: {},
     };
+  },
+  components: {
+    'project-select': ProjectSelect,
+  },
+  computed: {
+    disabled() {
+      if (this.groupId) {
+        return this.title === '' || !this.selectedProject.name;
+      }
+      return this.title === '';
+    },
   },
   methods: {
     submit(e) {
@@ -27,6 +48,7 @@ export default {
         labels,
         subscribed: true,
         assignees: [],
+        project_id: this.selectedProject.id,
       });
 
       if (Store.state.currentBoard) {
@@ -59,43 +81,53 @@ export default {
       this.title = '';
       eventHub.$emit(`hide-issue-form-${this.list.id}`);
     },
+    setSelectedProject(selectedProject) {
+      this.selectedProject = selectedProject;
+    },
   },
   mounted() {
     this.$refs.input.focus();
+    eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   template: `
-    <div class="card board-new-issue-form">
-      <form @submit="submit($event)">
-        <div class="flash-container"
-          v-if="error">
-          <div class="flash-alert">
-            An error occured. Please try again.
+    <div class="board-new-issue-form">
+      <div class="card">
+        <form @submit="submit($event)">
+          <div class="flash-container"
+            v-if="error">
+            <div class="flash-alert">
+              An error occured. Please try again.
+            </div>
           </div>
-        </div>
-        <label class="label-light"
-          :for="list.id + '-title'">
-          Title
-        </label>
-        <input class="form-control"
-          type="text"
-          v-model="title"
-          ref="input"
-          autocomplete="off"
-          :id="list.id + '-title'" />
-        <div class="clearfix prepend-top-10">
-          <button class="btn btn-success pull-left"
-            type="submit"
-            :disabled="title === ''"
-            ref="submit-button">
-            Submit issue
-          </button>
-          <button class="btn btn-default pull-right"
-            type="button"
-            @click="cancel">
-            Cancel
-          </button>
-        </div>
-      </form>
+          <label class="label-light"
+            :for="list.id + '-title'">
+            Title
+          </label>
+          <input class="form-control"
+            type="text"
+            v-model="title"
+            ref="input"
+            autocomplete="off"
+            :id="list.id + '-title'" />
+          <project-select
+            v-if="groupId"
+            :groupId="groupId"
+          />
+          <div class="clearfix prepend-top-10">
+            <button class="btn btn-success pull-left"
+              type="submit"
+              :disabled="disabled"
+              ref="submit-button">
+              Submit issue
+            </button>
+            <button class="btn btn-default pull-right"
+              type="button"
+              @click="cancel">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   `,
 };

@@ -18,6 +18,7 @@ class License < ActiveRecord::Base
   ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
+  GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
   JIRA_DEV_PANEL_INTEGRATION_FEATURE = 'GitLab_JiraDevelopmentPanelIntegration'.freeze
@@ -62,6 +63,7 @@ class License < ActiveRecord::Base
     issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
     issue_board_focus_mode: ISSUE_BOARD_FOCUS_MODE_FEATURE,
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
+    group_issue_boards: GROUP_ISSUE_BOARDS_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
     jenkins_integration: JENKINS_INTEGRATION_FEATURE,
     jira_dev_panel_integration: JIRA_DEV_PANEL_INTEGRATION_FEATURE,
@@ -118,7 +120,8 @@ class License < ActiveRecord::Base
     { OBJECT_STORAGE_FEATURE => 1 },
     { JIRA_DEV_PANEL_INTEGRATION_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 },
-    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
+    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 },
+    { GROUP_ISSUE_BOARDS_FEATURE => 1 }
   ].freeze
 
   EEU_FEATURES = [

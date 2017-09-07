@@ -80,7 +80,7 @@ describe Issues::UpdateService, :mailer do
           issue.save
         end
 
-        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+        opts[:move_between_ids] = [issue1.id, issue2.id]
 
         update_issue(opts)
 

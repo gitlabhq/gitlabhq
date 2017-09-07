@@ -4,11 +4,12 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
+import IssueProject from './project';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
-    this.globalId = obj.id;
-    this.id = obj.iid;
+    this.id = obj.id;
+    this.iid = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
     this.dueDate = obj.due_date;
@@ -18,6 +19,11 @@ class ListIssue {
     this.selected = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
+    this.project_id = obj.project_id;
+
+    if (obj.project) {
+      this.project = new IssueProject(obj.project);
+    }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -88,7 +94,8 @@ class ListIssue {
       data.issue.label_ids = [''];
     }
 
-    return Vue.http.patch(url, data);
+    const projectPath = this.project ? this.project.path : '';
+    return Vue.http.patch(url.replace(':project_path', projectPath), data);
   }
 }
 

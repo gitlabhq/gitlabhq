@@ -4,7 +4,7 @@ module EE
       def execute
         raise NotImplementedError unless defined?(super)
 
-        if project.feature_available?(:multiple_issue_boards, current_user)
+        if parent.multiple_issue_boards_available?(current_user)
           super
         else
           super.limit(1)

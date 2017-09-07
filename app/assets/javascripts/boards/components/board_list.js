@@ -9,6 +9,11 @@ const Store = gl.issueBoards.BoardsStore;
 export default {
   name: 'BoardList',
   props: {
+    groupId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     disabled: {
       type: Boolean,
       required: true,
@@ -77,7 +82,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },
@@ -160,17 +165,19 @@ export default {
   template: `
     <div class="board-list-component">
       <div
+        key="loading"
         class="board-list-loading text-center"
         aria-label="Loading issues"
         v-if="loading">
         <loading-icon />
       </div>
-      <transition name="slide-down">
-        <board-new-issue
-          :list="list"
-          v-if="list.type !== 'closed' && showIssueForm"/>
-      </transition>
+      <board-new-issue
+        key="newIssue"
+        :group-id="groupId"
+        :list="list"
+        v-if="list.type !== 'closed' && showIssueForm"/>
       <ul
+        key="list"
         class="board-list"
         v-show="!loading"
         ref="list"
@@ -183,6 +190,7 @@ export default {
           :list="list"
           :issue="issue"
           :issue-link-base="issueLinkBase"
+          :group-id="groupId"
           :root-path="rootPath"
           :disabled="disabled"
           :key="issue.id" />

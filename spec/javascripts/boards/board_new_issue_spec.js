@@ -1,5 +1,6 @@
 /* global boardsMockInterceptor */
 /* global BoardService */
+/* global mockBoardService */
 /* global List */
 /* global listObj */
 
@@ -35,7 +36,7 @@ describe('Issue boards new issue form', () => {
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 

@@ -1,5 +1,8 @@
 - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
 - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
+- issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
+- if @group.feature_available?(:group_issue_boards)
+  - issues_sub_menu_items.push('boards#index')
 
 .nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
@@ -39,7 +42,7 @@
                 %span
                   Contribution Analytics
 
-      = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
+      = nav_link(path: issues_sub_menu_items) do
         = sidebar_link issues_group_path(@group), title: _('Issues') do
           .nav-icon-container
             = custom_icon('issues')
@@ -58,6 +61,12 @@
             = link_to issues_group_path(@group), title: 'List' do
               %span
                 List
+
+          - if @group.feature_available?(:group_issue_boards)
+            = nav_link(path: 'boards#index') do
+              = link_to group_boards_path(@group), title: 'Boards' do
+                %span
+                  Boards
 
           = nav_link(path: 'labels#index') do
             = link_to group_labels_path(@group), title: 'Labels' do

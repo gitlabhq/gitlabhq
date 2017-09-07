@@ -6,6 +6,12 @@ module EE
       with_scope :subject
       condition(:ldap_synced) { @subject.ldap_synced? }
 
+      rule { reporter }.policy do
+        enable :admin_list
+        enable :admin_board
+        enable :admin_issue
+      end
+
       condition(:can_owners_manage_ldap, scope: :global) do
         ::Gitlab::CurrentSettings.current_application_settings
           .allow_group_owners_to_manage_ldap

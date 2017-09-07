@@ -147,13 +147,12 @@
     }
 
     .board-title {
-      position: initial;
       padding: 0;
       border-bottom: 0;
 
       > span {
         display: block;
-        transform: rotate(90deg) translate(25px, 0);
+        transform: rotate(90deg) translate(35px, 10px);
       }
     }
 
@@ -181,11 +180,18 @@
 }
 
 .board-header {
-  border-top-left-radius: $border-radius-default;
-  border-top-right-radius: $border-radius-default;
+  position: relative;
 
-  &.has-border {
+  &.has-border::before {
     border-top: 3px solid;
+    border-color: inherit;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    content: '';
+    position: absolute;
+    width: calc(100% + 2px);
+    top: 0;
+    left: 0;
     margin-top: -1px;
     margin-right: -1px;
     margin-left: -1px;
@@ -206,12 +212,16 @@
 }
 
 .board-title {
-  position: relative;
   margin: 0;
-  padding: $gl-padding;
-  padding-bottom: ($gl-padding + 3px);
+  padding: 12px $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+}
+
+.board-title-text {
+  margin-right: auto;
 }
 
 .board-delete {
@@ -259,43 +269,10 @@
   }
 }
 
-.slide-down-enter {
-  transform: translateY(-100%);
-}
-
-.slide-down-enter-active {
-  transition: transform $fade-in-duration;
-
-  + .board-list {
-    transform: translateY(-136px);
-    transition: none;
-  }
-}
-
-.slide-down-enter-to {
-  + .board-list {
-    transform: translateY(0);
-    transition: transform $fade-in-duration ease;
-  }
-}
-
-.slide-down-leave {
-  transform: translateY(0);
-}
-
-.slide-down-leave-active {
-  transition: all $fade-in-duration;
-  transform: translateY(-136px);
-
-  + .board-list {
-    transition: transform $fade-in-duration ease;
-    transform: translateY(-136px);
-  }
-}
-
 .board-list-component {
   height: calc(100% - 49px);
   overflow: hidden;
+  position: relative;
 }
 
 .board-list {
@@ -466,7 +443,7 @@
 }
 
 .board-new-issue-form {
-  z-index: 1;
+  z-index: 4;
   margin: 5px;
 }
 

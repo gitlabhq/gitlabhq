@@ -1,4 +1,7 @@
 class Label < ActiveRecord::Base
+  # EE specific
+  prepend EE::Label
+
   include CacheMarkdownField
   include Referable
   include Subscribable
@@ -34,7 +37,8 @@ class Label < ActiveRecord::Base
 
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
-  scope :on_project_boards, ->(project_id) { joins(lists: :board).merge(List.movable).where(boards: { project_id: project_id }) }
+  scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
+  scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)
     joins(:priorities)
@@ -172,6 +176,7 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
+      json[:type] = self.try(:type)
       json[:priority] = priority(options[:project]) if options.key?(:project)
     end
   end

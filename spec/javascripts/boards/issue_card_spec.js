@@ -37,6 +37,7 @@ describe('Issue card component', () => {
     list = listObj;
     issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [list.label],
@@ -51,6 +52,7 @@ describe('Issue card component', () => {
           issue,
           issueLinkBase: '/test',
           rootPath: '/',
+          groupId: null,
         };
       },
       components: {
@@ -60,6 +62,7 @@ describe('Issue card component', () => {
         <issue-card
           :issue="issue"
           :list="list"
+          :group-id="groupId"
           :issue-link-base="issueLinkBase"
           :root-path="rootPath"></issue-card>
       `,
@@ -238,65 +241,107 @@ describe('Issue card component', () => {
   });
 
   describe('labels', () => {
-    describe('exists', () => {
-      beforeEach((done) => {
-        component.issue.addLabel(label1);
+    beforeEach((done) => {
+      component.issue.addLabel(label1);
 
-        Vue.nextTick(() => done());
+      Vue.nextTick(() => done());
+    });
+
+    it('renders list label', () => {
+      expect(
+        component.$el.querySelectorAll('.label').length,
+      ).toBe(2);
+    });
+
+    it('renders label', () => {
+      const nodes = [];
+      component.$el.querySelectorAll('.label').forEach((label) => {
+        nodes.push(label.title);
       });
 
-      it('renders list label', () => {
-        expect(
-          component.$el.querySelectorAll('.label').length,
-        ).toBe(2);
+      expect(
+        nodes.includes(label1.description),
+      ).toBe(true);
+    });
+
+    it('sets label description as title', () => {
+      expect(
+        component.$el.querySelector('.label').getAttribute('title'),
+      ).toContain(label1.description);
+    });
+
+    it('sets background color of button', () => {
+      const nodes = [];
+      component.$el.querySelectorAll('.label').forEach((label) => {
+        nodes.push(label.style.backgroundColor);
       });
 
-      it('renders label', () => {
-        const nodes = [];
-        component.$el.querySelectorAll('.label').forEach((label) => {
-          nodes.push(label.title);
-        });
+      expect(
+        nodes.includes(label1.color),
+      ).toBe(true);
+    });
 
-        expect(
-          nodes.includes(label1.description),
-        ).toBe(true);
-      });
+    it('does not render label if label does not have an ID', (done) => {
+      component.issue.addLabel(new ListLabel({
+        title: 'closed',
+      }));
 
-      it('sets label description as title', () => {
-        expect(
-          component.$el.querySelector('.label').getAttribute('title'),
-        ).toContain(label1.description);
-      });
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el.querySelectorAll('.label').length,
+          ).toBe(2);
+          expect(
+            component.$el.textContent,
+          ).not.toContain('Closed');
 
-      it('sets background color of button', () => {
-        const nodes = [];
-        component.$el.querySelectorAll('.label').forEach((label) => {
-          nodes.push(label.style.backgroundColor);
-        });
+          done();
+        })
+        .catch(done.fail);
+    });
 
-        expect(
-          nodes.includes(label1.color),
-        ).toBe(true);
-      });
+    it('shows group labels on group boards', (done) => {
+      component.issue.addLabel(new ListLabel({
+        id: _.random(10000),
+        title: 'Group label',
+        type: 'GroupLabel',
+      }));
+      component.groupId = 1;
 
-      it('does not render label if label does not have an ID', (done) => {
-        component.issue.addLabel(new ListLabel({
-          title: 'closed',
-        }));
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el.querySelectorAll('.label').length,
+          ).toBe(3);
+          expect(
+            component.$el.textContent,
+          ).toContain('Group label');
 
-        Vue.nextTick()
-          .then(() => {
-            expect(
-              component.$el.querySelectorAll('.label').length,
-            ).toBe(2);
-            expect(
-              component.$el.textContent,
-            ).not.toContain('closed');
+          done();
+        })
+        .catch(done.fail);
+    });
 
-            done();
-          })
-          .catch(done.fail);
-      });
+    it('does not show project labels on group boards', (done) => {
+      component.issue.addLabel(new ListLabel({
+        id: 123,
+        title: 'Project label',
+        type: 'ProjectLabel',
+      }));
+      component.groupId = 1;
+
+      Vue.nextTick()
+        .then(() => {
+          expect(
+            component.$el.querySelectorAll('.label').length,
+          ).toBe(2);
+          expect(
+            component.$el.textContent,
+          ).not.toContain('Project label');
+
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });

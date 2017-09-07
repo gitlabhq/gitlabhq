@@ -4,16 +4,31 @@ module EE
 
     prepended do
       belongs_to :milestone
+      belongs_to :group
+
+      validates :group, presence: true, unless: :project
+    end
+
+    def project_needed?
+      !group
     end
 
     def milestone
-      return nil unless project.feature_available?(:issue_board_milestone)
+      return nil unless parent.feature_available?(:issue_board_milestone)
 
       if milestone_id == ::Milestone::Upcoming.id
         ::Milestone::Upcoming
       else
         super
       end
+    end
+
+    def parent
+      @parent ||= group || project
+    end
+
+    def group_board?
+      group_id.present?
     end
 
     def as_json(options = {})

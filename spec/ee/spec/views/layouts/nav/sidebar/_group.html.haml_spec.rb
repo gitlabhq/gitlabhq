@@ -41,5 +41,23 @@ describe 'layouts/nav/sidebar/_group' do
 
       expect(rendered).to have_text 'Contribution Analytics'
     end
+
+    describe 'group issue boards link' do
+      it 'is not visible when there is no valid license' do
+        stub_licensed_features(group_issue_boards: false)
+
+        render
+
+        expect(rendered).not_to have_text 'Boards'
+      end
+
+      it 'is visible when there is valid license' do
+        stub_licensed_features(group_issue_boards: true)
+
+        render
+
+        expect(rendered).to have_text 'Boards'
+      end
+    end
   end
 end

@@ -11,6 +11,7 @@ import './models/issue';
 import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';
@@ -58,7 +59,8 @@ $(() => {
     data: {
       state: Store.state,
       loading: true,
-      endpoint: $boardApp.dataset.endpoint,
+      boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+      listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
@@ -84,8 +86,13 @@ $(() => {
         Store.updateFiltersUrl(true);
       }
 
-      gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
-      Store.rootPath = this.endpoint;
+      gl.boardService = new BoardService({
+        boardsEndpoint: this.boardsEndpoint,
+        listsEndpoint: this.listsEndpoint,
+        bulkUpdatePath: this.bulkUpdatePath,
+        boardId: this.boardId,
+      });
+      Store.rootPath = this.boardsEndpoint;
 
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
       this.filterManager.setup();
@@ -149,7 +156,7 @@ $(() => {
         focusModeAvailable: gl.utils.convertPermissionToBoolean(
           $boardApp.dataset.focusModeAvailable,
         ),
-        canAdminList: gl.utils.convertPermissionToBoolean(
+        canAdminList: this.$options.el && gl.utils.convertPermissionToBoolean(
           this.$options.el.dataset.canAdminList,
         ),
       };
@@ -161,6 +168,9 @@ $(() => {
     },
     computed: {
       disabled() {
+        if (!this.store) {
+          return true;
+        }
         return !this.store.lists.filter(list => !list.preset).length;
       },
       tooltipTitle() {
@@ -188,14 +198,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-      toggleFocusMode() {
-        if (!this.focusModeAvailable) { return; }
-
-        $(this.$refs.toggleFocusModeButton).tooltip('hide');
-        issueBoardsContent.classList.toggle('is-focused');
-
-        this.isFullscreen = !this.isFullscreen;
-      },
     },
     mounted() {
       this.updateTooltip();
@@ -214,6 +216,30 @@ $(() => {
           @click="openModal">
           Add issues
         </button>
+      </div>
+    `,
+  });
+
+  gl.IssueBoardsToggleFocusBtn = new Vue({
+    el: document.getElementById('js-toggle-focus-btn'),
+    data: {
+      modal: ModalStore.store,
+      store: Store.state,
+      isFullscreen: false,
+      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
+    },
+    methods: {
+      toggleFocusMode() {
+        if (!this.focusModeAvailable) { return; }
+
+        $(this.$refs.toggleFocusModeButton).tooltip('hide');
+        issueBoardsContent.classList.toggle('is-focused');
+
+        this.isFullscreen = !this.isFullscreen;
+      },
+    },
+    template: `
+      <div class="board-extra-actions">
         <a
           href="#"
           class="btn btn-default has-tooltip prepend-left-10 js-focus-mode-btn"

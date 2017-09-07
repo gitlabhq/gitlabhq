@@ -5,7 +5,13 @@ class Board < ActiveRecord::Base
 
   has_many :lists, -> { order(:list_type, :position) }, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  validates :name, :project, presence: true
+  validates :name, presence: true
+
+  validates :project, presence: true, if: :project_needed?
+
+  def project_needed?
+    true
+  end
 
   def backlog_list
     lists.merge(List.backlog).take

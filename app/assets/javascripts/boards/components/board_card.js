@@ -16,6 +16,7 @@ export default {
         :list="list"
         :issue="issue"
         :issue-link-base="issueLinkBase"
+        :group-id="groupId"
         :root-path="rootPath"
         :update-filters="true" />
     </li>
@@ -30,6 +31,7 @@ export default {
     disabled: Boolean,
     index: Number,
     rootPath: String,
+    groupId: Number,
   },
   data() {
     return {

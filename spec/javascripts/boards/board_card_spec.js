@@ -4,6 +4,7 @@
 /* global listObj */
 /* global boardsMockInterceptor */
 /* global BoardService */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import '~/boards/models/assignee';
@@ -14,13 +15,13 @@ import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card';
 import './mock_data';
 
-describe('Issue card', () => {
+describe('Board card', () => {
   let vm;
 
   beforeEach((done) => {
     Vue.http.interceptors.push(boardsMockInterceptor);
 
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.issueBoards.BoardsStore.detail.issue = {};
 

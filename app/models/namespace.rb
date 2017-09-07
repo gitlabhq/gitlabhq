@@ -210,6 +210,14 @@ class Namespace < ActiveRecord::Base
     self.deleted_at = Time.now
   end
 
+  def multiple_issue_boards_available?(user = nil)
+    feature_available?(:multiple_issue_boards)
+  end
+
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone)
+  end
+
   private
 
   def refresh_access_of_projects_invited_groups
