@@ -21,15 +21,15 @@ describe('Monitoring Paths', () => {
     const component = createComponent({
       generatedLinePath: firstTimeSeries.linePath,
       generatedAreaPath: firstTimeSeries.areaPath,
-      lineColor: '#ccc',
-      areaColor: '#fff',
+      lineColor: firstTimeSeries.lineColor,
+      areaColor: firstTimeSeries.areaColor,
     });
     const metricArea = component.$el.querySelector('.metric-area');
     const metricLine = component.$el.querySelector('.metric-line');
 
-    expect(metricArea.getAttribute('fill')).toBe('#fff');
+    expect(metricArea.getAttribute('fill')).toBe('#8dd5aa');
     expect(metricArea.getAttribute('d')).toBe(firstTimeSeries.areaPath);
-    expect(metricLine.getAttribute('stroke')).toBe('#ccc');
+    expect(metricLine.getAttribute('stroke')).toBe('#1aaa55');
     expect(metricLine.getAttribute('d')).toBe(firstTimeSeries.linePath);
   });
 });
