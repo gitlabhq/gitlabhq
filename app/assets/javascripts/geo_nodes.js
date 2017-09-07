@@ -25,7 +25,7 @@ class GeoNodeStatus {
     this.$health = $('.js-health', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status);
-    this.$advancedStatus.on('click', this.toggleShowAdvancedStatus);
+    this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus);
 
     this.statusInterval = new gl.SmartInterval({
       callback: this.getStatus.bind(this),
