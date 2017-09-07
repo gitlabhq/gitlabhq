@@ -175,7 +175,7 @@ GitLabDropdownFilter = (function() {
         elements.show().removeClass('option-hidden');
       }
 
-      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
+      elements.parent().find('.dropdown-menu-empty-item').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -247,7 +247,7 @@ GitLabDropdown = (function() {
 
   currentIndex = -1;
 
-  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
+  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
 
   SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ", .option-hidden)";
 
@@ -702,7 +702,7 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.noResults = function() {
     var html;
-    return html = '<li class="dropdown-menu-empty-link"><a href="#" class="is-focused">No matching results</a></li>';
+    return '<li class="dropdown-menu-empty-item"><a>No matching results</a></li>';
   };
 
   GitLabDropdown.prototype.rowClicked = function(el) {

@@ -363,7 +363,7 @@
 
     restoreMenu() {
       var html;
-      html = "<ul> <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li> </ul>";
+      html = '<ul><li class="dropdown-menu-empty-item"><a>Loading...</a></li></ul>';
       return this.dropdownContent.html(html);
     }
 
