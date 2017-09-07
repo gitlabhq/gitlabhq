@@ -1130,10 +1130,10 @@ ActiveRecord::Schema.define(version: 20170905112933) do
 
   create_table "project_auto_devops", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.boolean "enabled"
-    t.string "domain"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled"
+    t.string "domain"
   end
 
   add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
@@ -1755,7 +1755,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
-  add_foreign_key "project_auto_devops", "projects", name: "fk_45436b12b2", on_delete: :cascade
+  add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
