@@ -28,7 +28,7 @@
   .disabled-comment.text-center.prepend-top-default
     %span.issuable-note-warning
       This
-      = issuable.class.to_s.titleize.underscore
+      = issuable.class.to_s.titleize.downcase
       is locked. Only
       %b project members
       can comment.
