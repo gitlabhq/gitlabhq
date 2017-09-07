@@ -19,6 +19,7 @@ describe('LockIssueSidebar', () => {
         isLocked: true,
         isEditable: true,
         service,
+        issuableType: 'issue',
       },
     }).$mount();
 
@@ -27,6 +28,7 @@ describe('LockIssueSidebar', () => {
         isLocked: false,
         isEditable: false,
         service,
+        issuableType: 'merge_request',
       },
     }).$mount();
   });
@@ -46,11 +48,11 @@ describe('LockIssueSidebar', () => {
   });
 
   it('displays the edit form when editable', (done) => {
-    expect(vm1.edit).toBe(false);
+    expect(vm1.isEditing).toBe(false);
 
     vm1.$el.querySelector('.lock-edit').click();
 
-    expect(vm1.edit).toBe(true);
+    expect(vm1.isEditing).toBe(true);
 
     setTimeout(() => {
       expect(

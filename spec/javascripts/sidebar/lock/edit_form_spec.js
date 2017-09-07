@@ -15,6 +15,7 @@ describe('EditForm', () => {
         isLocked: true,
         toggleForm,
         updateLockedAttribute,
+        issuableType: 'issue',
       },
     }).$mount();
 
@@ -23,6 +24,7 @@ describe('EditForm', () => {
         isLocked: false,
         toggleForm,
         updateLockedAttribute,
+        issuableType: 'merge_request',
       },
     }).$mount();
   });
@@ -33,7 +35,7 @@ describe('EditForm', () => {
     ).toBe(true);
 
     expect(
-      vm2.$el.innerHTML.includes('Lock this issue?'),
+      vm2.$el.innerHTML.includes('Lock this merge request?'),
     ).toBe(true);
   });
 });
