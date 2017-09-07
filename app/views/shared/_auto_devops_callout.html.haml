@@ -1,4 +1,4 @@
-.user-callout{ data: { uid: 'auto_devops_settings_dismissed' } }
+.user-callout{ data: { uid: 'auto_devops_settings_dismissed', project_path: project_path(@project) } }
   .bordered-box.landing.content-block
     %button.btn.btn-default.close.js-close-callout{ type: 'button',
       'aria-label' => 'Dismiss Auto DevOps box' }
@@ -12,4 +12,4 @@
         #{s_('LearnMoreInThe|Learn more in the')}
         = link_to _('Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
 
-      = link_to _('Enable in settings'), project_settings_ci_cd_path(@project), class: 'btn btn-primary js-close-callout'
+      = link_to _('Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn btn-primary js-close-callout'
