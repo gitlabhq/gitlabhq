@@ -411,4 +411,26 @@ describe('Filtered Search Manager', () => {
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(false);
     });
   });
+
+  describe('getAllParams', () => {
+    beforeEach(() => {
+      this.paramsArr = ['key=value', 'otherkey=othervalue'];
+
+      initializeManager();
+    });
+
+    it('correctly modifies params when custom modifier is passed', () => {
+      const modifedParams = manager.getAllParams.call({
+        modifyUrlParams: paramsArr => paramsArr.reverse(),
+      }, [].concat(this.paramsArr));
+
+      expect(modifedParams[0]).toBe(this.paramsArr[1]);
+    });
+
+    it('does not modify params when no custom modifier is passed', () => {
+      const modifedParams = manager.getAllParams.call({}, this.paramsArr);
+
+      expect(modifedParams[1]).toBe(this.paramsArr[1]);
+    });
+  });
 });

@@ -6,12 +6,11 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include SpammableActions
 
-  prepend ::EE::Projects::IssuesController
-
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
+  before_action :set_issues_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -22,25 +21,11 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
 
+  prepend ::EE::Projects::IssuesController
+
   respond_to :html
 
   def index
-    @collection_type    = "Issue"
-    @issues             = issues_collection
-
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
-
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
-    end
-
-    if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    end
-
-    @users = []
-
     if params[:assignee_id].present?
       assignee = User.find_by_id(params[:assignee_id])
       @users.push(assignee) if assignee

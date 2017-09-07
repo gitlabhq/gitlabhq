@@ -110,7 +110,7 @@
                 = number_with_delimiter(@project.open_issues_count)
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: :issues, html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: :issues, action: :index, html_options: { class: "fly-out-top-item" } ) do
               = link_to project_issues_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }
@@ -146,6 +146,11 @@
               = link_to project_labels_path(@project), title: 'Labels' do
                 %span
                   Labels
+
+            - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
+              = nav_link(controller: :issues, action: :service_desk ) do
+                = link_to service_desk_project_issues_path(@project), title: 'Service Desk' do
+                  %span Service Desk
 
             = nav_link(controller: :milestones) do
               = link_to project_milestones_path(@project), title: 'Milestones' do

@@ -1,0 +1,28 @@
+- @no_container = true
+- @can_bulk_update = false
+
+- page_title "Service Desk"
+
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+  = webpack_bundle_tag 'service_desk_issues'
+  = webpack_bundle_tag 'issues'
+
+- content_for :breadcrumbs_extra do
+  = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
+
+- support_bot_attrs = User.support_bot.to_json(only: [:id, :name, :username, :avatar_url])
+
+%div{ class: "#{container_class} js-service-desk-issues service-desk-issues", data: { support_bot: support_bot_attrs } }
+  .top-area
+    = render 'shared/issuable/nav', type: :issues
+    .nav-controls.visible-xs
+      = render "projects/issues/nav_btns", show_export_button: false, show_rss_button: false
+  = render 'shared/issuable/search_bar', type: :issues
+
+  - if @issues.present?
+    = render 'service_desk_info_content'
+
+  .issues-holder
+    = render 'projects/issues/issues', empty_state_path: 'service_desk_info_content'
