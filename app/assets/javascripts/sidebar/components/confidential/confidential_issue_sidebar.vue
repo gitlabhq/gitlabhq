@@ -49,7 +49,7 @@ export default {
 <template>
   <div class="block issuable-sidebar-item confidentiality">
     <div class="sidebar-collapsed-icon">
-      <i class="fa" :class="faEye" aria-hidden="true" data-hidden="true"></i>
+      <i class="fa" :class="faEye" aria-hidden="true"></i>
     </div>
     <div class="title hide-collapsed">
       Confidentiality
@@ -70,11 +70,11 @@ export default {
         :update-confidential-attribute="updateConfidentialAttribute"
       />
       <div v-if="!isConfidential" class="no-value sidebar-item-value">
-        <i class="fa fa-eye is-not-active"></i>
+        <i aria-hidden="true" class="fa fa-eye not-active"></i>
         Not confidential
       </div>
       <div v-else class="value sidebar-item-value hide-collapsed">
-        <i aria-hidden="true" data-hidden="true" class="fa fa-eye-slash is-active"></i>
+        <i aria-hidden="true" class="fa fa-eye-slash is-active"></i>
         This issue is confidential
       </div>
     </div>

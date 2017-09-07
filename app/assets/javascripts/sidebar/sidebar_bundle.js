@@ -43,7 +43,7 @@ function mountLockComponent(mediator) {
     propsData: {
       isLocked: initialData.is_locked,
       isEditable: initialData.is_editable,
-      service: mediator.service,
+      mediator,
       issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
     },
   }).$mount(el);

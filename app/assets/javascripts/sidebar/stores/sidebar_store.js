@@ -15,6 +15,7 @@ export default class SidebarStore {
       };
       this.autocompleteProjects = [];
       this.moveToProjectId = 0;
+      this.isLockDialogOpen = false;
 
       SidebarStore.singleton = this;
     }

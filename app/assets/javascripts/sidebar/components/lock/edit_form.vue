@@ -3,10 +3,6 @@ import editFormButtons from './edit_form_buttons.vue';
 import issuableMixin from '../../../vue_shared/mixins/issuable';
 
 export default {
-  components: {
-    editFormButtons,
-  },
-
   props: {
     isLocked: {
       required: true,
@@ -32,6 +28,10 @@ export default {
   mixins: [
     issuableMixin,
   ],
+
+  components: {
+    editFormButtons,
+  },
 };
 </script>
 

@@ -18,7 +18,7 @@ export default {
   },
 
   computed: {
-    onOrOff() {
+    buttonText() {
       return this.isLocked ? this.__('Unlock') : this.__('Lock');
     },
 
@@ -44,7 +44,7 @@ export default {
       class="btn btn-close"
       @click.prevent="updateLockedAttribute(updateLockedBool)"
     >
-      {{ onOrOff }}
+      {{ buttonText }}
     </button>
   </div>
 </template>

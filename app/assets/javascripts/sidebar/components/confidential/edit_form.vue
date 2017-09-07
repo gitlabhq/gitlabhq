@@ -2,9 +2,6 @@
 import editFormButtons from './edit_form_buttons.vue';
 
 export default {
-  components: {
-    editFormButtons,
-  },
   props: {
     isConfidential: {
       required: true,
@@ -18,6 +15,10 @@ export default {
       required: true,
       type: Function,
     },
+  },
+
+  components: {
+    editFormButtons,
   },
 };
 </script>

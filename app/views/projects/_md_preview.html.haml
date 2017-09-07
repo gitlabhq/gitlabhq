@@ -2,10 +2,10 @@
 
 - if defined?(@merge_request) && @merge_request.discussion_locked?
   .issuable-note-warning
-    %i.fa.fa-lock
+    = icon('lock')
     %span
-      This merge request is locked.
-      Only project members can comment.
+      = _('This merge request is locked.')
+      = _('Only project members can comment.')
 
 .md-area
   .md-header

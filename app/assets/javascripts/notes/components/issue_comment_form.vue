@@ -250,7 +250,11 @@
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
 
-              <issue-warning v-if="hasIssueWarning(getIssueData)" :is-locked="isIssueLocked(getIssueData)" :is-confidential="isIssueConfidential(getIssueData)" />
+              <issue-warning
+                v-if="hasIssueWarning(getIssueData)"
+                :is-locked="isIssueLocked(getIssueData)"
+                :is-confidential="isIssueConfidential(getIssueData)"
+              />
 
               <div class="error-alert"></div>
               <markdown-field

@@ -1,12 +1,9 @@
 <script>
 /* global Flash */
 import editForm from './edit_form.vue';
+import issuableMixin from '../../../vue_shared/mixins/issuable';
 
 export default {
-  components: {
-    editForm,
-  },
-
   props: {
     isLocked: {
       required: true,
@@ -18,9 +15,12 @@ export default {
       type: Boolean,
     },
 
-    service: {
+    mediator: {
       required: true,
       type: Object,
+      validator(mediatorObject) {
+        return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
+      },
     },
 
     issuableType: {
@@ -29,29 +29,35 @@ export default {
     },
   },
 
-  data() {
-    return {
-      isEditing: false,
-    };
+  mixins: [
+    issuableMixin,
+  ],
+
+  components: {
+    editForm,
   },
 
   computed: {
     lockIconClass() {
       return this.isLocked ? 'fa-lock' : 'fa-unlock';
     },
+
+    isLockDialogOpen() {
+      return this.mediator.store.isLockDialogOpen;
+    },
   },
 
   methods: {
     toggleForm() {
-      this.isEditing = !this.isEditing;
+      this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
     },
 
     updateLockedAttribute(locked) {
-      this.service.update(this.issuableType, {
+      this.mediator.service.update(this.issuableType, {
         discussion_locked: locked,
       })
       .then(() => location.reload())
-      .catch(() => Flash(this.__('Something went wrong trying to change the locked state of this issue')));
+      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${issuableDisplayName(this.issuableType)}`)));
     },
   },
 };
@@ -60,24 +66,28 @@ export default {
 <template>
   <div class="block issuable-sidebar-item lock">
     <div class="sidebar-collapsed-icon">
-      <i class="fa" :class="lockIconClass" aria-hidden="true" data-hidden="true"></i>
+      <i
+        class="fa"
+        :class="lockIconClass"
+        aria-hidden="true"
+      ></i>
     </div>
 
     <div class="title hide-collapsed">
-      {{ __('Lock issue') }}
-      <a
+      {{ __(`Lock ${issuableDisplayName(issuableType)}`) }}
+      <button
         v-if="isEditable"
-        class="pull-right lock-edit"
-        href="#"
+        class="pull-right lock-edit btn btn-blank"
+        type="button"
         @click.prevent="toggleForm"
       >
         {{ __('Edit') }}
-      </a>
+      </button>
     </div>
 
     <div class="value sidebar-item-value hide-collapsed">
       <editForm
-        v-if="isEditing"
+        v-if="isLockDialogOpen"
         :toggle-form="toggleForm"
         :is-locked="isLocked"
         :update-locked-attribute="updateLockedAttribute"
@@ -85,12 +95,12 @@ export default {
       />
 
       <div v-if="isLocked" class="value sidebar-item-value">
-        <i class="fa fa-lock is-active"></i>
+        <i aria-hidden="true" class="fa fa-lock is-active"></i>
         {{ __('Locked') }}
       </div>
 
       <div v-else class="no-value sidebar-item-value hide-collapsed">
-        <i aria-hidden="true" data-hidden="true" class="fa fa-unlock is-not-active"></i>
+        <i aria-hidden="true" class="fa fa-unlock not-active"></i>
         {{ __('Unlocked') }}
       </div>
     </div>

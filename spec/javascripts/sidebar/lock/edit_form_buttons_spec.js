@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import editFormButtons from '~/sidebar/components/lock/edit_form_buttons.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('EditFormButtons', () => {
   let vm1;
@@ -10,21 +11,17 @@ describe('EditFormButtons', () => {
     const toggleForm = () => { };
     const updateLockedAttribute = () => { };
 
-    vm1 = new Component({
-      propsData: {
-        isLocked: true,
-        toggleForm,
-        updateLockedAttribute,
-      },
-    }).$mount();
+    vm1 = mountComponent(Component, {
+      isLocked: true,
+      toggleForm,
+      updateLockedAttribute,
+    });
 
-    vm2 = new Component({
-      propsData: {
-        isLocked: false,
-        toggleForm,
-        updateLockedAttribute,
-      },
-    }).$mount();
+    vm2 = mountComponent(Component, {
+      isLocked: false,
+      toggleForm,
+      updateLockedAttribute,
+    });
   });
 
   it('renders unlock or lock text based on locked state', () => {

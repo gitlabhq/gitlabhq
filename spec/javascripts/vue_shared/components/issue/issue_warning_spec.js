@@ -9,7 +9,7 @@ function formatWarning(string) {
 }
 
 describe('Issue Warning Component', () => {
-  describe('if isLocked', () => {
+  describe('isLocked', () => {
     it('should render locked issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
         isLocked: true,
@@ -20,7 +20,7 @@ describe('Issue Warning Component', () => {
     });
   });
 
-  describe('if isConfidential', () => {
+  describe('isConfidential', () => {
     it('should render confidential issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
         isConfidential: true,
@@ -31,7 +31,7 @@ describe('Issue Warning Component', () => {
     });
   });
 
-  describe('if isLocked and isConfidential', () => {
+  describe('isLocked and isConfidential', () => {
     it('should render locked and confidential issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
         isLocked: true,

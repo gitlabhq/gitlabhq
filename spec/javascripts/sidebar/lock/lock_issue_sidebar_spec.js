@@ -7,18 +7,24 @@ describe('LockIssueSidebar', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(lockIssueSidebar);
-    const service = {
-      update: () => new Promise((resolve, reject) => {
-        resolve(true);
-        reject('failed!');
-      }),
+
+    const mediator = {
+      service: {
+        update: () => new Promise((resolve) => {
+          resolve(true);
+        }),
+      },
+
+      store: {
+        isLockDialogOpen: false,
+      },
     };
 
     vm1 = new Component({
       propsData: {
         isLocked: true,
         isEditable: true,
-        service,
+        mediator,
         issuableType: 'issue',
       },
     }).$mount();
@@ -27,7 +33,7 @@ describe('LockIssueSidebar', () => {
       propsData: {
         isLocked: false,
         isEditable: false,
-        service,
+        mediator,
         issuableType: 'merge_request',
       },
     }).$mount();
@@ -48,13 +54,13 @@ describe('LockIssueSidebar', () => {
   });
 
   it('displays the edit form when editable', (done) => {
-    expect(vm1.isEditing).toBe(false);
+    expect(vm1.isLockDialogOpen).toBe(false);
 
     vm1.$el.querySelector('.lock-edit').click();
 
-    expect(vm1.isEditing).toBe(true);
+    expect(vm1.isLockDialogOpen).toBe(true);
 
-    setTimeout(() => {
+    vm1.$nextTick(() => {
       expect(
         vm1.$el
           .innerHTML

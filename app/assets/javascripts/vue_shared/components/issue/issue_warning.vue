@@ -29,11 +29,11 @@
 <template>
   <div class="issuable-note-warning">
     <i
-    aria-hidden="true"
-    class="fa"
-    :class="iconClass"
-    v-if="!isLockedAndConfidential">
-    </i>
+      aria-hidden="true"
+      class="fa"
+      :class="iconClass"
+      v-if="!isLockedAndConfidential"
+    ></i>
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}
