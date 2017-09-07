@@ -163,12 +163,6 @@
     }
   }
 
-  &.dropdown-menu-empty-link {
-    &.is-focused {
-      background-color: $dropdown-empty-row-bg;
-    }
-  }
-
   &.dropdown-menu-user-link {
     line-height: 16px;
   }
@@ -254,6 +248,13 @@
 
   a {
     @include dropdown-link;
+  }
+
+  .dropdown-menu-empty-item a {
+    &:hover,
+    &:focus {
+      background-color: transparent;
+    }
   }
 
   .dropdown-header {
@@ -798,6 +799,13 @@
             top: 50%;
             transform: translateY(-50%);
           }
+        }
+      }
+
+      &.dropdown-menu-empty-item a {
+        &:hover,
+        &:focus {
+          background-color: transparent;
         }
       }
     }
