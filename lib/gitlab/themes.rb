@@ -73,13 +73,11 @@ module Gitlab
     private
 
     def default_id
-      id = Gitlab.config.gitlab.default_theme.to_i
+      @default_id ||= begin
+        id = Gitlab.config.gitlab.default_theme.to_i
+        theme_ids = THEMES.map(&:id)
 
-      # Prevent an invalid configuration setting from causing an infinite loop
-      if id < THEMES.first.id || id > THEMES.last.id
-        APPLICATION_DEFAULT
-      else
-        id
+        theme_ids.include?(id) ? id : APPLICATION_DEFAULT
       end
     end
   end

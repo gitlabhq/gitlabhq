@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PreferencesHelper do
-  describe 'dashboard_choices' do
+  describe '#dashboard_choices' do
     it 'raises an exception when defined choices may be missing' do
       expect(User).to receive(:dashboards).and_return(foo: 'foo')
       expect { helper.dashboard_choices }.to raise_error(RuntimeError)
@@ -26,7 +26,7 @@ describe PreferencesHelper do
     end
   end
 
-  describe 'user_application_theme' do
+  describe '#user_application_theme' do
     context 'with a user' do
       it "returns user's theme's css_class" do
         stub_user(theme_id: 3)
@@ -52,7 +52,7 @@ describe PreferencesHelper do
     end
   end
 
-  describe 'user_color_scheme' do
+  describe '#user_color_scheme' do
     context 'with a user' do
       it "returns user's scheme's css_class" do
         allow(helper).to receive(:current_user)
