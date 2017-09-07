@@ -46,8 +46,7 @@ module Gitlab
         cpu_time = System.cpu_time - start_cpu
 
         @real_time += real_time
-
-        @cpu_time += System.cpu_time - start_cpu
+        @cpu_time += cpu_time
         @call_count += 1
 
         self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
