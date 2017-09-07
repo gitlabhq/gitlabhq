@@ -9,10 +9,10 @@ function formatWarning(string) {
 }
 
 describe('Issue Warning Component', () => {
-  describe('if locked', () => {
+  describe('if isLocked', () => {
     it('should render locked issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
-        locked: true,
+        isLocked: true,
       });
 
       expect(vm.$el.querySelector('i').className).toEqual('fa fa-lock');
@@ -20,10 +20,10 @@ describe('Issue Warning Component', () => {
     });
   });
 
-  describe('if confidential', () => {
+  describe('if isConfidential', () => {
     it('should render confidential issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
-        confidential: true,
+        isConfidential: true,
       });
 
       expect(vm.$el.querySelector('i').className).toEqual('fa fa-eye-slash');
@@ -31,11 +31,11 @@ describe('Issue Warning Component', () => {
     });
   });
 
-  describe('if locked and confidential', () => {
+  describe('if isLocked and isConfidential', () => {
     it('should render locked and confidential issue warning information', () => {
       const vm = mountComponent(IssueWarning, {
-        locked: true,
-        confidential: true,
+        isLocked: true,
+        isConfidential: true,
       });
 
       expect(vm.$el.querySelector('i')).toBeFalsy();

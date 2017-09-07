@@ -47,6 +47,7 @@
       ...mapGetters([
         'getDiscussionLastNote',
         'getIssueDataByProp',
+        'getIssueData',
         'getNotesDataByProp',
         'getUserDataByProp',
       ]),
