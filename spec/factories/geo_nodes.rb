@@ -7,6 +7,7 @@ FactoryGirl.define do
     trait :primary do
       primary true
       port { Gitlab.config.gitlab.port }
+      geo_node_key nil
     end
 
     trait :current do
