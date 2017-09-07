@@ -29,6 +29,8 @@ class Group < Namespace
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
+  has_many :runner_groups, class_name: 'Ci::RunnerGroup'
+  has_many :runners, through: :runner_groups, source: :runner, class_name: 'Ci::Runner'
 
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
