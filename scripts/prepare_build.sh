@@ -2,11 +2,14 @@
 
 export SETUP_DB=${SETUP_DB:-true}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
-export BUNDLE_INSTALL_FLAGS="--without production --jobs $(nproc) --path vendor --retry 3 --quiet"
+export BUNDLE_INSTALL_FLAGS="--without production --jobs $(nproc) --path /cache/vendor/local-$CACHE_VERSION-$CACHE_KEY/bundler --retry 3 --quiet"
 
 if [ "$USE_BUNDLE_INSTALL" != "false" ]; then
-    bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
+    time bundle install --clean $BUNDLE_INSTALL_FLAGS && bundle check
 fi
+
+# Configure node_modules location
+npm config set prefix "/cache/vendor/local-$CACHE_VERSION-$CACHE_KEY/node_modules"
 
 # Only install knapsack after bundle install! Otherwise oddly some native
 # gems could not be found under some circumstance. No idea why, hours wasted.
@@ -47,9 +50,9 @@ cp config/redis.shared_state.yml.example config/redis.shared_state.yml
 sed -i 's/localhost/redis/g' config/redis.shared_state.yml
 
 if [ "$SETUP_DB" != "false" ]; then
-    bundle exec rake db:drop db:create db:schema:load db:migrate
+    time bundle exec rake db:drop db:create db:schema:load db:migrate
 
     if [ "$GITLAB_DATABASE" = "mysql" ]; then
-        bundle exec rake add_limits_mysql
+        time bundle exec rake add_limits_mysql
     fi
 fi

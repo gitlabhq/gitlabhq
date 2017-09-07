@@ -1,10 +1,54 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-7.1-postgresql-9.6"
 
+####################
+#
+# Cache
+#
+# We don't use remote cache. Transfering 400MB in and out
+# is time consuming operation that adds a lot for each build.
+#
+# Instead we use a local cache storage done on per-project basis: 
+# The `/cache` folder.
+# On cold machines we force to rebuild this cache on a new machine,
+# but since machines are re-used for number of builds there is 95% of build having hot cache.
+#
+# There are two variables to control cache:
+# - CACHE_KEY: bump the value if you make breaking change in `.gitlab-ci.yml`:
+#   - using newer version of NodeJS,
+#   - using different version of Ruby,
+#   - introducing a conflicting dependency with potentially already stored
+#
+# - CACHE_VERSION: bump the value in secret variables to force use a new cache for every run project
+#
+####################
+
+####################
+#
+# Artifacts
+#
+# Artifacts should be used with special care:
+# - always, artifacts should store minimal amount and only needed data,
+# - artifacts should not be used to pass binaries/vendored binaries, like gems or node_modules/,
+# 
+# **Make sure that change made to artifacts is approved either by Edge or CI/CD team**
+#
+# Reasons:
+# - We upload artifacts to GitLab.com,
+# - For every build we download artifacts from GitLab.com and unpack it,
+# - large artifacts takes longer to create and upload, take longer to download and extract,
+#   use more bandwidth and increase the egress cost of running CI for GitLab CE/EE,
+#
+# Let's consider the following scenario:
+# 1. Artifact uploaded from stage weights 100MB,
+# 2. We have 60 jobs in next stage that downloads 100MB, this adds to 6GB of traffic,
+# 3. We currently don't offer CDN solution to make the artifacts storage local to runners,
+# 4. If we assume that it takes 20s to upload (5MB/s) and 10s to download (10MB/s)
+#    it makes our pipelines significantly longer,
+#
+####################
+
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
-  paths:
-    - vendor/ruby
-    - .yarn-cache/
 
 .push-cache: &push-cache
   cache:
@@ -18,6 +62,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  CACHE_KEY: "1"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
@@ -246,14 +291,13 @@ setup-test-env:
     <<: *default-cache
   script:
     - node --version
-    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - time yarn install --frozen-lockfile --cache-folder /cache/vendor/local-$CACHE_VERSION-$CACHE_KEY/yarn-cache
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
-      - node_modules
       - public/assets
       - tmp/tests
 
@@ -462,7 +506,7 @@ db:rollback-mysql:
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
-    - bundle exec rake db:setup db:seed_fu
+    - time bundle exec rake db:setup db:seed_fu
   artifacts:
     when: on_failure
     expire_in: 1d
