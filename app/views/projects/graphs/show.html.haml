@@ -5,8 +5,6 @@
   = webpack_bundle_tag('graphs')
   = webpack_bundle_tag('graphs_show')
 
-- add_to_breadcrumbs("Repository", project_tree_path(@project))
-
 = render 'projects/commits/head'
 
 .js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }

@@ -2,8 +2,8 @@
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content js-focus-mode-board"
+- breadcrumb_title "Issue Boards"
 - page_title "Boards"
-- add_to_breadcrumbs("Issues", project_issues_path(@project))
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
@@ -12,6 +12,7 @@
 
   %script#js-board-template{ type: "text/x-template" }= render "projects/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
+  %script#js-board-promotion{ type: "text/x-template" }= render "shared/promotions/promote_issue_board"
 
 = render "projects/issues/head"
 

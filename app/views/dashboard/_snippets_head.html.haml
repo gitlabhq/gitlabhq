@@ -1,7 +1,3 @@
-- if current_user
-  - content_for :breadcrumbs_extra do
-    = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"
-
 .top-area
   %ul.nav-links
     = nav_link(page: dashboard_snippets_path, html_options: {class: 'home'}) do
@@ -10,3 +6,7 @@
     = nav_link(page: explore_snippets_path) do
       = link_to explore_snippets_path, title: 'Explore snippets', data: {placement: 'right'} do
         Explore Snippets
+
+  - if current_user
+    .nav-controls.hidden-xs
+      = link_to "New snippet", new_snippet_path, class: "btn btn-new", title: "New snippet"

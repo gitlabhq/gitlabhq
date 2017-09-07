@@ -21,8 +21,10 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
+export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-icons-only');
+
 export const canShowActiveSubItems = (el) => {
-  if (el.classList.contains('active') && (sidebar && !sidebar.classList.contains('sidebar-icons-only'))) {
+  if (el.classList.contains('active') && !isSidebarCollapsed()) {
     return false;
   }
 
@@ -100,12 +102,13 @@ export const moveSubItemsToPosition = (el, subItems) => {
 
 export const showSubLevelItems = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
+  const isIconOnly = subItems && subItems.classList.contains('is-fly-out-only');
 
   if (!canShowSubItems() || !canShowActiveSubItems(el)) return;
 
   el.classList.add(IS_OVER_CLASS);
 
-  if (!subItems) return;
+  if (!subItems || (!isSidebarCollapsed() && isIconOnly)) return;
 
   subItems.style.display = 'block';
   el.classList.add(IS_SHOWING_FLY_OUT_CLASS);

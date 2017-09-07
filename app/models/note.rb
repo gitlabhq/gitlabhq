@@ -16,6 +16,16 @@ class Note < ActiveRecord::Base
   include IgnorableColumn
   include Editable
 
+  module SpecialRole
+    FIRST_TIME_CONTRIBUTOR = :first_time_contributor
+
+    class << self
+      def values
+        constants.map {|const| self.const_get(const)}
+      end
+    end
+  end
+
   ignore_column :original_discussion_id
 
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
@@ -33,8 +43,11 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by quick actions.
+  # Attribute used to store the attributes that have been changed by quick actions.
   attr_accessor :commands_changes
+
+  # A special role that may be displayed on issuable's discussions
+  attr_accessor :special_role
 
   default_value_for :system, false
 
@@ -143,6 +156,10 @@ class Note < ActiveRecord::Base
         .group(:noteable_id)
         .where(noteable_type: type, noteable_id: ids)
     end
+
+    def has_special_role?(role, note)
+      note.special_role == role
+    end
   end
 
   def searchable?
@@ -210,6 +227,22 @@ class Note < ActiveRecord::Base
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
+  end
+
+  def special_role=(role)
+    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.values.include?(role)
+
+    @special_role = role
+  end
+
+  def has_special_role?(role)
+    self.class.has_special_role?(role, self)
+  end
+
+  def specialize_for_first_contribution!(noteable)
+    return unless noteable.author_id == self.author_id
+
+    self.special_role = Note::SpecialRole::FIRST_TIME_CONTRIBUTOR
   end
 
   def editable?

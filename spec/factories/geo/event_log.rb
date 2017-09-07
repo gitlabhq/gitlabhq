@@ -1,5 +1,9 @@
 FactoryGirl.define do
   factory :geo_event_log, class: Geo::EventLog do
+    trait :created_event do
+      repository_created_event factory: :geo_repository_created_event
+    end
+
     trait :updated_event do
       repository_updated_event factory: :geo_repository_updated_event
     end
@@ -13,11 +17,22 @@ FactoryGirl.define do
     end
   end
 
+  factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
+    project
+
+    repository_storage_name { project.repository_storage }
+    repository_storage_path { project.repository_storage_path }
+    add_attribute(:repo_path) { project.disk_path }
+    project_name { project.name }
+    wiki_path { "{project.disk_path}.wiki" }
+  end
+
   factory :geo_repository_updated_event, class: Geo::RepositoryUpdatedEvent do
+    project
+
     source 0
     branches_affected 0
     tags_affected 0
-    project
   end
 
   factory :geo_repository_deleted_event, class: Geo::RepositoryDeletedEvent do

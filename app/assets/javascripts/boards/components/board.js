@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
 /* global Sortable */
 import Vue from 'vue';
+import boardPromotionState from 'ee/boards/components/board_promotion_state';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list';
 import boardBlankState from './board_blank_state';
@@ -17,6 +18,7 @@ gl.issueBoards.Board = Vue.extend({
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
     boardBlankState,
+    boardPromotionState,
   },
   props: {
     list: Object,

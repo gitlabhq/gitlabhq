@@ -2,6 +2,7 @@
 /* global List */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import boardsStoreEE from 'ee/boards/stores/boards_store_ee';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -140,3 +141,5 @@ gl.issueBoards.BoardsStore = {
     }
   },
 };
+
+boardsStoreEE.initEESpecific(gl.issueBoards.BoardsStore);

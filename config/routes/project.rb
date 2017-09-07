@@ -478,4 +478,17 @@ constraints(ProjectUrlConstrainer.new) do
       end
     end
   end
+
+  # EE-specific
+  scope path: '/-/jira', as: :jira do
+    scope path: '*namespace_id', namespace_id: Gitlab::PathRegex.full_namespace_route_regex do
+      resources :projects, path: '/', constraints: { id: Gitlab::PathRegex.project_route_regex }, only: :show
+
+      scope path: ':project_id', constraints: { project_id: Gitlab::PathRegex.project_route_regex }, module: :projects do
+        resources :commit, only: :show, constraints: { id: /\h{7,40}/ }
+
+        get 'tree/*id', to: 'tree#show', as: nil
+      end
+    end
+  end
 end

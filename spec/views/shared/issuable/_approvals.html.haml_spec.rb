@@ -33,11 +33,11 @@ describe 'shared/issuable/_approvals.html.haml' do
       end
 
       it 'shows select approvers field' do
-        expect(rendered).to have_css('#merge_request_approver_ids')
+        expect(rendered).to have_css('#merge_request_approver_ids', visible: false)
       end
 
       it 'shows select approver groups field' do
-        expect(rendered).to have_css('#merge_request_approver_group_ids')
+        expect(rendered).to have_css('#merge_request_approver_group_ids', visible: false)
       end
     end
 

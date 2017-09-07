@@ -1,10 +1,54 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- page_title "Pipelines"
-- add_to_breadcrumbs("Settings", edit_project_path(@project))
+- page_title "CI / CD Settings"
+- page_title "CI / CD"
 
 = render "projects/settings/head"
 
-= render 'projects/runners/index'
-= render 'ci/variables/index'
-= render 'projects/triggers/index'
-= render 'projects/pipelines_settings/show'
+- expanded = Rails.env.test?
+
+%section.settings
+  .settings-header
+    %h4
+      General pipelines settings
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Update your CI/CD configuration, like job timeout.
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    = render 'projects/pipelines_settings/show'
+
+%section.settings
+  .settings-header
+    %h4
+      Runners settings
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Register and see your runners for this project.
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    = render 'projects/runners/index'
+
+%section.settings
+  .settings-header
+    %h4
+      Secret variables
+      = link_to icon('question-circle'), help_page_path('ci/variables/README', anchor: 'secret-variables'), target: '_blank'
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = render "ci/variables/content"
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    = render 'ci/variables/index'
+
+%section.settings
+  .settings-header
+    %h4
+      Pipeline triggers
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will
+      impersonate their associated user including their access to projects and their project
+      permissions.
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    = render 'projects/triggers/index'
