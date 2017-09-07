@@ -102,6 +102,22 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
           expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
         end
       end
+
+      context "when a feature is not persisted" do
+        it 'returns false when opt_into_all_features is off' do
+          allow(Feature).to receive(:persisted?).and_return(false)
+          allow(described_class).to receive(:opt_into_all_features?).and_return(false)
+
+          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(false)
+        end
+
+        it 'returns true when the override is on' do
+          allow(Feature).to receive(:persisted?).and_return(false)
+          allow(described_class).to receive(:opt_into_all_features?).and_return(true)
+
+          expect(described_class.feature_enabled?(feature_name, status: feature_status)).to be(true)
+        end
+      end
     end
 
     context 'when the feature_status is OPT_OUT' do
