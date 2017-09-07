@@ -264,6 +264,23 @@ describe 'Promotions', js: true do
     end
   end
 
+  describe 'for issue templates', js: true do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      project.team << [user, :master]
+      sign_in(user)
+    end
+
+    it 'should appear on the page', js: true do
+      visit new_project_issue_path(project)
+      wait_for_requests
+      find('#promotion-issue-template-link').click
+      expect(find('.promotion-issue-template-message')).to have_content 'Description templates allow you to define context-specific templates for issue and merge request description fields for your project.'
+    end
+  end
+
   describe 'for project audit events', js: true do
     before do
       allow(License).to receive(:current).and_return(nil)
