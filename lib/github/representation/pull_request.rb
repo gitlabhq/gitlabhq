@@ -10,9 +10,9 @@ module Github
 
       def source_branch_name
         @source_branch_name ||=
-          if !opened? && !source_branch_exists?
-            source_branch_ref
-          elsif cross_project?
+          if opened? && project.repository.branch_exists?(source_branch.ref)
+            source_branch.ref
+          elsif cross_project? && opened?
             source_branch_name_prefixed
           else
             source_branch_ref
@@ -22,7 +22,7 @@ module Github
       def source_branch_exists?
         return @source_branch_exists if defined?(@source_branch_exists)
 
-        @source_branch_exists = repository.branch_exists?(source_branch_name)
+        @source_branch_exists = project.repository.branch_exists?(source_branch_name)
       end
 
       def target_project
@@ -68,11 +68,11 @@ module Github
       end
 
       def source_branch_ref
-        "refs/merge-requests/#{pull_request.iid}/head"
+        "refs/merge-requests/#{iid}/head"
       end
 
       def source_branch_name_prefixed
-        "gh-#{target_branch_short_sha}/#{iid}/#{source_branch_user}/#{source_branch_ref}"
+        "gh-#{target_branch_short_sha}/#{iid}/#{source_branch_user}/#{source_branch.ref}"
       end
 
       def target_branch
