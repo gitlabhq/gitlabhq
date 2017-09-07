@@ -5,6 +5,13 @@
 module Gitlab
   module Middleware
     class RailsQueueDuration
+      def self.metric_rails_queue_duration_seconds
+        @metric_rails_queue_duration_seconds ||= Gitlab::Metrics.histogram(
+          :gitlab_rails_queue_duration_seconds,
+          Gitlab::Metrics::Transaction::BASE_LABELS
+        )
+      end
+
       def initialize(app)
         @app = app
       end
@@ -20,15 +27,6 @@ module Gitlab
         end
 
         @app.call(env)
-      end
-
-      private
-
-      def self.metric_rails_queue_duration_seconds
-        @metric_rails_queue_duration_seconds ||= Gitlab::Metrics.histogram(
-          :gitlab_rails_queue_duration_seconds,
-          Gitlab::Metrics::Transaction::BASE_LABELS
-        )
       end
     end
   end
