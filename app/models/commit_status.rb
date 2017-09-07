@@ -38,6 +38,14 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
+  enum failure_reason: {
+    unknown_failure: nil,
+    script_failure: 1,
+    api_failure: 2,
+    stuck_or_timeout_failure: 3,
+    runner_system_failure: 4
+  }
+
   state_machine :status do
     event :process do
       transition [:skipped, :manual] => :created
@@ -77,6 +85,11 @@ class CommitStatus < ActiveRecord::Base
 
     before_transition any => [:success, :failed, :canceled] do |commit_status|
       commit_status.finished_at = Time.now
+    end
+
+    before_transition any => :failed do |commit_status, transition|
+      failure_reason = transition.args.first
+      commit_status.failure_reason = failure_reason
     end
 
     after_transition do |commit_status, transition|

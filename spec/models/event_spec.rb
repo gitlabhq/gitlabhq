@@ -11,7 +11,6 @@ describe Event do
     it { is_expected.to respond_to(:author_email) }
     it { is_expected.to respond_to(:issue_title) }
     it { is_expected.to respond_to(:merge_request_title) }
-    it { is_expected.to respond_to(:commits) }
   end
 
   describe 'Callbacks' do

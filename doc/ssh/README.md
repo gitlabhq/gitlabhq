@@ -193,6 +193,38 @@ How to add your SSH key to Eclipse: https://wiki.eclipse.org/EGit/User_Guide#Ecl
 
 [winputty]: https://the.earth.li/~sgtatham/putty/0.67/htmldoc/Chapter8.html#pubkey-puttygen
 
+## SSH on the GitLab server
+
+GitLab integrates with the system-installed SSH daemon, designating a user
+(typically named `git`) through which all access requests are handled. Users
+connecting to the GitLab server over SSH are identified by their SSH key instead
+of their username.
+
+SSH *client* operations performed on the GitLab server wil be executed as this
+user. Although it is possible to modify the SSH configuration for this user to,
+e.g., provide a private SSH key to authenticate these requests by, this practice
+is **not supported** and is strongly discouraged as it presents significant
+security risks.
+
+The GitLab check process includes a check for this condition, and will direct you
+to this section if your server is configured like this, e.g.:
+
+```
+$ gitlab-rake gitlab:check
+# ...
+Git user has default SSH configuration? ... no
+  Try fixing it:
+  mkdir ~/gitlab-check-backup-1504540051
+  sudo mv /var/lib/git/.ssh/id_rsa ~/gitlab-check-backup-1504540051
+  sudo mv /var/lib/git/.ssh/id_rsa.pub ~/gitlab-check-backup-1504540051
+  For more information see:
+  doc/ssh/README.md in section "SSH on the GitLab server"
+  Please fix the error above and rerun the checks.
+```
+
+Remove the custom configuration as soon as you're able to. These customizations
+are *explicitly not supported* and may stop working at any time.
+
 ## Troubleshooting
 
 If on Git clone you are prompted for a password like `git@gitlab.com's password:`

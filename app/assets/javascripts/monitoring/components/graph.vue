@@ -3,11 +3,12 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
+  import monitoringPaths from './monitoring_paths.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { formatRelevantDigits } from '../../lib/utils/number_utils';
   import { timeScaleFormat } from '../utils/date_time_formatters';
+  import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
 
   const bisectDate = d3.bisector(d => d.time).left;
@@ -16,10 +17,6 @@
     props: {
       graphData: {
         type: Object,
-        required: true,
-      },
-      classType: {
-        type: String,
         required: true,
       },
       updateAspectRatio: {
@@ -36,32 +33,29 @@
 
     data() {
       return {
+        baseGraphHeight: 450,
+        baseGraphWidth: 600,
         graphHeight: 450,
         graphWidth: 600,
         graphHeightOffset: 120,
-        xScale: {},
-        yScale: {},
         margin: {},
-        data: [],
         unitOfDisplay: '',
         areaColorRgb: '#8fbce8',
         lineColorRgb: '#1f78d1',
         yAxisLabel: '',
         legendTitle: '',
         reducedDeploymentData: [],
-        area: '',
-        line: '',
         measurements: measurements.large,
         currentData: {
           time: new Date(),
           value: 0,
         },
-        currentYCoordinate: 0,
+        currentDataIndex: 0,
         currentXCoordinate: 0,
         currentFlagPosition: 0,
-        metricUsage: '',
         showFlag: false,
         showDeployInfo: true,
+        timeSeries: [],
       };
     },
 
@@ -69,16 +63,17 @@
       GraphLegend,
       GraphFlag,
       GraphDeployment,
+      monitoringPaths,
     },
 
     computed: {
       outterViewBox() {
-        return `0 0 ${this.graphWidth} ${this.graphHeight}`;
+        return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
       },
 
       innerViewBox() {
-        if ((this.graphWidth - 150) > 0) {
-          return `0 0 ${this.graphWidth - 150} ${this.graphHeight}`;
+        if ((this.baseGraphWidth - 150) > 0) {
+          return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
         }
         return '0 0 0 0';
       },
@@ -89,7 +84,7 @@
 
       paddingBottomRootSvg() {
         return {
-          paddingBottom: `${(Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0}%`,
+          paddingBottom: `${(Math.ceil(this.baseGraphHeight * 100) / this.baseGraphWidth) || 0}%`,
         };
       },
     },
@@ -104,17 +99,16 @@
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
         }
-        this.data = query.result[0].values;
         this.unitOfDisplay = query.unit || '';
         this.yAxisLabel = this.graphData.y_label || 'Values';
         this.legendTitle = query.label || 'Average';
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
         this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
-        if (this.data !== undefined) {
-          this.renderAxesPaths();
-          this.formatDeployments();
-        }
+        this.baseGraphHeight = this.graphHeight;
+        this.baseGraphWidth = this.graphWidth;
+        this.renderAxesPaths();
+        this.formatDeployments();
       },
 
       handleMouseOverGraph(e) {
@@ -123,16 +117,17 @@
         point.y = e.clientY;
         point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
         point.x = point.x += 7;
-        const timeValueOverlay = this.xScale.invert(point.x);
-        const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
-        const d0 = this.data[overlayIndex - 1];
-        const d1 = this.data[overlayIndex];
+        const firstTimeSeries = this.timeSeries[0];
+        const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
+        const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
+        const d0 = firstTimeSeries.values[overlayIndex - 1];
+        const d1 = firstTimeSeries.values[overlayIndex];
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
         this.currentData = evalTime ? d1 : d0;
-        this.currentXCoordinate = Math.floor(this.xScale(this.currentData.time));
+        this.currentDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
+        this.currentXCoordinate = Math.floor(firstTimeSeries.timeSeriesScaleX(this.currentData.time));
         const currentDeployXPos = this.mouseOverDeployInfo(point.x);
-        this.currentYCoordinate = this.yScale(this.currentData.value);
 
         if (this.currentXCoordinate > (this.graphWidth - 200)) {
           this.currentFlagPosition = this.currentXCoordinate - 103;
@@ -145,17 +140,25 @@
         } else {
           this.showFlag = true;
         }
-
-        this.metricUsage = `${formatRelevantDigits(this.currentData.value)} ${this.unitOfDisplay}`;
       },
 
       renderAxesPaths() {
+        this.timeSeries = createTimeSeries(this.graphData.queries[0].result,
+        this.graphWidth,
+        this.graphHeight,
+        this.graphHeightOffset);
+
+        if (this.timeSeries.length > 3) {
+          this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
+        }
+
         const axisXScale = d3.time.scale()
           .range([0, this.graphWidth]);
-        this.yScale = d3.scale.linear()
+        const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
-        axisXScale.domain(d3.extent(this.data, d => d.time));
-        this.yScale.domain([0, d3.max(this.data.map(d => d.value))]);
+
+        axisXScale.domain(d3.extent(this.timeSeries[0].values, d => d.time));
+        axisYScale.domain([0, d3.max(this.timeSeries[0].values.map(d => d.value))]);
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
@@ -164,7 +167,7 @@
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
-          .scale(this.yScale)
+          .scale(axisYScale)
           .ticks(measurements.yTicks)
           .orient('left');
 
@@ -180,25 +183,6 @@
                 .attr('class', 'axis-tick');
             } // Avoid adding the class to the first tick, to prevent coloring
           }); // This will select all of the ticks once they're rendered
-
-        this.xScale = d3.time.scale()
-          .range([0, this.graphWidth - 70]);
-
-        this.xScale.domain(d3.extent(this.data, d => d.time));
-
-        const areaFunction = d3.svg.area()
-          .x(d => this.xScale(d.time))
-          .y0(this.graphHeight - this.graphHeightOffset)
-          .y1(d => this.yScale(d.value))
-          .interpolate('linear');
-
-        const lineFunction = d3.svg.line()
-          .x(d => this.xScale(d.time))
-          .y(d => this.yScale(d.value));
-
-        this.line = lineFunction(this.data);
-
-        this.area = areaFunction(this.data);
       },
     },
 
@@ -219,12 +203,11 @@
     },
   };
 </script>
+
 <template>
-  <div
-    :class="classType">
-    <h5
-      class="text-center graph-title">
-        {{graphData.title}}
+  <div class="prometheus-graph">
+    <h5 class="text-center graph-title">
+      {{graphData.title}}
     </h5>
     <div
       class="prometheus-svg-container"
@@ -245,30 +228,25 @@
           :graph-height="graphHeight"
           :margin="margin"
           :measurements="measurements"
-          :area-color-rgb="areaColorRgb"
           :legend-title="legendTitle"
           :y-axis-label="yAxisLabel"
-          :metric-usage="metricUsage"
+          :time-series="timeSeries"
+          :unit-of-display="unitOfDisplay"
+          :current-data-index="currentDataIndex"
         />
         <svg
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <path
-              class="metric-area"
-              :d="area"
-              :fill="areaColorRgb"
-              transform="translate(-5, 20)">
-            </path>
-            <path
-              class="metric-line"
-              :d="line"
-              :stroke="lineColorRgb"
-              fill="none"
-              stroke-width="2"
-              transform="translate(-5, 20)">
-            </path>
-            <graph-deployment
+            <monitoring-paths
+              v-for="(path, index) in timeSeries"
+              :key="index"
+              :generated-line-path="path.linePath"
+              :generated-area-path="path.areaPath"
+              :line-color="path.lineColor"
+              :area-color="path.areaColor"
+            />
+            <monitoring-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"
@@ -277,7 +255,6 @@
             <graph-flag
               v-if="showFlag"
               :current-x-coordinate="currentXCoordinate"
-              :current-y-coordinate="currentYCoordinate"
               :current-data="currentData"
               :current-flag-position="currentFlagPosition"
               :graph-height="graphHeight"

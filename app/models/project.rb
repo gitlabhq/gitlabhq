@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
@@ -144,6 +145,7 @@ class Project < ActiveRecord::Base
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -185,9 +187,12 @@ class Project < ActiveRecord::Base
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
+  has_one :auto_devops, class_name: 'ProjectAutoDevops'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
   accepts_nested_attributes_for :import_data
+  accepts_nested_attributes_for :auto_devops
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -462,6 +467,14 @@ class Project < ActiveRecord::Base
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
+  end
+
+  def auto_devops_enabled?
+    if auto_devops&.enabled.nil?
+      current_application_settings.auto_devops_enabled?
+    else
+      auto_devops.enabled?
+    end
   end
 
   def repository_storage_path
@@ -1376,6 +1389,10 @@ class Project < ActiveRecord::Base
     Gitlab::Utils.slugify(full_path.to_s)
   end
 
+  def has_ci?
+    repository.gitlab_ci_yml || auto_devops_enabled?
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
@@ -1419,6 +1436,12 @@ class Project < ActiveRecord::Base
     return [] unless deployment_service
 
     deployment_service.predefined_variables
+  end
+
+  def auto_devops_variables
+    return [] unless auto_devops_enabled?
+
+    auto_devops&.variables || []
   end
 
   def append_or_update_attribute(name, value)
@@ -1482,6 +1505,14 @@ class Project < ActiveRecord::Base
     else
       self
     end
+  end
+
+  def multiple_issue_boards_available?(user)
+    feature_available?(:multiple_issue_boards, user)
+  end
+
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone, user)
   end
 
   def full_path_was

@@ -195,20 +195,4 @@ describe 'projects/jobs/show' do
         text: /\A\n#{Regexp.escape(commit_title)}\n\Z/)
     end
   end
-
-  describe 'shows trigger variables in sidebar' do
-    let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline) }
-
-    before do
-      build.trigger_request = trigger_request
-      render
-    end
-
-    it 'shows trigger variables in separate lines' do
-      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_1')
-      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_2')
-      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_1')
-      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_2')
-    end
-  end
 end

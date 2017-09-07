@@ -84,7 +84,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
-- [Issue Board](user/project/issue_board.md)
+- [Project issue Board](user/project/issue_board.md)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -160,7 +160,6 @@ have access to GitLab administration tools and settings.
 ### Integrations
 
 - [Integrations](integration/README.md): How to integrate with systems such as JIRA, Redmine, Twitter.
-- [Koding](administration/integration/koding.md): Set up Koding to use with GitLab.
 - [Mattermost](user/project/integrations/mattermost.md): Set up GitLab with Mattermost.
 
 ### Monitoring

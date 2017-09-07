@@ -5,8 +5,9 @@ const Api = {
   groupPath: '/api/:version/groups/:id.json',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
-  projectsPath: '/api/:version/projects.json?simple=true',
-  labelsPath: '/:namespace_path/:project_path/labels',
+  projectsPath: '/api/:version/projects.json',
+  projectLabelsPath: '/:namespace_path/:project_path/labels',
+  groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
@@ -58,6 +59,7 @@ const Api = {
     const defaults = {
       search: query,
       per_page: 20,
+      simple: true,
     };
 
     if (gon.current_user_id) {
@@ -73,9 +75,16 @@ const Api = {
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
-    const url = Api.buildUrl(Api.labelsPath)
-      .replace(':namespace_path', namespacePath)
-      .replace(':project_path', projectPath);
+    let url;
+
+    if (projectPath) {
+      url = Api.buildUrl(Api.projectLabelsPath)
+        .replace(':namespace_path', namespacePath)
+        .replace(':project_path', projectPath);
+    } else {
+      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
+    }
+
     return $.ajax({
       url,
       type: 'POST',

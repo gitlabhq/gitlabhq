@@ -117,6 +117,18 @@ describe API::MergeRequests do
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(merge_request3.id)
       end
+
+      it 'returns merge requests reacted by the authenticated user by the given emoji' do
+        merge_request3 = create(:merge_request, :simple, author: user, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+        award_emoji = create(:award_emoji, awardable: merge_request3, user: user2, name: 'star')
+
+        get api('/merge_requests', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
     end
   end
 

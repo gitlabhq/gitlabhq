@@ -5,7 +5,7 @@ module Gitlab
     class Tree
       include Gitlab::EncodingHelper
 
-      attr_accessor :id, :root_id, :name, :path, :type,
+      attr_accessor :id, :root_id, :name, :path, :flat_path, :type,
         :mode, :commit_id, :submodule_url
 
       class << self
@@ -19,8 +19,7 @@ module Gitlab
 
           Gitlab::GitalyClient.migrate(:tree_entries) do |is_enabled|
             if is_enabled
-              client = Gitlab::GitalyClient::CommitService.new(repository)
-              client.tree_entries(repository, sha, path)
+              repository.gitaly_commit_client.tree_entries(repository, sha, path)
             else
               tree_entries_from_rugged(repository, sha, path)
             end
@@ -88,7 +87,7 @@ module Gitlab
       end
 
       def initialize(options)
-        %w(id root_id name path type mode commit_id).each do |key|
+        %w(id root_id name path flat_path type mode commit_id).each do |key|
           self.send("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
@@ -99,6 +98,10 @@ module Gitlab
 
       def path
         encode! @path
+      end
+
+      def flat_path
+        encode! @flat_path
       end
 
       def dir?

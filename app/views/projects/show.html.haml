@@ -1,5 +1,5 @@
 - @no_container = true
-- breadcrumb_title "Project"
+- breadcrumb_title "Details"
 - @content_class = "limit-container-width" unless fluid_layout
 
 = content_for :meta_tags do
@@ -27,9 +27,10 @@
         = link_to project_tags_path(@project) do
           #{n_('Tag', 'Tags', @repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
 
-      - if default_project_view != 'readme' && @repository.readme
+      - if @repository.readme
         %li
-          = link_to _('Readme'), readme_path(@project)
+          = link_to _('Readme'),
+            default_project_view != 'readme' ? readme_path(@project) : '#readme'
 
       - if @repository.changelog
         %li

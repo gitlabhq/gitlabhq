@@ -22,7 +22,7 @@ describe Ci::RetryBuildService do
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id retried].freeze
+       user_id auto_canceled_by_id retried failure_reason].freeze
 
   shared_examples 'build duplication' do
     let(:stage) do
@@ -50,6 +50,17 @@ describe Ci::RetryBuildService do
         it "clones #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
+        end
+      end
+
+      context 'when job has nullified protected' do
+        before do
+          build.update_attribute(:protected, nil)
+        end
+
+        it "clones protected build attribute" do
+          expect(new_build.protected).to be_nil
+          expect(new_build.protected).to eq build.protected
         end
       end
     end

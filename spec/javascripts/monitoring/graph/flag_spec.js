@@ -32,10 +32,6 @@ describe('GraphFlag', () => {
       .toEqual(component.currentXCoordinate);
     expect(getCoordinate(component, '.selected-metric-line', 'x2'))
       .toEqual(component.currentXCoordinate);
-    expect(getCoordinate(component, '.circle-metric', 'cx'))
-      .toEqual(component.currentXCoordinate);
-    expect(getCoordinate(component, '.circle-metric', 'cy'))
-      .toEqual(component.currentYCoordinate);
   });
 
   it('has a SVG with the class rect-text-metric at the currentFlagPosition', () => {

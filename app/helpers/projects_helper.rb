@@ -15,9 +15,13 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { size: 16 }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+
+    classes = %W[avatar avatar-inline s#{opts[:size]}]
+    classes << opts[:avatar_class] if opts[:avatar_class]
+
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: classes, alt: '')
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -29,7 +33,7 @@ module ProjectsHelper
     author_html = ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
+    author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -54,31 +58,28 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        group_title(project.group)
+        group_title(project.group, nil, nil)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+    project_link = link_to project_path(project) do
       output =
-        if show_new_nav? && !Rails.env.test?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        if project.avatar_url && !Rails.env.test?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
         else
           ""
         end
 
-      output << simple_sanitize(project.name)
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
       output.html_safe
     end
 
-    if current_user
-      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
-        icon("chevron-down")
-      end
-    end
+    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
+    project_link = breadcrumb_list_item project_link
 
-    "#{namespace_link} / #{project_link}".html_safe
+    "#{namespace_link} #{project_link}".html_safe
   end
 
   def remove_project_message(project)

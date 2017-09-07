@@ -27,6 +27,7 @@
         endpoint: pipelinesData.endpoint,
         cssClass: pipelinesData.cssClass,
         helpPagePath: pipelinesData.helpPagePath,
+        autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
         canCreatePipeline: pipelinesData.canCreatePipeline,
         allPath: pipelinesData.allPath,
@@ -200,6 +201,7 @@
         <pipelines-table-component
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"
+          :auto-devops-help-path="autoDevopsPath"
           />
       </div>
 

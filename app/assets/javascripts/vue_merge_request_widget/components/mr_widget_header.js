@@ -75,18 +75,20 @@ export default {
           class="btn btn-small inline">
           Check out branch
         </a>
-        <span class="dropdown inline prepend-left-10">
+        <span class="dropdown prepend-left-10">
           <a
-            class="btn btn-xs dropdown-toggle"
+            class="btn btn-small inline dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             role="button">
             <i
               class="fa fa-download"
-              aria-hidden="true" />
+              aria-hidden="true">
+            </i>
             <i
               class="fa fa-caret-down"
-              aria-hidden="true" />
+              aria-hidden="true">
+            </i>
           </a>
           <ul class="dropdown-menu dropdown-menu-align-right">
             <li>

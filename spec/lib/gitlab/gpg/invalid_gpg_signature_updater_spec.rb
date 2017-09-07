@@ -4,8 +4,29 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do
     let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
     let!(:project) { create :project, :repository, path: 'sample-project' }
+    let!(:raw_commit) do
+      raw_commit = double(
+        :raw_commit,
+        signature: [
+          GpgHelpers::User1.signed_commit_signature,
+          GpgHelpers::User1.signed_commit_base_data
+        ],
+        sha: commit_sha,
+        committer_email: GpgHelpers::User1.emails.first
+      )
+
+      allow(raw_commit).to receive :save!
+
+      raw_commit
+    end
+
+    let!(:commit) do
+      create :commit, git_commit: raw_commit, project: project
+    end
 
     before do
+      allow_any_instance_of(Project).to receive(:commit).and_return(commit)
+
       allow(Rugged::Commit).to receive(:extract_signature)
         .with(Rugged::Repository, commit_sha)
         .and_return(
@@ -25,7 +46,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: true
+          verification_status: 'verified'
       end
 
       it 'assigns the gpg key to the signature when the missing gpg key is added' do
@@ -39,7 +60,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: true
+          verification_status: 'verified'
         )
       end
 
@@ -54,7 +75,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: true
+          verification_status: 'verified'
         )
       end
     end
@@ -68,7 +89,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: false
+          verification_status: 'unknown_key'
       end
 
       it 'updates the signature to being valid when the missing gpg key is added' do
@@ -82,7 +103,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: true
+          verification_status: 'verified'
         )
       end
 
@@ -97,7 +118,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: false
+          verification_status: 'unknown_key'
         )
       end
     end
@@ -115,7 +136,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: nil,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: false
+          verification_status: 'unknown_key'
       end
 
       it 'updates the signature to being valid when the user updates the email address' do
@@ -123,7 +144,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           key: GpgHelpers::User1.public_key,
           user: user
 
-        expect(invalid_gpg_signature.reload.valid_signature).to be_falsey
+        expect(invalid_gpg_signature.reload.verification_status).to eq 'unverified_key'
 
         # InvalidGpgSignatureUpdater is called by the after_update hook
         user.update_attributes!(email: GpgHelpers::User1.emails.first)
@@ -133,7 +154,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: true
+          verification_status: 'verified'
         )
       end
 
@@ -147,7 +168,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: false
+          verification_status: 'unverified_key'
         )
 
         # InvalidGpgSignatureUpdater is called by the after_update hook
@@ -158,7 +179,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           commit_sha: commit_sha,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          valid_signature: false
+          verification_status: 'unverified_key'
         )
       end
     end

@@ -66,55 +66,75 @@ describe Issuable do
   end
 
   describe ".search" do
-    let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
+    let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
 
-    it 'returns notes with a matching title' do
+    it 'returns issues with a matching title' do
       expect(issuable_class.search(searchable_issue.title))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
+    it 'returns issues with a partially matching title' do
       expect(issuable_class.search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
+    it 'returns issues with a matching title regardless of the casing' do
       expect(issuable_class.search(searchable_issue.title.upcase))
         .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.search('searchable issue')).to eq([searchable_issue])
+    end
+
+    it 'returns all issues with a query shorter than 3 chars' do
+      expect(issuable_class.search('zz')).to eq(issuable_class.all)
     end
   end
 
   describe ".full_search" do
     let!(:searchable_issue) do
-      create(:issue, title: "Searchable issue", description: 'kittens')
+      create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
 
-    it 'returns notes with a matching title' do
+    it 'returns issues with a matching title' do
       expect(issuable_class.full_search(searchable_issue.title))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
+    it 'returns issues with a partially matching title' do
       expect(issuable_class.full_search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
+    it 'returns issues with a matching title regardless of the casing' do
       expect(issuable_class.full_search(searchable_issue.title.upcase))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description' do
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.full_search('searchable issue')).to eq([searchable_issue])
+    end
+
+    it 'returns issues with a matching description' do
       expect(issuable_class.full_search(searchable_issue.description))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching description' do
+    it 'returns issues with a partially matching description' do
       expect(issuable_class.full_search(searchable_issue.description))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description regardless of the casing' do
+    it 'returns issues with a matching description regardless of the casing' do
       expect(issuable_class.full_search(searchable_issue.description.upcase))
         .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching description' do
+      expect(issuable_class.full_search('many kittens')).to eq([searchable_issue])
+    end
+
+    it 'returns all issues with a query shorter than 3 chars' do
+      expect(issuable_class.search('zz')).to eq(issuable_class.all)
     end
   end
 
@@ -457,6 +477,73 @@ describe Issuable do
             spend_time(-3600)
           end.to raise_error(ActiveRecord::RecordInvalid)
         end
+      end
+    end
+  end
+
+  describe '#first_contribution?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, namespace: group) }
+    let(:other_project) { create(:project) }
+    let(:owner) { create(:owner) }
+    let(:master) { create(:user) }
+    let(:reporter) { create(:user) }
+    let(:guest) { create(:user) }
+
+    let(:contributor) { create(:user) }
+    let(:first_time_contributor) { create(:user) }
+
+    before do
+      group.add_owner(owner)
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+      project.add_guest(contributor)
+      project.add_guest(first_time_contributor)
+    end
+
+    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+
+    context "for merge requests" do
+      it "is false for MASTER" do
+        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for OWNER" do
+        mr = create(:merge_request, author: owner, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is false for REPORTER" do
+        mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
+
+        expect(mr).not_to be_first_contribution
+      end
+
+      it "is true when you don't have any merged MR" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr).not_to be_first_contribution
+      end
+
+      it "handles multiple projects separately" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr_other_project).not_to be_first_contribution
+      end
+    end
+
+    context "for issues" do
+      let(:contributor_issue) { create(:issue, author: contributor, project: project) }
+      let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
+
+      it "is false even without merged MR" do
+        expect(merged_mr).to be
+        expect(first_time_contributor_issue).not_to be_first_contribution
+        expect(contributor_issue).not_to be_first_contribution
       end
     end
   end

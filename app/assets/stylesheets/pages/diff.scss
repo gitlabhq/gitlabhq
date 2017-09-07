@@ -578,12 +578,12 @@
   @media (min-width: $screen-sm-min) {
     position: -webkit-sticky;
     position: sticky;
-    top: 34px;
+    top: 24px;
     background-color: $white-light;
     z-index: 190;
 
     &.diff-files-changed-merge-request {
-      top: 84px;
+      top: 76px;
     }
 
     + .files,
@@ -610,6 +610,14 @@
       + .alert {
         margin-top: 30px;
       }
+    }
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .with-performance-bar {
+    .diff-files-changed.diff-files-changed-merge-request {
+      top: 76px + $performance-bar-height;
     }
   }
 }
