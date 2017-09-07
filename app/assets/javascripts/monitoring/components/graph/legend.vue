@@ -171,7 +171,7 @@
         ref="legendTitleSvg"
         x="38"
         :y="graphHeight - 30">
-        {{createSeriesString(index, series)}}        
+        {{createSeriesString(index, series)}}
       </text>
       <text
         v-else
