@@ -531,6 +531,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'search:show':
           new Search();
+          new UserCallout();
           break;
         case 'projects:mirrors:show':
         case 'projects:mirrors:update':

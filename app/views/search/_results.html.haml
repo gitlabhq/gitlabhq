@@ -1,5 +1,6 @@
 - if @search_objects.empty?
   = render partial: "search/results/empty"
+  = render 'shared/promotions/promote_advanced_search'
 - else
   .row-content-block
     = search_entries_info(@search_objects, @scope, @search_term)
@@ -8,7 +9,7 @@
         in project #{link_to @project.name_with_namespace, [@project.namespace.becomes(Namespace), @project]}
       - elsif @group
         in group #{link_to @group.name, @group}
-
+  = render 'shared/promotions/promote_advanced_search'
   .results.prepend-top-10
     - if @scope == 'commits'
       %ul.content-list.commit-list
