@@ -79,6 +79,32 @@ describe Projects::CreateService, '#execute' do
           expect(project.mirror_trigger_builds).to be true
         end
       end
+
+      context 'with checks on the namespace' do
+        before do
+          enable_namespace_license_check!
+        end
+
+        context 'when not licensed on a namespace' do
+          it 'does not allow enabeling mirrors' do
+            project = create_project(user, opts)
+
+            expect(project).to be_persisted
+            expect(project.mirror).to be_falsey
+          end
+        end
+
+        context 'when licensed on a namespace' do
+          it 'allows enabling mirrors' do
+            user.namespace.update!(plan: Plan.find_by(name: 'gold'))
+
+            project = create_project(user, opts)
+
+            expect(project).to be_persisted
+            expect(project.mirror).to be_truthy
+          end
+        end
+      end
     end
 
     context 'when unlicensed' do
@@ -148,6 +174,31 @@ describe Projects::CreateService, '#execute' do
       }
 
       expect { create_project(user, failing_opts) }.not_to change(Geo::RepositoryCreatedEvent, :count)
+    end
+  end
+
+  context 'when importing Project by repo URL' do
+    context 'and check namespace plan is enabled' do
+      before do
+        allow_any_instance_of(EE::Project).to receive(:add_import_job)
+        enable_namespace_license_check!
+      end
+
+      it 'creates the project' do
+        opts = {
+          name: 'GitLab',
+          import_url: 'https://www.gitlab.com/gitlab-org/gitlab-ce',
+          visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+          namespace_id: user.namespace.id,
+          mirror: true,
+          mirror_user_id: user.id,
+          mirror_trigger_builds: true
+        }
+
+        project = create_project(user, opts)
+
+        expect(project).to be_persisted
+      end
     end
   end
 
