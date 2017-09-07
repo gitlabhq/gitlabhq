@@ -9,6 +9,7 @@
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import issueDiscussionLockedWidget from './issue_discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issuableStateMixin from '../mixins/issuable_state';
@@ -29,6 +30,7 @@
     components: {
       issueWarning,
       issueNoteSignedOutWidget,
+      issueDiscussionLockedWidget,
       markdownField,
       userAvatarLink,
     },
@@ -239,6 +241,7 @@
 <template>
   <div>
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
+    <issue-discussion-locked-widget v-else-if="!canCreate" />
     <ul
       v-else
       class="notes notes-form timeline">

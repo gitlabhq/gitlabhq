@@ -15,7 +15,7 @@ class IssueEntity < IssuableEntity
 
   expose :current_user do
     expose :can_create_note do |issue|
-      can?(request.current_user, :create_note, issue.project)
+      can?(request.current_user, :create_note, issue)
     end
 
     expose :can_update do |issue|
