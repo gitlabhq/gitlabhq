@@ -7,9 +7,11 @@ module API
     use GrapeLogging::Middleware::RequestLogger,
         logger: ::Gitlab::ApiLogger.new(LOG_FILENAME),
         formatter: GrapeLogging::Formatters::Json.new,
-        include: [ GrapeLogging::Loggers::Response.new,
-                   GrapeLogging::Loggers::FilterParameters.new,
-                   GrapeLogging::Loggers::ClientEnv.new ]
+        include: [
+          GrapeLogging::Loggers::Response.new,
+          GrapeLogging::Loggers::FilterParameters.new,
+          GrapeLogging::Loggers::ClientEnv.new
+        ]
 
     allow_access_with_scope :api
     prefix :api
