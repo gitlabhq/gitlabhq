@@ -52,7 +52,7 @@ class GroupChildrenFinder
   end
 
   def subgroups_matching_filter
-    all_subgroups.search(params[:filter])
+    all_subgroups.search(params[:filter]).include(:parent)
   end
 
   def subgroups
@@ -75,6 +75,7 @@ class GroupChildrenFinder
   def projects_matching_filter
     ProjectsFinder.new(current_user: current_user).execute
       .search(params[:filter])
+      .include(:namespace)
       .where(namespace: all_subgroups)
   end
 

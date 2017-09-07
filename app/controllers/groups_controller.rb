@@ -77,6 +77,7 @@ class GroupsController < Groups::ApplicationController
         render json: GroupChildSerializer
                  .new(current_user: current_user)
                  .with_pagination(request, response)
+                 .hierarchy_base(parent, open_hierarchy: filter[:filter].present)
                  .represent(@children)
       end
     end
