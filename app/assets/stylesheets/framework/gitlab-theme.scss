@@ -2,7 +2,7 @@
  * Styles the GitLab application with a specific color theme
  */
 
-@mixin gitlab-theme($color-100, $color-200, $color-500, $color-700, $color-800, $color-900) {
+@mixin gitlab-theme($color-100, $color-200, $color-500, $color-700, $color-800, $color-900, $color-alternate) {
   // Header
 
   header.navbar-gitlab-new {
@@ -29,7 +29,7 @@
         &.active > a,
         &.dropdown.open > a {
           color: $color-900;
-          background-color: $white-light;
+          background-color: $color-alternate;
 
           svg {
             fill: currentColor;
@@ -76,6 +76,7 @@
         &.active > a,
         &.dropdown.open > a {
           color: $color-900;
+          background-color: $color-alternate;
 
           &:hover {
             svg {
@@ -169,31 +170,96 @@
 
 body {
   &.ui_indigo {
-    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900);
+    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900, $white-light);
   }
 
   &.ui_dark {
-    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900);
+    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900, $white-light);
+  }
+
+  &.ui_blue {
+    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900, $white-light);
+  }
+
+  &.ui_green {
+    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900, $white-light);
   }
 
   &.ui_light {
-    @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-500, $theme-gray-200, $theme-gray-100);
+    @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-700, $theme-gray-700, $theme-gray-100, $theme-gray-700);
 
     header.navbar-gitlab-new {
-      background: linear-gradient(to right, $theme-gray-100, $theme-gray-100);
+      background: $theme-gray-100;
       box-shadow: 0 2px 0 0 $border-color;
 
       .logo-text svg {
         fill: $theme-gray-900;
       }
+
+      .navbar-sub-nav,
+      .navbar-nav {
+        > li {
+          > a:hover,
+          > a:focus {
+            color: $theme-gray-900;
+          }
+
+          &.active > a {
+            color: $white-light;
+
+            &:hover {
+              color: $white-light;
+            }
+          }
+        }
+      }
+
+      .container-fluid {
+        .navbar-toggle,
+        .navbar-toggle:hover {
+          color: $theme-gray-700;
+          border-left: 1px solid $theme-gray-200;
+        }
+      }
     }
-  }
 
-  &.ui_blue {
-    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900);
-  }
+    .search {
+      form {
+        background-color: $white-light;
+        box-shadow: inset 0 0 0 1px $border-color;
 
-  &.ui_green {
-    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900);
+        &:hover {
+          background-color: $white-light;
+          box-shadow: inset 0 0 0 1px $blue-100;
+
+          .location-badge {
+            box-shadow: inset 0 0 0 1px $blue-100;
+          }
+        }
+      }
+
+      .search-input-wrap {
+        .search-icon {
+          color: $theme-gray-200;
+        }
+      }
+
+      .location-badge {
+        color: $theme-gray-700;
+        box-shadow: inset 0 0 0 1px $border-color;
+        background-color: $nav-badge-bg;
+        border-right: 0;
+      }
+    }
+
+    .nav-sidebar li.active {
+      > a {
+        color: $theme-gray-900;
+      }
+
+      svg {
+        fill: $theme-gray-900;
+      }
+    }
   }
 }
