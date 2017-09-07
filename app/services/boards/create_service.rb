@@ -1,5 +1,5 @@
 module Boards
-  class CreateService < BaseService
+  class CreateService < Boards::BaseService
     def execute
       create_board! if can_create_board?
     end
@@ -7,11 +7,11 @@ module Boards
     private
 
     def can_create_board?
-      project.boards.size == 0
+      parent.boards.size == 0
     end
 
     def create_board!
-      board = project.boards.create(params)
+      board = parent.boards.create(params)
 
       if board.persisted?
         board.lists.create(list_type: :backlog)
