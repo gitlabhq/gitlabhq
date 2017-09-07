@@ -5,8 +5,8 @@ module API
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     use GrapeLogging::Middleware::RequestLogger,
-        logger: ::Gitlab::ApiLogger.new(LOG_FILENAME),
-        formatter: GrapeLogging::Formatters::Json.new,
+        logger: Logger.new(LOG_FILENAME),
+        formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
         include: [
           GrapeLogging::Loggers::Response.new,
           GrapeLogging::Loggers::FilterParameters.new,
