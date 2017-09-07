@@ -613,7 +613,7 @@ describe 'Issues' do
       it 'redirects to signin then back to new issue after signin' do
         visit project_issues_path(project)
 
-        page.within '.breadcrumbs' do
+        page.within '.nav-controls' do
           click_link 'New issue'
         end
 

@@ -1,7 +1,3 @@
-- if current_user.can_create_group?
-  - content_for :breadcrumbs_extra do
-    = link_to "New group", new_group_path, class: "btn btn-new"
-
 .top-area
   %ul.nav-links
     = nav_link(page: dashboard_groups_path) do
@@ -10,8 +6,8 @@
     = nav_link(page: explore_groups_path) do
       = link_to explore_groups_path, title: 'Explore public groups' do
         Explore public groups
-  .nav-controls.nav-controls-new-nav
+  .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'
     - if current_user.can_create_group?
-      = link_to "New group", new_group_path, class: "btn btn-new visible-xs"
+      = link_to "New group", new_group_path, class: "btn btn-new"

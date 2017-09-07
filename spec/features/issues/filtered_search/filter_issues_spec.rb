@@ -818,7 +818,7 @@ describe 'Filter issues', js: true do
 
     it 'updates atom feed link for group issues' do
       visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.breadcrumbs a', text: 'Subscribe')
+      link = find('.nav-controls a', text: 'Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
