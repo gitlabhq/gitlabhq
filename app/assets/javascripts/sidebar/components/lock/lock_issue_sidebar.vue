@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <div class="block issuable-sidebar-item">
+  <div class="block issuable-sidebar-item lock">
     <div class="sidebar-collapsed-icon">
       <i class="fa" :class="lockIconClass" aria-hidden="true" data-hidden="true"></i>
     </div>

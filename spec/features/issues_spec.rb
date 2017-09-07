@@ -726,8 +726,8 @@ describe 'Issues' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_css('.issuable-note-warning')
-      expect(page).to have_css('.is-active')
-      expect(page).not_to have_css('.is-not-active')
+      expect(find('.issuable-sidebar-item.confidentiality')).to have_css('.is-active')
+      expect(find('.issuable-sidebar-item.confidentiality')).not_to have_css('.is-not-active')
 
       find('.confidential-edit').click
       expect(page).to have_css('.sidebar-item-warning-message')

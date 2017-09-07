@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-  <div class="block issuable-sidebar-item">
+  <div class="block issuable-sidebar-item confidentiality">
     <div class="sidebar-collapsed-icon">
       <i class="fa" :class="faEye" aria-hidden="true" data-hidden="true"></i>
     </div>
