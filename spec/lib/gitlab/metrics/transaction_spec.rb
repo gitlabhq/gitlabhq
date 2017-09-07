@@ -155,6 +155,61 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#labels' do
+    context 'when request goes to Grape endpoint' do
+      before do
+        route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)')
+        endpoint = double(:endpoint, route: route)
+
+        env['api.endpoint'] = endpoint
+      end
+      it 'provides labels with the method and path of the route in the grape endpoint' do
+        expect(transaction.labels).to eq({ controller: 'Grape', action: 'GET /projects/:id/archive' })
+        expect(transaction.action).to eq('Grape#GET /projects/:id/archive')
+      end
+
+      it 'does not provide labels if route infos are missing' do
+        endpoint = double(:endpoint)
+        allow(endpoint).to receive(:route).and_raise
+
+        env['api.endpoint'] = endpoint
+
+        expect(transaction.labels).to eq({})
+        expect(transaction.action).to be_nil
+      end
+    end
+
+    context 'when request goes to ActionController' do
+      let(:content_type) { 'text/html' }
+
+      before do
+        klass = double(:klass, name: 'TestController')
+        controller = double(:controller, class: klass, action_name: 'show', content_type: content_type)
+
+        env['action_controller.instance'] = controller
+      end
+
+      it 'tags a transaction with the name and action of a controller' do
+        expect(transaction.labels).to eq({ controller: 'TestController', action: 'show' })
+        expect(transaction.action).to eq('TestController#show')
+      end
+
+      context 'when the response content type is not :html' do
+        let(:content_type) { 'application/json' }
+
+        it 'appends the mime type to the transaction action' do
+          expect(transaction.labels).to eq({ controller: 'TestController', action: 'show.json' })
+          expect(transaction.action).to eq('TestController#show.json')
+        end
+      end
+    end
+
+    it 'returns no labels when no route information is present in env' do
+      expect(transaction.labels).to eq({})
+      expect(transaction.action).to eq(nil)
+    end
+  end
+
   describe '#add_event' do
     it 'adds a metric' do
       transaction.add_event(:meow)

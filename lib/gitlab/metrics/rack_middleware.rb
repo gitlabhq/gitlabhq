@@ -41,18 +41,6 @@ module Gitlab
       def filtered_path(env)
         ActionDispatch::Request.new(env).filtered_path.presence || env['REQUEST_URI']
       end
-
-      def endpoint_paths_cache
-        @endpoint_paths_cache ||= Hash.new do |hash, http_method|
-          hash[http_method] = Hash.new do |inner_hash, raw_path|
-            inner_hash[raw_path] = endpoint_instrumentable_path(raw_path)
-          end
-        end
-      end
-
-      def endpoint_instrumentable_path(raw_path)
-        raw_path.sub('(.:format)', '').sub('/:version', '')
-      end
     end
   end
 end

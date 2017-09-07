@@ -55,7 +55,7 @@ module Gitlab
       end
 
       def action
-        "#{labels[:controller]}##{labels[:action]}" if labels
+        "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
       end
 
       def labels
@@ -63,9 +63,9 @@ module Gitlab
 
         # memoize transaction labels only source env variables were present
         @labels = if @env[CONTROLLER_KEY]
-                    labels_from_controller(@env) || {}
+                    labels_from_controller || {}
                   elsif @env[ENDPOINT_KEY]
-                    labels_from_endpoint(@env) || {}
+                    labels_from_endpoint || {}
                   end
 
         @labels || {}
@@ -199,8 +199,8 @@ module Gitlab
         )
       end
 
-      def labels_from_controller(env)
-        controller = env[CONTROLLER_KEY]
+      def labels_from_controller
+        controller = @env[CONTROLLER_KEY]
 
         action = "#{controller.action_name}"
         suffix = CONTENT_TYPES[controller.content_type]
@@ -212,8 +212,8 @@ module Gitlab
         { controller: controller.class.name, action: action }
       end
 
-      def labels_from_endpoint(env)
-        endpoint = env[ENDPOINT_KEY]
+      def labels_from_endpoint
+        endpoint = @env[ENDPOINT_KEY]
 
         begin
           route = endpoint.route
@@ -227,6 +227,18 @@ module Gitlab
           path = endpoint_paths_cache[route.request_method][route.path]
           { controller: 'Grape', action: "#{route.request_method} #{path}" }
         end
+      end
+
+      def endpoint_paths_cache
+        @endpoint_paths_cache ||= Hash.new do |hash, http_method|
+          hash[http_method] = Hash.new do |inner_hash, raw_path|
+            inner_hash[raw_path] = endpoint_instrumentable_path(raw_path)
+          end
+        end
+      end
+
+      def endpoint_instrumentable_path(raw_path)
+        raw_path.sub('(.:format)', '').sub('/:version', '')
       end
     end
   end
