@@ -34,6 +34,8 @@ describe('Fly out sidebar navigation', () => {
     document.body.innerHTML = '';
     breakpointSize = 'lg';
     mousePos.length = 0;
+
+    setSidebar(null);
   });
 
   describe('calculateTop', () => {
@@ -242,6 +244,32 @@ describe('Fly out sidebar navigation', () => {
       ).toBe('block');
     });
 
+    it('shows collapsed only sub-items if icon only sidebar', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+      const sidebar = document.createElement('div');
+      sidebar.classList.add('sidebar-icons-only');
+      subItems.classList.add('is-fly-out-only');
+
+      setSidebar(sidebar);
+
+      showSubLevelItems(el);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).toBe('block');
+    });
+
+    it('does not show collapsed only sub-items if icon only sidebar', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+      subItems.classList.add('is-fly-out-only');
+
+      showSubLevelItems(el);
+
+      expect(
+        subItems.style.display,
+      ).not.toBe('block');
+    });
+
     it('sets transform of sub-items', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
       showSubLevelItems(el);
@@ -283,10 +311,6 @@ describe('Fly out sidebar navigation', () => {
   });
 
   describe('canShowActiveSubItems', () => {
-    afterEach(() => {
-      setSidebar(null);
-    });
-
     it('returns true by default', () => {
       expect(
         canShowActiveSubItems(el),

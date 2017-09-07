@@ -76,6 +76,13 @@ production: &base
 
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
+    ## Default theme ID
+    ##   1 - Indigo
+    ##   2 - Dark
+    ##   3 - Light
+    ##   4 - Blue
+    ##   5 - Green
+    # default_theme: 1 # default: 1
 
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.

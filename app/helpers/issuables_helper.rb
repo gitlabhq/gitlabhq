@@ -347,6 +347,14 @@ module IssuablesHelper
     end
   end
 
+  def labels_path
+    if @project
+      project_labels_path(@project)
+    elsif @group
+      group_labels_path(@group)
+    end
+  end
+
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
       endpoint: "#{issuable_json_path(issuable)}?basic=true",

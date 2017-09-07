@@ -412,11 +412,12 @@ table {
 
 .gl-accessibility {
   &:focus {
+    display: flex;
+    align-items: center;
     top: 1px;
     left: 1px;
     width: auto;
     height: 100%;
-    line-height: 50px;
     padding: 0 10px;
     clip: auto;
     text-decoration: none;

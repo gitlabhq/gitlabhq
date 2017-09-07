@@ -51,7 +51,7 @@ feature 'Groups > Members > Request access' do
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
 
-    click_link 'Members'
+    first(:link, 'Members').click
 
     page.within('.content') do
       expect(page).not_to have_content(user.name)
