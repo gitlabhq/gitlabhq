@@ -28,7 +28,7 @@ describe ApplicationSetting do
   describe '#should_check_namespace_plan?' do
     before do
       stub_application_setting(check_namespace_plan: check_namespace_plan_column)
-      allow(::Gitlab).to receive(:com?) { gl_com }
+      allow(::Gitlab).to receive(:dev_env_or_com?) { gl_com }
     end
 
     subject { setting.should_check_namespace_plan? }

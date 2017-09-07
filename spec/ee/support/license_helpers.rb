@@ -18,5 +18,10 @@ module EE
         allow(License).to receive(:feature_available?).with(feature) { enabled }
       end
     end
+
+    def enable_namespace_license_check!
+      stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+      current_application_settings.update!(check_namespace_plan: true)
+    end
   end
 end

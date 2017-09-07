@@ -16,6 +16,6 @@ module Gitlab
   end
 
   def self.dev_env_or_com?
-    Rails.env.development? || com?
+    Rails.env.test? || Rails.env.development? || com?
   end
 end
