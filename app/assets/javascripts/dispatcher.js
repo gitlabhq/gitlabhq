@@ -577,6 +577,9 @@ import initChangesDropdown from './init_changes_dropdown';
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
+              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+                .then(permissions => permissions.default())
+                .catch(() => {});
               break;
             case 'new':
               new ProjectNew();
