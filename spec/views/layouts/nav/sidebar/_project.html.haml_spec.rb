@@ -27,7 +27,7 @@ describe 'layouts/nav/sidebar/_project' do
     it 'highlights only one tab' do
       render
 
-      expect(rendered).to have_css('.active', count: 1)
+      expect(rendered).to have_css('.active', count: 2)
     end
 
     it 'highlights container registry tab only' do
