@@ -41,12 +41,10 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
 
   const maxValueFromSeries = _.max(maxValues, val => val.maxValue);
 
-  let timeSeriesNumber = 1;
-
-  return queryData.result.map((timeSeries) => {
+  return queryData.result.map((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
-    let lineColor = '#1f78d1';
-    let areaColor = '#8fbce8';
+    let lineColor = '';
+    let areaColor = '';
 
     const timeSeriesScaleX = d3.time.scale()
       .range([0, graphWidth - 70]);
@@ -69,27 +67,16 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
       .y0(graphHeight - graphHeightOffset)
       .y1(d => timeSeriesScaleY(d.value));
 
-    if (queryData.series != null) {
-      const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
-      const seriesCustomizationData = _.findWhere(queryData.series[0].series,
-                                                  { value: timeSeriesMetricLabel });
-      if (seriesCustomizationData != null) {
-        metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
-        if (seriesCustomizationData.color != null) {
-          [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
-        } else {
-          [lineColor, areaColor] = pickColor();
-        }
-      } else {
-        metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber}`;
-        [lineColor, areaColor] = pickColor();
-      }
-    }
-
-    if (timeSeriesNumber <= 5) {
-      timeSeriesNumber = timeSeriesNumber += 1;
+    const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
+    const seriesCustomizationData = queryData.series != null &&
+                                    _.findWhere(queryData.series[0].series,
+                                    { value: timeSeriesMetricLabel });
+    if (seriesCustomizationData != null) {
+      metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
+      [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
-      timeSeriesNumber = 1;
+      metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber + 1}`;
+      [lineColor, areaColor] = pickColor();
     }
 
     return {
