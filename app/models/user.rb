@@ -988,10 +988,17 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject
+      project_runner_ids = Ci::RunnerProject
         .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
         .select(:runner_id)
-      Ci::Runner.specific.where(id: runner_ids)
+
+      group_runner_ids = Ci::RunnerGroup
+        .where(group_id: owned_or_masters_groups.select(:id))
+        .select(:runner_id)
+
+      union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
+
+      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})")
     end
   end
 
@@ -1162,6 +1169,11 @@ class User < ActiveRecord::Base
 
   def max_member_access_for_group(group_id)
     max_member_access_for_group_ids([group_id])[group_id]
+  end
+
+  def owned_or_masters_groups
+    union = Gitlab::SQL::Union.new([owned_groups, masters_groups])
+    Group.from("(#{union.to_sql}) namespaces")
   end
 
   protected
