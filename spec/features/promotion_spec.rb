@@ -204,6 +204,33 @@ describe 'Promotions', js: true do
     end
   end
 
+  describe 'for issue boards ', js: true do
+    before do
+      stub_application_setting(check_namespace_plan: true)
+      allow(Gitlab).to receive(:com?) { true }
+
+      project.team << [user, :master]
+      sign_in(user)
+    end
+
+    it 'should appear in milestone page' do
+      visit project_boards_path(project)
+      expect(find('.board-promotion-state')).to have_content "Upgrade your plan to improve Issue boards"
+    end
+
+    it 'does not show when cookie is set' do
+      visit project_boards_path(project)
+
+      within('.board-promotion-state') do
+        find('#hide-btn').trigger('click')
+      end
+
+      visit project_boards_path(project, milestone)
+
+      expect(page).not_to have_selector('.board-promotion-state')
+    end
+  end
+
   describe 'for issue export', js: true do
     before do
       allow(License).to receive(:current).and_return(nil)
@@ -217,6 +244,23 @@ describe 'Promotions', js: true do
       visit project_issues_path(project)
       click_on 'Export as CSV'
       expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition.'
+    end
+  end
+
+  describe 'for issue weight', js: true do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      project.team << [user, :master]
+      sign_in(user)
+    end
+
+    it 'should appear on the page', js: true do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+      find('.promote-weight-link').click
+      expect(find('.promotion-info-weight-message')).to have_content 'Improve issues management with Issue weight and GitLab Enterprise Edition'
     end
   end
 

@@ -397,7 +397,6 @@ db:migrate:reset-mysql:
 
 .migration-paths: &migration-paths
   <<: *dedicated-runner
-  <<: *only-canonical-masters
   <<: *pull-cache
   stage: test
   variables:

@@ -66,6 +66,8 @@ module Gitlab
 
             if event_log.repository_updated_event
               handle_repository_update(event_log)
+            elsif event_log.repository_created_event
+              handle_repository_created(event_log)
             elsif event_log.repository_deleted_event
               handle_repository_delete(event_log)
             elsif event_log.repositories_changed_event
@@ -102,6 +104,24 @@ module Gitlab
           return true if event_log.project_id.nil?
 
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
+        end
+
+        def handle_repository_created(event_log)
+          created_event = event_log.repository_created_event
+          registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: created_event.project_id)
+          registry.resync_repository = true
+          registry.resync_wiki = created_event.wiki_path.present?
+
+          log_event_info(
+            event_log.created_at,
+            message: 'Repository created',
+            project_id: created_event.project_id,
+            repo_path: created_event.repo_path,
+            wiki_path: created_event.wiki_path,
+            resync_repository: registry.resync_repository,
+            resync_wiki: registry.resync_wiki)
+
+          registry.save!
         end
 
         def handle_repository_update(event)

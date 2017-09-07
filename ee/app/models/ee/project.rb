@@ -156,7 +156,15 @@ module EE
     def fetch_mirror
       return unless mirror?
 
-      repository.fetch_upstream(self.import_url)
+      # Only send the password if it's needed
+      url =
+        if import_data&.password_auth?
+          import_url
+        else
+          username_only_import_url
+        end
+
+      repository.fetch_upstream(url)
     end
 
     def can_override_approvers?

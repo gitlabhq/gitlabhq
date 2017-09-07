@@ -1,6 +1,15 @@
 class Admin::LogsController < Admin::ApplicationController
+  prepend EE::Admin::LogsController
+
+  before_action :loggers
+
   def show
-    @loggers = [
+  end
+
+  private
+
+  def loggers
+    @loggers ||= [
       Gitlab::AppLogger,
       Gitlab::GitLogger,
       Gitlab::EnvironmentLogger,

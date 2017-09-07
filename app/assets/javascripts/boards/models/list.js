@@ -12,7 +12,7 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.preset = ['backlog', 'closed', 'blank'].indexOf(this.type) > -1;
+    this.preset = ['backlog', 'closed', 'blank', 'promotion'].indexOf(this.type) > -1;
     this.isExpandable = ['backlog', 'closed'].indexOf(this.type) > -1;
     this.isExpanded = true;
     this.page = 1;
@@ -26,7 +26,7 @@ class List {
       this.label = new ListLabel(obj.label);
     }
 
-    if (this.type !== 'blank' && this.id) {
+    if (this.type !== 'blank' && this.type !== 'promotion' && this.id) {
       this.getIssues().catch(() => {
         // TODO: handle request error
       });

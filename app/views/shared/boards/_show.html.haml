@@ -14,6 +14,7 @@
 
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
+  %script#js-board-promotion{ type: "text/x-template" }= render "shared/promotions/promote_issue_board"
 
 - if @group
   = render "groups/head_issues"
