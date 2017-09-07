@@ -1,5 +1,6 @@
 <script>
 import editFormButtons from './edit_form_buttons.vue';
+import issuableMixin from '../../../vue_shared/mixins/issuable';
 
 export default {
   components: {
@@ -21,7 +22,16 @@ export default {
       required: true,
       type: Function,
     },
+
+    issuableType: {
+      required: true,
+      type: String,
+    },
   },
+
+  mixins: [
+    issuableMixin,
+  ],
 };
 </script>
 
@@ -30,13 +40,13 @@ export default {
     <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p v-if="isLocked">
-          {{ __('Unlock this issue?') }}
+          {{ __(`Unlock this ${issuableDisplayName(issuableType)}?`) }}
           <strong>{{ __('Everyone') }}</strong>
           {{ __('will be able to comment.') }}
         </p>
 
         <p v-else>
-          {{ __('Lock this issue? Only') }}
+          {{ __(`Lock this ${issuableDisplayName(issuableType)}? Only`) }}
           <strong>{{ __('project members') }}</strong>
           {{ __('will be able to comment.') }}
         </p>

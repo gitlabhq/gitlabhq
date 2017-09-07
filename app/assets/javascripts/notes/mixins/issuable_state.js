@@ -2,17 +2,17 @@
 import '../../autosave';
 
 export default {
-  computed: {
-    isIssueConfidential() {
-      return !!this.getIssueData.confidential;
+  methods: {
+    isIssueConfidential(issue) {
+      return !!issue.confidential;
     },
 
-    isIssueLocked() {
-      return !!this.getIssueData.discussion_locked;
+    isIssueLocked(issue) {
+      return !!issue.discussion_locked;
     },
 
-    hasIssueWarning() {
-      return this.isIssueConfidential || this.isIssueLocked;
+    hasIssueWarning(issue) {
+      return this.isIssueConfidential(issue) || this.isIssueLocked(issue);
     },
   },
 };

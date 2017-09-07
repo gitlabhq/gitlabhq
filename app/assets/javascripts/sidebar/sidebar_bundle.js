@@ -12,6 +12,9 @@ Vue.use(Translate);
 
 function mountConfidentialComponent(mediator) {
   const el = document.querySelector('#js-confidential-entry-point');
+
+  if (!el) return;
+
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
@@ -41,6 +44,7 @@ function mountLockComponent(mediator) {
       isLocked: initialData.is_locked,
       isEditable: initialData.is_editable,
       service: mediator.service,
+      issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
     },
   }).$mount(el);
 }

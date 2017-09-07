@@ -244,7 +244,7 @@
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
 
-              <issue-warning v-if="hasIssueWarning" :is-locked="isIssueLocked" :is-confidential="isIssueConfidential" />
+              <issue-warning v-if="hasIssueWarning(getIssueData)" :is-locked="isIssueLocked(getIssueData)" :is-confidential="isIssueConfidential(getIssueData)" />
 
               <div class="error-alert"></div>
               <markdown-field
@@ -252,7 +252,7 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="hasIssueWarning">
+                :is-confidential-issue="hasIssueWarning(getIssueData)">
                 <textarea
                   id="note-body"
                   name="note[note]"

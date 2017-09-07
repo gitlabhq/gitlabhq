@@ -22,6 +22,11 @@ export default {
       required: true,
       type: Object,
     },
+
+    issuableType: {
+      required: true,
+      type: String,
+    },
   },
 
   data() {
@@ -42,7 +47,7 @@ export default {
     },
 
     updateLockedAttribute(locked) {
-      this.service.update('issue', {
+      this.service.update(this.issuableType, {
         discussion_locked: locked,
       })
       .then(() => location.reload())
@@ -76,6 +81,7 @@ export default {
         :toggle-form="toggleForm"
         :is-locked="isLocked"
         :update-locked-attribute="updateLockedAttribute"
+        :issuable-type="issuableType"
       />
 
       <div v-if="isLocked" class="value sidebar-item-value">

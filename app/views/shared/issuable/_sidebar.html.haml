@@ -119,8 +119,9 @@
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
-      %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
-      #js-lock-entry-point
+      - if issuable.has_attribute?(:discussion_locked)
+        %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
+        #js-lock-entry-point
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
@@ -133,15 +134,6 @@
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
           %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'
-
-      - if can_edit_issuable
-        - locked = issuable.discussion_locked?
-        .block.light.discussion-lock{ data: { lock: (!locked).to_s, url: "#{issuable_json_path(issuable)}?basic=true", issuable_type: issuable.class.to_s.underscore } }
-          .sidebar-collapsed-icon
-            = icon('rss', 'aria-hidden': 'true')
-          - subscribtion_status = locked ? 'locked' : 'not locked'
-          %button.btn.btn-default.pull-right.js-discussion-lock-button.issuable-discussion-lock-button.hide-collapsed{ type: "button" }
-            %span= locked ? 'Unlock' : 'Lock'
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

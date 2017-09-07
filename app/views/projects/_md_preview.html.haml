@@ -1,9 +1,11 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
 
-- if defined?(@issue) && @issue.confidential?
+- if defined?(@merge_request) && @merge_request.discussion_locked?
   .issuable-note-warning
-    = confidential_icon(@issue)
-    %span __(This is a confidential issue. Your comment will not be visible to the public.)
+    %i.fa.fa-lock
+    %span
+      This merge request is locked.
+      Only project members can comment.
 
 .md-area
   .md-header
