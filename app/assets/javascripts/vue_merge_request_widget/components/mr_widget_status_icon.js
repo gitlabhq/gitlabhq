@@ -4,7 +4,7 @@ import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 export default {
   props: {
     status: { type: String, required: true },
-    disabled: { type: Boolean, required: false },
+    iconDisabled: { type: Boolean, required: false },
     showDisabledButton: { type: Boolean, required: false },
   },
   components: {
@@ -14,7 +14,7 @@ export default {
   computed: {
     statusObj() {
       return {
-        group: this.disabled ? 'disabled' : this.status,
+        group: this.iconDisabled ? 'disabled' : this.status,
         icon: `icon_status_${this.status}`,
       };
     },

@@ -24,7 +24,10 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="warning" disabled="true" />
+      <status-icon
+        status="warning"
+        :icon-disabled="true"
+      />
       <div class="media-body space-children">
         <span class="bold">
           <template v-if="mr.mergeError">{{mr.mergeError}}.</template>

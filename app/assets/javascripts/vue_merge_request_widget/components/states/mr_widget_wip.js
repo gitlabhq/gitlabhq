@@ -38,7 +38,11 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="warning" disabled="true" :showDisabledButton="Boolean(mr.removeWIPPath)" />
+      <status-icon
+        status="warning"
+        :icon-disabled="true"
+        :showDisabledButton="Boolean(mr.removeWIPPath)"
+      />
       <div class="media-body space-children">
         <span class="bold">
           This is a Work in Progress

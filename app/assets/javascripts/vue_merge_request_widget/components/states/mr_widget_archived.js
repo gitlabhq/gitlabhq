@@ -8,7 +8,10 @@ export default {
   template: `
     <div class="mr-widget-body media">
       <div class="space-children">
-        <status-icon status="warning" disabled="true" />
+        <status-icon
+          status="warning"
+          :icon-disabled="true"
+        />
         <button
           type="button"
           class="btn btn-success btn-small"
