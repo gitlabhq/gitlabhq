@@ -71,7 +71,7 @@ feature 'Admin updates settings' do
   end
 
   scenario 'Change Slack Notifications Service template settings' do
-    click_link 'Service Templates'
+    first(:link, 'Service Templates').click
     click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'

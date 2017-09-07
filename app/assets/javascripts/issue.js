@@ -74,7 +74,7 @@ class Issue {
 
           this.toggleCloseReopenButton(isClosed);
 
-          let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
+          let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
           projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
 
