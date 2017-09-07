@@ -1,0 +1,16 @@
+{
+    "type": "array",
+    "properties" : {
+        "name": { "type": "string" },
+        "commit": {
+            "type": "object",
+            "required": ["sha", "type"],
+            "properties" : {
+                "sha": { "type": "string" },
+                "type": { "type": "string" }
+            },
+            "additionalProperties": false
+        },
+        "additionalProperties": false
+    }
+}

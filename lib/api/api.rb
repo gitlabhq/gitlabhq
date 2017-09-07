@@ -49,6 +49,11 @@ module API
       mount ::API::V3::Triggers
       mount ::API::V3::Users
       mount ::API::V3::Variables
+
+      # Although the following endpoints are kept behind V3 namespace, they're not
+      # deprecated neither should be removed when V3 get removed.
+      # They're needed as a layer to integrate with Jira Development Panel.
+      mount ::API::V3::Github
     end
 
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }

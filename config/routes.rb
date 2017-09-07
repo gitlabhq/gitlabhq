@@ -21,6 +21,12 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  scope path: '/-/jira/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+    get :authorize, action: :new
+    get :callback
+    post :access_token
+  end
+
   namespace :oauth do
     scope path: 'geo', controller: :geo_auth, as: :geo do
       get 'auth'
