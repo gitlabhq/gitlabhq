@@ -6,7 +6,6 @@
 }
 
 .issuable-warning-icon {
-  margin: auto;
   color: $orange-600;
   background-color: $orange-50;
   border-radius: $border-radius-default;
@@ -20,7 +19,6 @@
 .issuable-sidebar-item {
   .is-not-active,
   .is-active {
-    margin: auto;
     border-radius: $border-radius-default;
     padding: 5px;
     margin: 0 3px 0 -4px;
