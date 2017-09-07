@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event do
+describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event, :migration, schema: 20170608152748 do
   describe '#commit_title' do
     it 'returns nil when there are no commits' do
       expect(described_class.new.commit_title).to be_nil
