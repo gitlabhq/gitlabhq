@@ -40,8 +40,8 @@ describe 'Discussion Lock', :js do
       it 'the user can not create a comment' do
         page.within('.issuable-discussion #notes') do
           expect(page).not_to have_selector('js-main-target-form')
-          expect(page.find('.disabled-comment')).
-            to have_content('This merge request is locked. Only project members can comment.')
+          expect(page.find('.disabled-comment'))
+            .to have_content('This merge request is locked. Only project members can comment.')
         end
       end
     end
