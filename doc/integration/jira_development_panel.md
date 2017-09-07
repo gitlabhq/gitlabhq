@@ -1,70 +1,90 @@
 # GitLab JIRA Development Panel integration
 
 As an extension to our [existing JIRA][existing-jira] project integration, you're now able to integrate
-all your GitLab projects with [JIRA Development Panel][jira-development-panel].
+all your GitLab projects with [JIRA Development Panel][jira-development-panel]. Both can be used
+simultaneously. This works with self-hosted GitLab or GitLab.com integrated with self-hosted JIRA
+or cloud JIRA.
 
-By doing this you can easily monitor new Branches, Commits and Merge Requests directly on a Jira issue.
+By doing this you can easily access related GitLab branches and commits directly from a JIRA issue.
 
 >**Note:**
-Our current integration supports Branches and Commits, but we're eagerly looking forward to extend this functionality.
+In the future, we plan to also support merge requests from the Development Panel.
 
-We have split the setup in a few steps so it is easier to follow.
+This integration connects all GitLab projects a user has access to with all projects in the JIRA instance.
+(Note this is different from the [existing JIRA][existing-jira] project integration, where the mapping
+is one GitLab project to the entire JIRA instance.) We recommend that a GitLab group admin
+or instance admin (in the case of self-hosted GitLab) set up the integration with respect to their
+account, in order to maximize the integrated GitLab projects used by your team.
 
+## GitLab Configuration
 
-## On GitLab
+1. In GitLab, create a new application in order to allow JIRA to connect with your GitLab account
 
-1. Create a new Application in order to allow Jira to connect with your GitLab account
-
-	Logged-in on GitLab, go to `Settings -> Applications`
-
+	While logged-in, go to `Settings -> Applications`. (Click your profile avatar at 
+	the top right, choose `Settings`, and then navigate to `Applications` from the left 
+	navigation menu.) Use the form to create a new application.
+	
+	Enter a userful name for the `Name` field.
+	
+	For the `Redirect URI` field, enter `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`,
+	replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com, 
+	this would be `https://gitlab.com/-/jira/login/oauth/callback`.
+	
 	![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
 
-	- Make sure to replace the `Redirect URI` HOST by your's (or `gitlab` in case you're using GitLab.com)
-	- Make sure the logged-in user on GitLab has access to the projects you want to import to Jira.
-	- Only the `api` scope needs to be checked
+	- Check `api` in the Scopes section.
 
-2. Save the generated 'Application id' and 'Secret', you'll need this information when configuring Jira.
+2. Click `Save application`. You will see the generated 'Application Id' and 'Secret' values.
+Copy these values that you will use on the JIRA configuration side.
 
+## JIRA Configuration
 
-## On Jira
-
-1. Go to `Application -> DVCS accounts` and click on `Link GitHub account`
+1. In JIRA, from the gear menu at the top right, go to `Applications`. Navigate to `DVCS accounts` 
+from the left navigation menu. Click `Link GitHub account` to start creating a new integration.
+(We are pretending to be GitHub in this integration until there is further platform support from JIRA.)
 
 	![Jira DVCS from Dashboard](img/jira_dev_panel_jira_setup_1.png)
 
-2. Provide the required information
+2. Complete the form
+
+    Select GitHub Enterprise for the `Host` field.
+    
+    For the `Team or User Account` field, enter the group name of a GitLab group that you have access to.
 
 	![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 	
-	- Make sure to replace the `Host URL` HOST by your's (keeping the rest of the URL `/-/jira` unchanged)
-	- Paste the `Application id` provided by GitLab on `Client ID` 
-	- Paste the `Secret` provided by GitLab on `Client Secret` 
+	For the `Host URL` field, enter `https://<your-gitlab-instance-domain>/-/jira`,
+	replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com, 
+	this would be `https://gitlab.com/-/jira`.
 	
+	For the `Client ID` field, use the `Application ID` value from the previous section.
+	
+	For the `Client Secret` field, use the `Secret` value from the previous section.
+
+    Ensure that the rest of the checkboxes are checked.
+	
+3. Click `Add` to complete and create the integration.
+
+    JIRA takes up to a few minutes to know about (import behind the scenes) all the commits and branches
+    for all the projects in the GitLab group you specified in the previous step. These are refreshed
+    every 60 minutes.
+    
 	>**Note:**
-	In case you have multiple groups with projects that you want to import, you'll follow this process for each one of these groups. 
-	So let's say your username on GitLab is 'mytest', but you have another group called 'group-a'. In order to import
-	your projects ('mytest') and all projects within 'group-a', you'll create one integration providing 'mytest' as 'Team or User Account' and 	another one providing 'group-a'.
+	In the future, we plan on implementating real-time integration.
+	
+4. Repeat the above steps for each GitLab group's projects that you want to be made known to JIRA.
+Specify the GitLab group name accordingly. (Note that you can also specify GitLab user names, as they
+are really GitLab "groups" behind the scenes. In that case, all the projects for that user would
+be made known to JIRA, up to the permissions of the user setting up the integration.)
 
-	
-3. Click `Add` and finish the authorization process
 
-	At that point you're done! All Projects Branches and Commits (within the configured groups) referring your Jira issues will be automatically
-	imported.
-	
-	The import process can take a few seconds (or minutes) depending on how many projects and commits you have on GitLab.
-	
-	>**Note:**
-	Jira automatically fetches your GitLab instance looking for new projects and referenced branches and projects in a 60 minute interval.
-	
-
-You can now see the linked `branches` and `commits` when entering a Jira issue.
+You can now see the linked `branches` and `commits` when entering a JIRA issue.
 
 ![Branch and Commit links on Jira issue](img/jira_dev_panel_jira_setup_3.png)
 
 Click these links for more information.
 
 ![GitLab commit details on a Jira issue](img/jira_dev_panel_jira_setup_4.png)
-
 
 [existing-jira]: ../user/project/integrations/jira.md
 [jira-development-panel]: https://confluence.atlassian.com/adminjiraserver070/integrating-with-development-tools-776637096.html#Integratingwithdevelopmenttools-Developmentpanelonissues
