@@ -652,6 +652,9 @@ import initGroupAnalytics from './init_group_analytics';
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
               new ApproversSelect();
+              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+                .then(permissions => permissions.default())
+                .catch(() => {});
               break;
             case 'new':
               new ProjectNew();
