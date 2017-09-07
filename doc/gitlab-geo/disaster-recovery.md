@@ -1,8 +1,8 @@
 # GitLab Geo Disaster Recovery
 
 > **Note:**
-This is not officially supported yet, please don't use as your only
-Disaster Recovery strategy as you may lose data.
+GitLab Geo Disaster Recovery is in **Alpha** development. Please don't
+use as your only Disaster Recovery strategy as you may lose data.
 
 GitLab Geo replicates your database and your Git repositories. We will
 support and replicate more data in the future, that will enable you to
