@@ -35,24 +35,15 @@ describe('UserCallout', function () {
   });
 
   describe('Sets cookie with setCalloutPerProject', () => {
-    let originalGon;
     beforeEach(() => {
-      originalGon = window.gon;
-      window.gon = Object.assign({}, {
-        project_url: 'http://localhost:3000/gitlab-org/gitlab-ce',
-      });
+      spyOn(Cookies, 'set').and.callFake(() => {});
+      document.querySelector('.user-callout').setAttribute('data-project-path', 'foo/bar');
       this.userCallout = new UserCallout({ setCalloutPerProject: true });
-    });
-
-    afterEach(() => {
-      window.gon = originalGon;
     });
 
     it('sets a cookie when the user clicks the close button', () => {
       this.userCalloutBtn.click();
-      // Note the path of a cookie is not accessible via JS, we can not test for that
-      // We can test if a cookie is set when an option is provided
-      expect(Cookies.get(USER_CALLOUT_COOKIE)).toBe('true');
+      expect(Cookies.set).toHaveBeenCalledWith('user_callout_dismissed', 'true', Object({ expires: 365, path: 'foo/bar' }));
     });
   });
 });

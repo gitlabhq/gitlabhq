@@ -9,7 +9,7 @@
       %h4= _('Auto DevOps (Beta)')
       %p= _('Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
       %p
-        #{s_('LearnMoreInThe|Learn more in the')}
+        #{s_('AutoDevOps|Learn more in the')}
         = link_to _('Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
 
       = link_to _('Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn btn-primary js-close-callout'
