@@ -74,7 +74,12 @@ module API
         use :optional_params
       end
       post do
-        authorize! :create_group
+        parent_group = find_group!(params[:parent_id]) if params[:parent_id].present?
+        if parent_group
+          authorize! :create_subgroup, parent_group
+        else
+          authorize! :create_group
+        end
 
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
