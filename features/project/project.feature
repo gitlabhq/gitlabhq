@@ -19,12 +19,6 @@ Feature: Project
     And I should not see the "Remove avatar" button
 
   @javascript
-  Scenario: I enable issues
-    Given I visit edit project "Shop" page
-    When I enable project issues
-    Then I should see the issues settings
-
-  @javascript
   Scenario: I should have readme on page
     And I visit project "Shop" page
     Then I should see project "Shop" README

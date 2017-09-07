@@ -7,7 +7,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
-    select 'Disabled', from: 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I save project' do
@@ -164,22 +163,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     page.within '#notifications-button' do
       expect(page).to have_content 'On mention'
     end
-  end
-
-  step 'I enable project issues' do
-    page.select 'Only team members', from: 'project_project_feature_attributes_issues_access_level'
-  end
-
-  step 'I disable project issues' do
-    page.select 'Disabled', from: 'project_project_feature_attributes_issues_access_level'
-  end
-
-  step 'I should not see the issues settings' do
-    expect(find('.issues-feature')).not_to be_visible
-  end
-
-  step 'I should see the issues settings' do
-    expect(find('.issues-feature')).to be_visible
   end
 
   step 'I create bare repo' do
