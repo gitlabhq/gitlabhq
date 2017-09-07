@@ -1,6 +1,9 @@
+- issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+- merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 - if @group.feature_available?(:group_issue_boards)
   - issues_sub_menu_items.push('boards#index')
+
 .nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     .context-header
@@ -18,6 +21,11 @@
             Overview
 
         %ul.sidebar-sub-level-items
+          = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
+            = link_to group_path(@group) do
+              %strong.fly-out-top-item-name
+                #{ _('Overview') }
+          %li.divider.fly-out-top-item
           = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
             = link_to group_path(@group), title: 'Group details' do
               %span
@@ -39,11 +47,16 @@
           .nav-icon-container
             = custom_icon('issues')
           %span.nav-item-name
-            - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
             Issues
           %span.badge.count= number_with_delimiter(issues.count)
 
         %ul.sidebar-sub-level-items
+          = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
+            = link_to issues_group_path(@group) do
+              %strong.fly-out-top-item-name
+                #{ _('Issues') }
+              %span.badge.count.issue_counter.fly-out-badge= number_with_delimiter(issues.count)
+          %li.divider.fly-out-top-item
           = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
             = link_to issues_group_path(@group), title: 'List' do
               %span
@@ -70,15 +83,25 @@
           .nav-icon-container
             = custom_icon('mr_bold')
           %span.nav-item-name
-            - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
             Merge Requests
           %span.badge.count= number_with_delimiter(merge_requests.count)
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'groups#merge_requests', html_options: { class: "fly-out-top-item" } ) do
+            = link_to merge_requests_group_path(@group) do
+              %strong.fly-out-top-item-name
+                #{ _('Merge Requests') }
+              %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests.count)
       = nav_link(path: 'group_members#index') do
         = sidebar_link group_group_members_path(@group), title: _('Members') do
           .nav-icon-container
             = custom_icon('members')
           %span.nav-item-name
             Members
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
+            = link_to merge_requests_group_path(@group) do
+              %strong.fly-out-top-item-name
+                #{ _('Members') }
       - if current_user && can?(current_user, :admin_group, @group)
         = nav_link(path: %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]) do
           = sidebar_link edit_group_path(@group), title: _('Settings') do
@@ -87,6 +110,11 @@
             %span.nav-item-name
               Settings
           %ul.sidebar-sub-level-items
+            = nav_link(path: %w[groups#projects groups#edit ci_cd#show], html_options: { class: "fly-out-top-item" } ) do
+              = link_to edit_group_path(@group) do
+                %strong.fly-out-top-item-name
+                  #{ _('Settings') }
+            %li.divider.fly-out-top-item
             = nav_link(path: 'groups#edit') do
               = link_to edit_group_path(@group), title: 'General' do
                 %span

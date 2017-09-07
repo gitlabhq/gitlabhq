@@ -91,5 +91,9 @@ module LicenseHelper
     !@project.feature_available?(project_feature) && show_promotions? && (callout_id.nil? || show_callout?(callout_id))
   end
 
+  def show_advanced_search_promotion?
+    !current_application_settings.should_check_namespace_plan? && show_promotions? && show_callout?('promote_advanced_search_dismissed') && !License.feature_available?(:elastic_search)
+  end
+
   extend self
 end

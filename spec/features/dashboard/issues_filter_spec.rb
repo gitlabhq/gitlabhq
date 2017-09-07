@@ -50,7 +50,7 @@ feature 'Dashboard Issues filtering', :js do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_id: user.id)
 
-      link = find('.breadcrumbs a[title="Subscribe"]')
+      link = find('.nav-controls a[title="Subscribe"]')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)

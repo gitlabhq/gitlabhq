@@ -1,0 +1,18 @@
+- if show_advanced_search_promotion?
+  .user-callout.promotion-callout.promotion-advanced-search.js-mr-approval-callout#promote_advanced_search{ data: { uid: 'promote_advanced_search_dismissed' } }
+    .bordered-box.content-block
+      %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => _('Dismiss Merge Request promotion') }
+        = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+      .svg-container
+        = custom_icon('icon_search_avatar')
+      .user-callout-copy
+        %h5
+          - if current_application_settings.should_check_namespace_plan?
+            = _('Upgrade your plan to activate Advanced Global Search.')
+          - else
+            = _('Improve search with Advanced Global Search and GitLab Enterprise Edition.')
+        %p
+          = _('The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project.')
+          = link_to _('Read more'), help_page_path('user/search/advanced_global_search.html'), target: '_blank'
+
+        = render 'shared/promotions/promotion_link_project'
