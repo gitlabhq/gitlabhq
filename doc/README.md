@@ -138,6 +138,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
 - [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
+- **(EEP)** [JIRA Development Panel](integration/jira_development_panel.md): See GitLab information in the JIRA Development Panel
 
 ----
 
