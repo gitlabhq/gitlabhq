@@ -1237,7 +1237,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        group_member = group.members.first
+        group_member = group.members.last
 
         expect do
           notification.decline_group_invite(group_member)
@@ -1285,7 +1285,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        project_member = project.members.first
+        project_member = project.members.last
 
         expect do
           notification.decline_project_invite(project_member)

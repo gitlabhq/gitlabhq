@@ -115,7 +115,7 @@ module QuickActions
         if issuable.allows_multiple_assignees?
           issuable.assignees.pluck(:id) + users.map(&:id)
         else
-          [users.last.id]
+          [users.first.id]
         end
     end
 

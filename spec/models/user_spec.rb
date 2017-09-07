@@ -1519,7 +1519,7 @@ describe User do
       developer_project = create(:project) { |p| p.add_developer(user) }
       master_project    = create(:project) { |p| p.add_master(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
+      expect(user.projects_where_can_admin_issues.to_a).to match_array([master_project, developer_project, reporter_project])
       expect(user.can?(:admin_issue, master_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)
