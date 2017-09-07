@@ -115,6 +115,7 @@ $(() => {
           this.state.lists = _.sortBy(this.state.lists, 'position');
 
           Store.addBlankState();
+          Store.addPromotionState();
           this.loading = false;
         })
         .catch(() => new Flash('An error occurred. Please try again.'));

@@ -227,10 +227,18 @@
   }
 }
 
-.board-blank-state {
+.board-blank-state,
+.board-promotion-state {
   height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: $white-light;
+}
+
+.board-promotion-state {
+  .btn.btn-primary {
+    display: block;
+    margin-bottom: 15px;
+  }
 }
 
 .board-blank-state-list {
