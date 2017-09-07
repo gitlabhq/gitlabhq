@@ -345,7 +345,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
-  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", using: :btree
+  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree

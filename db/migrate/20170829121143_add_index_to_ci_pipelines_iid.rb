@@ -6,7 +6,7 @@ class AddIndexToCiPipelinesIid < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index(:ci_pipelines, [:project_id, :iid])
+    add_concurrent_index(:ci_pipelines, [:project_id, :iid], unique: true)
   end
 
   def down

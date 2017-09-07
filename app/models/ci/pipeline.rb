@@ -5,7 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
-    include InternalId
+    include InternalId2
 
     belongs_to :project
     belongs_to :user

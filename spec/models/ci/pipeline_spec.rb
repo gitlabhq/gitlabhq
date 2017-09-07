@@ -27,6 +27,22 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
+  describe 'IID' do
+    it 'creates sequential iid in the same project' do
+      p1 = create(:ci_empty_pipeline, project: project)
+      p2 = create(:ci_empty_pipeline, project: project)
+      expect(p1.iid).to eq(0)
+      expect(p2.iid).to eq(1)
+    end
+
+    it 'creates the same iid in the different project' do
+      p1 = create(:ci_empty_pipeline, project: project)
+      p2 = create(:ci_empty_pipeline, project: create(:project))
+      expect(p1.iid).to eq(0)
+      expect(p2.iid).to eq(0)
+    end
+  end
+
   describe '#source' do
     context 'when creating new pipeline' do
       let(:pipeline) do
@@ -167,7 +183,18 @@ describe Ci::Pipeline, :mailer do
     it 'includes the defined keys' do
       keys = subject.map { |v| v[:key] }
 
-      expect(keys).to include('CI_PIPELINE_ID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE')
+      expect(keys).to eq(['CI_PIPELINE_ID', 'CI_PIPELINE_IID', 'CI_CONFIG_PATH', 'CI_PIPELINE_SOURCE'])
+    end
+
+    context 'when iid is nil' do
+      before do
+        pipeline.update_columns(iid: nil)
+      end
+
+      it 'returns empty iid' do
+        value = subject.select { |s| s[:key] == 'CI_PIPELINE_IID' } .first[:value]
+        expect(value).to be_empty
+      end
     end
   end
 

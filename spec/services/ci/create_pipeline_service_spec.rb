@@ -43,6 +43,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
+        expect(pipeline.iid).to eq(0)
       end
 
       it 'increments the prometheus counter' do

@@ -1260,6 +1260,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
