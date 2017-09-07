@@ -788,20 +788,28 @@ describe MergeRequest do
   end
 
   describe '#head_pipeline' do
-    describe 'when the source project exists' do
-      it 'returns the latest pipeline' do
-        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc", head_pipeline_of: subject)
-
-        expect(subject.head_pipeline).to eq(pipeline)
-      end
+    before do
+      allow(subject).to receive(:diff_head_sha).and_return('lastsha')
     end
 
-    describe 'when the source project does not exist' do
-      it 'returns nil' do
-        allow(subject).to receive(:source_project).and_return(nil)
+    it 'returns nil for MR without head_pipeline_id' do
+      subject.update_attribute(:head_pipeline_id, nil)
 
-        expect(subject.head_pipeline).to be_nil
-      end
+      expect(subject.head_pipeline).to be_nil
+    end
+
+    it 'returns nil for MR with old pipeline' do
+      pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
+      subject.update_attribute(:head_pipeline_id, pipeline.id)
+
+      expect(subject.head_pipeline).to be_nil
+    end
+
+    it 'returns the pipeline for MR with recent pipeline' do
+      pipeline = create(:ci_empty_pipeline, sha: 'lastsha')
+      subject.update_attribute(:head_pipeline_id, pipeline.id)
+
+      expect(subject.head_pipeline).to eq(pipeline)
     end
   end
 

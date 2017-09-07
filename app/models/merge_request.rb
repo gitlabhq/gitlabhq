@@ -123,6 +123,14 @@ class MergeRequest < ActiveRecord::Base
     '!'
   end
 
+  def head_pipeline
+    return unless head_pipeline_id
+
+    last_pipeline = Ci::Pipeline.find(head_pipeline_id)
+
+    last_pipeline.sha == diff_head_sha ? last_pipeline : nil
+  end
+
   # Pattern used to extract `!123` merge request references from text
   #
   # This pattern supports cross-project references.
