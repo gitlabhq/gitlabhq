@@ -1,0 +1,28 @@
+- if show_promotions? && !@project.feature_available?(:issue_weights)
+  .block.weight
+    .sidebar-collapsed-icon{ data: { toggle: "dropdown", target: ".weight" } }
+      = icon('balance-scale')
+      %span
+        No
+    .title.hide-collapsed
+      = _('Weight')
+      = link_to _('Edit'), '#', class: 'edit-link promote-weight-link pull-right', data: { toggle: "dropdown", target: ".weight" }
+    .promotion-info-weight.dropdown
+      .dropdown-menu.promotion-info-weight-message
+        .dropdown-title
+          %span
+            = _('Change Weight')
+          %button.dropdown-title-button.dropdown-menu-close{ "aria-label" => _('Close'), :type => "button" }
+            %i.fa.fa-times.dropdown-menu-close-icon{ "aria-hidden" => "true", "data-hidden" => "true" }
+        %div
+          %p
+            - if current_application_settings.should_check_namespace_plan?
+              = _('Upgrade your plan to activate Issue weight.')
+            - else
+              = _('Improve issues management with Issue weight and GitLab Enterprise Edition.')
+            = link_to _('Read more'), help_page_path('workflow/issue_weight.html'), class: 'btn-link', target: '_blank'
+          %div
+            = render 'shared/promotions/promotion_link_project', short_form: true
+    .hide-collapsed
+      %span.no-value
+        = _('None')

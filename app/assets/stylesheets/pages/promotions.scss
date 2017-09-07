@@ -76,3 +76,31 @@
     max-width: 700px;
   }
 }
+
+.promotion-info-weight-message {
+  padding: $gl-padding-top;
+
+  .dropdown-title {
+    margin: 0 0 10px;
+  }
+
+  .btn {
+    padding: $gl-vert-padding $gl-btn-padding;
+    border-radius: $border-radius-default;
+    display: block;
+    line-height: $line-height-base;
+  }
+
+  .btn-link {
+    display: inline;
+    color: $gl-link-color;
+    background-color: transparent;
+    padding: 0;
+
+    &:hover {
+      background-color: transparent;
+      color: $gl-link-hover-color;
+    }
+  }
+}
+

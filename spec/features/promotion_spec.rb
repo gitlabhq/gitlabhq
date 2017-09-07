@@ -247,6 +247,23 @@ describe 'Promotions', js: true do
     end
   end
 
+  describe 'for issue weight', js: true do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      project.team << [user, :master]
+      sign_in(user)
+    end
+
+    it 'should appear on the page', js: true do
+      visit project_issue_path(project, issue)
+      wait_for_requests
+      find('.promote-weight-link').click
+      expect(find('.promotion-info-weight-message')).to have_content 'Improve issues management with Issue weight and GitLab Enterprise Edition'
+    end
+  end
+
   describe 'for project audit events', js: true do
     before do
       allow(License).to receive(:current).and_return(nil)
