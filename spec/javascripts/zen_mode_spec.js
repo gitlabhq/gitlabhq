@@ -8,7 +8,7 @@ import ZenMode from '~/zen_mode';
   var enterZen, escapeKeydown, exitZen;
 
   describe('ZenMode', function() {
-    var fixtureName = 'issues/open-issue.html.raw';
+    var fixtureName = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(fixtureName);
     beforeEach(function() {
       loadFixtures(fixtureName);

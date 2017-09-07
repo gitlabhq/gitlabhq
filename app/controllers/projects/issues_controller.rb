@@ -94,9 +94,23 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: IssueSerializer.new.represent(@issue)
+        render json: serializer.represent(@issue)
       end
     end
+  end
+
+  def discussions
+    notes = @issue.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    prepare_notes_for_rendering(notes)
+
+    discussions = Discussion.build_collection(notes, @issue)
+
+    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
   end
 
   def create
@@ -270,7 +284,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def render_issue_json
     if @issue.valid?
-      render json: IssueSerializer.new.represent(@issue)
+      render json: serializer.represent(@issue)
     else
       render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
     end
@@ -305,5 +319,9 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     redirect_to new_user_session_path, notice: notice
+  end
+
+  def serializer
+    IssueSerializer.new(current_user: current_user, project: issue.project)
   end
 end

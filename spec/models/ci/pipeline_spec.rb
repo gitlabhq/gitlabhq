@@ -550,6 +550,22 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_kubernetes_active?' do
+    context 'when kubernetes is active' do
+      let(:project) { create(:kubernetes_project) }
+
+      it 'returns true' do
+        expect(pipeline).to have_kubernetes_active
+      end
+    end
+
+    context 'when kubernetes is not active' do
+      it 'returns false' do
+        expect(pipeline).not_to have_kubernetes_active
+      end
+    end
+  end
+
   describe '#has_stage_seeds?' do
     context 'when pipeline has stage seeds' do
       subject { build(:ci_pipeline_with_one_job) }

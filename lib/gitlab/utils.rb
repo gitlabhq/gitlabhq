@@ -43,6 +43,10 @@ module Gitlab
       end
     end
 
+    def random_string
+      Random.rand(Float::MAX.to_i).to_s(36)
+    end
+
     # EE below
     def try_megabytes_to_bytes(size)
       Integer(size).megabytes

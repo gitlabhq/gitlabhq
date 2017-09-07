@@ -14,13 +14,11 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   end
 
   step 'I own project "Shop" in group "Sourcing"' do
-    @project = create(:project, :repository,
-                      name: 'Shop', group: @group)
+    @project = create(:project, :repository, group: @group)
   end
 
   step 'I own empty project "Empty Shop" in group "Sourcing"' do
-    @project = create(:project,
-                      name: 'Shop', group: @group)
+    @project = create(:project, group: @group)
   end
 
   step 'group has hook' do

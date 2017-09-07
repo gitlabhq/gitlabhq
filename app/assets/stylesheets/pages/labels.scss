@@ -116,6 +116,8 @@
 }
 
 .manage-labels-list {
+  @include new-style-dropdown;
+
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     cursor: move;

@@ -29,6 +29,10 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)

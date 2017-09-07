@@ -73,6 +73,10 @@ module Gitlab
 
       delegate :exists?, to: :gitaly_repository_client
 
+      def ==(other)
+        path == other.path
+      end
+
       # Default branch in the repository
       def root_ref
         @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
@@ -738,6 +742,106 @@ module Gitlab
             end
           end
         end
+      end
+
+      def with_repo_branch_commit(start_repository, start_branch_name)
+        raise "expected Gitlab::Git::Repository, got #{start_repository}" unless start_repository.is_a?(Gitlab::Git::Repository)
+
+        return yield nil if start_repository.empty_repo?
+
+        if start_repository == self
+          yield commit(start_branch_name)
+        else
+          sha = start_repository.commit(start_branch_name).sha
+
+          if branch_commit = commit(sha)
+            yield branch_commit
+          else
+            with_repo_tmp_commit(
+              start_repository, start_branch_name, sha) do |tmp_commit|
+              yield tmp_commit
+            end
+          end
+        end
+      end
+
+      def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        tmp_ref = fetch_ref(
+          start_repository.path,
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          "refs/tmp/#{SecureRandom.hex}/head"
+        )
+
+        yield commit(sha)
+      ensure
+        delete_refs(tmp_ref) if tmp_ref
+      end
+
+      def fetch_source_branch(source_repository, source_branch, local_ref)
+        with_repo_branch_commit(source_repository, source_branch) do |commit|
+          if commit
+            write_ref(local_ref, commit.sha)
+          else
+            raise Rugged::ReferenceError, 'source repository is empty'
+          end
+        end
+      end
+
+      def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+        with_repo_branch_commit(source_repository, source_branch_name) do |commit|
+          break unless commit
+
+          Gitlab::Git::Compare.new(
+            self,
+            target_branch_name,
+            commit.sha,
+            straight: straight
+          )
+        end
+      end
+
+      def write_ref(ref_path, sha)
+        rugged.references.create(ref_path, sha, force: true)
+      end
+
+      def fetch_ref(source_path, source_ref, target_ref)
+        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+        message, status = run_git(args)
+
+        # Make sure ref was created, and raise Rugged::ReferenceError when not
+        raise Rugged::ReferenceError, message if status != 0
+
+        target_ref
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git(args)
+        circuit_breaker.perform do
+          popen([Gitlab.config.git.bin_path, *args], path)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def commit(ref = 'HEAD')
+        Gitlab::Git::Commit.find(self, ref)
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def empty_repo?
+        !exists? || !has_visible_content?
+      end
+
+      #
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      #
+      # This method return true if repository contains some content visible in project page.
+      #
+      def has_visible_content?
+        branch_count > 0
       end
 
       def gitaly_repository

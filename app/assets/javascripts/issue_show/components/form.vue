@@ -21,11 +21,11 @@
         required: false,
         default: () => [],
       },
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: true,
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
@@ -79,8 +79,8 @@
     </div>
     <description-field
       :form-state="formState"
-      :markdown-preview-url="markdownPreviewUrl"
-      :markdown-docs="markdownDocs" />
+      :markdown-preview-path="markdownPreviewPath"
+      :markdown-docs-path="markdownDocsPath" />
     <confidential-checkbox
       :form-state="formState" />
     <edit-actions

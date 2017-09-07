@@ -16,8 +16,8 @@ describe Gitlab::Ci::Config::Entry::Policy do
           end
 
           describe '#value' do
-            it 'returns key value' do
-              expect(entry.value).to eq config
+            it 'returns refs hash' do
+              expect(entry.value).to eq(refs: config)
             end
           end
         end
@@ -52,6 +52,50 @@ describe Gitlab::Ci::Config::Entry::Policy do
               .to include /policy config should be an array of strings or regexps/
           end
         end
+      end
+    end
+  end
+
+  context 'when using complex policy' do
+    context 'when specifiying refs policy' do
+      let(:config) { { refs: ['master'] } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(refs: %w[master])
+      end
+    end
+
+    context 'when specifying kubernetes policy' do
+      let(:config) { { kubernetes: 'active' } }
+
+      it 'is a correct configuraton' do
+        expect(entry).to be_valid
+        expect(entry.value).to eq(kubernetes: 'active')
+      end
+    end
+
+    context 'when specifying invalid kubernetes policy' do
+      let(:config) { { kubernetes: 'something' } }
+
+      it 'reports an error about invalid policy' do
+        expect(entry.errors).to include /unknown value: something/
+      end
+    end
+
+    context 'when specifying unknown policy' do
+      let(:config) { { refs: ['master'], invalid: :something } }
+
+      it 'returns error about invalid key' do
+        expect(entry.errors).to include /unknown keys: invalid/
+      end
+    end
+
+    context 'when policy is empty' do
+      let(:config) { {} }
+
+      it 'is not a valid configuration' do
+        expect(entry.errors).to include /can't be blank/
       end
     end
   end

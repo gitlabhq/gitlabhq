@@ -284,6 +284,7 @@ CommitStatus:
 - auto_canceled_by_id
 - retried
 - protected
+- failure_reason
 Ci::Variable:
 - id
 - project_id

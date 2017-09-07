@@ -110,7 +110,7 @@ import initGroupAnalytics from './init_group_analytics';
       path = page.split(':');
       shortcut_handler = null;
 
-      $('.js-gfm-input').each((i, el) => {
+      $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
         const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
@@ -198,7 +198,6 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();

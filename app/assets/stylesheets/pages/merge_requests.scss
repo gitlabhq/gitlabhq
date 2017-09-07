@@ -173,17 +173,6 @@
     vertical-align: top;
   }
 
-  .mini-pipeline-graph-dropdown-menu .mini-pipeline-graph-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    .ci-status-text,
-    .ci-status-icon {
-      top: 0;
-      margin-right: 10px;
-    }
-  }
-
   .normal {
     line-height: 28px;
   }

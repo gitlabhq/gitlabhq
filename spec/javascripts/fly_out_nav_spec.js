@@ -5,12 +5,14 @@ import {
   canShowActiveSubItems,
   mouseEnterTopItems,
   mouseLeaveTopItem,
+  getOpenMenu,
   setOpenMenu,
   mousePos,
   getHideSubItemsInterval,
   documentMouseMove,
   getHeaderHeight,
   setSidebar,
+  subItemsMouseLeave,
 } from '~/fly_out_nav';
 import bp from '~/breakpoints';
 
@@ -336,6 +338,31 @@ describe('Fly out sidebar navigation', () => {
       expect(
         canShowActiveSubItems(el),
       ).toBeTruthy();
+    });
+  });
+
+  describe('subItemsMouseLeave', () => {
+    beforeEach(() => {
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute;"></div>';
+
+      setOpenMenu(el.querySelector('.sidebar-sub-level-items'));
+    });
+
+    it('hides subMenu if element is not hovered', () => {
+      subItemsMouseLeave(el);
+
+      expect(
+        getOpenMenu(),
+      ).toBeNull();
+    });
+
+    it('does not hide subMenu if element is hovered', () => {
+      el.classList.add('is-over');
+      subItemsMouseLeave(el);
+
+      expect(
+        getOpenMenu(),
+      ).not.toBeNull();
     });
   });
 });

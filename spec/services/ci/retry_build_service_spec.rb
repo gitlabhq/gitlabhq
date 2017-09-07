@@ -22,8 +22,8 @@ describe Ci::RetryBuildService do
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id retried sourced_pipelines
-       artifacts_file_store artifacts_metadata_store].freeze
+       user_id auto_canceled_by_id retried failure_reason
+       sourced_pipelines artifacts_file_store artifacts_metadata_store].freeze # EE
 
   shared_examples 'build duplication' do
     let(:stage) do

@@ -49,13 +49,6 @@ module IssuesHelper
     end
   end
 
-  def bulk_update_milestone_options
-    milestones = @project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
-    milestones.unshift(Milestone::None)
-
-    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
-  end
-
   def milestone_options(object)
     milestones = object.project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
     milestones.unshift(object.milestone) if object.milestone.present? && object.milestone.closed?
@@ -95,14 +88,6 @@ module IssuesHelper
     return 'hidden' if issue.closed? == closed
   end
 
-  def merge_requests_sentence(merge_requests)
-    # Sorting based on the `!123` or `group/project!123` reference will sort
-    # local merge requests first.
-    merge_requests.map do |merge_request|
-      merge_request.to_reference(@project)
-    end.sort.to_sentence(last_word_connector: ', or ')
-  end
-
   def confidential_icon(issue)
     icon('eye-slash') if issue.confidential?
   end
@@ -139,7 +124,7 @@ module IssuesHelper
   end
 
   def awards_sort(awards)
-    awards.sort_by do |award, notes|
+    awards.sort_by do |award, award_emojis|
       if award == "thumbsup"
         0
       elsif award == "thumbsdown"
@@ -148,18 +133,6 @@ module IssuesHelper
         2
       end
     end.to_h
-  end
-
-  def due_date_options
-    options = [
-      Issue::AnyDueDate,
-      Issue::NoDueDate,
-      Issue::DueThisWeek,
-      Issue::DueThisMonth,
-      Issue::Overdue
-    ]
-
-    options_from_collection_for_select(options, 'name', 'title', params[:due_date])
   end
 
   def link_to_discussions_to_resolve(merge_request, single_discussion = nil)

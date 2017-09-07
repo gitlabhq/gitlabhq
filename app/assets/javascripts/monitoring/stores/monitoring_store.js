@@ -1,46 +1,52 @@
 import _ from 'underscore';
 
-class MonitoringStore {
+function sortMetrics(metrics) {
+  return _.chain(metrics).sortBy('weight').sortBy('title').value();
+}
+
+function normalizeMetrics(metrics) {
+  return metrics.map(metric => ({
+    ...metric,
+    queries: metric.queries.map(query => ({
+      ...query,
+      result: query.result.map(result => ({
+        ...result,
+        values: result.values.map(([timestamp, value]) => ({
+          time: new Date(timestamp * 1000),
+          value,
+        })),
+      })),
+    })),
+  }));
+}
+
+function collate(array, rows = 2) {
+  const collatedArray = [];
+  let row = [];
+  array.forEach((value, index) => {
+    row.push(value);
+    if ((index + 1) % rows === 0) {
+      collatedArray.push(row);
+      row = [];
+    }
+  });
+  if (row.length > 0) {
+    collatedArray.push(row);
+  }
+  return collatedArray;
+}
+
+export default class MonitoringStore {
   constructor() {
     this.groups = [];
     this.deploymentData = [];
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  createArrayRows(metrics = []) {
-    const currentMetrics = metrics;
-    const availableMetrics = [];
-    let metricsRow = [];
-    let index = 1;
-    Object.keys(currentMetrics).forEach((key) => {
-      const metricValues = currentMetrics[key].queries[0].result[0].values;
-      if (metricValues != null) {
-        const literalMetrics = metricValues.map(metric => ({
-          time: new Date(metric[0] * 1000),
-          value: metric[1],
-        }));
-        currentMetrics[key].queries[0].result[0].values = literalMetrics;
-        metricsRow.push(currentMetrics[key]);
-        if (index % 2 === 0) {
-          availableMetrics.push(metricsRow);
-          metricsRow = [];
-        }
-        index = index += 1;
-      }
-    });
-    if (metricsRow.length > 0) {
-      availableMetrics.push(metricsRow);
-    }
-    return availableMetrics;
-  }
-
   storeMetrics(groups = []) {
-    this.groups = groups.map((group) => {
-      const currentGroup = group;
-      currentGroup.metrics = _.chain(group.metrics).sortBy('weight').sortBy('title').value();
-      currentGroup.metrics = this.createArrayRows(currentGroup.metrics);
-      return currentGroup;
-    });
+    this.groups = groups.map(group => ({
+      ...group,
+      metrics: collate(normalizeMetrics(sortMetrics(group.metrics))),
+    }));
   }
 
   storeDeploymentData(deploymentData = []) {
@@ -57,5 +63,3 @@ class MonitoringStore {
     return metricsCount;
   }
 }
-
-export default MonitoringStore;

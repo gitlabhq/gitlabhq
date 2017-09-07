@@ -142,6 +142,16 @@ describe API::Issues, :mailer do
         expect(first_issue['id']).to eq(issue2.id)
       end
 
+      it 'returns issues reacted by the authenticated user by the given emoji' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        get api('/issues', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
       it 'returns issues matching given search string for title' do
         get api("/issues", user), search: issue.title
 
