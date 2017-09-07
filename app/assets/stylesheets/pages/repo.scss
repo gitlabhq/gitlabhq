@@ -84,6 +84,13 @@
       }
     }
 
+    .blob-no-preview {
+      .vertical-center {
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
     &.edit-mode {
       .blob-viewer-container {
         overflow: hidden;
