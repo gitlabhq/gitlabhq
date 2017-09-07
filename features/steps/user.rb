@@ -17,14 +17,9 @@ class Spinach::Features::User < Spinach::FeatureSteps
     Issues::CreateService.new(project, user, issue_params).execute
 
     # Push code contribution
-    push_params = {
-      project: project,
-      action: Event::PUSHED,
-      author_id: user.id,
-      data: { commit_count: 3 }
-    }
+    event = create(:push_event, project: project, author: user)
 
-    Event.create(push_params)
+    create(:push_event_payload, event: event, commit_count: 3)
   end
 
   step 'I should see contributed projects' do
@@ -38,6 +33,6 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   def contributed_project
-    @contributed_project ||= create(:project, :public)
+    @contributed_project ||= create(:project, :public, :empty_repo)
   end
 end

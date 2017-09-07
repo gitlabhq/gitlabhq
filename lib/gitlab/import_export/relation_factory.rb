@@ -70,7 +70,6 @@ module Gitlab
         reset_tokens!
         remove_encrypted_attributes!
 
-        @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
         set_st_diff_commits if @relation_name == :merge_request_diff
         set_diff if @relation_name == :merge_request_diff_files
       end

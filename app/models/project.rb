@@ -1507,6 +1507,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def multiple_issue_boards_available?(user)
+    feature_available?(:multiple_issue_boards, user)
+  end
+
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone, user)
+  end
+
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end

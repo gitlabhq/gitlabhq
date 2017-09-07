@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::Boards::IssuesController do
+describe Boards::IssuesController do
   let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
@@ -133,6 +133,22 @@ describe Projects::Boards::IssuesController do
           expect(response).to have_http_status(404)
         end
       end
+
+      context 'with invalid board id' do
+        it 'returns a not found 404 response' do
+          create_issue user: user, board: 999, list: list1, title: 'New issue'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'with invalid list id' do
+        it 'returns a not found 404 response' do
+          create_issue user: user, board: board, list: 999, title: 'New issue'
+
+          expect(response).to have_http_status(404)
+        end
+      end
     end
 
     context 'with unauthorized user' do
@@ -146,17 +162,15 @@ describe Projects::Boards::IssuesController do
     def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
-      post :create, namespace_id: project.namespace.to_param,
-                    project_id: project,
-                    board_id: board.to_param,
+      post :create, board_id: board.to_param,
                     list_id: list.to_param,
-                    issue: { title: title },
+                    issue: { title: title,  project_id: project.id },
                     format: :json
     end
   end
 
   describe 'PATCH update' do
-    let(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
+    let!(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
 
     context 'with valid params' do
       it 'returns a successful 200 response' do
@@ -186,7 +200,7 @@ describe Projects::Boards::IssuesController do
       end
 
       it 'returns a not found 404 response for invalid issue id' do
-        move user: user, board: board, issue: 999, from_list_id: list1.id, to_list_id: list2.id
+        move user: user, board: board, issue: double(id: 999), from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(404)
       end
@@ -210,9 +224,9 @@ describe Projects::Boards::IssuesController do
       sign_in(user)
 
       patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project,
+                     project_id: project.id,
                      board_id: board.to_param,
-                     id: issue.to_param,
+                     id: issue.id,
                      from_list_id: from_list_id,
                      to_list_id: to_list_id,
                      format: :json

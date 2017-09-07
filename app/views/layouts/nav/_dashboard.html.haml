@@ -1,5 +1,5 @@
 %ul.list-unstyled.navbar-sub-nav
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown" }) do
+  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects" }) do
     %a{ href: "#", data: { toggle: "dropdown" } }
       Projects
       = custom_icon('caret_down')
@@ -22,7 +22,7 @@
     = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
       Snippets
 
-  %li.dropdown.hidden-lg
+  %li.header-more.dropdown.hidden-lg
     %a{ href: "#", data: { toggle: "dropdown" } }
       More
       = custom_icon('caret_down')

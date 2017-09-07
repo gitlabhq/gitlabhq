@@ -45,7 +45,7 @@ module API
       expose :confirmed_at
       expose :last_activity_on
       expose :email
-      expose :color_scheme_id, :projects_limit, :current_sign_in_at
+      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
@@ -557,7 +557,7 @@ module API
     end
 
     class Event < Grape::Entity
-      expose :title, :project_id, :action_name
+      expose :project_id, :action_name
       expose :target_id, :target_iid, :target_type, :author_id
       expose :target_title
       expose :created_at
