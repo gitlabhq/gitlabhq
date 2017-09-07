@@ -2,10 +2,12 @@ desc "GitLab | Migrate files for artifacts to comply with new storage format"
 namespace :gitlab do
   namespace :artifacts do
     task migrate: :environment do
-      puts 'Artifacts'.color(:yellow)
-      Ci::Build.joins(:project).with_artifacts
-        .where(artifacts_file_store: ArtifactUploader::LOCAL_STORE)
-        .find_each(batch_size: 100) do |issue|
+      logger = Logger.new(STDOUT)
+      logger.info('Starting transfer of artifacts')
+
+      Ci::Build.joins(:project)
+        .with_artifacts_stored_locally
+        .find_each(batch_size: 10) do |build|
         begin
           build.artifacts_file.migrate!(ArtifactUploader::REMOTE_STORE)
           build.artifacts_metadata.migrate!(ArtifactUploader::REMOTE_STORE)

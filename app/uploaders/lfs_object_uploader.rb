@@ -1,19 +1,18 @@
-class LfsObjectUploader < GitlabUploader
-  storage :file
+class LfsObjectUploader < ObjectStoreUploader
+  storage_options Gitlab.config.lfs
+  after :store, :schedule_migration_to_object_storage
 
-  def store_dir
-    "#{Gitlab.config.lfs.storage_path}/#{model.oid[0, 2]}/#{model.oid[2, 2]}"
-  end
-
-  def cache_dir
-    "#{Gitlab.config.lfs.storage_path}/tmp/cache"
+  def self.local_store_path
+    Gitlab.config.lfs.storage_path
   end
 
   def filename
-    model.oid[4..-1]
+    subject.oid[4..-1]
   end
 
-  def work_dir
-    File.join(Gitlab.config.lfs.storage_path, 'tmp', 'work')
+  private
+
+  def default_path
+    "#{subject.oid[0, 2]}/#{subject.oid[2, 2]}"
   end
 end

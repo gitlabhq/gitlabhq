@@ -63,3 +63,4 @@
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
+  - [object_storage_upload, 1]

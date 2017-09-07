@@ -302,8 +302,9 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
-# Convert upload connection settings to use symbol keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
+Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
@@ -338,6 +339,13 @@ Settings.pages['external_https']  ||= false unless Settings.pages['external_http
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
+
+Settings.lfs['object_store'] ||= Settingslogic.new({})
+Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
+Settings.lfs['object_store']['remote_directory'] ||= nil
+Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Mattermost

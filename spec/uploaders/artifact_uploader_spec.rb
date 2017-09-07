@@ -6,8 +6,8 @@ describe ArtifactUploader do
   let(:uploader) { described_class.new(job, :artifacts_file) }
   let(:local_path) { Gitlab.config.artifacts.path }
 
-  describe '.local_artifacts_store' do
-    subject { described_class.local_artifacts_store }
+  describe '.local_store_path' do
+    subject { described_class.local_store_path }
 
     it "delegate to artifacts path" do
       expect(Gitlab.config.artifacts).to receive(:path)

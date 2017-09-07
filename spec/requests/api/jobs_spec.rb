@@ -17,8 +17,12 @@ describe API::Jobs do
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
+  let(:cross_project_pipeline_enabled) { true }
+  let(:object_storage_enabled) { true }
 
   before do
+    stub_licensed_features(cross_project_pipelines: cross_project_pipeline_enabled,
+                           object_storage: object_storage_enabled)
     project.add_developer(user)
   end
 
@@ -319,7 +323,7 @@ describe API::Jobs do
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
     before do
-      stub_artifacts_object_storage
+      stub_artifacts_object_storage(licensed: :skip)
       job.success
     end
 
