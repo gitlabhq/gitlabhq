@@ -129,7 +129,7 @@
     <form
       class="edit-note common-note-form js-quick-submit gfm-form">
 
-      <issue-warning v-if="hasIssueWarning" :is-locked="isIssueLocked" :is-confidential="isIssueConfidential" />
+      <issue-warning v-if="hasIssueWarning(getIssueData)" :is-locked="isIssueLocked(getIssueData)" :is-confidential="isIssueConfidential(getIssueData)" />
 
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
