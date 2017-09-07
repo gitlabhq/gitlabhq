@@ -141,6 +141,7 @@ production: &base
     # object_store:
     #   enabled: false
     #   remote_directory: artifacts # The bucket name
+    #   background_upload: false # Temporary option to limit automatic upload (Default: true)
     #   connection:
     #     provider: AWS # Only AWS supported at the moment
     #     aws_access_key_id: AWS_ACCESS_KEY_ID
@@ -152,6 +153,19 @@ production: &base
     enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
+    object_store:
+      enabled: false
+      remote_directory: lfs-objects # Bucket name
+      # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: eu-central-1
+        # Use the following options to configure an AWS compatible host
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## GitLab Pages
   pages:
@@ -723,6 +737,16 @@ test:
     enabled: true
   lfs:
     enabled: false
+    # The location where LFS objects are stored (default: shared/lfs-objects).
+    # storage_path: shared/lfs-objects
+    object_store:
+      enabled: false
+      remote_directory: lfs-objects # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: eu-central-1
   artifacts:
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).

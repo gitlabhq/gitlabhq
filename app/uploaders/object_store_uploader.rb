@@ -21,12 +21,20 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
       object_store_options&.enabled
     end
 
+    def background_upload_enabled?
+      object_store_options&.background_upload
+    end
+
     def object_store_credentials
       @object_store_credentials ||= object_store_options&.connection&.to_hash&.deep_symbolize_keys
     end
 
     def object_store_directory
       object_store_options&.remote_directory
+    end
+
+    def local_store_path
+      raise NotImplementedError
     end
   end
 
@@ -56,6 +64,14 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   def object_store=(value)
     @storage = nil
     subject.public_send(:"#{field}_store=", value) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def store_dir
+    if file_storage?
+      default_local_path
+    else
+      default_path
+    end
   end
 
   def use_file
@@ -105,6 +121,12 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     end
   end
 
+  def schedule_migration_to_object_storage(new_file)
+    if self.class.object_store_enabled? && licensed? && file_storage?
+      ObjectStorageUploadWorker.perform_async(self.class.name, subject.class.name, field, subject.id)
+    end
+  end
+
   def fog_directory
     self.class.object_store_directory
   end
@@ -133,24 +155,41 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   def verify_license!(new_file)
     return if file_storage?
 
-    raise 'Object Storage feature is missing' unless subject.project.feature_available?(:object_storage)
+    raise 'Object Storage feature is missing' unless licensed?
   end
 
   def exists?
     file.try(:exists?)
   end
 
+  def cache_dir
+    File.join(self.class.local_store_path, 'tmp/cache')
+  end
+
   # Override this if you don't want to save local files by default to the Rails.root directory
   def work_dir
     # Default path set by CarrierWave:
     # https://github.com/carrierwaveuploader/carrierwave/blob/v1.1.0/lib/carrierwave/uploader/cache.rb#L182
-    CarrierWave.tmp_path
+    # CarrierWave.tmp_path
+    File.join(self.class.local_store_path, 'tmp/work')
+  end
+
+  def licensed?
+    License.feature_available?(:object_storage)
   end
 
   private
 
   def set_default_local_store(new_file)
     self.object_store = LOCAL_STORE unless self.real_object_store
+  end
+
+  def default_local_path
+    File.join(self.class.local_store_path, default_path)
+  end
+
+  def default_path
+    raise NotImplementedError
   end
 
   def storage

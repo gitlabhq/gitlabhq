@@ -271,18 +271,15 @@ describe ObjectStoreUploader do
     end
 
     context 'when using remote storage' do
-      let(:project) { double }
-
       before do
         uploader_class.storage_options double(
           object_store: double(enabled: true))
         expect(object).to receive(:artifacts_file_store) { described_class::REMOTE_STORE }
-        expect(object).to receive(:project) { project }
       end
 
       context 'feature is not available' do
         before do
-          expect(project).to receive(:feature_available?).with(:object_storage) { false }
+          expect(License).to receive(:feature_available?).with(:object_storage) { false }
         end
 
         it "does raise an error" do
@@ -292,7 +289,7 @@ describe ObjectStoreUploader do
 
       context 'feature is available' do
         before do
-          expect(project).to receive(:feature_available?).with(:object_storage) { true }
+          expect(License).to receive(:feature_available?).with(:object_storage) { true }
         end
 
         it "does not raise an error" do

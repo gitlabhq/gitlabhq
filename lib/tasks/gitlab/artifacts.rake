@@ -9,8 +9,7 @@ namespace :gitlab do
       logger.info('Starting transfer of artifacts')
 
       Ci::Build.joins(:project)
-        .with_artifacts
-        .where(artifacts_file_store: [nil, ArtifactUploader::LOCAL_STORE])
+        .with_artifacts_stored_locally
         .find_each(batch_size: 10) do |build|
         begin
           build.artifacts_file.migrate!(ArtifactUploader::REMOTE_STORE)

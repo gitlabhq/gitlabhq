@@ -1,6 +1,7 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
+  include SendFileUpload
 
   layout 'project'
   before_action :authorize_read_build!
@@ -10,11 +11,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :set_path_and_entry, only: [:file, :raw]
 
   def download
-    if artifacts_file.file_storage?
-      send_file artifacts_file.path, disposition: 'attachment'
-    else
-      redirect_to artifacts_file.url
-    end
+    send_upload(artifacts_file, attachment: artifacts_file.filename)
   end
 
   def browse
