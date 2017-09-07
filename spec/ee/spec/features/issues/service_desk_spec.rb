@@ -7,6 +7,8 @@ describe 'Service Desk Issue Tracker', js: true do
   before do
     allow(License).to receive(:feature_available?).and_call_original
     allow(License).to receive(:feature_available?).with(:service_desk) { true }
+    allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
+    allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
     project.add_master(user)
     sign_in(user)
@@ -50,8 +52,6 @@ describe 'Service Desk Issue Tracker', js: true do
 
     context 'when service desk has been activated' do
       before do
-        allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
-        allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
       end
 
       context 'when there are no issues' do
