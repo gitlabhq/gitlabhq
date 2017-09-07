@@ -13,7 +13,6 @@ export default () => {
   new LabelsSelect();
   new IssuableContext(sidebarOptions.currentUser);
   gl.Subscription.bindAll('.subscription');
-  gl.DiscussionLock.bindAll('.discussion-lock');
   new gl.DueDateSelectors();
   window.sidebar = new Sidebar();
 };
