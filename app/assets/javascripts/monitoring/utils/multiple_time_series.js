@@ -68,8 +68,8 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
       .y1(d => timeSeriesScaleY(d.value));
 
     const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
-    const seriesCustomizationData = queryData.series != null &&
-                                    _.findWhere(queryData.series[0].series,
+    const seriesCustomizationData = queryData.when != null &&
+                                    _.findWhere(queryData.when[0].series,
                                     { value: timeSeriesMetricLabel });
     if (seriesCustomizationData != null) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
@@ -90,4 +90,3 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
     };
   });
 }
-

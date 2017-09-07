@@ -93,7 +93,7 @@ describe('GraphLegend', () => {
     const component = createComponent(defaultValuesComponent);
     const titles = component.$el.querySelectorAll('.legend-metric-title');
 
-    expect(titles[0].textContent.indexOf('hundred(s)')).not.toEqual(-1);
+    expect(titles[0].textContent.indexOf('1xx')).not.toEqual(-1);
     expect(titles[1].textContent.indexOf('2xx')).not.toEqual(-1);
     expect(getTextFromNode(component, '.y-label-text')).toEqual(component.yAxisLabel);
   });

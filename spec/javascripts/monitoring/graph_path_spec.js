@@ -27,9 +27,9 @@ describe('Monitoring Paths', () => {
     const metricArea = component.$el.querySelector('.metric-area');
     const metricLine = component.$el.querySelector('.metric-line');
 
-    expect(metricArea.getAttribute('fill')).toBe('#8dd5aa');
+    expect(metricArea.getAttribute('fill')).toBe('#8fbce8');
     expect(metricArea.getAttribute('d')).toBe(firstTimeSeries.areaPath);
-    expect(metricLine.getAttribute('stroke')).toBe('#1aaa55');
+    expect(metricLine.getAttribute('stroke')).toBe('#1f78d1');
     expect(metricLine.getAttribute('d')).toBe(firstTimeSeries.linePath);
   });
 });
