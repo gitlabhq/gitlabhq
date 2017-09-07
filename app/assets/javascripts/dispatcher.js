@@ -155,13 +155,13 @@ import initChangesDropdown from './init_changes_dropdown';
           new UsersSelect();
           break;
         case 'projects:merge_requests:index':
-          new UserCallout({ setCalloutPerProject: true });
-          break;
-        case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
+          }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
