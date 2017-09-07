@@ -515,16 +515,6 @@ header.navbar-gitlab-new {
   }
 }
 
-.top-area {
-  .nav-controls-new-nav {
-    .dropdown {
-      @media (min-width: $screen-sm-min) {
-        margin-right: 0;
-      }
-    }
-  }
-}
-
 .btn-sign-in {
   margin-top: 3px;
   background-color: $indigo-100;

@@ -3,19 +3,14 @@ class CreateProjectAutoDevOps < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
     create_table :project_auto_devops do |t|
-      t.belongs_to :project, null: false, index: { unique: true }
+      t.belongs_to :project, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
+      t.datetime_with_timezone :created_at, null: false
+      t.datetime_with_timezone :updated_at, null: false
       t.boolean :enabled, default: nil, null: true
       t.string :domain
     end
-
-    add_timestamps_with_timezone(:project_auto_devops, null: false)
-
-    # No need to check for violations as its a new table
-    add_concurrent_foreign_key(:project_auto_devops, :projects, column: :project_id)
   end
 
   def down

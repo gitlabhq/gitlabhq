@@ -1,5 +1,15 @@
 module API
   module Entities
+    class WikiPageBasic < Grape::Entity
+      expose :format
+      expose :slug
+      expose :title
+    end
+
+    class WikiPage < WikiPageBasic
+      expose :content
+    end
+
     class UserSafe < Grape::Entity
       expose :id, :name, :username
     end

@@ -56,6 +56,12 @@ module API
       @project ||= find_project!(params[:id])
     end
 
+    def wiki_page
+      page = user_project.wiki.find_page(params[:slug])
+
+      page || not_found!('Wiki Page')
+    end
+
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
