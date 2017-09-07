@@ -19,7 +19,7 @@ describe LfsObjectsProject do
     it 'validates object id' do
       is_expected.to validate_uniqueness_of(:lfs_object_id)
         .scoped_to(:project_id)
-        .with_message("already exists in project") }
+        .with_message("already exists in project")
     end
   end
 
