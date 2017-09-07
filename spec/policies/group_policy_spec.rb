@@ -24,8 +24,8 @@ describe GroupPolicy do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
-      :create_subgroup
-    ]
+      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+    ].compact
   end
 
   before do

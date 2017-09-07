@@ -93,7 +93,7 @@ module API
     end
 
     def find_group(id)
-      if id =~ /^\d+$/
+      if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)

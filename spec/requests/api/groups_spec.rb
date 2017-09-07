@@ -431,6 +431,30 @@ describe API::Groups do
 
         expect(response).to have_http_status(403)
       end
+
+      context 'as owner', :nested_groups do
+        before do
+          group2.add_owner(user1)
+        end
+
+        it 'can create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_http_status(201)
+        end
+      end
+
+      context 'as master', :nested_groups do
+        before do
+          group2.add_master(user1)
+        end
+
+        it 'cannot create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_http_status(403)
+        end
+      end
     end
 
     context "when authenticated as user with group permissions" do
