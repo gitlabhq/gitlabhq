@@ -25,6 +25,10 @@ export default {
       required: false,
       default: false,
     },
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     asyncButtonComponent,
@@ -218,7 +222,10 @@ export default {
       </div>
     </div>
 
-    <pipeline-url :pipeline="pipeline" />
+    <pipeline-url
+      :pipeline="pipeline"
+      :auto-devops-help-path="autoDevopsHelpPath"
+      />
 
     <div class="table-section section-25">
       <div

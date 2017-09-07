@@ -50,6 +50,7 @@ project_tree:
         - :push_event_payload
     - :stages
     - :statuses
+  - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
