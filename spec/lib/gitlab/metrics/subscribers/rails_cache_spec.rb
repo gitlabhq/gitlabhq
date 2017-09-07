@@ -33,12 +33,6 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
           subscriber.cache_read(event)
         end
 
-        it 'increments the cache_read_hit total' do
-          expect(described_class.metric_cache_read_hit_total).to receive(:increment)
-
-          subscriber.cache_read(event)
-        end
-
         context 'when super operation is fetch' do
           let(:event) { double(:event, duration: 15.2, payload: { hit: true, super_operation: :fetch }) }
 
@@ -64,7 +58,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
         end
 
         it 'increments the cache_read_miss total' do
-          expect(described_class.metric_cache_read_miss_total).to receive(:increment).with({})
+          expect(described_class.metric_cache_misses_total).to receive(:increment).with({})
 
           subscriber.cache_read(event)
         end
@@ -80,7 +74,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
           end
 
           it 'does not increment cache_read_miss total' do
-            expect(described_class.metric_cache_read_miss_total).not_to receive(:increment).with({})
+            expect(described_class.metric_cache_misses_total).not_to receive(:increment).with({})
 
             subscriber.cache_read(event)
           end
@@ -137,12 +131,6 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
 
         subscriber.cache_fetch_hit(event)
       end
-
-      it 'increments the cache_read_hit total' do
-        expect(described_class.metric_cache_read_hit_total).to receive(:increment).with({})
-
-        subscriber.cache_fetch_hit(event)
-      end
     end
   end
 
@@ -169,7 +157,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       it 'increments the cache_read_miss total' do
-        expect(described_class.metric_cache_read_miss_total).to receive(:increment).with({})
+        expect(described_class.metric_cache_misses_total).to receive(:increment).with({})
 
         subscriber.cache_generate(event)
       end

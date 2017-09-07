@@ -15,17 +15,9 @@ module Gitlab
           )
         end
 
-        def self.metric_cache_read_hit_total
-          @metric_cache_read_hit_total ||= Gitlab::Metrics.counter(
-            :gitlab_cache_read_hit_total,
-            'Cache read hit',
-            Transaction::BASE_LABELS
-          )
-        end
-
-        def self.metric_cache_read_miss_total
-          @metric_cache_read_miss_total ||= Gitlab::Metrics.counter(
-            :gitlab_cache_read_miss_total,
+        def self.metric_cache_misses_total
+          @metric_cache_misses_total ||= Gitlab::Metrics.counter(
+            :gitlab_cache_misses_total,
             'Cache read miss',
             Transaction::BASE_LABELS
           )
@@ -38,10 +30,9 @@ module Gitlab
           return if event.payload[:super_operation] == :fetch
 
           if event.payload[:hit]
-            self.class.metric_cache_read_hit_total.increment(current_transaction.labels)
             current_transaction.increment(:cache_read_hit_count, 1, false)
           else
-            self.class.metric_cache_read_miss_total.increment(current_transaction.labels)
+            self.class.metric_cache_misses_total.increment(current_transaction.labels)
             current_transaction.increment(:cache_read_miss_count, 1, false)
           end
         end
@@ -61,14 +52,13 @@ module Gitlab
         def cache_fetch_hit(event)
           return unless current_transaction
 
-          self.class.metric_cache_read_hit_total.increment(current_transaction.labels)
           current_transaction.increment(:cache_read_hit_count, 1)
         end
 
         def cache_generate(event)
           return unless current_transaction
 
-          self.class.metric_cache_read_miss_total.increment(current_transaction.labels)
+          self.class.metric_cache_misses_total.increment(current_transaction.labels)
           current_transaction.increment(:cache_read_miss_count, 1)
         end
 
