@@ -128,3 +128,37 @@
   }
 }
 
+
+.promotion-issue-template-message {
+  padding: $gl-padding 30px 20px $gl-padding;
+
+  p {
+    margin-right: 20px;
+  }
+
+  .dropdown-title {
+    margin: 0 -25px;
+    padding: 0;
+    overflow: initial;
+    border-bottom: none;
+  }
+
+  .btn {
+    padding: $gl-vert-padding $gl-btn-padding;
+    border-radius: $border-radius-default;
+    display: inline-block;
+    line-height: $line-height-base;
+  }
+
+  .btn-link {
+    display: inline;
+    color: $gl-link-color;
+    padding: 0;
+
+    &:hover {
+      background-color: transparent;
+      color: $gl-link-hover-color;
+    }
+  }
+}
+

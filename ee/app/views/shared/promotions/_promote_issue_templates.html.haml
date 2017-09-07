@@ -1,0 +1,15 @@
+.help-block
+  = _('Add')
+  = link_to 'description templates', 'javascript:void(0);', id: 'promotion-issue-template-link', data: {toggle: 'dropdown'}
+  = _('to help your contributors communicate effectively!')
+  .dropdown.promotion-issue-template
+    .dropdown-menu.promotion-issue-template-message
+      .dropdown-title
+        %button.dropdown-title-button.dropdown-menu-close{ "aria-label" => "Close", :type => "button" }
+          %i.fa.fa-times.dropdown-menu-close-icon{ "aria-hidden" => "true", "data-hidden" => "true" }
+      %div
+        %p
+          = _('Description templates allow you to define context-specific templates for issue and merge request description fields for your project.')
+          = link_to _('Read more'), help_page_path('user/project/description_templates'), class: 'btn-link'
+        %div
+          = render 'shared/promotions/promotion_link_project'
