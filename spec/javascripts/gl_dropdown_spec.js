@@ -8,7 +8,7 @@ describe('glDropdown', function describeDropdown() {
   preloadFixtures('static/gl_dropdown.html.raw');
   loadJSONFixtures('projects.json');
 
-  const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
+  const NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
   const SEARCH_INPUT_SELECTOR = '.dropdown-input-field';
   const ITEM_SELECTOR = `.dropdown-content li:not(${NON_SELECTABLE_CLASSES})`;
   const FOCUSED_ITEM_SELECTOR = `${ITEM_SELECTOR} a.is-focused`;
