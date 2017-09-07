@@ -7,7 +7,9 @@ module EE
     def board_data
       data = {
         board_milestone_title: board&.milestone&.title,
-        focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s
+        focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s,
+        show_promotion: (@project && show_promotions? && (!@project.feature_available?(:multiple_issue_boards) || !@project.feature_available?(:issue_board_milestone) || !@project.feature_available?(:issue_board_focus_mode))).to_s
+
       }
 
       super.merge(data)
@@ -50,9 +52,7 @@ module EE
     end
 
     def board_sidebar_user_data
-      super.merge(group_id: @group&.id,
-                  focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s,
-                  show_promotion: (@project && show_promotions? && (!@project.feature_available?(:multiple_issue_boards) || !@project.feature_available?(:issue_board_milestone) || !@project.feature_available?(:issue_board_focus_mode))).to_s)
+      super.merge(group_id: @group&.id)
     end
   end
 end
