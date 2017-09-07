@@ -27,7 +27,7 @@ export default {
     listEmptyMessage() {
       return this.searchFailed ?
         s__('ProjectsDropdown|Something went wrong on our end.') :
-        s__('ProjectsDropdown|No projects matched your query');
+        s__('ProjectsDropdown|Sorry, no projects matched your search');
     },
   },
 };
