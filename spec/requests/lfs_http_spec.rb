@@ -190,10 +190,12 @@ describe 'Git LFS API and storage' do
   describe 'when fetching lfs object' do
     let(:project) { create(:project) }
     let(:update_permissions) { }
+    let(:before_get) { }
 
     before do
       enable_lfs
       update_permissions
+      before_get
       get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
     end
 
@@ -238,6 +240,21 @@ describe 'Git LFS API and storage' do
             end
 
             it_behaves_like 'responds with a file'
+
+            context 'when LFS uses object storage' do
+              let(:before_get) do
+                stub_lfs_object_storage
+                lfs_object.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+              end
+
+              it 'responds with redirect' do
+                expect(response).to have_gitlab_http_status(302)
+              end
+
+              it 'responds with the file location' do
+                expect(response.location).to include(lfs_object.reload.file.path)
+              end
+            end
           end
         end
 
@@ -1009,6 +1026,32 @@ describe 'Git LFS API and storage' do
             end
           end
 
+          context 'and workhorse requests upload finalize for a new lfs object' do
+            before do
+              allow_any_instance_of(LfsObjectUploader).to receive(:exists?) { false }
+            end
+
+            context 'with object storage disabled' do
+              it "doesn't attempt to migrate file to object storage" do
+                expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+
+                put_finalize(with_tempfile: true)
+              end
+            end
+
+            context 'with object storage enabled' do
+              before do
+                stub_lfs_object_storage
+              end
+
+              it 'schedules migration of file to object storage' do
+                expect(ObjectStorageUploadWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
+
+                put_finalize(with_tempfile: true)
+              end
+            end
+          end
+
           context 'and project has limit enabled but will stay under the limit' do
             before do
               allow_any_instance_of(EE::Project).to receive_messages(
@@ -1222,13 +1265,22 @@ describe 'Git LFS API and storage' do
       put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file)
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false)
+      setup_tempfile(lfs_tmp) if with_tempfile
+
       put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", nil,
           headers.merge('X-Gitlab-Lfs-Tmp' => lfs_tmp).compact
     end
 
     def lfs_tmp_file
       "#{sample_oid}012345678"
+    end
+
+    def setup_tempfile(lfs_tmp)
+      upload_path = "#{Gitlab.config.lfs.storage_path}/tmp/upload"
+
+      FileUtils.mkdir_p(upload_path)
+      FileUtils.touch(File.join(upload_path, lfs_tmp))
     end
   end
 

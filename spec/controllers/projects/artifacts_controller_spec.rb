@@ -22,7 +22,7 @@ describe Projects::ArtifactsController do
 
   describe 'GET download' do
     it 'sends the artifacts file' do
-      expect(controller).to receive(:send_file).with(job.artifacts_file.path, disposition: 'attachment').and_call_original
+      expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
 
       get :download, namespace_id: project.namespace, project_id: project, job_id: job
     end
@@ -99,7 +99,7 @@ describe Projects::ArtifactsController do
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
           let(:store) { ObjectStoreUploader::LOCAL_STORE }
-          let(:archive_path) { ArtifactUploader.local_artifacts_store }
+          let(:archive_path) { ArtifactUploader.local_store_path }
         end
       end
 

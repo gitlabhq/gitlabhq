@@ -970,6 +970,7 @@ ActiveRecord::Schema.define(version: 20170906160132) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "file"
+    t.integer "file_store"
   end
 
   add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
