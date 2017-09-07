@@ -308,4 +308,40 @@ describe 'Promotions', js: true do
       expect(find('.user-callout-copy')).to have_content 'Add Group Webhooks'
     end
   end
+
+  describe 'for advanced search', js: true do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
+      sign_in(user)
+    end
+
+    it 'should appear on seearch page' do
+      visit search_path
+
+      fill_in 'search', with: 'chosen'
+      find('.btn-search').trigger('click')
+
+      expect(find('#promote_advanced_search')).to have_content 'Improve search with Advanced Global Search and GitLab Enterprise Edition.'
+    end
+
+    it 'does not show when cookie is set' do
+      visit search_path
+
+      fill_in 'search', with: 'chosen'
+      find('.btn-search').trigger('click')
+
+      within('#promote_advanced_search') do
+        find('.close').trigger('click')
+      end
+
+      visit search_path
+
+      fill_in 'search', with: 'chosen'
+      find('.btn-search').trigger('click')
+
+      expect(page).not_to have_selector('#promote_advanced_search')
+    end
+  end
 end
