@@ -37,9 +37,9 @@ describe PreferencesHelper do
       it 'returns the default when id is invalid' do
         stub_user(theme_id: Gitlab::Themes.count + 5)
 
-        allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(2)
+        allow(Gitlab.config.gitlab).to receive(:default_theme).and_return(1)
 
-        expect(helper.user_application_theme).to eq 'ui_dark'
+        expect(helper.user_application_theme).to eq 'ui_indigo'
       end
     end
 

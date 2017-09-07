@@ -5,7 +5,7 @@ module Gitlab
     extend self
 
     # Theme ID used when no `default_theme` configuration setting is provided.
-    APPLICATION_DEFAULT = 2
+    APPLICATION_DEFAULT = 1
 
     # Struct class representing a single Theme
     Theme = Struct.new(:id, :name, :css_class)
