@@ -289,13 +289,10 @@ project:
 - statistics
 - container_repositories
 - uploads
-<<<<<<< HEAD
 - mirror_data
 - source_pipelines
 - sourced_pipelines
-=======
 - members_and_requesters
->>>>>>> upstream/master
 award_emoji:
 - awardable
 - user

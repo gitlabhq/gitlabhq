@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170906160132) do
-=======
-ActiveRecord::Schema.define(version: 20170905112933) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,15 +31,8 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.string "title", null: false
     t.text "description", null: false
     t.string "logo"
-<<<<<<< HEAD
     t.integer "updated_by"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
     t.string "header_logo"
-=======
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
->>>>>>> upstream/master
     t.text "description_html"
     t.integer "cached_markdown_version"
   end
@@ -156,7 +145,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
-<<<<<<< HEAD
     t.boolean "slack_app_enabled", default: false
     t.string "slack_app_id"
     t.string "slack_app_secret"
@@ -166,6 +154,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
+    t.boolean "auto_devops_enabled", default: false, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -173,13 +162,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "password_authentication_enabled"
-    t.integer "performance_bar_allowed_group_id"
-    t.boolean "hashed_storage_enabled", default: false, null: false
-    t.boolean "project_export_enabled", default: true, null: false
-    t.boolean "auto_devops_enabled", default: false, null: false
->>>>>>> upstream/master
   end
 
   add_index "approvals", ["merge_request_id"], name: "index_approvals_on_merge_request_id", using: :btree
@@ -666,7 +648,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
-<<<<<<< HEAD
   create_table "geo_event_log", id: :bigserial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "repository_updated_event_id", limit: 8
@@ -766,8 +747,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_index "geo_repository_updated_events", ["project_id"], name: "index_geo_repository_updated_events_on_project_id", using: :btree
   add_index "geo_repository_updated_events", ["source"], name: "index_geo_repository_updated_events_on_source", using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "gpg_keys", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1528,10 +1507,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "cached_markdown_version"
     t.text "delete_error"
     t.datetime "last_repository_updated_at"
-<<<<<<< HEAD
     t.boolean "disable_overriding_approvers_per_merge_request"
-=======
->>>>>>> upstream/master
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
   end
@@ -1989,16 +1965,13 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "support_bot"
     t.string "preferred_language"
     t.string "rss_token"
-<<<<<<< HEAD
     t.boolean "external_email", default: false, null: false
     t.string "email_provider"
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
     t.integer "email_opted_in_source_id"
     t.datetime "email_opted_in_at"
-=======
     t.integer "theme_id", limit: 2
->>>>>>> upstream/master
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2171,12 +2144,8 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_foreign_key "protected_tag_create_access_levels", "protected_tags", name: "fk_f7dfda8c51", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
-<<<<<<< HEAD
-  add_foreign_key "push_event_payloads", "events_for_migration", column: "event_id", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
-=======
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade

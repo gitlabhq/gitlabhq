@@ -10,15 +10,14 @@
 # end
 #
 ActiveSupport::Inflector.inflections do |inflect|
-<<<<<<< HEAD
-  inflect.uncountable %w(award_emoji project_statistics system_note_metadata event_log project_registry file_registry)
-  inflect.acronym 'EE'
-=======
   inflect.uncountable %w(
     award_emoji
     project_statistics
     system_note_metadata
+    event_log
     project_auto_devops
+    project_registry
+    file_registry
   )
->>>>>>> upstream/master
+  inflect.acronym 'EE'
 end

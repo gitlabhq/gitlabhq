@@ -71,7 +71,6 @@ module API
         present build, with: Entities::Job
       end
 
-<<<<<<< HEAD
       desc 'Download the artifacts file from a job' do
         detail 'This feature was introduced in GitLab 8.5'
       end
@@ -107,8 +106,6 @@ module API
         present_artifacts!(latest_build.artifacts_file)
       end
 
-=======
->>>>>>> upstream/master
       # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
@@ -214,7 +211,6 @@ module API
 
         builds.where(status: available_statuses && scope)
       end
-<<<<<<< HEAD
 
       def authorize_read_builds!
         authorize! :read_build, user_project
@@ -227,8 +223,6 @@ module API
       def check_cross_project_pipelines_feature!
         not_found!('Project') if job_token_authentication? && !@project.feature_available?(:cross_project_pipelines)
       end
-=======
->>>>>>> upstream/master
     end
   end
 end
