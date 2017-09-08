@@ -5,7 +5,10 @@ import bp from './breakpoints';
 export default class NewNavSidebar {
   constructor() {
     this.initDomElements();
-    this.render();
+
+    if (this.$sidebar.length) {
+      this.render();
+    }
   }
 
   initDomElements() {
