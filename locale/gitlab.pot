@@ -987,8 +987,6 @@ msgstr ""
 msgid "Push Rules"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "ProjectsDropdown|Loading projects"
 msgstr ""
 
@@ -1007,7 +1005,6 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "Push events"
 msgstr ""
 
