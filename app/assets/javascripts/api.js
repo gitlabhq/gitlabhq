@@ -5,8 +5,9 @@ const Api = {
   groupPath: '/api/:version/groups/:id.json',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
-  projectsPath: '/api/:version/projects.json?simple=true',
-  labelsPath: '/:namespace_path/:project_path/labels',
+  projectsPath: '/api/:version/projects.json',
+  projectLabelsPath: '/:namespace_path/:project_path/labels',
+  groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
@@ -55,22 +56,35 @@ const Api = {
   // Return projects list. Filtered by query
   projects(query, options, callback) {
     const url = Api.buildUrl(Api.projectsPath);
+    const defaults = {
+      search: query,
+      per_page: 20,
+      simple: true,
+    };
+
+    if (gon.current_user_id) {
+      defaults.membership = true;
+    }
+
     return $.ajax({
       url,
-      data: Object.assign({
-        search: query,
-        per_page: 20,
-        membership: true,
-      }, options),
+      data: Object.assign(defaults, options),
       dataType: 'json',
     })
       .done(projects => callback(projects));
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
-    const url = Api.buildUrl(Api.labelsPath)
-      .replace(':namespace_path', namespacePath)
-      .replace(':project_path', projectPath);
+    let url;
+
+    if (projectPath) {
+      url = Api.buildUrl(Api.projectLabelsPath)
+        .replace(':namespace_path', namespacePath)
+        .replace(':project_path', projectPath);
+    } else {
+      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
+    }
+
     return $.ajax({
       url,
       type: 'POST',
@@ -96,18 +110,17 @@ const Api = {
       .done(projects => callback(projects));
   },
 
-  commitMultiple(id, data, callback) {
+  commitMultiple(id, data) {
+    // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', id);
-    return $.ajax({
+    return this.wrapAjaxCall({
       url,
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data),
       dataType: 'json',
-    })
-      .done(commitData => callback(commitData))
-      .fail(message => callback(message.responseJSON));
+    });
   },
 
   // Return text for a specific license

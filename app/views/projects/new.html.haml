@@ -25,11 +25,11 @@
               .form-group
                 = f.label :template_project, class: 'label-light' do
                   Create from template
-                  = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: "What’s included in a template?" }, title: "What’s included in a template?", class: 'has-tooltip', data: { placement: 'top'}
+                  = link_to icon('question-circle'), help_page_path("gitlab-basics/create-project"), target: '_blank', aria: { label: "What’s included in a template?" }, title: "What’s included in a template?", class: 'has-tooltip', data: { placement: 'top'}
                 %div
                   = render 'project_templates', f: f
-          .second-column
-            - if import_sources_enabled?
+          - if import_sources_enabled?
+            .second-column
               .project-import
                 .form-group.clearfix
                   = f.label :visibility_level, class: 'label-light' do #the label here seems wrong
@@ -68,9 +68,10 @@
                       - if git_import_enabled?
                         %button.btn.js-toggle-button.import_git{ type: "button" }
                           = icon('git', text: 'Repo by URL')
-                    .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
-                      = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
-                        = icon('gitlab', text: 'GitLab export')
+                    - if gitlab_project_import_enabled?
+                      .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
+                        = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
+                          = icon('gitlab', text: 'GitLab export')
 
         .row
           .col-lg-12
@@ -111,7 +112,7 @@
             %span.light (optional)
           = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250
 
-        .form-group.project-visibility-level-holder
+        .form-group.visibility-level-setting
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
             = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }

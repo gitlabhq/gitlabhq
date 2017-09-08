@@ -1,49 +1,73 @@
-# Dremor <egeorget@opmbx.org>, 2017. #zanata
-# Huang Tao <htve@outlook.com>, 2017. #zanata
-# Rémy Coutable <remy@rymai.me>, 2017. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: gitlab 1.0.0\n"
+"Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-13 12:07-0500\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: French (https://translate.zanata.org/project/view/GitLab)\n"
-"PO-Revision-Date: 2017-08-03 03:35-0400\n"
-"Last-Translator: Rémy Coutable <remy@rymai.me>\n"
-"Language: fr\n"
-"X-Generator: Zanata 3.9.6\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
-
-msgid "%s additional commit has been omitted to prevent performance issues."
-msgid_plural ""
-"%s additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-"%s validation supplémentaire a été masquée afin d'éviter de créer de "
-"problèmes de performances."
-msgstr[1] ""
-"%s validations supplémentaires ont été masquées afin d'éviter de créer de "
-"problèmes de performances."
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: gitlab-ee\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /master/locale/gitlab.pot\n"
 
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] "%d validation"
 msgstr[1] "%d validations"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s validation supplémentaire a été masquée afin d'éviter de créer de problèmes de performances."
+msgstr[1] "%s validations supplémentaires ont été masquées afin d'éviter de créer de problèmes de performances."
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} a validé %{commit_timeago}"
 
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
+
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "1 pipeline"
-msgstr[1] "%d pipelines"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Un ensemble de graphiques concernant l’Intégration Continue (CI)"
 
 msgid "About auto deploy"
 msgstr "A propos de l'auto-déploiement"
+
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
+msgstr ""
 
 msgid "Active"
 msgstr "Actif"
@@ -61,12 +85,19 @@ msgid "Add License"
 msgstr "Ajouter une licence"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
-msgstr ""
-"Ajoutez une clef SSH à votre profil pour pouvoir récupérer et pousser par "
-"SSH."
+msgstr "Ajoutez une clef SSH à votre profil pour pouvoir récupérer et pousser par SSH."
 
 msgid "Add new directory"
 msgstr "Ajouter un nouveau dossier"
+
+msgid "All"
+msgstr ""
+
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
 
 msgid "Archived project! Repository is read-only"
 msgstr "Projet archivé ! Le dépôt est en lecture seule"
@@ -74,23 +105,85 @@ msgstr "Projet archivé ! Le dépôt est en lecture seule"
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce pipeline programmé"
 
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Attachez un fichier par glisser &amp; déposer ou %{upload_link}"
 
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
-msgstr[0] "Branche"
-msgstr[1] "Branches"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid ""
-"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
-"choose a GitLab CI Yaml template and commit your changes. "
-"%{link_to_autodeploy_doc}"
-msgstr ""
-"La branche <strong>%{branch_name}</strong> a été crée. Pour mettre en place "
-"le déploiement automatisé, sélectionnez un modèle de fichier Yaml pour "
-"l'intégration continue (CI) de GitLab, et validez les modifications. "
-"%{link_to_autodeploy_doc}"
+msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr "La branche <strong>%{branch_name}</strong> a été crée. Pour mettre en place le déploiement automatisé, sélectionnez un modèle de fichier Yaml pour l'intégration continue (CI) de GitLab, et validez les modifications. %{link_to_autodeploy_doc}"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "Rechercher la branche"
@@ -99,7 +192,7 @@ msgid "BranchSwitcherTitle|Switch branch"
 msgstr "Changer de branche"
 
 msgid "Branches"
-msgstr "Branches"
+msgstr ""
 
 msgid "Browse Directory"
 msgstr "Parcourir le dossier"
@@ -116,11 +209,17 @@ msgstr "Parcourir les fichiers"
 msgid "ByAuthor|by"
 msgstr "par"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "Configuration de l'intégration continue (CI)"
 
 msgid "Cancel"
 msgstr "Annuler"
+
+msgid "Cancel edit"
+msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "Sélectionner dans la branche"
@@ -139,6 +238,9 @@ msgstr "Journal des modifications"
 
 msgid "Charts"
 msgstr "Graphiques"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "Sélectionner cette validation"
@@ -200,6 +302,9 @@ msgstr "ignoré"
 msgid "CiStatus|running"
 msgstr "en cours"
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "Validation"
@@ -232,11 +337,17 @@ msgstr "Validé par"
 msgid "Compare"
 msgstr "Comparer"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "Guilde de contribution"
 
 msgid "Contributors"
 msgstr "Contributeurs"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "Copier l'URL dans le presse-papier"
@@ -247,12 +358,11 @@ msgstr "Copier le SHA de la validation"
 msgid "Create New Directory"
 msgstr "Créer un nouveau dossier"
 
-msgid ""
-"Create a personal access token on your account to pull or push via "
-"%{protocol}."
+msgid "Create a new branch"
 msgstr ""
-"Créer un jeton d’accès personnel pour votre compte afin de récupérer ou "
-"pousser par %{protocol}."
+
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr "Créer un jeton d’accès personnel pour votre compte afin de récupérer ou pousser par %{protocol}."
 
 msgid "Create directory"
 msgstr "Créer un dossier"
@@ -284,25 +394,14 @@ msgstr "Syntaxe Cron"
 msgid "Custom notification events"
 msgstr "Événements de notification personnalisés"
 
-msgid ""
-"Custom notification levels are the same as participating levels. With custom "
-"notification levels you will also receive notifications for select events. "
-"To find out more, check out %{notification_link}."
-msgstr ""
-"Le niveau de notification Personnalisé est similaire au niveau Participation."
-" Cependant, il permet également de recevoir des notifications pour des "
-"événements sélectionnés. Pour plus d’information, vous pouvez consulter "
-"%{notification_link}."
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr "Le niveau de notification Personnalisé est similaire au niveau Participation. Cependant, il permet également de recevoir des notifications pour des événements sélectionnés. Pour plus d’information, vous pouvez consulter %{notification_link}."
 
 msgid "Cycle Analytics"
 msgstr "Analyseur de cycle"
 
-msgid ""
-"Cycle Analytics gives an overview of how much time it takes to go from idea "
-"to production in your project."
-msgstr ""
-"L’analyseur de cycle permet d’avoir une vue d’ensemble du temps nécessaire "
-"pour aller d’une idée à sa mise en production pour votre projet."
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
+msgstr "L’analyseur de cycle permet d’avoir une vue d’ensemble du temps nécessaire pour aller d’une idée à sa mise en production pour votre projet."
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "Code"
@@ -336,11 +435,20 @@ msgid_plural "Deploys"
 msgstr[0] "Déploiement"
 msgstr[1] "Déploiements"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
-msgstr "Description"
+msgstr ""
+
+msgid "Details"
+msgstr ""
 
 msgid "Directory name"
 msgstr "Nom du dossier"
+
+msgid "Discard changes"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "Ne plus montrer"
@@ -377,6 +485,27 @@ msgstr "Éditer"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Éditer le pipeline programmé %{id}"
+
+msgid "Emails"
+msgstr ""
+
+msgid "EventFilterBy|Filter by all"
+msgstr ""
+
+msgid "EventFilterBy|Filter by comments"
+msgstr ""
+
+msgid "EventFilterBy|Filter by issue events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by merge events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by push events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by team"
+msgstr ""
 
 msgid "Every day (at 4:00am)"
 msgstr "Chaque jour (à 4:00 du matin)"
@@ -423,8 +552,19 @@ msgid "From issue creation until deploy to production"
 msgstr "Depuis la création de l'incident jusqu'au déploiement en production"
 
 msgid "From merge request merge until deploy to production"
+msgstr "Depuis la fusion de la demande de fusion jusqu'au déploiement en production"
+
+msgid "GPG Keys"
 msgstr ""
-"Depuis la fusion de la demande de fusion jusqu'au déploiement en production"
+
+msgid "Geo Nodes"
+msgstr ""
+
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
 
 msgid "Go to your fork"
 msgstr "Aller à votre fourche"
@@ -432,8 +572,32 @@ msgstr "Aller à votre fourche"
 msgid "GoToYourFork|Fork"
 msgstr "Fourche"
 
+msgid "Group overview"
+msgstr ""
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
+msgstr ""
+
 msgid "Home"
 msgstr "Accueil"
+
+msgid "Hooks"
+msgstr ""
 
 msgid "Housekeeping successfully started"
 msgstr "Maintenance démarrée avec succès"
@@ -441,26 +605,29 @@ msgstr "Maintenance démarrée avec succès"
 msgid "Import repository"
 msgstr "Importer un dépôt"
 
+msgid "Install a Runner compatible with GitLab CI"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr "Schéma d’intervalle"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Introduction à l'analyseur de cycle"
 
-msgid "Jobs for last month"
-msgstr "Tâches pour le mois dernier"
+msgid "Issue events"
+msgstr ""
 
-msgid "Jobs for last week"
-msgstr "Tâches pour la semaine dernière"
-
-msgid "Jobs for last year"
-msgstr "Tâches pour l'année dernière"
+msgid "Issues"
+msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr "Désactivé"
 
 msgid "LFSStatus|Enabled"
 msgstr "Activé"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -476,6 +643,12 @@ msgstr "Dernière mise à jour"
 msgid "Last commit"
 msgstr "Dernière validation"
 
+msgid "LastPushEvent|You pushed to"
+msgstr ""
+
+msgid "LastPushEvent|at"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr "En apprendre plus dans le"
 
@@ -488,16 +661,40 @@ msgstr "Quitter le groupe"
 msgid "Leave project"
 msgstr "Quitter le projet"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "Limiter l'affichage au plus à %d évènement"
 msgstr[1] "Limiter l'affichage au plus à %d évènements"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "Médian"
 
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
+
+msgid "Merge events"
+msgstr ""
+
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "ajouter une clef SSH"
+
+msgid "Monitoring"
+msgstr ""
+
+msgid "More information is available|here"
+msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -597,6 +794,9 @@ msgstr "Participation"
 msgid "NotificationLevel|Watch"
 msgstr "Surveillé"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtre"
 
@@ -604,13 +804,19 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr "Ouvert"
 
 msgid "Options"
-msgstr "Options"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
 
 msgid "Owner"
 msgstr "Propriétaire"
 
+msgid "Password"
+msgstr ""
+
 msgid "Pipeline"
-msgstr "Pipeline"
+msgstr ""
 
 msgid "Pipeline Health"
 msgstr "Santé du Pipeline"
@@ -620,6 +826,9 @@ msgstr "Programmation de pipeline"
 
 msgid "Pipeline Schedules"
 msgstr "Programmations de pipeline"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Échecs : "
@@ -679,10 +888,19 @@ msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Personnalisé"
 
 msgid "Pipelines"
-msgstr "Pipelines"
+msgstr ""
 
 msgid "Pipelines charts"
 msgstr "Graphique des pipelines"
+
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
 
 msgid "Pipeline|all"
 msgstr "Tous"
@@ -695,6 +913,15 @@ msgstr "avec l'étape"
 
 msgid "Pipeline|with stages"
 msgstr "avec les étapes"
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
+
+msgid "Project"
+msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Projet '%{project_name}' en attente de suppression."
@@ -709,8 +936,10 @@ msgid "Project '%{project_name}' will be deleted."
 msgstr "Le projet '%{project_name}' sera supprimé."
 
 msgid "Project access must be granted explicitly to each user."
+msgstr "L’accès au projet doit être explicitement accordé à chaque utilisateur."
+
+msgid "Project details"
 msgstr ""
-"L’accès au projet doit être explicitement accordé à chaque utilisateur."
 
 msgid "Project export could not be deleted."
 msgstr "L'export du projet n'a pas pu être supprimé."
@@ -718,20 +947,20 @@ msgstr "L'export du projet n'a pas pu être supprimé."
 msgid "Project export has been deleted."
 msgstr "L'export du projet a été supprimé."
 
-msgid ""
-"Project export link has expired. Please generate a new export from your "
-"project settings."
-msgstr ""
-"Le lien de l’export du projet a expiré. Merci de générer un nouvel export "
-"depuis les paramètres du projet."
+msgid "Project export link has expired. Please generate a new export from your project settings."
+msgstr "Le lien de l’export du projet a expiré. Merci de générer un nouvel export depuis les paramètres du projet."
 
 msgid "Project export started. A download link will be sent by email."
-msgstr ""
-"L'export du projet a débuté. Un lien de téléchargement sera envoyé par "
-"courriel."
+msgstr "L'export du projet a débuté. Un lien de téléchargement sera envoyé par courriel."
 
 msgid "Project home"
 msgstr "Accueil du projet"
+
+msgid "Project overview"
+msgstr ""
+
+msgid "ProjectActivityRSS|Subscribe"
+msgstr ""
 
 msgid "ProjectFeature|Disabled"
 msgstr "Désactivé"
@@ -753,6 +982,12 @@ msgstr "Étape"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Graphique "
+
+msgid "Push Rules"
+msgstr ""
+
+msgid "Push events"
+msgstr ""
 
 msgid "Read more"
 msgstr "Lire plus"
@@ -790,14 +1025,29 @@ msgstr "Me le rappeler ultérieurement"
 msgid "Remove project"
 msgstr "Supprimer le projet"
 
+msgid "Repository"
+msgstr ""
+
 msgid "Request Access"
 msgstr "Demander l'accès"
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr "Annuler cette validation"
 
 msgid "Revert this merge request"
 msgstr "Annuler cette demande de fusion"
+
+msgid "SSH Keys"
+msgstr ""
 
 msgid "Save pipeline schedule"
 msgstr "Sauvegarder le pipeline programmé"
@@ -817,13 +1067,17 @@ msgstr "Sélectionnez le format de l'archive"
 msgid "Select a timezone"
 msgstr "Sélectionnez un fuseau horaire"
 
+msgid "Select existing branch"
+msgstr ""
+
 msgid "Select target branch"
 msgstr "Sélectionnez une branche cible"
 
-msgid "Set a password on your account to pull or push via %{protocol}."
+msgid "Service Templates"
 msgstr ""
-"Définissez un mot de passe pour votre compte pour pouvoir tirer ou pousser "
-"par %{protocol}."
+
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr "Définissez un mot de passe pour votre compte pour pouvoir tirer ou pousser par %{protocol}."
 
 msgid "Set up CI"
 msgstr "Mettre en place l'intégration continue (CI)"
@@ -837,19 +1091,34 @@ msgstr "Mettre en place l’auto-déploiement"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "définir un mot de passe"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "Affichage de %d évènement"
 msgstr[1] "Affichage de %d évènements"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "Code source"
+
+msgid "Spam Logs"
+msgstr ""
+
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
 
 msgid "StarProject|Star"
 msgstr "S'abonner"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Créer une %{new_merge_request} avec ces changements"
+
+msgid "Start the Runner!"
+msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "Changer de branche / d'étiquette"
@@ -865,67 +1134,35 @@ msgstr "Étiquettes"
 msgid "Target Branch"
 msgstr "Branche cible"
 
-msgid ""
-"The coding stage shows the time from the first commit to creating the merge "
-"request. The data will automatically be added here once you create your "
-"first merge request."
+msgid "Team"
 msgstr ""
-"L’étape de développement montre le temps entre la première validation et la "
-"création de la demande de fusion. Les données seront automatiquement "
-"ajoutées ici une fois que vous aurez créé votre première demande de fusion."
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr "L’étape de développement montre le temps entre la première validation et la création de la demande de fusion. Les données seront automatiquement ajoutées ici une fois que vous aurez créé votre première demande de fusion."
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr ""
-"L’ensemble d’évènements ajoutés aux données récupérées pour cette étape."
+msgstr "L’ensemble d’évènements ajoutés aux données récupérées pour cette étape."
 
 msgid "The fork relationship has been removed."
 msgstr "La relation de fourche a été supprimée."
 
-msgid ""
-"The issue stage shows the time it takes from creating an issue to assigning "
-"the issue to a milestone, or add the issue to a list on your Issue Board. "
-"Begin creating issues to see data for this stage."
-msgstr ""
-"L'étape des incidents montre le temps nécessaire entre la création d'un "
-"incident et son assignation à un jalon, ou son ajout à une liste d'un "
-"tableau d'incidents. Débutez à créer des incidents pour voir des données "
-"pour cette étape."
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr "L'étape des incidents montre le temps nécessaire entre la création d'un incident et son assignation à un jalon, ou son ajout à une liste d'un tableau d'incidents. Débutez à créer des incidents pour voir des données pour cette étape."
 
 msgid "The phase of the development lifecycle."
 msgstr "Les étapes du cycle de développement."
 
-msgid ""
-"The pipelines schedule runs pipelines in the future, repeatedly, for "
-"specific branches or tags. Those scheduled pipelines will inherit limited "
-"project access based on their associated user."
-msgstr ""
-"Les pipelines programmés exécutent des pipelines dans le futur, de façon "
-"répétée, pour les branches et étiquettes spécifiées. Ces pipelines "
-"programmés héritent d’un accès partiel au projet basé sur l’utilisateur qui "
-"leurs est associé."
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
+msgstr "Les pipelines programmés exécutent des pipelines dans le futur, de façon répétée, pour les branches et étiquettes spécifiées. Ces pipelines programmés héritent d’un accès partiel au projet basé sur l’utilisateur qui leurs est associé."
 
-msgid ""
-"The planning stage shows the time from the previous step to pushing your "
-"first commit. This time will be added automatically once you push your first "
-"commit."
-msgstr ""
-"L’étape de planification montre le temps entre l’étape précédente et l’envoi "
-"de votre première validation. Ce temps sera automatiquement ajouté quand "
-"vous pousserez votre première validation."
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr "L’étape de planification montre le temps entre l’étape précédente et l’envoi de votre première validation. Ce temps sera automatiquement ajouté quand vous pousserez votre première validation."
 
-msgid ""
-"The production stage shows the total time it takes between creating an issue "
-"and deploying the code to production. The data will be automatically added "
-"once you have completed the full idea to production cycle."
-msgstr ""
-"L’étape de mise en production montre le temps nécessaire entre la création "
-"d’un incident et le déploiement du code en production. Les données seront "
-"automatiquement ajoutées une fois que vous aurez complété le cycle complet, "
-"depuis l’idée jusqu’à la mise en production."
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr "L’étape de mise en production montre le temps nécessaire entre la création d’un incident et le déploiement du code en production. Les données seront automatiquement ajoutées une fois que vous aurez complété le cycle complet, depuis l’idée jusqu’à la mise en production."
 
 msgid "The project can be accessed by any logged in user."
-msgstr ""
-"Votre projet peut être accédé par n’importe quel utilisateur authentifié"
+msgstr "Votre projet peut être accédé par n’importe quel utilisateur authentifié"
 
 msgid "The project can be accessed without any authentication."
 msgstr "Votre projet peut être accédé sans aucune authentification."
@@ -933,52 +1170,26 @@ msgstr "Votre projet peut être accédé sans aucune authentification."
 msgid "The repository for this project does not exist."
 msgstr "Le dépôt pour ce projet n'existe pas."
 
-msgid ""
-"The review stage shows the time from creating the merge request to merging "
-"it. The data will automatically be added after you merge your first merge "
-"request."
-msgstr ""
-"L’étape d’évaluation montre le temps entre la création de la demande de "
-"fusion et la fusion effective de celle-ci. Ces données seront "
-"automatiquement ajoutées après que vous ayez fusionné votre première demande "
-"de fusion."
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr "L’étape d’évaluation montre le temps entre la création de la demande de fusion et la fusion effective de celle-ci. Ces données seront automatiquement ajoutées après que vous ayez fusionné votre première demande de fusion."
 
-msgid ""
-"The staging stage shows the time between merging the MR and deploying code "
-"to the production environment. The data will be automatically added once you "
-"deploy to production for the first time."
-msgstr ""
-"L’étape de pré-production indique le temps entre la fusion de la DF et le "
-"déploiement du code dans l’environnent de production. Les données seront "
-"automatiquement ajoutées une fois que vous déploierez en production pour la "
-"première fois."
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr "L’étape de pré-production indique le temps entre la fusion de la DF et le déploiement du code dans l’environnent de production. Les données seront automatiquement ajoutées une fois que vous déploierez en production pour la première fois."
 
-msgid ""
-"The testing stage shows the time GitLab CI takes to run every pipeline for "
-"the related merge request. The data will automatically be added after your "
-"first pipeline finishes running."
-msgstr ""
-"L’étape de test montre le temps que le CI de GitLab met pour exécuter chaque "
-"pipeline liés à la demande de fusion. Les données seront automatiquement "
-"ajoutées après que votre premier pipeline s’achèvera."
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr "L’étape de test montre le temps que le CI de GitLab met pour exécuter chaque pipeline liés à la demande de fusion. Les données seront automatiquement ajoutées après que votre premier pipeline s’achèvera."
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "Le temps pris par chaque entrée récoltée durant cette étape."
 
-msgid ""
-"The value lying at the midpoint of a series of observed values. E.g., "
-"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
-" 6."
-msgstr ""
-"La valeur située au point médian d’une série de valeur observée. C.à.d., "
-"entre 3, 5, 9, le médian est 5. Entre 3, 5, 7, 8, le médian est (5+7)/2 = 6."
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr "La valeur située au point médian d’une série de valeur observée. C.à.d., entre 3, 5, 9, le médian est 5. Entre 3, 5, 7, 8, le médian est (5+7)/2 = 6."
 
-msgid ""
-"This means you can not push code until you create an empty repository or "
-"import existing one."
+msgid "There are problems accessing Git storage: "
 msgstr ""
-"Cela signifie que vous ne pouvez pas pousser du code tant que vous ne créez "
-"pas un dépôt vide, ou importez une dépôt existant."
+
+msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr "Cela signifie que vous ne pouvez pas pousser du code tant que vous ne créez pas un dépôt vide, ou importez une dépôt existant."
 
 msgid "Time before an issue gets scheduled"
 msgstr "Temps avant qu’un incident ne soit planifié"
@@ -1146,6 +1357,9 @@ msgstr "Téléverser un fichier"
 msgid "UploadLink|click to upload"
 msgstr "Cliquez pour envoyer"
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr "Utiliser vos paramètres de notification globaux"
 
@@ -1165,12 +1379,13 @@ msgid "VisibilityLevel|Unknown"
 msgstr "Inconnu"
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
-"Vous voulez voir les données ? Merci de contacter un administrateur pour en "
-"obtenir l’accès."
+msgstr "Vous voulez voir les données ? Merci de contacter un administrateur pour en obtenir l’accès."
 
 msgid "We don't have enough data to show this stage."
 msgstr "Nous n'avons pas suffisamment de données pour afficher cette étape."
+
+msgid "Wiki"
+msgstr ""
 
 msgid "Withdraw Access Request"
 msgstr "Retirer la demande d'accès"
@@ -1181,19 +1396,11 @@ msgstr "Vous êtes sur le point de supprimer %{group_name}. Les groupes supprim�
 msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "Vous êtes sur le point de supprimer %{project_name_with_namespace}. Les projets supprimés NE PEUVENT PAS être restaurés ! Êtes vous ABSOLUMENT sûr ?"
 
-msgid ""
-"You are going to remove the fork relationship to source project "
-"%{forked_from_project}. Are you ABSOLUTELY sure?"
-msgstr ""
-"Vous allez supprimer la relation de fourche avec le projet source "
-"%{forked_from_project}. Êtes-vous VRAIMENT sûr."
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
+msgstr "Vous allez supprimer la relation de fourche avec le projet source %{forked_from_project}. Êtes-vous VRAIMENT sûr."
 
-msgid ""
-"You are going to transfer %{project_name_with_namespace} to another owner. "
-"Are you ABSOLUTELY sure?"
-msgstr ""
-"Vous allez transférer %{project_name_with_namespace} à un nouveau "
-"propriétaire. Êtes vous VRAIMENT sûr ?"
+msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
+msgstr "Vous allez transférer %{project_name_with_namespace} à un nouveau propriétaire. Êtes vous VRAIMENT sûr ?"
 
 msgid "You can only add files when you are on a branch"
 msgstr "Vous ne pouvez ajouter de fichier que dans une branche"
@@ -1211,39 +1418,22 @@ msgid "You will not get any notifications via email"
 msgstr "Vous ne recevrez aucune notification par courriel"
 
 msgid "You will only receive notifications for the events you choose"
-msgstr ""
-"Vous ne recevrez de notification que pour les évènements que vous aurez "
-"choisis"
+msgstr "Vous ne recevrez de notification que pour les évènements que vous aurez choisis"
 
-msgid ""
-"You will only receive notifications for threads you have participated in"
-msgstr ""
-"Vous ne recevrez de notification que pour les sujets auxquels vous avez "
-"participé"
+msgid "You will only receive notifications for threads you have participated in"
+msgstr "Vous ne recevrez de notification que pour les sujets auxquels vous avez participé"
 
 msgid "You will receive notifications for any activity"
 msgstr "Vous recevrez des notifications pour n’importe quelles activités"
 
-msgid ""
-"You will receive notifications only for comments in which you were "
-"@mentioned"
-msgstr ""
-"Vous ne recevrez de notifications que pour les commentaires où vous êtes "
-"@mentionné"
+msgid "You will receive notifications only for comments in which you were @mentioned"
+msgstr "Vous ne recevrez de notifications que pour les commentaires où vous êtes @mentionné"
 
-msgid ""
-"You won't be able to pull or push project code via %{protocol} until you "
-"%{set_password_link} on your account"
-msgstr ""
-"Vous ne pourrez pas récupérer ou pousser de code par %{protocol} tant que "
-"vous n'aurez pas %{set_password_link} pour votre compte"
+msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
+msgstr "Vous ne pourrez pas récupérer ou pousser de code par %{protocol} tant que vous n'aurez pas %{set_password_link} pour votre compte"
 
-msgid ""
-"You won't be able to pull or push project code via SSH until you "
-"%{add_ssh_key_link} to your profile"
-msgstr ""
-"Vous ne pourrez pas récupérer ou pousser de code par SSH tant que vous "
-"n’aurez pas %{add_ssh_key_link} dans votre profil"
+msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
+msgstr "Vous ne pourrez pas récupérer ou pousser de code par SSH tant que vous n’aurez pas %{add_ssh_key_link} dans votre profil"
 
 msgid "Your name"
 msgstr "Votre nom"
@@ -1261,6 +1451,6 @@ msgstr "courriels de notification"
 
 msgid "parent"
 msgid_plural "parents"
-msgstr[0] "parent"
-msgstr[1] "parents"
+msgstr[0] ""
+msgstr[1] ""
 

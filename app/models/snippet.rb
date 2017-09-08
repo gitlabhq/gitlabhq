@@ -10,6 +10,8 @@ class Snippet < ApplicationRecord
   include Spammable
   include Editable
 
+  extend Gitlab::CurrentSettings
+
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
   cache_markdown_field :content

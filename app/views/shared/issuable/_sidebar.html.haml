@@ -3,7 +3,7 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('sidebar')
 
-%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { "offset-top" => ("50" unless show_new_nav?), "spy" => ("affix" unless show_new_nav?), signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
@@ -34,7 +34,7 @@
           Milestone
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to 'Edit', '#', class: 'edit-link pull-right'
+            = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
         .value.hide-collapsed
           - if issuable.milestone
             = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_remaining_days(issuable.milestone), data: { container: "body", html: 1 }
@@ -60,7 +60,7 @@
             Due date
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              = link_to 'Edit', '#', class: 'edit-link pull-right'
+              = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
           .value.hide-collapsed
             %span.value-content
               - if issuable.due_date
@@ -95,7 +95,7 @@
             Labels
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
-              = link_to 'Edit', '#', class: 'edit-link pull-right'
+              = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
           .value.issuable-show-labels.hide-collapsed{ class: ("has-labels" if selected_labels.any?) }
             - if selected_labels.any?
               - selected_labels.each do |label|
@@ -141,5 +141,22 @@
             %cite{ title: project_ref }
               = project_ref
           = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
+      - if current_user && issuable.can_move?(current_user)
+        .block.js-sidebar-move-issue-block
+          .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body' }, title: 'Move issue' }
+            = custom_icon('icon_arrow_right')
+          .dropdown.sidebar-move-issue-dropdown.hide-collapsed
+            %button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',
+              data: { toggle: 'dropdown' } }
+              Move issue
+            .dropdown-menu.dropdown-menu-selectable
+              = dropdown_title('Move issue')
+              = dropdown_filter('Search project', search_id: 'sidebar-move-issue-dropdown-search')
+              = dropdown_content
+              = dropdown_loading
+              = dropdown_footer add_content_class: true do
+                %button.btn.btn-new.sidebar-move-issue-confirmation-button.js-move-issue-confirmation-button{ disabled: true }
+                  Move
+                  = icon('spinner spin', class: 'sidebar-move-issue-confirmation-loading-icon')
 
     %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe

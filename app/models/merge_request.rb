@@ -7,7 +7,6 @@ class MergeRequest < ApplicationRecord
   include IgnorableColumn
   include CreatedAtFilterable
 
-  ignore_column :position
   ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
@@ -32,6 +31,7 @@ class MergeRequest < ApplicationRecord
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -241,6 +241,14 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Calls `MergeWorker` to proceed with the merge process and
+  # updates `merge_jid` with the MergeWorker#jid.
+  # This helps tracking enqueued and ongoing merge jobs.
+  def merge_async(user_id, params)
+    jid = MergeWorker.perform_async(id, user_id, params)
+    update_column(:merge_jid, jid)
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -384,9 +392,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def merge_ongoing?
-    return false unless merge_jid
-
-    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+    !!merge_jid && !merged?
   end
 
   def closed_without_fork?
@@ -599,6 +605,8 @@ class MergeRequest < ApplicationRecord
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
@@ -683,9 +691,8 @@ class MergeRequest < ApplicationRecord
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
-
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -798,7 +805,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?
@@ -820,7 +827,7 @@ class MergeRequest < ApplicationRecord
       lock_mr
       yield
     ensure
-      unlock_mr if locked?
+      unlock_mr
     end
   end
 
@@ -911,6 +918,12 @@ class MergeRequest < ApplicationRecord
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -937,16 +950,25 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def update_project_counter_caches?
+    state_changed?
+  end
+
+  def update_project_counter_caches
+    return unless update_project_counter_caches?
+
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  end
+
+  def first_contribution?
+    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
+
+    project.merge_requests.merged.where(author_id: author_id).empty?
+  end
+
   private
 
   def write_ref
-    target_project.repository.with_repo_branch_commit(
-      source_project.repository, source_branch) do |commit|
-        if commit
-          target_project.repository.write_ref(ref_path, commit.sha)
-        else
-          raise Rugged::ReferenceError, 'source repository is empty'
-        end
-      end
+    target_project.repository.fetch_source_branch(source_project.repository, source_branch, ref_path)
   end
 end

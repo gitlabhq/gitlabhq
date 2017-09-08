@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples 'reportable note' do
+shared_examples 'reportable note' do |type|
   include NotesHelper
 
   let(:comment) { find("##{ActionView::RecordIdentifier.dom_id(note)}") }
@@ -20,7 +20,12 @@ shared_examples 'reportable note' do
     open_dropdown(dropdown)
 
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
-    expect(dropdown).to have_link('Delete comment', href: note_url(note, project))
+
+    if type == 'issue'
+      expect(dropdown).to have_button('Delete comment')
+    else
+      expect(dropdown).to have_link('Delete comment', href: note_url(note, project))
+    end
   end
 
   it 'Report button links to a report page' do
@@ -34,7 +39,7 @@ shared_examples 'reportable note' do
   end
 
   def open_dropdown(dropdown)
-    dropdown.click
+    dropdown.find('.more-actions-toggle').trigger('click')
     dropdown.find('.dropdown-menu li', match: :first)
   end
 end

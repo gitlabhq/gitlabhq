@@ -17,14 +17,15 @@ class Project < ApplicationRecord
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
-  include Storage::LegacyProject
 
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
+  LATEST_STORAGE_VERSION = 1
 
   cache_markdown_field :description, pipeline: :description
 
@@ -32,8 +33,11 @@ class Project < ApplicationRecord
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
+  delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
@@ -44,36 +48,27 @@ class Project < ApplicationRecord
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  after_create :ensure_storage_path_exist
-  after_create :create_project_feature, unless: :project_feature
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
+
   after_save :update_project_statistics, if: :namespace_id_changed?
-
-  # set last_activity_at to the same as created_at
+  after_create :create_project_feature, unless: :project_feature
   after_create :set_last_activity_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
   after_create :set_last_repository_updated_at
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
-  end
+  after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
-  after_destroy :remove_pages
-
-  # update visibility_level of forks
-  after_update :update_forks_visibility_level
+  after_destroy -> { run_after_commit { remove_pages } }
 
   after_validation :check_pending_delete
 
-  # Legacy Storage specific hooks
-
-  after_save :ensure_storage_path_exist, if: :namespace_id_changed?
+  # Storage specific hooks
+  after_initialize :use_hashed_storage
+  after_create :ensure_storage_path_exists
+  after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
   acts_as_taggable
 
-  attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
@@ -150,6 +145,7 @@ class Project < ApplicationRecord
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -191,9 +187,12 @@ class Project < ApplicationRecord
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
+  has_one :auto_devops, class_name: 'ProjectAutoDevops'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
   accepts_nested_attributes_for :import_data
+  accepts_nested_attributes_for :auto_devops
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -228,6 +227,7 @@ class Project < ApplicationRecord
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
+  validate :can_create_repository?, on: [:create, :update], if: ->(project) { !project.persisted? || project.renamed? }
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -237,9 +237,6 @@ class Project < ApplicationRecord
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
-
-  add_authentication_token_field :runners_token
-  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -256,6 +253,7 @@ class Project < ApplicationRecord
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
@@ -369,7 +367,10 @@ class Project < ApplicationRecord
     state :failed
 
     after_transition [:none, :finished, :failed] => :scheduled do |project, _|
-      project.run_after_commit { add_import_job }
+      project.run_after_commit do
+        job_id = add_import_job
+        update(import_jid: job_id) if job_id
+      end
     end
 
     after_transition started: :finished do |project, _|
@@ -377,11 +378,7 @@ class Project < ApplicationRecord
 
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
         project.run_after_commit do
-          begin
-            Projects::HousekeepingService.new(project).execute
-          rescue Projects::HousekeepingService::LeaseTaken => e
-            Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
-          end
+          Projects::AfterImportService.new(project).execute
         end
       end
     end
@@ -472,8 +469,20 @@ class Project < ApplicationRecord
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
 
+  def auto_devops_enabled?
+    if auto_devops&.enabled.nil?
+      current_application_settings.auto_devops_enabled?
+    else
+      auto_devops.enabled?
+    end
+  end
+
+  def has_auto_devops_implicitly_disabled?
+    auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
+  end
+
   def repository_storage_path
-    Gitlab.config.repositories.storages[repository_storage]['path']
+    Gitlab.config.repositories.storages[repository_storage].try(:[], 'path')
   end
 
   def team
@@ -482,6 +491,10 @@ class Project < ApplicationRecord
 
   def repository
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
+  end
+
+  def reload_repository!
+    @repository = nil
   end
 
   def container_registry_url
@@ -524,17 +537,26 @@ class Project < ApplicationRecord
   def add_import_job
     job_id =
       if forked?
-        RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
-          forked_from_project.full_path,
-          self.namespace.full_path)
+        RepositoryForkWorker.perform_async(id,
+                                           forked_from_project.repository_storage_path,
+                                           forked_from_project.full_path,
+                                           self.namespace.full_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
 
+    log_import_activity(job_id)
+
+    job_id
+  end
+
+  def log_import_activity(job_id, type: :import)
+    job_type = type.to_s.capitalize
+
     if job_id
-      Rails.logger.info "Import job started for #{full_path} with job ID #{job_id}"
+      Rails.logger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id}.")
     else
-      Rails.logger.error "Import job failed to start for #{full_path}"
+      Rails.logger.error("#{job_type} job failed to create for #{full_path}.")
     end
   end
 
@@ -543,6 +565,7 @@ class Project < ApplicationRecord
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    update(import_error: nil)
     remove_import_data
   end
 
@@ -574,7 +597,7 @@ class Project < ApplicationRecord
   end
 
   def valid_import_url?
-    valid? || errors.messages[:import_url].blank?
+    valid?(:import_url) || errors.messages[:import_url].blank?
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
@@ -991,12 +1014,39 @@ class Project < ApplicationRecord
     end
   end
 
+  # Check if repository already exists on disk
+  def can_create_repository?
+    return false unless repository_storage_path
+
+    expires_full_path_cache # we need to clear cache to validate renames correctly
+
+    if gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+      errors.add(:base, 'There is already a repository with that name on disk')
+      return false
+    end
+
+    true
+  end
+
+  def create_repository(force: false)
+    # Forked import is handled asynchronously
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
+    end
+  end
+
   def hook_attrs(backward: true)
     attrs = {
       name: name,
       description: description,
       web_url: web_url,
-      avatar_url: avatar_url,
+      avatar_url: avatar_url(only_path: false),
       git_ssh_url: ssh_url_to_repo,
       git_http_url: http_url_to_repo,
       namespace: namespace.name,
@@ -1073,6 +1123,7 @@ class Project < ApplicationRecord
     !!repository.exists?
   end
 
+  # update visibility_level of forks
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
 
@@ -1145,7 +1196,11 @@ class Project < ApplicationRecord
   end
 
   def open_issues_count
-    issues.opened.count
+    Projects::OpenIssuesCountService.new(self).count
+  end
+
+  def open_merge_requests_count
+    Projects::OpenMergeRequestsCountService.new(self).count
   end
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
@@ -1200,11 +1255,16 @@ class Project < ApplicationRecord
   end
 
   def pages_path
-    File.join(Settings.pages.path, disk_path)
+    # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
+    File.join(Settings.pages.path, full_path)
   end
 
   def public_pages_path
     File.join(pages_path, 'public')
+  end
+
+  def pages_available?
+    Gitlab.config.pages.enabled && !namespace.subgroup?
   end
 
   def remove_private_deploy_keys
@@ -1224,6 +1284,9 @@ class Project < ApplicationRecord
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
+    # Projects with a missing namespace cannot have their pages removed
+    return unless namespace
+
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
@@ -1234,6 +1297,50 @@ class Project < ApplicationRecord
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
+  end
+
+  def rename_repo
+    new_full_path = build_full_path
+
+    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+
+    if has_container_registry_tags?
+      Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
+
+      # we currently doesn't support renaming repository if it contains images in container registry
+      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
+    end
+
+    expire_caches_before_rename(full_path_was)
+
+    if storage.rename_repo
+      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
+      rename_repo_notify!
+      after_rename_repo
+    else
+      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+
+      # if we cannot move namespace directory we should rollback
+      # db changes in order to prevent out of sync between db and fs
+      raise StandardError.new('repository cannot be renamed')
+    end
+  end
+
+  def rename_repo_notify!
+    send_move_instructions(full_path_was)
+    expires_full_path_cache
+
+    self.old_path_with_namespace = full_path_was
+    SystemHooksService.new.execute_hooks_for(self, :rename)
+
+    reload_repository!
+  end
+
+  def after_rename_repo
+    path_before_change = previous_changes['path'].first
+
+    Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1286,6 +1393,10 @@ class Project < ApplicationRecord
     Gitlab::Utils.slugify(full_path.to_s)
   end
 
+  def has_ci?
+    repository.gitlab_ci_yml || auto_devops_enabled?
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
@@ -1329,6 +1440,12 @@ class Project < ApplicationRecord
     return [] unless deployment_service
 
     deployment_service.predefined_variables
+  end
+
+  def auto_devops_variables
+    return [] unless auto_devops_enabled?
+
+    auto_devops&.variables || []
   end
 
   def append_or_update_attribute(name, value)
@@ -1394,6 +1511,18 @@ class Project < ApplicationRecord
     end
   end
 
+  def multiple_issue_boards_available?(user)
+    feature_available?(:multiple_issue_boards, user)
+  end
+
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone, user)
+  end
+
+  def full_path_was
+    File.join(namespace.full_path, previous_changes['path'].first)
+  end
+
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
@@ -1403,7 +1532,39 @@ class Project < ApplicationRecord
     Projects::ForksCountService.new(self).count
   end
 
+  def legacy_storage?
+    self.storage_version.nil?
+  end
+
+  def renamed?
+    persisted? && path_changed?
+  end
+
   private
+
+  def storage
+    @storage ||=
+      if self.storage_version && self.storage_version >= 1
+        Storage::HashedProject.new(self)
+      else
+        Storage::LegacyProject.new(self)
+      end
+  end
+
+  def use_hashed_storage
+    if self.new_record? && current_application_settings.hashed_storage_enabled
+      self.storage_version = LATEST_STORAGE_VERSION
+    end
+  end
+
+  # set last_activity_at to the same as created_at
+  def set_last_activity_at
+    update_column(:last_activity_at, self.created_at)
+  end
+
+  def set_last_repository_updated_at
+    update_column(:last_repository_updated_at, self.created_at)
+  end
 
   def cross_namespace_reference?(from)
     case from

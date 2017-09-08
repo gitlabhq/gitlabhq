@@ -56,6 +56,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_id)
       params.delete(:due_date)
       params.delete(:canonical_issue_id)
+      params.delete(:project)
     end
 
     filter_assignee(issuable)
@@ -192,6 +193,8 @@ class IssuableBaseService < BaseService
 
   def after_create(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def before_update(issuable)
@@ -200,6 +203,8 @@ class IssuableBaseService < BaseService
 
   def after_update(issuable)
     # To be overridden by subclasses
+
+    issuable.update_project_counter_caches
   end
 
   def update(issuable)
@@ -240,9 +245,7 @@ class IssuableBaseService < BaseService
         new_assignees = issuable.assignees.to_a
         affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
 
-        # Don't clear the project cache, because it will be handled by the
-        # appropriate service (close / reopen / merge / etc.).
-        invalidate_cache_counts(issuable, users: affected_assignees.compact, skip_project_cache: true)
+        invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(issuable, 'update')
@@ -336,18 +339,9 @@ class IssuableBaseService < BaseService
     create_labels_note(issuable, old_labels) if issuable.labels != old_labels
   end
 
-  def invalidate_cache_counts(issuable, users: [], skip_project_cache: false)
+  def invalidate_cache_counts(issuable, users: [])
     users.each do |user|
       user.public_send("invalidate_#{issuable.model_name.singular}_cache_counts") # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    unless skip_project_cache
-      case issuable
-      when Issue
-        IssuesFinder.new(nil, project_id: issuable.project_id).clear_caches!
-      when MergeRequest
-        MergeRequestsFinder.new(nil, project_id: issuable.target_project_id).clear_caches!
-      end
     end
   end
 end

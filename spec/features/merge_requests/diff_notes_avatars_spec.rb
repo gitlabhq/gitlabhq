@@ -21,6 +21,8 @@ feature 'Diff note avatars', js: true do
   before do
     project.team << [user, :master]
     sign_in user
+
+    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
   end
 
   context 'discussion tab' do
@@ -137,7 +139,7 @@ feature 'Diff note avatars', js: true do
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').trigger('click')
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
         end
@@ -150,7 +152,7 @@ feature 'Diff note avatars', js: true do
           page.within '.js-discussion-note-form' do
             find('.js-note-text').native.send_keys('Test')
 
-            find('.js-comment-button').trigger 'click'
+            find('.js-comment-button').trigger('click')
 
             wait_for_requests
           end

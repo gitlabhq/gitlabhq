@@ -28,7 +28,8 @@ module Gitlab
             attributes.merge(project: project,
                              ref: pipeline.ref,
                              tag: pipeline.tag,
-                             trigger_request: trigger)
+                             trigger_request: trigger,
+                             protected: protected_ref?)
           end
         end
 
@@ -42,6 +43,12 @@ module Gitlab
               yield build if block_given?
             end
           end
+        end
+
+        private
+
+        def protected_ref?
+          @protected_ref ||= project.protected_for?(pipeline.ref)
         end
       end
     end

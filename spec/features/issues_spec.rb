@@ -271,17 +271,21 @@ describe 'Issues' do
       it 'filters by none' do
         visit project_issues_path(project, due_date: Issue::NoDueDate.name)
 
-        expect(page).not_to have_content('foo')
-        expect(page).not_to have_content('bar')
-        expect(page).to have_content('baz')
+        page.within '.issues-holder' do
+          expect(page).not_to have_content('foo')
+          expect(page).not_to have_content('bar')
+          expect(page).to have_content('baz')
+        end
       end
 
       it 'filters by any' do
         visit project_issues_path(project, due_date: Issue::AnyDueDate.name)
 
-        expect(page).to have_content('foo')
-        expect(page).to have_content('bar')
-        expect(page).to have_content('baz')
+        page.within '.issues-holder' do
+          expect(page).to have_content('foo')
+          expect(page).to have_content('bar')
+          expect(page).to have_content('baz')
+        end
       end
 
       it 'filters by due this week' do
@@ -291,9 +295,11 @@ describe 'Issues' do
 
         visit project_issues_path(project, due_date: Issue::DueThisWeek.name)
 
-        expect(page).to have_content('foo')
-        expect(page).to have_content('bar')
-        expect(page).not_to have_content('baz')
+        page.within '.issues-holder' do
+          expect(page).to have_content('foo')
+          expect(page).to have_content('bar')
+          expect(page).not_to have_content('baz')
+        end
       end
 
       it 'filters by due this month' do
@@ -303,9 +309,11 @@ describe 'Issues' do
 
         visit project_issues_path(project, due_date: Issue::DueThisMonth.name)
 
-        expect(page).to have_content('foo')
-        expect(page).to have_content('bar')
-        expect(page).not_to have_content('baz')
+        page.within '.issues-holder' do
+          expect(page).to have_content('foo')
+          expect(page).to have_content('bar')
+          expect(page).not_to have_content('baz')
+        end
       end
 
       it 'filters by overdue' do
@@ -315,9 +323,11 @@ describe 'Issues' do
 
         visit project_issues_path(project, due_date: Issue::Overdue.name)
 
-        expect(page).not_to have_content('foo')
-        expect(page).not_to have_content('bar')
-        expect(page).to have_content('baz')
+        page.within '.issues-holder' do
+          expect(page).not_to have_content('foo')
+          expect(page).not_to have_content('bar')
+          expect(page).to have_content('baz')
+        end
       end
     end
 
@@ -567,7 +577,9 @@ describe 'Issues' do
       it 'redirects to signin then back to new issue after signin' do
         visit project_issues_path(project)
 
-        click_link 'New issue'
+        page.within '.nav-controls' do
+          click_link 'New issue'
+        end
 
         expect(current_path).to eq new_user_session_path
 

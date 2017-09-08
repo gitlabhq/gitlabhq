@@ -241,13 +241,10 @@ describe AutocompleteController do
 
         it 'returns projects' do
           expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq(2)
+          expect(json_response.size).to eq(1)
 
-          expect(json_response.first['id']).to eq(0)
-          expect(json_response.first['name_with_namespace']).to eq 'No project'
-
-          expect(json_response.last['id']).to eq authorized_project.id
-          expect(json_response.last['name_with_namespace']).to eq authorized_project.name_with_namespace
+          expect(json_response.first['id']).to eq authorized_project.id
+          expect(json_response.first['name_with_namespace']).to eq authorized_project.name_with_namespace
         end
       end
     end
@@ -265,10 +262,10 @@ describe AutocompleteController do
 
         it 'returns projects' do
           expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq(2)
+          expect(json_response.size).to eq(1)
 
-          expect(json_response.last['id']).to eq authorized_search_project.id
-          expect(json_response.last['name_with_namespace']).to eq authorized_search_project.name_with_namespace
+          expect(json_response.first['id']).to eq authorized_search_project.id
+          expect(json_response.first['name_with_namespace']).to eq authorized_search_project.name_with_namespace
         end
       end
     end
@@ -292,7 +289,7 @@ describe AutocompleteController do
 
         it 'returns projects' do
           expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq 3 # Of a total of 4
+          expect(json_response.size).to eq 2 # Of a total of 3
         end
       end
     end
@@ -312,9 +309,9 @@ describe AutocompleteController do
           get(:projects, project_id: project.id, offset_id: authorized_project.id)
         end
 
-        it 'returns "No project"' do
-          expect(json_response.detect { |item| item['id'] == 0 }).to be_nil # 'No project' is not there
-          expect(json_response.detect { |item| item['id'] == authorized_project.id }).to be_nil # Offset project is not there either
+        it 'returns projects' do
+          expect(json_response).to be_kind_of(Array)
+          expect(json_response.size).to eq 2 # Of a total of 3
         end
       end
     end
@@ -331,11 +328,48 @@ describe AutocompleteController do
           get(:projects, project_id: project.id)
         end
 
-        it 'returns a single "No project"' do
+        it 'returns no projects' do
           expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq(1) # 'No project'
-          expect(json_response.first['id']).to eq 0
+          expect(json_response.size).to eq(0)
         end
+      end
+    end
+  end
+
+  context 'GET award_emojis' do
+    let(:user2) { create(:user) }
+    let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: 'thumbsup') }
+    let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: 'thumbsdown') }
+    let!(:award_emoji3) { create_list(:award_emoji, 3, user: user, name: 'star') }
+    let!(:award_emoji4) { create_list(:award_emoji, 1, user: user, name: 'tea') }
+
+    context 'unauthorized user' do
+      it 'returns empty json' do
+        get :award_emojis
+
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'sign in as user without award emoji' do
+      it 'returns empty json' do
+        sign_in(user2)
+        get :award_emojis
+
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'sign in as user with award emoji' do
+      it 'returns json sorted by name count' do
+        sign_in(user)
+        get :award_emojis
+
+        expect(json_response.count).to eq 4
+        expect(json_response[0]).to match('name' => 'star')
+        expect(json_response[1]).to match('name' => 'thumbsup')
+        expect(json_response[2]).to match('name' => 'tea')
+        expect(json_response[3]).to match('name' => 'thumbsdown')
       end
     end
   end

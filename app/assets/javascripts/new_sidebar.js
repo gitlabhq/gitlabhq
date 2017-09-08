@@ -15,6 +15,7 @@ export default class NewNavSidebar {
     this.$openSidebar = $('.toggle-mobile-nav');
     this.$closeSidebar = $('.close-nav-button');
     this.$sidebarToggle = $('.js-toggle-sidebar');
+    this.$topLevelLinks = $('.sidebar-top-level-items > li > a');
   }
 
   bindEvents() {
@@ -47,10 +48,13 @@ export default class NewNavSidebar {
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
-      this.$page.toggleClass('page-with-new-sidebar', !collapsed);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
     NewNavSidebar.setCollapsedCookie(collapsed);
+
+    this.$topLevelLinks.attr('title', function updateTopLevelTitle() {
+      return collapsed ? this.getAttribute('aria-label') : '';
+    });
   }
 
   render() {
@@ -59,7 +63,7 @@ export default class NewNavSidebar {
     if (breakpoint === 'sm' || breakpoint === 'md') {
       this.toggleCollapsedSidebar(true);
     } else if (breakpoint === 'lg') {
-      const collapse = Cookies.get('sidebar_collapsed') === 'true';
+      const collapse = this.$sidebar.hasClass('sidebar-icons-only');
       this.toggleCollapsedSidebar(collapse);
     }
   }

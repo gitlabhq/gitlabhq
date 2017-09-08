@@ -70,7 +70,7 @@
     &.active a {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
 
       .badge {
         color: $black;
@@ -288,11 +288,7 @@
   display: flex;
   max-width: 350px;
   overflow: hidden;
-
-  @media(max-width: $screen-xs-max) {
-    width: 100%;
-    max-width: none;
-  }
+  float: right;
 
   .new-project-item-link {
     white-space: nowrap;
@@ -302,6 +298,23 @@
 
   .new-project-item-select-button {
     width: 32px;
+  }
+}
+
+.empty-state .project-item-select-holder.btn-group {
+  float: none;
+  display: inline-block;
+
+  .btn {
+    // overrides styles applied to plain `.empty-state .btn`
+    margin: 10px 0;
+    max-width: 300px;
+    width: auto;
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 250px;
+    }
+
   }
 }
 
@@ -352,7 +365,7 @@
       z-index: 300;
 
       li.active {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
       }
     }
   }

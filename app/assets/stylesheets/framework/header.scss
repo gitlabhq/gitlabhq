@@ -105,14 +105,12 @@ header {
           top: -3px;
           font-size: 10px;
         }
+      }
 
+      .user-counter {
         svg {
-          position: relative;
-          top: 2px;
-          height: 17px;
-          // hack to get SVG to line up with FA icons
+          height: 16px;
           width: 23px;
-          fill: currentColor;
         }
       }
 
@@ -160,7 +158,7 @@ header {
 
     li {
       &.active a {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
       }
     }
   }
@@ -250,7 +248,7 @@ header {
       font-size: 18px;
       line-height: 22px;
       display: inline-block;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       color: $gl-text-color;
       vertical-align: top;
       white-space: nowrap;
@@ -325,12 +323,12 @@ header {
   li {
     .badge {
       position: inherit;
-      top: -8px;
-      font-weight: normal;
-      margin-left: -11px;
+      font-weight: $gl-font-weight-normal;
+      margin-left: -6px;
       font-size: 11px;
       color: $white-light;
-      padding: 1px 5px 2px;
+      padding: 0 5px;
+      line-height: 12px;
       border-radius: 7px;
       box-shadow: 0 1px 0 rgba($gl-header-color, .2);
 

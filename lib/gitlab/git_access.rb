@@ -4,6 +4,7 @@ module Gitlab
   class GitAccess
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
+    ProjectMovedError = Class.new(NotFoundError)
 
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
@@ -34,6 +35,7 @@ module Gitlab
 
     def check(cmd, changes)
       check_protocol!
+      check_valid_actor!
       check_active_user!
       check_project_accessibility!
       check_project_moved!
@@ -69,6 +71,14 @@ module Gitlab
 
     private
 
+    def check_valid_actor!
+      return unless actor.is_a?(Key)
+
+      unless actor.valid?
+        raise UnauthorizedError, "Your SSH key #{actor.errors[:key].first}."
+      end
+    end
+
     def check_protocol!
       unless protocol_allowed?
         raise UnauthorizedError, "Git access over #{protocol.upcase} is not allowed"
@@ -90,18 +100,18 @@ module Gitlab
     end
 
     def check_project_moved!
-      if redirected_path
-        url = protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
-        message = <<-MESSAGE.strip_heredoc
-          Project '#{redirected_path}' was moved to '#{project.full_path}'.
+      return unless redirected_path
 
-          Please update your Git remote and try again:
+      url = protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
+      message = <<-MESSAGE.strip_heredoc
+        Project '#{redirected_path}' was moved to '#{project.full_path}'.
 
-            git remote set-url origin #{url}
-        MESSAGE
+        Please update your Git remote and try again:
 
-        raise NotFoundError, message
-      end
+          git remote set-url origin #{url}
+      MESSAGE
+
+      raise ProjectMovedError, message
     end
 
     def check_command_disabled!(cmd)

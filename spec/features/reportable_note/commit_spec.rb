@@ -18,7 +18,7 @@ describe 'Reportable note on commit', :js do
       visit project_commit_path(project, sample_commit.id)
     end
 
-    it_behaves_like 'reportable note'
+    it_behaves_like 'reportable note', 'commit'
   end
 
   context 'a diff note' do
@@ -28,6 +28,6 @@ describe 'Reportable note on commit', :js do
       visit project_commit_path(project, sample_commit.id)
     end
 
-    it_behaves_like 'reportable note'
+    it_behaves_like 'reportable note', 'commit'
   end
 end

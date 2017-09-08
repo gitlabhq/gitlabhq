@@ -16,7 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
-gem 'grape-route-helpers', '~> 2.0.0'
+gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -27,11 +27,11 @@ gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
 gem 'omniauth-azure-oauth2', '~> 0.0.6'
-gem 'omniauth-cas3', '~> 1.1.2'
+gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.4.1'
+gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.8.1'
@@ -76,7 +76,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.2'
+gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -126,12 +126,16 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.2'
 gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
-gem 'truncato', '~> 0.7.8'
+gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
+<<<<<<< HEAD
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
 gem 'nokogiri', '~> 1.6.8.1'
+=======
+gem 'nokogiri', '~> 1.8.0'
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -143,9 +147,13 @@ group :unicorn do
 end
 
 # State machine
+<<<<<<< HEAD
 gem 'state_machines-activerecord', '~> 0.5.0'
 # Run events after state machine commits
 gem 'after_commit_queue', '~> 1.3.0'
+=======
+gem 'state_machines-activerecord', '~> 0.4.0'
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 4.0'
@@ -154,7 +162,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
-gem 'sidekiq-limit_fetch', '~> 3.4'
+gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -186,7 +194,7 @@ gem 'connection_pool', '~> 2.0'
 gem 'hipchat', '~> 1.5.0'
 
 # JIRA integration
-gem 'jira-ruby', '~> 1.1.2'
+gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
@@ -206,8 +214,13 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 # Kubernetes integration
 gem 'kubeclient', '~> 2.2.0'
 
+<<<<<<< HEAD
 # underscore-rails
 gem 'underscore-rails', '~> 1.8.0'
+=======
+# d3
+gem 'd3_rails', '~> 3.5.0'
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
@@ -229,7 +242,7 @@ gem 'ace-rails-ap', '~> 4.1.0'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.7.3'
+gem 'charlock_holmes', '~> 0.7.5'
 
 # Faster JSON
 gem 'oj', '~> 2.17.4'
@@ -247,7 +260,7 @@ gem 'uglifier', '~> 2.7.2'
 gem 'addressable', '~> 2.3.8'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
-gem 'gemojione', '~> 3.0'
+gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails', '~> 4.3.1'
@@ -286,7 +299,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -329,9 +342,13 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
+<<<<<<< HEAD
   gem 'rails-controller-testing', '~> 1.0.2'
 
   gem 'capybara', '~> 2.14.4'
+=======
+  gem 'capybara', '~> 2.15.0'
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 
@@ -341,7 +358,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.49.1', require: false
   gem 'rubocop-rspec', '~> 1.15.1', require: false
-  gem 'rubocop-gitlab-security', '~> 0.0.6', require: false
+  gem 'rubocop-gitlab-security', '~> 0.1.0', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -356,6 +373,8 @@ group :development, :test do
   gem 'activerecord_sane_schema_dumper', '1.0'
 
   gem 'stackprof', '~> 0.2.10', require: false
+
+  gem 'simple_po_parser', '~> 1.1.2', require: false
 end
 
 group :test do
@@ -396,12 +415,12 @@ gem 'net-ssh', '~> 4.1.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 3.2'
+  gem 'rbnacl', '~> 4.0'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.27.0'
+gem 'gitaly-proto', '~> 0.33.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
@@ -411,3 +430,4 @@ gem 'flipper-active_record', '~> 0.10.2'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
+gem 'grape_logging', '~> 1.6'

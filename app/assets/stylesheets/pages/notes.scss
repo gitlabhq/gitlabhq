@@ -100,6 +100,20 @@ ul.notes {
       }
     }
 
+    .editing-spinner {
+      display: none;
+    }
+
+    &.is-requesting {
+      .note-timestamp {
+        display: none;
+      }
+
+      .editing-spinner {
+        display: inline-block;
+      }
+    }
+
     &.is-editing {
       .note-header,
       .note-text,
@@ -365,9 +379,7 @@ ul.notes {
 }
 
 .discussion-header,
-.note-header {
-  position: relative;
-
+.note-header-info {
   a {
     color: inherit;
 
@@ -402,6 +414,10 @@ ul.notes {
 .note-header-info {
   min-width: 0;
   padding-bottom: 8px;
+
+  &.discussion {
+    padding-bottom: 0;
+  }
 }
 
 .system-note .note-header-info {
@@ -453,6 +469,8 @@ ul.notes {
 }
 
 .note-actions {
+  @include new-style-dropdown;
+
   align-self: flex-start;
   flex-shrink: 0;
   display: inline-flex;
@@ -488,22 +506,6 @@ ul.notes {
 .more-actions-dropdown {
   width: 180px;
   min-width: 180px;
-  margin-top: $gl-btn-padding;
-
-  li > a,
-  li > .btn {
-    color: $gl-text-color;
-    padding: $gl-btn-padding;
-    width: 100%;
-    text-align: left;
-
-    &:hover,
-    &:focus {
-      color: $gl-text-color;
-      background-color: $blue-25;
-      border-radius: $border-radius-default;
-    }
-  }
 }
 
 .discussion-actions {
@@ -514,7 +516,7 @@ ul.notes {
 }
 
 .note-actions-item {
-  margin-left: 15px;
+  margin-left: 12px;
   display: flex;
   align-items: center;
 
@@ -618,13 +620,23 @@ ul.notes {
 
 .note-role {
   position: relative;
-  padding: 0 7px;
+  display: inline-block;
   color: $notes-role-color;
   font-size: 12px;
   line-height: 20px;
-  border: 1px solid $border-color;
-  border-radius: $label-border-radius;
+  margin: 0 3px;
+
+  &.note-role-access {
+    padding: 0 7px;
+    border: 1px solid $border-color;
+    border-radius: $label-border-radius;
+  }
+
+  &.note-role-special {
+    text-shadow: 0 0 15px $gl-text-color-inverted;
+  }
 }
+
 
 
 /**
@@ -766,17 +778,25 @@ ul.notes {
   background-color: transparent;
   border: none;
   outline: 0;
+  transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
     cursor: default;
   }
 
-  &:not(.is-disabled):hover,
+  &:not(.is-disabled) {
+    &:hover,
+    &:focus {
+      color: $gl-text-green;
+    }
+  }
+
   &.is-active {
     color: $gl-text-green;
 
-    svg {
-      fill: $gl-text-green;
+    &:hover,
+    &:focus {
+      color: $gl-text-green-hover;
     }
   }
 
@@ -804,10 +824,6 @@ ul.notes {
       fill: $gray-darkest;
     }
   }
-}
-
-.discussion-notes .flash-container {
-  margin-bottom: 0;
 }
 
 // Merge request notes in diffs

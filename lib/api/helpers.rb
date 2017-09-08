@@ -11,6 +11,27 @@ module API
       declared(params, options).to_h.symbolize_keys
     end
 
+    def check_unmodified_since!(last_modified)
+      if_unmodified_since = Time.parse(headers['If-Unmodified-Since']) rescue nil
+
+      if if_unmodified_since && last_modified && last_modified > if_unmodified_since
+        render_api_error!('412 Precondition Failed', 412)
+      end
+    end
+
+    def destroy_conditionally!(resource, last_updated: nil)
+      last_updated ||= resource.updated_at
+
+      check_unmodified_since!(last_updated)
+
+      status 204
+      if block_given?
+        yield resource
+      else
+        resource.destroy
+      end
+    end
+
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -33,6 +54,12 @@ module API
 
     def user_project
       @project ||= find_project!(params[:id])
+    end
+
+    def wiki_page
+      page = user_project.wiki.find_page(params[:slug])
+
+      page || not_found!('Wiki Page')
     end
 
     def available_labels
@@ -66,7 +93,7 @@ module API
     end
 
     def find_group(id)
-      if id =~ /^\d+$/
+      if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -107,6 +134,10 @@ module API
       merge_request
     end
 
+    def find_build!(id)
+      user_project.builds.find(id.to_i)
+    end
+
     def authenticate!
       unauthorized! unless current_user && can?(initial_current_user, :access_api)
     end
@@ -137,6 +168,14 @@ module API
 
     def authorize_admin_project
       authorize! :admin_project, user_project
+    end
+
+    def authorize_read_builds!
+      authorize! :read_build, user_project
+    end
+
+    def authorize_update_builds!
+      authorize! :update_build, user_project
     end
 
     def require_gitlab_workhorse!
@@ -189,7 +228,7 @@ module API
 
     def bad_request!(attribute)
       message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given"
+      message << "\"" + attribute.to_s + "\" not given" if attribute
       render_api_error!(message.join(' '), 400)
     end
 
@@ -290,7 +329,7 @@ module API
 
     def uploaded_file(field, uploads_path)
       if params[field]
-        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        bad_request!("#{field} is not a file") unless params[field][:filename]
         return params[field]
       end
 
@@ -409,6 +448,10 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    end
+
+    def send_artifacts_entry(build, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

@@ -53,6 +53,7 @@ describe Project do
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -74,6 +75,7 @@ describe Project do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
+    it { is_expected.to have_many(:members_and_requesters) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -90,22 +92,8 @@ describe Project do
         project.team << [developer, :developer]
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = project.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = project.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { project }
       end
     end
 
@@ -181,7 +169,7 @@ describe Project do
       end
     end
 
-    context 'repository storages inclussion' do
+    context 'repository storages inclusion' do
       let(:project2) { build(:project, repository_storage: 'missing') }
 
       before do
@@ -1251,60 +1239,6 @@ describe Project do
     end
   end
 
-  describe '#rename_repo' do
-    let(:project) { create(:project, :repository) }
-    let(:gitlab_shell) { Gitlab::Shell.new }
-
-    before do
-      # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
-      # call. This makes testing a bit easier.
-      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
-    end
-
-    it 'renames a repository' do
-      stub_container_registry_config(enabled: false)
-
-      expect(gitlab_shell).to receive(:mv_repository)
-        .ordered
-        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-        .and_return(true)
-
-      expect(gitlab_shell).to receive(:mv_repository)
-        .ordered
-        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-        .and_return(true)
-
-      expect_any_instance_of(SystemHooksService)
-        .to receive(:execute_hooks_for)
-        .with(project, :rename)
-
-      expect_any_instance_of(Gitlab::UploadsTransfer)
-        .to receive(:rename_project)
-        .with('foo', project.path, project.namespace.full_path)
-
-      expect(project).to receive(:expire_caches_before_rename)
-
-      expect(project).to receive(:expires_full_path_cache)
-
-      project.rename_repo
-    end
-
-    context 'container registry with images' do
-      let(:container_repository) { create(:container_repository) }
-
-      before do
-        stub_container_registry_config(enabled: true)
-        stub_container_registry_tags(repository: :any, tags: ['tag'])
-        project.container_repositories << container_repository
-      end
-
-      subject { project.rename_repo }
-
-      it { expect {subject}.to raise_error(StandardError) }
-    end
-  end
-
   describe '#expire_caches_before_rename' do
     let(:project) { create(:project, :repository) }
     let(:repo)    { double(:repo, exists?: true) }
@@ -1610,18 +1544,32 @@ describe Project do
     it 'imports a project' do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
-      project.import_schedule
-
+      expect { project.import_schedule }.to change { project.import_jid }
       expect(project.reload.import_status).to eq('finished')
     end
   end
 
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
-      let(:housekeeping_service) { spy }
+      let(:after_import_service) { spy(:after_import_service) }
+      let(:housekeeping_service) { spy(:housekeeping_service) }
 
       before do
-        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+        allow(Projects::AfterImportService)
+          .to receive(:new) { after_import_service }
+
+        allow(after_import_service)
+          .to receive(:execute) { housekeeping_service.execute }
+
+        allow(Projects::HousekeepingService)
+          .to receive(:new) { housekeeping_service }
+      end
+
+      it 'resets project import_error' do
+        error_message = 'Some error'
+        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+
+        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
 
       it 'performs housekeeping when an import of a fresh project is completed' do
@@ -1629,6 +1577,7 @@ describe Project do
 
         project.import_finish
 
+        expect(after_import_service).to have_received(:execute)
         expect(housekeeping_service).to have_received(:execute)
       end
 
@@ -1730,17 +1679,21 @@ describe Project do
   end
 
   describe '#add_import_job' do
+    let(:import_jid) { '123' }
+
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async)
-          .with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.disk_path, project.namespace.full_path)
+        expect(RepositoryForkWorker).to receive(:perform_async).with(
+          project.id,
+          forked_from_project.repository_storage_path,
+          forked_from_project.disk_path,
+          project.namespace.full_path).and_return(import_jid)
 
-        project.add_import_job
+        expect(project.add_import_job).to eq(import_jid)
       end
     end
 
@@ -1748,9 +1701,8 @@ describe Project do
       it 'schedules a RepositoryImportWorker job' do
         project = create(:project, import_url: generate(:url))
 
-        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
-
-        project.add_import_job
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+        expect(project.add_import_job).to eq(import_jid)
       end
     end
   end
@@ -2270,6 +2222,28 @@ describe Project do
     end
   end
 
+  describe '#pages_available?' do
+    let(:project) { create(:project, group: group) }
+
+    subject { project.pages_available? }
+
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+    end
+
+    context 'when the project is in a top level namespace' do
+      let(:group) { create(:group) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the project is in a subgroup' do
+      let(:group) { create(:group, :nested) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#remove_private_deploy_keys' do
     let!(:project) { create(:project) }
 
@@ -2311,6 +2285,44 @@ describe Project do
     end
   end
 
+  describe '#remove_pages' do
+    let(:project) { create(:project) }
+    let(:namespace) { project.namespace }
+    let(:pages_path) { project.pages_path }
+
+    around do |example|
+      FileUtils.mkdir_p(pages_path)
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(pages_path)
+      end
+    end
+
+    it 'removes the pages directory' do
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
+      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
+
+      project.remove_pages
+    end
+
+    it 'is a no-op when there is no namespace' do
+      project.update_column(:namespace_id, nil)
+
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
+
+      project.remove_pages
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_pages).and_call_original
+
+      project.destroy
+    end
+  end
+
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)
@@ -2318,6 +2330,356 @@ describe Project do
       allow(project.forks).to receive(:count).and_return(1)
 
       expect(project.forks_count).to eq(1)
+    end
+  end
+
+  context 'legacy storage' do
+    let(:project) { create(:project, :repository) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    describe '#base_dir' do
+      it 'returns base_dir based on namespace only' do
+        expect(project.base_dir).to eq(project.namespace.full_path)
+      end
+    end
+
+    describe '#disk_path' do
+      it 'returns disk_path based on namespace and project path' do
+        expect(project.disk_path).to eq("#{project.namespace.full_path}/#{project.path}")
+      end
+    end
+
+    describe '#ensure_storage_path_exists' do
+      it 'delegates to gitlab_shell to ensure namespace is created' do
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, project.base_dir)
+
+        project.ensure_storage_path_exists
+      end
+    end
+
+    describe '#legacy_storage?' do
+      it 'returns true when storage_version is nil' do
+        project = build(:project)
+
+        expect(project.legacy_storage?).to be_truthy
+      end
+    end
+
+    describe '#rename_repo' do
+      before do
+        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
+        # call. This makes testing a bit easier.
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'renames a repository' do
+        stub_container_registry_config(enabled: false)
+
+        expect(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .and_return(true)
+
+        expect(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .and_return(true)
+
+        expect_any_instance_of(SystemHooksService)
+          .to receive(:execute_hooks_for)
+            .with(project, :rename)
+
+        expect_any_instance_of(Gitlab::UploadsTransfer)
+          .to receive(:rename_project)
+            .with('foo', project.path, project.namespace.full_path)
+
+        expect(project).to receive(:expire_caches_before_rename)
+
+        expect(project).to receive(:expires_full_path_cache)
+
+        project.rename_repo
+      end
+
+      context 'container registry with images' do
+        let(:container_repository) { create(:container_repository) }
+
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: :any, tags: ['tag'])
+          project.container_repositories << container_repository
+        end
+
+        subject { project.rename_repo }
+
+        it { expect { subject }.to raise_error(StandardError) }
+      end
+    end
+
+    describe '#pages_path' do
+      it 'returns a path where pages are stored' do
+        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
+      end
+    end
+  end
+
+  context 'hashed storage' do
+    let(:project) { create(:project, :repository) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
+
+    before do
+      stub_application_setting(hashed_storage_enabled: true)
+      allow(Digest::SHA2).to receive(:hexdigest) { hash }
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    describe '#base_dir' do
+      it 'returns base_dir based on hash of project id' do
+        expect(project.base_dir).to eq('@hashed/6b/86')
+      end
+    end
+
+    describe '#disk_path' do
+      it 'returns disk_path based on hash of project id' do
+        hashed_path = '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+
+        expect(project.disk_path).to eq(hashed_path)
+      end
+    end
+
+    describe '#ensure_storage_path_exists' do
+      it 'delegates to gitlab_shell to ensure namespace is created' do
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '@hashed/6b/86')
+
+        project.ensure_storage_path_exists
+      end
+    end
+
+    describe '#rename_repo' do
+      before do
+        # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
+        # call. This makes testing a bit easier.
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'renames a repository' do
+        stub_container_registry_config(enabled: false)
+
+        expect(gitlab_shell).not_to receive(:mv_repository)
+
+        expect_any_instance_of(SystemHooksService)
+          .to receive(:execute_hooks_for)
+            .with(project, :rename)
+
+        expect_any_instance_of(Gitlab::UploadsTransfer)
+          .to receive(:rename_project)
+            .with('foo', project.path, project.namespace.full_path)
+
+        expect(project).to receive(:expire_caches_before_rename)
+
+        expect(project).to receive(:expires_full_path_cache)
+
+        project.rename_repo
+      end
+
+      context 'container registry with images' do
+        let(:container_repository) { create(:container_repository) }
+
+        before do
+          stub_container_registry_config(enabled: true)
+          stub_container_registry_tags(repository: :any, tags: ['tag'])
+          project.container_repositories << container_repository
+        end
+
+        subject { project.rename_repo }
+
+        it { expect { subject }.to raise_error(StandardError) }
+      end
+    end
+
+    describe '#pages_path' do
+      it 'returns a path where pages are stored' do
+        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
+      end
+    end
+  end
+
+  describe '#has_ci?' do
+    set(:project) { create(:project) }
+    let(:repository) { double }
+
+    before do
+      expect(project).to receive(:repository) { repository }
+    end
+
+    context 'when has .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { 'content' }
+      end
+
+      it "CI is available" do
+        expect(project).to have_ci
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { nil }
+      end
+
+      it "CI is not available" do
+        expect(project).not_to have_ci
+      end
+
+      context 'when auto devops is enabled' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it "CI is available" do
+          expect(project).to have_ci
+        end
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_enabled? }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly enabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it "auto devops is disabled" do
+          expect(project).not_to be_auto_devops_enabled
+        end
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).not_to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+    end
+  end
+
+  describe '#has_auto_devops_implicitly_disabled?' do
+    set(:project) { create(:project) }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_disabled
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_disabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+    end
+  end
+
+  context '#auto_devops_variables' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_variables }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      context 'when domain is empty' do
+        before do
+          create(:project_auto_devops, project: project, domain: nil)
+        end
+
+        it 'variables are empty' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          create(:project_auto_devops, project: project, domain: 'example.com')
+        end
+
+        it "variables are not empty" do
+          is_expected.not_to be_empty
+        end
+      end
     end
   end
 end

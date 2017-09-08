@@ -41,5 +41,15 @@ feature "Pipelines settings" do
       checkbox = find_field('project_auto_cancel_pending_pipelines')
       expect(checkbox).to be_checked
     end
+
+    scenario 'update auto devops settings' do
+      fill_in('project_auto_devops_attributes_domain', with: 'test.com')
+      page.choose('project_auto_devops_attributes_enabled_false')
+      click_on 'Save changes'
+
+      expect(page.status_code).to eq(200)
+      expect(project.auto_devops).to be_present
+      expect(project.auto_devops).not_to be_enabled
+    end
   end
 end

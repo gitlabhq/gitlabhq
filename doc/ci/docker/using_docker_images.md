@@ -96,7 +96,7 @@ services:
 - tutum/wordpress:latest
 ```
 
-If you don't [specify a service alias](#available-settings-for-services-entry),
+If you don't [specify a service alias](#available-settings-for-services),
 when the job is run, `tutum/wordpress` will be started and you will have
 access to it from your build container under two hostnames to choose from:
 
@@ -117,7 +117,7 @@ following these rules:
   created (requires GitLab Runner v1.1.0 or higher)
 
 To override the default behavior, you can
-[specify a service alias](#available-settings-for-services-entry).
+[specify a service alias](#available-settings-for-services).
 
 ## Define `image` and `services` from `.gitlab-ci.yml`
 
@@ -183,8 +183,7 @@ test:
 
 ## Extended Docker configuration options
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
 When configuring the `image` or `services` entries, you can use a string or a map as
 options:
@@ -221,27 +220,28 @@ For example, the following two definitions are equal:
 
 ### Available settings for `image`
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting    | Required | Description |
-|------------|----------|-------------|
-| `name`     | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| Setting    | Required | GitLab version | Description |
+|------------|----------|----------------| ----------- |
+| `name`     | yes, when used with any other option      | 9.4 |Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
 
 ### Available settings for `services`
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting    | Required | Description |
-|------------|----------|-------------|
-| `name`       | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
-| `command`    | no       | Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
-| `alias`      | no       | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+| Setting    | Required | GitLab version | Description |
+|------------|----------|----------------| ----------- |
+| `name`       | yes, when used with any other option  | 9.4 | Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| `command`    | no       | 9.4 |Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
+| `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
 ### Starting multiple services from the same image
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Before the new extended Docker configuration options, the following configuration
 would not work properly:
@@ -273,6 +273,9 @@ but now each of them will also be accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
 ### Setting a command for the service
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Let's assume you have a `super/sql:latest` image with some SQL database
 inside it and you would like to use it as a service for your job. Let's also
@@ -312,6 +315,9 @@ services:
 As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
 
 ### Overriding the entrypoint of an image
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Let's assume you have a `super/sql:experimental` image with some SQL database
 inside it and you would like to use it as a base image for your job because you
@@ -382,15 +388,40 @@ that runner.
 
 As an example, let's assume that you want to use the `registry.example.com/private/image:latest`
 image which is private and requires you to login into a private container registry.
+
+Let's also assume that these are the login credentials:
+
+| Key      | Value                |
+|----------|----------------------|
+| registry | registry.example.com |
+| username | my_username          |
+| password | my_password          |
+
 To configure access for `registry.example.com`, follow these steps:
 
-1. Do a `docker login` on your computer:
+1. Find what the value of `DOCKER_AUTH_CONFIG` should be. There are two ways to
+   accomplish this:
+     - **First way -** Do a `docker login` on your local machine:
 
-     ```bash
-     docker login registry.example.com --username my_username --password my_password
-     ```
+         ```bash
+         docker login registry.example.com --username my_username --password my_password
+         ```
 
-1. Copy the content of `~/.docker/config.json`
+          Then copy the content of `~/.docker/config.json`.
+     - **Second way -** In some setups, it's possible that Docker client will use
+       the available system keystore to store the result of `docker login`. In
+       that case, it's impossible to read `~/.docker/config.json`, so you will
+       need to prepare the required base64-encoded version of
+       `${username}:${password}` manually. Open a terminal and execute the
+       following command:
+
+           ```bash
+           echo -n "my_username:my_password" | base64
+
+           # Example output to copy
+           bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+           ```
+
 1. Create a [secret variable] `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
@@ -404,7 +435,8 @@ To configure access for `registry.example.com`, follow these steps:
      }
      ```
 
-1. Do a `docker logout` on your computer if you don't need access to the
+1. Optionally,if you followed the first way of finding the `DOCKER_AUTH_CONFIG`
+   value, do a `docker logout` on your computer if you don't need access to the
    registry from it:
 
      ```bash
@@ -412,7 +444,7 @@ To configure access for `registry.example.com`, follow these steps:
      ```
 
 1. You can now use any private image from `registry.example.com` defined in
-   `image` and/or `services` in your [`.gitlab-ci.yml` file][yaml-priv-reg]:
+   `image` and/or `services` in your `.gitlab-ci.yml` file:
 
       ```yaml
       image: my.registry.tld:5000/namespace/image:tag

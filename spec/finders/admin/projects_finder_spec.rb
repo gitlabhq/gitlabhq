@@ -118,6 +118,12 @@ describe Admin::ProjectsFinder do
 
         it { is_expected.to match_array([archived_project, shared_project, public_project, internal_project, private_project]) }
       end
+
+      context 'archived=only' do
+        let(:params) { { archived: 'only' } }
+
+        it { is_expected.to eq([archived_project]) }
+      end
     end
 
     context 'filter by personal' do

@@ -1,7 +1,11 @@
 import Cookies from 'js-cookie';
 
 export default class UserCallout {
-  constructor(className = 'user-callout') {
+  constructor(options = {}) {
+    this.options = options;
+
+    const className = this.options.className || 'user-callout';
+
     this.userCalloutBody = $(`.${className}`);
     this.cookieName = this.userCalloutBody.data('uid');
     this.isCalloutDismissed = Cookies.get(this.cookieName);
@@ -17,7 +21,11 @@ export default class UserCallout {
   dismissCallout(e) {
     const $currentTarget = $(e.currentTarget);
 
-    Cookies.set(this.cookieName, 'true', { expires: 365 });
+    if (this.options.setCalloutPerProject) {
+      Cookies.set(this.cookieName, 'true', { expires: 365, path: this.userCalloutBody.data('project-path') });
+    } else {
+      Cookies.set(this.cookieName, 'true', { expires: 365 });
+    }
 
     if ($currentTarget.hasClass('close')) {
       this.userCalloutBody.remove();

@@ -565,7 +565,7 @@ describe API::Commits do
       end
 
       context 'when the ref has a pipeline' do
-        let!(:pipeline) { project.pipelines.create(source: :push, ref: 'master', sha: commit.sha) }
+        let!(:pipeline) { project.pipelines.create(source: :push, ref: 'master', sha: commit.sha, protected: false) }
 
         it 'includes a "created" status' do
           get api(route, current_user)
@@ -672,6 +672,12 @@ describe API::Commits do
 
           it_behaves_like 'ref diff'
         end
+      end
+
+      context 'when binary diff are treated as text' do
+        let(:commit_id) { TestEnv::BRANCH_SHA['add-pdf-text-binary'] }
+
+        it_behaves_like 'ref diff'
       end
     end
   end
@@ -804,7 +810,7 @@ describe API::Commits do
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/commit/basic')
           expect(json_response['title']).to eq(commit.title)
-          expect(json_response['message']).to eq(commit.message)
+          expect(json_response['message']).to eq(commit.cherry_pick_message(user))
           expect(json_response['author_name']).to eq(commit.author_name)
           expect(json_response['committer_name']).to eq(user.name)
         end

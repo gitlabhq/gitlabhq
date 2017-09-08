@@ -55,7 +55,7 @@ class Spinach::Features::ProjectMilestone < Spinach::FeatureSteps
   end
 
   step 'I click link "Labels"' do
-    page.within('.layout-nav .nav-links') do
+    page.within('.nav-sidebar') do
       page.find(:xpath, "//a[@href='#tab-labels']").click
     end
   end

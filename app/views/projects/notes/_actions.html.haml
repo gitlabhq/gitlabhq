@@ -1,6 +1,8 @@
-- access = note_max_access_for_user(note)
-- if access
-  %span.note-role= access
+- if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
+  %span.note-role.note-role-special.has-tooltip{ title: _("This is the author's first Merge Request to this project. Handle with care.") }
+    = issuable_first_contribution_icon
+- if access = note_max_access_for_user(note)
+  %span.note-role.note-role-access= Gitlab::Access.human_access(access)
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)
@@ -26,8 +28,12 @@
           ":title" => "buttonText",
           ":ref" => "'button'" }
 
-        = icon('spin spinner', 'v-show' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
-        %div{ 'v-show' => '!loading' }= render 'shared/icons/icon_status_success.svg'
+        = icon('spin spinner', 'v-if' => 'loading', class: 'loading', 'aria-hidden' => 'true', 'aria-label' => 'Loading')
+        %div{ 'v-else' => '' }
+          %template{ 'v-if' => 'isResolved' }
+            = render 'shared/icons/icon_status_success_solid.svg'
+          %template{ 'v-else' => '' }
+            = render 'shared/icons/icon_resolve_discussion.svg'
 
 - if current_user
   - if note.emoji_awardable?

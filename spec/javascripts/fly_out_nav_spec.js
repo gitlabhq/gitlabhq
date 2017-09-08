@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import {
   calculateTop,
   showSubLevelItems,
@@ -6,11 +5,14 @@ import {
   canShowActiveSubItems,
   mouseEnterTopItems,
   mouseLeaveTopItem,
+  getOpenMenu,
   setOpenMenu,
   mousePos,
   getHideSubItemsInterval,
   documentMouseMove,
   getHeaderHeight,
+  setSidebar,
+  subItemsMouseLeave,
 } from '~/fly_out_nav';
 import bp from '~/breakpoints';
 
@@ -32,6 +34,8 @@ describe('Fly out sidebar navigation', () => {
     document.body.innerHTML = '';
     breakpointSize = 'lg';
     mousePos.length = 0;
+
+    setSidebar(null);
   });
 
   describe('calculateTop', () => {
@@ -113,7 +117,6 @@ describe('Fly out sidebar navigation', () => {
         clientX: el.getBoundingClientRect().left + 20,
         clientY: el.getBoundingClientRect().top + 10,
       });
-      console.log(el);
 
       expect(
         getHideSubItemsInterval(),
@@ -241,6 +244,32 @@ describe('Fly out sidebar navigation', () => {
       ).toBe('block');
     });
 
+    it('shows collapsed only sub-items if icon only sidebar', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+      const sidebar = document.createElement('div');
+      sidebar.classList.add('sidebar-icons-only');
+      subItems.classList.add('is-fly-out-only');
+
+      setSidebar(sidebar);
+
+      showSubLevelItems(el);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).toBe('block');
+    });
+
+    it('does not show collapsed only sub-items if icon only sidebar', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+      subItems.classList.add('is-fly-out-only');
+
+      showSubLevelItems(el);
+
+      expect(
+        subItems.style.display,
+      ).not.toBe('block');
+    });
+
     it('sets transform of sub-items', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
       showSubLevelItems(el);
@@ -282,50 +311,58 @@ describe('Fly out sidebar navigation', () => {
   });
 
   describe('canShowActiveSubItems', () => {
-    afterEach(() => {
-      Cookies.remove('sidebar_collapsed');
-    });
-
     it('returns true by default', () => {
       expect(
         canShowActiveSubItems(el),
       ).toBeTruthy();
     });
 
-    it('returns false when cookie is false & element is active', () => {
-      Cookies.set('sidebar_collapsed', 'false');
+    it('returns false when active & expanded sidebar', () => {
+      const sidebar = document.createElement('div');
       el.classList.add('active');
+
+      setSidebar(sidebar);
 
       expect(
         canShowActiveSubItems(el),
       ).toBeFalsy();
     });
 
-    it('returns true when cookie is false & element is active', () => {
-      Cookies.set('sidebar_collapsed', 'true');
+    it('returns true when active & collapsed sidebar', () => {
+      const sidebar = document.createElement('div');
+      sidebar.classList.add('sidebar-icons-only');
       el.classList.add('active');
+
+      setSidebar(sidebar);
 
       expect(
         canShowActiveSubItems(el),
       ).toBeTruthy();
     });
+  });
 
-    it('returns true when element is active & breakpoint is sm', () => {
-      breakpointSize = 'sm';
-      el.classList.add('active');
+  describe('subItemsMouseLeave', () => {
+    beforeEach(() => {
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute;"></div>';
 
-      expect(
-        canShowActiveSubItems(el),
-      ).toBeTruthy();
+      setOpenMenu(el.querySelector('.sidebar-sub-level-items'));
     });
 
-    it('returns true when element is active & breakpoint is md', () => {
-      breakpointSize = 'md';
-      el.classList.add('active');
+    it('hides subMenu if element is not hovered', () => {
+      subItemsMouseLeave(el);
 
       expect(
-        canShowActiveSubItems(el),
-      ).toBeTruthy();
+        getOpenMenu(),
+      ).toBeNull();
+    });
+
+    it('does not hide subMenu if element is hovered', () => {
+      el.classList.add('is-over');
+      subItemsMouseLeave(el);
+
+      expect(
+        getOpenMenu(),
+      ).not.toBeNull();
     });
   });
 });

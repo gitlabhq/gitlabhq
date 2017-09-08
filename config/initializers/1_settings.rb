@@ -139,6 +139,8 @@ if Settings.ldap['enabled'] || Rails.env.test?
   end
 
   Settings.ldap['servers'].each do |key, server|
+    server = Settingslogic.new(server)
+
     server['label'] ||= 'LDAP'
     server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
@@ -153,18 +155,13 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['encryption'] = 'simple_tls' if server['encryption'] == 'ssl'
     server['encryption'] = 'start_tls' if server['encryption'] == 'tls'
 
-    # Certificates are not verified for backwards compatibility.
-    # This default should be flipped to true in 9.5.
-    if server['verify_certificates'].nil?
-      server['verify_certificates'] = false
+    # Certificate verification was added in 9.4.2, and defaulted to false for
+    # backwards-compatibility.
+    #
+    # Since GitLab 10.0, verify_certificates defaults to true for security.
+    server['verify_certificates'] = true if server['verify_certificates'].nil?
 
-      message = <<-MSG.strip_heredoc
-        LDAP SSL certificate verification is disabled for backwards-compatibility.
-        Please add the "verify_certificates" option to gitlab.yml for each LDAP
-        server. Certificate verification will be enabled by default in GitLab 9.5.
-      MSG
-      Rails.logger.warn(message)
-    end
+    Settings.ldap['servers'][key] = server
   end
 end
 
@@ -176,7 +173,20 @@ Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_prov
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
-Settings.omniauth['sync_email_from_provider'] ||= nil
+
+Settings.omniauth['sync_profile_from_provider'] = false if Settings.omniauth['sync_profile_from_provider'].nil?
+Settings.omniauth['sync_profile_attributes'] = ['email'] if Settings.omniauth['sync_profile_attributes'].nil?
+
+# Handle backwards compatibility with merge request 11268
+if Settings.omniauth['sync_email_from_provider']
+  if Settings.omniauth['sync_profile_from_provider'].is_a?(Array)
+    Settings.omniauth['sync_profile_from_provider'] |= [Settings.omniauth['sync_email_from_provider']]
+  elsif !Settings.omniauth['sync_profile_from_provider']
+    Settings.omniauth['sync_profile_from_provider'] = [Settings.omniauth['sync_email_from_provider']]
+  end
+
+  Settings.omniauth['sync_profile_attributes'] |= ['email'] unless Settings.omniauth['sync_profile_attributes'] == true
+end
 
 Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -222,6 +232,7 @@ Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
+Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
@@ -436,7 +447,9 @@ unless Settings.repositories.storages['default']
   Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
 end
 
-Settings.repositories.storages.values.each do |storage|
+Settings.repositories.storages.each do |key, storage|
+  storage = Settingslogic.new(storage)
+
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
   # Set failure defaults
@@ -450,6 +463,8 @@ Settings.repositories.storages.values.each do |storage|
   storage['failure_reset_time'] = storage['failure_reset_time'].to_i
   # We might want to have a timeout shorter than 1 second.
   storage['storage_timeout'] = storage['storage_timeout'].to_f
+
+  Settings.repositories.storages[key] = storage
 end
 
 #

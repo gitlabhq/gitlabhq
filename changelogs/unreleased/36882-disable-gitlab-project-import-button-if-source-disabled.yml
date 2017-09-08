@@ -1,0 +1,5 @@
+---
+title: Disable GitLab Project Import Button if source disabled
+merge_request:
+author:
+type: fixed

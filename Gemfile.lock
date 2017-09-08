@@ -49,8 +49,6 @@ GEM
       ice_nine (~> 0.11.0)
       memoizable (~> 0.4.0)
     addressable (2.3.8)
-    after_commit_queue (1.3.0)
-      activerecord (>= 3.0)
     akismet (2.0.0)
     allocations (1.0.5)
     arel (7.1.4)
@@ -100,9 +98,13 @@ GEM
       bundler (~> 1.2)
       thor (~> 0.18)
     byebug (9.0.6)
+<<<<<<< HEAD
     capybara (2.14.4)
+=======
+    capybara (2.15.1)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       addressable
-      mime-types (>= 1.16)
+      mini_mime (>= 0.1.3)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
@@ -115,7 +117,7 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
     cause (0.1)
-    charlock_holmes (0.7.3)
+    charlock_holmes (0.7.5)
     chronic (0.10.2)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
@@ -198,8 +200,13 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
+<<<<<<< HEAD
     fast_gettext (1.4.1)
     ffaker (2.6.0)
+=======
+    fast_gettext (1.4.0)
+    ffaker (2.4.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     ffi (1.9.18)
     flay (2.8.1)
       erubis (~> 2.7.0)
@@ -258,7 +265,11 @@ GEM
       ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
+<<<<<<< HEAD
     gemojione (3.2.0)
+=======
+    gemojione (3.3.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       json
     get_process_mem (0.2.1)
     gettext (3.2.3)
@@ -272,7 +283,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly (0.27.0)
+    gitaly-proto (0.33.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.0)
     github-linguist (4.7.6)
@@ -280,7 +291,11 @@ GEM
       escape_utils (~> 1.1.0)
       mime-types (>= 1.19)
       rugged (>= 0.23.0b)
+<<<<<<< HEAD
     github-markup (1.6.0)
+=======
+    github-markup (1.6.1)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     gitlab-flowdock-git-hook (1.0.1)
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
@@ -300,12 +315,21 @@ GEM
       activesupport (>= 4.2.0)
     gollum-grit_adapter (1.0.1)
       gitlab-grit (~> 2.7, >= 2.7.1)
+<<<<<<< HEAD
     gollum-lib (4.2.5)
       gemojione (~> 3.2)
       github-markup (~> 1.6)
       gollum-grit_adapter (~> 1.0)
       nokogiri (~> 1.6.4)
       rouge (~> 2.0)
+=======
+    gollum-lib (4.2.7)
+      gemojione (~> 3.2)
+      github-markup (~> 1.6)
+      gollum-grit_adapter (~> 1.0)
+      nokogiri (>= 1.6.1, < 2.0)
+      rouge (~> 2.1)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       sanitize (~> 2.1)
       stringex (~> 2.6)
     gollum-rugged_adapter (0.4.4)
@@ -318,6 +342,7 @@ GEM
       request_store (>= 1.0)
     google-api-client (0.9.28)
       addressable (~> 2.3)
+<<<<<<< HEAD
       googleauth (~> 0.5)
       httpclient (~> 2.7)
       hurley (~> 0.1)
@@ -326,6 +351,17 @@ GEM
       representable (~> 2.3.0)
       retriable (~> 2.0)
     google-protobuf (3.3.0)
+=======
+      autoparse (~> 0.3)
+      extlib (~> 0.9)
+      faraday (~> 0.9)
+      googleauth (~> 0.3)
+      launchy (~> 2.4)
+      multi_json (~> 1.10)
+      retriable (~> 1.4)
+      signet (~> 0.6)
+    google-protobuf (3.4.0.2)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     googleauth (0.5.1)
       faraday (~> 0.9)
       jwt (~> 1.4)
@@ -336,12 +372,9 @@ GEM
       signet (~> 0.7)
     gpgme (2.0.13)
       mini_portile2 (~> 2.1)
-    grape (0.19.2)
+    grape (1.0.0)
       activesupport
       builder
-      hashie (>= 2.1.0)
-      multi_json (>= 1.3.2)
-      multi_xml (>= 0.5.2)
       mustermann-grape (~> 1.0.0)
       rack (>= 1.3.0)
       rack-accept
@@ -349,11 +382,17 @@ GEM
     grape-entity (0.6.1)
       activesupport (>= 5.0.0)
       multi_json (>= 1.3.2)
-    grape-route-helpers (2.0.0)
+    grape-route-helpers (2.1.0)
       activesupport
-      grape (~> 0.16, >= 0.16.0)
+      grape (>= 0.16.0)
       rake
+<<<<<<< HEAD
     grpc (1.4.1)
+=======
+    grape_logging (1.6.0)
+      grape
+    grpc (1.4.5)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       google-protobuf (~> 3.1)
       googleauth (~> 0.5.1)
     haml (4.0.7)
@@ -403,8 +442,13 @@ GEM
       cause
       json
     ipaddress (0.8.3)
+<<<<<<< HEAD
     jira-ruby (1.1.3)
+=======
+    jira-ruby (1.4.1)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       activesupport
+      multipart-post
       oauth (~> 0.5, >= 0.5.0)
     jquery-atwho-rails (1.3.2)
     jquery-rails (4.3.1)
@@ -476,8 +520,14 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     method_source (0.8.2)
     mime-types (2.99.3)
+<<<<<<< HEAD
     mimemagic (0.3.2)
     mini_portile2 (2.1.0)
+=======
+    mimemagic (0.3.0)
+    mini_mime (0.1.4)
+    mini_portile2 (2.2.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     minitest (5.7.0)
     mmap2 (2.2.7)
     mousetrap-rails (1.4.6)
@@ -491,9 +541,14 @@ GEM
     net-ldap (0.16.0)
     net-ssh (4.1.0)
     netrc (0.11.0)
+<<<<<<< HEAD
     nio4r (2.1.0)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
+=======
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     numerizer (0.1.1)
     oauth (0.5.3)
     oauth2 (1.4.0)
@@ -515,10 +570,15 @@ GEM
     omniauth-azure-oauth2 (0.0.8)
       jwt (~> 1.0)
       omniauth (~> 1.0)
+<<<<<<< HEAD
       omniauth-oauth2 (~> 1.4)
     omniauth-cas3 (1.1.3)
+=======
+      omniauth-oauth2 (~> 1.1)
+    omniauth-cas3 (1.1.4)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       addressable (~> 2.3)
-      nokogiri (~> 1.6.6)
+      nokogiri (~> 1.7, >= 1.7.1)
       omniauth (~> 1.2)
     omniauth-facebook (4.0.0)
       omniauth-oauth2 (~> 1.2)
@@ -528,8 +588,8 @@ GEM
     omniauth-gitlab (1.0.2)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
-    omniauth-google-oauth2 (0.4.1)
-      jwt (~> 1.5.2)
+    omniauth-google-oauth2 (0.5.2)
+      jwt (~> 1.5)
       multi_json (~> 1.3)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.3.1)
@@ -620,7 +680,7 @@ GEM
       parser
       unparser
     procto (0.0.3)
-    prometheus-client-mmap (0.7.0.beta11)
+    prometheus-client-mmap (0.7.0.beta14)
       mmap2 (~> 2.2, >= 2.2.7)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -688,7 +748,7 @@ GEM
     rake (12.0.0)
     rblineprof (0.3.7)
       debugger-ruby_core_source (~> 1.3)
-    rbnacl (3.4.0)
+    rbnacl (4.0.2)
       ffi
     rbnacl-libsodium (1.0.11)
       rbnacl (>= 3.0.1)
@@ -730,9 +790,15 @@ GEM
     retriable (2.1.0)
     rinku (2.0.2)
     rotp (2.1.2)
+<<<<<<< HEAD
     rouge (2.1.1)
     rqrcode (0.10.1)
       chunky_png (~> 1.0)
+=======
+    rouge (2.2.1)
+    rqrcode (0.7.0)
+      chunky_png
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
     rqrcode-rails3 (0.1.7)
       rqrcode (>= 0.4.2)
     rspec (3.6.0)
@@ -777,7 +843,7 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-gitlab-security (0.0.6)
+    rubocop-gitlab-security (0.1.0)
       rubocop (>= 0.47.1)
     rubocop-rspec (1.15.1)
       rubocop (>= 0.42.0)
@@ -840,6 +906,7 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
+    simple_po_parser (1.1.2)
     simplecov (0.14.1)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -872,6 +939,7 @@ GEM
       sprockets (>= 3.0.0)
     sqlite3 (1.3.13)
     stackprof (0.2.10)
+<<<<<<< HEAD
     state_machines (0.5.0)
     state_machines-activemodel (0.5.0)
       activemodel (>= 4.1, < 5.2)
@@ -881,6 +949,17 @@ GEM
       state_machines-activemodel (>= 0.5.0)
     stringex (2.7.1)
     sys-filesystem (1.1.7)
+=======
+    state_machines (0.4.0)
+    state_machines-activemodel (0.4.0)
+      activemodel (>= 4.1, < 5.1)
+      state_machines (>= 0.4.0)
+    state_machines-activerecord (0.4.0)
+      activerecord (>= 4.1, < 5.1)
+      state_machines-activemodel (>= 0.3.0)
+    stringex (2.7.1)
+    sys-filesystem (1.1.6)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
       ffi
     sysexits (1.2.0)
     temple (0.7.7)
@@ -896,9 +975,9 @@ GEM
     timfel-krb5-auth (0.8.3)
     toml-rb (0.3.15)
       citrus (~> 3.0, > 3.0)
-    truncato (0.7.8)
+    truncato (0.7.10)
       htmlentities (~> 4.3.1)
-      nokogiri (~> 1.6.1)
+      nokogiri (~> 1.8.0, >= 1.7.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     u2f (0.2.1)
@@ -906,7 +985,6 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    underscore-rails (1.8.3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
@@ -965,7 +1043,6 @@ DEPENDENCIES
   activerecord_sane_schema_dumper (= 1.0)
   acts-as-taggable-on (~> 4.0)
   addressable (~> 2.3.8)
-  after_commit_queue (~> 1.3.0)
   akismet (~> 2.0)
   allocations (~> 1.0)
   asana (~> 0.6.0)
@@ -985,10 +1062,14 @@ DEPENDENCIES
   browser (~> 2.2)
   bullet (~> 5.5.0)
   bundler-audit (~> 0.5.0)
+<<<<<<< HEAD
   capybara (~> 2.14.4)
+=======
+  capybara (~> 2.15.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
   capybara-screenshot (~> 1.0.0)
   carrierwave (~> 1.1)
-  charlock_holmes (~> 0.7.3)
+  charlock_holmes (~> 0.7.5)
   chronic (~> 0.10.2)
   chronic_duration (~> 0.10.6)
   concurrent-ruby (~> 1.0.5)
@@ -1022,11 +1103,11 @@ DEPENDENCIES
   foreman (~> 0.78.0)
   fuubar (~> 2.2.0)
   gemnasium-gitlab-service (~> 0.2)
-  gemojione (~> 3.0)
+  gemojione (~> 3.3)
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly (~> 0.27.0)
+  gitaly-proto (~> 0.33.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
@@ -1036,9 +1117,10 @@ DEPENDENCIES
   gon (~> 6.1.0)
   google-api-client (~> 0.9.28)
   gpgme
-  grape (~> 0.19.2)
+  grape (~> 1.0)
   grape-entity (~> 0.6.0)
-  grape-route-helpers (~> 2.0.0)
+  grape-route-helpers (~> 2.1.0)
+  grape_logging (~> 1.6)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
@@ -1048,7 +1130,7 @@ DEPENDENCIES
   html2text
   httparty (~> 0.13.3)
   influxdb (~> 0.2)
-  jira-ruby (~> 1.1.2)
+  jira-ruby (~> 1.4)
   jquery-atwho-rails (~> 1.3.2)
   jquery-rails (~> 4.3.1)
   json-schema (~> 2.6.2)
@@ -1068,7 +1150,11 @@ DEPENDENCIES
   mysql2 (~> 0.4.5)
   net-ldap
   net-ssh (~> 4.1.0)
+<<<<<<< HEAD
   nokogiri (~> 1.6.8.1)
+=======
+  nokogiri (~> 1.8.0)
+>>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
   oj (~> 2.17.4)
@@ -1076,11 +1162,11 @@ DEPENDENCIES
   omniauth-auth0 (~> 1.4.1)
   omniauth-authentiq (~> 0.3.1)
   omniauth-azure-oauth2 (~> 0.0.6)
-  omniauth-cas3 (~> 1.1.2)
+  omniauth-cas3 (~> 1.1.4)
   omniauth-facebook (~> 4.0.0)
   omniauth-github (~> 1.1.1)
   omniauth-gitlab (~> 1.0.2)
-  omniauth-google-oauth2 (~> 0.4.1)
+  omniauth-google-oauth2 (~> 0.5.2)
   omniauth-kerberos (~> 0.3.0)
   omniauth-oauth2-generic (~> 0.2.2)
   omniauth-saml (~> 1.8.1)
@@ -1101,7 +1187,7 @@ DEPENDENCIES
   pg (~> 0.18.2)
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.7.0.beta11)
+  prometheus-client-mmap (~> 0.7.0.beta14)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)
@@ -1115,7 +1201,7 @@ DEPENDENCIES
   rainbow (~> 2.2)
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
-  rbnacl (~> 3.2)
+  rbnacl (~> 4.0)
   rbnacl-libsodium
   rdoc (~> 4.2)
   re2 (~> 1.1.1)
@@ -1134,7 +1220,7 @@ DEPENDENCIES
   rspec-set (~> 0.1.3)
   rspec_profiling (~> 0.0.5)
   rubocop (~> 0.49.1)
-  rubocop-gitlab-security (~> 0.0.6)
+  rubocop-gitlab-security (~> 0.1.0)
   rubocop-rspec (~> 1.15.1)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
@@ -1153,6 +1239,7 @@ DEPENDENCIES
   sidekiq (~> 5.0)
   sidekiq-cron (~> 0.6.0)
   sidekiq-limit_fetch (~> 3.4)
+  simple_po_parser (~> 1.1.2)
   simplecov (~> 0.14.0)
   slack-notifier (~> 1.5.1)
   spinach-rails (~> 0.2.1)
@@ -1167,10 +1254,9 @@ DEPENDENCIES
   thin (~> 1.7.0)
   timecop (~> 0.8.0)
   toml-rb (~> 0.3.15)
-  truncato (~> 0.7.8)
+  truncato (~> 0.7.9)
   u2f (~> 0.2.1)
   uglifier (~> 2.7.2)
-  underscore-rails (~> 1.8.0)
   unf (~> 0.1.4)
   unicorn (~> 5.1.0)
   unicorn-worker-killer (~> 0.4.4)
@@ -1183,4 +1269,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

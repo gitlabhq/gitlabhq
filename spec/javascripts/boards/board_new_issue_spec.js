@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global List */
 /* global listObj */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';
@@ -30,10 +31,12 @@ describe('Issue boards new issue form', () => {
   };
 
   beforeEach((done) => {
+    setFixtures('<div class="test-container"></div>');
+
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 
@@ -46,15 +49,17 @@ describe('Issue boards new issue form', () => {
       propsData: {
         list,
       },
-    }).$mount();
+    }).$mount(document.querySelector('.test-container'));
 
     Vue.nextTick()
       .then(done)
       .catch(done.fail);
   });
 
+  afterEach(() => vm.$destroy());
+
   it('calls submit if submit button is clicked', (done) => {
-    spyOn(vm, 'submit');
+    spyOn(vm, 'submit').and.callFake(e => e.preventDefault());
     vm.title = 'Testing Title';
 
     Vue.nextTick()

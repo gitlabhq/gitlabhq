@@ -50,6 +50,7 @@ project_tree:
         - :push_event_payload
     - :stages
     - :statuses
+  - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
@@ -98,6 +99,7 @@ excluded_attributes:
     - :last_activity_at
     - :last_repository_updated_at
     - :last_repository_check_at
+    - :storage_version
   snippets:
     - :expired_at
   merge_request_diff:
@@ -115,6 +117,7 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
+    - :when
   push_event_payload:
     - :event_id
 
@@ -133,5 +136,11 @@ methods:
     - :utf8_diff
   merge_requests:
     - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
   project:
     - :description_html
+  events:
+    - :action
+  push_event_payload:
+    - :action

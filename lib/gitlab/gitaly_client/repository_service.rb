@@ -32,6 +32,27 @@ module Gitlab
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
         GitalyClient.call(@storage, :repository_service, :repository_size, request).size
       end
+
+      def apply_gitattributes(revision)
+        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
+        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+      end
+
+      def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false)
+        request = Gitaly::FetchRemoteRequest.new(repository: @gitaly_repo, remote: remote, force: forced, no_tags: no_tags)
+
+        if ssh_auth&.ssh_import?
+          if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
+            request.ssh_key = ssh_auth.ssh_private_key
+          end
+
+          if ssh_auth.ssh_known_hosts.present?
+            request.known_hosts = ssh_auth.ssh_known_hosts
+          end
+        end
+
+        GitalyClient.call(@storage, :repository_service, :fetch_remote, request)
+      end
     end
   end
 end

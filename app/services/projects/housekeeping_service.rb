@@ -9,7 +9,8 @@ module Projects
   class HousekeepingService < BaseService
     include Gitlab::CurrentSettings
 
-    LEASE_TIMEOUT = 3600
+    # Timeout set to 24h
+    LEASE_TIMEOUT = 86400
 
     class LeaseTaken < StandardError
       def to_s
@@ -24,6 +25,8 @@ module Projects
     def execute
       lease_uuid = try_obtain_lease
       raise LeaseTaken unless lease_uuid.present?
+
+      yield if block_given?
 
       execute_gitlab_shell_gc(lease_uuid)
     end

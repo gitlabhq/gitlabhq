@@ -22,7 +22,7 @@ module Gitlab
         end
       end
 
-      def is_ancestor(ancestor_id, child_id)
+      def ancestor?(ancestor_id, child_id)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
           ancestor_id: ancestor_id,
@@ -60,36 +60,42 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
-        entry = response.first
-        return unless entry.oid.present?
 
-        if entry.type == :BLOB
-          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
-          entry.data += rest_of_data
+        entry = nil
+        data = ''
+        response.each do |msg|
+          if entry.nil?
+            entry = msg
+
+            break unless entry.type == :BLOB
+          end
+
+          data << msg.data
         end
+        entry.data = data
 
-        entry
+        entry unless entry.oid.blank?
       end
 
       def tree_entries(repository, revision, path)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path.presence || '.'
+          revision: GitalyClient.encode(revision),
+          path: path.present? ? GitalyClient.encode(path) : '.'
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
 
         response.flat_map do |message|
           message.entries.map do |gitaly_tree_entry|
-            entry_path = gitaly_tree_entry.path.dup
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
-              name: File.basename(entry_path),
-              path: entry_path,
+              name: File.basename(gitaly_tree_entry.path),
+              path: GitalyClient.encode(gitaly_tree_entry.path),
+              flat_path: GitalyClient.encode(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
           end
@@ -169,8 +175,8 @@ module Gitlab
       def raw_blame(revision, path)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
@@ -186,6 +192,16 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
 
         response.commit
+      end
+
+      def patch(revision)
+        request = Gitaly::CommitPatchRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
+
+        response.sum(&:data)
       end
 
       private

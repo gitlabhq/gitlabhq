@@ -243,6 +243,7 @@ import bp from './breakpoints';
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
 
@@ -253,6 +254,7 @@ import bp from './breakpoints';
 
     loadDiff(source) {
       if (this.diffsLoaded) {
+        document.dispatchEvent(new CustomEvent('scroll'));
         return;
       }
 

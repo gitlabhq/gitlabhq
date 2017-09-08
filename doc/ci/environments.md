@@ -274,9 +274,7 @@ session -  and even a multiplexer like `screen` or `tmux`!
 >**Note:**
 Container-based deployments often lack basic tools (like an editor), and may
 be stopped or restarted at any time. If this happens, you will lose all your
-changes! Treat this as a debugging tool, not a comprehensive online IDE. You
-can use [Koding](../administration/integration/koding.md) for online
-development.
+changes! Treat this as a debugging tool, not a comprehensive online IDE.
 
 ---
 
@@ -448,8 +446,7 @@ and/or `production`) you can see this information in the merge request itself.
 
 ![Environment URLs in merge request](img/environments_link_url_mr.png)
 
-### <a name="route-map"></a>Go directly from source files to public pages on the environment
-
+### Go directly from source files to public pages on the environment
 
 > Introduced in GitLab 8.17.
 

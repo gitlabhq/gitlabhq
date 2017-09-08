@@ -30,7 +30,7 @@ var config = {
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
-    common_vue:           ['vue', './vue_shared/common_vue.js'],
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
@@ -55,6 +55,7 @@ var config = {
     monitoring:           './monitoring/monitoring_bundle.js',
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
+    notes:                './notes/index.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/pipelines_bundle.js',
     pipelines_charts:     './pipelines/pipelines_charts.js',
@@ -76,7 +77,6 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
@@ -171,7 +171,7 @@ var config = {
       if (chunk.name) {
         return chunk.name;
       }
-      return chunk.modules.map((m) => {
+      return chunk.mapModules((m) => {
         var chunkPath = m.request.split('!').pop();
         return path.relative(m.context, chunkPath);
       }).join('_');
@@ -195,6 +195,7 @@ var config = {
         'merge_conflicts',
         'monitoring',
         'notebook_viewer',
+        'notes',
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
@@ -277,14 +278,9 @@ if (IS_PRODUCTION) {
     })
   );
 
-  // zopfli requires a lot of compute time and is disabled in CI
+  // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
-    try {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
-    } catch(err) {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
-    }
+    config.plugins.push(new CompressionPlugin());
   }
 }
 

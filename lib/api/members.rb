@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
+      resource source_type.pluralize, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         desc 'Gets a list of group or project members viewable by the authenticated user.' do
           success Entities::Member
         end
@@ -93,11 +93,11 @@ module API
         end
         delete ":id/members/:user_id" do
           source = find_source(source_type, params[:id])
-          # Ensure that memeber exists
-          source.members.find_by!(user_id: params[:user_id])
+          member = source.members.find_by!(user_id: params[:user_id])
 
-          status 204
-          ::Members::DestroyService.new(source, current_user, declared_params).execute
+          destroy_conditionally!(member) do
+            ::Members::DestroyService.new(source, current_user, declared_params).execute
+          end
         end
       end
     end

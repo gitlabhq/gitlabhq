@@ -163,12 +163,6 @@
     }
   }
 
-  &.dropdown-menu-empty-link {
-    &.is-focused {
-      background-color: $dropdown-empty-row-bg;
-    }
-  }
-
   &.dropdown-menu-user-link {
     line-height: 16px;
   }
@@ -189,13 +183,13 @@
   width: auto;
   top: 100%;
   left: 0;
-  z-index: 9;
+  z-index: 300;
   min-width: 240px;
   max-width: 500px;
   margin-top: 2px;
-  margin-bottom: 0;
+  margin-bottom: 2px;
   font-size: 14px;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   padding: 8px 0;
   background-color: $white-light;
   border: 1px solid $dropdown-border-color;
@@ -256,6 +250,13 @@
     @include dropdown-link;
   }
 
+  .dropdown-menu-empty-item a {
+    &:hover,
+    &:focus {
+      background-color: transparent;
+    }
+  }
+
   .dropdown-header {
     color: $gl-text-color-secondary;
     font-size: 13px;
@@ -268,7 +269,7 @@
   }
 
   .dropdown-bold-header {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 22px;
     padding: 0 16px;
   }
@@ -368,6 +369,10 @@
   transform: translateY(0);
 }
 
+.comment-type-dropdown.open .dropdown-menu {
+  display: block;
+}
+
 .filtered-search-box-input-container {
   .dropdown-menu,
   .dropdown-menu-nav {
@@ -432,7 +437,7 @@
 
 .dropdown-menu-user-full-name {
   display: block;
-  font-weight: 500;
+  font-weight: $gl-font-weight-normal;
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -468,7 +473,7 @@
 
     &.is-indeterminate,
     &.is-active {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       color: $gl-text-color;
 
       &::before {
@@ -502,7 +507,7 @@
   position: relative;
   padding: 2px 25px 10px;
   margin: 0 10px 10px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
   line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
@@ -618,6 +623,11 @@
   border-top: 1px solid $dropdown-divider-color;
 }
 
+.dropdown-footer-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .dropdown-due-date-footer {
   padding-top: 0;
   margin-left: 10px;
@@ -685,7 +695,7 @@
 .dropdown-menu-inner-title {
   display: block;
   color: $gl-text-color;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .dropdown-menu-inner-content {
@@ -724,30 +734,69 @@
   overflow: hidden;
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+}
+
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
-    .divider {
-      margin: 6px 0;
-    }
+    margin-bottom: 24px;
 
     li {
+      display: block;
       padding: 0 1px;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &.divider {
+        margin: 6px 0;
+
+        &:hover {
+          background-color: $dropdown-divider-color;
+        }
+      }
 
       &.dropdown-header {
         padding: 8px 16px;
       }
 
-      a {
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
+      a,
+      button,
+      .menu-item {
         border-radius: 0;
+        box-shadow: none;
         padding: 8px 16px;
+        text-align: left;
+        white-space: normal;
+        width: 100%;
+
+        // make sure the text color is not overriden
+        &.text-danger {
+          color: $brand-danger;
+        }
 
         &.is-focused,
         &:hover,
         &:active,
         &:focus {
-          background-color: $gray-darker;
+          @include dropdown-item-hover;
+
+          background-color: $dropdown-item-hover-bg;
+          color: $gl-text-color;
+
+          // make sure the text color is not overriden
+          &.text-danger {
+            color: $brand-danger;
+          }
         }
 
         &.is-active {
@@ -756,6 +805,18 @@
           &::before {
             top: 16px;
           }
+
+          &.dropdown-menu-user-link::before {
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+      }
+
+      &.dropdown-menu-empty-item a {
+        &:hover,
+        &:focus {
+          background-color: transparent;
         }
       }
     }
@@ -775,5 +836,179 @@
 
   #{$selector}.dropdown-menu-align-right {
     margin-top: 2px;
+  }
+
+  .open {
+    #{$selector}.dropdown-menu,
+    #{$selector}.dropdown-menu-nav {
+      @media (max-width: $screen-xs-max) {
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+}
+
+@include new-style-dropdown('.breadcrumbs-list .dropdown ');
+@include new-style-dropdown('.js-namespace-select + ');
+
+header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
+  padding: 0;
+}
+
+.projects-dropdown-container {
+  display: flex;
+  flex-direction: row;
+  width: 500px;
+  height: 334px;
+
+  .project-dropdown-sidebar,
+  .project-dropdown-content {
+    padding: 8px 0;
+  }
+
+  .loading-animation {
+    color: $almost-black;
+  }
+
+  .project-dropdown-sidebar {
+    width: 30%;
+    border-right: 1px solid $border-color;
+  }
+
+  .project-dropdown-content {
+    position: relative;
+    width: 70%;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    flex: 1;
+
+    .project-dropdown-sidebar,
+    .project-dropdown-content {
+      width: 100%;
+    }
+
+    .project-dropdown-sidebar {
+      border-bottom: 1px solid $border-color;
+      border-right: 0;
+    }
+  }
+}
+
+.projects-dropdown-container {
+  .projects-list-frequent-container,
+  .projects-list-search-container, {
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+
+  .section-header,
+  .projects-list-frequent-container li.section-empty,
+  .projects-list-search-container li.section-empty {
+    padding: 0 15px;
+  }
+
+  .section-header,
+  .projects-list-frequent-container li.section-empty,
+  .projects-list-search-container li.section-empty {
+    color: $gl-text-color-secondary;
+    font-size: $gl-font-size;
+  }
+
+  .projects-list-frequent-container,
+  .projects-list-search-container {
+    li.section-empty.section-failure {
+      color: $callout-danger-color;
+    }
+  }
+
+  .search-input-container {
+    position: relative;
+    padding: 4px $gl-padding;
+
+    .search-icon {
+      position: absolute;
+      top: 13px;
+      right: 25px;
+      color: $md-area-border;
+    }
+  }
+
+  .section-header {
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  .projects-list-search-container {
+    height: 284px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-list-frequent-container {
+      width: auto;
+      height: auto;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.projects-list-item-container {
+  .project-item-avatar-container
+  .project-item-metadata-container {
+    float: left;
+  }
+
+  .project-title,
+  .project-namespace {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    .project-item-avatar-container .avatar {
+      border-color: $md-area-border;
+    }
+  }
+
+  .project-title {
+    font-size: $gl-font-size;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .project-namespace {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 12px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .project-item-metadata-container {
+      float: none;
+    }
   }
 }

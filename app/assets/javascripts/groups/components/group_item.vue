@@ -1,10 +1,10 @@
 <script>
+import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
-import groupIdenticon from './group_identicon.vue';
 
 export default {
   components: {
-    groupIdenticon,
+    identicon,
   },
   props: {
     group: {
@@ -205,7 +205,7 @@ export default {
             class="avatar s40"
             :src="group.avatarUrl"
           />
-          <group-identicon
+          <identicon
             v-else
             :entity-id=group.id
             :entity-name="group.name"

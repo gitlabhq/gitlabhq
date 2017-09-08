@@ -35,6 +35,10 @@ describe Issues::CreateService do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'refreshes the number of open issues' do
+        expect { issue }.to change { project.open_issues_count }.from(0).to(1)
+      end
+
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
 
@@ -366,7 +370,7 @@ describe Issues::CreateService do
       context 'when recaptcha was not verified' do
         context 'when akismet detects spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
           end
 
           it 'marks an issue as a spam ' do
@@ -388,7 +392,7 @@ describe Issues::CreateService do
 
         context 'when akismet does not detect spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
           end
 
           it 'does not mark an issue as a spam ' do

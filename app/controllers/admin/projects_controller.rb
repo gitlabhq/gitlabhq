@@ -3,9 +3,9 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :group, only: [:show, :transfer]
 
   def index
-    finder    = Admin::ProjectsFinder.new(params: params, current_user: current_user)
-    @projects = finder.execute
-    @sort     = finder.sort
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+    @projects = Admin::ProjectsFinder.new(params: params, current_user: current_user).execute
 
     respond_to do |format|
       format.html

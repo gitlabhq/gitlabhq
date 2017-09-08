@@ -75,7 +75,7 @@ ul.related-merge-requests > li {
 .merge-requests-title,
 .related-branches-title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .merge-request-id {
@@ -143,8 +143,12 @@ ul.related-merge-requests > li {
   }
 }
 
-.issue-form .select2-container {
-  width: 250px !important;
+.issue-form {
+  @include new-style-dropdown;
+
+  .select2-container {
+    width: 250px !important;
+  }
 }
 
 .issues-footer {
@@ -186,6 +190,8 @@ ul.related-merge-requests > li {
 }
 
 .create-mr-dropdown-wrap {
+  @include new-style-dropdown;
+
   .btn-group:not(.hide) {
     display: flex;
   }
@@ -212,15 +218,6 @@ ul.related-merge-requests > li {
   }
 
   li:not(.divider) {
-    padding: 6px;
-    cursor: pointer;
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
-    }
-
     &.droplab-item-selected {
       .icon-container {
         i {
@@ -244,10 +241,14 @@ ul.related-merge-requests > li {
 
       strong {
         display: block;
-        font-weight: 600;
+        font-weight: $gl-font-weight-bold;
       }
     }
   }
+}
+
+.discussion-reply-holder .note-edit-form {
+  display: block;
 }
 
 @media (min-width: $screen-sm-min) {

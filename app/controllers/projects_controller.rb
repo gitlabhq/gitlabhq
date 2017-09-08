@@ -20,7 +20,10 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def new
-    @project = Project.new
+    namespace = Namespace.find_by(id: params[:namespace_id]) if params[:namespace_id]
+    return access_denied! if namespace && !can?(current_user, :create_projects, namespace)
+
+    @project = Project.new(namespace_id: namespace&.id)
   end
 
   def edit
@@ -320,6 +323,7 @@ class ProjectsController < Projects::ApplicationController
       :build_allow_git_fetch,
       :build_coverage_regex,
       :build_timeout_in_minutes,
+      :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :default_branch,
       :description,

@@ -81,12 +81,15 @@ module Gitlab
             relative_order: index
           )
 
-          # Compatibility with old diffs created with Psych.
           diff_hash.tap do |hash|
             diff_text = hash[:diff]
 
             hash[:too_large] = !!hash[:too_large]
 
+            hash[:a_mode] ||= guess_mode(hash[:new_file], hash[:diff])
+            hash[:b_mode] ||= guess_mode(hash[:deleted_file], hash[:diff])
+
+            # Compatibility with old diffs created with Psych.
             if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
               hash[:binary] = true
               hash[:diff] = [diff_text].pack('m0')
@@ -95,6 +98,15 @@ module Gitlab
         end
 
         [commit_rows, file_rows]
+      end
+
+      # This doesn't have to be 100% accurate, because it's only used for
+      # display - it won't change file modes in the repository. Submodules are
+      # created as 600, regular files as 644.
+      def guess_mode(file_missing, diff)
+        return '0' if file_missing
+
+        diff.include?('Subproject commit') ? '160000' : '100644'
       end
 
       # Unlike MergeRequestDiff#valid_raw_diff?, don't count Rugged objects as

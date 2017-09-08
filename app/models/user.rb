@@ -2,9 +2,11 @@ require 'carrierwave/orm/activerecord'
 
 class User < ApplicationRecord
   extend Gitlab::ConfigHelper
+  extend Gitlab::CurrentSettings
 
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
+  include Gitlab::SQL::Pattern
   include Avatarable
   include Referable
   include Sortable
@@ -13,10 +15,12 @@ class User < ApplicationRecord
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
+  include IgnorableColumn
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
-  ignore_column :authorized_projects_populated
+  ignore_column :external_email
+  ignore_column :email_provider
 
   add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
@@ -31,6 +35,7 @@ class User < ApplicationRecord
   default_value_for :project_view, :files
   default_value_for :notified_of_own_activity, false
   default_value_for :preferred_language, I18n.default_locale
+  default_value_for :theme_id, gitlab_config.default_theme
 
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.secrets.otp_key_base,
@@ -46,11 +51,6 @@ class User < ApplicationRecord
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
-
-  # devise overrides #inspect, so we manually use the Referable one
-  def inspect
-    referable_inspect
-  end
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -73,7 +73,7 @@ class User < ApplicationRecord
   #
 
   # Namespace for personal projects
-  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+  has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
   has_many :keys, -> do
@@ -88,6 +88,7 @@ class User < ApplicationRecord
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :u2f_registrations, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :user_synced_attributes_metadata, autosave: true
 
   # Groups
   has_many :members, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -164,6 +165,7 @@ class User < ApplicationRecord
   after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
+  before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   after_save :ensure_namespace_correct
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
   after_initialize :set_projects_limit
@@ -258,11 +260,13 @@ class User < ApplicationRecord
     end
 
     def sort_by_attr(method)
-      case method.to_s
+      order_method = method || 'id_desc'
+
+      case order_method.to_s
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
       else
-        order_by(method)
+        order_by(order_method)
       end
     end
 
@@ -308,7 +312,7 @@ class User < ApplicationRecord
     # Returns an ActiveRecord::Relation.
     def search(query)
       table   = arel_table
-      pattern = "%#{query}%"
+      pattern = User.to_pattern(query)
 
       order = <<~SQL
         CASE
@@ -370,7 +374,7 @@ class User < ApplicationRecord
 
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
-      find_by(id: Key.unscoped.select(:user_id).where(id: key_id))
+      Key.find_by(id: key_id)&.user
     end
 
     def find_by_full_path(path, follow_redirects: false)
@@ -606,7 +610,7 @@ class User < ApplicationRecord
   end
 
   def require_personal_access_token_creation_for_git_auth?
-    return false if allow_password_authentication? || ldap_user?
+    return false if current_application_settings.password_authentication_enabled? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
@@ -647,11 +651,6 @@ class User < ApplicationRecord
     @personal_projects_count ||= personal_projects.count
   end
 
-  def projects_limit_percent
-    return 100 if projects_limit.zero?
-    (personal_projects.count.to_f / projects_limit) * 100
-  end
-
   def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
@@ -667,10 +666,6 @@ class User < ApplicationRecord
 
       merge_requests.empty?
     end
-  end
-
-  def projects_sorted_by_activity
-    authorized_projects.sorted_by_activity
   end
 
   def several_namespaces?
@@ -842,7 +837,12 @@ class User < ApplicationRecord
     create_namespace!(path: username, name: username) unless namespace
 
     if username_changed?
-      namespace.update_attributes(path: username, name: username)
+      unless namespace.update_attributes(path: username, name: username)
+        namespace.errors.each do |attribute, message|
+          self.errors.add(:"namespace_#{attribute}", message)
+        end
+        raise ActiveRecord::RecordInvalid.new(namespace)
+      end
     end
   end
 
@@ -1046,6 +1046,26 @@ class User < ApplicationRecord
   # solution.
   def rss_token
     ensure_rss_token!
+  end
+
+  def verified_email?(email)
+    self.email == email
+  end
+
+  def sync_attribute?(attribute)
+    return true if ldap_user? && attribute == :email
+
+    attributes = Gitlab.config.omniauth.sync_profile_attributes
+
+    if attributes.is_a?(Array)
+      attributes.include?(attribute.to_s)
+    else
+      attributes
+    end
+  end
+
+  def read_only_attribute?(attribute)
+    user_synced_attributes_metadata&.read_only?(attribute)
   end
 
   protected

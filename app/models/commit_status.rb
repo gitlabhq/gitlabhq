@@ -38,13 +38,21 @@ class CommitStatus < ApplicationRecord
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
-  state_machine :status do
-    event :enqueue do
-      transition [:created, :skipped, :manual] => :pending
-    end
+  enum failure_reason: {
+    unknown_failure: nil,
+    script_failure: 1,
+    api_failure: 2,
+    stuck_or_timeout_failure: 3,
+    runner_system_failure: 4
+  }
 
+  state_machine :status do
     event :process do
       transition [:skipped, :manual] => :created
+    end
+
+    event :enqueue do
+      transition [:created, :skipped, :manual] => :pending
     end
 
     event :run do
@@ -79,6 +87,11 @@ class CommitStatus < ApplicationRecord
       commit_status.finished_at = Time.now
     end
 
+    before_transition any => :failed do |commit_status, transition|
+      failure_reason = transition.args.first
+      commit_status.failure_reason = failure_reason
+    end
+
     after_transition do |commit_status, transition|
       next if transition.loopback?
 
@@ -91,6 +104,7 @@ class CommitStatus < ApplicationRecord
           end
         end
 
+        StageUpdateWorker.perform_async(commit_status.stage_id)
         ExpireJobCacheWorker.perform_async(commit_status.id)
       end
     end

@@ -50,7 +50,7 @@ describe 'Help Pages' do
 
     it 'hides the version check image if the image request fails' do
       # We use '--load-images=yes' with poltergeist so the image fails to load
-      expect(find('.js-version-status-badge', visible: false)).not_to be_visible
+      expect(page).to have_selector('.js-version-status-badge', visible: false)
     end
   end
 

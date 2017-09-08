@@ -17,7 +17,7 @@ describe('Api', () => {
 
   beforeEach(() => {
     originalGon = window.gon;
-    window.gon = dummyGon;
+    window.gon = Object.assign({}, dummyGon);
   });
 
   afterEach(() => {
@@ -98,14 +98,38 @@ describe('Api', () => {
   });
 
   describe('projects', () => {
-    it('fetches projects', (done) => {
+    it('fetches projects with membership when logged in', (done) => {
       const query = 'dummy query';
       const options = { unused: 'option' };
-      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json?simple=true`;
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
+      window.gon.current_user_id = 1;
       const expectedData = Object.assign({
         search: query,
         per_page: 20,
         membership: true,
+        simple: true,
+      }, options);
+      spyOn(jQuery, 'ajax').and.callFake((request) => {
+        expect(request.url).toEqual(expectedUrl);
+        expect(request.dataType).toEqual('json');
+        expect(request.data).toEqual(expectedData);
+        return sendDummyResponse();
+      });
+
+      Api.projects(query, options, (response) => {
+        expect(response).toBe(dummyResponse);
+        done();
+      });
+    });
+
+    it('fetches projects without membership when not logged in', (done) => {
+      const query = 'dummy query';
+      const options = { unused: 'option' };
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects.json`;
+      const expectedData = Object.assign({
+        search: query,
+        per_page: 20,
+        simple: true,
       }, options);
       spyOn(jQuery, 'ajax').and.callFake((request) => {
         expect(request.url).toEqual(expectedUrl);

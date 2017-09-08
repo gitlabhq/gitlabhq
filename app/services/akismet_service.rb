@@ -1,4 +1,6 @@
 class AkismetService
+  include Gitlab::CurrentSettings
+
   attr_accessor :owner, :text, :options
 
   def initialize(owner, text, options = {})
@@ -7,7 +9,7 @@ class AkismetService
     @options = options
   end
 
-  def is_spam?
+  def spam?
     return false unless akismet_enabled?
 
     params = {

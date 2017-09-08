@@ -1,7 +1,7 @@
 @mixin btn-default {
   border-radius: 3px;
   font-size: $gl-font-size;
-  font-weight: 400;
+  font-weight: $gl-font-weight-normal;
   padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,
@@ -43,6 +43,15 @@
     > .icon {
       color: $hover-text;
     }
+  }
+}
+
+@mixin btn-svg {
+  svg {
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: 2px;
   }
 }
 
@@ -123,6 +132,7 @@
 .btn {
   @include btn-default;
   @include btn-white;
+  @include btn-svg;
 
   color: $gl-text-color;
 
@@ -220,13 +230,6 @@
     .fa-caret-down {
       margin-left: 3px;
     }
-  }
-
-  svg {
-    height: 15px;
-    width: 15px;
-    position: relative;
-    top: 2px;
   }
 
   svg,

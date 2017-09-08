@@ -3,6 +3,7 @@ module Ci
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
+    include Importable
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -34,6 +35,7 @@ module Ci
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
+    scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -46,7 +48,10 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create :execute_hooks
+    after_create do |build|
+      run_after_commit { BuildHooksWorker.perform_async(build.id) }
+    end
+
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 
@@ -211,6 +216,7 @@ module Ci
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
@@ -384,7 +390,9 @@ module Ci
 
       [
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
+        { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
+        { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
+        { key: 'GITLAB_USER_NAME', value: user.name, public: true }
       ]
     end
 
@@ -441,6 +449,10 @@ module Ci
       Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Ci::MaskSecret.mask!(trace, token)
       trace
+    end
+
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
     end
 
     private

@@ -303,11 +303,13 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :toggle_subscription
           post :mark_as_spam
+          post :move
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
           get :realtime_changes
           post :create_merge_request
+          get :discussions, format: :json
         end
         collection do
           post  :bulk_update
@@ -341,19 +343,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show] do
-        scope module: :boards do
-          resources :issues, only: [:index, :update]
-
-          resources :lists, only: [:index, :create, :update, :destroy] do
-            collection do
-              post :generate
-            end
-
-            resources :issues, only: [:index, :create]
-          end
-        end
-      end
+      resources :boards, only: [:index, :show, :create, :update, :destroy]
 
       resources :todos, only: [:create]
 

@@ -3,6 +3,7 @@ module NotesActions
   extend ActiveSupport::Concern
 
   included do
+    before_action :set_polling_interval_header, only: [:index]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
   end
@@ -12,14 +13,18 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    @notes = notes_finder.execute.inc_relations_for_view
-    @notes = prepare_notes_for_rendering(@notes)
+    notes = notes_finder.execute
+      .inc_relations_for_view
+      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    @notes.each do |note|
-      next if note.cross_reference_not_visible_for?(current_user)
+    notes = prepare_notes_for_rendering(notes)
 
-      notes_json[:notes] << note_json(note)
-    end
+    notes_json[:notes] =
+      if noteable.discussions_rendered_on_frontend?
+        note_serializer.represent(notes)
+      else
+        notes.map { |note| note_json(note) }
+      end
 
     render json: notes_json
   end
@@ -82,22 +87,27 @@ module NotesActions
     }
 
     if note.persisted?
-      attrs.merge!(
-        valid: true,
-        id: note.id,
-        discussion_id: note.discussion_id(noteable),
-        html: note_html(note),
-        note: note.note
-      )
+      attrs[:valid] = true
 
-      discussion = note.to_discussion(noteable)
-      unless discussion.individual_note?
+      if noteable.nil? || noteable.discussions_rendered_on_frontend?
+        attrs.merge!(note_serializer.represent(note))
+      else
         attrs.merge!(
-          discussion_resolvable: discussion.resolvable?,
-
-          diff_discussion_html: diff_discussion_html(discussion),
-          discussion_html: discussion_html(discussion)
+          id: note.id,
+          discussion_id: note.discussion_id(noteable),
+          html: note_html(note),
+          note: note.note
         )
+
+        discussion = note.to_discussion(noteable)
+        unless discussion.individual_note?
+          attrs.merge!(
+            discussion_resolvable: discussion.resolvable?,
+
+            diff_discussion_html: diff_discussion_html(discussion),
+            discussion_html: discussion_html(discussion)
+          )
+        end
       end
     else
       attrs.merge!(
@@ -168,6 +178,10 @@ module NotesActions
     )
   end
 
+  def set_polling_interval_header
+    Gitlab::PollingInterval.set_header(response, interval: 6_000)
+  end
+
   def noteable
     @noteable ||= notes_finder.target
   end
@@ -178,6 +192,10 @@ module NotesActions
 
   def notes_finder
     @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
+  end
+
+  def note_serializer
+    NoteSerializer.new(project: project, noteable: noteable, current_user: current_user)
   end
 
   def note_project

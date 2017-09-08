@@ -40,7 +40,7 @@
       // "Changes suppressed. Click to show." link
       .show-suppressed-diff {
         font-size: 110%;
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -104,7 +104,7 @@
       a {
         float: left;
         width: 35px;
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
 
         &[disabled] {
           cursor: default;
@@ -395,7 +395,7 @@
   background-color: transparent;
   border: 0;
   color: $gl-link-color;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 
   &:hover,
   &:focus {
@@ -578,12 +578,12 @@
   @media (min-width: $screen-sm-min) {
     position: -webkit-sticky;
     position: sticky;
-    top: 34px;
+    top: 24px;
     background-color: $white-light;
     z-index: 190;
 
     &.diff-files-changed-merge-request {
-      top: 84px;
+      top: 76px;
     }
 
     + .files,
@@ -610,6 +610,14 @@
       + .alert {
         margin-top: 30px;
       }
+    }
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .with-performance-bar {
+    .diff-files-changed.diff-files-changed-merge-request {
+      top: 76px + $performance-bar-height;
     }
   }
 }

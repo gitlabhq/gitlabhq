@@ -9,10 +9,7 @@ class Issue < ApplicationRecord
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
-  include IgnorableColumn
   include CreatedAtFilterable
-
-  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -53,7 +50,10 @@ class Issue < ApplicationRecord
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
+  scope :public_only, -> { where(confidential: false) }
+
   after_save :expire_etag_cache
+  after_commit :update_project_counter_caches, on: :destroy
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -267,6 +267,20 @@ class Issue < ApplicationRecord
         )
       end
     end
+  end
+
+  def discussions_rendered_on_frontend?
+    true
+  end
+
+  def update_project_counter_caches?
+    state_changed? || confidential_changed?
+  end
+
+  def update_project_counter_caches
+    return unless update_project_counter_caches?
+
+    Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 
   private

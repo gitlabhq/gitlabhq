@@ -1,9 +1,9 @@
 # GitLab Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
+> **Note**:
+* This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
+* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
-
-The `gitlab` Helm chart deploys GitLab into your Kubernetes cluster.
+The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. This chart requires advanced knowledge of Kubernetes to successfully use. For most deployments we **strongly recommended** the [gitlab-omnibus](gitlab_omnibus.md) chart, which will replace this chart once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68). Due to the difficulty in supporting upgrades to the `omnibus-gitlab` chart, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 This chart includes the following:
 
@@ -15,16 +15,16 @@ This chart includes the following:
 - Optional PostgreSQL deployment using the [PostgreSQL Chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) (defaults to enabled)
 - Optional Ingress (defaults to disabled)
 
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
 ## Prerequisites
 
-- _At least_ 3 GB of RAM available on your cluster, in chunks of 1 GB. 41GB of storage and 2 CPU are also required.
+- _At least_ 3 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
 - The ability to point a DNS entry or URL at your GitLab install
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo [added to your Helm Client](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab
 
@@ -427,6 +427,13 @@ ingress:
 
 ## Installing GitLab using the Helm Chart
 > You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
+
+Add the GitLab Helm repository and initialize Helm:
+
+```bash
+helm repo add gitlab https://charts.gitlab.io
+helm init
+```
 
 Once you [have configured](#configuration) GitLab in your `values.yml` file,
 run the following:

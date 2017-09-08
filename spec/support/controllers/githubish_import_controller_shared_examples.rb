@@ -140,9 +140,14 @@ shared_examples 'a GitHub-ish import controller: POST create' do
     end
 
     context "when a namespace with the provider user's username already exists" do
-      let!(:existing_namespace) { create(:namespace, name: other_username, owner: user) }
+      let!(:existing_namespace) { user.namespace }
 
       context "when the namespace is owned by the GitLab user" do
+        before do
+          user.username = other_username
+          user.save
+        end
+
         it "takes the existing namespace" do
           expect(Gitlab::GithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, existing_namespace, user, access_params, type: provider)
@@ -153,12 +158,9 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       end
 
       context "when the namespace is not owned by the GitLab user" do
-        before do
-          existing_namespace.owner = create(:user)
-          existing_namespace.save
-        end
-
         it "creates a project using user's namespace" do
+          create(:user, username: other_username)
+
           expect(Gitlab::GithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
               .and_return(double(execute: true))

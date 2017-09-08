@@ -32,14 +32,14 @@ import '~/notes';
 
   describe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
-    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:issues:show');
+      $('body').data('page', 'projects:merge_requets:show');
     });
 
     describe('task lists', function() {
@@ -53,17 +53,19 @@ import '~/notes';
       it('modifies the Markdown field', function() {
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
-        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        $('input[type=checkbox]').attr('checked', true)[1].dispatchEvent(changeEvent);
+
+        expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
           return expect(req.data.note).not.toBe(null);
         });
-        $('.js-task-list-field').trigger('tasklist:changed');
+
+        $('.js-task-list-field.js-note-text').trigger('tasklist:changed');
       });
     });
 
@@ -767,6 +769,20 @@ import '~/notes';
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeTruthy();
+      });
+
+      it('should return a escaped user name', () => {
+        const currentUserFullnameXSS = 'Foo <script>alert("XSS")</script>';
+        const $tempNote = this.notes.createPlaceholderNote({
+          formContent: sampleComment,
+          uniqueId,
+          isDiscussionNote: false,
+          currentUsername,
+          currentUserFullname: currentUserFullnameXSS,
+          currentUserAvatar,
+        });
+        const $tempNoteHeader = $tempNote.find('.note-header');
+        expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
       });
     });
 

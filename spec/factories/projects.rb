@@ -81,6 +81,10 @@ FactoryGirl.define do
       archived true
     end
 
+    trait :hashed do
+      storage_version Project::LATEST_STORAGE_VERSION
+    end
+
     trait :access_requestable do
       request_access_enabled true
     end
@@ -97,8 +101,6 @@ FactoryGirl.define do
 
     # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
-      path { 'gitlabhq' }
-
       test_repo
 
       transient do

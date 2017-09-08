@@ -24,6 +24,7 @@ integrated platform
   from messing with history or pushing code without review
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
+  - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) (**EES/EEP**): Ask for approval before
@@ -66,8 +67,6 @@ website with GitLab Pages
 **Other features:**
 
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
-- [Koding integration](koding.md) (not available on GitLab.com): Integrate
-with Koding to have access to a web terminal right from the GitLab UI
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
 
@@ -90,11 +89,11 @@ from your fork to the upstream project
 
 ## Import or export a project
 
-- Import a project from:
-  - [GitHub to GitLab](../../workflow/importing/import_projects_from_github.md)
-  - [BitBucket to GitLab](../../workflow/importing/import_projects_from_bitbucket.md)
-  - [Gitea to GitLab](../../workflow/importing/import_projects_from_gitea.md)
-  - [FogBugz to GitLab](../../workflow/importing/import_projects_from_fogbugz.md)
+- [Import a project](import/index.md) from:
+  - [GitHub to GitLab](import/github.md)
+  - [BitBucket to GitLab](import/bitbucket.md)
+  - [Gitea to GitLab](import/gitea.md)
+  - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 

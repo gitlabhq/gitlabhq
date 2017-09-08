@@ -6,6 +6,7 @@
 #
 module Issuable
   extend ActiveSupport::Concern
+  include Gitlab::SQL::Pattern
   include CacheMarkdownField
   include Participable
   include Mentionable
@@ -122,7 +123,9 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      where(arel_table[:title].matches("%#{query}%"))
+      title = to_fuzzy_arel(:title, query)
+
+      where(title)
     end
 
     # Searches for records with a matching title or description.
@@ -133,10 +136,10 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      t = arel_table
-      pattern = "%#{query}%"
+      title = to_fuzzy_arel(:title, query)
+      description = to_fuzzy_arel(:description, query)
 
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+      where(title&.or(description))
     end
 
     def sort_by_attr(method, excluded_labels: [])
@@ -330,5 +333,12 @@ module Issuable
   def record_metrics
     metrics = self.metrics || create_metrics
     metrics.record!
+  end
+
+  ##
+  # Override in issuable specialization
+  #
+  def first_contribution?
+    false
   end
 end

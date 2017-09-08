@@ -24,7 +24,7 @@ plus premium features available in each version: **Enterprise Edition Starter**
 
 Shortcuts to GitLab's most visited docs:
 
-| [GitLab CI](ci/README.md) | Other |
+| [GitLab CI/CD](ci/README.md) | Other |
 | :----- | :----- |
 | [Quick start guide](ci/quick_start/README.md) | [API](api/README.md) |
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) | [SSH authentication](ssh/README.md) |
@@ -41,6 +41,7 @@ Shortcuts to GitLab's most visited docs:
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
 - [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [Auto DevOps](topics/autodevops/index.md)
 
 ### User account
 
@@ -77,12 +78,14 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
+- Commits
+  - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Issues and Merge Requests (MRs)
 
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
-- [Issue Board](user/project/issue_board.md)
+- [Project issue Board](user/project/issue_board.md)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -98,11 +101,10 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
-- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 
-- [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Importing to GitLab](user/project/import/index.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
 ### Continuous Integration, Delivery, and Deployment
@@ -159,7 +161,6 @@ have access to GitLab administration tools and settings.
 ### Integrations
 
 - [Integrations](integration/README.md): How to integrate with systems such as JIRA, Redmine, Twitter.
-- [Koding](administration/integration/koding.md): Set up Koding to use with GitLab.
 - [Mattermost](user/project/integrations/mattermost.md): Set up GitLab with Mattermost.
 
 ### Monitoring

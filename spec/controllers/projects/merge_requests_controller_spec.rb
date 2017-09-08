@@ -56,6 +56,28 @@ describe Projects::MergeRequestsController do
 
         expect(response).to be_success
       end
+
+      context "loads notes" do
+        let(:first_contributor) { create(:user) }
+        let(:contributor) { create(:user) }
+        let(:merge_request) { create(:merge_request, author: first_contributor, target_project: project, source_project: project) }
+        let(:contributor_merge_request) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+        # the order here is important
+        # as the controller reloads these from DB, references doesn't correspond after
+        let!(:first_contributor_note) { create(:note, author: first_contributor, noteable: merge_request, project: project) }
+        let!(:contributor_note) { create(:note, author: contributor, noteable: merge_request, project: project) }
+        let!(:owner_note) { create(:note, author: user, noteable: merge_request, project: project) }
+
+        it "with special_role FIRST_TIME_CONTRIBUTOR" do
+          go(format: :html)
+
+          notes = assigns(:notes)
+          expect(notes).to match(a_collection_containing_exactly(an_object_having_attributes(special_role: Note::SpecialRole::FIRST_TIME_CONTRIBUTOR),
+                                                                 an_object_having_attributes(special_role: nil),
+                                                                 an_object_having_attributes(special_role: nil)
+                                                                ))
+        end
+      end
     end
 
     describe 'as json' do

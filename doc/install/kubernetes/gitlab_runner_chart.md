@@ -1,7 +1,6 @@
 # GitLab Runner Helm Chart
-> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
-
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
+> **Note:**
+These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.
@@ -12,14 +11,14 @@ This chart configures the Runner to:
 - For each new job it receives from [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/), it will provision a
   new pod within the specified namespace to run it.
 
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
 ## Prerequisites
 
 - Your GitLab Server's API is reachable from the cluster
 - Kubernetes 1.4+ with Beta APIs enabled
 - The `kubectl` CLI installed locally and authenticated for the cluster
-- The Helm Client installed locally
-- The Helm Server (Tiller) already installed and running in the cluster, by running `helm init`
-- The GitLab Helm Repo added to your Helm Client. See [Adding GitLab Helm Repo](index.md#add-the-gitlab-helm-repository)
+- The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
 ## Configuring GitLab Runner using the Helm Chart
 
@@ -35,6 +34,8 @@ In order for GitLab Runner to function, your config file **must** specify the fo
  - `gitlabURL`  - the GitLab Server URL (with protocol) to register the runner against
  - `runnerRegistrationToken` - The Registration Token for adding new Runners to the GitLab Server. This must be
     retrieved from your GitLab Instance. See the [GitLab Runner Documentation](../../ci/runners/README.md#creating-and-registering-a-runner) for more information.
+
+Unless you need to specify additional configuration, you are [ready to install](#installing-gitlab-runner-using-the-helm-chart).
 
 ### Other configuration
 
@@ -115,6 +116,17 @@ runners:
 
 ```
 
+### Controlling maximum Runner concurrency
+
+A single GitLab Runner deployed on Kubernetes is able to execute multiple jobs in parallel by automatically starting additional Runner pods. The [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) controls the maximum number of pods allowed at a single time, and defaults to `10`.
+
+```yaml
+## Configure the maximum number of concurrent jobs
+## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
+##
+concurrent: 10
+```
+
 ### Running Docker-in-Docker containers with GitLab Runners
 
 See [Running Privileged Containers for the Runners](#running-privileged-containers-for-the-runners) for how to enable it,
@@ -189,6 +201,13 @@ certsSecretName: <SECRET NAME>
 - `<SECRET_NAME>` is the Kubernetes Secret resource name. For example: `gitlab-domain-cert`
 
 ## Installing GitLab Runner using the Helm Chart
+
+Add the GitLab Helm repository and initialize Helm:
+
+```bash
+helm repo add gitlab https://charts.gitlab.io
+helm init
+```
 
 Once you [have configured](#configuration) GitLab Runner in your `values.yml` file,
 run the following:

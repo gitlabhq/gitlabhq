@@ -2,6 +2,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleSubscriptionAction
   include IssuableActions
   include RendersNotes
+  include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
 
@@ -18,10 +19,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_requests     = @merge_requests.page(params[:page])
     @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
+    @total_pages        = merge_requests_page_count(@merge_requests)
 
-    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(safe_params.merge(page: @merge_requests.total_pages, only_path: true))
-    end
+    return if redirect_out_of_range(@merge_requests, @total_pages)
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -61,11 +61,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
 
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
-
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
+
+        @discussions = @merge_request.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
         labels
 
@@ -95,7 +95,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def commits
     # Get commits from repository
     # or from cache if already merged
-    @commits = @merge_request.commits
+    @commits = prepare_commits_for_rendering(@merge_request.commits)
     @note_counts = Note.where(commit_id: @commits.map(&:id))
       .group(:commit_id).count
 
@@ -318,14 +318,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        MergeWorker.perform_async(@merge_request.id, current_user.id, params.to_hash)
+        @merge_request.merge_async(current_user.id, params.to_hash)
 
         :success
       else
         :failed
       end
     else
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params.to_hash)
+      @merge_request.merge_async(current_user.id, params.to_hash)
 
       :success
     end
