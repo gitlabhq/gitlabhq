@@ -8,7 +8,7 @@ The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and of
 This chart includes the following:
 
 - Deployment using the [gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) or [gitlab-ee](https://hub.docker.com/r/gitlab/gitlab-ee) container image
-- ConfigMap containing the `gitlab.rb` contents that configure [Omnibus GitLab](../../../omnibus/settings/configuration.html#configuration-options)
+- ConfigMap containing the `gitlab.rb` contents that configure [Omnibus GitLab](https://docs.gitlab.com/omnibus/settings/configuration.html#configuration-options)
 - Persistent Volume Claims for Data, Config, Logs, and Registry Storage
 - A Kubernetes service
 - Optional Redis deployment using the [Redis Chart](https://github.com/kubernetes/charts/tree/master/stable/redis) (defaults to enabled)
@@ -87,7 +87,7 @@ used by default in the chart, will be supported by a chart install.
 ### Custom Omnibus GitLab configuration
 
 In addition to the configuration options provided for GitLab in the Helm Chart, you can also pass any custom configuration
-that is valid for the [Omnibus GitLab Configuration](../../../omnibus/settings/configuration.html).
+that is valid for the [Omnibus GitLab Configuration](https://docs.gitlab.com/omnibus/settings/configuration.html).
 
 The setting to pass these values in is `omnibusConfigRuby`. It accepts any valid
 Ruby code that could used in the Omnibus `/etc/gitlab/gitlab.rb` file. In
@@ -286,7 +286,7 @@ redis:
 
 By default, the GitLab container will not be able to send email from your cluster.
 In order to send email, you should configure SMTP settings in the
-`omnibusConfigRuby` section, as per the [GitLab Omnibus documentation](../../../omnibus/settings/smtp.html).
+`omnibusConfigRuby` section, as per the [GitLab Omnibus documentation](https://docs.gitlab.com/omnibus/settings/smtp.html).
 
 >**Note:**
 Some cloud providers restrict emails being sent out on SMTP, so you will have
@@ -318,7 +318,7 @@ omnibusConfigRuby: |
 To setup HTTPS access to your GitLab server, first you need to configure the
 chart to use the [ingress](#ingress-routing).
 
-GitLab's config should be updated to support [proxied SSL](../../../omnibus/settings/nginx.html#supporting-proxied-ssl).
+GitLab's config should be updated to support [proxied SSL](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl).
 
 In addition to having a Ingress Controller deployed and the basic ingress
 settings configured, you will also need to specify in the ingress settings

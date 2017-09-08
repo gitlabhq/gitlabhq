@@ -14,7 +14,7 @@ This chart provides an easy way to get started with GitLab, provisioning an inst
 
 The deployment includes:
 
-- A [GitLab Omnibus](../../../omnibus/) Pod, including Mattermost, Container Registry, and Prometheus
+- A [GitLab Omnibus](https://docs.gitlab.com/omnibus/) Pod, including Mattermost, Container Registry, and Prometheus
 - An auto-scaling [GitLab Runner](https://docs.gitlab.com/runner/) using the Kubernetes executor
 - [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis)
 - [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql)
@@ -40,7 +40,7 @@ For more information on available GitLab Helm Charts, please see our [overview](
 
 ### Networking Prerequisites
 
-This chart configures a GitLab server and Kubernetes cluster which can support dynamic [Review Apps](../../ci/review_apps/index.html), as well as services like the integrated [Container Registry](../../user/project/container_registry.html) and [Mattermost](../../../omnibus/gitlab-mattermost/).
+This chart configures a GitLab server and Kubernetes cluster which can support dynamic [Review Apps](https://docs.gitlab.com/ee/ci/review_apps/index.html), as well as services like the integrated [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html) and [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
 
 To support the GitLab services and dynamic environments, a wildcard DNS entry is required which resolves to the [Load Balancer](#load-balancer-ip) or [External IP](#external-ip). Configuration of the DNS entry will depend upon the DNS service being used.
 
@@ -71,7 +71,7 @@ For most installations, only two parameters are required:
 Other common configuration options:
 - `baseIP`: the desired [external IP address](#external-ip-recommended)
 - `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
-- `gitlabEELicense`: For Enterprise Edition, the [license](../../user/admin_area/license.html) can be installed directly via the Chart
+- `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Container Engine](https://cloud.google.com/container-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 
 For additional configuration options, consult the [values.yaml](https://gitlab.com/charts/charts.gitlab.io/blob/master/charts/gitlab-omnibus/values.yaml).
