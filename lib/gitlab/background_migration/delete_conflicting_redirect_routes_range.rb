@@ -1,6 +1,6 @@
 module Gitlab
   module BackgroundMigration
-    class DeleteConflictingRedirectRoutes
+    class DeleteConflictingRedirectRoutesRange
       class Route < ActiveRecord::Base
         self.table_name = 'routes'
       end
@@ -17,7 +17,7 @@ module Gitlab
         conflicts = RedirectRoute.where(routes_match_redirects_clause(start_id, end_id))
         num_rows = conflicts.delete_all
 
-        Rails.logger.info("Gitlab::BackgroundMigration::DeleteConflictingRedirectRoutes [#{start_id}, #{end_id}] - Deleted #{num_rows} redirect routes that were conflicting with routes.")
+        Rails.logger.info("Gitlab::BackgroundMigration::DeleteConflictingRedirectRoutesRange [#{start_id}, #{end_id}] - Deleted #{num_rows} redirect routes that were conflicting with routes.")
       end
 
       def migrate?

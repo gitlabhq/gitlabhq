@@ -7,7 +7,7 @@ class DeleteConflictingRedirectRoutes < ActiveRecord::Migration
   DOWNTIME = false
   BATCH_SIZE = 1000 # Number of rows to process per job
   JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
-  MIGRATION = 'DeleteConflictingRedirectRoutes'.freeze
+  MIGRATION = 'DeleteConflictingRedirectRoutesRange'.freeze
 
   disable_ddl_transaction!
 
