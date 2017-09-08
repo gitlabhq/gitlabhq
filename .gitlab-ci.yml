@@ -95,7 +95,7 @@ stages:
     - cp ${FLAKY_RSPEC_SUITE_REPORT_PATH} ${ALL_FLAKY_RSPEC_REPORT_PATH}
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
-    - knapsack rspec "--color --format documentation"
+    - knapsack rspec "--color --format documentation --tag ~migration"
   artifacts:
     expire_in: 31d
     when: always
@@ -462,12 +462,13 @@ db:migrate:reset-mysql:
     - bundle install $BUNDLE_INSTALL_FLAGS
     - . scripts/prepare_build.sh
     - bundle exec rake db:migrate
+    - bundle exec rspec --color --format documentation --tag migration
 
-migration:path-pg:
+migration-pg:
   <<: *migration-paths
   <<: *use-pg
 
-migration:path-mysql:
+migration-mysql:
   <<: *migration-paths
   <<: *use-mysql
 
