@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import _ from 'underscore';
+import bp from '../breakpoints';
 import {
   getCookieName,
   getSelector,
@@ -9,7 +10,9 @@ import {
   mouseleave,
 } from './feature_highlight_helper';
 
-export const setupFeatureHighlightPopover = (id, debounceTimeout = 300) => {
+export const highlightOrder = ['issue-boards'];
+
+export function setupPopover(id, debounceTimeout = 300) {
   const $selector = $(getSelector(id));
   const $parent = $selector.parent();
   const $popoverContent = $parent.siblings('.feature-highlight-popover-content');
@@ -40,22 +43,28 @@ export const setupFeatureHighlightPopover = (id, debounceTimeout = 300) => {
     })
     // Display feature highlight
     .removeAttr('disabled');
-};
+}
 
-export const shouldHighlightFeature = (id) => {
+export function shouldHighlightFeature(id) {
   const element = document.querySelector(getSelector(id));
   const previouslyDismissed = Cookies.get(getCookieName(id)) === 'true';
 
   return element && !previouslyDismissed;
-};
+}
 
-export const highlightFeatures = (highlightOrder) => {
-  const featureId = highlightOrder.find(shouldHighlightFeature);
+export function highlightFeatures(features) {
+  const featureId = features.find(shouldHighlightFeature);
 
   if (featureId) {
-    setupFeatureHighlightPopover(featureId);
+    setupPopover(featureId);
     return true;
   }
 
   return false;
-};
+}
+
+export function init(order) {
+  if (bp.getBreakpointSize() === 'lg') {
+    highlightFeatures(order);
+  }
+}

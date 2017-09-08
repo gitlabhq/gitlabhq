@@ -1,9 +1,51 @@
 import Cookies from 'js-cookie';
+import bp from '~/breakpoints';
 import * as featureHighlightHelper from '~/feature_highlight/feature_highlight_helper';
 import * as featureHighlight from '~/feature_highlight/feature_highlight';
 
 describe('feature highlight', () => {
-  describe('setupFeatureHighlightPopover', () => {
+  describe('init', () => {
+    const highlightOrder = [];
+
+    beforeEach(() => {
+      // Check for when highlightFeatures is called
+      spyOn(highlightOrder, 'find').and.callFake(() => {});
+    });
+
+    it('should not call highlightFeatures when breakpoint is xs', () => {
+      spyOn(bp, 'getBreakpointSize').and.returnValue('xs');
+
+      featureHighlight.init(highlightOrder);
+      expect(bp.getBreakpointSize).toHaveBeenCalled();
+      expect(highlightOrder.find).not.toHaveBeenCalled();
+    });
+
+    it('should not call highlightFeatures when breakpoint is sm', () => {
+      spyOn(bp, 'getBreakpointSize').and.returnValue('sm');
+
+      featureHighlight.init(highlightOrder);
+      expect(bp.getBreakpointSize).toHaveBeenCalled();
+      expect(highlightOrder.find).not.toHaveBeenCalled();
+    });
+
+    it('should not call highlightFeatures when breakpoint is md', () => {
+      spyOn(bp, 'getBreakpointSize').and.returnValue('md');
+
+      featureHighlight.init(highlightOrder);
+      expect(bp.getBreakpointSize).toHaveBeenCalled();
+      expect(highlightOrder.find).not.toHaveBeenCalled();
+    });
+
+    it('should call highlightFeatures when breakpoint is lg', () => {
+      spyOn(bp, 'getBreakpointSize').and.returnValue('lg');
+
+      featureHighlight.init(highlightOrder);
+      expect(bp.getBreakpointSize).toHaveBeenCalled();
+      expect(highlightOrder.find).toHaveBeenCalled();
+    });
+  });
+
+  describe('setupPopover', () => {
     const selector = '.js-feature-highlight[data-highlight=test]';
     beforeEach(() => {
       setFixtures(`
@@ -21,7 +63,7 @@ describe('feature highlight', () => {
       `);
       spyOn(window, 'addEventListener');
       spyOn(window, 'removeEventListener');
-      featureHighlight.setupFeatureHighlightPopover('test', 0);
+      featureHighlight.setupPopover('test', 0);
     });
 
     it('setups popover content', () => {
@@ -103,7 +145,7 @@ describe('feature highlight', () => {
   });
 
   describe('highlightFeatures', () => {
-    it('calls setupFeatureHighlightPopover if shouldHighlightFeature returns true', () => {
+    it('calls setupPopover if shouldHighlightFeature returns true', () => {
       // Mimic shouldHighlightFeature set to true
       const highlightOrder = ['issue-boards'];
       spyOn(highlightOrder, 'find').and.returnValue(highlightOrder[0]);
@@ -111,7 +153,7 @@ describe('feature highlight', () => {
       expect(featureHighlight.highlightFeatures(highlightOrder)).toEqual(true);
     });
 
-    it('does not call setupFeatureHighlightPopover if shouldHighlightFeature returns false', () => {
+    it('does not call setupPopover if shouldHighlightFeature returns false', () => {
       // Mimic shouldHighlightFeature set to false
       const highlightOrder = ['issue-boards'];
       spyOn(highlightOrder, 'find').and.returnValue(null);

@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 export const getCookieName = cookieId => `feature-highlighted-${cookieId}`;
 export const getSelector = highlightId => `.js-feature-highlight[data-highlight=${highlightId}]`;
 
-export const showPopover = function showPopover() {
+export function showPopover() {
   if (this.hasClass('js-popover-show')) {
     return false;
   }
@@ -11,9 +11,9 @@ export const showPopover = function showPopover() {
   this.addClass('disable-animation js-popover-show');
 
   return true;
-};
+}
 
-export const hidePopover = function hidePopover() {
+export function hidePopover() {
   if (!this.hasClass('js-popover-show')) {
     return false;
   }
@@ -21,22 +21,22 @@ export const hidePopover = function hidePopover() {
   this.removeClass('disable-animation js-popover-show');
 
   return true;
-};
+}
 
-export const dismiss = function dismiss(cookieId) {
+export function dismiss(cookieId) {
   Cookies.set(getCookieName(cookieId), true);
   hidePopover.call(this);
   this.hide();
-};
+}
 
-export const mouseleave = function mouseleave() {
+export function mouseleave() {
   if (!$('.popover:hover').length > 0) {
     const $featureHighlight = $(this);
     hidePopover.call($featureHighlight);
   }
-};
+}
 
-export const mouseenter = function mouseenter() {
+export function mouseenter() {
   const $featureHighlight = $(this);
 
   const showedPopover = showPopover.call($featureHighlight);
@@ -44,9 +44,9 @@ export const mouseenter = function mouseenter() {
     $('.popover')
       .on('mouseleave', mouseleave.bind($featureHighlight));
   }
-};
+}
 
-export const setupDismissButton = function setupDismissButton() {
+export function setupDismissButton() {
   const popoverId = this.getAttribute('aria-describedby');
   const cookieId = this.dataset.highlight;
   const $popover = $(this);
@@ -54,4 +54,4 @@ export const setupDismissButton = function setupDismissButton() {
 
   $(`#${popoverId} .dismiss-feature-highlight`)
     .on('click', dismissWrapper);
-};
+}
