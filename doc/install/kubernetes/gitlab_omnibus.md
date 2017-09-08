@@ -23,7 +23,7 @@ The deployment includes:
 
 ### Limitations
 
-* This chart is suited for small to medium size deployments, because [High Availability](../../administration/high_availability/) and [Geo](../../gitlab-geo/README.html) will not be supported.
+* This chart is suited for small to medium size deployments, because [High Availability](https://docs.gitlab.com/ee/administration/high_availability/) and [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) will not be supported.
 * It is in beta. Additional features to support production deployments, like backups, are [in development](https://gitlab.com/charts/charts.gitlab.io/issues/68). Once completed, this chart will be generally available.
 * A new generation of [cloud native charts](index.md#upcoming-cloud-native-helm-charts) is in development, and will eventually deprecate these. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment. We do not expect these to be production ready before the second half of 2018.
 

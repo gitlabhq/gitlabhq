@@ -7,7 +7,7 @@ Kubernetes cluster.
 
 This chart configures the Runner to:
 
-- Run using the GitLab Runner [Kubernetes executor](../../../runner/install/kubernetes.html)
+- Run using the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/install/kubernetes.html)
 - For each new job it receives from [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/), it will provision a
   new pod within the specified namespace to run it.
 
@@ -118,7 +118,7 @@ runners:
 
 ### Controlling maximum Runner concurrency
 
-A single GitLab Runner deployed on Kubernetes is able to execute multiple jobs in parallel by automatically starting additional Runner pods. The [`concurrent` setting](../../../runner/configuration/advanced-configuration.html#the-global-section) controls the maximum number of pods allowed at a single time, and defaults to `10`.
+A single GitLab Runner deployed on Kubernetes is able to execute multiple jobs in parallel by automatically starting additional Runner pods. The [`concurrent` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) controls the maximum number of pods allowed at a single time, and defaults to `10`.
 
 ```yaml
 ## Configure the maximum number of concurrent jobs
@@ -130,7 +130,7 @@ concurrent: 10
 ### Running Docker-in-Docker containers with GitLab Runners
 
 See [Running Privileged Containers for the Runners](#running-privileged-containers-for-the-runners) for how to enable it,
-and the [GitLab CI Runner documentation](../../../runner/executors/kubernetes.html#using-docker-in-your-builds) on running dind.
+and the [GitLab CI Runner documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-in-your-builds) on running dind.
 
 ### Running privileged containers for the Runners
 
@@ -138,7 +138,7 @@ You can tell the GitLab Runner to run using privileged containers. You may need
 this enabled if you need to use the Docker executable within your GitLab CI jobs.
 
 This comes with several risks that you can read about in the
-[GitLab CI Runner documentation](../../../runner/executors/kubernetes.html#using-docker-in-your-builds).
+[GitLab CI Runner documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-in-your-builds).
 
 If you are okay with the risks, and your GitLab CI Runner instance is registered
 against a specific project in GitLab that you trust the CI jobs of, you can
@@ -164,7 +164,7 @@ Each key name in the Secret will be used as a filename in the directory, with th
 file content being the value associated with the key.
 
 More information on how GitLab Runner uses these certificates can be found in the
-[Runner Documentation](../../../runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates).
+[Runner Documentation](https://docs.gitlab.com/runner/configuration/tls-self-signed.html#supported-options-for-self-signed-certificates).
 
  - The key/file name used should be in the format `<gitlab-hostname>.crt`. For example: `gitlab.your-domain.com.crt`.
  - Any intermediate certificates need to be concatenated to your server certificate in the same file.
