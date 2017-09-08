@@ -1,9 +1,6 @@
 module BoardsHelper
-<<<<<<< HEAD
   prepend EE::BoardsHelper
 
-=======
->>>>>>> upstream/master
   def board
     @board ||= @board || @boards.first
   end

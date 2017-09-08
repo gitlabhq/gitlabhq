@@ -14,26 +14,16 @@
         %span.has-tooltip{ "v-if": "list.type === \"label\"",
           ":title" => '(list.label ? list.label.description : "")',
           data: { container: "body", placement: "bottom" },
-<<<<<<< HEAD:app/views/shared/boards/components/_board.html.haml
-          class: " label color-label title board-title-text",
-=======
           class: "label color-label title board-title-text",
->>>>>>> upstream/master:app/views/shared/boards/components/_board.html.haml
           ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.color ? list.label.text_color : \"#2e2e2e\") }" }
           {{ list.title }}
         - if can?(current_user, :admin_list, current_board_parent)
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-<<<<<<< HEAD:app/views/shared/boards/components/_board.html.haml
             %button.board-delete.has-tooltip.append-right-10{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
         .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"' }
-=======
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
-              = icon("trash")
-        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank"' }
->>>>>>> upstream/master:app/views/shared/boards/components/_board.html.haml
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_list, current_board_parent)
@@ -44,12 +34,7 @@
               "title" => "New issue",
               data: { placement: "top", container: "body" } }
               = icon("plus", class: "js-no-trigger-collapse")
-<<<<<<< HEAD:app/views/shared/boards/components/_board.html.haml
     %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
-=======
-
-    %board-list{ "v-if" => 'list.type !== "blank"',
->>>>>>> upstream/master:app/views/shared/boards/components/_board.html.haml
       ":list" => "list",
       ":issues" => "list.issues",
       ":loading" => "list.loading",

@@ -25,11 +25,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
   },
   computed: {
     updateUrl() {
-<<<<<<< HEAD
       return this.issueUpdate.replace(':project_path', this.issue.project.path);
-=======
-      return this.issueUpdate;
->>>>>>> upstream/master
     },
   },
   methods: {
@@ -48,14 +44,11 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
           label_ids: labelIds,
         },
       };
-<<<<<<< HEAD
       if (Store.state.currentBoard.milestone_id) {
         data.issue.milestone_id = -1;
       }
 
       // Post the remove data
-=======
->>>>>>> upstream/master
       Vue.http.patch(this.updateUrl, data).catch(() => {
         new Flash('Failed to remove issue from board, please try again.', 'alert');
 

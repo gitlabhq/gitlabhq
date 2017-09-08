@@ -123,11 +123,7 @@ describe('List model', () => {
         list.issues.push(new ListIssue({
           title: 'Testing',
           id: _.random(10000) + i,
-<<<<<<< HEAD
-          iid: _.random(1000) + i,
-=======
           iid: _.random(10000) + i,
->>>>>>> upstream/master
           confidential: false,
           labels: [list.label],
           assignees: [],

@@ -76,7 +76,6 @@ $(() => {
       },
     },
     created () {
-<<<<<<< HEAD
       if (this.milestoneTitle) {
         const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
 
@@ -86,15 +85,6 @@ $(() => {
 
         Store.updateFiltersUrl(true);
       }
-=======
-      gl.boardService = new BoardService({
-        boardsEndpoint: this.boardsEndpoint,
-        listsEndpoint: this.listsEndpoint,
-        bulkUpdatePath: this.bulkUpdatePath,
-        boardId: this.boardId,
-      });
-      Store.rootPath = this.boardsEndpoint;
->>>>>>> upstream/master
 
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
@@ -148,10 +138,7 @@ $(() => {
     el: document.getElementById('js-add-list'),
     data: {
       filters: Store.state.filters,
-<<<<<<< HEAD
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
-=======
->>>>>>> upstream/master
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();
@@ -165,7 +152,6 @@ $(() => {
       return {
         modal: ModalStore.store,
         store: Store.state,
-<<<<<<< HEAD
         isFullscreen: false,
         focusModeAvailable: gl.utils.convertPermissionToBoolean(
           $boardApp.dataset.focusModeAvailable,
@@ -173,8 +159,6 @@ $(() => {
         canAdminList: this.$options.el && gl.utils.convertPermissionToBoolean(
           this.$options.el.dataset.canAdminList,
         ),
-=======
->>>>>>> upstream/master
       };
     },
     watch: {
@@ -228,15 +212,11 @@ $(() => {
           :class="{ 'disabled': disabled }"
           :title="tooltipTitle"
           :aria-disabled="disabled"
-<<<<<<< HEAD
           v-if="canAdminList"
-=======
->>>>>>> upstream/master
           @click="openModal">
           Add issues
         </button>
       </div>
-<<<<<<< HEAD
     `,
   });
 
@@ -277,8 +257,6 @@ $(() => {
           </span>
         </a>
       </div>
-=======
->>>>>>> upstream/master
     `,
   });
 
