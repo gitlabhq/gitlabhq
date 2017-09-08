@@ -5,11 +5,7 @@ describe API::Jobs do
     create(:project, :repository, public_builds: false)
   end
 
-<<<<<<< HEAD
-  let(:pipeline) do
-=======
   set(:pipeline) do
->>>>>>> upstream/master
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)
@@ -340,18 +336,11 @@ describe API::Jobs do
         it_behaves_like 'downloads artifact'
       end
 
-<<<<<<< HEAD
-      context 'user is admin, but not member' do
-        let(:api_user) { create(:admin) }
-
-        it 'does not allow to see that artfiact is present' do
-=======
       context 'when anonymous user is accessing private artifacts' do
         let(:api_user) { nil }
 
         it 'hides artifacts and rejects request' do
           expect(project).to be_private
->>>>>>> upstream/master
           expect(response).to have_http_status(404)
         end
       end
