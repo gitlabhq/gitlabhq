@@ -5,7 +5,7 @@ to your project's homepage and clicking **Settings**.
 
 ## General settings
 
-Adjust your project's path and name, description, avatar, [default branch](../repository/branches/index.md#default-branches), and tags:
+Adjust your project's path and name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
 
 ![general project settings](img/general_settings.png)
 
@@ -23,11 +23,11 @@ Add an [issue description template](../description_templates.md#description-temp
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](https://docs.gitlab.com/ee/user/project/merge_requests/fast_forward_merge.html#fast-forward-merge-requests)). Fast-forward is available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/).
-- Merge request [description templates](../description_templates.md#description-templates)
-- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals), available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/).
-- Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md)
-- Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved)
+- Set up the merge request method (merge commit, [fast-forward merge](https://docs.gitlab.com/ee/user/project/merge_requests/fast_forward_merge.html#fast-forward-merge-requests)). _Fast-forward is available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)._
+- Merge request [description templates](../description_templates.md#description-templates).
+- Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals), _available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)_.
+- Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+- Enable [merge only when all discussions are resolved](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-discussions-are-resolved).
 
 ![project's merge request settings](img/merge_requests_settings.png)
 
