@@ -28,24 +28,13 @@ module Gitlab
         <<~ROUTES_MATCH_REDIRECTS
           EXISTS (
             SELECT 1 FROM routes
-            WHERE (#{route_paths_match_redirects})
+            WHERE (
+              LOWER(redirect_routes.path) = LOWER(routes.path)
+              OR LOWER(redirect_routes.path) LIKE LOWER(CONCAT(routes.path, '/%'))
+            )
             AND routes.id BETWEEN #{start_id} AND #{end_id}
           )
         ROUTES_MATCH_REDIRECTS
-      end
-
-      def route_paths_match_redirects
-        if Gitlab::Database.postgresql?
-          <<~ROUTE_PATHS_MATCH_REDIRECTS
-            LOWER(redirect_routes.path) = LOWER(routes.path)
-            OR LOWER(redirect_routes.path) LIKE LOWER(CONCAT(routes.path, '/%'))
-          ROUTE_PATHS_MATCH_REDIRECTS
-        else
-          <<~ROUTE_PATHS_MATCH_REDIRECTS
-            redirect_routes.path = routes.path
-            OR redirect_routes.path LIKE CONCAT(routes.path, '/%')
-          ROUTE_PATHS_MATCH_REDIRECTS
-        end
       end
     end
   end
