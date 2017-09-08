@@ -1178,7 +1178,6 @@ Note the JSON response differs if the hook is available or not. If the project h
 is available before it is returned in the JSON response or an empty response is returned.
 
 ## Admin fork relation
-<<<<<<< HEAD
 
 Allows modification of the forked relationship between existing projects. Available only for admins.
 
@@ -1235,17 +1234,14 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
-## Push Rules (EE only)
-=======
->>>>>>> upstream/master
+## Push Rules
+
+>**Note:**
+Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee).
 
 ### Get project push rules
 
-<<<<<<< HEAD
-Get a project push rule.
-=======
-### Create a forked from/to relation between existing projects
->>>>>>> upstream/master
+Get the push rules of a project.
 
 ```
 GET /projects/:id/push_rule
@@ -1313,22 +1309,17 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
-<<<<<<< HEAD
+> Introduced in GitLab 9.0.
+
 Removes a push rule from a project. This is an idempotent method and can be called multiple times.
 Either the push rule is available or not.
-=======
-> Introduced in GitLab 9.0.
->>>>>>> upstream/master
 
 ```
 DELETE /projects/:id/push_rule
 ```
 
-<<<<<<< HEAD
-=======
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
->>>>>>> upstream/master
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Branches

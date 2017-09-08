@@ -55,7 +55,6 @@ changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
 
-<<<<<<< HEAD
 ## Setting a default template for issues and merge requests
 
 >
@@ -83,11 +82,6 @@ After you add the description, hit **Save changes** for the settings to take
 effect. Now, every time a new issue or merge request is created, it will be
 pre-filled with the text you entered in the template(s).
 
-[ce-4981]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4981
-[ee-28]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/28 "Merge Request for adding issues template"
-[ee-7478ece]: https://gitlab.com/gitlab-org/gitlab-ee/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
-[products]: https://about.gitlab.com/products/
-=======
 ## Description template example
 
 We make use of Description Templates for Issues and Merge Requests within the GitLab Community Edition project. Please refer to the [`.gitlab` folder][gitlab-ce-templates] for some examples.
@@ -142,5 +136,7 @@ Possible fixes
 
 [ce-4981]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4981
 [gitlab-ce-templates]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab
+[ee-28]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/28 "Merge Request for adding issues template"
+[ee-7478ece]: https://gitlab.com/gitlab-org/gitlab-ee/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
+[products]: https://about.gitlab.com/products/
 
->>>>>>> upstream/master
