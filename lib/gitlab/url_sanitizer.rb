@@ -49,20 +49,20 @@ module Gitlab
     private
 
     def parse_url(url)
-      url             = url.strip
-      match           = url.match(%r{\A(?:ssh|http(?:s?))\://(?:(.+)(?:@))?(.+)})
+      url             = url.to_s.strip
+      match           = url.match(%r{\A(?:git|ssh|http(?:s?))\://(?:(.+)(?:@))?(.+)})
       raw_credentials = match[1] if match
 
       if raw_credentials.present?
         url.sub!("#{raw_credentials}@", '')
 
         user, password = raw_credentials.split(':')
-        @credentials ||= { user: user, password: password }
+        @credentials ||= { user: user.presence, password: password.presence }
       end
 
       url = Addressable::URI.parse(url)
-      url.user = user
-      url.password = password
+      url.password = password if password.present?
+      url.user = user if user.present?
       url
     end
 
@@ -70,8 +70,8 @@ module Gitlab
       return @url unless valid_credentials?
       @full_url = @url.dup
 
-      @full_url.password = credentials[:password]
-      @full_url.user = credentials[:user]
+      @full_url.password = credentials[:password] if credentials[:password].present?
+      @full_url.user = credentials[:user] if credentials[:user].present?
 
       @full_url
     end
