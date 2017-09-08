@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20170906160132) do
     t.string "logo"
     t.integer "updated_by"
     t.string "header_logo"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
   end
