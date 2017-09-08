@@ -1,6 +1,6 @@
 # GitLab Runner Helm Chart
 > **Note:**
-Officially supported cloud providers are Google Container Service and Azure Container Service.
+These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.
@@ -10,6 +10,8 @@ This chart configures the Runner to:
 - Run using the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/install/kubernetes.html)
 - For each new job it receives from [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/), it will provision a
   new pod within the specified namespace to run it.
+
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
 ## Prerequisites
 
