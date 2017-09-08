@@ -146,4 +146,8 @@ module NotesHelper
       autocomplete: autocomplete
     }
   end
+
+  def discussion_resolved_intro(discussion)
+    discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
+  end
 end

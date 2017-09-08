@@ -88,14 +88,14 @@ module Gitlab
 
         response.flat_map do |message|
           message.entries.map do |gitaly_tree_entry|
-            entry_path = gitaly_tree_entry.path.dup
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
-              name: File.basename(entry_path),
-              path: entry_path,
+              name: File.basename(gitaly_tree_entry.path),
+              path: GitalyClient.encode(gitaly_tree_entry.path),
+              flat_path: GitalyClient.encode(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
           end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService do
-  let(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
   let(:ref_name) { 'refs/heads/master' }
 

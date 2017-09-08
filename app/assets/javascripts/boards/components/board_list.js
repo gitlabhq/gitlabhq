@@ -82,7 +82,11 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
+<<<<<<< HEAD
       if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+=======
+      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+>>>>>>> upstream/master
         this.loadNextPage();
       }
     },
@@ -172,8 +176,11 @@ export default {
         <loading-icon />
       </div>
       <board-new-issue
+<<<<<<< HEAD
         key="newIssue"
         :group-id="groupId"
+=======
+>>>>>>> upstream/master
         :list="list"
         v-if="list.type !== 'closed' && showIssueForm"/>
       <ul

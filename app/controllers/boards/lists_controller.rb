@@ -1,6 +1,9 @@
 module Boards
   class ListsController < Boards::ApplicationController
+<<<<<<< HEAD
     prepend EE::BoardsResponses
+=======
+>>>>>>> upstream/master
     include BoardsResponses
 
     before_action :authorize_admin_list, only: [:create, :update, :destroy, :generate]

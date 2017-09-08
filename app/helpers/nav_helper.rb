@@ -33,4 +33,15 @@ module NavHelper
   def nav_control_class
     "nav-control" if current_user
   end
+<<<<<<< HEAD
+=======
+
+  def user_dropdown_class
+    class_names = []
+    class_names << 'header-user-dropdown-toggle'
+    class_names << 'impersonated-user' if session[:impersonator_id]
+
+    class_names
+  end
+>>>>>>> upstream/master
 end

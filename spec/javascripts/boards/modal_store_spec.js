@@ -26,7 +26,11 @@ describe('Modal store', () => {
     });
     issue2 = new ListIssue({
       title: 'Testing',
+<<<<<<< HEAD
       id: 2,
+=======
+      id: 1,
+>>>>>>> upstream/master
       iid: 2,
       confidential: false,
       labels: [],

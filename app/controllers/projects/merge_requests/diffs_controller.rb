@@ -27,7 +27,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff.order_id_desc
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?

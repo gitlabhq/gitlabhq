@@ -230,6 +230,14 @@
     vertical-align: baseline;
   }
 
+  a.autodevops-badge {
+    color: $white-light;
+  }
+
+  a.autodevops-link {
+    color: $gl-link-color;
+  }
+
   .commit-row-description {
     font-size: 14px;
     padding: 10px 15px;

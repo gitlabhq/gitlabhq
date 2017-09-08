@@ -28,12 +28,14 @@ Example response:
 [
   {
     "id": 1,
+    "name": "user1",
     "path": "user1",
     "kind": "user",
     "full_path": "user1"
   },
   {
     "id": 2,
+    "name": "group1",
     "path": "group1",
     "kind": "group"
     "full_path": "group1",
@@ -43,6 +45,7 @@ Example response:
   },
   {
     "id": 3,
+    "name": "bar",
     "path": "bar",
     "kind": "group",
     "full_path": "foo/bar",
@@ -78,6 +81,7 @@ Example response:
 [
   {
     "id": 4,
+    "name": "twitter",
     "path": "twitter",
     "kind": "group",
     "full_path": "twitter",

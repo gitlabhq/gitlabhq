@@ -30,8 +30,6 @@ Event:
 - id
 - target_type
 - target_id
-- title
-- data
 - project_id
 - created_at
 - updated_at
@@ -66,6 +64,7 @@ Note:
 - change_position
 - resolved_at
 - resolved_by_id
+- resolved_by_push
 - discussion_id
 - original_discussion_id
 LabelLink:
@@ -228,6 +227,7 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+- config_source
 - protected
 Ci::Stage:
 - id
@@ -404,6 +404,7 @@ Project:
 - public_builds
 - last_repository_check_failed
 - last_repository_check_at
+- collapse_outdated_diff_comments
 - container_registry_enabled
 - only_allow_merge_if_pipeline_succeeds
 - has_external_issue_tracker
@@ -412,6 +413,7 @@ Project:
 - only_allow_merge_if_all_discussions_are_resolved
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
+- resolve_outdated_diff_discussions
 - build_allow_git_fetch
 - merge_requests_template
 - merge_requests_rebase_enabled
@@ -483,5 +485,12 @@ Timelog:
 - merge_request_id
 - issue_id
 - user_id
+- created_at
+- updated_at
+ProjectAutoDevops:
+- id
+- enabled
+- domain
+- project_id
 - created_at
 - updated_at

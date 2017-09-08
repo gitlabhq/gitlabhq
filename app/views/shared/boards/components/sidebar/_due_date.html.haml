@@ -10,7 +10,11 @@
         No due date
       %span.bold{ "v-if" => "issue.dueDate" }
         {{ issue.dueDate | due-date }}
+<<<<<<< HEAD:app/views/shared/boards/components/sidebar/_due_date.html.haml
       - if can?(current_user, :admin_issue, current_board_parent)
+=======
+      - if can_admin_issue?
+>>>>>>> upstream/master:app/views/shared/boards/components/sidebar/_due_date.html.haml
         %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
           \-
           %a.js-remove-due-date{ href: "#", role: "button" }

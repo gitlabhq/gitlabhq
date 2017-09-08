@@ -1,0 +1,5 @@
+---
+title: Add JSON logger in `log/api_json.log` for Grape API endpoints
+merge_request:
+author:
+type: added

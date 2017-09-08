@@ -19,6 +19,15 @@ module Gitlab
     end
 
     def initialize(url, credentials: nil)
+<<<<<<< HEAD
+=======
+      @url = Addressable::URI.parse(url.to_s.strip)
+
+      %i[user password].each do |symbol|
+        credentials[symbol] = credentials[symbol].presence if credentials&.key?(symbol)
+      end
+
+>>>>>>> upstream/master
       @credentials = credentials
       @url = parse_url(url)
     end
@@ -29,13 +38,18 @@ module Gitlab
 
     def masked_url
       url = @url.dup
+<<<<<<< HEAD
       url.password = "*****" if url.password
       url.user = "*****" if url.user
+=======
+      url.password = "*****" if url.password.present?
+      url.user = "*****" if url.user.present?
+>>>>>>> upstream/master
       url.to_s
     end
 
     def credentials
-      @credentials ||= { user: @url.user, password: @url.password }
+      @credentials ||= { user: @url.user.presence, password: @url.password.presence }
     end
 
     def full_url
@@ -65,8 +79,10 @@ module Gitlab
     def generate_full_url
       return @url unless valid_credentials?
       @full_url = @url.dup
-      @full_url.user = credentials[:user]
+
       @full_url.password = credentials[:password]
+      @full_url.user = credentials[:user]
+
       @full_url
     end
 

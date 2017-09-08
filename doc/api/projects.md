@@ -69,6 +69,7 @@ GET /projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -137,6 +138,7 @@ GET /projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -246,6 +248,7 @@ GET /users/:user_id/projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -313,6 +316,7 @@ GET /users/:user_id/projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -409,6 +413,7 @@ GET /projects/:id
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -533,6 +538,7 @@ POST /projects
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -569,6 +575,7 @@ POST /projects/user/:user_id
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -605,6 +612,7 @@ PUT /projects/:id
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -678,6 +686,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -753,6 +762,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -834,6 +844,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -927,6 +938,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -1166,6 +1178,7 @@ Note the JSON response differs if the hook is available or not. If the project h
 is available before it is returned in the JSON response or an empty response is returned.
 
 ## Admin fork relation
+<<<<<<< HEAD
 
 Allows modification of the forked relationship between existing projects. Available only for admins.
 
@@ -1223,10 +1236,16 @@ POST /projects/:id/housekeeping
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ## Push Rules (EE only)
+=======
+>>>>>>> upstream/master
 
 ### Get project push rules
 
+<<<<<<< HEAD
 Get a project push rule.
+=======
+### Create a forked from/to relation between existing projects
+>>>>>>> upstream/master
 
 ```
 GET /projects/:id/push_rule
@@ -1294,13 +1313,22 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
+<<<<<<< HEAD
 Removes a push rule from a project. This is an idempotent method and can be called multiple times.
 Either the push rule is available or not.
+=======
+> Introduced in GitLab 9.0.
+>>>>>>> upstream/master
 
 ```
 DELETE /projects/:id/push_rule
 ```
 
+<<<<<<< HEAD
+=======
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+>>>>>>> upstream/master
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Branches

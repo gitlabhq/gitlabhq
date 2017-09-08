@@ -8,6 +8,7 @@ module Groups
     def execute
       @group = Group.new(params)
 
+<<<<<<< HEAD
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         deny_visibility_level(@group)
         return @group
@@ -21,6 +22,9 @@ module Groups
         @group.parent = nil
         @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
 
+=======
+      unless can_use_visibility_level? && can_create_group?
+>>>>>>> upstream/master
         return @group
       end
 
@@ -42,6 +46,34 @@ module Groups
 
     def create_chat_team?
       Gitlab.config.mattermost.enabled && @chat_team && group.chat_team.nil?
+    end
+
+    def can_create_group?
+      if @group.subgroup?
+        unless can?(current_user, :create_subgroup, @group.parent)
+          @group.parent = nil
+          @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
+
+          return false
+        end
+      else
+        unless can?(current_user, :create_group)
+          @group.errors.add(:base, 'You don’t have permission to create groups.')
+
+          return false
+        end
+      end
+
+      true
+    end
+
+    def can_use_visibility_level?
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+        deny_visibility_level(@group)
+        return false
+      end
+
+      true
     end
   end
 end

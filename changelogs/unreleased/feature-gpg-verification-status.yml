@@ -1,0 +1,6 @@
+---
+title: 'Update the GPG verification semantics: A GPG signature must additionally match
+  the committer in order to be verified'
+merge_request: 13771
+author: Alexis Reigel
+type: changed

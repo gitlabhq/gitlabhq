@@ -279,6 +279,7 @@
 
 // TODO: change global style
 .ajax-project-dropdown,
+.ajax-users-dropdown,
 body[data-page="projects:edit"] #select2-drop,
 .ajax-users-dropdown,
 body[data-page="projects:settings:repository:show"] #select2-drop,
@@ -286,6 +287,7 @@ body[data-page="projects:new"] #select2-drop,
 body[data-page="projects:merge_requests:edit"] #select2-drop,
 body[data-page="projects:blob:new"] #select2-drop,
 body[data-page="profiles:show"] #select2-drop,
+body[data-page="admin:groups:show"] #select2-drop,
 body[data-page="projects:issues:show"] #select2-drop,
 body[data-page="admin:groups:show"] #select2-drop,
 body[data-page="projects:blob:edit"] #select2-drop {

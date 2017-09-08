@@ -59,8 +59,13 @@ module Issues
 
       after_id, before_id = params.delete(:move_between_ids)
 
+<<<<<<< HEAD
       issue_before = get_issue_if_allowed(before_id) if before_id
       issue_after = get_issue_if_allowed(after_id) if after_id
+=======
+      issue_before = get_issue_if_allowed(issue.project, before_id) if before_id
+      issue_after = get_issue_if_allowed(issue.project, after_id) if after_id
+>>>>>>> upstream/master
 
       issue.move_between(issue_before, issue_after)
     end
@@ -87,8 +92,13 @@ module Issues
 
     private
 
+<<<<<<< HEAD
     def get_issue_if_allowed(id)
       issue = Issue.find(id)
+=======
+    def get_issue_if_allowed(project, id)
+      issue = project.issues.find(id)
+>>>>>>> upstream/master
       issue if can?(current_user, :update_issue, issue)
     end
 

@@ -43,8 +43,10 @@
   display: inline-block;
 }
 
-.blob-viewer[data-type="rich"] {
-  margin: 20px;
+@media (min-width: $screen-md-min) {
+  .blob-viewer[data-type="rich"] {
+    margin: 20px;
+  }
 }
 
 .repository-view {

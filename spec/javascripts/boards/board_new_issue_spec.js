@@ -3,6 +3,7 @@
 /* global mockBoardService */
 /* global List */
 /* global listObj */
+/* global mockBoardService */
 
 import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';

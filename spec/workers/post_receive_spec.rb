@@ -127,6 +127,7 @@ describe PostReceive do
 
     it "asks the project to trigger all hooks" do
       allow(Project).to receive(:find_by).and_return(project)
+
       expect(project).to receive(:execute_hooks).twice
       expect(project).to receive(:execute_services).twice
 
@@ -135,6 +136,7 @@ describe PostReceive do
 
     it "enqueues a UpdateMergeRequestsWorker job" do
       allow(Project).to receive(:find_by).and_return(project)
+
       expect(UpdateMergeRequestsWorker).to receive(:perform_async).with(project.id, project.owner.id, any_args)
 
       described_class.new.perform(gl_repository, key_id, base64_changes)

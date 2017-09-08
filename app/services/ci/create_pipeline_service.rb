@@ -16,7 +16,11 @@ module Ci
         protected: project.protected_for?(ref)
       )
 
+<<<<<<< HEAD
       result = validate_project_and_git_items(mirror_update: mirror_update) ||
+=======
+      result = validate_project_and_git_items ||
+>>>>>>> upstream/master
         validate_pipeline(ignore_skip_ci: ignore_skip_ci,
                           save_on_errors: save_on_errors)
 
@@ -47,15 +51,22 @@ module Ci
 
     private
 
+<<<<<<< HEAD
     def validate_project_and_git_items(mirror_update: false)
+=======
+    def validate_project_and_git_items
+>>>>>>> upstream/master
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
 
+<<<<<<< HEAD
       if mirror_update && !project.mirror_trigger_builds?
         return error('Pipeline is disabled for mirror updates')
       end
 
+=======
+>>>>>>> upstream/master
       unless allowed_to_trigger_pipeline?
         if can?(current_user, :create_pipeline, project)
           return error("Insufficient permissions for protected ref '#{ref}'")

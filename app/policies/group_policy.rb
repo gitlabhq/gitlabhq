@@ -60,7 +60,7 @@ class GroupPolicy < BasePolicy
     enable :change_visibility_level
   end
 
-  rule { owner & can_create_group & nested_groups_supported }.enable :create_subgroup
+  rule { owner & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 

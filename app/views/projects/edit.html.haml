@@ -83,8 +83,11 @@
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
+<<<<<<< HEAD
   = render 'projects/ee/issues_settings'
 
+=======
+>>>>>>> upstream/master
   %section.settings.merge-requests-feature{ class: ("hidden" if @project.project_feature.send(:merge_requests_access_level) == 0) }
     .settings-header
       %h4

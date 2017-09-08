@@ -121,6 +121,7 @@ module Gitlab
         ]
       end
 
+<<<<<<< HEAD
       def send_artifacts_entry(build, entry)
         file = build.artifacts_file
         archive =
@@ -133,6 +134,12 @@ module Gitlab
         params = {
           'Archive' => archive,
           'Entry' => Base64.encode64(entry.path)
+=======
+      def send_artifacts_entry(build, path)
+        params = {
+          'Archive' => build.artifacts_file.path,
+          'Entry' => Base64.encode64(path.to_s)
+>>>>>>> upstream/master
         }
 
         [

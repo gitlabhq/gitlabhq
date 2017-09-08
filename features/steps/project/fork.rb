@@ -52,7 +52,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I visit the forks page of the "Shop" project' do
-    @project = Project.where(name: 'Shop').last
+    @project = Project.where(name: 'Shop').first
     visit project_forks_path(@project)
   end
 

@@ -136,6 +136,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Abuse Reports') }
               %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(AbuseReport.count(:all))
+<<<<<<< HEAD:app/views/layouts/nav/sidebar/_admin.html.haml
 
       = nav_link(controller: :licenses) do
         = sidebar_link admin_license_path, title: _('License') do
@@ -148,6 +149,8 @@
             = link_to admin_license_path do
               %strong.fly-out-top-item-name
                 #{ _('License') }
+=======
+>>>>>>> upstream/master:app/views/layouts/nav/sidebar/_admin.html.haml
 
       - if akismet_enabled?
         = nav_link(controller: :spam_logs) do
@@ -161,6 +164,7 @@
               = link_to admin_spam_logs_path do
                 %strong.fly-out-top-item-name
                   #{ _('Spam Logs') }
+<<<<<<< HEAD:app/views/layouts/nav/sidebar/_admin.html.haml
 
       = nav_link(controller: :push_rules) do
         = sidebar_link admin_push_rule_path, title: _('Push Rules') do
@@ -185,6 +189,8 @@
             = link_to admin_geo_nodes_path do
               %strong.fly-out-top-item-name
                 #{ _('Geo Nodes') }
+=======
+>>>>>>> upstream/master:app/views/layouts/nav/sidebar/_admin.html.haml
 
       = nav_link(controller: :deploy_keys) do
         = sidebar_link admin_deploy_keys_path, title: _('Deploy Keys') do

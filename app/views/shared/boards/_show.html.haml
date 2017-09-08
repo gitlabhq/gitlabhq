@@ -1,12 +1,19 @@
 - board = local_assigns.fetch(:board, nil)
 - @no_breadcrumb_container = true
 - @no_container = true
+<<<<<<< HEAD:app/views/shared/boards/_show.html.haml
 - @content_class = "issue-boards-content js-focus-mode-board"
 - breadcrumb_title "Issue Boards"
 - page_title "Boards"
 
 - add_to_breadcrumbs("Issues", @issues_path)
 
+=======
+- @content_class = "issue-boards-content"
+- breadcrumb_title "Issue Board"
+- page_title "Boards"
+
+>>>>>>> upstream/master:app/views/shared/boards/_show.html.haml
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
@@ -38,6 +45,7 @@
       ":board-id" => "boardId",
       ":key" => "_uid" }
   = render "shared/boards/components/sidebar"
+<<<<<<< HEAD:app/views/shared/boards/_show.html.haml
   - if @project
     %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
       "new-issue-path" => new_project_issue_path(@project),
@@ -46,3 +54,12 @@
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
       ":project-id" => @project.try(:id) }
+=======
+  %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
+    "new-issue-path" => new_project_issue_path(@project),
+    "milestone-path" => milestones_filter_dropdown_path,
+    "label-path" => labels_filter_path,
+    ":issue-link-base" => "issueLinkBase",
+    ":root-path" => "rootPath",
+    ":project-id" => @project.try(:id) }
+>>>>>>> upstream/master:app/views/shared/boards/_show.html.haml

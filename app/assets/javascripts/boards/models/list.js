@@ -112,7 +112,10 @@ class List {
       .then((data) => {
         issue.id = data.id;
         issue.iid = data.iid;
+<<<<<<< HEAD
         issue.milestone = data.milestone;
+=======
+>>>>>>> upstream/master
         issue.project = data.project;
 
         if (this.issuesSize > 1) {

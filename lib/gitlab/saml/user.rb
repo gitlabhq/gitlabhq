@@ -49,7 +49,7 @@ module Gitlab
       end
 
       def find_by_email
-        if auth_hash.has_email?
+        if auth_hash.has_attribute?(:email)
           user = ::User.find_by(email: auth_hash.email.downcase)
           user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider) if user
           user

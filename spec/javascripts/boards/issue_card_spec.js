@@ -293,11 +293,16 @@ describe('Issue card component', () => {
           ).toBe(2);
           expect(
             component.$el.textContent,
+<<<<<<< HEAD
           ).not.toContain('Closed');
+=======
+          ).not.toContain('closed');
+>>>>>>> upstream/master
 
           done();
         })
         .catch(done.fail);
+<<<<<<< HEAD
     });
 
     it('shows group labels on group boards', (done) => {
@@ -342,6 +347,8 @@ describe('Issue card component', () => {
           done();
         })
         .catch(done.fail);
+=======
+>>>>>>> upstream/master
     });
   });
 });

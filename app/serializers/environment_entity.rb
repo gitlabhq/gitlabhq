@@ -26,9 +26,14 @@ class EnvironmentEntity < Grape::Entity
       terminal_project_environment_path(environment.project, environment)
   end
 
+<<<<<<< HEAD
   expose :rollout_status_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
     can?(request.current_user, :read_deploy_board, environment.project) &&
       status_project_environment_path(environment.project, environment, format: :json)
+=======
+  expose :folder_path do |environment|
+    folder_project_environments_path(environment.project, environment.folder_name)
+>>>>>>> upstream/master
   end
 
   expose :created_at, :updated_at

@@ -5,7 +5,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'signed-commits'                     => '5d4a1cb',
+    'signed-commits'                     => '2d1096e',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -178,6 +178,24 @@ module TestEnv
 
     spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
     @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
+    wait_gitaly
+  end
+
+  def wait_gitaly
+    sleep_time = 10
+    sleep_interval = 0.1
+    socket = Gitlab::GitalyClient.address('default').sub('unix:', '')
+
+    Integer(sleep_time / sleep_interval).times do
+      begin
+        Socket.unix(socket)
+        return
+      rescue
+        sleep sleep_interval
+      end
+    end
+
+    raise "could not connect to gitaly at #{socket.inspect} after #{sleep_time} seconds"
   end
 
   def stop_gitaly

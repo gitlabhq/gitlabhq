@@ -8,7 +8,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_update_build!, only: [:keep]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!
-  before_action :set_path_and_entry, only: [:file, :raw]
+  before_action :entry, only: [:file]
 
   def download
     send_upload(artifacts_file, attachment: artifacts_file.filename)
@@ -38,7 +38,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def raw
-    send_artifacts_entry(build, @entry)
+    path = Gitlab::Ci::Build::Artifacts::Path
+      .new(params[:path])
+
+    send_artifacts_entry(build, path)
   end
 
   def keep
@@ -90,9 +93,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
     @artifacts_file ||= build.artifacts_file
   end
 
-  def set_path_and_entry
-    @path = params[:path]
-    @entry = build.artifacts_metadata_entry(@path)
+  def entry
+    @entry = build.artifacts_metadata_entry(params[:path])
 
     render_404 unless @entry.exists?
   end

@@ -221,6 +221,7 @@ level of members in group.
 Member Lock lets a group owner to lock down any new project membership to all the
 projects within the group, allowing tighter control over project membership.
 
+<<<<<<< HEAD
 For instance, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
 you enable Member Lock to guarantee that any membership is added or changed
 during the audition.
@@ -234,6 +235,8 @@ This will disable the option for all users who previously had permissions to
 operate project memberships so no new users can be added. Furthermore, any
 request to add new user to project through API will not be possible.
 
+=======
+>>>>>>> upstream/master
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,

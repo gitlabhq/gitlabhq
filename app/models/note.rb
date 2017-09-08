@@ -160,10 +160,13 @@ class Note < ActiveRecord::Base
     def has_special_role?(role, note)
       note.special_role == role
     end
+<<<<<<< HEAD
   end
 
   def searchable?
     !system
+=======
+>>>>>>> upstream/master
   end
 
   def cross_reference?
