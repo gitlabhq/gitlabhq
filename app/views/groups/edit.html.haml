@@ -30,7 +30,6 @@
         .col-sm-offset-2.col-sm-10
           = render 'shared/allow_request_access', form: f
 
-<<<<<<< HEAD
       .form-group
         %label.control-label
           = s_("GroupSettings|Share with group lock")
@@ -54,22 +53,6 @@
           .checkbox
             = f.check_box :membership_lock
             %span.descr Prevent adding new members to project membership within this group
-=======
-      .form-group
-        %label.control-label
-          = s_("GroupSettings|Share with group lock")
-        .col-sm-10
-          .checkbox
-            = f.label :share_with_group_lock do
-              = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
-              %strong
-                - group_link = link_to @group.name, group_path(@group)
-                = s_("GroupSettings|Prevent sharing a project within %{group} with other groups").html_safe % { group: group_link }
-              %br
-              %span.descr= share_with_group_lock_help_text(@group)
-
-      = render 'group_admin_settings', f: f
->>>>>>> upstream/master
 
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"

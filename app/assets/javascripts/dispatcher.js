@@ -659,10 +659,7 @@ import initGroupAnalytics from './init_group_analytics';
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
-<<<<<<< HEAD
               new ApproversSelect();
-=======
->>>>>>> upstream/master
               import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
                 .then(permissions => permissions.default())
                 .catch(() => {});
