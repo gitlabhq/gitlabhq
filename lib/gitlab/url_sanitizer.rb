@@ -19,15 +19,10 @@ module Gitlab
     end
 
     def initialize(url, credentials: nil)
-<<<<<<< HEAD
-=======
-      @url = Addressable::URI.parse(url.to_s.strip)
-
       %i[user password].each do |symbol|
         credentials[symbol] = credentials[symbol].presence if credentials&.key?(symbol)
       end
 
->>>>>>> upstream/master
       @credentials = credentials
       @url = parse_url(url)
     end
@@ -38,13 +33,8 @@ module Gitlab
 
     def masked_url
       url = @url.dup
-<<<<<<< HEAD
-      url.password = "*****" if url.password
-      url.user = "*****" if url.user
-=======
       url.password = "*****" if url.password.present?
       url.user = "*****" if url.user.present?
->>>>>>> upstream/master
       url.to_s
     end
 

@@ -74,17 +74,8 @@ describe Gitlab::UrlSanitizer do
       with_them do
         subject { described_class.new("http://#{userinfo}example.com").sanitized_url }
 
-<<<<<<< HEAD
-  describe '.valid?' do
-    it 'validates url strings' do
-      expect(described_class.valid?(nil)).to be(false)
-      expect(described_class.valid?('')).to be(false)
-      expect(described_class.valid?('valid@project:url.git')).to be(true)
-      expect(described_class.valid?('123://invalid:url')).to be(false)
-=======
         it { is_expected.to eq('http://example.com') }
       end
->>>>>>> upstream/master
     end
   end
 
