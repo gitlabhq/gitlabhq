@@ -22,6 +22,8 @@ module Gitlab
             ci_builds: ::Ci::Build.count,
             ci_internal_pipelines: ::Ci::Pipeline.internal.count,
             ci_external_pipelines: ::Ci::Pipeline.external.count,
+            ci_pipeline_config_auto_devops: ::Ci::Pipeline.auto_devops_source.count,
+            ci_pipeline_config_repository: ::Ci::Pipeline.repository_source.count,
             ci_runners: ::Ci::Runner.count,
             ci_triggers: ::Ci::Trigger.count,
             ci_pipeline_schedules: ::Ci::PipelineSchedule.count,

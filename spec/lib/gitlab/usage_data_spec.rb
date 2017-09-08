@@ -40,6 +40,8 @@ describe Gitlab::UsageData do
         ci_builds
         ci_internal_pipelines
         ci_external_pipelines
+        ci_pipeline_config_auto_devops
+        ci_pipeline_config_repository
         ci_runners
         ci_triggers
         ci_pipeline_schedules
