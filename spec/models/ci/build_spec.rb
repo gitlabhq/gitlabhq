@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Ci::Build do
   set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
+  set(:group) { create(:group, :access_requestable) }
+  set(:project) { create(:project, :repository, group: group) }
 
   set(:pipeline) do
     create(:ci_pipeline, project: project,
@@ -1196,6 +1197,8 @@ describe Ci::Build do
       end
 
       context 'use from gitlab-ci.yml' do
+        let(:pipeline) { create(:ci_pipeline) }
+
         before do
           stub_ci_pipeline_yaml_file(config)
         end
@@ -1439,11 +1442,7 @@ describe Ci::Build do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
-      let(:group) { create(:group, :access_requestable) }
-
       before do
-        build.project.update(group: group)
-
         create(:ci_group_variable,
                secret_variable.slice(:key, :value).merge(group: group))
       end
@@ -1456,11 +1455,7 @@ describe Ci::Build do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
 
-      let(:group) { create(:group, :access_requestable) }
-
       before do
-        build.project.update(group: group)
-
         create(:ci_group_variable,
                :protected,
                protected_variable.slice(:key, :value).merge(group: group))
@@ -1483,6 +1478,10 @@ describe Ci::Build do
       end
 
       context 'when the ref is not protected' do
+        before do
+          build.update_column(:ref, 'some/feature')
+        end
+
         it { is_expected.not_to include(protected_variable) }
       end
     end
@@ -1549,6 +1548,8 @@ describe Ci::Build do
     end
 
     context 'when yaml_variables are undefined' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
       before do
         build.yaml_variables = nil
       end
@@ -1642,7 +1643,10 @@ describe Ci::Build do
 
       before do
         build.environment = 'production'
-        allow(project).to receive(:deployment_variables).and_return([deployment_variable])
+
+        allow_any_instance_of(Project)
+          .to receive(:deployment_variables)
+          .and_return([deployment_variable])
       end
 
       it { is_expected.to include(deployment_variable) }
@@ -1666,14 +1670,19 @@ describe Ci::Build do
 
       before do
         allow(build).to receive(:predefined_variables) { [build_pre_var] }
-        allow(project).to receive(:predefined_variables) { [project_pre_var] }
-        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for)
+        allow_any_instance_of(Project)
+          .to receive(:predefined_variables) { [project_pre_var] }
+
+        allow_any_instance_of(Project)
+          .to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
+
+        allow_any_instance_of(Ci::Pipeline)
+          .to receive(:predefined_variables) { [pipeline_pre_var] }
       end
 
       it do
