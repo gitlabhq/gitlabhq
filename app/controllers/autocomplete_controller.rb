@@ -3,10 +3,10 @@ class AutocompleteController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
   before_action :load_project, only: [:users]
-  before_action :find_users, only: [:users]
+  before_action :load_group, only: [:users]
 
   def users
-    @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, users: @users).execute
+    @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, project: @project, group: @group).execute
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
@@ -39,26 +39,14 @@ class AutocompleteController < ApplicationController
 
   private
 
-  def find_users
-    @users =
-      if @project
-        user_ids = @project.team.users.pluck(:id)
-
-        if params[:author_id].present?
-          user_ids << params[:author_id]
-        end
-
-        User.where(id: user_ids)
-      elsif params[:group_id].present?
+  def load_group
+    @group ||= begin
+      if @project.blank? && params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
-
-        group.users
-      elsif current_user
-        User.all
-      else
-        User.none
+        group
       end
+    end
   end
 
   def load_project

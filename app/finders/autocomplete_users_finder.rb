@@ -1,10 +1,11 @@
 class AutocompleteUsersFinder
-  attr_reader :current_user, :users, :search, :skip_users, :page,
-              :per_page, :author_id, :params
+  attr_reader :current_user, :project, :group, :search, :skip_users,
+              :page, :per_page, :author_id, :params
 
-  def initialize(params:, current_user:, users: nil)
+  def initialize(params:, current_user:, project:, group:)
     @current_user = current_user
-    @users = users
+    @project = project
+    @group = group
     @search = params[:search]
     @skip_users = params[:skip_users]
     @page = params[:page]
@@ -14,7 +15,7 @@ class AutocompleteUsersFinder
   end
 
   def execute
-    items = users || User.none
+    items = find_users
     items = items.active
     items = items.reorder(:name)
     items = items.search(search) if search.present?
@@ -38,5 +39,22 @@ class AutocompleteUsersFinder
     end
 
     items
+  end
+
+  private
+
+  def find_users
+    return users_from_project if project
+    return group.users if group
+    return User.all if current_user
+
+    User.none
+  end
+
+  def users_from_project
+    user_ids = project.team.users.pluck(:id)
+    user_ids << author_id if author_id.present?
+
+    User.where(id: user_ids)
   end
 end

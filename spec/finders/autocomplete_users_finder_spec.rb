@@ -9,13 +9,37 @@ describe AutocompleteUsersFinder do
     let(:current_user) { create(:user) }
     let(:params) { {} }
 
-    let(:users) { User.all }
-    subject { described_class.new(params: params, current_user: current_user, users: users).execute.to_a }
+    let(:project) { nil }
+    let(:group) { nil }
 
-    context 'when users param not passed or nil' do
-      let(:users) { nil }
+    subject { described_class.new(params: params, current_user: current_user, project: project, group: group).execute.to_a }
+
+    context 'when current_user not passed or nil' do
+      let(:current_user) { nil }
 
       it { is_expected.to match_array([]) }
+    end
+
+    context 'when project passed' do
+      let(:project) { create(:project) }
+
+      it { is_expected.to match_array([project.owner]) }
+
+      context 'when author_id passed' do
+        let(:params) { { author_id: user2.id } }
+
+        it { is_expected.to match_array([project.owner, user2]) }
+      end
+    end
+
+    context 'when group passed and project not passed' do
+      let(:group) { create(:group, :public) }
+
+      before do
+        group.add_users([user1], GroupMember::DEVELOPER)
+      end
+
+      it { is_expected.to match_array([user1]) }
     end
 
     it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
