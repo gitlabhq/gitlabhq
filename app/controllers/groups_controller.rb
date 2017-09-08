@@ -74,11 +74,11 @@ class GroupsController < Groups::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: GroupChildSerializer
-                 .new(current_user: current_user)
-                 .with_pagination(request, response)
-                 .hierarchy_base(parent, open_hierarchy: filter[:filter].present)
-                 .represent(@children)
+        serializer = GroupChildSerializer
+                       .new(current_user: current_user)
+                       .with_pagination(request, response)
+        serializer.expand_hierarchy(parent) if params[:filter].present?
+        render json: serializer.represent(@children)
       end
     end
   end

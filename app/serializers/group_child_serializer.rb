@@ -18,11 +18,14 @@ class GroupChildSerializer < BaseSerializer
     end
   end
 
+  protected
+
   def represent_hierarchies(children, opts)
     if children.is_a?(GroupHierarchy)
-      represent_hierarchy(children.hierarchy(hierarchy_root), opts)
+      represent_hierarchy(children.hierarchy(hierarchy_root), opts).first
     else
-      children.map { |child| represent_hierarchy(child.hierarchy(hierarchy_root), opts) }
+      hierarchies = Array.wrap(GroupHierarchy.merge_hierarchies(children, hierarchy_root))
+      hierarchies.map { |hierarchy| represent_hierarchy(hierarchy, opts) }.flatten
     end
   end
 
@@ -30,9 +33,10 @@ class GroupChildSerializer < BaseSerializer
     serializer = self.class.new(parameters)
 
     result = if hierarchy.is_a?(Hash)
-               parent = hierarchy.keys.first
-               serializer.represent(parent, opts)
-                 .merge(children: [serializer.represent_hierarchy(hierarchy[parent], opts)])
+               hierarchy.map do |parent, children|
+                 serializer.represent(parent, opts)
+                   .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
+               end
              else
                serializer.represent(hierarchy, opts)
              end

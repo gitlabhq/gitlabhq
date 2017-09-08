@@ -16,7 +16,7 @@ describe GroupChildSerializer do
       end
     end
 
-    context 'with a hierarchy' do
+    context 'with a hierarchy', :nested_groups do
       let(:parent) { create(:group) }
 
       subject(:serializer) do
@@ -35,8 +35,51 @@ describe GroupChildSerializer do
         expect(subsub_group_json[:id]).to eq(subsub_group.id)
       end
 
-      it 'can expand multiple trees' do
+      it 'can render a nested tree' do
+        subgroup1 = create(:group, parent: parent)
+        subsub_group1 = create(:group, parent: subgroup1)
+        subgroup2 = create(:group, parent: parent)
+        subsub_group2 = create(:group, parent: subgroup2)
 
+        json = serializer.represent([subsub_group1, subsub_group2])
+        subgroup1_json = json.first
+        subsub_group1_json = subgroup1_json[:children].first
+
+        expect(json.size).to eq(2)
+        expect(subgroup1_json[:id]).to eq(subgroup1.id)
+        expect(subsub_group1_json[:id]).to eq(subsub_group1.id)
+      end
+    end
+
+    context 'for projects' do
+      it 'can render a single project' do
+        expect(serializer.represent(build(:project))).to be_kind_of(Hash)
+      end
+
+      it 'can render a collection of projects' do
+        expect(serializer.represent(build_list(:project, 2))).to be_kind_of(Array)
+      end
+
+      context 'with a hierarchy', :nested_groups do
+        let(:parent) { create(:group) }
+
+        subject(:serializer) do
+          described_class.new(current_user: user).expand_hierarchy(parent)
+        end
+
+        it 'can render a nested tree' do
+          subgroup1 = create(:group, parent: parent)
+          project1 = create(:project, namespace: subgroup1)
+          subgroup2 = create(:group, parent: parent)
+          project2 = create(:project, namespace: subgroup2)
+
+          json = serializer.represent([project1, project2])
+          project1_json, project2_json = json.map { |group_json| group_json[:children].first }
+
+          expect(json.size).to eq(2)
+          expect(project1_json[:id]).to eq(project1.id)
+          expect(project2_json[:id]).to eq(project2.id)
+        end
       end
     end
   end

@@ -224,6 +224,36 @@ describe GroupsController do
           expect(assigns(:children)).to contain_exactly(public_subgroup, public_project)
         end
       end
+
+      context 'filtering children' do
+        def get_filtered_list
+          get :children, id: group.to_param, filter: 'filter', format: :json
+        end
+
+        it 'expands the tree for matching projects' do
+          project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
+
+          get_filtered_list
+
+          group_json = json_response.first
+          project_json = group_json['children'].first
+
+          expect(group_json['id']).to eq(public_subgroup.id)
+          expect(project_json['id']).to eq(project.id)
+        end
+
+        it 'expands the tree for matching subgroups' do
+          matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
+
+          get_filtered_list
+
+          group_json = json_response.first
+          matched_group_json = group_json['children'].first
+
+          expect(group_json['id']).to eq(public_subgroup.id)
+          expect(matched_group_json['id']).to eq(matched_group.id)
+        end
+      end
     end
   end
 
