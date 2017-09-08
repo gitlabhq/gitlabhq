@@ -128,14 +128,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-<<<<<<< HEAD
-
-# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
-# and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
-gem 'nokogiri', '~> 1.6.8.1'
-=======
 gem 'nokogiri', '~> 1.8.0'
->>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -147,13 +140,7 @@ group :unicorn do
 end
 
 # State machine
-<<<<<<< HEAD
 gem 'state_machines-activerecord', '~> 0.5.0'
-# Run events after state machine commits
-gem 'after_commit_queue', '~> 1.3.0'
-=======
-gem 'state_machines-activerecord', '~> 0.4.0'
->>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 4.0'
@@ -213,14 +200,6 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
 gem 'kubeclient', '~> 2.2.0'
-
-<<<<<<< HEAD
-# underscore-rails
-gem 'underscore-rails', '~> 1.8.0'
-=======
-# d3
-gem 'd3_rails', '~> 3.5.0'
->>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
 
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
@@ -342,13 +321,7 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-<<<<<<< HEAD
-  gem 'rails-controller-testing', '~> 1.0.2'
-
-  gem 'capybara', '~> 2.14.4'
-=======
   gem 'capybara', '~> 2.15.0'
->>>>>>> bce1c50928e4885d54dd11221a9c8197a7fb1a7d
   gem 'capybara-screenshot', '~> 1.0.0'
   gem 'poltergeist', '~> 1.9.0'
 

@@ -1,5 +1,5 @@
 module Ci
-  class PipelineVariable < ActiveRecord::Base
+  class PipelineVariable < ApplicationRecord
     extend Ci::Model
     include HasVariable
 

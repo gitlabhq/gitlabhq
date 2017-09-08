@@ -1,4 +1,4 @@
-class GpgSignature < ActiveRecord::Base
+class GpgSignature < ApplicationRecord
   include ShaAttribute
   include IgnorableColumn
 

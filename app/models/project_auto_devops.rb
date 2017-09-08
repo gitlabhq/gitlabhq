@@ -1,4 +1,4 @@
-class ProjectAutoDevops < ActiveRecord::Base
+class ProjectAutoDevops < ApplicationRecord
   belongs_to :project
 
   validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }

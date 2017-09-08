@@ -1,4 +1,4 @@
-class GpgKey < ActiveRecord::Base
+class GpgKey < ApplicationRecord
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
   KEY_SUFFIX = '-----END PGP PUBLIC KEY BLOCK-----'.freeze
 
