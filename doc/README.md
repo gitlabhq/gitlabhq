@@ -52,6 +52,7 @@ Shortcuts to GitLab's most visited docs:
 ### Projects and groups
 
 - [Projects](user/project/index.md):
+  - [Project settings](user/project/settings/index.md)
   - [Create a project](gitlab-basics/create-project.md)
   - [Fork a project](gitlab-basics/fork-project.md)
   - [Importing and exporting projects between instances](user/project/settings/import_export.md).

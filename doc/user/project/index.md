@@ -89,6 +89,10 @@ You can [fork a project](../../gitlab-basics/fork-project.md) in order to:
 from your fork to the upstream project
 - Fork a sample project to work on the top of that
 
+## Project settings
+
+Read through the documentation on [project settings](settings/index.md).
+
 ## Import or export a project
 
 - [Import a project](import/index.md) from:
