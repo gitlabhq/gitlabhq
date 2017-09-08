@@ -21,30 +21,17 @@ The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
-<<<<<<< HEAD
-| Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                    | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| See a job   log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse job artifacts     | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
-| Download project                      |         | ✓          | ✓           | ✓        | ✓      |
-=======
 | Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
->>>>>>> upstream/master
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
