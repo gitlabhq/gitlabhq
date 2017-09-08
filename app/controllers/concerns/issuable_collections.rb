@@ -15,10 +15,9 @@ module IssuableCollections
     @issues             = issues_collection
     @issues             = @issues.page(params[:page])
     @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+    @total_pages        = issues_page_count(@issues)
 
-    if @issues.out_of_range? && @issues.total_pages != 0
-      return redirect_to url_for(params.merge(page: @issues.total_pages, only_path: true))
-    end
+    return if redirect_out_of_range(@issues, @total_pages)
 
     if params[:label_name].present?
       @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
