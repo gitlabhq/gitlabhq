@@ -58,16 +58,7 @@ msgstr ""
 msgid "About auto deploy"
 msgstr ""
 
-msgid "Abuse Reports"
-msgstr ""
-
-msgid "Access Tokens"
-msgstr ""
-
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
-
-msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -91,15 +82,6 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
-msgid "All"
-msgstr ""
-
-msgid "Appearances"
-msgstr ""
-
-msgid "Applications"
-msgstr ""
-
 msgid "Archived project! Repository is read-only"
 msgstr ""
 
@@ -119,63 +101,6 @@ msgid "Are you sure?"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
-msgstr ""
-
-msgid "Authentication log"
-msgstr ""
-
-msgid "Billing"
-msgstr ""
-
-msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
-msgstr ""
-
-msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
-msgstr ""
-
-msgid "BillingPlans|Current plan"
-msgstr ""
-
-msgid "BillingPlans|Customer Support"
-msgstr ""
-
-msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
-msgstr ""
-
-msgid "BillingPlans|Manage plan"
-msgstr ""
-
-msgid "BillingPlans|Please contact %{customer_support_link} in that case."
-msgstr ""
-
-msgid "BillingPlans|See all %{plan_name} features"
-msgstr ""
-
-msgid "BillingPlans|This group uses the plan associated with its parent group."
-msgstr ""
-
-msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
-msgstr ""
-
-msgid "BillingPlans|Upgrade"
-msgstr ""
-
-msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr ""
-
-msgid "BillingPlans|frequently asked questions"
-msgstr ""
-
-msgid "BillingPlans|monthly"
-msgstr ""
-
-msgid "BillingPlans|paid annually at %{price_per_year}"
-msgstr ""
-
-msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Billinglans|Downgrade"
 msgstr ""
 
 msgid "Branch"
@@ -210,9 +135,6 @@ msgstr ""
 msgid "ByAuthor|by"
 msgstr ""
 
-msgid "CI / CD"
-msgstr ""
-
 msgid "CI configuration"
 msgstr ""
 
@@ -238,9 +160,6 @@ msgid "Changelog"
 msgstr ""
 
 msgid "Charts"
-msgstr ""
-
-msgid "Chat"
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -303,9 +222,6 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
-msgid "Comments"
-msgstr ""
-
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
@@ -338,16 +254,10 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
-msgid "Container Registry"
-msgstr ""
-
 msgid "Contribution guide"
 msgstr ""
 
 msgid "Contributors"
-msgstr ""
-
-msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -436,9 +346,6 @@ msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Deploy Keys"
-msgstr ""
-
 msgid "Description"
 msgstr ""
 
@@ -485,27 +392,6 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
-msgstr ""
-
-msgid "Emails"
-msgstr ""
-
-msgid "EventFilterBy|Filter by all"
-msgstr ""
-
-msgid "EventFilterBy|Filter by comments"
-msgstr ""
-
-msgid "EventFilterBy|Filter by issue events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by merge events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by push events"
-msgstr ""
-
-msgid "EventFilterBy|Filter by team"
 msgstr ""
 
 msgid "Every day (at 4:00am)"
@@ -555,12 +441,6 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "GPG Keys"
-msgstr ""
-
-msgid "Geo Nodes"
-msgstr ""
-
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -571,9 +451,6 @@ msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
-msgstr ""
-
-msgid "Group overview"
 msgstr ""
 
 msgid "Health Check"
@@ -597,9 +474,6 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-msgid "Hooks"
-msgstr ""
-
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -615,19 +489,19 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Issue events"
+msgid "Jobs for last month"
 msgstr ""
 
-msgid "Issues"
+msgid "Jobs for last week"
+msgstr ""
+
+msgid "Jobs for last year"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr ""
 
 msgid "LFSStatus|Enabled"
-msgstr ""
-
-msgid "Labels"
 msgstr ""
 
 msgid "Last %d day"
@@ -644,12 +518,6 @@ msgstr ""
 msgid "Last commit"
 msgstr ""
 
-msgid "LastPushEvent|You pushed to"
-msgstr ""
-
-msgid "LastPushEvent|at"
-msgstr ""
-
 msgid "Learn more in the"
 msgstr ""
 
@@ -662,36 +530,15 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-msgid "License"
-msgstr ""
-
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Locked Files"
-msgstr ""
-
 msgid "Median"
 msgstr ""
 
-msgid "Members"
-msgstr ""
-
-msgid "Merge Requests"
-msgstr ""
-
-msgid "Merge events"
-msgstr ""
-
-msgid "Messages"
-msgstr ""
-
 msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr ""
-
-msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
@@ -795,9 +642,6 @@ msgstr ""
 msgid "NotificationLevel|Watch"
 msgstr ""
 
-msgid "Notifications"
-msgstr ""
-
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
@@ -807,13 +651,7 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-msgid "Overview"
-msgstr ""
-
 msgid "Owner"
-msgstr ""
-
-msgid "Password"
 msgstr ""
 
 msgid "Pipeline"
@@ -826,9 +664,6 @@ msgid "Pipeline Schedule"
 msgstr ""
 
 msgid "Pipeline Schedules"
-msgstr ""
-
-msgid "Pipeline quota"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -894,15 +729,6 @@ msgstr ""
 msgid "Pipelines charts"
 msgstr ""
 
-msgid "Pipelines for last month"
-msgstr ""
-
-msgid "Pipelines for last week"
-msgstr ""
-
-msgid "Pipelines for last year"
-msgstr ""
-
 msgid "Pipeline|all"
 msgstr ""
 
@@ -913,15 +739,6 @@ msgid "Pipeline|with stage"
 msgstr ""
 
 msgid "Pipeline|with stages"
-msgstr ""
-
-msgid "Preferences"
-msgstr ""
-
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -957,12 +774,6 @@ msgstr ""
 msgid "Project home"
 msgstr ""
 
-msgid "Project overview"
-msgstr ""
-
-msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
-
 msgid "ProjectFeature|Disabled"
 msgstr ""
 
@@ -982,12 +793,6 @@ msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectNetworkGraph|Graph"
-msgstr ""
-
-msgid "Push Rules"
-msgstr ""
-
-msgid "Push events"
 msgstr ""
 
 msgid "Read more"
@@ -1047,9 +852,6 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
-msgid "SSH Keys"
-msgstr ""
-
 msgid "Save pipeline schedule"
 msgstr ""
 
@@ -1074,9 +876,6 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
-msgid "Service Templates"
-msgstr ""
-
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -1092,21 +891,12 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
-msgid "Settings"
-msgstr ""
-
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Snippets"
-msgstr ""
-
 msgid "Source code"
-msgstr ""
-
-msgid "Spam Logs"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
@@ -1133,9 +923,6 @@ msgid "Tags"
 msgstr ""
 
 msgid "Target Branch"
-msgstr ""
-
-msgid "Team"
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
@@ -1383,9 +1170,6 @@ msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
-msgstr ""
-
-msgid "Wiki"
 msgstr ""
 
 msgid "Withdraw Access Request"
