@@ -448,6 +448,7 @@ db:migrate:reset-mysql:
 .migration-paths: &migration-paths
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   variables:
     SETUP_DB: "false"
