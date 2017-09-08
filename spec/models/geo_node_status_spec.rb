@@ -170,6 +170,34 @@ describe GeoNodeStatus do
     end
   end
 
+  describe '#last_event_id and #last_event_date' do
+    it 'returns nil when no events are available' do
+      expect(subject.last_event_id).to be_nil
+      expect(subject.last_event_date).to be_nil
+    end
+
+    it 'returns the latest event' do
+      created_at = Date.new(2017, 10, 22)
+      event = create(:geo_event_log, created_at: created_at)
+
+      expect(subject.last_event_id).to eq(event.id)
+      expect(subject.last_event_date).to eq(created_at)
+    end
+  end
+
+  describe '#cursor_last_event_id and #cursor_last_event_date' do
+    it 'returns nil when no events are available' do
+      expect(subject.cursor_last_event_id).to be_nil
+      expect(subject.cursor_last_event_date).to be_nil
+    end
+
+    it 'returns the latest event ID' do
+      event = create(:geo_event_log_state)
+
+      expect(subject.cursor_last_event_id).to eq(event.event_id)
+    end
+  end
+
   context 'when no values are available' do
     it 'returns 0 for each attribute' do
       allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(nil)
@@ -180,6 +208,10 @@ describe GeoNodeStatus do
       subject.repositories_count = nil
       subject.repositories_synced_count = nil
       subject.repositories_failed_count = nil
+      subject.last_event_id = nil
+      subject.last_event_date = nil
+      subject.cursor_last_event_id = nil
+      subject.cursor_last_event_date = nil
 
       expect(subject.db_replication_lag).to be_nil
       expect(subject.repositories_count).to be_zero
@@ -192,6 +224,10 @@ describe GeoNodeStatus do
       expect(subject.attachments_count).to be_zero
       expect(subject.attachments_synced_count).to be_zero
       expect(subject.attachments_synced_in_percentage).to be_zero
+      expect(subject.last_event_id).to be_nil
+      expect(subject.last_event_date).to be_nil
+      expect(subject.cursor_last_event_id).to be_nil
+      expect(subject.cursor_last_event_date).to be_nil
     end
   end
 end

@@ -22,6 +22,42 @@ class GeoNodeStatus
     @db_replication_lag = value
   end
 
+  def last_event_id
+    @last_event_id ||= latest_event&.id
+  end
+
+  def last_event_id=(value)
+    @last_event_id = value
+  end
+
+  def last_event_date
+    @last_event_date ||= Geo::EventLog.latest_event&.created_at
+  end
+
+  def last_event_date=(value)
+    @last_event_date = value
+  end
+
+  def cursor_last_event_id
+    @cursor_last_event_id ||= cursor_last_processed&.event_id
+  end
+
+  def cursor_last_event_id=(value)
+    @cursor_last_event_id = value
+  end
+
+  def cursor_last_event_date
+    event_id = cursor_last_event_id
+
+    return unless event_id
+
+    @cursor_last_event_date ||= Geo::EventLog.find_by(id: event_id)&.created_at
+  end
+
+  def cursor_last_event_date=(value)
+    @cursor_last_event_date = value
+  end
+
   def repositories_count
     @repositories_count ||= repositories.count
   end
@@ -125,5 +161,13 @@ class GeoNodeStatus
 
   def repositories
     @repositories ||= Gitlab::Geo.current_node.projects
+  end
+
+  def latest_event
+    Geo::EventLog.latest_event
+  end
+
+  def cursor_last_processed
+    Geo::EventLogState.last_processed
   end
 end

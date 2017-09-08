@@ -11,7 +11,11 @@
     "db_replication_lag",
     "repositories_count",
     "repositories_failed_count",
-    "repositories_synced_count"
+    "repositories_synced_count",
+    "last_event_id",
+    "last_event_date",
+    "cursor_last_event_id",
+    "cursor_last_event_date"
   ],
   "properties" : {
     "id": { "type": "integer" },
@@ -27,7 +31,11 @@
     "repositories_count": { "type": "integer" },
     "repositories_failed_count": { "type": "integer" },
     "repositories_synced_count": { "type": "integer" },
-    "repositories_synced_in_percentage": { "type": "string" }
+    "repositories_synced_in_percentage": { "type": "string" },
+    "last_event_id": { "type": ["integer", "null"] },
+    "last_event_date": { "type": ["string", "null"] },
+    "cursor_last_event_id": { "type": ["integer", "null"] },
+    "cursor_last_event_date": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

@@ -32,7 +32,11 @@ describe Geo::NodeStatusService do
                lfs_objects_count: 100,
                lfs_objects_synced_count: 50,
                attachments_count: 30,
-               attachments_synced_count: 30 }
+               attachments_synced_count: 30,
+               last_event_id: 2,
+               last_event_date: Time.now,
+               cursor_last_event_id: 1,
+               cursor_last_event_date: Time.now }
       request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
       allow(described_class).to receive(:get).and_return(request)
 

@@ -22,6 +22,10 @@ module Geo
       class_name: 'Geo::RepositoriesChangedEvent',
       foreign_key: :repositories_changed_event_id
 
+    def self.latest_event
+      order(id: :desc).first
+    end
+
     def event
       repository_created_event ||
         repository_updated_event ||

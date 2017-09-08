@@ -29,6 +29,19 @@
   }
 }
 
+.advanced-geo-node-status-container {
+  .btn-link {
+    padding-left: 0;
+    padding-right: 0;
+    border-left: 0;
+    border-right: 0;
+
+    .fa {
+      margin-left: 3px;
+    }
+  }
+}
+
 .node-info {
   color: $gl-text-color;
 }
