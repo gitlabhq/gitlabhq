@@ -20,6 +20,8 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**EES/EEP**): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
 integrated platform
+  - [Branches](repository/branches/index.md): use Git branching strategies to
+  collaborate on code
   - [Protected branches](protected_branches.md): Prevent collaborators
   from messing with history or pushing code without review
   - [Protected tags](protected_tags.md): Control over who has
