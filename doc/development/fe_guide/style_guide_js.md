@@ -311,6 +311,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 #### Alignment
 1. Follow these alignment styles for the template method:
+  1. With more than one attribute, all attributes should be on a new line:
   ```javascript
     // bad
     <component v-if="bar"
@@ -327,9 +328,16 @@ A forEach will cause side effects, it will be mutating the array being iterated.
     <button class="btn">
       Click me
     </button>
+  ```
+  1. The tag can be inline if there is only one attribute:
+  ```javascript
+    // good
+      <component bar="bar" />
 
-    // if props fit in one line then keep it on the same line
-    <component bar="bar" />
+    // good
+      <component
+        bar="bar"
+        />
   ```
 
 #### Quotes
@@ -381,9 +389,12 @@ A forEach will cause side effects, it will be mutating the array being iterated.
     }
   ```
 
-1. Default key should always be provided if the prop is not required:
+1. Default key should be provided if the prop is not required.
+_Note:_ There are some scenarios where we need to check for the existence of the property.
+On those a default key should not be provided.
+
   ```javascript
-    // bad
+    // good
     props: {
       foo: {
         type: String,
@@ -512,11 +523,11 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   ```
 
 ### The Javascript/Vue Accord
-The goal of this accord is to make sure we are all on the same page. 
+The goal of this accord is to make sure we are all on the same page.
 
-1. When writing Vue, you may not use jQuery in your application. 
+1. When writing Vue, you may not use jQuery in your application.
   1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
-  1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html). 
+  1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
   1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
   1. We will avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object 1 time, while bootstrapping your application for application specific data (e.g. `scrollTo` is ok to access anytime). Do this access during the bootstrapping of your application.
