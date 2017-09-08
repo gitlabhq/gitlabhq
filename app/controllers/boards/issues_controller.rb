@@ -1,10 +1,7 @@
 module Boards
   class IssuesController < Boards::ApplicationController
-<<<<<<< HEAD
     prepend EE::BoardsResponses
     prepend EE::Boards::IssuesController
-=======
->>>>>>> upstream/master
     include BoardsResponses
 
     before_action :authorize_read_issue, only: [:index]
@@ -15,11 +12,7 @@ module Boards
     def index
       issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
       issues = issues.page(params[:page]).per(params[:per] || 20)
-<<<<<<< HEAD
       make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
-=======
-      make_sure_position_is_set(issues)
->>>>>>> upstream/master
 
       render json: {
         issues: serialize_as_json(issues.preload(:project)),

@@ -127,14 +127,9 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-<<<<<<< HEAD
-    def add_user(source, user, access_level, current_user: nil, expires_at: nil, ldap: false)
-      user = retrieve_user(user)
-=======
-    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil)
+    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
->>>>>>> upstream/master
       access_level = retrieve_access_level(access_level)
 
       return member unless can_update_member?(current_user, member)

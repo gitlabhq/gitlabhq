@@ -1,9 +1,6 @@
 class Admin::LogsController < Admin::ApplicationController
-<<<<<<< HEAD
   prepend EE::Admin::LogsController
 
-=======
->>>>>>> upstream/master
   before_action :loggers
 
   def show
