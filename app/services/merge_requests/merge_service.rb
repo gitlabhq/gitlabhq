@@ -67,15 +67,9 @@ module MergeRequests
     private
 
     def commit
-      committer = repository.user_to_committer(current_user)
+      message = params[:commit_message] || merge_request.merge_commit_message
 
-      options = {
-        message: params[:commit_message] || merge_request.merge_commit_message,
-        author: committer,
-        committer: committer
-      }
-
-      commit_id = repository.merge(current_user, source, merge_request, options)
+      commit_id = repository.merge(current_user, source, merge_request, message)
 
       raise MergeError, 'Conflicts detected during merge' unless commit_id
 

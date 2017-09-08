@@ -10,10 +10,7 @@ describe Repository, models: true do
   let(:user) { create(:user) }
   let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
 
-  let(:commit_options) do
-    author = repository.user_to_committer(user)
-    { message: 'Test message', committer: author, author: author }
-  end
+  let(:message) { 'Test message' }
 
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
@@ -21,7 +18,7 @@ describe Repository, models: true do
     merge_commit_id = repository.merge(user,
                                        merge_request.diff_head_sha,
                                        merge_request,
-                                       commit_options)
+                                       message)
 
     repository.commit(merge_commit_id)
   end
@@ -1293,10 +1290,7 @@ describe Repository, models: true do
   describe '#merge' do
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
 
-    let(:commit_options) do
-      author = repository.user_to_committer(user)
-      { message: 'Test \r\n\r\n message', committer: author, author: author }
-    end
+    let(:message) { 'Test \r\n\r\n message' }
 
     it 'merges the code and returns the commit id' do
       expect(merge_commit).to be_present
@@ -1304,19 +1298,19 @@ describe Repository, models: true do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
 
     it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
-      expect(repository.commit(merge_commit_id).message).to eq(commit_options[:message].delete("\r"))
+      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
     end
 
-    def merge(repository, user, merge_request, options = {})
-      repository.merge(user, merge_request.diff_head_sha, merge_request, options)
+    def merge(repository, user, merge_request, message)
+      repository.merge(user, merge_request.diff_head_sha, merge_request, message)
     end
   end
 
