@@ -153,7 +153,7 @@
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m]) * 100) by (cpu)'
+    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) by (cpu)  * 100'
       label: CPU
       unit: "%"
       series:
