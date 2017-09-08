@@ -5,11 +5,7 @@ const Api = {
   groupPath: '/api/:version/groups/:id.json',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
-<<<<<<< HEAD
-  projectsPath: '/api/:version/projects.json?simple=true',
-=======
   projectsPath: '/api/:version/projects.json',
->>>>>>> upstream/master
   projectLabelsPath: '/:namespace_path/:project_path/labels',
   groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',

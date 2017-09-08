@@ -849,8 +849,6 @@
   }
 }
 
-<<<<<<< HEAD
-=======
 @media (max-width: $screen-xs-max) {
   .navbar-gitlab {
     li.header-projects,
@@ -870,7 +868,6 @@
   }
 }
 
->>>>>>> upstream/master
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
