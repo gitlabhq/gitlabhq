@@ -108,7 +108,7 @@
                   %span.badge.count.issue_counter.fly-out-badge
                     = number_with_delimiter(@project.open_issues_count)
             %li.divider.fly-out-top-item
-            = nav_link(controller: :issues) do
+            = nav_link(controller: :issues, action: :index) do
               = link_to project_issues_path(@project), title: 'Issues' do
                 %span
                   List
