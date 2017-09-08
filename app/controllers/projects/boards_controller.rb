@@ -1,9 +1,6 @@
 class Projects::BoardsController < Projects::ApplicationController
-<<<<<<< HEAD
   prepend EE::Boards::BoardsController
   prepend EE::BoardsResponses
-=======
->>>>>>> upstream/master
   include BoardsResponses
   include IssuableCollections
 

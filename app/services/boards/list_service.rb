@@ -1,10 +1,7 @@
 module Boards
   class ListService < Boards::BaseService
-<<<<<<< HEAD
     prepend EE::Boards::ListService
 
-=======
->>>>>>> upstream/master
     def execute
       create_board! if parent.boards.empty?
       parent.boards

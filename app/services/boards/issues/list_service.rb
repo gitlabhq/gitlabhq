@@ -1,11 +1,8 @@
 module Boards
   module Issues
     class ListService < Boards::BaseService
-<<<<<<< HEAD
       prepend EE::Boards::Issues::ListService
 
-=======
->>>>>>> upstream/master
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless movable_list? || closed_list?
