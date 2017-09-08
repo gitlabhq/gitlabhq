@@ -124,7 +124,6 @@ export default {
   },
 
   methods: {
-<<<<<<< HEAD
 
     /**
      * Toggles the visibility of the deploy boards of the clicked environment.
@@ -140,10 +139,7 @@ export default {
       }
     },
 
-    toggleFolder(folder, folderUrl) {
-=======
     toggleFolder(folder) {
->>>>>>> upstream/master
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
