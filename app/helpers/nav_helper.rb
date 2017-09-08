@@ -33,8 +33,6 @@ module NavHelper
   def nav_control_class
     "nav-control" if current_user
   end
-<<<<<<< HEAD
-=======
 
   def user_dropdown_class
     class_names = []
@@ -43,5 +41,4 @@ module NavHelper
 
     class_names
   end
->>>>>>> upstream/master
 end

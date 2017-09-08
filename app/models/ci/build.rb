@@ -462,14 +462,13 @@ module Ci
       trace
     end
 
-<<<<<<< HEAD
     def has_codeclimate_json?
       options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
         artifacts_metadata?
-=======
+    end
+
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
->>>>>>> upstream/master
     end
 
     private

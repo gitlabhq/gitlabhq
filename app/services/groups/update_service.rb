@@ -8,13 +8,10 @@ module Groups
       return false unless valid_visibility_level_change?(group, params[:visibility_level])
 
       return false unless valid_share_with_group_lock_change?
-<<<<<<< HEAD
 
       # Repository size limit comes as MB from the view
       limit = @params.delete(:repository_size_limit)
       group.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
-=======
->>>>>>> upstream/master
 
       group.assign_attributes(params)
 
