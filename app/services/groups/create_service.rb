@@ -8,7 +8,6 @@ module Groups
     def execute
       @group = Group.new(params)
 
-<<<<<<< HEAD
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         deny_visibility_level(@group)
         return @group
@@ -21,10 +20,9 @@ module Groups
       if @group.parent && !can?(current_user, :create_subgroup, @group.parent)
         @group.parent = nil
         @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
+      end
 
-=======
       unless can_use_visibility_level? && can_create_group?
->>>>>>> upstream/master
         return @group
       end
 
