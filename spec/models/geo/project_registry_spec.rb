@@ -1,21 +1,23 @@
 require 'spec_helper'
 
 describe Geo::ProjectRegistry do
+  subject { create(:geo_project_registry) }
+
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_uniqueness_of(:project) }
   end
 
   describe '.failed' do
     it 'returns projects where last attempt to sync failed' do
-      project = create(:project)
-      create(:geo_project_registry, :synced, project: project)
-      create(:geo_project_registry, :synced, :dirty, project: project)
-      repository_sync_failed = create(:geo_project_registry, :repository_sync_failed, project: project)
-      wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed, project: project)
+      create(:geo_project_registry, :synced)
+      create(:geo_project_registry, :synced, :dirty)
+      repository_sync_failed = create(:geo_project_registry, :repository_sync_failed)
+      wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed)
 
       expect(described_class.failed).to match_array([repository_sync_failed, wiki_sync_failed])
     end
@@ -23,10 +25,9 @@ describe Geo::ProjectRegistry do
 
   describe '.synced' do
     it 'returns synced projects' do
-      project = create(:project)
-      create(:geo_project_registry, :synced, :dirty, project: project)
-      create(:geo_project_registry, :sync_failed, project: project)
-      synced_project = create(:geo_project_registry, :synced, project: project)
+      create(:geo_project_registry, :synced, :dirty)
+      create(:geo_project_registry, :sync_failed)
+      synced_project = create(:geo_project_registry, :synced)
 
       expect(described_class.synced).to match_array([synced_project])
     end
