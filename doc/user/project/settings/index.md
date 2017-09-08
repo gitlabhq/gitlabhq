@@ -5,7 +5,7 @@ to your project's homepage and clicking **Settings**.
 
 ## General settings
 
-Adjust your project's path and name, description, avatar, [default branch](../repository/branches/index.md#default-branches), and tags:
+Adjust your project's path and name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
 
 ![general project settings](img/general_settings.png)
 
