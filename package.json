@@ -9,9 +9,13 @@
     "karma-coverage": "BABEL_ENV=coverage karma start config/karma.config.js --single-run",
     "karma-start": "karma start config/karma.config.js",
     "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@storybook/addon-knobs": "^3.2.8",
+    "@storybook/addon-options": "^3.2.6",
     "axios": "^0.16.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.2.1",
@@ -53,6 +57,7 @@
     "react-dev-utils": "^0.5.2",
     "select2": "3.5.2-browserify",
     "sql.js": "^0.4.0",
+    "stats-webpack-plugin": "^0.6.1",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
@@ -63,13 +68,14 @@
     "vue": "^2.2.6",
     "vue-loader": "^11.3.4",
     "vue-resource": "^1.3.4",
-    "vue-template-compiler": "^2.2.6",
+    "vue-template-compiler": "^2.4.2",
     "vuex": "^2.3.1",
     "webpack": "^3.5.5",
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-stats-plugin": "^0.1.5"
   },
   "devDependencies": {
+    "@storybook/vue": "^3.2.8",
     "babel-plugin-istanbul": "^4.0.0",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
