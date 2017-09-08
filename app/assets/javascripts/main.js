@@ -102,7 +102,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
-import { initFeatureHighlight, highlightOrder } from './feature_highlight/feature_highlight';
+import * as featureHighlight from './feature_highlight/feature_highlight';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
@@ -183,7 +183,7 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
-  initFeatureHighlight(highlightOrder);
+  featureHighlight.init(featureHighlight.highlightOrder);
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
