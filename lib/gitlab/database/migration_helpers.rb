@@ -1,6 +1,9 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
+      BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
+
       # Adds `created_at` and `updated_at` columns with timezone information.
       #
       # This method is an improved version of Rails' built-in method `add_timestamps`.
@@ -652,6 +655,51 @@ Both queries will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
           EOF
         end
+      end
+
+      # Queues background migration jobs for an entire table, batched by ID range.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size = BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        jobs = []
+
+        model_class.each_batch(of: batch_size) do |relation|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
+            # Note: This code path generally only helps with many millions of rows
+            # We push multiple jobs at a time to reduce the time spent in
+            # Sidekiq/Redis operations. We're using this buffer based approach so we
+            # don't need to run additional queries for every range.
+            BackgroundMigrationWorker.perform_bulk(jobs)
+            jobs.clear
+          end
+
+          jobs << [job_class_name, [start_id, end_id]]
+        end
+
+        BackgroundMigrationWorker.perform_bulk(jobs) unless jobs.empty?
       end
     end
   end

@@ -6,8 +6,8 @@ describe DeleteConflictingRedirectRoutes, :migration, :sidekiq do
   let!(:routes) { table(:routes) }
 
   before do
-    stub_const("#{described_class.name}::BATCH_SIZE", 2)
-    stub_const("#{described_class.name}::JOB_BUFFER_SIZE", 2)
+    stub_const("Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_BATCH_SIZE", 2)
+    stub_const("Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE", 2)
 
     routes.create!(id: 1, source_id: 1, source_type: 'Namespace', path: 'foo1')
     routes.create!(id: 2, source_id: 2, source_type: 'Namespace', path: 'foo2')

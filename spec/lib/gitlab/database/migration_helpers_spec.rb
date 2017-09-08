@@ -914,4 +914,66 @@ describe Gitlab::Database::MigrationHelpers do
         .to raise_error(RuntimeError, /Your database user is not allowed/)
     end
   end
+
+  describe '#queue_background_migration_jobs_by_range', :sidekiq do
+    context 'when the model has an ID column' do
+      let!(:id1) { create(:user).id }
+      let!(:id2) { create(:user).id }
+      let!(:id3) { create(:user).id }
+
+      before do
+        User.class_eval do
+          include EachBatch
+        end
+      end
+
+      context 'with enough rows to bulk queue jobs more than once' do
+        before do
+          stub_const('Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE', 1)
+        end
+
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range(User, 'FooJob', 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in groups of buffer size 1' do
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]]])
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id3, id3]]])
+
+          model.queue_background_migration_jobs_by_range(User, 'FooJob', 2)
+        end
+      end
+
+      context 'with not enough rows to bulk queue jobs more than once' do
+        it 'queues jobs correctly' do
+          Sidekiq::Testing.fake! do
+            model.queue_background_migration_jobs_by_range(User, 'FooJob', 2)
+
+            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          end
+        end
+
+        it 'queues jobs in bulk all at once (big buffer size)' do
+          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]],
+                                                                            ['FooJob', [id3, id3]]])
+
+          model.queue_background_migration_jobs_by_range(User, 'FooJob', 2)
+        end
+      end
+    end
+
+    context "when the model doesn't have an ID column" do
+      it 'raises error (for now)' do
+        expect do
+          model.queue_background_migration_jobs_by_range(ProjectAuthorization, 'FooJob')
+        end.to raise_error(StandardError, /does not have an ID/)
+      end
+    end
+  end
 end
