@@ -1,3 +1,7 @@
+---
+last_updated: 2017-09-25
+---
+
 # GitLab Kubernetes / OpenShift integration
 
 GitLab can be configured to interact with Kubernetes, or other systems using the
@@ -64,10 +68,56 @@ GitLab CI build environment:
 - `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
 - `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
 
-## Web terminals
+## What you can get with the Kubernetes integration
+
+Here's what you can do with GitLab if you enable the Kubernetes integration.
+
+### Deploy Boards
+
+> Available in [GitLab Enterprise Edition Premium][ee].
+
+GitLab's Deploy Boards offer a consolidated view of the current health and
+status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
+displaying the status of the pods in the deployment. Developers and other
+teammates can view the progress and status of a rollout, pod by pod, in the
+workflow they already use without any need to access Kubernetes.
+
+[> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
+
+### Canary Deployments
+
+> Available in [GitLab Enterprise Edition Premium][ee].
+
+Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
+and visualize your canary deployments right inside the Deploy Board, without
+the need to leave GitLab.
+
+[> Read more about Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+
+### Kubernetes monitoring
+
+GitLab has support for automatically detecting and monitoring Kubernetes metrics.
+Kubernetes exposes Node level metrics out of the box via the built-in
+[Prometheus metrics support in cAdvisor](https://github.com/google/cadvisor).
+No additional services or exporters are needed.
+
+[> Read more about Kubernetes monitoring](./prometheus_library/kubernetes.md)
+
+### Auto DevOps
+
+Auto DevOps brings best practices to your project in an easy and default way.
+A typical web project starts with Continuous Integration (CI), then adds
+automated deployment to production, and maybe some time in the future adds some
+kind of monitoring. With Auto DevOps, every project has a complete workflow,
+with no configuration, including: **Auto Build**, **Auto Test**, **Auto Code Quality**,
+**Auto Review Apps**, **Auto Deploy**, and **Auto Monitoring**.
+
+[> Read more about Auto DevOps](../../../topics/autodevops/index.md).
+
+### Web terminals
 
 NOTE: **Note:**
-Added in GitLab 8.15. You must be the project owner or have `master` permissions
+Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
 to use terminals. Support is currently limited to the first container in the
 first pod of your environment.
 
@@ -77,3 +127,5 @@ Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
+
+[ee]: https://about.gitlab.com/gitlab-ee/
