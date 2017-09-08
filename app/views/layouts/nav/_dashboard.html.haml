@@ -1,25 +1,4 @@
 %ul.list-unstyled.navbar-sub-nav
-<<<<<<< HEAD
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "home"}) do
-    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
-      Projects
-
-  = nav_link(controller: ['dashboard/groups', 'explore/groups']) do
-    = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
-      Groups
-
-  = nav_link(path: 'dashboard#activity', html_options: { class: "hidden-xs hidden-sm" }) do
-    = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
-      Activity
-
-  %li.dropdown
-    %a{ href: "#", data: { toggle: "dropdown" } }
-      More
-      = icon("chevron-down", class: "dropdown-chevron")
-    .dropdown-menu
-      %ul
-        = nav_link(path: 'dashboard#activity', html_options: { class: "visible-xs visible-sm" }) do
-=======
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects" }) do
     %a{ href: "#", data: { toggle: "dropdown" } }
       Projects
@@ -54,7 +33,6 @@
             Groups
 
         = nav_link(path: 'dashboard#activity') do
->>>>>>> upstream/master
           = link_to activity_dashboard_path, title: 'Activity' do
             Activity
 
@@ -65,11 +43,6 @@
         = nav_link(controller: 'dashboard/snippets') do
           = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
             Snippets
-<<<<<<< HEAD
-        %li.divider
-        %li
-          = link_to "Help", help_path, title: 'About GitLab CE'
-=======
 
   -# Shortcut to Dashboard > Projects
   %li.hidden
@@ -87,4 +60,7 @@
       = link_to sherlock_transactions_path, class: 'admin-icon', title: 'Sherlock Transactions',
         data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = icon('tachometer fw')
->>>>>>> upstream/master
+  - if Gitlab::Geo.secondary?
+    %li
+      = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+        = icon('globe fw')

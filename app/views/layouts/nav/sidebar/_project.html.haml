@@ -110,11 +110,7 @@
                 = number_with_delimiter(@project.open_issues_count)
 
           %ul.sidebar-sub-level-items
-<<<<<<< HEAD:app/views/layouts/nav/sidebar/_project.html.haml
             = nav_link(controller: :issues, action: :index, html_options: { class: "fly-out-top-item" } ) do
-=======
-            = nav_link(controller: :issues, html_options: { class: "fly-out-top-item" } ) do
->>>>>>> upstream/master:app/views/layouts/nav/sidebar/_project.html.haml
               = link_to project_issues_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Issues') }

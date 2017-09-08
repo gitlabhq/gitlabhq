@@ -2,13 +2,10 @@
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
 @import "framework/mixins";
-<<<<<<< HEAD
-=======
 
 .content-wrapper.page-with-new-nav {
   margin-top: $new-navbar-height;
 }
->>>>>>> upstream/master
 
 header.navbar-gitlab-new {
   color: $white-light;
@@ -431,39 +428,11 @@ header.navbar-gitlab-new {
     }
   }
 }
-<<<<<<< HEAD
-=======
 
 .breadcrumb-item-text {
   @include str-truncated(128px);
 }
 
-.breadcrumbs-list-angle {
-  position: absolute;
-  right: -12px;
-  top: 50%;
-  color: $gl-text-color-tertiary;
-  transform: translateY(-50%);
-}
-
-.breadcrumbs-extra {
-  display: flex;
-  flex: 0 0 auto;
-  margin-left: auto;
-}
-
-.breadcrumbs-sub-title {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
->>>>>>> upstream/master
-
-.breadcrumb-item-text {
-  @include str-truncated(128px);
-}
-
-<<<<<<< HEAD
 .breadcrumbs-list-angle {
   position: absolute;
   right: -12px;
@@ -486,13 +455,14 @@ header.navbar-gitlab-new {
 
   a {
     color: $gl-text-color;
-=======
+  }
+}
+
 .btn-sign-in {
   margin-top: 3px;
   font-weight: $gl-font-weight-bold;
 
   &:hover {
     background-color: $white-light;
->>>>>>> upstream/master
   }
 }
