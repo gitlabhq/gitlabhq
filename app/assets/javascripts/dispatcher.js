@@ -465,7 +465,6 @@ import initGroupAnalytics from './init_group_analytics';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-<<<<<<< HEAD
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
             PathLocks.init(
@@ -474,9 +473,7 @@ import initGroupAnalytics from './init_group_analytics';
             );
           }
 
-=======
           new UserCallout({ setCalloutPerProject: true });
->>>>>>> upstream/master
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
