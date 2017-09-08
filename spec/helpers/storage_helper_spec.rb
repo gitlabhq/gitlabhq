@@ -15,7 +15,7 @@ describe StorageHelper do
     end
 
     it 'uses commas as thousands separator' do
-      expect(helper.storage_counter(100_000_000_000_000_000)).to eq '90,949.5 TB'
+      expect(helper.storage_counter(100_000_000_000_000_000)).to eq '88.8 PB'
     end
   end
 end
