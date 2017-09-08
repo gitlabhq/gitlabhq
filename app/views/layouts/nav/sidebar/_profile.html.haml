@@ -28,6 +28,18 @@
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
                 #{ _('Account') }
+      - if current_application_settings.should_check_namespace_plan?
+        = nav_link(controller: :billings) do
+          = sidebar_link profile_billings_path, title: _('Billing') do
+            .nav-icon-container
+              = custom_icon('credit_card')
+            %span.nav-item-name
+              Billing
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(controller: :billings, html_options: { class: "fly-out-top-item" } ) do
+              = link_to profile_billings_path do
+                %strong.fly-out-top-item-name
+                  #{ _('Billing') }
       - if current_application_settings.user_oauth_applications?
         = nav_link(controller: 'oauth/applications') do
           = sidebar_link applications_profile_path, title: _('Applications') do
@@ -140,5 +152,16 @@
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
                 #{ _('Authentication Log') }
+      = nav_link(path: 'profiles#pipeline_quota') do
+        = sidebar_link profile_pipeline_quota_path, title: _('Pipeline quota') do
+          .nav-icon-container
+            = custom_icon('pipeline')
+          %span.nav-item-name
+            Pipeline quota
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'profiles#pipeline_quota', html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_pipeline_quota_path do
+              %strong.fly-out-top-item-name
+                #{ _('Pipeline quota') }
 
     = render 'shared/sidebar_toggle_button'
