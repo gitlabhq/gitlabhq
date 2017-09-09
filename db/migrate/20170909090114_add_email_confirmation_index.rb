@@ -31,6 +31,6 @@ class AddEmailConfirmationIndex < ActiveRecord::Migration
   end
 
   def down
-    remove_index :emails, :confirmation_token if index_exists?(:emails, :confirmation_token)
+    remove_concurrent_index :emails, :confirmation_token if index_exists?(:emails, :confirmation_token)
   end
 end

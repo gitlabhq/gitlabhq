@@ -30,6 +30,7 @@ module Gitlab
       ci
       dashboard
       deploy.html
+      emails
       explore
       favicon.ico
       files

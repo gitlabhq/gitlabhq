@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Profiles::EmailsController do
-
   let(:user) { create(:user) }
 
   before do
@@ -9,7 +8,7 @@ describe Profiles::EmailsController do
   end
 
   describe '#create' do
-    let(:email_params) { {email: "add_email@example.com" } }
+    let(:email_params) { {email: "add_email@example.com"} }
 
     it 'sends an email confirmation' do
       expect {post(:create, { email: email_params })}.to change { ActionMailer::Base.deliveries.size }
@@ -19,7 +18,7 @@ describe Profiles::EmailsController do
   end
 
   describe '#resend_confirmation_instructions' do
-    let(:email_params) { {email: "add_email@example.com" } }
+    let(:email_params) { {email: "add_email@example.com"} }
 
     it 'resends an email confirmation' do
       email = user.emails.create(email: 'add_email@example.com')
@@ -29,7 +28,7 @@ describe Profiles::EmailsController do
     end
 
     it 'unable to resend an email confirmation' do
-      expect {put(:resend_confirmation_instructions, { id: 1 })}.to_not change { ActionMailer::Base.deliveries.size }
+      expect {put(:resend_confirmation_instructions, { id: 1 })}.not_to change { ActionMailer::Base.deliveries.size }
     end
   end
 end

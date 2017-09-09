@@ -8,7 +8,7 @@ describe Emails::ConfirmService do
 
   describe '#execute' do
     it 'sends a confirmation email again' do
-      email = user.emails.create(email: opts[:email])
+      user.emails.create(email: opts[:email])
       mail  = service.execute
       expect(mail.subject).to eq('Confirmation instructions')
     end

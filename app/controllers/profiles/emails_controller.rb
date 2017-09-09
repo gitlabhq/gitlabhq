@@ -33,7 +33,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
     end
     redirect_to profile_emails_url
   end
-  
+
   private
 
   def email_params

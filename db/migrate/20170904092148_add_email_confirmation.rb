@@ -27,7 +27,7 @@ class AddEmailConfirmation < ActiveRecord::Migration
 
   def change
     add_column :emails, :confirmation_token, :string
-    add_column :emails, :confirmed_at, :datetime
-    add_column :emails, :confirmation_sent_at, :datetime
+    add_column :emails, :confirmed_at, :datetime_with_timezone
+    add_column :emails, :confirmation_sent_at, :datetime_with_timezone
   end
 end
