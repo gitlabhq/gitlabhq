@@ -7,15 +7,16 @@
       - nginx_upstream_responses_total
     weight: 1
     queries:
-    - query_range: 'rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])'
+    - query_range: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code)'
       unit: req / sec
+      label: Status Code
       series:
         - label: status_code
           when:
             - value: 2xx
               color: green
             - value: 4xx
-              color: yellow
+              color: orange
             - value: 5xx
               color: red
   - title: "Latency"
