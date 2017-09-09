@@ -7,7 +7,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 | Name | Query |
 | ---- | ----- |
-| Throughput (req/sec) | rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m]) |
+| Throughput (req/sec) | sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code) |
 | Latency (ms) | avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}) |
 | HTTP Error Rate (HTTP Errors / sec) | sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) |
 
