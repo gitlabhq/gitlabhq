@@ -47,6 +47,6 @@
               %span.label.label-info Public email
             - if email.email === current_user.notification_email
               %span.label.label-info Notification email
-            - if !email.confirmed?
+            - unless email.confirmed?
               %span.label.label-warning Unconfirmed
             = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'
