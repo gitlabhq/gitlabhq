@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddEmailConfirmation < ActiveRecord::Migration
+class AddEmailConfirmationIndex < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -23,11 +23,14 @@ class AddEmailConfirmation < ActiveRecord::Migration
   #
   # To disable transactions uncomment the following line and remove these
   # comments:
-  # disable_ddl_transaction!
+  disable_ddl_transaction!
 
-  def change
-    add_column :emails, :confirmation_token, :string
-    add_column :emails, :confirmed_at, :datetime
-    add_column :emails, :confirmation_sent_at, :datetime
+  # Not necessary to remove duplicates, as :confirmation_token is a new column
+  def up
+    add_concurrent_index :emails, :confirmation_token, unique: true
+  end
+
+  def down
+    remove_index :emails, :confirmation_token if index_exists?(:emails, :confirmation_token)
   end
 end
