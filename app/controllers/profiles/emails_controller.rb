@@ -24,6 +24,16 @@ class Profiles::EmailsController < Profiles::ApplicationController
     end
   end
 
+  def resend_confirmation_instructions
+    @email = current_user.emails.find(params[:id])
+    if @email && Emails::ConfirmService.new(current_user, email: @email.email).execute
+      flash[:notice] = "Confirmation email sent to #{@email.email}"
+    else
+      flash[:alert] = "There was a problem sending the confirmation email"
+    end
+    redirect_to profile_emails_url
+  end
+  
   private
 
   def email_params

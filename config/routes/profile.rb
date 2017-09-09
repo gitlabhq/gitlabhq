@@ -28,7 +28,11 @@ resource :profile, only: [:show, :update] do
         put :revoke
       end
     end
-    resources :emails, only: [:index, :create, :destroy]
+    resources :emails, only: [:index, :create, :destroy] do
+      member do
+        put :resend_confirmation_instructions
+      end
+    end
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do
         delete :deny

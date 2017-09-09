@@ -17,4 +17,19 @@ describe Profiles::EmailsController do
       expect(ActionMailer::Base.deliveries.last.subject).to match "Confirmation instructions"
     end
   end
+
+  describe '#resend_confirmation_instructions' do
+    let(:email_params) { {email: "add_email@example.com" } }
+
+    it 'resends an email confirmation' do
+      email = user.emails.create(email: 'add_email@example.com')
+      expect {put(:resend_confirmation_instructions, { id: email })}.to change { ActionMailer::Base.deliveries.size }
+      expect(ActionMailer::Base.deliveries.last.to).to eq [email_params[:email]]
+      expect(ActionMailer::Base.deliveries.last.subject).to match "Confirmation instructions"
+    end
+
+    it 'unable to resend an email confirmation' do
+      expect {put(:resend_confirmation_instructions, { id: 1 })}.to_not change { ActionMailer::Base.deliveries.size }
+    end
+  end
 end
