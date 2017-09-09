@@ -165,10 +165,10 @@ making them available in the build environment. It's the recommended method to
 use for storing things like passwords, secret keys and credentials.
 
 Project-level secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings ➔ CI/CD**, then finding the section called **Secret variables**.
 
 Likewise, group-level secret variables can be added by going to your group's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings ➔ CI/CD**, then finding the section called **Secret variables**.
 Any variables of [subgroups] will be inherited recursively.
 
 Once you set them, they will be available for all subsequent pipelines. You can also
@@ -185,7 +185,7 @@ protected, it would only be securely passed to pipelines running on the
 protected variables.
 
 Protected variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
+**Settings ➔ CI/CD**, then finding the section called
 **Secret variables**, and check *Protected*.
 
 Once you set them, they will be available for all subsequent pipelines.
