@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170906160132) do
+ActiveRecord::Schema.define(version: 20170910051507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2128,14 +2128,14 @@ ActiveRecord::Schema.define(version: 20170906160132) do
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
-  add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "users"
-  add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_branch_push_access_levels", "namespaces", column: "group_id", name: "fk_7111b68cdb", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade
-  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
+  add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id", name: "fk_b4eb82fe3c", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "protected_tags", name: "fk_f7dfda8c51", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
