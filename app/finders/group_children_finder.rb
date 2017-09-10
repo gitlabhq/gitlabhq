@@ -52,7 +52,7 @@ class GroupChildrenFinder
   end
 
   def subgroups_matching_filter
-    all_subgroups.search(params[:filter])
+    all_subgroups.where.not(id: parent_group).search(params[:filter])
   end
 
   def subgroups

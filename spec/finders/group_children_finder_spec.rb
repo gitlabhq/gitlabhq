@@ -60,6 +60,12 @@ describe GroupChildrenFinder do
 
             expect(finder.execute).to contain_exactly(matching_project)
           end
+
+          it 'does not include the parent itself' do
+            group.update!(name: 'test')
+
+            expect(finder.execute).not_to include(group)
+          end
         end
       end
     end
