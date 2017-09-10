@@ -52,7 +52,7 @@ class GroupChildrenFinder
   end
 
   def subgroups_matching_filter
-    all_subgroups.search(params[:filter]).include(:parent)
+    all_subgroups.search(params[:filter])
   end
 
   def subgroups
@@ -64,7 +64,7 @@ class GroupChildrenFinder
              else
                base_groups
              end
-    groups = groups.includes(:route).includes(:children)
+    groups = groups
     groups.sort(params[:sort])
   end
 
@@ -75,7 +75,6 @@ class GroupChildrenFinder
   def projects_matching_filter
     ProjectsFinder.new(current_user: current_user).execute
       .search(params[:filter])
-      .include(:namespace)
       .where(namespace: all_subgroups)
   end
 
@@ -87,7 +86,6 @@ class GroupChildrenFinder
                else
                  base_projects
                end
-    projects = projects.includes(:route)
     projects.sort(params[:sort])
   end
 end

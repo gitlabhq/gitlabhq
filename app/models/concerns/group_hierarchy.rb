@@ -62,7 +62,12 @@ module GroupHierarchy
     # If both of them are hashes, we can deep_merge with the same logic
     elsif first_child.is_a?(Hash) && second_child.is_a?(Hash)
       first_child.deep_merge(second_child) { |key, first, second| merge_values(first, second) }
-    # One of them is a root node, we just need to put them next to eachother in an array
+    # If only one of them is a hash, we can check if the other child is already
+    # included, we don't need to do anything when it is.
+    elsif first_child.is_a?(Hash) && first_child.keys.include?(second_child)
+      first_child
+    elsif second_child.is_a?(Hash) && second_child.keys.include?(first_child)
+      second_child
     else
       Array.wrap(first_child) + Array.wrap(second_child)
     end

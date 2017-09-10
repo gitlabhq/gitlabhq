@@ -124,6 +124,12 @@ describe GroupHierarchy, :nested_groups do
 
         expect(described_class.merge_hierarchies(elements, parent)).to eq(expected_hierarchy)
       end
+
+      it 'merges to elements in the same hierarchy' do
+        expected_hierarchy = { parent => subgroup }
+
+        expect(described_class.merge_hierarchies([parent, subgroup])).to eq(expected_hierarchy)
+      end
     end
   end
 end
