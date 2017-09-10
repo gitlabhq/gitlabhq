@@ -226,14 +226,10 @@ describe GroupsController do
       end
 
       context 'filtering children' do
-        def get_filtered_list
-          get :children, id: group.to_param, filter: 'filter', format: :json
-        end
-
         it 'expands the tree for matching projects' do
           project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
 
-          get_filtered_list
+          get :children, id: group.to_param, filter: 'filter', format: :json
 
           group_json = json_response.first
           project_json = group_json['children'].first
@@ -245,13 +241,90 @@ describe GroupsController do
         it 'expands the tree for matching subgroups' do
           matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
 
-          get_filtered_list
+          get :children, id: group.to_param, filter: 'filter', format: :json
 
           group_json = json_response.first
           matched_group_json = group_json['children'].first
 
           expect(group_json['id']).to eq(public_subgroup.id)
           expect(matched_group_json['id']).to eq(matched_group.id)
+        end
+      end
+
+      context 'queries per rendered element' do
+        # The expected extra queries for the rendered group are:
+        # 1. Count of memberships of the group
+        # 2. Count of visible projects in the element
+        # 3. Count of visible subgroups in the element
+        let(:expected_queries_per_group) { 3 }
+        let(:expected_queries_per_project) { 0 }
+
+        def get_list
+          get :children, id: group.to_param, format: :json
+        end
+
+        it 'queries the expected amount for a group row' do
+          control_count = ActiveRecord::QueryRecorder.new { get_list }.count
+
+          _new_group = create(:group, :public, parent: group)
+
+          expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+        end
+
+        it 'queries the expected amount for a project row' do
+          control_count = ActiveRecord::QueryRecorder.new { get_list }.count
+
+          _new_project = create(:project, :public, namespace: group)
+
+          expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_project)
+        end
+
+        context 'when rendering hierarchies' do
+          def get_filtered_list
+            get :children, id: group.to_param, filter: 'filter', format: :json
+          end
+
+          it 'queries the expected amount when nested rows are rendered for a group' do
+            matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
+
+            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+
+            nested_group = create(:group, :public, parent: public_subgroup)
+            matched_group.update!(parent: nested_group)
+
+            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+          end
+
+          it 'queries the expected amount when a new group match is added' do
+            create(:group, :public, parent: public_subgroup, name: 'filterme')
+
+            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+
+            create(:group, :public, parent: public_subgroup, name: 'filterme2')
+
+            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+          end
+
+          it 'queries the expected amount when nested rows are rendered for a project' do
+            matched_project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
+
+            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+
+            nested_group = create(:group, :public, parent: public_subgroup)
+            matched_project.update!(namespace: nested_group)
+
+            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+          end
+
+          it 'queries the expected amount when a new project match is added' do
+            create(:project, :public, namespace: public_subgroup, name: 'filterme')
+
+            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+
+            create(:project, :public, namespace: public_subgroup, name: 'filterme2')
+
+            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_project)
+          end
         end
       end
     end

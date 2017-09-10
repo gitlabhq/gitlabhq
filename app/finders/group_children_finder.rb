@@ -65,7 +65,7 @@ class GroupChildrenFinder
                base_groups
              end
     groups = groups
-    groups.sort(params[:sort])
+    groups.sort(params[:sort]).includes(:route)
   end
 
   def base_projects
@@ -86,6 +86,6 @@ class GroupChildrenFinder
                else
                  base_projects
                end
-    projects.sort(params[:sort])
+    projects.sort(params[:sort]).includes(:route, :namespace)
   end
 end

@@ -32,11 +32,9 @@ class GroupChildEntity < Grape::Entity
   end
 
   def permission
-    if project?
-      object.project_members.find_by(user_id: request.current_user)&.human_access
-    else
-      object.group_members.find_by(user_id: request.current_user)&.human_access
-    end
+    return unless request&.current_user
+
+    request.current_user.members.find_by(source: object)&.human_access
   end
 
   # Project only attributes
