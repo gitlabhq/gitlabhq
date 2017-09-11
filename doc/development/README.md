@@ -60,6 +60,7 @@
 - [Ordering Table Columns](ordering_table_columns.md)
 - [Verifying Database Capabilities](verifying_database_capabilities.md)
 - [Hash Indexes](hash_indexes.md)
+- [Swapping Tables](swapping_tables.md)
 
 ## i18n
 
