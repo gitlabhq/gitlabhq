@@ -11,47 +11,28 @@ describe('Ajax Loading Spinner', () => {
     gl.AjaxLoadingSpinner.init();
   });
 
-  it('change current icon with spinner icon and disable link while waiting ajax response', (done) => {
-    spyOn(jQuery, 'ajax').and.callFake((req) => {
-      const xhr = new XMLHttpRequest();
-      const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
-      const icon = ajaxLoadingSpinner.querySelector('i');
+  it('ajaxBeforeSend', () => {
+    const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
+    const icon = ajaxLoadingSpinner.querySelector('i');
 
-      req.beforeSend(xhr, { dataType: 'text/html' });
+    $(ajaxLoadingSpinner).trigger('ajax:beforeSend');
 
-      expect(icon).not.toHaveClass('fa-trash-o');
-      expect(icon).toHaveClass('fa-spinner');
-      expect(icon).toHaveClass('fa-spin');
-      expect(icon.dataset.icon).toEqual('fa-trash-o');
-      expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual('');
-
-      req.complete({});
-
-      done();
-      const deferred = $.Deferred();
-      return deferred.promise();
-    });
-    document.querySelector('.js-ajax-loading-spinner').click();
+    expect(icon).not.toHaveClass('fa-trash-o');
+    expect(icon).toHaveClass('fa-spinner');
+    expect(icon).toHaveClass('fa-spin');
+    expect(icon.dataset.icon).toEqual('fa-trash-o');
+    expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual('');
   });
 
-  it('use original icon again and enabled the link after complete the ajax request', (done) => {
-    spyOn(jQuery, 'ajax').and.callFake((req) => {
-      const xhr = new XMLHttpRequest();
-      const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
+  it('ajaxComplete', () => {
+    const ajaxLoadingSpinner = document.querySelector('.js-ajax-loading-spinner');
+    const icon = ajaxLoadingSpinner.querySelector('i');
 
-      req.beforeSend(xhr, { dataType: 'text/html' });
-      req.complete({});
+    $(ajaxLoadingSpinner).trigger('ajax:ajaxComplete');
 
-      const icon = ajaxLoadingSpinner.querySelector('i');
-      expect(icon).toHaveClass('fa-trash-o');
-      expect(icon).not.toHaveClass('fa-spinner');
-      expect(icon).not.toHaveClass('fa-spin');
-      expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual(null);
-
-      done();
-      const deferred = $.Deferred();
-      return deferred.promise();
-    });
-    document.querySelector('.js-ajax-loading-spinner').click();
+    expect(icon).toHaveClass('fa-trash-o');
+    expect(icon).not.toHaveClass('fa-spinner');
+    expect(icon).not.toHaveClass('fa-spin');
+    expect(ajaxLoadingSpinner.getAttribute('disabled')).toEqual(null);
   });
 });

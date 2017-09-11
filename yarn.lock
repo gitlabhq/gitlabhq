@@ -3506,9 +3506,9 @@ jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
 
-jquery-ujs@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.1.tgz#6ee75b1ef4e9ac95e7124f8d71f7d351f5548e92"
+jquery-ujs@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.2.tgz#6a8ef1020e6b6dda385b90a4bddc128c21c56397"
   dependencies:
     jquery ">=1.8.0"
 
