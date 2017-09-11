@@ -1,0 +1,5 @@
+---
+title: Geo - Ignore S3-backed LFS objects on secondary nodes
+merge_request: 2889
+author:
+type: other
