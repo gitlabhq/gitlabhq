@@ -8,19 +8,9 @@ module Groups
     def execute
       @group = Group.new(params)
 
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
-        deny_visibility_level(@group)
-        return @group
-      end
-
       # Repository size limit comes as MB from the view
       limit = params.delete(:repository_size_limit)
       @group.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
-
-      if @group.parent && !can?(current_user, :create_subgroup, @group.parent)
-        @group.parent = nil
-        @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
-      end
 
       unless can_use_visibility_level? && can_create_group?
         return @group
