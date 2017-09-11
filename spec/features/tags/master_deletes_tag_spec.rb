@@ -51,7 +51,7 @@ feature 'Master deletes tag' do
 
   def delete_first_tag
     page.within('.content') do
-      first('.btn-remove').click
+      first('.btn-remove').trigger('click')
     end
 
     wait_for_requests
