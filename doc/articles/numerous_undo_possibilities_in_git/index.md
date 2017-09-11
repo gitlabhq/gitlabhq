@@ -1,9 +1,14 @@
-# Numerous undo possibilities in Git
-
-> **Article [Type](../../development/writing_documentation.md#types-of-technical-articles):**  tutorial ||
-> **Level:** intermediary ||
-> **Author:** [Crt Mori](https://gitlab.com/Letme)  ||
-> **Publication date:** 2017-08-17
+---
+title: I am a title
+date: 2019-09-09
+author: Hello
+author_gitlab: hello
+last_updated: 2019-09-10
+level: intermediary
+article_type: tutorial
+layout: article
+tags: [ git ]
+---
 
 ## Introduction
 
