@@ -1,0 +1,5 @@
+---
+title: Fix branch name regex not saving in /admin/push_rule config
+merge_request:
+author:
+type: fixed

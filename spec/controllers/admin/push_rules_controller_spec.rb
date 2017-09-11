@@ -10,7 +10,7 @@ describe Admin::PushRulesController do
   describe '#update' do
     let(:params) do
       {
-        deny_delete_tag: true, delete_branch_regex: "any", commit_message_regex: "any",
+        deny_delete_tag: true, delete_branch_regex: "any", commit_message_regex: "any", branch_name_regex: "any",
         force_push_regex: "any", author_email_regex: "any", member_check: true, file_name_regex: "any",
         max_file_size: "0", prevent_secrets: true
       }
