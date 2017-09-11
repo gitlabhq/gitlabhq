@@ -2,6 +2,7 @@
 
 if defined?(Unicorn)
   require 'unicorn'
+  require 'unicorn/soft_timeout'
 
   if ENV['RAILS_ENV'] == 'production' || ENV['RAILS_ENV'] == 'staging'
     # Unicorn self-process killer
@@ -12,6 +13,9 @@ if defined?(Unicorn)
 
     # Max memory size (RSS) per worker
     use Unicorn::WorkerKiller::Oom, min, max
+
+    soft_timeout = (ENV['GITLAB_UNICORN_SOFT_TIMEOUT'] || 55).to_i
+    use Unicorn::SoftTimeout soft_timeout
   end
 end
 

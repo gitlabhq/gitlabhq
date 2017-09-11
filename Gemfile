@@ -137,6 +137,7 @@ gem 'diffy', '~> 3.1.0'
 group :unicorn do
   gem 'unicorn', '~> 5.1.0'
   gem 'unicorn-worker-killer', '~> 0.4.4'
+  gem 'unicorn-soft-timeout', '~> 0.2.0'
 end
 
 # State machine
