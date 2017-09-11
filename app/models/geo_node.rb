@@ -114,11 +114,14 @@ class GeoNode < ActiveRecord::Base
   end
 
   def lfs_objects
-    if restricted_project_ids
-      LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
-    else
-      LfsObject.all
-    end
+    relation =
+      if restricted_project_ids
+        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+      else
+        LfsObject.all
+      end
+
+    relation.with_files_stored_locally
   end
 
   def projects
