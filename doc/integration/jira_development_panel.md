@@ -1,6 +1,6 @@
 # GitLab JIRA Development Panel integration
 
-> [Introduced][ee-2786] in [GitLab Enterprise Edition Premium][eep] 9.1.
+> [Introduced][ee-2381] in [GitLab Enterprise Edition Premium][eep] 10.0.
 
 As an extension to our [existing JIRA][existing-jira] project integration, you're now able to integrate
 all your GitLab projects with [JIRA Development Panel][jira-development-panel]. Both can be used
