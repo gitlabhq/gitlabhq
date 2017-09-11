@@ -18,7 +18,7 @@ class DeleteConflictingRedirectRoutes < ActiveRecord::Migration
   def up
     say opening_message
 
-    queue_background_migration_jobs_by_range(Route, MIGRATION)
+    queue_background_migration_jobs_by_range_at_intervals(Route, MIGRATION, 1.minute)
   end
 
   def down

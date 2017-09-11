@@ -657,7 +657,9 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      # Queues background migration jobs for an entire table, batched by ID range.
+      # Bulk queues background migration jobs for an entire table, batched by ID range.
+      # "Bulk" meaning many jobs will be pushed at a time for efficiency.
+      # If you need a delay interval per job, then use `queue_background_migration_jobs_by_range_at_intervals`.
       #
       # model_class - The table being iterated over
       # job_class_name - The background migration job class as a string
@@ -670,7 +672,7 @@ into similar problems in the future (e.g. when new tables are created).
       #       self.table_name = 'routes'
       #     end
       #
-      #     queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
+      #     bulk_queue_background_migration_jobs_by_range(Route, 'ProcessRoutes')
       #
       # Where the model_class includes EachBatch, and the background migration exists:
       #
@@ -679,7 +681,7 @@ into similar problems in the future (e.g. when new tables are created).
       #         # do something
       #       end
       #     end
-      def queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size = BACKGROUND_MIGRATION_BATCH_SIZE)
+      def bulk_queue_background_migration_jobs_by_range(model_class, job_class_name, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         jobs = []
@@ -700,6 +702,44 @@ into similar problems in the future (e.g. when new tables are created).
         end
 
         BackgroundMigrationWorker.perform_bulk(jobs) unless jobs.empty?
+      end
+
+      # Queues background migration jobs for an entire table, batched by ID range.
+      # Each job is scheduled with a `delay_interval` in between.
+      # If you use a small interval, then some jobs may run at the same time.
+      #
+      # model_class - The table being iterated over
+      # job_class_name - The background migration job class as a string
+      # delay_interval - The duration between each job's scheduled time (must respond to `to_f`)
+      # batch_size - The maximum number of rows per job
+      #
+      # Example:
+      #
+      #     class Route < ActiveRecord::Base
+      #       include EachBatch
+      #       self.table_name = 'routes'
+      #     end
+      #
+      #     queue_background_migration_jobs_by_range_at_intervals(Route, 'ProcessRoutes', 1.minute)
+      #
+      # Where the model_class includes EachBatch, and the background migration exists:
+      #
+      #     class Gitlab::BackgroundMigration::ProcessRoutes
+      #       def perform(start_id, end_id)
+      #         # do something
+      #       end
+      #     end
+      def queue_background_migration_jobs_by_range_at_intervals(model_class, job_class_name, delay_interval, batch_size: BACKGROUND_MIGRATION_BATCH_SIZE)
+        raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
+
+        model_class.each_batch(of: batch_size) do |relation, index|
+          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+
+          # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
+          # the same time, which is not helpful in most cases where we wish to
+          # spread the work over time.
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+        end
       end
     end
   end
