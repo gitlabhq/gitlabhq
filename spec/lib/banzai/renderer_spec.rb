@@ -16,19 +16,11 @@ describe Banzai::Renderer do
 
     context 'without cache' do
       let(:commit) { create(:project, :repository).commit }
-      let(:object) { fake_object(fresh: false) }
 
       it 'returns cacheless render field' do
         expect(renderer).to receive(:cacheless_render_field).with(commit, :title)
 
         renderer.render_field(commit, :title)
-      end
-
-      it "skips database caching on a Geo secondary" do
-        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
-        expect(object).to receive(:refresh_markdown_cache!).with(do_update: false)
-
-        expect(renderer.render_field(object, :field)).to eq('field_html')
       end
     end
 
@@ -40,6 +32,13 @@ describe Banzai::Renderer do
 
         it 'caches and returns the result' do
           expect(object).to receive(:refresh_markdown_cache!).with(do_update: true)
+
+          is_expected.to eq('field_html')
+        end
+
+        it "skips database caching on a Geo secondary" do
+          allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+          expect(object).to receive(:refresh_markdown_cache!).with(do_update: false)
 
           is_expected.to eq('field_html')
         end
