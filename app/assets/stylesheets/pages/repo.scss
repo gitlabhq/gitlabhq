@@ -71,6 +71,11 @@
     height: 100%;
 
     .monaco-editor.vs {
+      .current-line {
+        border: none;
+        background: #f1f1f2;
+      }
+
       .line-numbers {
         cursor: pointer;
 
