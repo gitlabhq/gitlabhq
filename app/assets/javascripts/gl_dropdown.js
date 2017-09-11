@@ -655,7 +655,6 @@ GitLabDropdown = (function() {
         fieldName = this.options.fieldName;
 
         if (value) {
-          value = value.toString().replace(/'/g, '\\\'');
           field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
           if (field.length) {
             selected = true;
