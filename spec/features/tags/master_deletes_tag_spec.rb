@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Master deletes tag' do
+  include WaitForRequests
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -51,5 +53,7 @@ feature 'Master deletes tag' do
     page.within('.content') do
       first('.btn-remove').click
     end
+
+    wait_for_requests
   end
 end
