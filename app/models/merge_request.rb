@@ -942,13 +942,7 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-  def update_project_counter_caches?
-    state_changed?
-  end
-
   def update_project_counter_caches
-    return unless update_project_counter_caches?
-
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 
