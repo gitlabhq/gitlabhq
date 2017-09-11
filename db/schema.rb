@@ -1967,8 +1967,6 @@ ActiveRecord::Schema.define(version: 20170906160132) do
     t.boolean "support_bot"
     t.string "preferred_language"
     t.string "rss_token"
-    t.boolean "external_email", default: false, null: false
-    t.string "email_provider"
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
     t.integer "email_opted_in_source_id"
