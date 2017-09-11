@@ -73,7 +73,7 @@
     .monaco-editor.vs {
       .current-line {
         border: none;
-        background: #f1f1f2;
+        background: $well-light-border;
       }
 
       .line-numbers {
@@ -115,7 +115,7 @@
       overflow: auto;
 
       > div,
-      .file-content {
+      .file-content:not(.wiki) {
         display: flex;
       }
 
