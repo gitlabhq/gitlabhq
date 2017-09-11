@@ -114,16 +114,6 @@ describe Projects::ArtifactsController do
         end
       end
     end
-
-    context 'when the file does not exist' do
-      let(:path) { 'unknown' }
-
-      it 'responds Not Found' do
-        subject
-
-        expect(response).to be_not_found
-      end
-    end
   end
 
   describe 'GET latest_succeeded' do
