@@ -2067,7 +2067,7 @@ describe Repository, models: true do
     it 'returns the local branches' do
       masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev.id)
 
       expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
@@ -2078,7 +2078,7 @@ describe Repository, models: true do
     it 'returns the remote branches' do
       masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev.id)
 
       expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
       expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
