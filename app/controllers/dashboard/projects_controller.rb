@@ -48,7 +48,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     ProjectsFinder
       .new(params: finder_params, current_user: current_user)
       .execute
-      .includes(:route, :creator, namespace: :route)
+      .includes(:route, :creator, namespace: [:route, :owner])
   end
 
   def load_events
