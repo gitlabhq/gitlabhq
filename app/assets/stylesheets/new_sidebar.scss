@@ -162,15 +162,8 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   li.active {
-    box-shadow: inset 4px 0 0 $active-border;
-
     > a {
-      color: $active-color;
       font-weight: $gl-font-weight-bold;
-    }
-
-    svg {
-      fill: $active-color;
     }
   }
 
