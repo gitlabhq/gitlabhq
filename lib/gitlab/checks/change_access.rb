@@ -177,7 +177,7 @@ module Gitlab
 
       def branch_name_allowed_by_push_rule?(push_rule)
         return true unless push_rule
-        return true if @branch_name.empty?
+        return true if @branch_name.blank?
 
         push_rule.branch_name_allowed?(@branch_name)
       end
