@@ -304,7 +304,7 @@ describe API::Jobs do
             let(:api_user) { nil }
 
             it 'does not return specific job artifacts' do
-              expect(response).to have_http_status(401)
+              expect(response).to have_http_status(404)
             end
           end
         end
