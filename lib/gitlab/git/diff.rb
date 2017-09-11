@@ -206,6 +206,10 @@ module Gitlab
         Diff.binary_message(@old_path, @new_path)
       end
 
+      def has_binary_notice?
+        @diff.start_with?('Binary')
+      end
+
       private
 
       def init_from_rugged(rugged)
