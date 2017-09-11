@@ -88,12 +88,21 @@ describe GpgKey do
 
   describe '#emails_with_verified_status' do
     it 'email is verified if the user has the matching email' do
-      user = create :user, email: 'bette.cartwright@example.com'
+      user    = create :user, email: 'bette.cartwright@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+      email_unconfirmed = create :email, user: user
+      user.reload
 
       expect(gpg_key.emails_with_verified_status).to eq(
         'bette.cartwright@example.com' => true,
-        'bette.cartwright@example.net' => false
+        'bette.cartwright@example.net' => false        
+      )
+
+      email_confirmed = create :email, :confirmed, user: user, email: 'bette.cartwright@example.net'
+      user.reload
+      expect(gpg_key.emails_with_verified_status).to eq(
+        'bette.cartwright@example.com' => true,
+        'bette.cartwright@example.net' => true
       )
     end
   end

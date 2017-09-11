@@ -1093,6 +1093,48 @@ describe User do
     end
   end
 
+  describe '#all_emails' do
+    let(:user) { create(:user) }
+
+    it 'returns all emails' do
+      email_confirmed   = create :email, user: user, confirmed_at: Time.now
+      email_unconfirmed = create :email, user: user
+      user.reload
+      expect(user.all_emails).to eq([user.email, email_unconfirmed.email, email_confirmed.email])
+    end
+  end
+
+  describe '#all_verified_emails' do
+    let(:user) { create(:user) }
+
+    it 'returns only confirmed emails' do
+      email_confirmed   = create :email, user: user, confirmed_at: Time.now
+      email_unconfirmed = create :email, user: user
+      user.reload
+      expect(user.all_verified_emails).to eq([user.email, email_confirmed.email])
+    end
+  end
+
+  describe '#verified_email?' do
+    let(:user) { create(:user) }
+
+    it 'returns true when the email is verified/confirmed' do
+      email_confirmed   = create :email, user: user, confirmed_at: Time.now
+      email_unconfirmed = create :email, user: user
+      user.reload
+
+      expect(user.verified_email?(user.email)).to be_truthy
+      expect(user.verified_email?(email_confirmed.email)).to be_truthy
+    end
+
+    it 'returns false when the email is not verified/confirmed' do
+      email_unconfirmed = create :email, user: user
+      user.reload
+
+      expect(user.verified_email?(email_unconfirmed.email)).to be_falsy
+    end
+  end
+
   describe '#requires_ldap_check?' do
     let(:user) { described_class.new }
 
@@ -2070,20 +2112,6 @@ describe User do
           end
         end
       end
-    end
-  end
-
-  describe '#verified_email?' do
-    it 'returns true when the email is the primary email' do
-      user = build :user, email: 'email@example.com'
-
-      expect(user.verified_email?('email@example.com')).to be true
-    end
-
-    it 'returns false when the email is not the primary email' do
-      user = build :user, email: 'email@example.com'
-
-      expect(user.verified_email?('other_email@example.com')).to be false
     end
   end
 

@@ -26,7 +26,7 @@ to be uploaded to GitLab. For a signature to be verified three conditions need
 to be met:
 
 1. The public key needs to be added your GitLab account
-1. One of the emails in the GPG key matches your **primary** email
+1. One of the emails in the GPG key matches a **verified** email address you use in GitLab
 1. The committer's email matches the verified email from the gpg key
 
 ## Generating a GPG key
@@ -94,7 +94,7 @@ started:
     ```
 
 1. Enter you real name, the email address to be associated with this key (should
-   match the primary email address you use in GitLab) and an optional comment
+   match a verified email address you use in GitLab) and an optional comment
    (press <kbd>Enter</kbd> to skip):
 
     ```

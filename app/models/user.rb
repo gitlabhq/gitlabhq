@@ -817,6 +817,17 @@ class User < ActiveRecord::Base
     all_emails
   end
 
+  def all_verified_emails
+    verified_emails = []
+    verified_emails << email if confirmed? && !temp_oauth_email?
+    verified_emails.concat(emails.select {|e| e.confirmed?}.map(&:email))
+    verified_emails
+  end
+
+  def verified_email?(email)
+    all_verified_emails.include?(email)
+  end
+
   def hook_attrs
     {
       name: name,
@@ -1039,10 +1050,6 @@ class User < ActiveRecord::Base
   # solution.
   def rss_token
     ensure_rss_token!
-  end
-
-  def verified_email?(email)
-    self.email == email
   end
 
   def sync_attribute?(attribute)
