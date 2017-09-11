@@ -396,8 +396,8 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UserCallout('js-service-desk-callout');
-          new UserCallout('js-mr-approval-callout');
+          new UserCallout({ className: 'js-service-desk-callout' });
+          new UserCallout({ className: 'js-mr-approval-callout' });
           break;
         case 'projects:imports:show':
           new ProjectImport();
