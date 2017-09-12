@@ -43,7 +43,7 @@ class GroupChildEntity < Grape::Entity
 
   # Group only attributes
   expose :children_count, :leave_path, :parent_id, :number_projects_with_delimiter,
-         :number_users_with_delimiter, :project_count, :subgroup_count,
+         :number_users_with_delimiter, :project_count, :subgroup_count, :can_leave,
          unless: lambda { |_instance, _options| project? }
 
   def children_finder
@@ -64,6 +64,14 @@ class GroupChildEntity < Grape::Entity
 
   def leave_path
     leave_group_group_members_path(object)
+  end
+
+  def can_leave
+    if membership = object.members_and_requesters.find_by(user: request.current_user)
+      can?(request.current_user, :destroy_group_member, membership)
+    else
+      false
+    end
   end
 
   def number_projects_with_delimiter

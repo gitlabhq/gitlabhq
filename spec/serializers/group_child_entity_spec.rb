@@ -83,6 +83,12 @@ describe GroupChildEntity do
       end
     end
 
+    it 'allows an owner to leave when there is another one' do
+      object.add_owner(create(:user))
+
+      expect(json[:can_leave]).to be_truthy
+    end
+
     it_behaves_like 'group child json'
   end
 end
