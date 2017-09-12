@@ -2682,4 +2682,60 @@ describe Project do
       end
     end
   end
+
+  describe '#latest_successful_builds_for' do
+    let(:project) { build(:project) }
+
+    before do
+      allow(project).to receive(:default_branch).and_return('master')
+    end
+
+    context 'without a ref' do
+      it 'returns a pipeline for the default branch' do
+        expect(project)
+          .to receive(:latest_successful_pipeline_for_default_branch)
+
+        project.latest_successful_pipeline_for
+      end
+    end
+
+    context 'with the ref set to the default branch' do
+      it 'returns a pipeline for the default branch' do
+        expect(project)
+          .to receive(:latest_successful_pipeline_for_default_branch)
+
+        project.latest_successful_pipeline_for(project.default_branch)
+      end
+    end
+
+    context 'with a ref that is not the default branch' do
+      it 'returns the latest successful pipeline for the given ref' do
+        expect(project.pipelines).to receive(:latest_successful_for).with('foo')
+
+        project.latest_successful_pipeline_for('foo')
+      end
+    end
+  end
+
+  describe '#latest_successful_pipeline_for_default_branch' do
+    let(:project) { build(:project) }
+
+    before do
+      allow(project).to receive(:default_branch).and_return('master')
+    end
+
+    it 'memoizes and returns the latest successful pipeline for the default branch' do
+      pipeline = double(:pipeline)
+
+      expect(project.pipelines).to receive(:latest_successful_for)
+        .with(project.default_branch)
+        .and_return(pipeline)
+        .once
+
+      2.times do
+        expect(project.latest_successful_pipeline_for_default_branch)
+          .to eq(pipeline)
+      end
+    end
+  end
 end
