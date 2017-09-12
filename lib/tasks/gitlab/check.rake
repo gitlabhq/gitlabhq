@@ -427,7 +427,6 @@ namespace :gitlab do
     end
   end
 
-
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
