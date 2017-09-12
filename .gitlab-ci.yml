@@ -46,10 +46,6 @@ stages:
 .dedicated-runner: &dedicated-runner
   retry: 1
   tags:
-    - gitlab-org
-
-.dedicated-runner-high-cpu: &dedicated-runner-high-cpu
-  tags:
     - gitlab-org-high-cpu
 
 .tests-metadata-state: &tests-metadata-state
@@ -82,7 +78,7 @@ stages:
     - /(^docs[\/-].*|.*-docs$)/
 
 .rspec-metadata: &rspec-metadata
-  <<: *dedicated-runner-high-cpu
+  <<: *dedicated-runner
   <<: *pull-cache
   stage: test
   script:
@@ -120,7 +116,7 @@ stages:
   <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
-  <<: *dedicated-runner-high-cpu
+  <<: *dedicated-runner
   <<: *pull-cache
   stage: test
   script:
@@ -279,7 +275,7 @@ flaky-examples-check:
 
 setup-test-env:
   <<: *use-pg
-  <<: *dedicated-runner-high-cpu
+  <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
   cache:
@@ -520,7 +516,7 @@ db:seed_fu-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  <<: *dedicated-runner-high-cpu
+  <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
   stage: test
