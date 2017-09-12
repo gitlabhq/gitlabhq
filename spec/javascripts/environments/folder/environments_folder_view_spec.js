@@ -15,7 +15,7 @@ describe('Environments Folder View', () => {
   });
 
   afterEach(() => {
-    window.history.pushState({}, null, '');
+    window.history.pushState({}, null, '/');
   });
 
   let component;
