@@ -80,8 +80,6 @@ module API
           }
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
-            authorize! :create_note, noteable
-
             if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
               opts[:created_at] = params[:created_at]
             end

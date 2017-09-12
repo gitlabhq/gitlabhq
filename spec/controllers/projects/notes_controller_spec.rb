@@ -261,6 +261,11 @@ describe Projects::NotesController do
         before do
           project.project_member(user).destroy
         end
+
+        it 'returns 404 status' do
+          post :create, request_params
+
+          expect(response).to have_http_status(404)
         end
 
         it 'does not create a new note' do

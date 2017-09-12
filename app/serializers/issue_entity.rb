@@ -3,7 +3,6 @@ class IssueEntity < IssuableEntity
 
   expose :branch_name
   expose :confidential
-  expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic
   expose :due_date
   expose :moved_to_id
@@ -15,7 +14,7 @@ class IssueEntity < IssuableEntity
 
   expose :current_user do
     expose :can_create_note do |issue|
-      can?(request.current_user, :create_note, issue)
+      can?(request.current_user, :create_note, issue.project)
     end
 
     expose :can_update do |issue|
