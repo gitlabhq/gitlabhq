@@ -68,7 +68,7 @@ describe AutoDevopsHelper do
 
     context 'when master contains a .gitlab-ci.yml file' do
       before do
-        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: [ 'test']")
+        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
       end
 
       it { is_expected.to eq(false) }
