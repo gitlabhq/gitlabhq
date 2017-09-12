@@ -8,21 +8,28 @@ describe API::Runners do
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
-  let!(:shared_runner) { create(:ci_runner, :shared) }
+  let(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
+
+  let!(:shared_runner) { create(:ci_runner, :shared, description: 'Shared runner') }
   let!(:unused_specific_runner) { create(:ci_runner) }
 
-  let!(:specific_runner) do
-    create(:ci_runner).tap do |runner|
+  let!(:project_runner) do
+    create(:ci_runner, description: 'Project runner').tap do |runner|
       create(:ci_runner_project, runner: runner, project: project)
     end
   end
 
   let!(:two_projects_runner) do
-    create(:ci_runner).tap do |runner|
+    create(:ci_runner, description: 'Two projects runner').tap do |runner|
       create(:ci_runner_project, runner: runner, project: project)
       create(:ci_runner_project, runner: runner, project: project2)
     end
   end
+
+  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+
+  let!(:two_groups_runner) { create(:ci_runner, description: 'Two groups runner', groups: [group, group2]) }
 
   before do
     # Set project access for users
@@ -37,9 +44,13 @@ describe API::Runners do
         get api('/runners', user)
 
         shared = json_response.any? { |r| r['is_shared'] }
+        descriptions = json_response.map { |runner| runner['description'] }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(descriptions).to contain_exactly(
+          'Project runner', 'Group runner', 'Two projects runner', 'Two groups runner'
+        )
         expect(shared).to be_falsey
       end
 
@@ -128,10 +139,26 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it "returns runner's details" do
-          get api("/runners/#{specific_runner.id}", admin)
+          get api("/runners/#{project_runner.id}", admin)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response['description']).to eq(specific_runner.description)
+          expect(json_response['description']).to eq(project_runner.description)
+        end
+
+        it "returns the project's details for a project runner" do
+          get api("/runners/#{project_runner.id}", admin)
+
+          expect(json_response['projects'].first['id']).to eq(project.id)
+        end
+
+        it "returns the group's details for a group runner" do
+          get api("/runners/#{group_runner.id}", admin)
+
+          expect(json_response['groups'].first).to eq(
+            'id' => group.id,
+            'web_url' => group.web_url,
+            'name' => group.name
+          )
         end
       end
 
@@ -145,10 +172,10 @@ describe API::Runners do
     context "runner project's administrative user" do
       context 'when runner is not shared' do
         it "returns runner's details" do
-          get api("/runners/#{specific_runner.id}", user)
+          get api("/runners/#{project_runner.id}", user)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(json_response['description']).to eq(specific_runner.description)
+          expect(json_response['description']).to eq(project_runner.description)
         end
       end
 
@@ -162,17 +189,40 @@ describe API::Runners do
       end
     end
 
+    context "runner group's administrative user" do
+      context 'when runner is not shared' do
+        it "returns runner's details" do
+          get api("/runners/#{group_runner.id}", user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response['id']).to eq(group_runner.id)
+        end
+      end
+    end
+
     context 'other authorized user' do
-      it "does not return runner's details" do
-        get api("/runners/#{specific_runner.id}", user2)
+      it "does not return project runner's details" do
+        get api("/runners/#{project_runner.id}", user2)
+
+        expect(response).to have_http_status(403)
+      end
+
+      it "does not return group runner's details" do
+        get api("/runners/#{group_runner.id}", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'unauthorized user' do
-      it "does not return runner's details" do
-        get api("/runners/#{specific_runner.id}")
+      it "does not return project runner's details" do
+        get api("/runners/#{project_runner.id}")
+
+        expect(response).to have_http_status(401)
+      end
+
+      it "does not return group runner's details" do
+        get api("/runners/#{group_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -209,16 +259,16 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'updates runner' do
-          description = specific_runner.description
-          runner_queue_value = specific_runner.ensure_runner_queue_value
+          description = project_runner.description
+          runner_queue_value = project_runner.ensure_runner_queue_value
 
-          update_runner(specific_runner.id, admin, description: 'test')
-          specific_runner.reload
+          update_runner(project_runner.id, admin, description: 'test')
+          project_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
-          expect(specific_runner.description).to eq('test')
-          expect(specific_runner.description).not_to eq(description)
-          expect(specific_runner.ensure_runner_queue_value)
+          expect(project_runner.description).to eq('test')
+          expect(project_runner.description).not_to eq(description)
+          expect(project_runner.ensure_runner_queue_value)
             .not_to eq(runner_queue_value)
         end
       end
@@ -244,27 +294,49 @@ describe API::Runners do
       end
 
       context 'when runner is not shared' do
-        it 'does not update runner without access to it' do
-          put api("/runners/#{specific_runner.id}", user2), description: 'test'
+        it 'does not update project runner without access to it' do
+          put api("/runners/#{project_runner.id}", user2), description: 'test'
+
+          expect(response).to have_http_status(403)
+        end
+
+        it 'does not update group runner without access to it' do
+          put api("/runners/#{group_runner.id}", user2), description: 'test'
 
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'updates runner with access to it' do
-          description = specific_runner.description
-          put api("/runners/#{specific_runner.id}", admin), description: 'test'
-          specific_runner.reload
+        it 'updates project runner with access to it' do
+          description = project_runner.description
+          put api("/runners/#{project_runner.id}", admin), description: 'test'
+          project_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
-          expect(specific_runner.description).to eq('test')
-          expect(specific_runner.description).not_to eq(description)
+          expect(project_runner.description).to eq('test')
+          expect(project_runner.description).not_to eq(description)
+        end
+
+        it 'updates group runner with access to it' do
+          description = group_runner.description
+          put api("/runners/#{group_runner.id}", admin), description: 'test'
+          group_runner.reload
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(group_runner.description).to eq('test')
+          expect(group_runner.description).not_to eq(description)
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete runner' do
-        put api("/runners/#{specific_runner.id}")
+      it 'does not delete project runner' do
+        put api("/runners/#{project_runner.id}")
+
+        expect(response).to have_http_status(401)
+      end
+
+      it 'does not delete group runner' do
+        put api("/runners/#{group_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -296,9 +368,17 @@ describe API::Runners do
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
-        it 'deletes used runner' do
+        it 'deletes used project runner' do
           expect do
-            delete api("/runners/#{specific_runner.id}", admin)
+            delete api("/runners/#{project_runner.id}", admin)
+
+            expect(response).to have_http_status(204)
+          end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it 'deletes used group runner' do
+          expect do
+            delete api("/runners/#{group_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
@@ -322,32 +402,51 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'does not delete runner without access to it' do
-          delete api("/runners/#{specific_runner.id}", user2)
+          delete api("/runners/#{project_runner.id}", user2)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'does not delete runner with more than one associated project' do
+        it 'does not delete project runner with more than one associated project' do
           delete api("/runners/#{two_projects_runner.id}", user)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'deletes runner for one owned project' do
+        it 'deletes project runner for one owned project' do
           expect do
-            delete api("/runners/#{specific_runner.id}", user)
+            delete api("/runners/#{project_runner.id}", user)
+
+            expect(response).to have_http_status(204)
+          end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it 'does not delete group runner with more than one associated group' do
+          delete api("/runners/#{two_groups_runner.id}", user)
+          expect(response).to have_http_status(403)
+        end
+
+        it 'deletes group runner for one owned group' do
+          expect do
+            delete api("/runners/#{group_runner.id}", user)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/runners/#{specific_runner.id}", user) }
+          let(:request) { api("/runners/#{project_runner.id}", user) }
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete runner' do
-        delete api("/runners/#{specific_runner.id}")
+      it 'does not delete project runner' do
+        delete api("/runners/#{project_runner.id}")
+
+        expect(response).to have_http_status(401)
+      end
+
+      it 'does not delete group runner' do
+        delete api("/runners/#{group_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -520,7 +619,7 @@ describe API::Runners do
 
   describe 'POST /projects/:id/runners' do
     context 'authorized user' do
-      let(:specific_runner2) do
+      let(:project_runner2) do
         create(:ci_runner).tap do |runner|
           create(:ci_runner_project, runner: runner, project: project2)
         end
@@ -528,23 +627,23 @@ describe API::Runners do
 
       it 'enables specific runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
+          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
         end.to change { project.runners.count }.by(+1)
         expect(response).to have_gitlab_http_status(201)
       end
 
       it 'avoids changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
+          post api("/projects/#{project.id}/runners", user), runner_id: project_runner.id
         end.to change { project.runners.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
       end
 
       it 'does not enable locked runner' do
-        specific_runner2.update(locked: true)
+        project_runner2.update(locked: true)
 
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
+          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
         end.to change { project.runners.count }.by(0)
 
         expect(response).to have_gitlab_http_status(403)
@@ -616,7 +715,7 @@ describe API::Runners do
       context 'when runner have one associated projects' do
         it "does not disable project's runner" do
           expect do
-            delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
+            delete api("/projects/#{project.id}/runners/#{project_runner.id}", user)
           end.to change { project.runners.count }.by(0)
           expect(response).to have_gitlab_http_status(403)
         end
@@ -631,7 +730,7 @@ describe API::Runners do
 
     context 'authorized user without permissions' do
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
+        delete api("/projects/#{project.id}/runners/#{project_runner.id}", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -639,7 +738,7 @@ describe API::Runners do
 
     context 'unauthorized user' do
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{specific_runner.id}")
+        delete api("/projects/#{project.id}/runners/#{project_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end

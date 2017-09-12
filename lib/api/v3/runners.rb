@@ -54,6 +54,7 @@ module API
 
           forbidden!("Runner is shared") if runner.is_shared?
           forbidden!("Runner associated with more than one project") if runner.projects.count > 1
+          forbidden!("Runner associated with more that one group") if runner.groups.count > 1
           forbidden!("No access granted") unless user_can_access_runner?(runner)
         end
 
