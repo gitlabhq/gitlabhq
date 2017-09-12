@@ -436,12 +436,6 @@ describe IssuesFinder do
           expect(subject).to include(public_issue)
           expect(subject).not_to include(confidential_issue)
         end
-
-        it 'filters by confidentiality' do
-          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
-        end
       end
 
       context 'for a guest user' do
