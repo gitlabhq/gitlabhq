@@ -931,7 +931,7 @@ describe Repository, models: true do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, target_repository, old_rev, new_rev, updating_ref)
+          .with(user, target_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
@@ -973,7 +973,7 @@ describe Repository, models: true do
           expect(target_project.repository).to receive(:fetch_ref)
             .and_call_original
 
-          GitOperationService.new(committer, target_repository)
+          GitOperationService.new(user, target_repository)
             .with_branch(
               'master',
               start_project: project,
@@ -989,7 +989,7 @@ describe Repository, models: true do
         it 'does not fetch_ref and just pass the commit' do
           expect(target_repository).not_to receive(:fetch_ref)
 
-          GitOperationService.new(committer, target_repository)
+          GitOperationService.new(user, target_repository)
             .with_branch('feature', start_project: project) { new_rev }
         end
       end
