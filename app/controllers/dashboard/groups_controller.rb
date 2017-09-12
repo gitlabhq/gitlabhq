@@ -15,7 +15,7 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
         current_user.groups
       end
 
-    @groups = @groups.search(params[:filter_groups]) if params[:filter_groups].present?
+    @groups = @groups.search(params[:filter]) if params[:filter].present?
     @groups = @groups.includes(:route)
     @groups = @groups.sort(@sort)
     @groups = @groups.page(params[:page])
@@ -23,10 +23,9 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: GroupSerializer
-          .new(current_user: @current_user)
-          .with_pagination(request, response)
-          .represent(@groups)
+        serializer = GroupChildSerializer.new(current_user: current_user)
+                       .with_pagination(request, response)
+        render json: serializer.represent(@groups)
       end
     end
   end

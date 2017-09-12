@@ -5,13 +5,14 @@ class GroupChildSerializer < BaseSerializer
 
   entity GroupChildEntity
 
-  def expand_hierarchy(hierarchy_root)
+  def expand_hierarchy(hierarchy_root = nil)
     @hierarchy_root = hierarchy_root
+    @expand_hierarchy = true
     self
   end
 
   def represent(resource, opts = {}, entity_class = nil)
-    if hierarchy_root.present?
+    if @expand_hierarchy
       represent_hierarchies(resource, opts)
     else
       super(resource, opts)

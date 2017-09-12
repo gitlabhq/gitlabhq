@@ -49,6 +49,22 @@ describe GroupChildSerializer do
         expect(subgroup1_json[:id]).to eq(subgroup1.id)
         expect(subsub_group1_json[:id]).to eq(subsub_group1.id)
       end
+
+      context 'without a specified parent' do
+        subject(:serializer) do
+          described_class.new(current_user: user).expand_hierarchy
+        end
+
+        it 'can render a tree' do
+          subgroup = create(:group, parent: parent)
+
+          json = serializer.represent([subgroup])
+          parent_json = json.first
+
+          expect(parent_json[:id]).to eq(parent.id)
+          expect(parent_json[:children].first[:id]).to eq(subgroup.id)
+        end
+      end
     end
 
     context 'for projects' do
