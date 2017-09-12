@@ -810,6 +810,10 @@ class User < ActiveRecord::Base
     avatar_path(args) || GravatarService.new.execute(email, size, scale, username: username)
   end
 
+  def primary_email_verified?
+    confirmed? && !temp_oauth_email?
+  end
+
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?
@@ -817,15 +821,15 @@ class User < ActiveRecord::Base
     all_emails
   end
 
-  def all_verified_emails
+  def verified_emails
     verified_emails = []
-    verified_emails << email if confirmed? && !temp_oauth_email?
-    verified_emails.concat(emails.select {|e| e.confirmed?}.map(&:email))
+    verified_emails << email if primary_email_verified?
+    verified_emails.concat(emails.where.not(confirmed_at: nil).pluck(:email))
     verified_emails
   end
 
-  def verified_email?(email)
-    all_verified_emails.include?(email)
+  def verified_email?(check_email)
+    (email == check_email && primary_email_verified?) || verified_emails.include?(check_email)
   end
 
   def hook_attrs

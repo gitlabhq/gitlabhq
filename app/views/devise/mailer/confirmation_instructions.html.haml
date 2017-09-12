@@ -1,4 +1,1 @@
-- if @resource.is_a?(User)
-  = render partial: 'confirmation_instructions_account'
-- else
-  = render partial: 'confirmation_instructions_secondary'
+= render partial: "confirmation_instructions_#{@resource.is_a?(User) ? 'account' : 'secondary'}"

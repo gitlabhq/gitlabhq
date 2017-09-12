@@ -12,7 +12,7 @@ devise_scope :user do
 end
 
 # for secondary email confirmations
-devise_for   :emails, controllers: { confirmations: :confirmations }
+devise_for :emails, controllers: { confirmations: :confirmations }
 
 scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do
   scope(path: 'users/:username',

@@ -1100,18 +1100,18 @@ describe User do
       email_confirmed   = create :email, user: user, confirmed_at: Time.now
       email_unconfirmed = create :email, user: user
       user.reload
-      expect(user.all_emails).to eq([user.email, email_unconfirmed.email, email_confirmed.email])
+      expect(user.all_emails).to match_array([user.email, email_unconfirmed.email, email_confirmed.email])
     end
   end
 
-  describe '#all_verified_emails' do
+  describe '#verified_emails' do
     let(:user) { create(:user) }
 
     it 'returns only confirmed emails' do
       email_confirmed   = create :email, user: user, confirmed_at: Time.now
       email_unconfirmed = create :email, user: user
       user.reload
-      expect(user.all_verified_emails).to eq([user.email, email_confirmed.email])
+      expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
     end
   end
 
