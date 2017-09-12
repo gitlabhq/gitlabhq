@@ -1,7 +1,7 @@
 export default class GeoNodeForm {
   constructor(container) {
     this.$container = container;
-    this.$namespaces = this.$container.find('.js-namespaces');
+    this.$namespaces = this.$container.find('.js-hide-if-geo-primary');
     this.$namespacesSelect = this.$namespaces.find('.select2');
     this.$primaryCheckbox = this.$container.find("input[type='checkbox']");
     this.$primaryCheckbox.on('change', () => this.onPrimaryCheckboxChange());

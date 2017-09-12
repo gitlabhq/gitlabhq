@@ -63,31 +63,11 @@ logins opened on all nodes as we will be moving back and forth.
     sudo -i
     ```
 
-1. (Source install only): Create a new SSH key pair for the primary node. Choose the default location
-   and leave the password blank by hitting 'Enter' three times:
+1. Add this node as the Geo primary by running:
 
     ```bash
-    sudo -u git -H ssh-keygen -b 4096 -C 'Primary GitLab Geo node'
+    bundle exec rake geo:set_primary_node
     ```
-
-    Read more in [additional info for SSH key pairs](#additional-information-for-the-ssh-key-pairs).
-
-1. Get the contents of `id_rsa.pub` for the git user:
-
-    ```
-    sudo -u git cat /home/git/.ssh/id_rsa.pub
-    ```
-
-1. Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
-   your browser.
-
-1. Add the primary node by providing its full URL and the public SSH key
-   you created previously. Make sure to check the box 'This is a primary node'
-   when adding it.
-
-    ![Add new primary Geo node](img/geo_nodes_add_new.png)
-
-1. Click the **Add node** button.
 
 ### Step 2. Updating the `known_hosts` file of the secondary nodes
 
@@ -318,7 +298,7 @@ Point your users to the [after setup steps](after_setup.md).
 ## Adding another secondary Geo node
 
 To add another Geo node in an already Geo configured infrastructure, just follow
-[the steps starting form step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
+[the steps starting from step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
 Just omit the first step that sets up the primary node.
 
 ## Additional information for the SSH key pairs

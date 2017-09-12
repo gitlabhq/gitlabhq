@@ -1,0 +1,5 @@
+---
+title: Geo primary nodes no longer require SSH keys
+merge_request: 2861
+author:
+type: changed

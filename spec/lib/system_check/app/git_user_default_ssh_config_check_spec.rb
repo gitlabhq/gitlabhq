@@ -34,6 +34,15 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
 
       it { is_expected.to eq(expected_result) }
     end
+
+    # EE-only
+    it 'skips Geo secondaries' do
+      stub_user
+      stub_home_dir
+      allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+
+      is_expected.to be_truthy
+    end
   end
 
   describe '#check?' do

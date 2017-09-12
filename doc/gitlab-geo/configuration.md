@@ -62,15 +62,13 @@ logins opened on all nodes as we will be moving back and forth.
     sudo -i
     ```
 
-1. Added in GitLab 9.1: Execute the command below to define the node as primary Geo node:
+1. Execute the command below to define the node as primary Geo node:
 
     ```
     gitlab-ctl set-geo-primary-node
     ```
 
-    This command will use your defined `external_url` in `gitlab.rb` and pre-generated SSH key pairs.
-
-    Read more in [additional info for SSH key pairs](#additional-information-for-the-ssh-key-pairs).
+    This command will use your defined `external_url` in `gitlab.rb`
 
 ### Step 2. Updating the `known_hosts` file of the secondary nodes
 
@@ -282,29 +280,14 @@ Just omit the first step that sets up the primary node.
 
 ## Additional information for the SSH key pairs
 
-When adding a new Geo node, you must provide an SSH public key of the user that
-your GitLab instance runs on (unless changed, should be the user `git`). This
-user will act as a "normal user" who fetches from the primary Geo node.
+When adding a new **secondary** Geo node, you must provide an SSH public key for
+the system user that your GitLab instance runs as (unless changed, should be the
+user `git`). This user will act as a "normal user" who fetches from the primary
+Geo node.
 
-If for any reason you generate the key using a different name from the default
-`id_rsa`, or you want to generate an extra key only for the repository
-synchronization feature, you can do so, but you have to create/modify your
-`~/.ssh/config` (for the `git` user).
-
-This is an example on how to change the default key for all remote hosts:
-
-```bash
-Host *                              # Match all remote hosts
-  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
-```
-
-This is how to change it for an specific host:
-
-```bash
-Host example.com                    # The FQDN of the primary Geo node
-  HostName example.com              # The FQDN of the primary Geo node
-  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
-```
+Omnibus automatically generates `~git/.ssh/id_rsa` and `~git/.ssh/id_rsa.pub`
+files on secondary Geo nodes. Primaries do not need these files, and you should
+not create them manually.
 
 ### Upgrading Geo
 
