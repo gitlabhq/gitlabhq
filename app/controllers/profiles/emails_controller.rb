@@ -1,4 +1,7 @@
 class Profiles::EmailsController < Profiles::ApplicationController
+
+  before_action :find_email, only: [:destroy, :resend_confirmation_instructions]
+
   def index
     @primary = current_user.email
     @emails = current_user.emails.order_id_desc
@@ -14,9 +17,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def destroy
-    @email = current_user.emails.find(params[:id])
-
-    Emails::DestroyService.new(current_user, email: @email.email).execute
+    Emails::DestroyService.new(current_user).execute(@email)
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url, status: 302 }
@@ -25,8 +26,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def resend_confirmation_instructions
-    @email = current_user.emails.find(params[:id])
-    if @email && Emails::ConfirmService.new(current_user, email: @email.email).execute
+    if Emails::ConfirmService.new(current_user).execute(@email)
       flash[:notice] = "Confirmation email sent to #{@email.email}"
     else
       flash[:alert] = "There was a problem sending the confirmation email"
@@ -38,5 +38,9 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def email_params
     params.require(:email).permit(:email)
+  end
+  
+  def find_email
+    @email = current_user.emails.find(params[:id])
   end
 end

@@ -1,7 +1,7 @@
 module Emails
   class ConfirmService < ::Emails::BaseService
-    def execute
-      Email.find_by_email!(@email).resend_confirmation_instructions
+    def execute(email_record)
+      email_record.resend_confirmation_instructions
     end
   end
 end
