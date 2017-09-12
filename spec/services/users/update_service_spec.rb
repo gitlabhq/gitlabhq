@@ -37,7 +37,7 @@ describe Users::UpdateService do
 
   describe '#execute!' do
     it 'updates the name' do
-      service = described_class.new(user, name: 'New Name')
+      service = described_class.new(user, user, name: 'New Name')
       expect(service).not_to receive(:notify_new_user)
 
       result = service.execute!
@@ -55,7 +55,7 @@ describe Users::UpdateService do
     it 'fires system hooks when a new user is saved' do
       system_hook_service = spy(:system_hook_service)
       user = build(:user)
-      service = described_class.new(user, name: 'John Doe')
+      service = described_class.new(user, user, name: 'John Doe')
       expect(service).to receive(:notify_new_user).and_call_original
       expect(service).to receive(:system_hook_service).and_return(system_hook_service)
 
