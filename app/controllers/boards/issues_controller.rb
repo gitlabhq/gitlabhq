@@ -12,10 +12,10 @@ module Boards
       issues = issues.page(params[:page]).per(params[:per] || 20)
       make_sure_position_is_set(issues)
       issues = issues.preload(:project,
-                              :labels,
                               :milestone,
                               :assignees,
-                              :notes => [:award_emoji, :author]
+                              labels: [:priorities],
+                              notes: [:award_emoji, :author]
                              )
 
       render json: {
