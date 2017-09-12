@@ -96,5 +96,41 @@ describe Banzai::Filter::TableOfContentsFilter do
       expect(links.last.attr('href')).to eq '#header-2'
       expect(links.last.text).to eq 'Header 2'
     end
+
+    context 'table of contents nesting' do
+      let(:results) do
+        result(
+          header(1, 'Header 1') <<
+          header(2, 'Header 1-1') <<
+          header(3, 'Header 1-1-1') <<
+          header(2, 'Header 1-2') <<
+          header(1, 'Header 2') <<
+          header(2, 'Header 2-1')
+        )
+      end
+
+      it 'keeps list levels regarding header levels' do
+        items = doc.css('li')
+
+        # Header 1
+        expect(items[0].ancestors).to satisfy_none { |node| node.name == 'li' }
+
+        # Header 1-1
+        expect(items[1].ancestors).to include(items[0])
+
+        # Header 1-1-1
+        expect(items[2].ancestors).to include(items[0], items[1])
+
+        # Header 1-2
+        expect(items[3].ancestors).to include(items[0])
+        expect(items[3].ancestors).not_to include(items[1])
+
+        # Header 2
+        expect(items[4].ancestors).to satisfy_none { |node| node.name == 'li' }
+
+        # Header 2-1
+        expect(items[5].ancestors).to include(items[4])
+      end
+    end
   end
 end

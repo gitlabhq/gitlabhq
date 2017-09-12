@@ -1,5 +1,15 @@
 module API
   module Entities
+    class WikiPageBasic < Grape::Entity
+      expose :format
+      expose :slug
+      expose :title
+    end
+
+    class WikiPage < WikiPageBasic
+      expose :content
+    end
+
     class UserSafe < Grape::Entity
       expose :id, :name, :username
     end
@@ -35,7 +45,7 @@ module API
       expose :confirmed_at
       expose :last_activity_on
       expose :email
-      expose :color_scheme_id, :projects_limit, :current_sign_in_at
+      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
@@ -129,6 +139,7 @@ module API
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
+      expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -319,10 +330,11 @@ module API
     end
 
     class RepoDiff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+      expose :json_safe_diff, as: :diff
     end
 
     class ProtectedRefAccess < Grape::Entity
@@ -553,6 +565,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -603,7 +619,7 @@ module API
     end
 
     class Event < Grape::Entity
-      expose :title, :project_id, :action_name
+      expose :project_id, :action_name
       expose :target_id, :target_iid, :target_type, :author_id
       expose :target_title
       expose :created_at

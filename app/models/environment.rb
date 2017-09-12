@@ -82,12 +82,7 @@ class Environment < ActiveRecord::Base
   def set_environment_type
     names = name.split('/')
 
-    self.environment_type =
-      if names.many?
-        names.first
-      else
-        nil
-      end
+    self.environment_type = names.many? ? names.first : nil
   end
 
   def includes_commit?(commit)
@@ -101,7 +96,7 @@ class Environment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics?
-    (environment_type || name) == "production"
+    folder_name == "production"
   end
 
   def first_deployment_for(commit)
@@ -225,6 +220,10 @@ class Environment < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_environments_path(
       project,
       format: :json)
+  end
+
+  def folder_name
+    self.environment_type || self.name
   end
 
   private

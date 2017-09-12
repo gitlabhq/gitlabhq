@@ -66,6 +66,10 @@ class IssuableFinder
     execute.find_by(*params)
   end
 
+  def row_count
+    Gitlab::IssuablesCountForState.new(self).for_state_or_opened(params[:state])
+  end
+
   # We often get counts for each state by running a query per state, and
   # counting those results. This is typically slower than running one query
   # (even if that query is slower than any of the individual state queries) and

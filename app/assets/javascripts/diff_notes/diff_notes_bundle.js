@@ -33,6 +33,10 @@ $(() => {
       const tmpApp = new tmp().$mount();
 
       $(this).replaceWith(tmpApp.$el);
+      $(tmpApp.$el).one('remove.vue', () => {
+        tmpApp.$destroy();
+        tmpApp.$el.remove();
+      });
     });
 
     const $components = $(COMPONENT_SELECTOR).filter(function () {

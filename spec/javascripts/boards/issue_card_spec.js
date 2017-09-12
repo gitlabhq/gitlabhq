@@ -293,7 +293,7 @@ describe('Issue card component', () => {
           ).toBe(2);
           expect(
             component.$el.textContent,
-          ).not.toContain('Closed');
+          ).not.toContain('closed');
 
           done();
         })

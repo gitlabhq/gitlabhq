@@ -139,11 +139,11 @@ export default {
       }
     },
 
-    toggleFolder(folder, folderUrl) {
+    toggleFolder(folder) {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, folderUrl, true);
+        this.fetchChildEnvironments(folder, true);
       }
     },
 
@@ -171,10 +171,10 @@ export default {
         .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, folderUrl, showLoader = false) {
+    fetchChildEnvironments(folder, showLoader = false) {
       this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
-      this.service.getFolderContent(folderUrl)
+      this.service.getFolderContent(folder.folder_path)
         .then(resp => resp.json())
         .then(response => this.store.setfolderContent(folder, response.environments))
         .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
@@ -201,12 +201,7 @@ export default {
       // We need to verify if any folder is open to also update it
       const openFolders = this.store.getOpenFolders();
       if (openFolders.length) {
-        openFolders.forEach((folder) => {
-          // TODO - Move this to the backend
-          const folderUrl = `${window.location.pathname}/folders/${folder.folderName}`;
-
-          return this.fetchChildEnvironments(folder, folderUrl);
-        });
+        openFolders.forEach(folder => this.fetchChildEnvironments(folder));
       }
 
       const openDeployBoards = this.store.getOpenDeployBoards();

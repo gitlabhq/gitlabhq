@@ -15,8 +15,8 @@ describe IssuesFinder do
   set(:award_emoji3) { create(:award_emoji, name: 'thumbsdown', user: user, awardable: issue3) }
 
   describe '#execute' do
-    set(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
-    set(:label_link) { create(:label_link, label: label, target: issue2) }
+    let!(:closed_issue) { create(:issue, author: user2, assignees: [user2], project: project2, state: 'closed') }
+    let!(:label_link) { create(:label_link, label: label, target: issue2) }
     let(:search_user) { user }
     let(:params) { {} }
     let(:issues) { described_class.new(search_user, params.reverse_merge(scope: scope, state: 'opened')).execute }
@@ -390,6 +390,20 @@ describe IssuesFinder do
 
         expect(issues.count).to eq 0
       end
+    end
+  end
+
+  describe '#row_count', :request_store do
+    it 'returns the number of rows for the default state' do
+      finder = described_class.new(user)
+
+      expect(finder.row_count).to eq(3)
+    end
+
+    it 'returns the number of rows for a given state' do
+      finder = described_class.new(user, state: 'closed')
+
+      expect(finder.row_count).to be_zero
     end
   end
 

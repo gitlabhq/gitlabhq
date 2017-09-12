@@ -20,6 +20,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
       it { expect(dir.path).to eq('encoding') }
+      it { expect(dir.flat_path).to eq('encoding') }
       it { expect(dir.mode).to eq('40000') }
 
       context :subdir do
@@ -30,6 +31,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
         it { expect(subdir.commit_id).to eq(SeedRepo::Commit::ID) }
         it { expect(subdir.name).to eq('html') }
         it { expect(subdir.path).to eq('files/html') }
+        it { expect(subdir.flat_path).to eq('files/html') }
       end
 
       context :subdir_file do
@@ -40,6 +42,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
         it { expect(subdir_file.commit_id).to eq(SeedRepo::Commit::ID) }
         it { expect(subdir_file.name).to eq('popen.rb') }
         it { expect(subdir_file.path).to eq('files/ruby/popen.rb') }
+        it { expect(subdir_file.flat_path).to eq('files/ruby/popen.rb') }
       end
     end
 

@@ -8,6 +8,7 @@ module Projects
         define_secret_variables
         define_triggers_variables
         define_badges_variables
+        define_auto_devops_variables
       end
 
       private
@@ -41,6 +42,10 @@ module Projects
         @badges.map! do |badge|
           badge.new(@project, @ref).metadata
         end
+      end
+
+      def define_auto_devops_variables
+        @auto_devops = @project.auto_devops || ProjectAutoDevops.new
       end
     end
   end

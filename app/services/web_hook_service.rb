@@ -19,7 +19,7 @@ class WebHookService
   def initialize(hook, data, hook_name)
     @hook = hook
     @data = data
-    @hook_name = hook_name
+    @hook_name = hook_name.to_s
   end
 
   def execute

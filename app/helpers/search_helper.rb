@@ -12,6 +12,7 @@ module SearchHelper
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
+    generic_results.concat(default_autocomplete_admin) if current_user.admin?
     generic_results.select! { |result| result[:label] =~ search_pattern }
 
     [
@@ -51,8 +52,14 @@ module SearchHelper
     [
       { category: "Settings", label: "User settings",    url: profile_path },
       { category: "Settings", label: "SSH Keys",         url: profile_keys_path },
-      { category: "Settings", label: "Dashboard",        url: root_path },
-      { category: "Settings", label: "Admin Section",    url: admin_root_path }
+      { category: "Settings", label: "Dashboard",        url: root_path }
+    ]
+  end
+
+  # Autocomplete results for settings pages, for admins
+  def default_autocomplete_admin
+    [
+      { category: "Settings", label: "Admin Section", url: admin_root_path }
     ]
   end
 
@@ -95,7 +102,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.order_id_desc.search(term).limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -107,7 +114,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.search_by_title(term)
+    current_user.authorized_projects.order_id_desc.search_by_title(term)
       .sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         category: "Projects",

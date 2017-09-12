@@ -229,6 +229,10 @@
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
   }
+
+  .pipeline-tags .label-container {
+    white-space: normal;
+  }
 }
 
 .stage-cell {
@@ -1163,4 +1167,9 @@ a.linked-pipeline-mini-item {
 
 .pipelines-container .top-area .nav-controls > .btn:last-child {
   float: none;
+}
+
+.autodevops-title {
+  font-weight: $gl-font-weight-normal;
+  line-height: 1.5;
 }

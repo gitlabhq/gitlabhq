@@ -33,7 +33,7 @@ class BroadcastMessage < ActiveRecord::Base
   end
 
   def self.current_and_future_messages
-    where('ends_at > :now', now: Time.zone.now).reorder(id: :asc)
+    where('ends_at > :now', now: Time.zone.now).order_id_asc
   end
 
   def active?

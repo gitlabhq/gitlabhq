@@ -187,6 +187,9 @@ import initGroupAnalytics from './init_group_analytics';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
+          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
 
@@ -375,6 +378,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -392,14 +396,17 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UserCallout('js-service-desk-callout');
-          new UserCallout('js-mr-approval-callout');
+          new UserCallout({ className: 'js-service-desk-callout' });
+          new UserCallout({ className: 'js-mr-approval-callout' });
           break;
         case 'projects:imports:show':
           new ProjectImport();
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
+          break;
+        case 'projects:pipelines:index':
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -466,6 +473,7 @@ import initGroupAnalytics from './init_group_analytics';
             );
           }
 
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });

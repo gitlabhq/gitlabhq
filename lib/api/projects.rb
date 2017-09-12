@@ -16,6 +16,7 @@ module API
         optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
         optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
@@ -242,6 +243,7 @@ module API
         at_least_one_of_ce =
           [
             :jobs_enabled,
+            :resolve_outdated_diff_discussions,
             :container_registry_enabled,
             :default_branch,
             :description,

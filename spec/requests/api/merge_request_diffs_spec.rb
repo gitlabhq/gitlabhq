@@ -14,7 +14,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/versions' do
     it 'returns 200 for a valid merge request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/versions", user)
-      merge_request_diff = merge_request.merge_request_diffs.first
+      merge_request_diff = merge_request.merge_request_diffs.last
 
       expect(response.status).to eq 200
       expect(response).to include_pagination_headers

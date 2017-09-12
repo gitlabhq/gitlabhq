@@ -1,7 +1,7 @@
 class Profiles::EmailsController < Profiles::ApplicationController
   def index
     @primary = current_user.email
-    @emails = current_user.emails
+    @emails = current_user.emails.order_id_desc
   end
 
   def create

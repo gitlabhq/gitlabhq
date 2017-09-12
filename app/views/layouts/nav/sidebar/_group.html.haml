@@ -1,5 +1,6 @@
 - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
 - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
+
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 - if @group.feature_available?(:group_issue_boards)
   - issues_sub_menu_items.push('boards#index')

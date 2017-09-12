@@ -31,7 +31,7 @@ gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.4.1'
+gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.7.0'
@@ -191,7 +191,7 @@ gem 'connection_pool', '~> 2.0'
 gem 'hipchat', '~> 1.5.0'
 
 # JIRA integration
-gem 'jira-ruby', '~> 1.1.2'
+gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
@@ -413,7 +413,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.33.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
@@ -423,3 +423,4 @@ gem 'flipper-active_record', '~> 0.10.2'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
+gem 'grape_logging', '~> 1.6'

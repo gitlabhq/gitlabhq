@@ -20,14 +20,12 @@ describe Gitlab::LDAP::Access do
   describe '#find_ldap_user' do
     it 'finds a user by dn first' do
       expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(:ldap_user)
-      expect(user).not_to receive(:external_email?)
 
       access.find_ldap_user
     end
 
     it 'finds a user by email if the email came from LDAP' do
       expect(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(nil)
-      expect(user).to receive(:external_email?).and_return(true)
       expect(Gitlab::LDAP::Person).to receive(:find_by_email)
 
       access.find_ldap_user
@@ -51,7 +49,7 @@ describe Gitlab::LDAP::Access do
       end
 
       context 'when looking for a user by email' do
-        let(:user) { create(:omniauth_user, external_email: true) }
+        let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
         it { is_expected.to be_falsey }
       end

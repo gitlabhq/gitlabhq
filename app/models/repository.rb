@@ -173,32 +173,25 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    newrev = commit(ref).try(:sha)
-
-    return false unless newrev
-
-    Gitlab::Git::OperationService.new(user, raw_repository).add_branch(branch_name, newrev)
+    branch = raw_repository.add_branch(branch_name, committer: user, target: ref)
 
     after_create_branch
-    find_branch(branch_name)
+
+    branch
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    newrev = commit(target).try(:id)
-    options = { message: message, tagger: user_to_committer(user) } if message
-
-    return false unless newrev
-
-    Gitlab::Git::OperationService.new(user, raw_repository).add_tag(tag_name, newrev, options)
-
-    find_tag(tag_name)
+    raw_repository.add_tag(tag_name, committer: user, target: target, message: message)
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-    branch = find_branch(branch_name)
 
-    Gitlab::Git::OperationService.new(user, raw_repository).rm_branch(branch)
+    raw_repository.rm_branch(branch_name, committer: user)
 
     after_remove_branch
     true
@@ -206,9 +199,8 @@ class Repository
 
   def rm_tag(user, tag_name)
     before_remove_tag
-    tag = find_tag(tag_name)
 
-    Gitlab::Git::OperationService.new(user, raw_repository).rm_tag(tag)
+    raw_repository.rm_tag(tag_name, committer: user)
 
     after_remove_tag
     true

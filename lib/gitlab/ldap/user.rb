@@ -38,7 +38,7 @@ module Gitlab
       end
 
       def find_by_email
-        ::User.find_by(email: auth_hash.email.downcase) if auth_hash.has_email?
+        ::User.find_by(email: auth_hash.email.downcase) if auth_hash.has_attribute?(:email)
       end
 
       def update_user_attributes
@@ -62,7 +62,7 @@ module Gitlab
         ldap_config.block_auto_created_users
       end
 
-      def sync_email_from_provider?
+      def sync_profile_from_provider?
         true
       end
 

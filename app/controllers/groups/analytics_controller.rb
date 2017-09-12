@@ -5,7 +5,7 @@ class Groups::AnalyticsController < Groups::ApplicationController
   layout 'group'
 
   def show
-    @users = @group.users.select(:id, :name, :username)
+    @users = @group.users.select(:id, :name, :username).reorder(:id)
     @start_date = params[:start_date] || Date.today - 1.week
     @events = Event.contributions
       .where("created_at > ?", @start_date)

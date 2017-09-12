@@ -16,6 +16,8 @@ class Commit
   participant :notes_with_associations
 
   attr_accessor :project, :author
+  attr_accessor :redacted_description_html
+  attr_accessor :redacted_title_html
 
   DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
@@ -25,6 +27,13 @@ class Commit
 
   # The SHA can be between 7 and 40 hex characters.
   COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
+
+  def banzai_render_context(field)
+    context = { pipeline: :single_line, project: self.project }
+    context[:author] = self.author if self.author
+
+    context
+  end
 
   class << self
     def decorate(commits, project)
@@ -405,6 +414,6 @@ class Commit
   end
 
   def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.for_commit(self)
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

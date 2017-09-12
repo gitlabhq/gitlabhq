@@ -6,6 +6,6 @@ FactoryGirl.define do
     project
     gpg_key
     gpg_key_primary_keyid { gpg_key.primary_keyid }
-    valid_signature true
+    verification_status :verified
   end
 end

@@ -171,13 +171,6 @@ module IssuablesHelper
     html.html_safe
   end
 
-  def cached_assigned_issuables_count(assignee, issuable_type, state)
-    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
-    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      assigned_issuables_count(assignee, issuable_type, state)
-    end
-  end
-
   def issuable_first_contribution_icon
     content_tag(:span, class: 'fa-stack') do
       concat(icon('certificate', class: "fa-stack-2x"))
@@ -253,7 +246,8 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state)
     finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    finder.count_by_state[state]
+
+    Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
   def close_issuable_url(issuable)

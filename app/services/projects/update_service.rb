@@ -1,6 +1,7 @@
 module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
+
     prepend ::EE::Projects::UpdateService
 
     def execute

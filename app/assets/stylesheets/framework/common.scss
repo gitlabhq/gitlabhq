@@ -22,6 +22,7 @@
 .append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
 .append-bottom-0 { margin-bottom: 0; }
+.append-bottom-5 { margin-bottom: 5px; }
 .append-bottom-10 { margin-bottom: 10px; }
 .append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }
@@ -420,11 +421,12 @@ table {
 
 .gl-accessibility {
   &:focus {
+    display: flex;
+    align-items: center;
     top: 1px;
     left: 1px;
     width: auto;
     height: 100%;
-    line-height: 50px;
     padding: 0 10px;
     clip: auto;
     text-decoration: none;
