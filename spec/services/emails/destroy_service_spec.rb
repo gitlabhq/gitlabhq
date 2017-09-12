@@ -10,5 +10,9 @@ describe Emails::DestroyService do
     it 'removes an email' do
       expect { service.execute }.to change { user.emails.count }.by(-1)
     end
+
+    it 'registers a security event' do
+      expect { service.execute }.to change { SecurityEvent.count }.by(1)
+    end
   end
 end

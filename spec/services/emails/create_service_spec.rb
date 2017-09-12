@@ -17,5 +17,9 @@ describe Emails::CreateService do
 
       expect(user.emails).to eq(Email.where(opts))
     end
+
+    it 'registers a security event' do
+      expect { service.execute }.to change { SecurityEvent.count }.by(1)
+    end
   end
 end
