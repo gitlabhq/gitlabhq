@@ -184,6 +184,16 @@ describe ObjectStoreUploader do
           end
         end
 
+        context 'when storage is unlicensed' do
+          before do
+            stub_artifacts_object_storage(licensed: false)
+          end
+
+          it "raises an error" do
+            expect { subject }.to raise_error(/Object Storage feature is missing/)
+          end
+        end
+
         context 'when credentials are set' do
           before do
             stub_artifacts_object_storage
