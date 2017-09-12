@@ -137,11 +137,11 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :housekeeping_full_repack_period,
             presence: true,
-            numericality: { only_integer: true, greater_than: :housekeeping_incremental_repack_period }
+            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_incremental_repack_period }
 
   validates :housekeeping_gc_period,
             presence: true,
-            numericality: { only_integer: true, greater_than: :housekeeping_full_repack_period }
+            numericality: { only_integer: true, greater_than_or_equal_to: :housekeeping_full_repack_period }
 
   validates :terminal_max_session_time,
             presence: true,

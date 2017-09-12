@@ -75,7 +75,7 @@ describe Projects::HousekeepingService do
     end
   end
 
-  it 'uses all three kinds of housekeeping we offer' do
+  it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
     allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
     allow(subject).to receive(:lease_key).and_return(:the_lease_key)
 
