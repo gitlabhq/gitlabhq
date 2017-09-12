@@ -8,10 +8,16 @@ describe API::V3::Runners do
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
+  let(:group) { create(:group).tap { |group| group.add_owner(user) } }
+  let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
+
+  let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
+  let!(:two_groups_runner) { create(:ci_runner, description: 'Two groups runner', groups: [group, group2]) }
+
   let!(:shared_runner) { create(:ci_runner, :shared) }
   let!(:unused_specific_runner) { create(:ci_runner) }
 
-  let!(:specific_runner) do
+  let!(:project_runner) do
     create(:ci_runner).tap do |runner|
       create(:ci_runner_project, runner: runner, project: project)
     end
@@ -51,9 +57,17 @@ describe API::V3::Runners do
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
-        it 'deletes used runner' do
+        it 'deletes used project runner' do
           expect do
-            delete v3_api("/runners/#{specific_runner.id}", admin)
+            delete v3_api("/runners/#{project_runner.id}", admin)
+
+            expect(response).to have_http_status(200)
+          end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it 'deletes used group runner' do
+          expect do
+            delete v3_api("/runners/#{group_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.specific.count }.by(-1)
@@ -77,18 +91,31 @@ describe API::V3::Runners do
 
       context 'when runner is not shared' do
         it 'does not delete runner without access to it' do
-          delete v3_api("/runners/#{specific_runner.id}", user2)
+          delete v3_api("/runners/#{project_runner.id}", user2)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'does not delete runner with more than one associated project' do
+        it 'does not delete project runner with more than one associated project' do
           delete v3_api("/runners/#{two_projects_runner.id}", user)
           expect(response).to have_gitlab_http_status(403)
         end
 
-        it 'deletes runner for one owned project' do
+        it 'deletes project runner for one owned project' do
           expect do
-            delete v3_api("/runners/#{specific_runner.id}", user)
+            delete v3_api("/runners/#{group_runner.id}", user)
+
+            expect(response).to have_http_status(200)
+          end.to change { Ci::Runner.specific.count }.by(-1)
+        end
+
+        it 'does not delete group runner with more than one associated project' do
+          delete v3_api("/runners/#{two_groups_runner.id}", user)
+          expect(response).to have_http_status(403)
+        end
+
+        it 'deletes group runner for one owned project' do
+          expect do
+            delete v3_api("/runners/#{project_runner.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.specific.count }.by(-1)
@@ -97,8 +124,14 @@ describe API::V3::Runners do
     end
 
     context 'unauthorized user' do
-      it 'does not delete runner' do
-        delete v3_api("/runners/#{specific_runner.id}")
+      it 'does not delete project runner' do
+        delete v3_api("/runners/#{project_runner.id}")
+
+        expect(response).to have_http_status(401)
+      end
+
+      it 'does not delete group runner' do
+        delete v3_api("/runners/#{group_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -120,7 +153,7 @@ describe API::V3::Runners do
       context 'when runner have one associated projects' do
         it "does not disable project's runner" do
           expect do
-            delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
+            delete v3_api("/projects/#{project.id}/runners/#{project_runner.id}", user)
           end.to change { project.runners.count }.by(0)
           expect(response).to have_gitlab_http_status(403)
         end
@@ -135,7 +168,7 @@ describe API::V3::Runners do
 
     context 'authorized user without permissions' do
       it "does not disable project's runner" do
-        delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
+        delete v3_api("/projects/#{project.id}/runners/#{project_runner.id}", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -143,7 +176,7 @@ describe API::V3::Runners do
 
     context 'unauthorized user' do
       it "does not disable project's runner" do
-        delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}")
+        delete v3_api("/projects/#{project.id}/runners/#{project_runner.id}")
 
         expect(response).to have_gitlab_http_status(401)
       end

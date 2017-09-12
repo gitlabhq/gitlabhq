@@ -25,8 +25,11 @@ module API
             # Create shared runner. Requires admin access
             Ci::Runner.create(attributes.merge(is_shared: true))
           elsif project = Project.find_by(runners_token: params[:token])
-            # Create a specific runner for project.
+            # Create a specific runner for the project
             project.runners.create(attributes)
+          elsif group = Group.find_by(runners_token: params[:token])
+            # Create a specific runner for the group
+            group.runners.create(attributes)
           end
 
         break forbidden! unless runner
