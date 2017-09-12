@@ -27,6 +27,14 @@
   transition: .3s cubic-bezier(.67, .06, .19, 1.44);
   transition-property: transform, opacity;
 
+  &.is-rendered {
+    display: block;
+  }
+
+  &:not(.is-rendered) {
+    display: none;
+  }
+
   &.is-aligned-right {
     transform-origin: 100% -45px;
   }

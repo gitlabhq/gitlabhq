@@ -23,6 +23,9 @@ const categoryLabelMap = {
   flags: 'Flags',
 };
 
+const IS_VISIBLE = 'is-visible';
+const IS_RENDERED = 'is-rendered';
+
 class AwardsHandler {
   constructor(emoji) {
     this.emoji = emoji;
@@ -50,7 +53,7 @@ class AwardsHandler {
       if (!$target.closest('.emoji-menu').length) {
         if ($('.emoji-menu').is(':visible')) {
           $('.js-add-award.is-active').removeClass('is-active');
-          $('.emoji-menu').removeClass('is-visible');
+          this.hideMenuElement($('.emoji-menu'));
         }
       }
     });
@@ -87,12 +90,12 @@ class AwardsHandler {
     if ($menu.length) {
       if ($menu.is('.is-visible')) {
         $addBtn.removeClass('is-active');
-        $menu.removeClass('is-visible');
+        this.hideMenuElement($menu);
         $('.js-emoji-menu-search').blur();
       } else {
         $addBtn.addClass('is-active');
         this.positionMenu($menu, $addBtn);
-        $menu.addClass('is-visible');
+        this.showMenuElement($menu);
         $('.js-emoji-menu-search').focus();
       }
     } else {
@@ -102,7 +105,7 @@ class AwardsHandler {
         $addBtn.removeClass('is-loading');
         this.positionMenu($createdMenu, $addBtn);
         return setTimeout(() => {
-          $createdMenu.addClass('is-visible');
+          this.showMenuElement($createdMenu);
           $('.js-emoji-menu-search').focus();
         }, 200);
       });
@@ -240,7 +243,8 @@ class AwardsHandler {
     if (gl.utils.isInIssuePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
-      $('.emoji-menu').removeClass('is-visible');
+      this.hideMenuElement($('.emoji-menu'));
+
       $('.js-add-award.is-active').removeClass('is-active');
       const toggleAwardEvent = new CustomEvent('toggleAward', {
         detail: {
@@ -260,7 +264,8 @@ class AwardsHandler {
       return typeof callback === 'function' ? callback() : undefined;
     });
 
-    $('.emoji-menu').removeClass('is-visible');
+    this.hideMenuElement($('.emoji-menu'));
+
     return $('.js-add-award.is-active').removeClass('is-active');
   }
 
@@ -526,6 +531,34 @@ class AwardsHandler {
     const $matchingElements = $emojiElements
       .filter((i, elm) => emojiMatches.indexOf(elm.dataset.name) >= 0);
     return $matchingElements.closest('li').clone();
+  }
+
+  /* showMenuElement and hideMenuElement are performance optimizations. We use
+   * opacity to show/hide the emoji menu, because we can animate it. But opacity
+   * leaves hidden elements in the render tree, which is unacceptable given the number
+   * of emoji elements in the emoji menu (5k+). To get the best of both worlds, we separately
+   * apply IS_RENDERED to add/remove the menu from the render tree and IS_VISIBLE to animate
+   * the menu being opened and closed. */
+
+  showMenuElement($emojiMenu) {
+    // enqueues animation as a microtask, so it begins ASAP once IS_RENDERED added
+    Promise.resolve().then(() => { // eslint-disable-line promise/catch-or-return
+      $emojiMenu.addClass(IS_VISIBLE);
+    });
+
+    $emojiMenu.addClass(IS_RENDERED);
+  }
+
+  hideMenuElement($emojiMenu) {
+    $emojiMenu.on(transitionEndEventString, (e) => {
+      if (e.currentTarget === e.target) {
+        $emojiMenu
+          .removeClass(IS_RENDERED)
+          .off(transitionEndEventString);
+      }
+    });
+
+    $emojiMenu.removeClass(IS_VISIBLE);
   }
 
   destroy() {
