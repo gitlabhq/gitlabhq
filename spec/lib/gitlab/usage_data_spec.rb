@@ -45,6 +45,8 @@ describe Gitlab::UsageData do
         ci_runners
         ci_triggers
         ci_pipeline_schedules
+        auto_devops_enabled
+        auto_devops_disabled
         deploy_keys
         deployments
         environments

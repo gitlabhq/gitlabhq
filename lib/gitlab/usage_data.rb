@@ -27,6 +27,8 @@ module Gitlab
             ci_runners: ::Ci::Runner.count,
             ci_triggers: ::Ci::Trigger.count,
             ci_pipeline_schedules: ::Ci::PipelineSchedule.count,
+            auto_devops_enabled: ::ProjectAutoDevops.enabled.count,
+            auto_devops_disabled: ::ProjectAutoDevops.disabled.count,
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: ::Environment.count,
