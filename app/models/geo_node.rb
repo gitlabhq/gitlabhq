@@ -137,6 +137,27 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
+  # These are projects that meet the project restriction but haven't yet been
+  # synced (i.e., do not yet have a project registry entry).
+  #
+  # This query requires data from two different databases, and unavoidably
+  # plucks a list of project IDs from one into the other. This will not scale
+  # well with the number of synchronized projects - the query will increase
+  # linearly in size - so this should be replaced with postgres_fdw ASAP.
+  def unsynced_projects
+    registry_project_ids = project_registries.pluck(:project_id)
+    return projects if registry_project_ids.empty?
+
+    joined_relation = projects.joins(<<~SQL)
+      LEFT OUTER JOIN
+      (VALUES #{registry_project_ids.map { |id| "(#{id}, 't')" }.join(',')})
+      project_registry(project_id, registry_present)
+      ON projects.id = project_registry.project_id
+    SQL
+
+    joined_relation.where(project_registry: { registry_present: [nil, false] })
+  end
+
   def uploads
     if restricted_project_ids
       uploads_table   = Upload.arel_table
