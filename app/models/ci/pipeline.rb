@@ -453,6 +453,10 @@ module Ci
         .fabricate!
     end
 
+    def latest_builds_with_artifacts
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts
+    end
+
     private
 
     def ci_yaml_from_repo
