@@ -138,22 +138,17 @@ export default class Todos {
   goToTodoUrl(e) {
     const todoLink = this.dataset.url;
 
-    if (!todoLink) {
+    if (!todoLink || e.target.tagName === 'A' || e.target.tagName === 'IMG') {
       return;
     }
 
+    e.stopPropagation();
+    e.preventDefault();
+
     if (isMetaClick(e)) {
       const windowTarget = '_blank';
-      const selected = e.target;
-      e.stopPropagation();
-      e.preventDefault();
 
-      if (selected.tagName === 'IMG') {
-        const avatarUrl = selected.parentElement.getAttribute('href');
-        window.open(avatarUrl, windowTarget);
-      } else {
-        window.open(todoLink, windowTarget);
-      }
+      window.open(todoLink, windowTarget);
     } else {
       gl.utils.visitUrl(todoLink);
     }
