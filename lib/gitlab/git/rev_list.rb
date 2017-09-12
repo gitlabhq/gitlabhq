@@ -3,6 +3,8 @@
 module Gitlab
   module Git
     class RevList
+      include Gitlab::Git::Popen
+
       attr_reader :oldrev, :newrev, :path_to_repo
 
       def initialize(path_to_repo:, newrev:, oldrev: nil)
@@ -26,7 +28,7 @@ module Gitlab
       private
 
       def execute(args)
-        output, status = Gitlab::Popen.popen(args, nil, Gitlab::Git::Env.all.stringify_keys)
+        output, status = popen(args, nil, Gitlab::Git::Env.all.stringify_keys)
 
         unless status.zero?
           raise "Got a non-zero exit code while calling out `#{args.join(' ')}`."
