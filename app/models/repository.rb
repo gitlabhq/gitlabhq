@@ -232,7 +232,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -243,6 +243,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -1024,7 +1028,12 @@ class Repository
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    run_git(args)
+    message, status = run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)
