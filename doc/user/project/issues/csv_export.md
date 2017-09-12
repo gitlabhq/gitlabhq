@@ -58,6 +58,8 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 | Updated At (UTC) | Formated as `YYYY-MM-DD HH:MM:SS` |
 | Milestone | Title of the issue milestone |
 | Labels | Title of any labels joined with a `,` |
+| Time Estimate | [Time estimate](../../../workflow/time_tracking.md#estimates) in seconds |
+| Time Spent | [Time spent](../../../workflow/time_tracking.md#time-spent) in seconds |
 
 
 ## Limitations
