@@ -15,8 +15,7 @@ There are also two other sets of charts:
 
 ## Official GitLab Helm Charts
 
-These charts utilize our [GitLab Omnibus Docker images](https://docs.gitlab.com/omnibus/docker/README.html). You can report any issues and feedback related to these charts at
-https://gitlab.com/charts/charts.gitlab.io/issues.
+This chart is the best available way to operate GitLab on Kubernetes. It deploys and configures nearly all features of GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](../../user/project/container_registry.html#gitlab-container-registry), [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and a [load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). It is based on our [GitLab Omnibus Docker Images](https://docs.gitlab.com/omnibus/docker/README.html).
 
 ### Deploying GitLab on Kubernetes
 > **Note**: This chart will eventually be replaced by the [cloud native charts](#upcoming-cloud-native-helm-charts), which are presently in development.
@@ -34,7 +33,7 @@ It offers a quick way to configure and deploy the Runner on Kubernetes, regardle
 ### Advanced deployment of GitLab
 > **Note**: This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
 
-If advanced configuration of GitLab is required, the beta [gitlab](gitlab_chart.md) chart can be used which deploys the GitLab service along with optional Postgres and Redis. It offers extensive configuration, but requires deep knowledge of Kubernetes and Helm to use.
+If you already have a GitLab instance running, inside or outside of Kubernetes, and you'd like to leverage the Runner's [Kubernetes capabilities](https://docs.gitlab.com/runner/executors/kubernetes.html), it can be deployed with the GitLab Runner chart.
 
 For most deployments we recommend using our [gitlab-omnibus](gitlab_omnibus.md) chart.
 

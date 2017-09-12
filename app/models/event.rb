@@ -49,7 +49,7 @@ class Event < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :project
   belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
-  has_one :push_event_payload, foreign_key: :event_id
+  has_one :push_event_payload
 
   # Callbacks
   after_create :reset_project_activity
