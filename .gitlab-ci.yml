@@ -191,6 +191,8 @@ review-docs-deploy:
   stage: build
   environment:
     name: review-docs/$CI_COMMIT_REF_NAME
+    # The URL must end in /ce
+    url: http://$CI_COMMIT_REF_SLUG-built-from-ce-ee.$DOCS_REVIEW_APPS_DOMAIN/ce
     on_stop: review-docs-cleanup
   script:
     - gem install gitlab --no-doc
