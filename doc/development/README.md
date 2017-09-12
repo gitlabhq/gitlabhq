@@ -43,6 +43,7 @@
 - [Object state models](object_state_models.md)
 - [Building a package for testing purposes](build_test_package.md)
 - [Manage feature flags](feature_flags.md)
+- [View sent emails or preview mailers](emails.md)
 
 ## Databases
 
