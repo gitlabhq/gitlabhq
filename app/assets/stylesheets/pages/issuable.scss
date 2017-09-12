@@ -223,14 +223,14 @@
   top: $new-navbar-height;
   bottom: 0;
   right: 0;
-  transition: width .3s;
+  transition: width $right-sidebar-transition-duration;
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$new-navbar-height});
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
