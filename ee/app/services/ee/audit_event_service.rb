@@ -41,33 +41,6 @@ module EE
       self
     end
 
-    def for_deploy_key(key_title)
-      action = @details[:action]
-      author_name = @author.name
-
-      @details =
-        case action
-        when :destroy
-          {
-            remove: "deploy_key",
-            author_name: author_name,
-            target_id: key_title,
-            target_type: "DeployKey",
-            target_details: key_title
-          }
-        when :create
-          {
-            add: "deploy_key",
-            author_name: author_name,
-            target_id: key_title,
-            target_type: "DeployKey",
-            target_details: key_title
-          }
-        end
-
-      self
-    end
-
     def for_failed_login
       ip = @details[:ip_address]
       auth = @details[:with] || 'STANDARD'
@@ -132,6 +105,46 @@ module EE
         entity_type: 'User',
         details: @details
       )
+    end
+
+    def method_missing(method_sym, *arguments, &block)
+      super(method_sym, *arguments, &block) unless respond_to?(method_sym)
+
+      for_custom_model(method_sym.to_s.slice('for_'), *arguments)
+    end
+
+    def respond_to?(method, include_private = false)
+      method.to_s.start_with?('for_') || super
+    end
+
+    private
+
+    def for_custom_model(model, key_title)
+      action = @details[:action]
+      author_name = @author.name
+      model_class = model.camelize
+
+      @details =
+          case action
+            when :destroy
+              {
+                  remove: model,
+                  author_name: author_name,
+                  target_id: key_title,
+                  target_type: model_class,
+                  target_details: key_title
+              }
+            when :create
+              {
+                  add: model,
+                  author_name: author_name,
+                  target_id: key_title,
+                  target_type: model_class,
+                  target_details: key_title
+              }
+          end
+
+      self
     end
   end
 end
