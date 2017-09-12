@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.4 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
+
 ## 9.5.3 (2017-09-03)
 
 - [FIXED] Check if table exists before loading the current license. !2783
@@ -45,6 +49,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix accessing individual files on Object Storage.
 - Fix rebase button when merge request is created from a fork.
 - Skip oAuth authorization for trusted applications.
+
+## 9.4.6 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
 
 ## 9.4.5 (2017-08-14)
 
@@ -128,6 +136,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Adding support for AWS ec2 instance profile credentials with elasticsearch. (Matt Gresko)
 - Fixed edit issue boards milestone action buttons not sticking to bottom of dropdown.
 - Respect the external user setting in Elasticsearch.
+
+## 9.3.11 (2017-09-06)
+
+- [FIXED] Validate branch name push rule when pushing branch without commits. !2685
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 9.3.10 (2017-08-09)
 
