@@ -1034,6 +1034,8 @@ class Project < ActiveRecord::Base
     end
 
     true
+  rescue GRPC::Internal # if the path is too long
+    false
   end
 
   def create_repository(force: false)
