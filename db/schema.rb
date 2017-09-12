@@ -1608,6 +1608,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
     t.string "rss_token"
+    t.integer "theme_id", limit: 2
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
