@@ -11,15 +11,15 @@ module Gitlab
       end
 
       def gl_user
-        if auto_link_ldap_user?
+        if auto_link_saml_user?
+          @user ||= find_by_email
+        end
+
+        if auto_link_ldap_user? && !@user&.ldap_user?
           @user ||= find_or_create_ldap_user
         end
 
         @user ||= find_by_uid_and_provider
-
-        if auto_link_saml_user?
-          @user ||= find_by_email
-        end
 
         if signup_enabled?
           @user ||= build_new_user
@@ -42,7 +42,11 @@ module Gitlab
       def find_by_email
         if auth_hash.has_attribute?(:email)
           user = ::User.find_by(email: auth_hash.email.downcase)
-          user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider) if user
+
+          if user&.identities&.empty?
+            user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+          end
+
           user
         end
       end

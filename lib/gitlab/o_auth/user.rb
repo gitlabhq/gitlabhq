@@ -108,9 +108,12 @@ module Gitlab
       end
 
       def find_ldap_person(auth_hash, adapter)
-        by_uid = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
+        person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
         # The `uid` might actually be a DN. Try it next.
-        by_uid || Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+        person ||= Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+
+        # The `uid` might actually be a Email. Try it next.
+        person || Gitlab::LDAP::Person.find_by_email(auth_hash.uid, adapter)
       end
 
       def ldap_config

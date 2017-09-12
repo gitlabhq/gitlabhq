@@ -170,6 +170,7 @@ describe Gitlab::Saml::User do
               allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
               allow(Gitlab::LDAP::Person).to receive(:find_by_dn).and_return(ldap_user)
+              allow(Gitlab::LDAP::Person).to receive(:find_by_email).and_return(ldap_user)
             end
 
             context 'and no account for the LDAP user' do
@@ -193,6 +194,82 @@ describe Gitlab::Saml::User do
                        extern_uid: 'uid=user1,ou=People,dc=example',
                        provider: 'ldapmain',
                        username: 'john')
+              end
+
+              shared_examples 'find ldap person' do |uid_type, uid|
+                before do
+                  allow(Gitlab::LDAP::Person).to receive(:"find_by_#{uid_type}").and_return(ldap_user)
+                end
+
+                it 'adds the omniauth identity to the LDAP account' do
+                  identities = [
+                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                    { provider: 'saml', extern_uid: extern_uid }
+                  ]
+
+                  identities_as_hash = gl_user.identities.map do |id|
+                    { provider: id.provider, extern_uid: id.extern_uid }
+                  end
+
+                  saml_user.save
+
+                  expect(gl_user).to be_valid
+                  expect(gl_user.username).to eql 'john'
+                  expect(gl_user.email).to eql 'john@mail.com'
+                  expect(gl_user.identities.length).to be 2
+                  expect(identities_as_hash).to match_array(identities)
+                end
+              end
+
+              context 'when uid is an uid' do
+                it_behaves_like 'find ldap person', 'uid' do
+                  let(:extern_uid) { uid }
+                  let(:auth_hash) do
+                    OmniAuth::AuthHash.new(
+                      uid: uid,
+                      provider: provider,
+                      info: info_hash,
+                      extra: {
+                        raw_info: OneLogin::RubySaml::Attributes.new(
+                          { 'groups' => %w(Developers Freelancers Designers) }
+                        )
+                      })
+                  end
+                end
+              end
+
+              context 'when uid is a dn' do
+                it_behaves_like 'find ldap person', 'email' do
+                  let(:extern_uid) { 'uid=user1,ou=People,dc=example' }
+                  let(:auth_hash) do
+                    OmniAuth::AuthHash.new(
+                      uid: extern_uid,
+                      provider: provider,
+                      info: info_hash,
+                      extra: {
+                        raw_info: OneLogin::RubySaml::Attributes.new(
+                          { 'groups' => %w(Developers Freelancers Designers) }
+                        )
+                      })
+                  end
+                end
+              end
+
+              context 'when uid is an email' do
+                it_behaves_like 'find ldap person', 'email' do
+                  let(:extern_uid) { 'john@mail.com' }
+                  let(:auth_hash) do
+                    OmniAuth::AuthHash.new(
+                      uid: extern_uid,
+                      provider: provider,
+                      info: info_hash,
+                      extra: {
+                        raw_info: OneLogin::RubySaml::Attributes.new(
+                          { 'groups' => %w(Developers Freelancers Designers) }
+                        )
+                      })
+                  end
+                end
               end
 
               it 'adds the omniauth identity to the LDAP account' do
