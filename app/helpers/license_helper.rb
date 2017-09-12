@@ -20,23 +20,14 @@ module LicenseHelper
     is_trial = current_license.trial?
     message = ["Your Enterprise Edition #{'trial ' if is_trial}license"]
 
-    message << if current_license.expired?
-                 "expired on #{current_license.expires_at}."
-               else
-                 "will expire in #{pluralize(current_license.remaining_days, 'day')}."
-               end
+    message << expiration_message
 
     message << link_to('Buy now!', Gitlab::SUBSCRIPTIONS_PLANS_URL, target: '_blank') if is_trial
 
     if current_license.expired? && current_license.will_block_changes?
       message << 'Pushing code and creation of issues and merge requests'
 
-      message <<
-        if current_license.block_changes?
-          'has been disabled.'
-        else
-          "will be disabled on #{current_license.block_changes_at}."
-        end
+      message << block_changes_message
 
       message <<
         if is_admin
@@ -51,6 +42,22 @@ module LicenseHelper
     end
 
     message.join(' ').html_safe
+  end
+
+  def expiration_message
+    if current_license.expired?
+      "expired on #{current_license.expires_at}."
+    else
+      "will expire in #{pluralize(current_license.remaining_days, 'day')}."
+    end
+  end
+
+  def block_changes_message
+    if current_license.block_changes?
+      'has been disabled.'
+    else
+      "will be disabled on #{current_license.block_changes_at}."
+    end
   end
 
   def current_license
