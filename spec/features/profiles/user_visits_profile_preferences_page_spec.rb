@@ -1,14 +1,20 @@
 require 'spec_helper'
 
-describe 'Profile > Preferences', :js do
+describe 'User visits the profile preferences page' do
   let(:user) { create(:user) }
 
   before do
     sign_in(user)
-    visit profile_preferences_path
+
+    visit(profile_preferences_path)
   end
 
-  describe 'User changes their syntax highlighting theme' do
+  it 'shows correct menu item' do
+    expect(find('.sidebar-top-level-items > li.active')).to have_content('Preferences')
+    expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
+  end
+
+  describe 'User changes their syntax highlighting theme', :js do
     it 'creates a flash message' do
       choose 'user_color_scheme_id_5'
 
@@ -27,7 +33,7 @@ describe 'Profile > Preferences', :js do
     end
   end
 
-  describe 'User changes their default dashboard' do
+  describe 'User changes their default dashboard', :js do
     it 'creates a flash message' do
       select 'Starred Projects', from: 'user_dashboard'
       click_button 'Save'
