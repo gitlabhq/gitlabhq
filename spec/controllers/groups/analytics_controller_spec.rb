@@ -62,16 +62,20 @@ describe Groups::AnalyticsController do
     end
   end
 
-  it 'sets instance variables properly' do
+  it 'sets instance variables properly', :aggregate_failures do
     get :show, group_id: group.path
 
-    expect(controller.instance_variable_get(:@users)).to match_array([user, user2, user3])
-    expect(controller.instance_variable_get(:@events).length).to eq(6)
-    stats = controller.instance_variable_get(:@stats)
+    expect(response).to have_gitlab_http_status(200)
+
+    expect(assigns[:users]).to match_array([user, user2, user3])
+    expect(assigns[:events].length).to eq(6)
+    stats = assigns[:stats]
+
+    # NOTE: The array ordering matters! The view references them all by index
     expect(stats[:total_events]).to eq([2, 2, 2])
     expect(stats[:merge_requests_merged]).to eq([0, 0, 0])
-    expect(stats[:merge_requests_created]).to eq([1, 1, 0])
-    expect(stats[:issues_closed]).to eq([0, 1, 1])
+    expect(stats[:merge_requests_created]).to eq([0, 1, 1])
+    expect(stats[:issues_closed]).to eq([1, 1, 0])
     expect(stats[:push]).to eq([1, 0, 1])
   end
 
