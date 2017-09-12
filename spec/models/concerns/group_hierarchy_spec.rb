@@ -62,6 +62,17 @@ describe GroupHierarchy, :nested_groups do
 
         expect(described_class.merge_hierarchies(groups, parent)).to eq(expected_hierarchy)
       end
+
+      it 'handles building a tree out of order' do
+        other_subgroup = create(:group, parent: parent)
+        other_subgroup2 = create(:group, parent: parent)
+        other_subsub_group = create(:group, parent: other_subgroup)
+
+        groups = [subsub_group, other_subgroup2, other_subsub_group]
+        expected_hierarchy = { parent => [{ subgroup => subsub_group }, other_subgroup2, { other_subgroup => other_subsub_group }] }
+
+        expect(described_class.merge_hierarchies(groups)).to eq(expected_hierarchy)
+      end
     end
   end
 
