@@ -23,20 +23,20 @@ describe Backup::Manager do
 
   describe '#remove_old' do
     let(:files) do
-      [
-        '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
-        '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
-        '1451510000_2015_12_30_gitlab_backup.tar',
-        '1450742400_2015_12_22_gitlab_backup.tar',
-        '1449878400_gitlab_backup.tar',
-        '1449014400_gitlab_backup.tar',
-        'manual_gitlab_backup.tar'
-      ]
+      {
+        human_versioned_2016: '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
+        human_versioned_2015: '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+        human_non_versioned_2015_12_30: '1451510000_2015_12_30_gitlab_backup.tar',
+        human_non_versioned_2015_12_22: '1450742400_2015_12_22_gitlab_backup.tar',
+        machine_timestamp_2015_12_12: '1449878400_gitlab_backup.tar',
+        machine_timestamp_2015_12_02: '1449014400_gitlab_backup.tar',
+        non_matching: 'manual_gitlab_backup.tar'
+      }
     end
 
     before do
       allow(Dir).to receive(:chdir).and_yield
-      allow(Dir).to receive(:glob).and_return(files)
+      allow(Dir).to receive(:glob).and_return(files.values)
       allow(FileUtils).to receive(:rm)
       allow(Time).to receive(:now).and_return(Time.utc(2016))
     end
@@ -83,25 +83,25 @@ describe Backup::Manager do
       end
 
       it 'removes matching files with a human-readable versioned timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[1])
+        expect(FileUtils).to have_received(:rm).with(files[:human_versioned_2015])
       end
 
       it 'removes matching files with a human-readable non-versioned timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[2])
-        expect(FileUtils).to have_received(:rm).with(files[3])
+        expect(FileUtils).to have_received(:rm).with(files[:human_non_versioned_2015_12_30])
+        expect(FileUtils).to have_received(:rm).with(files[:human_non_versioned_2015_12_22])
       end
 
       it 'removes matching files without a human-readable timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[4])
-        expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[:machine_timestamp_2015_12_12])
+        expect(FileUtils).to have_received(:rm).with(files[:machine_timestamp_2015_12_02])
       end
 
       it 'does not remove files that are not old enough' do
-        expect(FileUtils).not_to have_received(:rm).with(files[0])
+        expect(FileUtils).not_to have_received(:rm).with(files[:human_versioned_2016])
       end
 
       it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[6])
+        expect(FileUtils).not_to have_received(:rm).with(files[:non_matching])
       end
 
       it 'prints a done message' do
@@ -110,7 +110,7 @@ describe Backup::Manager do
     end
 
     context 'when removing a file fails' do
-      let(:file) { files[1] }
+      let(:file) { files[:human_versioned_2015] }
       let(:message) { "Permission denied @ unlink_internal - #{file}" }
 
       before do
@@ -121,10 +121,10 @@ describe Backup::Manager do
       end
 
       it 'removes the remaining expected files' do
-        expect(FileUtils).to have_received(:rm).with(files[2])
-        expect(FileUtils).to have_received(:rm).with(files[3])
-        expect(FileUtils).to have_received(:rm).with(files[4])
-        expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[:human_non_versioned_2015_12_30])
+        expect(FileUtils).to have_received(:rm).with(files[:human_non_versioned_2015_12_22])
+        expect(FileUtils).to have_received(:rm).with(files[:machine_timestamp_2015_12_12])
+        expect(FileUtils).to have_received(:rm).with(files[:machine_timestamp_2015_12_02])
       end
 
       it 'sets the correct removed count' do
