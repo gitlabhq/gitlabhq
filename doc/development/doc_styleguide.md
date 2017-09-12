@@ -222,21 +222,31 @@ Inside the document:
 - If a heading is placed right after an image, always add three dashes (`---`)
   between the image and the heading
 
-## Notes
+## Alerts
 
-- Notes should be quoted with the word `Note:` being bold. Use this form:
+There are four types of alerts: note, tip, caution, danger.
+They should be capitalized and followed by a colon. For example, the following:
 
-    ```
-    >**Note:**
-    This is something to note.
-    ```
+```
+NOTE: This is something to note.
 
-    which renders to:
+TIP: This is a tip.
 
-    >**Note:**
-    This is something to note.
+CAUTION: This is something to be careful about.
 
-    If the note spans across multiple lines it's OK to split the line.
+DANGER: This is something that causes a destructive action.
+```
+
+would render like:
+
+
+NOTE: This is something to note.
+
+TIP: This is a tip.
+
+CAUTION: This is something to be careful about.
+
+DANGER: This is something that causes a destructive action.
 
 ## New features
 
