@@ -1,4 +1,6 @@
 module ProjectsHelper
+  include Gitlab::CurrentSettings
+
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
@@ -13,9 +15,13 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { size: 16 }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
+
+    classes = %W[avatar avatar-inline s#{opts[:size]}]
+    classes << opts[:avatar_class] if opts[:avatar_class]
+
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: classes, alt: '')
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -27,7 +33,7 @@ module ProjectsHelper
     author_html = ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]} #{opts[:avatar_class] if opts[:avatar_class]}", alt: '') if opts[:avatar]
+    author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
@@ -52,31 +58,28 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        group_title(project.group)
+        group_title(project.group, nil, nil)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+    project_link = link_to project_path(project) do
       output =
-        if show_new_nav?
-          project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
+        if project.avatar_url && !Rails.env.test?
+          project_icon(project, alt: project.name, class: 'avatar-tile', width: 15, height: 15)
         else
           ""
         end
 
-      output << simple_sanitize(project.name)
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-text js-breadcrumb-item-text")
       output.html_safe
     end
 
-    if current_user
-      project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
-        icon("chevron-down")
-      end
-    end
+    namespace_link = breadcrumb_list_item(namespace_link) unless project.group
+    project_link = breadcrumb_list_item project_link
 
-    "#{namespace_link} / #{project_link}".html_safe
+    "#{namespace_link} #{project_link}".html_safe
   end
 
   def remove_project_message(project)
@@ -134,15 +137,7 @@ module ProjectsHelper
   end
 
   def last_push_event
-    return unless current_user
-    return current_user.recent_push unless @project
-
-    project_ids = [@project.id]
-    if fork = current_user.fork_of(@project)
-      project_ids << fork.id
-    end
-
-    current_user.recent_push(project_ids)
+    current_user&.recent_push(@project)
   end
 
   def project_feature_access_select(field)
@@ -540,6 +535,43 @@ module ProjectsHelper
     return [] if current_user.admin?
 
     current_application_settings.restricted_visibility_levels || []
+  end
+
+  def project_permissions_settings(project)
+    feature = project.project_feature
+    {
+      visibilityLevel: project.visibility_level,
+      requestAccessEnabled: !!project.request_access_enabled,
+      issuesAccessLevel: feature.issues_access_level,
+      repositoryAccessLevel: feature.repository_access_level,
+      mergeRequestsAccessLevel: feature.merge_requests_access_level,
+      buildsAccessLevel: feature.builds_access_level,
+      wikiAccessLevel: feature.wiki_access_level,
+      snippetsAccessLevel: feature.snippets_access_level,
+      containerRegistryEnabled: !!project.container_registry_enabled,
+      lfsEnabled: !!project.lfs_enabled
+    }
+  end
+
+  def project_permissions_panel_data(project)
+    data = {
+      currentSettings: project_permissions_settings(project),
+      canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
+      allowedVisibilityOptions: project_allowed_visibility_levels(project),
+      visibilityHelpPath: help_page_path('public_access/public_access'),
+      registryAvailable: Gitlab.config.registry.enabled,
+      registryHelpPath: help_page_path('user/project/container_registry'),
+      lfsAvailable: Gitlab.config.lfs.enabled && current_user.admin?,
+      lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
+    }
+
+    data.to_json.html_safe
+  end
+
+  def project_allowed_visibility_levels(project)
+    Gitlab::VisibilityLevel.values.select do |level|
+      project.visibility_level_allowed?(level) && !restricted_levels.include?(level)
+    end
   end
 
   def find_file_path

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event do
+describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event, :migration, schema: 20170608152748 do
   describe '#commit_title' do
     it 'returns nil when there are no commits' do
       expect(described_class.new.commit_title).to be_nil
@@ -214,7 +214,7 @@ end
 # The background migration relies on a temporary table, hence we're migrating
 # to a specific version of the database where said table is still present.
 #
-describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migration, schema: 20170608152748 do
+describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migration, schema: 20170825154015 do
   let(:migration) { described_class.new }
   let(:project) { create(:project_empty_repo) }
   let(:author) { create(:user) }

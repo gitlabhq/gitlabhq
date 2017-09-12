@@ -7,15 +7,15 @@
       = f.label :default_branch_protection, class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
-    .form-group.project-visibility-level-holder
+    .form-group.visibility-level-setting
       = f.label :default_group_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
@@ -42,18 +42,27 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
-    .form-group
-      %label.control-label.col-sm-2 Enabled Git access protocols
-      .col-sm-10
-        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
-        %span.help-block#clone-protocol-help
-          Allow only the selected protocols to be used for Git access.
+
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :project_export_enabled do
             = f.check_box :project_export_enabled
             Project export enabled
+
+    .form-group
+      %label.control-label.col-sm-2 Enabled Git access protocols
+      .col-sm-10
+        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
+        %span.help-block#clone-protocol-help
+          Allow only the selected protocols to be used for Git access.
+
+    - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
+      - field_name = :"#{type}_key_restriction"
+      .form-group
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
   %fieldset
     %legend Account and Limit Settings
@@ -153,7 +162,7 @@
         .checkbox
           = f.label :password_authentication_enabled do
             = f.check_box :password_authentication_enabled
-            Password authentication enabled
+            Sign-in enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
@@ -217,7 +226,17 @@
         .help-block 0 for unlimited
 
   %fieldset
-    %legend Continuous Integration
+    %legend Continuous Integration and Deployment
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :auto_devops_enabled do
+            = f.check_box :auto_devops_enabled
+            Enabled Auto DevOps (Beta) for projects by default
+        .help-block
+          It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
+          = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
+
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -530,24 +549,27 @@
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
 
-  %fieldset
-    %legend Koding
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :koding_enabled do
-            = f.check_box :koding_enabled
-            Enable Koding
-    .form-group
-      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
-        .help-block
-          Koding has integration enabled out of the box for the
-          %strong gitlab
-          team, and you need to provide that team's URL here. Learn more in the
-          = succeed "." do
-            = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
+  - if koding_enabled?
+    %fieldset
+      %legend Koding
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            = f.label :koding_enabled do
+              = f.check_box :koding_enabled
+              Enable Koding
+          .help-block
+            Koding integration has been deprecated since GitLab 10.0. If you disable your Koding integration, you will not be able to enable it again.
+      .form-group
+        = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
+          .help-block
+            Koding has integration enabled out of the box for the
+            %strong gitlab
+            team, and you need to provide that team's URL here. Learn more in the
+            = succeed "." do
+              = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
 
   %fieldset
     %legend PlantUML

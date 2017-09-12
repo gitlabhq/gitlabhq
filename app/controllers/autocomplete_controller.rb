@@ -41,12 +41,6 @@ class AutocompleteController < ApplicationController
     project = Project.find_by_id(params[:project_id])
     projects = projects_finder.execute(project, search: params[:search], offset_id: params[:offset_id])
 
-    no_project = {
-      id: 0,
-      name_with_namespace: 'No project'
-    }
-    projects.unshift(no_project) unless params[:offset_id].present?
-
     render json: projects.to_json(only: [:id, :name_with_namespace], methods: :name_with_namespace)
   end
 
@@ -55,7 +49,7 @@ class AutocompleteController < ApplicationController
       .limit(AWARD_EMOJI_MAX)
       .where(user: current_user)
       .group(:name)
-      .order(count: :desc, name: :asc)
+      .order('count_all DESC, name ASC')
       .count
 
     # Transform from hash to array to guarantee json order

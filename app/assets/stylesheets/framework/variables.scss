@@ -177,13 +177,14 @@ $row-hover: $blue-25;
 $row-hover-border: $blue-100;
 $progress-color: #c0392b;
 $header-height: 50px;
+$new-navbar-height: 40px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
 $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
-$border-radius-default: 3px;
+$border-radius-default: 4px;
 $settings-icon-size: 18px;
 $provider-btn-not-active-color: $blue-500;
 $link-underline-blue: $blue-500;
@@ -539,6 +540,11 @@ $project-breadcrumb-color: #999;
 $project-private-forks-notice-odd: $green-600;
 $project-network-controls-color: #888;
 
+$feature-toggle-color: #fff;
+$feature-toggle-text-color: #fff;
+$feature-toggle-color-disabled: #999;
+$feature-toggle-color-enabled: #4a8bee;
+
 /*
 * Runners
 */
@@ -591,9 +597,10 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: #eaf3fc;
-$stage-hover-border: #d1e7fc;
-$action-icon-color: #d6d6d6;
+$stage-hover-bg: $gray-darker;
+$ci-action-icon-size: 22px;
+$pipeline-dropdown-line-height: 20px;
+$pipeline-dropdown-status-icon-size: 18px;
 
 /*
 Pipeline Schedules

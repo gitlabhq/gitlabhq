@@ -1,5 +1,7 @@
 module Projects
   class UpdatePagesService < BaseService
+    include Gitlab::CurrentSettings
+
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
     SITE_PATH = 'public/'.freeze
@@ -51,7 +53,7 @@ module Projects
       log_error("Projects::UpdatePagesService: #{message}")
       @status.allow_failure = !latest?
       @status.description = message
-      @status.drop
+      @status.drop(:script_failure)
       super
     end
 

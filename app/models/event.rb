@@ -1,5 +1,6 @@
 class Event < ActiveRecord::Base
   include Sortable
+  include IgnorableColumn
   default_scope { reorder(nil).where.not(author_id: nil) }
 
   CREATED   = 1
@@ -48,15 +49,11 @@ class Event < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :project
   belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
-  has_one :push_event_payload, foreign_key: :event_id
-
-  # For Hash only
-  serialize :data # rubocop:disable Cop/ActiveRecordSerialize
+  has_one :push_event_payload
 
   # Callbacks
   after_create :reset_project_activity
   after_create :set_last_repository_updated_at, if: :push?
-  after_create :replicate_event_for_push_events_migration
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
@@ -81,6 +78,10 @@ class Event < ActiveRecord::Base
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
   self.inheritance_column = 'action'
+
+  # "data" will be removed in 10.0 but it may be possible that JOINs happen that
+  # include this column, hence we're ignoring it as well.
+  ignore_column :data
 
   class << self
     def model_name
@@ -159,7 +160,7 @@ class Event < ActiveRecord::Base
   end
 
   def push?
-    action == PUSHED && valid_push?
+    false
   end
 
   def merged?
@@ -272,87 +273,6 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def valid_push?
-    data[:ref] && ref_name.present?
-  rescue
-    false
-  end
-
-  def tag?
-    Gitlab::Git.tag_ref?(data[:ref])
-  end
-
-  def branch?
-    Gitlab::Git.branch_ref?(data[:ref])
-  end
-
-  def new_ref?
-    Gitlab::Git.blank_ref?(commit_from)
-  end
-
-  def rm_ref?
-    Gitlab::Git.blank_ref?(commit_to)
-  end
-
-  def md_ref?
-    !(rm_ref? || new_ref?)
-  end
-
-  def commit_from
-    data[:before]
-  end
-
-  def commit_to
-    data[:after]
-  end
-
-  def ref_name
-    if tag?
-      tag_name
-    else
-      branch_name
-    end
-  end
-
-  def branch_name
-    @branch_name ||= Gitlab::Git.ref_name(data[:ref])
-  end
-
-  def tag_name
-    @tag_name ||= Gitlab::Git.ref_name(data[:ref])
-  end
-
-  # Max 20 commits from push DESC
-  def commits
-    @commits ||= (data[:commits] || []).reverse
-  end
-
-  def commit_title
-    commit = commits.last
-
-    commit[:message] if commit
-  end
-
-  def commit_id
-    commit_to || commit_from
-  end
-
-  def commits_count
-    data[:total_commits_count] || commits.count || 0
-  end
-
-  def ref_type
-    tag? ? "tag" : "branch"
-  end
-
-  def push_with_commits?
-    !commits.empty? && commit_from && commit_to
-  end
-
-  def last_push_to_non_root?
-    branch? && project.default_branch != branch_name
-  end
-
   def target_iid
     target.respond_to?(:iid) ? target.iid : target_id
   end
@@ -430,16 +350,6 @@ class Event < ActiveRecord::Base
 
   def authored_by?(user)
     user ? author_id == user.id : false
-  end
-
-  # We're manually replicating data into the new table since database triggers
-  # are not dumped to db/schema.rb. This could mean that a new installation
-  # would not have the triggers in place, thus losing events data in GitLab
-  # 10.0.
-  def replicate_event_for_push_events_migration
-    new_attributes = attributes.with_indifferent_access.except(:title, :data)
-
-    EventForMigration.create!(new_attributes)
   end
 
   def to_partial_path

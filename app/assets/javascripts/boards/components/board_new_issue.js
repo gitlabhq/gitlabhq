@@ -6,7 +6,10 @@ const Store = gl.issueBoards.BoardsStore;
 export default {
   name: 'BoardNewIssue',
   props: {
-    list: Object,
+    list: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {

@@ -3,10 +3,8 @@ export default class Store {
     this.state = initialState;
     this.formState = {
       title: '',
-      confidential: false,
       description: '',
       lockedWarningVisible: false,
-      move_to_project_id: 0,
       updateLoading: false,
     };
   }

@@ -10,18 +10,9 @@ describe 'projects/edit' do
     assign(:project, project)
 
     allow(controller).to receive(:current_user).and_return(user)
-    allow(view).to receive_messages(current_user: user, can?: true)
-  end
-
-  context 'LFS enabled setting' do
-    it 'displays the correct elements' do
-      allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
-
-      render
-
-      expect(rendered).to have_select('project_lfs_enabled')
-      expect(rendered).to have_content('Git Large File Storage')
-    end
+    allow(view).to receive_messages(current_user: user,
+                                    can?: true,
+                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
   end
 
   context 'project export disabled' do

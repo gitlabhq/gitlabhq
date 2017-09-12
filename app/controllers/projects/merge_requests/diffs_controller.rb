@@ -27,7 +27,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff.order_id_desc
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?
@@ -61,6 +61,6 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@compare.diff_refs)
-    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes))
+    @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes), @merge_request)
   end
 end

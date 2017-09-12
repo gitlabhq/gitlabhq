@@ -55,7 +55,9 @@ module API
         optional :tag_list, type: Array[String], desc: 'The list of tags for a runner'
         optional :run_untagged, type: Boolean, desc: 'Flag indicating the runner can execute untagged jobs'
         optional :locked, type: Boolean, desc: 'Flag indicating the runner is locked'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked
+        optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
+                                desc: 'The access_level of the runner'
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
       end
       put ':id' do
         runner = get_runner(params.delete(:id))
@@ -77,17 +79,17 @@ module API
       end
       delete ':id' do
         runner = get_runner(params[:id])
+
         authenticate_delete_runner!(runner)
 
-        status 204
-        runner.destroy!
+        destroy_conditionally!(runner)
       end
     end
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       before { authorize_admin_project }
 
       desc 'Get runners available for project' do
@@ -135,8 +137,7 @@ module API
         runner = runner_project.runner
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
-        status 204
-        runner_project.destroy
+        destroy_conditionally!(runner_project)
       end
     end
 

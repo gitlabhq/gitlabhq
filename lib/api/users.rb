@@ -230,8 +230,87 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        destroy_conditionally!(key)
+      end
+
+      desc 'Add a GPG key to a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params.delete(:id))
+        not_found!('User') unless user
+
+        key = user.gpg_keys.new(declared_params(include_missing: false))
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Get the GPG keys of a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        use :pagination
+      end
+      get ':id/gpg_keys' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        present paginate(user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Delete an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      delete ':id/gpg_keys/:key_id' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
         status 204
         key.destroy
+      end
+
+      desc 'Revokes an existing GPG key from a specified user. Available only for admins.' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post ':id/gpg_keys/:key_id/revoke' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        key = user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
       end
 
       desc 'Add an email address to a specified user. Available only for admins.' do
@@ -287,7 +366,11 @@ module API
         email = user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        Emails::DestroyService.new(user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, email: email.email).execute
+        end
+
+        user.update_secondary_emails!
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -299,11 +382,13 @@ module API
       end
       delete ":id" do
         authenticated_as_admin!
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
-        status 204
-        user.delete_async(deleted_by: current_user, params: params)
+        destroy_conditionally!(user) do
+          user.delete_async(deleted_by: current_user, params: params)
+        end
       end
 
       desc 'Block a user. Available only for admins.'
@@ -403,8 +488,11 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
-            status 204
-            find_impersonation_token.revoke!
+            token = find_impersonation_token
+
+            destroy_conditionally!(token) do
+              token.revoke!
+            end
           end
         end
       end
@@ -481,6 +569,75 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        destroy_conditionally!(key)
+      end
+
+      desc "Get the currently authenticated user's GPG keys" do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        use :pagination
+      end
+      get 'gpg_keys' do
+        present paginate(current_user.gpg_keys), with: Entities::GPGKey
+      end
+
+      desc 'Get a single GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      get 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        present key, with: Entities::GPGKey
+      end
+
+      desc 'Add a new GPG key to the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+        success Entities::GPGKey
+      end
+      params do
+        requires :key, type: String, desc: 'The new GPG key'
+      end
+      post 'gpg_keys' do
+        key = current_user.gpg_keys.new(declared_params)
+
+        if key.save
+          present key, with: Entities::GPGKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Revoke a GPG key owned by currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the GPG key'
+      end
+      post 'gpg_keys/:key_id/revoke' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
+        key.revoke
+        status :accepted
+      end
+
+      desc 'Delete a GPG key from the currently authenticated user' do
+        detail 'This feature was added in GitLab 10.0'
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the SSH key'
+      end
+      delete 'gpg_keys/:key_id' do
+        key = current_user.gpg_keys.find_by(id: params[:key_id])
+        not_found!('GPG Key') unless key
+
         status 204
         key.destroy
       end
@@ -533,8 +690,11 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
-        status 204
-        Emails::DestroyService.new(current_user, email: email.email).execute
+        destroy_conditionally!(email) do |email|
+          Emails::DestroyService.new(current_user, email: email.email).execute
+        end
+
+        current_user.update_secondary_emails!
       end
 
       desc 'Get a list of user activities'

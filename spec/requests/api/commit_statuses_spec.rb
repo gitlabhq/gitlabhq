@@ -16,8 +16,8 @@ describe API::CommitStatuses do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.pipelines.create(source: :push, sha: commit.id, ref: 'master') }
-      let!(:develop) { project.pipelines.create(source: :push, sha: commit.id, ref: 'develop') }
+      let!(:master) { project.pipelines.create(source: :push, sha: commit.id, ref: 'master', protected: false) }
+      let!(:develop) { project.pipelines.create(source: :push, sha: commit.id, ref: 'develop', protected: false) }
 
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
@@ -142,6 +142,9 @@ describe API::CommitStatuses do
               expect(json_response['ref']).not_to be_empty
               expect(json_response['target_url']).to be_nil
               expect(json_response['description']).to be_nil
+              if status == 'failed'
+                expect(CommitStatus.find(json_response['id'])).to be_api_failure
+              end
             end
           end
         end

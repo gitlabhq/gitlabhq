@@ -24,7 +24,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get project hooks' do
         success Entities::ProjectHook
       end
@@ -96,8 +96,7 @@ module API
       delete ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
-        status 204
-        hook.destroy
+        destroy_conditionally!(hook)
       end
     end
   end

@@ -687,6 +687,7 @@ describe API::V3::Projects do
         expect(json_response['wiki_enabled']).to be_present
         expect(json_response['builds_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
+        expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['container_registry_enabled']).to be_present
         expect(json_response['created_at']).to be_present
         expect(json_response['last_activity_at']).to be_present

@@ -17,7 +17,7 @@
     .issuable-meta
       = issuable_meta(@merge_request, @project, "Merge request")
 
-  .issuable-actions
+  .issuable-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
       %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
         Options

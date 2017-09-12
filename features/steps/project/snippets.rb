@@ -23,7 +23,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "New snippet"' do
-    page.within '#content-body' do
+    page.within '.nav-controls' do
       first(:link, "New snippet").click
     end
   end

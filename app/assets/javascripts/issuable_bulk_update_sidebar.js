@@ -5,7 +5,6 @@
 /* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import SidebarHeightManager from './sidebar_height_manager';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
@@ -50,13 +49,6 @@ export default class IssuableBulkUpdateSidebar {
     new SubscriptionSelect();
   }
 
-  getNavHeight() {
-    const navbarHeight = $('.navbar-gitlab').outerHeight();
-    const layoutNavHeight = $('.layout-nav').outerHeight();
-    const subNavScroll = $('.sub-nav-scroll').outerHeight();
-    return navbarHeight + layoutNavHeight + subNavScroll;
-  }
-
   setupBulkUpdateActions() {
     IssuableBulkUpdateActions.setOriginalDropdownData();
   }
@@ -84,23 +76,6 @@ export default class IssuableBulkUpdateSidebar {
     this.toggleBulkEditButtonDisabled(enable);
     this.toggleOtherFiltersDisabled(enable);
     this.toggleCheckboxDisplay(enable);
-
-    if (enable) {
-      this.initAffix();
-      SidebarHeightManager.init();
-    }
-  }
-
-  initAffix() {
-    if (!this.$sidebar.hasClass('affix-top')) {
-      const offsetTop = $('.scrolling-tabs-container').outerHeight() + $('.sub-nav-scroll').outerHeight();
-
-      this.$sidebar.affix({
-        offset: {
-          top: offsetTop,
-        },
-      });
-    }
   }
 
   updateSelectedIssuableIds() {

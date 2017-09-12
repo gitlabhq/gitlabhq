@@ -12,15 +12,13 @@ describe('Inline edit form component', () => {
     vm = new Component({
       propsData: {
         canDestroy: true,
-        canMove: true,
         formState: {
           title: 'b',
           description: 'a',
           lockedWarningVisible: false,
         },
-        markdownPreviewUrl: '/',
-        markdownDocs: '/',
-        projectsAutocompleteUrl: '/',
+        markdownPreviewPath: '/',
+        markdownDocsPath: '/',
         projectPath: '/',
         projectNamespace: '/',
       },

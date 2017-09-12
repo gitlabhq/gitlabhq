@@ -48,7 +48,7 @@ feature 'Admin updates settings' do
   end
 
   scenario 'Change Slack Notifications Service template settings' do
-    click_link 'Service Templates'
+    first(:link, 'Service Templates').click
     click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
@@ -77,6 +77,22 @@ feature 'Admin updates settings' do
 
       expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
     end
+  end
+
+  scenario 'Change Keys settings' do
+    select 'Are forbidden', from: 'RSA SSH keys'
+    select 'Are allowed', from: 'DSA SSH keys'
+    select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
+    select 'Are forbidden', from: 'ED25519 SSH keys'
+    click_on 'Save'
+
+    forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
+
+    expect(page).to have_content 'Application settings saved successfully'
+    expect(find_field('RSA SSH keys').value).to eq(forbidden)
+    expect(find_field('DSA SSH keys').value).to eq('0')
+    expect(find_field('ECDSA SSH keys').value).to eq('384')
+    expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
   end
 
   def check_all_events

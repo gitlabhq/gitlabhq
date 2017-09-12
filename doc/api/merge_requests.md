@@ -22,113 +22,26 @@ GET /merge_requests?state=all
 GET /merge_requests?milestone=release
 GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
+GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned-to-me
 ```
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
-| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
-| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
-| `milestone`  | string  | no | Return merge requests for a specific milestone |
-| `view` | string | no | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request |
-| `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
-| `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
-| `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
-| `scope` | string | no | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` |
-| `author_id` | integer | no | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me` |
-| `assignee_id` | integer | no | Returns merge requests assigned to the given user `id` |
-
-```json
-[
-  {
-    "id": 1,
-    "iid": 1,
-    "target_branch": "master",
-    "source_branch": "test1",
-    "project_id": 3,
-    "title": "test1",
-    "state": "opened",
-    "upvotes": 0,
-    "downvotes": 0,
-    "author": {
-      "id": 1,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
-    },
-    "assignee": {
-      "id": 1,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2012-04-29T08:46:00Z"
-    },
-    "source_project_id": 2,
-    "target_project_id": 3,
-    "labels": [ ],
-    "description": "fixed login page css paddings",
-    "work_in_progress": false,
-    "milestone": {
-      "id": 5,
-      "iid": 1,
-      "project_id": 3,
-      "title": "v2.0",
-      "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
-      "state": "closed",
-      "created_at": "2015-02-02T19:49:26.013Z",
-      "updated_at": "2015-02-02T19:49:26.013Z",
-      "due_date": null
-    },
-    "merge_when_pipeline_succeeds": true,
-    "merge_status": "can_be_merged",
-    "sha": "8888888888888888888888888888888888888888",
-    "merge_commit_sha": null,
-    "user_notes_count": 1,
-    "should_remove_source_branch": true,
-    "force_remove_source_branch": false,
-    "web_url": "http://example.com/example/example/merge_requests/1"
-  }
-]
-```
-
-## List project merge requests
-
-Get all merge requests for this project.
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
-
-```
-GET /projects/:id/merge_requests
-GET /projects/:id/merge_requests?state=opened
-GET /projects/:id/merge_requests?state=all
-GET /projects/:id/merge_requests?iids[]=42&iids[]=43
-GET /projects/:id/merge_requests?milestone=release
-GET /projects/:id/merge_requests?labels=bug,reproduced
-```
-
-Parameters:
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
-| `iids[]` | Array[integer] | no | Return the request having the given `iid` |
-| `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
-| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
-| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
-| `milestone`  | string  | no | Return merge requests for a specific milestone |
-| `view` | string | no | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request |
-| `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
-| `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
-| `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
-| `scope` | string | no | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `author_id` | integer | no | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_ |
-| `assignee_id` | integer | no | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| Attribute           | Type     | Required | Description                                                                                                            |
+| ------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `state`             | string   | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                       |
+| `order_by`          | string   | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                |
+| `sort`              | string   | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                     |
+| `milestone`         | string   | no       | Return merge requests for a specific milestone                                                                         |
+| `view`              | string   | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                              |
+| `labels`            | string   | no       | Return merge requests matching a comma separated list of labels                                                        |
+| `created_after`     | datetime | no       | Return merge requests created after the given time (inclusive)                                                         |
+| `created_before`    | datetime | no       | Return merge requests created before the given time (inclusive)                                                        |
+| `scope`             | string   | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me`     |
+| `author_id`         | integer  | no       | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`              |
+| `assignee_id`       | integer  | no       | Returns merge requests assigned to the given user `id`                                                                 |
+| `my_reaction_emoji` | string   | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_ |
 
 ```json
 [
@@ -182,7 +95,110 @@ Parameters:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
-    "discussion_locked": false
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
+]
+```
+
+## List project merge requests
+
+Get all merge requests for this project.
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+
+```
+GET /projects/:id/merge_requests
+GET /projects/:id/merge_requests?state=opened
+GET /projects/:id/merge_requests?state=all
+GET /projects/:id/merge_requests?iids[]=42&iids[]=43
+GET /projects/:id/merge_requests?milestone=release
+GET /projects/:id/merge_requests?labels=bug,reproduced
+GET /projects/:id/merge_requests?my_reaction_emoji=star
+```
+
+Parameters:
+
+| Attribute           | Type           | Required | Description                                                                                                                    |
+| ------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                | integer        | yes      | The ID of a project                                                                                                            |
+| `iids[]`            | Array[integer] | no       | Return the request having the given `iid`                                                                                      |
+| `state`             | string         | no       | Return all merge requests or just those that are `opened`, `closed`, or `merged`                                               |
+| `order_by`          | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                        |
+| `sort`              | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                             |
+| `milestone`         | string         | no       | Return merge requests for a specific milestone                                                                                 |
+| `view`              | string         | no       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request                                      |
+| `labels`            | string         | no       | Return merge requests matching a comma separated list of labels                                                                |
+| `created_after`     | datetime       | no       | Return merge requests created after the given time (inclusive)                                                                 |
+| `created_before`    | datetime       | no       | Return merge requests created before the given time (inclusive)                                                                |
+| `scope`             | string         | no       | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `author_id`         | integer        | no       | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                 |
+| `assignee_id`       | integer        | no       | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_                                |
+| `my_reaction_emoji` | string         | no       | Return merge requests reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_         |
+
+```json
+[
+  {
+    "id": 1,
+    "iid": 1,
+    "target_branch": "master",
+    "source_branch": "test1",
+    "project_id": 3,
+    "title": "test1",
+    "state": "opened",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "assignee": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "source_project_id": 2,
+    "target_project_id": 3,
+    "labels": [ ],
+    "description": "fixed login page css paddings",
+    "work_in_progress": false,
+    "milestone": {
+      "id": 5,
+      "iid": 1,
+      "project_id": 3,
+      "title": "v2.0",
+      "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+      "state": "closed",
+      "created_at": "2015-02-02T19:49:26.013Z",
+      "updated_at": "2015-02-02T19:49:26.013Z",
+      "due_date": null
+    },
+    "merge_when_pipeline_succeeds": true,
+    "merge_status": "can_be_merged",
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
+    "user_notes_count": 1,
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1",
+    "discussion_locked": false,
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
   }
 ]
 ```
@@ -252,7 +268,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
-  "discussion_locked": false
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -357,8 +379,14 @@ Parameters:
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
-  "web_url": "http://example.com/example/example/merge_requests/1",,
+  "web_url": "http://example.com/example/example/merge_requests/1",
   "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
   "changes": [
     {
     "old_path": "VERSION",
@@ -446,7 +474,13 @@ POST /projects/:id/merge_requests
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
-  "discussion_locked": false
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -525,7 +559,13 @@ Must include at least one non-required attribute from above.
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
-  "discussion_locked": false
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -624,7 +664,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
-  "discussion_locked": false
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -695,7 +741,13 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
-  "discussion_locked": false
+  "discussion_locked": false,
+  "time_stats": {
+    "time_estimate": 0,
+    "total_time_spent": 0,
+    "human_time_estimate": null,
+    "human_total_time_spent": null
+  }
 }
 ```
 
@@ -1276,3 +1328,4 @@ Example response:
 ```
 
 [ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016

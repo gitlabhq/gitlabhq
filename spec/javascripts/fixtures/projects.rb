@@ -17,6 +17,10 @@ describe ProjectsController, '(JavaScript fixtures)', type: :controller do
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'projects/dashboard.html.raw' do |example|
     get :show,
       namespace_id: project.namespace.to_param,

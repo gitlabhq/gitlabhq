@@ -138,6 +138,16 @@ describe API::Issues, :mailer do
         expect(first_issue['id']).to eq(issue2.id)
       end
 
+      it 'returns issues reacted by the authenticated user by the given emoji' do
+        issue2 = create(:issue, project: project, author: user, assignees: [user])
+        award_emoji = create(:award_emoji, awardable: issue2, user: user2, name: 'star')
+
+        get api('/issues', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
       it 'returns issues matching given search string for title' do
         get api("/issues", user), search: issue.title
 
@@ -508,6 +518,18 @@ describe API::Issues, :mailer do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
+
+    it 'avoids N+1 queries' do
+      control_count = ActiveRecord::QueryRecorder.new do
+        get api("/projects/#{project.id}/issues", user)
+      end.count
+
+      create(:issue, author: user, project: project)
+
+      expect do
+        get api("/projects/#{project.id}/issues", user)
+      end.not_to exceed_query_limit(control_count)
+    end
 
     it 'returns 404 when project does not exist' do
       get api('/projects/1000/issues', non_member)
@@ -1303,6 +1325,10 @@ describe API::Issues, :mailer do
         delete api("/projects/#{project.id}/issues/#{issue.iid}", owner)
 
         expect(response).to have_http_status(204)
+      end
+
+      it_behaves_like '412 response' do
+        let(:request) { api("/projects/#{project.id}/issues/#{issue.iid}", owner) }
       end
     end
 

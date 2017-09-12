@@ -68,7 +68,7 @@ module API
       end
 
       get "/merge_request_urls" do
-        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+        merge_request_urls
       end
 
       #
@@ -88,7 +88,8 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION
+          gitlab_rev: Gitlab::REVISION,
+          redis: redis_ping
         }
       end
 
@@ -142,6 +143,14 @@ module API
         { success: true, recovery_codes: codes }
       end
 
+      post '/pre_receive' do
+        status 200
+
+        reference_counter_increased = Gitlab::ReferenceCounter.new(params[:gl_repository]).increase
+
+        { reference_counter_increased: reference_counter_increased }
+      end
+
       post "/notify_post_receive" do
         status 200
 
@@ -154,6 +163,21 @@ module API
         # rescue GRPC::Unavailable => e
         #   render_api_error!(e, 500)
         # end
+      end
+
+      post '/post_receive' do
+        status 200
+
+        PostReceive.perform_async(params[:gl_repository], params[:identifier],
+          params[:changes])
+        broadcast_message = BroadcastMessage.current&.last&.message
+        reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
+
+        {
+          merge_request_urls: merge_request_urls,
+          broadcast_message: broadcast_message,
+          reference_counter_decreased: reference_counter_decreased
+        }
       end
     end
   end

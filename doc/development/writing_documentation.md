@@ -103,3 +103,24 @@ If that job fails, read the instructions in the job log for what to do next.
 Contributors do not need to submit their changes to EE, GitLab Inc. employees
 on the other hand need to make sure that their changes apply cleanly to both
 CE and EE.
+
+## Previewing the changes live
+
+If you want to preview your changes live, you can use the manual `build-docs`
+job in your merge request.
+
+![Manual trigger a docs build](img/manual_build_docs.png)
+
+This job will:
+
+1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
+   project named after the scheme: `<CE/EE-branch-slug>-built-from-ce-ee`
+1. Trigger a pipeline and build the docs site with your changes
+
+Look for the docs URL at the output of the `build-docs` job.
+
+>**Note:**
+Make sure that you always delete the branch of the merge request you were
+working on. If you don't, the remote docs branch won't be removed either,
+and the server where the Review Apps are hosted will eventually be out of
+disk space.

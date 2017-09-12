@@ -605,6 +605,8 @@ class MergeRequest < ActiveRecord::Base
       self.merge_requests_closing_issues.delete_all
 
       closes_issues(current_user).each do |issue|
+        next if issue.is_a?(ExternalIssue)
+
         self.merge_requests_closing_issues.create!(issue: issue)
       end
     end
@@ -803,7 +805,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/merge-requests/#{iid}/head"
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
   end
 
   def ref_fetched?
@@ -916,6 +918,12 @@ class MergeRequest < ActiveRecord::Base
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -942,20 +950,25 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def update_project_counter_caches?
+    state_changed?
+  end
+
   def update_project_counter_caches
+    return unless update_project_counter_caches?
+
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  end
+
+  def first_contribution?
+    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
+
+    project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
   private
 
   def write_ref
-    target_project.repository.with_repo_branch_commit(
-      source_project.repository, source_branch) do |commit|
-        if commit
-          target_project.repository.write_ref(ref_path, commit.sha)
-        else
-          raise Rugged::ReferenceError, 'source repository is empty'
-        end
-      end
+    target_project.repository.fetch_source_branch(source_project.repository, source_branch, ref_path)
   end
 end

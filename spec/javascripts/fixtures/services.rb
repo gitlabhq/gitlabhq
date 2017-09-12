@@ -18,6 +18,10 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'services/edit_service.html.raw' do |example|
     get :edit,
       namespace_id: namespace,

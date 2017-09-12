@@ -41,7 +41,6 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
@@ -74,6 +73,7 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
@@ -98,7 +98,7 @@ import initChangesDropdown from './init_changes_dropdown';
       path = page.split(':');
       shortcut_handler = null;
 
-      $('.js-gfm-input').each((i, el) => {
+      $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
         const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
@@ -160,6 +160,9 @@ import initChangesDropdown from './init_changes_dropdown';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
+          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
 
@@ -171,7 +174,6 @@ import initChangesDropdown from './init_changes_dropdown';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -343,6 +345,7 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -361,6 +364,9 @@ import initChangesDropdown from './init_changes_dropdown';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
+          break;
+        case 'projects:pipelines:index':
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -419,6 +425,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -489,6 +496,8 @@ import initChangesDropdown from './init_changes_dropdown';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
         case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
@@ -554,9 +563,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'root':
           new UserCallout();
           break;
-        case 'groups':
-          new GroupName();
-          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -564,7 +570,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects':
           new Project();
           new ProjectAvatar();
-          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
@@ -572,9 +577,13 @@ import initChangesDropdown from './init_changes_dropdown';
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
+              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+                .then(permissions => permissions.default())
+                .catch(() => {});
               break;
             case 'new':
               new ProjectNew();
+              initProjectVisibilitySelector();
               break;
             case 'show':
               new Star();

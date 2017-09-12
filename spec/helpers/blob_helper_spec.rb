@@ -95,13 +95,13 @@ describe BlobHelper do
     it 'returns a link with the proper route' do
       link = edit_blob_link(project, 'master', 'README.md')
 
-      expect(Capybara.string(link).find_link('Edit')[:href]).to eq('/gitlab/gitlabhq/edit/master/README.md')
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md")
     end
 
     it 'returns a link with the passed link_opts on the expected route' do
       link = edit_blob_link(project, 'master', 'README.md', link_opts: { mr_id: 10 })
 
-      expect(Capybara.string(link).find_link('Edit')[:href]).to eq('/gitlab/gitlabhq/edit/master/README.md?mr_id=10')
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md?mr_id=10")
     end
   end
 

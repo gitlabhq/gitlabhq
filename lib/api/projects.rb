@@ -1,7 +1,6 @@
 require_dependency 'declarative_policy'
 
 module API
-  # Projects API
   class Projects < Grape::API
     include PaginationParams
 
@@ -17,6 +16,7 @@ module API
         optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
         optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
@@ -96,7 +96,7 @@ module API
       end
     end
 
-    resource :users, requirements: { user_id: %r{[^/]+} } do
+    resource :users, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end
@@ -184,7 +184,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a single project' do
         success Entities::ProjectWithAccess
       end
@@ -237,6 +237,7 @@ module API
         at_least_one_of_ce =
           [
             :jobs_enabled,
+            :resolve_outdated_diff_discussions,
             :container_registry_enabled,
             :default_branch,
             :description,
@@ -334,7 +335,10 @@ module API
       desc 'Remove a project'
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+
+        destroy_conditionally!(user_project) do
+          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+        end
 
         accepted!
       end
@@ -363,8 +367,7 @@ module API
         authorize! :remove_fork_project, user_project
 
         if user_project.forked?
-          status 204
-          user_project.forked_project_link.destroy
+          destroy_conditionally!(user_project.forked_project_link)
         else
           not_modified!
         end
@@ -408,8 +411,7 @@ module API
         link = user_project.project_group_links.find_by(group_id: params[:group_id])
         not_found!('Group Link') unless link
 
-        status 204
-        link.destroy
+        destroy_conditionally!(link)
       end
 
       desc 'Upload a file'

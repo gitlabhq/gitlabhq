@@ -1,4 +1,6 @@
 - @no_container = true
+- add_to_breadcrumbs "Jobs", project_jobs_path(@project)
+- breadcrumb_title "##{@build.id}"
 - page_title "#{@build.name} (##{@build.id})", "Jobs"
 = render "projects/pipelines/head"
 

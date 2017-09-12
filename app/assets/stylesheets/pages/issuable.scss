@@ -220,7 +220,7 @@
 
 .right-sidebar {
   position: absolute;
-  top: $header-height;
+  top: $new-navbar-height;
   bottom: 0;
   right: 0;
   transition: width .3s;
@@ -230,7 +230,7 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$header-height});
+    height: calc(100% - #{$new-navbar-height});
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -473,17 +473,35 @@
     padding-top: 6px;
   }
 
-  .open .dropdown-menu {
+  .dropdown-menu {
     width: 100%;
   }
 }
 
 .with-performance-bar .right-sidebar {
-  top: $header-height + $performance-bar-height;
+  top: $new-navbar-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+    height: calc(100% - #{$new-navbar-height} - #{$performance-bar-height});
   }
+}
+
+.sidebar-move-issue-dropdown {
+  @include new-style-dropdown;
+}
+
+.sidebar-move-issue-confirmation-button {
+  width: 100%;
+
+  &.is-loading {
+    .sidebar-move-issue-confirmation-loading-icon {
+      display: inline-block;
+    }
+  }
+}
+
+.sidebar-move-issue-confirmation-loading-icon {
+  display: none;
 }
 
 .detail-page-description {
@@ -498,6 +516,7 @@
   color: $gray-darkest;
   display: block;
   margin: 16px 0 0;
+  font-size: 85%;
 
   .author_link {
     color: $gray-darkest;
@@ -598,6 +617,8 @@
 }
 
 .issuable-actions {
+  @include new-style-dropdown;
+
   padding-top: 10px;
 
   @media (min-width: $screen-sm-min) {

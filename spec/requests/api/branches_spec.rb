@@ -75,6 +75,22 @@ describe API::Branches do
     let(:route) { "/projects/#{project_id}/repository/branches/#{branch_name}" }
 
     shared_examples_for 'repository branch' do
+      context 'HEAD request' do
+        it 'returns 204 No Content' do
+          head api(route, user)
+
+          expect(response).to have_gitlab_http_status(204)
+          expect(response.body).to be_empty
+        end
+
+        it 'returns 404 Not Found' do
+          head api("/projects/#{project_id}/repository/branches/unknown", user)
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_empty
+        end
+      end
+
       it 'returns the repository branch' do
         get api(route, current_user)
 
@@ -498,6 +514,10 @@ describe API::Branches do
       delete api("/projects/#{project.id}/repository/branches/foobar", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/repository/branches/#{branch_name}", user) }
     end
   end
 

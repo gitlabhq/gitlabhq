@@ -46,6 +46,15 @@
   }
 }
 
+@mixin btn-svg {
+  svg {
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: 2px;
+  }
+}
+
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
   border-color: $border-light;
@@ -123,6 +132,7 @@
 .btn {
   @include btn-default;
   @include btn-white;
+  @include btn-svg;
 
   color: $gl-text-color;
 
@@ -220,13 +230,6 @@
     .fa-caret-down {
       margin-left: 3px;
     }
-  }
-
-  svg {
-    height: 15px;
-    width: 15px;
-    position: relative;
-    top: 2px;
   }
 
   svg,

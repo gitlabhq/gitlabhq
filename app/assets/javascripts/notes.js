@@ -464,7 +464,6 @@ export default class Notes {
   }
 
   renderDiscussionAvatar(diffAvatarContainer, noteEntity) {
-    var commentButton = diffAvatarContainer.find('.js-add-diff-note-button');
     var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
 
     if (!avatarHolder.length) {
@@ -474,10 +473,6 @@ export default class Notes {
       diffAvatarContainer.append(avatarHolder);
 
       gl.diffNotesCompileComponents();
-    }
-
-    if (commentButton.length) {
-      commentButton.remove();
     }
   }
 
@@ -767,6 +762,7 @@ export default class Notes {
         var $note, $notes;
         $note = $(el);
         $notes = $note.closest('.discussion-notes');
+        const discussionId = $('.notes', $notes).data('discussion-id');
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           if (gl.diffNoteApps[noteElId]) {
@@ -782,6 +778,8 @@ export default class Notes {
 
           // "Discussions" tab
           $notes.closest('.timeline-entry').remove();
+
+          $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
 
           // The notes tr can contain multiple lists of notes, like on the parallel diff
           if (notesTr.find('.discussion-notes').length > 1) {
@@ -1274,16 +1272,16 @@ export default class Notes {
       `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
          <div class="timeline-entry-inner">
             <div class="timeline-icon">
-               <a href="/${currentUsername}">
+               <a href="/${_.escape(currentUsername)}">
                  <img class="avatar s40" src="${currentUserAvatar}" />
                </a>
             </div>
             <div class="timeline-content ${discussionClass}">
                <div class="note-header">
                   <div class="note-header-info">
-                     <a href="/${currentUsername}">
-                       <span class="hidden-xs">${currentUserFullname}</span>
-                       <span class="note-headline-light">@${currentUsername}</span>
+                     <a href="/${_.escape(currentUsername)}">
+                       <span class="hidden-xs">${_.escape(currentUsername)}</span>
+                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
                      </a>
                   </div>
                </div>
@@ -1296,6 +1294,9 @@ export default class Notes {
          </div>
       </li>`
     );
+
+    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
 
     return $tempNote;
   }

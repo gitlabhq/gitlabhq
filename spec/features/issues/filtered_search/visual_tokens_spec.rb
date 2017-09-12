@@ -28,6 +28,8 @@ describe 'Visual tokens', js: true do
     sign_in(user)
     create(:issue, project: project)
 
+    page.driver.set_cookie('sidebar_collapsed', 'true')
+
     visit project_issues_path(project)
   end
 

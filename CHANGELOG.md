@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.4 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Fixes race condition in project uploads.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Disallow the `name` attribute on all user-provided markup.
+
+## 9.5.3 (2017-09-03)
+
+- [SECURITY] Filter additional secrets from Rails logs.
+- [FIXED] Make username update fail if the namespace update fails. !13642
+- [FIXED] Fix failure when issue is authored by a deleted user. !13807
+- [FIXED] Reverts changes made to signin_enabled. !13956
+- [FIXED] Fix Merge when pipeline succeeds button dropdown caret icon horizontal alignment.
+- [FIXED] Fixed diff changes bar buttons from showing/hiding whilst scrolling.
+- [FIXED] Fix events error importing GitLab projects.
+- [FIXED] Fix pipeline trigger via API fails with 500 Internal Server Error in 9.5.
+- [FIXED] Fixed fly-out nav flashing in & out.
+- [FIXED] Remove closing external issues by reference error.
+- [FIXED] Re-allow appearances.description_html to be NULL.
+- [CHANGED] Update and fix resolvable note icons for easier recognition.
+- [OTHER] Eager load head pipeline projects for MRs index.
+- [OTHER] Instrument MergeRequest#fetch_ref.
+- [OTHER] Instrument MergeRequest#ensure_ref_fetched.
+
 ## 9.5.2 (2017-08-28)
 
 - [FIXED] Fix signing in using LDAP when attribute mapping uses simple strings instead of arrays.
@@ -184,6 +212,18 @@ entry.
 - Skip oAuth authorization for trusted applications.
 - Use a specialized class for querying events to improve performance.
 - Update build badges to be pipeline badges and display passing instead of success.
+
+## 9.4.6 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Remove hidden symlinks from project import files.
+- Fixes race condition in project uploads.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
 
 ## 9.4.5 (2017-08-14)
 
@@ -434,6 +474,24 @@ entry.
 - Defer project destroys within a namespace in Groups::DestroyService#async_execute.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
+
+## 9.3.11 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Improve support for external issue references. !12485
+- Use uploads/system directory for personal snippets.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+- Fix XSS issue in go-get handling.
+- Remove hidden symlinks from project import files.
+- Fix an infinite loop when handling user-supplied regular expressions.
+- Fixes race condition in project uploads.
+- Fixes race condition in project uploads.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
+- Renders 404 if given project is not readable by the user on Todos dashboard.
 
 ## 9.3.10 (2017-08-09)
 

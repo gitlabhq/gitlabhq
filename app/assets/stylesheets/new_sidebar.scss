@@ -26,7 +26,7 @@ $new-sidebar-collapsed-width: 50px;
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: calc(100% - #{$header-height});
+    height: calc(100% - #{$new-navbar-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -45,7 +45,6 @@ $new-sidebar-collapsed-width: 50px;
   margin-right: 2px;
 
   a {
-    border-bottom: 1px solid $border-color;
     font-weight: $gl-font-weight-bold;
     display: flex;
     align-items: center;
@@ -93,12 +92,19 @@ $new-sidebar-collapsed-width: 50px;
   z-index: 400;
   width: $new-sidebar-width;
   transition: left $sidebar-transition-duration;
-  top: $header-height;
+  top: $new-navbar-height;
   bottom: 0;
   left: 0;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
+
+  &:not(.sidebar-icons-only) {
+    @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
+      box-shadow: inset -2px 0 0 $border-color,
+                  2px 1px 3px $dropdown-shadow-color;
+    }
+  }
 
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
@@ -107,17 +113,18 @@ $new-sidebar-collapsed-width: 50px;
       overflow-x: hidden;
     }
 
-    .badge,
-    .sidebar-context-title {
-      display: none;
-    }
-
+    .badge:not(.fly-out-badge),
+    .sidebar-context-title,
     .nav-item-name {
       display: none;
     }
 
     .sidebar-top-level-items > li > a {
       min-height: 44px;
+    }
+
+    .fly-out-top-item {
+      display: block;
     }
   }
 
@@ -180,6 +187,10 @@ $new-sidebar-collapsed-width: 50px;
       width: 16px;
     }
   }
+
+  .fly-out-top-item {
+    display: none;
+  }
 }
 
 .nav-sidebar-inner-scroll {
@@ -189,7 +200,7 @@ $new-sidebar-collapsed-width: 50px;
 }
 
 .with-performance-bar .nav-sidebar {
-  top: $header-height + $performance-bar-height;
+  top: $new-navbar-height + $performance-bar-height;
 }
 
 .sidebar-sub-level-items {
@@ -250,7 +261,7 @@ $new-sidebar-collapsed-width: 50px;
           left: $new-sidebar-width;
           min-width: 150px;
           margin-top: -1px;
-          padding: 8px 1px;
+          padding: 4px 1px;
           background-color: $white-light;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
           border: 1px solid $gray-darker;
@@ -269,6 +280,13 @@ $new-sidebar-collapsed-width: 50px;
 
           &.is-above {
             margin-top: 1px;
+          }
+
+          .divider {
+            height: 1px;
+            margin: 4px -1px;
+            padding: 0;
+            background-color: $dropdown-divider-color;
           }
 
           > .active {
@@ -310,7 +328,7 @@ $new-sidebar-collapsed-width: 50px;
         font-weight: $gl-font-weight-bold;
       }
 
-      .sidebar-sub-level-items {
+      .sidebar-sub-level-items:not(.is-fly-out-only) {
         display: block;
       }
     }
@@ -389,6 +407,10 @@ $new-sidebar-collapsed-width: 50px;
     }
   }
 
+  .nav-icon-container {
+    margin-right: 0;
+  }
+
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
     padding: 16px 18px;
@@ -404,6 +426,19 @@ $new-sidebar-collapsed-width: 50px;
   }
 }
 
+.fly-out-top-item {
+  > a {
+    display: flex;
+  }
+
+  .fly-out-badge {
+    margin-left: 8px;
+  }
+}
+
+.fly-out-top-item-name {
+  flex: 1;
+}
 
 // Mobile nav
 
@@ -453,7 +488,7 @@ $new-sidebar-collapsed-width: 50px;
 // Make issue boards full-height now that sub-nav is gone
 
 .boards-list {
-  height: calc(100vh - #{$header-height});
+  height: calc(100vh - #{$new-navbar-height});
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
@@ -464,7 +499,7 @@ $new-sidebar-collapsed-width: 50px;
 }
 
 .with-performance-bar .boards-list {
-  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
+  height: calc(100vh - #{$new-navbar-height} - #{$performance-bar-height});
 }
 
 

@@ -28,7 +28,7 @@ module API
         end
 
         def list_milestones_for(parent)
-          milestones = parent.milestones
+          milestones = parent.milestones.order_id_desc
           milestones = Milestone.filter_by_state(milestones, params[:state])
           milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
           milestones = filter_by_search(milestones, params[:search]) if params[:search]

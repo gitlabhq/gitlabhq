@@ -17,6 +17,8 @@ module Gitlab
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
+      GitError = Class.new(StandardError)
+      DeleteBranchError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -46,6 +48,9 @@ module Gitlab
       # Directory name of repo
       attr_reader :name
 
+      # Relative path of repo
+      attr_reader :relative_path
+
       # Rugged repo object
       attr_reader :rugged
 
@@ -68,6 +73,10 @@ module Gitlab
                 to: :rugged
 
       delegate :exists?, to: :gitaly_repository_client
+
+      def ==(other)
+        path == other.path
+      end
 
       # Default branch in the repository
       def root_ref
@@ -126,15 +135,19 @@ module Gitlab
       # This is to work around a bug in libgit2 that causes in-memory refs to
       # be stale/invalid when packed-refs is changed.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/474
       def find_branch(name, force_reload = false)
-        reload_rugged if force_reload
+        gitaly_migrate(:find_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.find_branch(name)
+          else
+            reload_rugged if force_reload
 
-        rugged_ref = rugged.branches[name]
-        if rugged_ref
-          target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-          Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            rugged_ref = rugged.branches[name]
+            if rugged_ref
+              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            end
+          end
         end
       end
 
@@ -244,6 +257,19 @@ module Gitlab
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
+      end
+
+      def delete_all_refs_except(prefixes)
+        delete_refs(*all_ref_names_except(prefixes))
+      end
+
+      # Returns an Array of all ref names, except when it's matching pattern
+      #
+      # regexp - The pattern for ref names we don't want
+      def all_ref_names_except(prefixes)
+        rugged.references.reject do |ref|
+          prefixes.any? { |p| ref.name.start_with?(p) }
+        end.map(&:name)
       end
 
       # Discovers the default branch based on the repository's available branches
@@ -584,11 +610,77 @@ module Gitlab
         # TODO: implement this method
       end
 
+      def add_branch(branch_name, committer:, target:)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        OperationService.new(committer, self).add_branch(branch_name, target_object.oid)
+        find_branch(branch_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      end
+
+      def add_tag(tag_name, committer:, target:, message: nil)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        committer = Committer.from_user(committer) if committer.is_a?(User)
+
+        options = nil # Use nil, not the empty hash. Rugged cares about this.
+        if message
+          options = {
+            message: message,
+            tagger: Gitlab::Git.committer_hash(email: committer.email, name: committer.name)
+          }
+        end
+
+        OperationService.new(committer, self).add_tag(tag_name, target_object.oid, options)
+
+        find_tag(tag_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      end
+
+      def rm_branch(branch_name, committer:)
+        OperationService.new(committer, self).rm_branch(find_branch(branch_name))
+      end
+
+      def rm_tag(tag_name, committer:)
+        OperationService.new(committer, self).rm_tag(find_tag(tag_name))
+      end
+
+      def find_tag(name)
+        tags.find { |tag| tag.name == name }
+      end
+
       # Delete the specified branch from the repository
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
-        rugged.branches.delete(branch_name)
+        gitaly_migrate(:delete_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.delete_branch(branch_name)
+          else
+            rugged.branches.delete(branch_name)
+          end
+        end
+      rescue Rugged::ReferenceError, CommandError => e
+        raise DeleteBranchError, e
+      end
+
+      def delete_refs(*ref_names)
+        instructions = ref_names.map do |ref|
+          "delete #{ref}\x00\x00"
+        end
+
+        command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
+        message, status = Gitlab::Popen.popen(
+          command,
+          path) do |stdin|
+          stdin.write(instructions.join)
+        end
+
+        unless status.zero?
+          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
+        end
       end
 
       # Create a new branch named **ref+ based on **stat_point+, HEAD by default
@@ -596,15 +688,14 @@ module Gitlab
       # Examples:
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def create_branch(ref, start_point = "HEAD")
-        rugged_ref = rugged.branches.create(ref, start_point)
-        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-      rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
-        raise InvalidRef.new("Invalid reference #{start_point}")
+        gitaly_migrate(:create_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.create_branch(ref, start_point)
+          else
+            rugged_create_branch(ref, start_point)
+          end
+        end
       end
 
       # Delete the specified remote from this repository.
@@ -704,6 +795,106 @@ module Gitlab
             end
           end
         end
+      end
+
+      def with_repo_branch_commit(start_repository, start_branch_name)
+        raise "expected Gitlab::Git::Repository, got #{start_repository}" unless start_repository.is_a?(Gitlab::Git::Repository)
+
+        return yield nil if start_repository.empty_repo?
+
+        if start_repository == self
+          yield commit(start_branch_name)
+        else
+          sha = start_repository.commit(start_branch_name).sha
+
+          if branch_commit = commit(sha)
+            yield branch_commit
+          else
+            with_repo_tmp_commit(
+              start_repository, start_branch_name, sha) do |tmp_commit|
+              yield tmp_commit
+            end
+          end
+        end
+      end
+
+      def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        tmp_ref = fetch_ref(
+          start_repository.path,
+          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          "refs/tmp/#{SecureRandom.hex}/head"
+        )
+
+        yield commit(sha)
+      ensure
+        delete_refs(tmp_ref) if tmp_ref
+      end
+
+      def fetch_source_branch(source_repository, source_branch, local_ref)
+        with_repo_branch_commit(source_repository, source_branch) do |commit|
+          if commit
+            write_ref(local_ref, commit.sha)
+          else
+            raise Rugged::ReferenceError, 'source repository is empty'
+          end
+        end
+      end
+
+      def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
+        with_repo_branch_commit(source_repository, source_branch_name) do |commit|
+          break unless commit
+
+          Gitlab::Git::Compare.new(
+            self,
+            target_branch_name,
+            commit.sha,
+            straight: straight
+          )
+        end
+      end
+
+      def write_ref(ref_path, sha)
+        rugged.references.create(ref_path, sha, force: true)
+      end
+
+      def fetch_ref(source_path, source_ref, target_ref)
+        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+        message, status = run_git(args)
+
+        # Make sure ref was created, and raise Rugged::ReferenceError when not
+        raise Rugged::ReferenceError, message if status != 0
+
+        target_ref
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git(args)
+        circuit_breaker.perform do
+          popen([Gitlab.config.git.bin_path, *args], path)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def commit(ref = 'HEAD')
+        Gitlab::Git::Commit.find(self, ref)
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def empty_repo?
+        !exists? || !has_visible_content?
+      end
+
+      #
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      #
+      # This method return true if repository contains some content visible in project page.
+      #
+      def has_visible_content?
+        branch_count > 0
       end
 
       def gitaly_repository
@@ -1039,6 +1230,15 @@ module Gitlab
       # exist when it has an invalid name).
       rescue Rugged::ReferenceError
         false
+      end
+
+      def rugged_create_branch(ref, start_point)
+        rugged_ref = rugged.branches.create(ref, start_point)
+        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+      rescue Rugged::ReferenceError => e
+        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+        raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
       def gitaly_copy_gitattributes(revision)

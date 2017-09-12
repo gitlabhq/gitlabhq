@@ -24,17 +24,22 @@ module API
         present paginate(branches), with: Entities::RepoBranch, project: user_project
       end
 
-      desc 'Get a single branch' do
-        success Entities::RepoBranch
-      end
-      params do
-        requires :branch, type: String, desc: 'The name of the branch'
-      end
-      get ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
-        branch = user_project.repository.find_branch(params[:branch])
-        not_found!("Branch") unless branch
+      resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
+        desc 'Get a single branch' do
+          success Entities::RepoBranch
+        end
+        params do
+          requires :branch, type: String, desc: 'The name of the branch'
+        end
+        head do
+          user_project.repository.branch_exists?(params[:branch]) ? status(204) : status(404)
+        end
+        get do
+          branch = user_project.repository.find_branch(params[:branch])
+          not_found!('Branch') unless branch
 
-        present branch, with: Entities::RepoBranch, project: user_project
+          present branch, with: Entities::RepoBranch, project: user_project
+        end
       end
 
       # Note: This API will be deprecated in favor of the protected branches API.
@@ -125,11 +130,18 @@ module API
       delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        result = DeleteBranchService.new(user_project, current_user)
-                 .execute(params[:branch])
+        branch = user_project.repository.find_branch(params[:branch])
+        not_found!('Branch') unless branch
 
-        if result[:status] != :success
-          render_api_error!(result[:message], result[:return_code])
+        commit = user_project.repository.commit(branch.dereferenced_target)
+
+        destroy_conditionally!(commit, last_updated: commit.authored_date) do
+          result = DeleteBranchService.new(user_project, current_user)
+                    .execute(params[:branch])
+
+          if result[:status] != :success
+            render_api_error!(result[:message], result[:return_code])
+          end
         end
       end
 

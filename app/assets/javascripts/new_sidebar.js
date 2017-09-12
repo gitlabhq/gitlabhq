@@ -15,9 +15,15 @@ export default class NewNavSidebar {
     this.$openSidebar = $('.toggle-mobile-nav');
     this.$closeSidebar = $('.close-nav-button');
     this.$sidebarToggle = $('.js-toggle-sidebar');
+    this.$topLevelLinks = $('.sidebar-top-level-items > li > a');
   }
 
   bindEvents() {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
+        this.toggleCollapsedSidebar(true);
+      }
+    });
     this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
@@ -50,6 +56,10 @@ export default class NewNavSidebar {
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
     NewNavSidebar.setCollapsedCookie(collapsed);
+
+    this.$topLevelLinks.attr('title', function updateTopLevelTitle() {
+      return collapsed ? this.getAttribute('aria-label') : '';
+    });
   }
 
   render() {

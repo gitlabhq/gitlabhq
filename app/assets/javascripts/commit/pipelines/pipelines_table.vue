@@ -13,6 +13,10 @@
         type: String,
         required: true,
       },
+      autoDevopsHelpPath: {
+        type: String,
+        required: true,
+      },
     },
     mixins: [
       pipelinesMixin,
@@ -95,6 +99,7 @@
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
+        :auto-devops-help-path="autoDevopsHelpPath"
         />
     </div>
   </div>

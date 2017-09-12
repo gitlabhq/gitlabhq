@@ -82,7 +82,7 @@ describe Issues::UpdateService, :mailer do
           issue.save
         end
 
-        opts[:move_between_iids] = [issue1.iid, issue2.iid]
+        opts[:move_between_ids] = [issue1.id, issue2.id]
 
         update_issue(opts)
 
@@ -509,6 +509,26 @@ describe Issues::UpdateService, :mailer do
             .to receive(:execute).with(issue, canonical_issue)
 
           update_issue(canonical_issue_id: canonical_issue.id)
+        end
+      end
+    end
+
+    context 'move issue to another project' do
+      let(:target_project) { create(:project) }
+
+      context 'valid project' do
+        before do
+          target_project.team << [user, :master]
+        end
+
+        it 'calls the move service with the proper issue and project' do
+          move_stub = instance_double(Issues::MoveService)
+          allow(Issues::MoveService).to receive(:new).and_return(move_stub)
+          allow(move_stub).to receive(:execute).with(issue, target_project).and_return(issue)
+
+          expect(move_stub).to receive(:execute).with(issue, target_project)
+
+          update_issue(target_project: target_project)
         end
       end
     end

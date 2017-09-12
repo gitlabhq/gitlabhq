@@ -202,7 +202,7 @@ module ApplicationHelper
   end
 
   def support_url
-    current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
   def page_filter_path(options = {})
@@ -300,10 +300,6 @@ module ApplicationHelper
     else
       "https://www.twitter.com/#{name}"
     end
-  end
-
-  def show_new_nav?
-    cookies["new_nav"] == "true"
   end
 
   def collapsed_sidebar?

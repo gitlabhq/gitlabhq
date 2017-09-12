@@ -21,7 +21,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
+          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels, :timelogs)
       end
 
       params :merge_requests_params do
@@ -40,6 +40,7 @@ module API
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
       end
     end
@@ -72,7 +73,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
       helpers do
@@ -164,8 +165,8 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
-        status 204
-        merge_request.destroy
+
+        destroy_conditionally!(merge_request)
       end
 
       params do

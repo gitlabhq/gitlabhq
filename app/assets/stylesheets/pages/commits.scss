@@ -141,17 +141,17 @@
   display: inline-block;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 5px;
+  padding: 0 4px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
   margin-left: 5px;
-  font-size: $gl-font-size;
+  font-size: 12px;
   line-height: $gl-font-size;
   outline: none;
 
   &.open {
-    background: $gray-light;
+    background-color: darken($gray-light, 10%);
     box-shadow: inset 0 0 2px rgba($black, 0.2);
   }
 
@@ -224,6 +224,14 @@
   button {
     color: $gl-text-color;
     vertical-align: baseline;
+  }
+
+  a.autodevops-badge {
+    color: $white-light;
+  }
+
+  a.autodevops-link {
+    color: $gl-link-color;
   }
 
   .commit-row-description {

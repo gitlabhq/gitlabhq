@@ -166,7 +166,7 @@ input[type="checkbox"]:hover {
     .dropdown-menu {
       transition-duration: 100ms, 75ms;
       transition-delay: 75ms, 100ms;
-      transform: translateY(13px);
+      transform: translateY(7px);
       opacity: 1;
     }
   }
@@ -190,6 +190,8 @@ input[type="checkbox"]:hover {
 }
 
 .search-holder {
+  @include new-style-dropdown;
+
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
     display: flex;

@@ -10,6 +10,22 @@ module IssuableCollections
 
   private
 
+  def set_issues_index
+    @collection_type    = "Issue"
+    @issues             = issues_collection
+    @issues             = @issues.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+    @total_pages        = issues_page_count(@issues)
+
+    return if redirect_out_of_range(@issues, @total_pages)
+
+    if params[:label_name].present?
+      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    end
+
+    @users = []
+  end
+
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignees, :labels, :milestone, project: :namespace)
   end
@@ -34,6 +50,34 @@ module IssuableCollections
 
   def merge_requests_finder
     @merge_requests_finder ||= issuable_finder_for(MergeRequestsFinder)
+  end
+
+  def redirect_out_of_range(relation, total_pages)
+    return false if total_pages.zero?
+
+    out_of_range = relation.current_page > total_pages
+
+    if out_of_range
+      redirect_to(url_for(params.merge(page: total_pages, only_path: true)))
+    end
+
+    out_of_range
+  end
+
+  def issues_page_count(relation)
+    page_count_for_relation(relation, issues_finder.row_count)
+  end
+
+  def merge_requests_page_count(relation)
+    page_count_for_relation(relation, merge_requests_finder.row_count)
+  end
+
+  def page_count_for_relation(relation, row_count)
+    limit = relation.limit_value.to_f
+
+    return 1 if limit.zero?
+
+    (row_count.to_f / limit).ceil
   end
 
   def issuable_finder_for(finder_class)

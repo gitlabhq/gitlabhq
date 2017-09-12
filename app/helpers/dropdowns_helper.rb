@@ -97,9 +97,11 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_footer(&block)
+  def dropdown_footer(add_content_class: false, &block)
     content_tag(:div, class: "dropdown-footer") do
-      if block
+      if add_content_class
+        content_tag(:div, capture(&block), class: "dropdown-footer-content")
+      else
         capture(&block)
       end
     end

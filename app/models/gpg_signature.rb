@@ -4,6 +4,15 @@ class GpgSignature < ActiveRecord::Base
   sha_attribute :commit_sha
   sha_attribute :gpg_key_primary_keyid
 
+  enum verification_status: {
+    unverified: 0,
+    verified: 1,
+    same_user_different_email: 2,
+    other_user: 3,
+    unverified_key: 4,
+    unknown_key: 5
+  }
+
   belongs_to :project
   belongs_to :gpg_key
 
@@ -20,6 +29,6 @@ class GpgSignature < ActiveRecord::Base
   end
 
   def gpg_commit
-    Gitlab::Gpg::Commit.new(project, commit_sha)
+    Gitlab::Gpg::Commit.new(commit)
   end
 end

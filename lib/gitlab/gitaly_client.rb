@@ -70,21 +70,41 @@ module Gitlab
       params['gitaly_token'].presence || Gitlab.config.gitaly['token']
     end
 
-    def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
+    # Evaluates whether a feature toggle is on or off
+    def self.feature_enabled?(feature_name, status: MigrationStatus::OPT_IN)
+      # Disabled features are always off!
       return false if status == MigrationStatus::DISABLED
 
-      feature = Feature.get("gitaly_#{feature}")
+      feature = Feature.get("gitaly_#{feature_name}")
 
-      # If the feature hasn't been set, turn it on if it's opt-out
-      return status == MigrationStatus::OPT_OUT unless Feature.persisted?(feature)
+      # If the feature has been set, always evaluate
+      if Feature.persisted?(feature)
+        if feature.percentage_of_time_value > 0
+          # Probabilistically enable this feature
+          return Random.rand() * 100 < feature.percentage_of_time_value
+        end
 
-      if feature.percentage_of_time_value > 0
-        # Probabilistically enable this feature
-        return Random.rand() * 100 < feature.percentage_of_time_value
+        return feature.enabled?
       end
 
-      feature.enabled?
+      # If the feature has not been set, the default depends
+      # on it's status
+      case status
+      when MigrationStatus::OPT_OUT
+        true
+      when MigrationStatus::OPT_IN
+        opt_into_all_features?
+      else
+        false
+      end
     end
+
+    # opt_into_all_features? returns true when the current environment
+    # is one in which we opt into features automatically
+    def self.opt_into_all_features?
+      Rails.env.development? || ENV["GITALY_FEATURE_DEFAULT_ON"] == "1"
+    end
+    private_class_method :opt_into_all_features?
 
     def self.migrate(feature, status: MigrationStatus::OPT_IN)
       is_enabled  = feature_enabled?(feature, status: status)
