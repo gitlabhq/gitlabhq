@@ -313,22 +313,9 @@ describe ProjectsHelper do
 
     it 'returns recent push on the current project' do
       event = double(:event)
-      expect(user).to receive(:recent_push).with([project.id]).and_return(event)
+      expect(user).to receive(:recent_push).with(project).and_return(event)
 
       expect(helper.last_push_event).to eq(event)
-    end
-
-    context 'when current user has a fork of the current project' do
-      let(:fork) { double(:fork, id: 2) }
-
-      it 'returns recent push considering fork events' do
-        expect(user).to receive(:fork_of).with(project).and_return(fork)
-
-        event_on_fork = double(:event)
-        expect(user).to receive(:recent_push).with([project.id, fork.id]).and_return(event_on_fork)
-
-        expect(helper.last_push_event).to eq(event_on_fork)
-      end
     end
   end
 

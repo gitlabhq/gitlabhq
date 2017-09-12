@@ -16,7 +16,7 @@ describe IssuablePolicy, models: true do
 
       context 'when the user is a project member' do
         before do
-          project.add_guest(user)
+          project.team << [user, :guest]
         end
 
         it 'can create a note' do

@@ -228,7 +228,8 @@ To make a Runner pick tagged/untagged jobs:
 
 ### Be careful with sensitive information
 
-If you can run a job on a Runner, you can get access to any code it runs
+With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
+if you can run a job on the Runner, you can get access to any code it runs
 and get the token of the Runner. With shared Runners, this means that anyone
 that runs jobs on the Runner, can access anyone else's code that runs on the
 Runner.
@@ -237,7 +238,8 @@ In addition, because you can get access to the Runner token, it is possible
 to create a clone of a Runner and submit false jobs, for example.
 
 The above is easily avoided by restricting the usage of shared Runners
-on large public GitLab instances and controlling access to your GitLab instance.
+on large public GitLab instances, controlling access to your GitLab instance,
+and using more secure [Runner Executors](https://docs.gitlab.com/runner/executors/README.html).
 
 ### Forks
 

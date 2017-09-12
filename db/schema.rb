@@ -659,7 +659,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
-    t.boolean "discussion_locked"
+    t.boolean "discussion_locked", default: false, null: false
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -882,7 +882,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
     t.string "merge_jid"
-    t.boolean "discussion_locked"
+    t.boolean "discussion_locked", default: false, null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1609,7 +1609,6 @@ ActiveRecord::Schema.define(version: 20170905112933) do
     t.boolean "notified_of_own_activity"
     t.string "preferred_language"
     t.string "rss_token"
-    t.integer "theme_id", limit: 2
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -63,8 +63,6 @@ the same way as you do for projects.
 ![filter issues in a group](img/group_issues_filter.png)
 
 The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab.
-The search and filter UI currently uses dropdowns. In a future release, the same
-dynamic UI as above will be carried over here.
 
 ## Search history
 

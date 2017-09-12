@@ -1,8 +1,7 @@
 class IssuablePolicy < BasePolicy
   delegate { @subject.project }
 
-  condition(:locked, scope: :subject, score: 0) { @subject.discussion_locked? }
-
+  condition(:locked) { @subject.discussion_locked? }
   condition(:is_project_member) { @user && @subject.project && @subject.project.team.member?(@user) }
 
   desc "User is the assignee or author"
@@ -17,11 +16,5 @@ class IssuablePolicy < BasePolicy
     enable :update_merge_request
   end
 
-  rule { locked & ~is_project_member }.policy do
-    prevent :create_note
-    prevent :update_note
-    prevent :admin_note
-    prevent :resolve_note
-    prevent :edit_note
-  end
+  rule { locked & ~is_project_member }.prevent :create_note
 end

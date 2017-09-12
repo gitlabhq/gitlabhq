@@ -25,11 +25,9 @@
     = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link'
     to comment
 - elsif discussion_locked
-  .disabled-comment.text-center.prepend-top-default
-    %span.issuable-note-warning
+  .discussion_locked
+    %span
       This
-      = issuable.class.to_s.titleize.downcase
-      is locked. Only
-      %b project members
-      can comment.
+      = issuable.class.to_s
+      has been locked. Posting comments has been restricted to project members.
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe

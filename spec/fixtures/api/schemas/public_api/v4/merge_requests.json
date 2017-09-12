@@ -74,6 +74,7 @@
       "force_remove_source_branch": { "type": ["boolean", "null"] },
       "discussion_locked": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
+      "discussion_locked": { "type": "boolean" },
       "time_stats": {
         "time_estimate": { "type": "integer" },
         "total_time_spent": { "type": "integer" },

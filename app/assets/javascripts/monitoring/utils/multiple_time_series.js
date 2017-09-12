@@ -1,8 +1,37 @@
 import d3 from 'd3';
 import _ from 'underscore';
 
-export default function createTimeSeries(seriesData, graphWidth, graphHeight, graphHeightOffset) {
-  const maxValues = seriesData.map((timeSeries, index) => {
+const defaultColorPalette = {
+  blue: ['#1f78d1', '#8fbce8'],
+  orange: ['#fc9403', '#feca81'],
+  red: ['#db3b21', '#ed9d90'],
+  green: ['#1aaa55', '#8dd5aa'],
+  purple: ['#6666c4', '#d1d1f0'],
+};
+
+const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
+
+export default function createTimeSeries(queryData, graphWidth, graphHeight, graphHeightOffset) {
+  let usedColors = [];
+
+  function pickColor(name) {
+    let pick;
+    if (name && defaultColorPalette[name]) {
+      pick = name;
+    } else {
+      const unusedColors = _.difference(defaultColorOrder, usedColors);
+      if (unusedColors.length > 0) {
+        pick = unusedColors[0];
+      } else {
+        usedColors = [];
+        pick = defaultColorOrder[0];
+      }
+    }
+    usedColors.push(pick);
+    return defaultColorPalette[pick];
+  }
+
+  const maxValues = queryData.result.map((timeSeries, index) => {
     const maxValue = d3.max(timeSeries.values.map(d => d.value));
     return {
       maxValue,
@@ -12,10 +41,11 @@ export default function createTimeSeries(seriesData, graphWidth, graphHeight, gr
 
   const maxValueFromSeries = _.max(maxValues, val => val.maxValue);
 
-  let timeSeriesNumber = 1;
-  let lineColor = '#1f78d1';
-  let areaColor = '#8fbce8';
-  return seriesData.map((timeSeries) => {
+  return queryData.result.map((timeSeries, timeSeriesNumber) => {
+    let metricTag = '';
+    let lineColor = '';
+    let areaColor = '';
+
     const timeSeriesScaleX = d3.time.scale()
       .range([0, graphWidth - 70]);
 
@@ -23,49 +53,30 @@ export default function createTimeSeries(seriesData, graphWidth, graphHeight, gr
       .range([graphHeight - graphHeightOffset, 0]);
 
     timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
+    timeSeriesScaleX.ticks(d3.time.minute, 60);
     timeSeriesScaleY.domain([0, maxValueFromSeries.maxValue]);
 
     const lineFunction = d3.svg.line()
+      .interpolate('linear')
       .x(d => timeSeriesScaleX(d.time))
       .y(d => timeSeriesScaleY(d.value));
 
     const areaFunction = d3.svg.area()
+      .interpolate('linear')
       .x(d => timeSeriesScaleX(d.time))
       .y0(graphHeight - graphHeightOffset)
-      .y1(d => timeSeriesScaleY(d.value))
-      .interpolate('linear');
+      .y1(d => timeSeriesScaleY(d.value));
 
-    switch (timeSeriesNumber) {
-      case 1:
-        lineColor = '#1f78d1';
-        areaColor = '#8fbce8';
-        break;
-      case 2:
-        lineColor = '#fc9403';
-        areaColor = '#feca81';
-        break;
-      case 3:
-        lineColor = '#db3b21';
-        areaColor = '#ed9d90';
-        break;
-      case 4:
-        lineColor = '#1aaa55';
-        areaColor = '#8dd5aa';
-        break;
-      case 5:
-        lineColor = '#6666c4';
-        areaColor = '#d1d1f0';
-        break;
-      default:
-        lineColor = '#1f78d1';
-        areaColor = '#8fbce8';
-        break;
-    }
-
-    if (timeSeriesNumber <= 5) {
-      timeSeriesNumber = timeSeriesNumber += 1;
+    const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
+    const seriesCustomizationData = queryData.series != null &&
+                                    _.findWhere(queryData.series[0].when,
+                                    { value: timeSeriesMetricLabel });
+    if (seriesCustomizationData != null) {
+      metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
+      [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
-      timeSeriesNumber = 1;
+      metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber + 1}`;
+      [lineColor, areaColor] = pickColor();
     }
 
     return {
@@ -75,6 +86,7 @@ export default function createTimeSeries(seriesData, graphWidth, graphHeight, gr
       values: timeSeries.values,
       lineColor,
       areaColor,
+      metricTag,
     };
   });
 }

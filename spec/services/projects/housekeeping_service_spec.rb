@@ -20,6 +20,7 @@ describe Projects::HousekeepingService do
       expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :the_task, :the_lease_key, :the_uuid)
 
       subject.execute
+
       expect(project.reload.pushes_since_gc).to eq(0)
     end
 

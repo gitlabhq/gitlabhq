@@ -13,7 +13,7 @@ describe 'Issue Boards', js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+    page.driver.set_cookie('sidebar_collapsed', 'true')
 
     sign_in(user)
   end
