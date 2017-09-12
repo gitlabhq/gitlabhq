@@ -148,7 +148,7 @@ export const documentMouseMove = (e) => {
 export const subItemsMouseLeave = (relatedTarget) => {
   clearTimeout(timeoutId);
 
-  if (!relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
+  if (relatedTarget && !relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
     hideMenu(currentOpenMenu);
   }
 };
