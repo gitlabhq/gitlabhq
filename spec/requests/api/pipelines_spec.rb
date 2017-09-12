@@ -435,4 +435,40 @@ describe API::Pipelines do
       end
     end
   end
+
+  describe 'POST /projects/:id/pipelines/cancel' do
+    let!(:pipelines) do
+      create_list(:ci_empty_pipeline, 2,
+                  project: project, sha: project.commit.id,
+                  ref: project.default_branch, status: :running)
+    end
+
+    let!(:build) { create(:ci_build, :running, pipeline: pipelines[0]) }
+    let!(:build2) { create(:ci_build, :running, pipeline: pipelines[1]) }
+
+    context 'authorized user' do
+      it 'retries failed builds' do
+        post api("/projects/#{project.id}/pipelines/cancel", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to be_empty
+        json_response.each { |r| expect(r['status']).to eq('canceled') }
+      end
+    end
+
+    context 'user without proper access rights' do
+      let!(:reporter) { create(:user) }
+
+      before do
+        project.team << [reporter, :reporter]
+      end
+
+      it 'rejects the action' do
+        post api("/projects/#{project.id}/pipelines/cancel", reporter)
+
+        expect(response).to have_http_status(403)
+        expect(pipeline.reload.status).to eq('pending')
+      end
+    end
+  end
 end

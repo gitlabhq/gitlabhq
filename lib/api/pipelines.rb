@@ -98,6 +98,24 @@ module API
         status 200
         present pipeline.reload, with: Entities::Pipeline
       end
+
+      desc 'Cancel all builds in all pipelines of the project' do
+        detail 'This feature was introduced in GitLab 10.1'
+      end
+      post ':id/pipelines/:cancel' do
+        authorize! :update_pipeline, user_project
+
+        result = []
+
+        user_project.pipelines.running.find_each do |pipeline|
+          pipeline.cancel_running
+          pipeline.reload
+          result << { id: pipeline.id, status: pipeline.status }
+        end
+
+        status 200
+        present result.as_json
+      end
     end
 
     helpers do
