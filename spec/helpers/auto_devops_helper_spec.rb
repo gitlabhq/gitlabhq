@@ -65,5 +65,21 @@ describe AutoDevopsHelper do
 
       it { is_expected.to eq(false) }
     end
+
+    context 'when master contains a .gitlab-ci.yml file' do
+      before do
+        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when another service is enabled' do
+      before do
+        create(:service, project: project, category: :ci, active: true)
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 end
