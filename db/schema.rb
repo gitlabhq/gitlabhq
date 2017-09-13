@@ -515,8 +515,12 @@ ActiveRecord::Schema.define(version: 20170921115009) do
     t.string "email", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
   end
 
+  add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
