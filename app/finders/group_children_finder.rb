@@ -64,7 +64,6 @@ class GroupChildrenFinder
              else
                base_groups
              end
-    groups = groups
     groups.sort(params[:sort]).includes(:route)
   end
 

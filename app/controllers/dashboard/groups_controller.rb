@@ -2,19 +2,9 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
   def index
     @sort = params[:sort] || 'id_desc'
 
-    @groups =
-      if params[:parent_id] && Group.supports_nested_groups?
-        parent = Group.find_by(id: params[:parent_id])
-
-        if can?(current_user, :read_group, parent)
-          GroupsFinder.new(current_user, parent: parent).execute
-        else
-          Group.none
-        end
-      else
-        current_user.groups
-      end
-
+    @groups = GroupsFinder.new(current_user, all_available: false).execute
+    # Only show root groups if no parent-id is given
+    @groups = @groups.where(parent_id: params[:parent_id])
     @groups = @groups.search(params[:filter]) if params[:filter].present?
     @groups = @groups.includes(:route)
     @groups = @groups.sort(@sort)
