@@ -73,7 +73,12 @@ window.DropzoneInput = (function() {
         const processingFileCount = this.getQueuedFiles().length + this.getUploadingFiles().length;
         const shouldPad = processingFileCount >= 1;
 
-        pasteText(response.link.markdown, shouldPad);
+        let uploadMarkdown = response.link.markdown;
+        if (header.width && header.height) {
+          uploadMarkdown = uploadMarkdown.replace(response.link.url, `${response.link.url}?wi=${header.width}&he=${header.height}`);
+        }
+        pasteText(uploadMarkdown, shouldPad);
+
         // Show 'Attach a file' link only when all files have been uploaded.
         if (!processingFileCount) $attachButton.removeClass('hide');
         addFileToForm(response.link.url);
