@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe GroupsController do
   let(:user) { create(:user) }
@@ -150,6 +150,45 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #show' do
+    context 'pagination' do
+      context 'with only projects' do
+        let!(:other_project) { create(:project, :public, namespace: group) }
+        let!(:first_page_projects) { create_list(:project, Kaminari.config.default_per_page, :public, namespace: group ) }
+
+        it 'has projects on the first page' do
+          get :show, id: group.to_param, sort: 'id_desc'
+
+          expect(assigns(:children)).to contain_exactly(*first_page_projects)
+        end
+
+        it 'has projects on the second page' do
+          get :show, id: group.to_param, sort: 'id_desc', page: 2
+
+          expect(assigns(:children)).to contain_exactly(other_project)
+        end
+      end
+
+      context 'with subgroups and projects', :nested_groups do
+        let!(:other_subgroup) { create(:group, :public, parent: group) }
+        let!(:project) { create(:project, :public, namespace: group) }
+        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
+
+        it 'contains all subgroups' do
+          get :children, id: group.to_param, sort: 'id_desc', format: :json
+
+          expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
+        end
+
+        it 'contains the project and group on the second page' do
+          get :children, id: group.to_param, sort: 'id_desc', page: 2, format: :json
+
+          expect(assigns(:children)).to contain_exactly(other_subgroup, project)
+        end
+      end
+    end
+  end
+
   describe 'GET #children' do
     context 'for projects' do
       let!(:public_project) { create(:project, :public, namespace: group) }
@@ -251,12 +290,14 @@ describe GroupsController do
         end
       end
 
-      context 'queries per rendered element' do
+      context 'queries per rendered element', :request_store do
         # The expected extra queries for the rendered group are:
         # 1. Count of memberships of the group
         # 2. Count of visible projects in the element
         # 3. Count of visible subgroups in the element
-        let(:expected_queries_per_group) { 3 }
+        # 4. Every parent
+        # 5. The route for a parent
+        let(:expected_queries_per_group) { 5 }
         let(:expected_queries_per_project) { 0 }
 
         def get_list
@@ -265,7 +306,6 @@ describe GroupsController do
 
         it 'queries the expected amount for a group row' do
           control_count = ActiveRecord::QueryRecorder.new { get_list }.count
-
           _new_group = create(:group, :public, parent: group)
 
           expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
@@ -273,7 +313,6 @@ describe GroupsController do
 
         it 'queries the expected amount for a project row' do
           control_count = ActiveRecord::QueryRecorder.new { get_list }.count
-
           _new_project = create(:project, :public, namespace: group)
 
           expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_project)
@@ -288,7 +327,6 @@ describe GroupsController do
             matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
 
             control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
-
             nested_group = create(:group, :public, parent: public_subgroup)
             matched_group.update!(parent: nested_group)
 
@@ -299,7 +337,6 @@ describe GroupsController do
             create(:group, :public, parent: public_subgroup, name: 'filterme')
 
             control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
-
             create(:group, :public, parent: public_subgroup, name: 'filterme2')
 
             expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
@@ -570,79 +607,61 @@ describe GroupsController do
         end
       end
 
-      context 'pagination' do
-        let!(:other_subgroup) { create(:group, :public, parent: group) }
-        let!(:project) { create(:project, :public, namespace: group) }
-        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
+      context 'for a POST request' do
+        context 'when requesting the canonical path with different casing' do
+          it 'does not 404' do
+            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
 
-        it 'contains all subgroups' do
-          get :children, id: group.to_param, sort: 'id', format: :json
+            expect(response).not_to have_http_status(404)
+          end
 
-          expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
+          it 'does not redirect to the correct casing' do
+            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+
+            expect(response).not_to have_http_status(301)
+          end
         end
 
-        it 'contains the project and group on the second page' do
-          get :children, id: group.to_param, sort: 'id', page: 2, format: :json
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
 
-          expect(assigns(:children)).to contain_exactly(other_subgroup, project)
+          it 'returns not found' do
+            post :update, id: redirect_route.path, group: { path: 'new_path' }
+
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
+
+      context 'for a DELETE request' do
+        context 'when requesting the canonical path with different casing' do
+          it 'does not 404' do
+            delete :destroy, id: group.to_param.upcase
+
+            expect(response).not_to have_http_status(404)
+          end
+
+          it 'does not redirect to the correct casing' do
+            delete :destroy, id: group.to_param.upcase
+
+            expect(response).not_to have_http_status(301)
+          end
+        end
+
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+          it 'returns not found' do
+            delete :destroy, id: redirect_route.path
+
+            expect(response).to have_http_status(404)
+          end
         end
       end
     end
 
-    context 'for a POST request' do
-      context 'when requesting the canonical path with different casing' do
-        it 'does not 404' do
-          post :update, id: group.to_param.upcase, group: { path: 'new_path' }
-
-          expect(response).not_to have_http_status(404)
-        end
-
-        it 'does not redirect to the correct casing' do
-          post :update, id: group.to_param.upcase, group: { path: 'new_path' }
-
-          expect(response).not_to have_http_status(301)
-        end
-      end
-
-      context 'when requesting a redirected path' do
-        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
-
-        it 'returns not found' do
-          post :update, id: redirect_route.path, group: { path: 'new_path' }
-
-          expect(response).to have_http_status(404)
-        end
-      end
+    def group_moved_message(redirect_route, group)
+      "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
     end
-
-    context 'for a DELETE request' do
-      context 'when requesting the canonical path with different casing' do
-        it 'does not 404' do
-          delete :destroy, id: group.to_param.upcase
-
-          expect(response).not_to have_http_status(404)
-        end
-
-        it 'does not redirect to the correct casing' do
-          delete :destroy, id: group.to_param.upcase
-
-          expect(response).not_to have_http_status(301)
-        end
-      end
-
-      context 'when requesting a redirected path' do
-        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
-
-        it 'returns not found' do
-          delete :destroy, id: redirect_route.path
-
-          expect(response).to have_http_status(404)
-        end
-      end
-    end
-  end
-
-  def group_moved_message(redirect_route, group)
-    "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

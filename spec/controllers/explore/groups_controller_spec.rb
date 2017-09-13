@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Dashboard::GroupsController do
+describe Explore::GroupsController do
   let(:user) { create(:user) }
 
   before do
@@ -11,13 +11,14 @@ describe Dashboard::GroupsController do
     expect(described_class).to include(GroupTree)
   end
 
-  it 'only includes projects the user is a member of' do
+  it 'includes public projects' do
     member_of_group = create(:group)
     member_of_group.add_developer(user)
-    create(:group, :public)
+    public_group = create(:group, :public)
 
     get :index
 
-    expect(assigns(:groups)).to contain_exactly(member_of_group)
+    expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
   end
+
 end
