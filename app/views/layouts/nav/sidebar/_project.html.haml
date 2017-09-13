@@ -114,7 +114,7 @@
                   List
 
             = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Board' do
+              = link_to project_boards_path(@project), title: boards_link_text do
                 %span
                   = boards_link_text
 
