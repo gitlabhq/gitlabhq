@@ -380,7 +380,7 @@ GEM
       activesupport
       grape (>= 0.16.0)
       rake
-    grape_logging (1.6.0)
+    grape_logging (1.7.0)
       grape
     grpc (1.4.5)
       google-protobuf (~> 3.1)
@@ -1073,8 +1073,12 @@ DEPENDENCIES
   grape (~> 1.0)
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
+<<<<<<< HEAD
   gssapi
   grape_logging (~> 1.6)
+=======
+  grape_logging (~> 1.7)
+>>>>>>> upstream/master
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes

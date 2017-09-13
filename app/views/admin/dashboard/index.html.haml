@@ -126,6 +126,7 @@
               GitLab API
               %span.pull-right
                 = API::API::version
+<<<<<<< HEAD
 
             - if Gitlab::Geo.enabled?
               %p
@@ -136,6 +137,13 @@
                   - else
                     Undefined
 
+=======
+            - if Gitlab.config.pages.enabled
+              %p
+                GitLab Pages
+                %span.pull-right
+                  = Gitlab::Pages::VERSION
+>>>>>>> upstream/master
             %p
               Git
               %span.pull-right

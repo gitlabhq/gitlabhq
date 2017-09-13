@@ -431,6 +431,7 @@ header.navbar-gitlab-new {
 
 .breadcrumb-item-text {
   @include str-truncated(128px);
+  text-decoration: inherit;
 }
 
 .breadcrumbs-list-angle {

@@ -80,7 +80,10 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
+<<<<<<< HEAD
   - **(EES/EEP)** [Lock a file](user/project/file_lock.md): Lock a file to avoid merge conflicts.
+=======
+>>>>>>> upstream/master
 - [Branches](user/project/repository/branches/index.md)
   - [Default branch](user/project/repository/branches/index.md#default-branch)
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)

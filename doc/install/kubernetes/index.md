@@ -19,7 +19,7 @@ should be deployed, upgraded, and configured.
 ## GitLab-Omnibus Chart (Recommended)
 > **Note**: This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being added.
 
-This chart is the best available way to operate GitLab on Kubernetes. It deploys and configures nearly all features of GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](https://docs.gitlab.com/ee/user/project/container_registry.html#gitlab-container-registry), [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and a [load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). It is based on our [GitLab Omnibus Docker Images](https://docs.gitlab.com/omnibus/docker/README.html).
+This chart is the best available way to operate GitLab on Kubernetes. It deploys and configures nearly all features of GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](../../user/project/container_registry.html#gitlab-container-registry), [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and a [load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). It is based on our [GitLab Omnibus Docker Images](https://docs.gitlab.com/omnibus/docker/README.html).
 
 Once the [cloud native charts](#upcoming-cloud-native-helm-charts) are ready for production use, this chart will be deprecated. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment.
 
@@ -41,7 +41,7 @@ This is a large project and will be worked on over the span of multiple releases
 
 ### GitLab Runner Chart
 
-If you already have a GitLab instance running, inside or outside of Kubernetes, and you'd like to leverage the Runner's [Kubernetes capabilities](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/executors/kubernetes.md), it can be deployed with the GitLab Runner chart.
+If you already have a GitLab instance running, inside or outside of Kubernetes, and you'd like to leverage the Runner's [Kubernetes capabilities](https://docs.gitlab.com/runner/executors/kubernetes.html), it can be deployed with the GitLab Runner chart.
 
 Learn more about [gitlab-runner chart.](gitlab_runner_chart.md)
 

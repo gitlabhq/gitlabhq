@@ -401,6 +401,35 @@ namespace :gitlab do
     end
   end
 
+  namespace :orphans do
+    desc 'Gitlab | Check for orphaned namespaces and repositories'
+    task check: :environment do
+      warn_user_is_not_gitlab
+      checks = [
+        SystemCheck::Orphans::NamespaceCheck,
+        SystemCheck::Orphans::RepositoryCheck
+      ]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned namespaces in the repositories path'
+    task check_namespaces: :environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::NamespaceCheck]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned repositories in the repositories path'
+    task check_repositories: :environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::RepositoryCheck]
+
+      SystemCheck.run('Orphans', checks)
+    end
+  end
+
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|

@@ -8,7 +8,7 @@
           "aria-hidden": "true" }
 
         %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
-          ":title" => '(list.label ? list.label.description : "")' }
+          ":title" => '(list.label ? list.label.description : "")', data: { container: "body" } }
           {{ list.title }}
 
         %span.has-tooltip{ "v-if": "list.type === \"label\"",

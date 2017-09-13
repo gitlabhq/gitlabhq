@@ -214,7 +214,6 @@ module IssuablesHelper
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
       issuableRef: issuable.to_reference,
-      isConfidential: issuable.confidential,
       markdownPreviewPath: preview_markdown_path(@project),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
