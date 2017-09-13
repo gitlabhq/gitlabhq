@@ -15,7 +15,9 @@ class GeoNodeStatus
   end
 
   def db_replication_lag
-    @db_replication_lag ||= Gitlab::Geo::HealthCheck.db_replication_lag
+    return @db_replication_lag if defined?(@db_replication_lag)
+
+    @db_replication_lag = Gitlab::Geo::HealthCheck.db_replication_lag if Gitlab::Geo.secondary?
   end
 
   def db_replication_lag=(value)
@@ -39,7 +41,9 @@ class GeoNodeStatus
   end
 
   def cursor_last_event_id
-    @cursor_last_event_id ||= cursor_last_processed&.event_id
+    return @cursor_last_event_id if defined?(@cursor_last_event_id)
+
+    @cursor_last_event_id = cursor_last_processed&.event_id if Gitlab::Geo.secondary?
   end
 
   def cursor_last_event_id=(value)
