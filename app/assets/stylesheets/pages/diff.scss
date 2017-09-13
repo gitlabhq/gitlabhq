@@ -559,6 +559,42 @@
   }
 }
 
+.image-replaced-view .btn-group .btn {
+  background-color: transparent;
+  box-shadow: none;
+  border-color: transparent;
+  border-right: 1px solid $diff-view-modes-border;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding: 0 16px;
+  color: $diff-view-modes-color;
+
+  &.active {
+    color: $black;
+  }
+
+  &:last-child {
+    border-right: transparent;
+  }
+}
+
+.two-up {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: $gl-padding * 2;
+
+  .image-container {
+    &:first-child {
+      margin-right: 2px;
+    }
+
+    &:last-child {
+      margin-left: 2px;
+    }
+  }
+}
+
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;
