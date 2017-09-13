@@ -283,7 +283,7 @@ describe Ci::Build do
       let(:project_regex) { '\(\d+\.\d+\) covered' }
 
       before do
-        project.build_coverage_regex = project_regex
+        project.update_column(:build_coverage_regex, project_regex)
       end
 
       context 'and coverage_regex attribute is not set' do
