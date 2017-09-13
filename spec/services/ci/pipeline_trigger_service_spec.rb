@@ -34,7 +34,7 @@ describe Ci::PipelineTriggerService do
           expect(result[:pipeline].ref).to eq('master')
           expect(result[:pipeline].project).to eq(project)
           expect(result[:pipeline].user).to eq(trigger.owner)
-          expect([result[:pipeline].trigger_requests.last])
+          expect(result[:pipeline].trigger_requests.to_a)
             .to eq(result[:pipeline].builds.map(&:trigger_request).uniq)
           expect(result[:status]).to eq(:success)
         end
