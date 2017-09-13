@@ -13,9 +13,15 @@ module Boards
       issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
       issues = issues.page(params[:page]).per(params[:per] || 20)
       make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
+      issues = issues.preload(:project,
+                              :milestone,
+                              :assignees,
+                              labels: [:priorities],
+                              notes: [:award_emoji, :author]
+                             )
 
       render json: {
-        issues: serialize_as_json(issues.preload(:project)),
+        issues: serialize_as_json(issues),
         size: issues.total_count
       }
     end
@@ -78,14 +84,13 @@ module Boards
 
     def serialize_as_json(resource)
       resource.as_json(
-        labels: true,
         only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
+        labels: true,
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
           milestone: { only: [:id, :title] }
-        },
-        user: current_user
+        }
       )
     end
   end
