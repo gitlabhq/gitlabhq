@@ -3177,4 +3177,27 @@ describe Project do
       expect { project.write_repository_config }.not_to raise_error
     end
   end
+
+  describe '#execute_hooks' do
+    it 'executes the projects hooks with the specified scope' do
+      hook1 = create(:project_hook, merge_requests_events: true, tag_push_events: false)
+      hook2 = create(:project_hook, merge_requests_events: false, tag_push_events: true)
+      project = create(:project, hooks: [hook1, hook2])
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).once
+
+      project.execute_hooks({}, :tag_push_hooks)
+    end
+
+    it 'executes the system hooks with the specified scope' do
+      create :system_hook, merge_requests_events: true, tag_push_events: false
+      create :system_hook, merge_requests_events: false, tag_push_events: true
+      allow_any_instance_of(SystemHook).to receive(:async_execute).once
+      project = create :project
+
+      expect_any_instance_of(SystemHook).to receive(:async_execute).once
+
+      project.execute_hooks({}, :tag_push_hooks)
+    end
+  end
 end
