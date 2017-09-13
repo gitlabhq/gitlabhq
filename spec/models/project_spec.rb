@@ -53,6 +53,7 @@ describe Project do
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -74,6 +75,7 @@ describe Project do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
+    it { is_expected.to have_many(:members_and_requesters) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -90,22 +92,8 @@ describe Project do
         project.team << [developer, :developer]
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = project.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = project.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { project }
       end
     end
 
@@ -2518,6 +2506,179 @@ describe Project do
     describe '#pages_path' do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
+      end
+    end
+  end
+
+  describe '#has_ci?' do
+    set(:project) { create(:project) }
+    let(:repository) { double }
+
+    before do
+      expect(project).to receive(:repository) { repository }
+    end
+
+    context 'when has .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { 'content' }
+      end
+
+      it "CI is available" do
+        expect(project).to have_ci
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { nil }
+      end
+
+      it "CI is not available" do
+        expect(project).not_to have_ci
+      end
+
+      context 'when auto devops is enabled' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it "CI is available" do
+          expect(project).to have_ci
+        end
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_enabled? }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly enabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it "auto devops is disabled" do
+          expect(project).not_to be_auto_devops_enabled
+        end
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).not_to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+    end
+  end
+
+  describe '#has_auto_devops_implicitly_disabled?' do
+    set(:project) { create(:project) }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_disabled
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_disabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+    end
+  end
+
+  context '#auto_devops_variables' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_variables }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      context 'when domain is empty' do
+        before do
+          create(:project_auto_devops, project: project, domain: nil)
+        end
+
+        it 'variables are empty' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          create(:project_auto_devops, project: project, domain: 'example.com')
+        end
+
+        it "variables are not empty" do
+          is_expected.not_to be_empty
+        end
       end
     end
   end

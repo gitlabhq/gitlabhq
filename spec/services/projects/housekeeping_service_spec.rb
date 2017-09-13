@@ -20,6 +20,7 @@ describe Projects::HousekeepingService do
       expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :the_task, :the_lease_key, :the_uuid)
 
       subject.execute
+
       expect(project.reload.pushes_since_gc).to eq(0)
     end
 
@@ -74,7 +75,7 @@ describe Projects::HousekeepingService do
     end
   end
 
-  it 'uses all three kinds of housekeeping we offer' do
+  it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
     allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
     allow(subject).to receive(:lease_key).and_return(:the_lease_key)
 

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-31 17:34+0530\n"
-"PO-Revision-Date: 2017-08-31 17:34+0530\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-06 08:32+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -58,7 +58,16 @@ msgstr ""
 msgid "About auto deploy"
 msgstr ""
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -85,6 +94,12 @@ msgstr ""
 msgid "All"
 msgstr ""
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr ""
 
@@ -104,6 +119,63 @@ msgid "Are you sure?"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr ""
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
 msgstr ""
 
 msgid "Branch"
@@ -138,6 +210,9 @@ msgstr ""
 msgid "ByAuthor|by"
 msgstr ""
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr ""
 
@@ -163,6 +238,9 @@ msgid "Changelog"
 msgstr ""
 
 msgid "Charts"
+msgstr ""
+
+msgid "Chat"
 msgstr ""
 
 msgid "Cherry-pick this commit"
@@ -260,10 +338,16 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr ""
 
 msgid "Contributors"
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -352,6 +436,9 @@ msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr ""
 
@@ -400,6 +487,9 @@ msgstr ""
 msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
+msgid "Emails"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -425,9 +515,6 @@ msgid "Every month (on the 1st at 4:00am)"
 msgstr ""
 
 msgid "Every week (Sundays at 4:00am)"
-msgstr ""
-
-msgid "Explore projects"
 msgstr ""
 
 msgid "Failed to change the owner"
@@ -468,6 +555,12 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -478,6 +571,9 @@ msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
+msgstr ""
+
+msgid "Group overview"
 msgstr ""
 
 msgid "Health Check"
@@ -501,6 +597,9 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -519,10 +618,16 @@ msgstr ""
 msgid "Issue events"
 msgstr ""
 
+msgid "Issues"
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr ""
 
 msgid "LFSStatus|Enabled"
+msgstr ""
+
+msgid "Labels"
 msgstr ""
 
 msgid "Last %d day"
@@ -557,18 +662,36 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
+msgstr ""
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
 msgstr ""
 
 msgid "Merge events"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
+msgstr ""
+
+msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
@@ -672,6 +795,9 @@ msgstr ""
 msgid "NotificationLevel|Watch"
 msgstr ""
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
@@ -681,7 +807,13 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
+msgstr ""
+
+msgid "Password"
 msgstr ""
 
 msgid "Pipeline"
@@ -694,6 +826,9 @@ msgid "Pipeline Schedule"
 msgstr ""
 
 msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "Pipeline quota"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -780,6 +915,12 @@ msgstr ""
 msgid "Pipeline|with stages"
 msgstr ""
 
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
@@ -816,6 +957,9 @@ msgstr ""
 msgid "Project home"
 msgstr ""
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -840,22 +984,22 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
-msgid "ProjectsDropdown|Frequently visited"
+msgid "Push Rules"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
 msgstr ""
 
-msgid "ProjectsDropdown|No projects matched your query"
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|Projects you visit often will appear here"
 msgstr ""
 
-msgid "ProjectsDropdown|Search projects"
+msgid "ProjectsDropdown|Search your projects"
 msgstr ""
 
-msgid "ProjectsDropdown|Something went wrong on our end."
+msgid "ProjectsDropdown|Something went wrong on our end"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
@@ -921,6 +1065,9 @@ msgstr ""
 msgid "Revert this merge request"
 msgstr ""
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr ""
 
@@ -945,6 +1092,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -960,21 +1110,27 @@ msgstr ""
 msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
+msgstr ""
+
+msgid "Spam Logs"
 msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
 msgid "StarProject|Star"
-msgstr ""
-
-msgid "Starred projects"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
@@ -1247,6 +1403,9 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "Wiki"
+msgstr ""
+
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -1296,9 +1455,6 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "Your name"
-msgstr ""
-
-msgid "Your projects"
 msgstr ""
 
 msgid "day"

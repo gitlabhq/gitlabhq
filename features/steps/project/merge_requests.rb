@@ -15,7 +15,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    page.within '.breadcrumbs' do
+    page.within '.nav-controls' do
       page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
     end
   end

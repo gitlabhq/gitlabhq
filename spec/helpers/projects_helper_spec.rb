@@ -191,10 +191,31 @@ describe ProjectsHelper do
     end
   end
 
-  describe 'link_to_member' do
-    let(:group)   { create(:group) }
-    let(:project) { create(:project, group: group) }
-    let(:user)    { create(:user) }
+  describe '#link_to_member_avatar' do
+    let(:user) { build_stubbed(:user) }
+    let(:expected) { double }
+
+    before do
+      expect(helper).to receive(:avatar_icon).with(user, 16).and_return(expected)
+    end
+
+    it 'returns image tag for member avatar' do
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
+
+      helper.link_to_member_avatar(user)
+    end
+
+    it 'returns image tag with avatar class' do
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+
+      helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
+    end
+  end
+
+  describe '#link_to_member' do
+    let(:group)   { build_stubbed(:group) }
+    let(:project) { build_stubbed(:project, group: group) }
+    let(:user)    { build_stubbed(:user) }
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
@@ -292,22 +313,9 @@ describe ProjectsHelper do
 
     it 'returns recent push on the current project' do
       event = double(:event)
-      expect(user).to receive(:recent_push).with([project.id]).and_return(event)
+      expect(user).to receive(:recent_push).with(project).and_return(event)
 
       expect(helper.last_push_event).to eq(event)
-    end
-
-    context 'when current user has a fork of the current project' do
-      let(:fork) { double(:fork, id: 2) }
-
-      it 'returns recent push considering fork events' do
-        expect(user).to receive(:fork_of).with(project).and_return(fork)
-
-        event_on_fork = double(:event)
-        expect(user).to receive(:recent_push).with([project.id, fork.id]).and_return(event_on_fork)
-
-        expect(helper.last_push_event).to eq(event_on_fork)
-      end
     end
   end
 
@@ -459,6 +467,17 @@ describe ProjectsHelper do
       end
 
       expect(recorder.count).to eq(1)
+    end
+  end
+
+  describe '#git_user_name' do
+    let(:user) { double(:user, name: 'John "A" Doe53') }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'parses quotes in name' do
+      expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
     end
   end
 end

@@ -31,6 +31,16 @@ to be met:
 
 ## Generating a GPG key
 
+>**Notes:**
+- If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
+  the following commands.
+- If Git is using `gpg` and you get errors like `secret key not available` or
+  `gpg: signing failed: secret key not available`, run the following command to
+  change to `gpg2`:
+    ```
+    git config --global gpg.program gpg2
+    ```
+
 If you don't already have a GPG key, the following steps will help you get
 started:
 
@@ -103,7 +113,7 @@ started:
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format 0xLONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.
@@ -157,7 +167,7 @@ key to use.
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format 0xLONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.

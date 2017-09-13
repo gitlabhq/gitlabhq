@@ -43,7 +43,7 @@ describe('ProjectsListSearchComponent', () => {
         expect(vm.listEmptyMessage).toBe('Something went wrong on our end.');
 
         vm.searchFailed = false;
-        expect(vm.listEmptyMessage).toBe('No projects matched your query');
+        expect(vm.listEmptyMessage).toBe('Sorry, no projects matched your search');
       });
     });
   });

@@ -36,13 +36,13 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I should see project "Community" home page' do
-    page.within '.breadcrumbs .title' do
+    page.within '.breadcrumbs .breadcrumb-item-text' do
       expect(page).to have_content 'Community'
     end
   end
 
   step 'I should see project "Internal" home page' do
-    page.within '.breadcrumbs .title' do
+    page.within '.breadcrumbs .breadcrumb-item-text' do
       expect(page).to have_content 'Internal'
     end
   end

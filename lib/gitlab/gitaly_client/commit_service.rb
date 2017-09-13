@@ -88,14 +88,14 @@ module Gitlab
 
         response.flat_map do |message|
           message.entries.map do |gitaly_tree_entry|
-            entry_path = gitaly_tree_entry.path.dup
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
-              name: File.basename(entry_path),
-              path: entry_path,
+              name: File.basename(gitaly_tree_entry.path),
+              path: GitalyClient.encode(gitaly_tree_entry.path),
+              flat_path: GitalyClient.encode(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
           end
@@ -202,6 +202,14 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
 
         response.sum(&:data)
+      end
+
+      def commit_stats(revision)
+        request = Gitaly::CommitStatsRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request)
       end
 
       private

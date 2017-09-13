@@ -230,6 +230,14 @@ users:
 GitLab 8.12 has a completely redesigned job permissions system. To learn more,
 read through the documentation on the [new CI/CD permissions model](project/new_ci_build_permissions_model.md#new-ci-job-permissions-model).
 
+## Running pipelines on protected branches
+
+The permission to merge or push to protected branches is used to define if a user can
+run CI/CD pipelines and execute actions on jobs that are related to those branches.
+
+See [Security on protected branches](../ci/pipelines.md#security-on-protected-branches)
+for details about the pipelines security model.
+
 ## LDAP users permissions
 
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
