@@ -1216,6 +1216,7 @@ ActiveRecord::Schema.define(version: 20170918223303) do
     t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
+    t.boolean "merge_requests_ff_only_enabled", default: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
