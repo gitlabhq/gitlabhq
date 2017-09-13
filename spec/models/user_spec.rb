@@ -379,6 +379,44 @@ describe User do
         user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
       end
     end
+
+    describe '#update_emails_with_primary_email' do
+      before do
+        @user = create(:user, email: 'primary@example.com').tap do |user|
+          user.skip_reconfirmation!
+        end
+        @secondary = create :email, email: 'secondary@example.com', user: @user
+        @user.reload
+      end
+
+      it 'gets called when email updated' do
+        expect(@user).to receive(:update_emails_with_primary_email)
+        @user.update_attributes!(email: 'new_primary@example.com')
+      end
+
+      it 'does not add old primary to secondary emails' do
+        @user.update_attributes!(email: 'new_primary@example.com')
+        @user.reload
+        expect(@user.emails.count).to eq 1
+        expect(@user.emails.first.email).to eq @secondary.email
+      end
+
+      it 'adds old primary to secondary emails if secondary is becoming a primary' do
+        @user.update_attributes!(email: @secondary.email)
+        @user.reload
+        expect(@user.emails.count).to eq 1
+        expect(@user.emails.first.email).to eq 'primary@example.com'
+      end
+
+      it 'transfers old confirmation values into new secondary' do
+        org_user = @user
+        @user.update_attributes!(email: @secondary.email)
+        @user.reload
+        expect(@user.emails.count).to eq 1
+        expect(@user.emails.first.confirmed_at).not_to eq nil
+      end
+    end
+
   end
 
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do

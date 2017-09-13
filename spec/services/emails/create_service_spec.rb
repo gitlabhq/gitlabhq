@@ -12,6 +12,11 @@ describe Emails::CreateService do
       expect(Email.where(opts)).not_to be_empty
     end
 
+    it 'creates an email with additional attributes' do
+      expect { service.execute(confirmation_token: 'abc') }.to change { Email.count }.by(1)
+      expect(Email.where(opts).first.confirmation_token).to eq 'abc'
+    end
+
     it 'has the right user association' do
       service.execute
 

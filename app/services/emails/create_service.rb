@@ -1,7 +1,7 @@
 module Emails
   class CreateService < ::Emails::BaseService
-    def execute
-      @user.emails.create(email: @email)
+    def execute(options = {})
+      @user.emails.create({email: @email}.merge(options))
     end
   end
 end

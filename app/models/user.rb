@@ -526,8 +526,11 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      Emails::DestroyService.new(self, email: email).execute
-      Emails::CreateService.new(self, email: email_was).execute
+      Emails::DestroyService.new(self).execute(primary_email_record)
+
+      # the original primary email was confirmed, and we want that to carry over.  We don't
+      # have access to the original confirmation values at this point, so just set confirmed_at
+      Emails::CreateService.new(self, email: email_was).execute(confirmed_at: confirmed_at_was)
     end
   end
 
