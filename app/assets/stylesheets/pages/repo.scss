@@ -191,6 +191,10 @@
           }
         }
 
+        .close-icon:hover {
+          color: $hint-color;
+        }
+
         .close-icon,
         .unsaved-icon {
           float: right;
