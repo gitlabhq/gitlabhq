@@ -366,7 +366,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user).execute(email)
         end
 
         user.update_secondary_emails!
@@ -689,7 +689,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user).execute(email)
         end
 
         current_user.update_secondary_emails!
