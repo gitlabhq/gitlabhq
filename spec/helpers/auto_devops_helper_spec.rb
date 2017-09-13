@@ -10,12 +10,22 @@ describe AutoDevopsHelper do
     before do
       allow(helper).to receive(:can?).with(user, :admin_pipeline, project) { allowed }
       allow(helper).to receive(:current_user) { user }
+
+      Feature.get(:auto_devops_banner_disabled).disable
     end
 
     subject { helper.show_auto_devops_callout?(project) }
 
     context 'when all conditions are met' do
       it { is_expected.to eq(true) }
+    end
+
+    context 'when the banner is disabled by feature flag' do
+      it 'allows the feature flag to disable' do
+        Feature.get(:auto_devops_banner_disabled).enable
+
+        expect(subject).to be(false)
+      end
     end
 
     context 'when dismissed' do
