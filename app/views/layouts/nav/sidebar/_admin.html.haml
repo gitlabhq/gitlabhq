@@ -52,13 +52,8 @@
               %span
                 ConvDev Index
 
-<<<<<<< HEAD
       = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles audit_logs)) do
         = sidebar_link admin_conversational_development_index_path, title: _('Monitoring') do
-=======
-      = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
-        = sidebar_link admin_system_info_path, title: _('Monitoring') do
->>>>>>> upstream/master
           .nav-icon-container
             = custom_icon('monitoring')
           %span.nav-item-name
