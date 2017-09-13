@@ -7,7 +7,7 @@ describe Groups::BillingsController do
   describe 'GET index' do
     before do
       stub_application_setting(check_namespace_plan: true)
-      allow(Gitlab).to receive(:com?) { true }
+      allow(Gitlab).to receive(:dev_env_or_com?) { true }
     end
 
     context 'authorized' do
@@ -46,7 +46,7 @@ describe Groups::BillingsController do
       end
 
       it 'renders 404 when it is not gitlab.com' do
-        allow(Gitlab).to receive(:com?) { false }
+        allow(Gitlab).to receive(:dev_env_or_com?) { false }
         group.add_owner(user)
         sign_in(user)
 
