@@ -17,7 +17,7 @@
           .preview-row
             .quadrant.three
             .quadrant.four
-        = f.radio_button :theme_id, theme.id
+        = f.radio_button :theme_id, theme.id, checked: Gitlab::Themes.for_user(@user).id == theme.id
         = theme.name
 
   .col-sm-12
