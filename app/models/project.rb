@@ -1557,6 +1557,23 @@ class Project < ActiveRecord::Base
     persisted? && path_changed?
   end
 
+  def merge_method
+    if self.merge_requests_ff_only_enabled
+      :ff
+    else
+      :merge
+    end
+  end
+
+  def merge_method=(method)
+    self.merge_requests_ff_only_enabled = method.to_s == "ff"
+  end
+
+  def ff_merge_must_be_possible?
+    self.merge_requests_ff_only_enabled
+  end
+  # alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
+
   private
 
   def storage

@@ -1,6 +1,28 @@
 - form = local_assigns.fetch(:form)
 
 .form-group
+  = label_tag :merge_method_merge, class: 'label-light' do
+    Merge method
+  .radio
+    = label_tag :project_merge_method_merge do
+      = form.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+      %strong Merge commit
+      %br
+      %span.descr
+        A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
+
+  .radio
+    = label_tag :project_merge_method_ff do
+      = form.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+      %strong Fast-forward merge
+      %br
+      %span.descr
+        No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+      %br
+      %span.descr
+        When fast-forward merge is not possible, the user must first rebase locally.
+
+.form-group
   .checkbox.builds-feature{ class: ("hidden" if @project && @project.project_feature.send(:builds_access_level) == 0) }
     = form.label :only_allow_merge_if_pipeline_succeeds do
       = form.check_box :only_allow_merge_if_pipeline_succeeds
