@@ -1,11 +1,13 @@
 module Gitlab
   module Git
     class OperationService
-      attr_reader :committer, :repository
+      attr_reader :user, :repository
 
-      def initialize(committer, new_repository)
-        committer = Gitlab::Git::Committer.from_user(committer) if committer.is_a?(User)
-        @committer = committer
+      def initialize(user, new_repository)
+        if user
+          user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
+          @user = user
+        end
 
         # Refactoring aid
         unless new_repository.is_a?(Gitlab::Git::Repository)
@@ -128,7 +130,7 @@ module Gitlab
 
       def with_hooks(ref, newrev, oldrev)
         Gitlab::Git::HooksService.new.execute(
-          committer,
+          user,
           repository,
           oldrev,
           newrev,
