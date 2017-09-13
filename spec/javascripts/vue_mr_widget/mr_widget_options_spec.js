@@ -247,10 +247,9 @@ describe('mrWidgetOptions', () => {
       beforeEach(() => {
         const favicon = document.createElement('link');
         favicon.setAttribute('id', 'favicon');
-        favicon.setAttribute('href', 'default/favicon');
         document.body.appendChild(favicon);
 
-        faviconElement = document.body.getElementById('favicon');
+        faviconElement = document.getElementById('favicon');
       });
 
       afterEach(() => {
@@ -258,7 +257,7 @@ describe('mrWidgetOptions', () => {
       });
 
       it('should call setFavicon method', () => {
-        vm.setFavicon();
+        vm.setFaviconHelper();
 
         expect(faviconElement.getAttribute('href')).toEqual(vm.mr.ciStatusFaviconPath);
       });
