@@ -1,10 +1,14 @@
 module Gitlab
   module Git
-    class Committer
+    class User
       attr_reader :name, :email, :gl_id
 
-      def self.from_user(user)
-        new(user.name, user.email, Gitlab::GlId.gl_id(user))
+      def self.from_gitlab(gitlab_user)
+        new(gitlab_user.name, gitlab_user.email, Gitlab::GlId.gl_id(gitlab_user))
+      end
+
+      def self.from_gitaly(gitaly_user)
+        new(gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
       end
 
       def initialize(name, email, gl_id)

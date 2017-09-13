@@ -173,7 +173,7 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    branch = raw_repository.add_branch(branch_name, committer: user, target: ref)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
     after_create_branch
 
@@ -183,7 +183,7 @@ class Repository
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    raw_repository.add_tag(tag_name, committer: user, target: target, message: message)
+    raw_repository.add_tag(tag_name, user: user, target: target, message: message)
   rescue Gitlab::Git::Repository::InvalidRef
     false
   end
@@ -191,7 +191,7 @@ class Repository
   def rm_branch(user, branch_name)
     before_remove_branch
 
-    raw_repository.rm_branch(branch_name, committer: user)
+    raw_repository.rm_branch(branch_name, user: user)
 
     after_remove_branch
     true
@@ -200,7 +200,7 @@ class Repository
   def rm_tag(user, tag_name)
     before_remove_tag
 
-    raw_repository.rm_tag(tag_name, committer: user)
+    raw_repository.rm_tag(tag_name, user: user)
 
     after_remove_tag
     true
