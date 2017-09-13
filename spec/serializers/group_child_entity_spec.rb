@@ -16,19 +16,17 @@ describe GroupChildEntity do
     end
 
     %w[id
-       path
        full_name
-       full_path
        avatar_url
        name
        description
-       web_url
        visibility
        type
        can_edit
        visibility
        edit_path
-       permission].each do |attribute|
+       permission
+       relative_path].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present
       end

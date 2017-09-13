@@ -2,7 +2,7 @@ class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
 
-  expose :id, :name, :path, :description, :visibility, :full_name, :full_path, :web_url,
+  expose :id, :name, :description, :visibility, :full_name, :relative_path,
          :created_at, :updated_at, :can_edit, :type, :avatar_url, :permission, :edit_path
 
   def project?
@@ -28,6 +28,14 @@ class GroupChildEntity < Grape::Entity
       edit_project_path(object)
     else
       edit_group_path(object)
+    end
+  end
+
+  def relative_path
+    if project?
+      project_path(object)
+    else
+      group_path(object)
     end
   end
 
