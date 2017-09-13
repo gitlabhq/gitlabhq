@@ -69,11 +69,17 @@ module Gitlab
 
     def optimistic_using_tmp_keychain
       previous_dir = current_home_dir
-      Dir.mktmpdir do |dir|
-        GPGME::Engine.home_dir = dir
-        yield
-      end
+      tmp_dir = Dir.mktmpdir
+      GPGME::Engine.home_dir = tmp_dir
+      yield
     ensure
+      # Ignore any errors when removing the tmp directory, as we may run into a
+      # race condition:
+      # The `gpg-agent` agent process may clean up some files as well while
+      # `FileUtils.remove_entry` is iterating the directory and removing all
+      # its contained files and directories recursively, which could raise an
+      # error.
+      FileUtils.remove_entry(tmp_dir, true)
       GPGME::Engine.home_dir = previous_dir
     end
   end
