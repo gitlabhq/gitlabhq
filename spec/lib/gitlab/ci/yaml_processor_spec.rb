@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-    describe YamlProcessor, :lib do
+    describe YamlProcessor do
       subject { described_class.new(config, path) }
       let(:path) { 'path' }
 
