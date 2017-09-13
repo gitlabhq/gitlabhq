@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Ansi2html do
+describe Gitlab::Ci::Ansi2html do
   subject { described_class }
 
   it "prints non-ansi as-is" do
