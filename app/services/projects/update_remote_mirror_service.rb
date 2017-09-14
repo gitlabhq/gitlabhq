@@ -11,10 +11,6 @@ module Projects
       begin
         repository.fetch_remote(mirror.ref_name, no_tags: true)
 
-        if divergent_branches.present?
-          errors << "The following branches have diverged from their local counterparts: #{divergent_branches.to_sentence}"
-        end
-
         push_branches if changed_branches.present?
         delete_branches if deleted_branches.present?
 
@@ -70,15 +66,7 @@ module Projects
           branches << name
         elsif branch.dereferenced_target == remote_branch.dereferenced_target
           # Already up to date
-        elsif !repository.upstream_has_diverged?(name, mirror.ref_name)
-          branches << name
-        end
-      end
-    end
-
-    def divergent_branches
-      remote_branches.each_with_object([]) do |(name, _), branches|
-        if local_branches[name] && repository.upstream_has_diverged?(name, mirror.ref_name)
+        else
           branches << name
         end
       end
