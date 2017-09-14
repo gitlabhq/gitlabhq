@@ -19,19 +19,24 @@
       load(event) {
         this.$emit('imageLoaded', event);
       },
+      click() {
+        this.$emit('click', event);
+      },
     },
   };
 </script>
 
 <template>
   <div
-    class="frame"
+    class="frame click-to-comment"
     :class="className"
   >
     <img
+      @click="click"
       @load="load"
       :src="src"
       :alt="alt"
     />
+    <slot />
   </div>
 </template>

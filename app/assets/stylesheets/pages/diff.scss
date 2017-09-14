@@ -599,6 +599,21 @@
   }
 }
 
+.frame.click-to-comment {
+  position: relative;
+  // TODO: Use custom image cursor
+  cursor: wait;
+
+  .badge {
+    position: absolute;
+    background-color: $blue-400;
+    color: $white-light;
+    border-color: $white-light;
+    border-style: solid;
+    border-width: 1px;
+  }
+}
+
 .diff-files-changed {
   .inline-parallel-buttons {
     position: relative;
