@@ -5,7 +5,8 @@ describe GroupTree do
   let(:user) { create(:user) }
 
   controller(ApplicationController) do
-    include GroupTree # rubocop:disable Rspec/DescribedClass
+    # `described_class` is not available in this context
+    include GroupTree # rubocop:disable RSpec/DescribedClass
 
     def index
       render_group_tree Group.all
@@ -43,6 +44,14 @@ describe GroupTree do
 
         expect(assigns(:groups)).to contain_exactly(subgroup)
       end
+
+      it 'allows filtering for subgroups' do
+        subgroup = create(:group, :public, parent: group, name: 'filter')
+
+        get :index, filter: 'filt', format: :json
+
+        expect(assigns(:groups)).to contain_exactly(subgroup)
+      end
     end
 
     context 'json content' do
@@ -50,6 +59,19 @@ describe GroupTree do
         get :index, format: :json
 
         expect(json_response.first['id']).to eq(group.id)
+      end
+
+      context 'nested groups', :nested_groups do
+        it 'expands the tree when filtering' do
+          subgroup = create(:group, :public, parent: group, name: 'filter')
+
+          get :index, filter: 'filt', format: :json
+
+          children_response = json_response.first['children']
+
+          expect(json_response.first['id']).to eq(group.id)
+          expect(children_response.first['id']).to eq(subgroup.id)
+        end
       end
     end
   end

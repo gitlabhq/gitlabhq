@@ -20,5 +20,4 @@ describe Explore::GroupsController do
 
     expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
   end
-
 end
