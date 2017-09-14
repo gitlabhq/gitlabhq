@@ -45,8 +45,10 @@ import Cookies from 'js-cookie';
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
         }
         if (!triggered) {
-          return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
+          Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
         }
+        console.log('loadCheck')
+        gl.lazyLoader.loadCheck();
       });
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
     };

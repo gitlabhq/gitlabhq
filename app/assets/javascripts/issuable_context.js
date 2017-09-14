@@ -70,7 +70,10 @@ const PARTICIPANTS_ROW_COUNT = 7;
       } else {
         $(this).text(originalText);
       }
-      return $(".js-participants-hidden").toggle();
+
+      $(".js-participants-hidden").toggle();
+
+      gl.lazyLoader.loadCheck();
     };
 
     return IssuableContext;
