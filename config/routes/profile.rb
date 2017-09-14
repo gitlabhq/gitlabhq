@@ -1,3 +1,6 @@
+# for secondary email confirmations - uses the same confirmation controller as :users
+devise_for :emails, path: 'profile/emails', controllers: { confirmations: :confirmations }
+
 resource :profile, only: [:show, :update] do
   member do
     get :audit_log
