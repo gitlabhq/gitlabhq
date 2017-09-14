@@ -80,7 +80,6 @@ import './copy_as_gfm';
 import './copy_to_clipboard';
 import './create_label';
 import './diff';
-import './discussion_lock';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
