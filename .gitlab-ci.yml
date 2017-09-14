@@ -191,8 +191,9 @@ review-docs-deploy:
   stage: build
   environment:
     name: review-docs/$CI_COMMIT_REF_NAME
-    # The URL must end in /ce
-    url: http://$CI_COMMIT_REF_SLUG-built-from-ce-ee.$DOCS_REVIEW_APPS_DOMAIN/ce
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
+    url: http://$CI_COMMIT_REF_SLUG-built-from-ce-ee.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
     - gem install gitlab --no-doc
