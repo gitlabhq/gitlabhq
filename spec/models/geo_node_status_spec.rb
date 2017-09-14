@@ -205,7 +205,7 @@ describe GeoNodeStatus do
     end
 
     it "doesn't attempt to retrieve cursor if primary" do
-      event = create(:geo_event_log_state)
+      create(:geo_event_log_state)
       expect(Gitlab::Geo).to receive(:secondary?).exactly(2).times.and_return(false)
 
       expect(subject.cursor_last_event_date).to eq(nil)
