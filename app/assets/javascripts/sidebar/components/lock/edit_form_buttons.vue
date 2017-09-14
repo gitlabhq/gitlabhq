@@ -1,25 +1,29 @@
 <script>
 export default {
   props: {
-    isConfidential: {
+    isLocked: {
       required: true,
       type: Boolean,
     },
+
     toggleForm: {
       required: true,
       type: Function,
     },
-    updateConfidentialAttribute: {
+
+    updateLockedAttribute: {
       required: true,
       type: Function,
     },
   },
+
   computed: {
     buttonText() {
-      return this.isConfidential ? 'Turn Off' : 'Turn On';
+      return this.isLocked ? this.__('Unlock') : this.__('Lock');
     },
-    updateConfidentialBool() {
-      return !this.isConfidential;
+
+    updateLockedBool() {
+      return !this.isLocked;
     },
   },
 };
@@ -32,12 +36,13 @@ export default {
       class="btn btn-default append-right-10"
       @click="toggleForm"
     >
-      Cancel
+      {{ __('Cancel') }}
     </button>
+
     <button
       type="button"
       class="btn btn-close"
-      @click.prevent="updateConfidentialAttribute(updateConfidentialBool)"
+      @click.prevent="updateLockedAttribute(updateLockedBool)"
     >
       {{ buttonText }}
     </button>
