@@ -3,39 +3,21 @@
 module Gitlab
   module Diff
     class Position
-      FORMATTER_CLASS_SUFIX = "_formatter".freeze
+      FORMATTER_CLASS_SUFFIX = "_formatter".freeze
 
-      attr_reader :old_path
-      attr_reader :new_path
-      attr_reader :old_line
-      attr_reader :new_line
-      attr_reader :base_sha
-      attr_reader :start_sha
-      attr_reader :head_sha
-      attr_reader :component_type
+      attr_accessor :formatter
+
+      delegate :old_path,
+               :old_line,
+               :new_line,
+               :new_path,
+               :base_sha,
+               :start_sha,
+               :head_sha,
+               :component_type, :to => :formatter
 
       def initialize(attrs = {})
-        if diff_file = attrs[:diff_file]
-          attrs[:diff_refs] = diff_file.diff_refs
-          attrs[:old_path] = diff_file.old_path
-          attrs[:new_path] = diff_file.new_path
-        end
-
-        if diff_refs = attrs[:diff_refs]
-          attrs[:base_sha]  = diff_refs.base_sha
-          attrs[:start_sha] = diff_refs.start_sha
-          attrs[:head_sha]  = diff_refs.head_sha
-        end
-
-        @old_path = attrs[:old_path]
-        @new_path = attrs[:new_path]
-        @base_sha  = attrs[:base_sha]
-        @start_sha = attrs[:start_sha]
-        @head_sha  = attrs[:head_sha]
-
-        formatter_class = Gitlab::Diff::Formatters.const_get(formatter_class_name)
-
-        formatter = formatter_class.new(coder)
+        @formatter = get_formatter_class(attrs[:file_type]).new(attrs)
       end
 
       # `Gitlab::Diff::Position` objects are stored as serialized attributes in
@@ -50,41 +32,27 @@ module Gitlab
       end
 
       def encode_with(coder)
-        coder['attributes'] = self.to_h
+        coder['attributes'] = formatter.to_h
       end
 
       def key
-        @key ||= [base_sha, start_sha, head_sha, Digest::SHA1.hexdigest(old_path || ""), Digest::SHA1.hexdigest(new_path || ""), old_line, new_line]
+        formatter.key
       end
 
       def ==(other)
         other.is_a?(self.class) && key == other.key
       end
 
-      # def to_h
-      #   {
-      #     old_path: old_path,
-      #     new_path: new_path,
-      #     old_line: old_line,
-      #     new_line: new_line,
-      #     base_sha:  base_sha,
-      #     start_sha: start_sha,
-      #     head_sha:  head_sha
-      #   }
-      # end
-
       def inspect
-        %(#<#{self.class}:#{object_id} #{to_h}>)
+        %(#<#{self.class}:#{object_id} #{formatter.to_h}>)
       end
 
       def complete?
-        file_path.present? &&
-          (old_line || new_line) &&
-          diff_refs.complete?
+        file_path.present? && formatter.complete? && diff_refs.complete?
       end
 
       def to_json(opts = nil)
-        JSON.generate(self.to_h, opts)
+        JSON.generate(formatter.to_h, opts)
       end
 
       def type
@@ -154,8 +122,11 @@ module Gitlab
         diff_refs.compare_in(repository.project).diffs(paths: paths, expanded: true).diff_files.first
       end
 
-      def formatter_class_name
-        ("text" + FORMATTER_CLASS_SUFIX).classify
+      def get_formatter_class(type)
+        type ||= "text"
+        class_name = (type + FORMATTER_CLASS_SUFFIX).classify
+
+        Gitlab::Diff::Formatters.const_get(class_name)
       end
     end
   end
