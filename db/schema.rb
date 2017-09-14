@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905112933) do
+ActiveRecord::Schema.define(version: 20170913131410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -520,7 +520,7 @@ ActiveRecord::Schema.define(version: 20170905112933) do
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
   create_table "environments", force: :cascade do |t|
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
