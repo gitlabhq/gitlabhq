@@ -4,8 +4,8 @@ import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
 export default {
-  fetchNotes(endpoint) {
-    return Vue.http.get(endpoint);
+  fetchNotes(endpoint, params = {}) {
+    return Vue.http.get(endpoint, params);
   },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);

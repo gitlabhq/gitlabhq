@@ -84,8 +84,7 @@ export default {
         notes.push(note);
       }
     });
-
-    Object.assign(state, { notes });
+    state.notes.push(notes);
   },
 
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
