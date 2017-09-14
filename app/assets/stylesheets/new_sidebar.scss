@@ -451,6 +451,12 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+    height: 16px;
+    padding: 0 16px;
+
+    i {
+      font-size: 18px;
+    }
   }
 }
 
