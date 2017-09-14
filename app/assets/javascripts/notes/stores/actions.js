@@ -18,25 +18,25 @@ export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NO
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchNotes = ({ commit, dispatch }, path, params = {}) => {
+export const fetchNotes = ({ commit, dispatch }, data) => {
+  let { path, params } = data;
+  params = params || {};
+
   function innerFetchNotes(path, params) {
-    console.log('calling innerFetchNotes')
     return service
-    .fetchNotes(path, params)
-    .then(res => res.json())
-    .then((res) => {
-      console.log('----------HI----------', res)
-      if(res.length > 0){
-        // append onto the notes. 
-        // fetch again
-        let newParams = params;
-        const lastNotes = res[res.length-1].notes;
-        const lastNoteLength = lastNotes.length;
-        newParams.params.after = lastNotes[lastNoteLength-1].id;
-        commit(types.SET_INITIAL_NOTES, res);
-        return innerFetchNotes(path, newParams);
-      }
-    });
+      .fetchNotes(path, params)
+      .then(res => res.json())
+      .then((res) => {
+        if (res.length > 0) {
+          const newParams = params;
+          const lastNotes = res[res.length-1].notes;
+          const lastNoteLength = lastNotes.length;
+
+          newParams.after = lastNotes[lastNoteLength-1].id;
+          commit(types.SET_INITIAL_NOTES, res);
+          return innerFetchNotes(path, newParams);
+        }
+      });
   }
   return innerFetchNotes(path, params);
 }

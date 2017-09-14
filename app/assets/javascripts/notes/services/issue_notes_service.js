@@ -5,7 +5,7 @@ Vue.use(VueResource);
 
 export default {
   fetchNotes(endpoint, params = {}) {
-    return Vue.http.get(endpoint, params);
+    return Vue.http.get(endpoint, { params });
   },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);

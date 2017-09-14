@@ -77,7 +77,15 @@
         return note.individual_note ? note.notes[0] : note;
       },
       fetchNotes() {
-        return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'), { params: { limit: 3 } })
+        const options = {
+          path: this.getNotesDataByProp('discussionsPath'),
+          params: { limit: 3 },
+        }
+
+        // FIXME: This should be changed.
+        this.isLoading = false;
+
+        return this.actionFetchNotes(options)
           .then(() => {
             this.initPolling()
           })
