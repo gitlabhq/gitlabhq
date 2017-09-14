@@ -559,22 +559,26 @@
   }
 }
 
-.image-replaced-view .btn-group .btn {
-  background-color: transparent;
-  box-shadow: none;
-  border-color: transparent;
-  border-right: 1px solid $diff-view-modes-border;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding: 0 16px;
-  color: $diff-view-modes-color;
+.image-replaced-view .btn-group {
+  margin-top: $gl-padding * 2;
 
-  &.active {
-    color: $black;
-  }
+  .btn {
+    background-color: transparent;
+    box-shadow: none;
+    border-color: transparent;
+    border-right: 1px solid $diff-view-modes-border;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding: 0 $gl-padding;
+    color: $diff-view-modes-color;
 
-  &:last-child {
-    border-right: transparent;
+    &.active {
+      color: $black;
+    }
+
+    &:last-child {
+      border-right: transparent;
+    }
   }
 }
 

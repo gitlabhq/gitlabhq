@@ -16,9 +16,9 @@ document.querySelectorAll('.js-vue-image-diff').forEach(
 
       return {
         images: {
-          added: dataset.added ? JSON.parse(dataset.added): null,
-          deleted: dataset.deleted ? JSON.parse(dataset.deleted): null,
-        }
+          added: dataset.added ? JSON.parse(dataset.added) : null,
+          deleted: dataset.deleted ? JSON.parse(dataset.deleted) : null,
+        },
       };
     },
     render(createElement) {
@@ -28,5 +28,5 @@ document.querySelectorAll('.js-vue-image-diff').forEach(
         },
       });
     },
-  })
+  }),
 );

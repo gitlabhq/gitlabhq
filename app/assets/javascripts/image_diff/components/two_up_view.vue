@@ -15,6 +15,7 @@
     },
     methods: {
       loadMeta(imageType, event) {
+        // TODO: Determine why this doesn't render after change
         this.$nextTick(() => {
           this[imageType].width = event.target.naturalWidth;
           this[imageType].height = event.target.naturalHeight;
@@ -26,7 +27,6 @@
 
 <template>
   <div class="two-up view">
-    <!-- TODO: Refactor into separate component -->
     <div class="image-container">
       <div class="frame deleted">
         <img

@@ -135,7 +135,7 @@
               height: maxHeight + 2
             });
             $swipeBar.css({
-              left: 0
+              left: 1
             });
 
             wrapPadding = parseInt($swipeWrap.css('right').replace('px', ''), 10);

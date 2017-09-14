@@ -1,6 +1,7 @@
 <script>
   import twoUpView from './two_up_view.vue';
   import swipeView from './swipe_view.vue';
+  import onionSkinView from './onion_skin_view.vue';
 
   export default {
     name: 'imageReplaced',
@@ -19,14 +20,9 @@
     components: {
       twoUpView,
       swipeView,
+      onionSkinView,
     },
     methods: {
-      loadMeta(imageType, event) {
-        this.$nextTick(() => {
-          this.images[imageType].width = event.target.naturalWidth;
-          this.images[imageType].height = event.target.naturalHeight;
-        });
-      },
       changeView(viewType) {
         this.currentView = viewType;
       },
@@ -43,6 +39,11 @@
     />
     <swipe-view
       v-else-if="currentView === 'swipe'"
+      :added="images.added"
+      :deleted="images.deleted"
+    />
+    <onion-skin-view
+      v-else-if="currentView === 'onion-skin'"
       :added="images.added"
       :deleted="images.deleted"
     />

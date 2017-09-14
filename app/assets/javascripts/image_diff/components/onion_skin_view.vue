@@ -1,6 +1,11 @@
 <script>
   export default {
-    name: 'swipeView',
+    name: 'onionSkinView',
+    data() {
+      return {
+        dragging: false,
+      };
+    },
     props: {
       added: {
         type: Object,
@@ -19,31 +24,31 @@
         file,
         initDraggable: gl.ImageFile.prototype.initDraggable,
       };
-      // TODO: Create tech debt issue for refactoring gl.ImageFile
-      gl.ImageFile.prototype.views.swipe.call(context);
+      gl.ImageFile.prototype.views['onion-skin'].call(context);
     },
   };
 </script>
 
 <template>
-  <div class="swipe view">
-    <div class="swipe-frame">
+  <div class="onion-skin view">
+    <div class="onion-skin-frame">
       <div class="frame deleted">
         <img
           :src="deleted.path"
           :alt="deleted.alt" />
       </div>
-      <div class="swipe-wrap">
-        <div class="frame added">
-          <img
-            :src="added.path"
-            :alt="added.alt" />
+      <div class="frame added">
+        <img
+          :src="added.path"
+          :alt="added.alt" />
+      </div>
+      <div class="controls">
+        <div class="transparent"></div>
+        <div class="drag-track">
+          <div class="dragger" style="left: 0px"></div>
+          <div class="opaque"></div>
         </div>
       </div>
-      <span class="swipe-bar">
-        <span class="top-handle"></span>
-        <span class="bottom-handle"></span>
-      </span>
     </div>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script>
   import imageReplaced from './image_replaced.vue';
+
   export default {
     name: 'imageDiffApp',
     props: {
@@ -23,12 +24,8 @@
         return this.images.added || this.images.deleted;
       },
       currentImageFrameClass() {
-        return !this.isImageReplaced && this.isImageAdded? 'frame added' : 'frame deleted';
-      }
-    },
-    mounted() {
-      // const diffFile = this.$el.closest('.diff-file');
-      // new gl.ImageFile(diffFile);
+        return !this.isImageReplaced && this.isImageAdded ? 'frame added' : 'frame deleted';
+      },
     },
   };
 </script>
