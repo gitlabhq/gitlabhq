@@ -39,7 +39,6 @@ import './commit/file';
 import './commit/image_file';
 
 // lib/utils
-import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
