@@ -90,6 +90,12 @@ class Repository
     )
   end
 
+  # we need to have this method here because it is not cached in ::Git and
+  # the method is called multiple times for every request
+  def has_visible_content?
+    branch_count > 0
+  end
+
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
   end
