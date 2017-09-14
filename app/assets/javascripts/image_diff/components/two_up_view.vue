@@ -1,17 +1,12 @@
 <script>
+  import * as imageReplacedProps from './../mixins/image_replaced_props';
+  import imageFrame from './image_frame.vue';
+
   export default {
     name: 'twoUpView',
-    props: {
-      added: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
-      deleted: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
+    mixins: [imageReplacedProps.mixin],
+    components: {
+      imageFrame,
     },
     methods: {
       loadMeta(imageType, event) {
@@ -28,13 +23,12 @@
 <template>
   <div class="two-up view">
     <div class="image-container">
-      <div class="frame deleted">
-        <img
-          @load="loadMeta('deleted', $event)"
-          :src="deleted.path"
-          :alt="deleted.alt"
-        >
-      </div>
+      <image-frame
+        @imageLoaded="loadMeta('deleted', $event)"
+        className="deleted"
+        :src="deleted.path"
+        :alt="deleted.alt"
+      />
       <p class="image-info">
         <span class="meta-filesize">
           {{deleted.size}}
@@ -53,13 +47,12 @@
     </div>
 
     <div class="image-container">
-      <div class="frame added">
-        <img
-          @load="loadMeta('added', $event)"
-          :src="added.path"
-          :alt="added.alt"
-        >
-      </div>
+      <image-frame
+        @imageLoaded="loadMeta('added', $event)"
+        className="added"
+        :src="added.path"
+        :alt="added.alt"
+      />
       <p class="image-info">
         <span class="meta-filesize">
           {{added.size}}

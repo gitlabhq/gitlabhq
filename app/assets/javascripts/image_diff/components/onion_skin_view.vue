@@ -1,22 +1,12 @@
 <script>
+  import * as imageReplacedProps from './../mixins/image_replaced_props';
+  import imageFrame from './image_frame.vue';
+
   export default {
     name: 'onionSkinView',
-    data() {
-      return {
-        dragging: false,
-      };
-    },
-    props: {
-      added: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
-      deleted: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
+    mixins: [imageReplacedProps.mixin],
+    components: {
+      imageFrame,
     },
     mounted() {
       const file = this.$el.closest('.images');
@@ -32,16 +22,16 @@
 <template>
   <div class="onion-skin view">
     <div class="onion-skin-frame">
-      <div class="frame deleted">
-        <img
-          :src="deleted.path"
-          :alt="deleted.alt" />
-      </div>
-      <div class="frame added">
-        <img
-          :src="added.path"
-          :alt="added.alt" />
-      </div>
+      <image-frame
+        className="deleted"
+        :src="deleted.path"
+        :alt="deleted.alt"
+      />
+      <image-frame
+        className="added"
+        :src="added.path"
+        :alt="added.alt"
+      />
       <div class="controls">
         <div class="transparent"></div>
         <div class="drag-track">

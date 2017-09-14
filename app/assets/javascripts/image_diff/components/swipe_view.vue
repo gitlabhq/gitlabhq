@@ -1,17 +1,12 @@
 <script>
+  import * as imageReplacedProps from './../mixins/image_replaced_props';
+  import imageFrame from './image_frame.vue';
+
   export default {
     name: 'swipeView',
-    props: {
-      added: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
-      deleted: {
-        type: Object,
-        required: true,
-        // TODO: Add validation
-      },
+    mixins: [imageReplacedProps.mixin],
+    components: {
+      imageFrame,
     },
     mounted() {
       const file = this.$el.closest('.images');
@@ -28,17 +23,17 @@
 <template>
   <div class="swipe view">
     <div class="swipe-frame">
-      <div class="frame deleted">
-        <img
-          :src="deleted.path"
-          :alt="deleted.alt" />
-      </div>
+      <image-frame
+        className="deleted"
+        :src="deleted.path"
+        :alt="deleted.alt"
+      />
       <div class="swipe-wrap">
-        <div class="frame added">
-          <img
-            :src="added.path"
-            :alt="added.alt" />
-        </div>
+        <image-frame
+          className="added"
+          :src="added.path"
+          :alt="added.alt"
+        />
       </div>
       <span class="swipe-bar">
         <span class="top-handle"></span>
