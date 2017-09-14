@@ -23,12 +23,13 @@ With GitLab merge requests, you can:
 - Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
+- Enable [fast-forward merge requests](https://docs.gitlab.com/ce/user/project/merge_requests/fast_forward_merge.html)
+
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Enterprise Edition Starter)
-- Enable [fast-forward merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/fast_forward_merge.html) (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
 - Enable [semi-linear history merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch (available in GitLab Enterprise Edition Starter)
 - Analise the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Enterprise Edition Starter)
@@ -88,6 +89,15 @@ Cherry-pick any commit in the UI by simply clicking the **Cherry-pick** button
 in a merged merge requests or a commit.
 
 [Learn more about cherry-picking changes.](cherry_pick_changes.md)
+
+## Fast-forward merge requests
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+[Read more about fast-forward merge requests.](fast_forward_merge.md)
 
 ## Merge when pipeline succeeds
 
