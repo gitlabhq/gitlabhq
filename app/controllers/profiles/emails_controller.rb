@@ -1,5 +1,4 @@
 class Profiles::EmailsController < Profiles::ApplicationController
-
   before_action :find_email, only: [:destroy, :resend_confirmation_instructions]
 
   def index
@@ -39,7 +38,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   def email_params
     params.require(:email).permit(:email)
   end
-  
+
   def find_email
     @email = current_user.emails.find(params[:id])
   end

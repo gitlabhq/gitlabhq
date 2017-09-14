@@ -8,7 +8,7 @@ describe Profiles::EmailsController do
   end
 
   describe '#create' do
-    let(:email_params) { {email: "add_email@example.com"} }
+    let(:email_params) { { email: "add_email@example.com" } }
 
     it 'sends an email confirmation' do
       expect {post(:create, { email: email_params })}.to change { ActionMailer::Base.deliveries.size }
@@ -18,7 +18,7 @@ describe Profiles::EmailsController do
   end
 
   describe '#resend_confirmation_instructions' do
-    let(:email_params) { {email: "add_email@example.com"} }
+    let(:email_params) { { email: "add_email@example.com" } }
 
     it 'resends an email confirmation' do
       email = user.emails.create(email: 'add_email@example.com')

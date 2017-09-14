@@ -409,14 +409,12 @@ describe User do
       end
 
       it 'transfers old confirmation values into new secondary' do
-        org_user = @user
         @user.update_attributes!(email: @secondary.email)
         @user.reload
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
       end
     end
-
   end
 
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
@@ -1146,8 +1144,8 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns only confirmed emails' do
-      email_confirmed   = create :email, user: user, confirmed_at: Time.now
-      email_unconfirmed = create :email, user: user
+      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      create :email, user: user
       user.reload
       expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
     end
@@ -1157,8 +1155,8 @@ describe User do
     let(:user) { create(:user) }
 
     it 'returns true when the email is verified/confirmed' do
-      email_confirmed   = create :email, user: user, confirmed_at: Time.now
-      email_unconfirmed = create :email, user: user
+      email_confirmed = create :email, user: user, confirmed_at: Time.now
+      create :email, user: user
       user.reload
 
       expect(user.verified_email?(user.email)).to be_truthy
