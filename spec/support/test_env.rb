@@ -63,6 +63,11 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
+    unless Rails.env.test?
+      puts "\nTestEnv.init can only be run if `RAILS_ENV` is set to 'test' not '#{Rails.env}'!\n"
+      exit 1
+    end
+
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
