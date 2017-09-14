@@ -1572,7 +1572,6 @@ class Project < ActiveRecord::Base
   def ff_merge_must_be_possible?
     self.merge_requests_ff_only_enabled
   end
-  # alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
   private
 
