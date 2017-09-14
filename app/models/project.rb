@@ -975,9 +975,7 @@ class Project < ActiveRecord::Base
       end
     end
 
-    SystemHook.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
-      hook.async_execute(data, hooks_scope.to_s)
-    end
+    SystemHooksService.new.execute_hooks(data, hooks_scope)
   end
 
   def execute_services(data, hooks_scope = :push_hooks)

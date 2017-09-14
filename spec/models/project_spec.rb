@@ -3190,14 +3190,10 @@ describe Project do
     end
 
     it 'executes the system hooks with the specified scope' do
-      create :system_hook, merge_requests_events: true, tag_push_events: false
-      create :system_hook, merge_requests_events: false, tag_push_events: true
-      allow_any_instance_of(SystemHook).to receive(:async_execute).once
-      project = create :project
+      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with({ data: 'data' }, :merge_request_hooks)
 
-      expect_any_instance_of(SystemHook).to receive(:async_execute).once
-
-      project.execute_hooks({}, :tag_push_hooks)
+      project = build(:project)
+      project.execute_hooks({ data: 'data' }, :merge_request_hooks)
     end
   end
 end
