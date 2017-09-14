@@ -10,7 +10,7 @@ describe DeleteConflictingRedirectRoutes, :migration, :sidekiq do
   end
 
   before do
-    stub_const("Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_BATCH_SIZE", 2)
+    stub_const("DeleteConflictingRedirectRoutes::BATCH_SIZE", 2)
     stub_const("Gitlab::Database::MigrationHelpers::BACKGROUND_MIGRATION_JOB_BUFFER_SIZE", 2)
 
     routes.create!(id: 1, source_id: 1, source_type: 'Namespace', path: 'foo1')
@@ -38,11 +38,11 @@ describe DeleteConflictingRedirectRoutes, :migration, :sidekiq do
         migrate!
 
         expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([described_class::MIGRATION, [1, 2]])
-        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(1.minute.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(12.seconds.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([described_class::MIGRATION, [3, 4]])
-        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(2.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(24.seconds.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[2]['args']).to eq([described_class::MIGRATION, [5, 5]])
-        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(3.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(36.seconds.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end

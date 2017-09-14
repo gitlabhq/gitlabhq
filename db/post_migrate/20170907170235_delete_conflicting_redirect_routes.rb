@@ -6,6 +6,8 @@ class DeleteConflictingRedirectRoutes < ActiveRecord::Migration
 
   DOWNTIME = false
   MIGRATION = 'DeleteConflictingRedirectRoutesRange'.freeze
+  BATCH_SIZE = 200 # At 200, I expect under 20s per batch, which is under our query timeout of 60s.
+  DELAY_INTERVAL = 12.seconds
 
   disable_ddl_transaction!
 
@@ -18,7 +20,7 @@ class DeleteConflictingRedirectRoutes < ActiveRecord::Migration
   def up
     say opening_message
 
-    queue_background_migration_jobs_by_range_at_intervals(Route, MIGRATION, 1.minute)
+    queue_background_migration_jobs_by_range_at_intervals(Route, MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
   end
 
   def down
