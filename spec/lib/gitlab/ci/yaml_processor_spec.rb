@@ -167,8 +167,6 @@ module Gitlab
         end
 
         context 'when kubernetes policy is specified' do
-          let(:pipeline) { create(:ci_empty_pipeline) }
-
           let(:config) do
             YAML.dump(
               spinach: { stage: 'test', script: 'spinach' },
@@ -204,7 +202,7 @@ module Gitlab
         end
       end
 
-      describe "#builds_for_stage_and_ref" do
+      describe "#pipeline_stage_builds" do
         let(:type) { 'test' }
 
         it "returns builds if no branch specified" do
@@ -215,8 +213,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-          expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref(type, "master").first).to eq({
+          expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
+          expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).first).to eq({
             stage: "test",
             stage_idx: 1,
             name: "rspec",
@@ -243,7 +241,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
           end
 
           it "does not return builds if only has regexp with another branch" do
@@ -254,7 +252,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
           end
 
           it "returns builds if only has specified this branch" do
@@ -265,7 +263,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
           end
 
           it "returns builds if only has a list of branches including specified" do
@@ -276,7 +274,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
           end
 
           it "returns builds if only has a branches keyword specified" do
@@ -287,7 +285,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
           end
 
           it "does not return builds if only has a tags keyword" do
@@ -298,7 +296,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
           end
 
           it "returns builds if only has special keywords specified and source matches" do
@@ -317,7 +315,7 @@ module Gitlab
 
               config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-              expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(1)
             end
           end
 
@@ -337,7 +335,7 @@ module Gitlab
 
               config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-              expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(0)
             end
           end
 
@@ -349,7 +347,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
           end
 
           it "does not return builds if only has different repository path" do
@@ -360,7 +358,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
           end
 
           it "returns build only for specified type" do
@@ -373,9 +371,9 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, 'fork')
 
-            expect(config_processor.builds_for_stage_and_ref("deploy", "deploy").size).to eq(2)
-            expect(config_processor.builds_for_stage_and_ref("test", "deploy").size).to eq(1)
-            expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "deploy")).size).to eq(2)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "deploy")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "master")).size).to eq(1)
           end
 
           context 'for invalid value' do
@@ -420,7 +418,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
           end
 
           it "returns builds if except has regexp with another branch" do
@@ -431,7 +429,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(1)
           end
 
           it "does not return builds if except has specified this branch" do
@@ -442,7 +440,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "master").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "master")).size).to eq(0)
           end
 
           it "does not return builds if except has a list of branches including specified" do
@@ -453,7 +451,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
           end
 
           it "does not return builds if except has a branches keyword specified" do
@@ -464,7 +462,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
           end
 
           it "returns builds if except has a tags keyword" do
@@ -475,7 +473,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
           end
 
           it "does not return builds if except has special keywords specified and source matches" do
@@ -494,7 +492,7 @@ module Gitlab
 
               config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-              expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(0)
             end
           end
 
@@ -514,7 +512,7 @@ module Gitlab
 
               config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-              expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+              expect(config_processor.pipeline_stage_builds(type, pipeline(ref: 'deploy', tag: false, source: possibility[:source])).size).to eq(1)
             end
           end
 
@@ -526,7 +524,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
           end
 
           it "returns builds if except has different repository path" do
@@ -537,7 +535,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
           end
 
           it "returns build except specified type" do
@@ -550,9 +548,9 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, 'fork')
 
-            expect(config_processor.builds_for_stage_and_ref("deploy", "deploy").size).to eq(2)
-            expect(config_processor.builds_for_stage_and_ref("test", "test").size).to eq(0)
-            expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(0)
+            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "deploy")).size).to eq(2)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "test")).size).to eq(0)
+            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "master")).size).to eq(0)
           end
 
           context 'for invalid value' do
@@ -593,7 +591,7 @@ module Gitlab
         let(:config_data) { YAML.dump(config) }
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config_data, path) }
 
-        subject { config_processor.builds_for_stage_and_ref("test", "master").first }
+        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first }
 
         describe "before_script" do
           context "in global context" do
@@ -676,8 +674,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-            expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -711,8 +709,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-            expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -744,8 +742,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-            expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -773,8 +771,8 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-            expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
               stage: "test",
               stage_idx: 1,
               name: "rspec",
@@ -920,7 +918,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            builds = config_processor.builds_for_stage_and_ref("test", "master")
+            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
           end
@@ -951,8 +949,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -970,8 +968,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
             paths: ["logs/", "binaries/"],
             untracked: true,
             key: 'key',
@@ -990,8 +988,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first[:options][:cache]).to eq(
             paths: ["test/"],
             untracked: false,
             key: 'local',
@@ -1019,8 +1017,8 @@ module Gitlab
 
           config_processor = Gitlab::Ci::YamlProcessor.new(config)
 
-          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).size).to eq(1)
+          expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "master")).first).to eq({
             stage: "test",
             stage_idx: 1,
             name: "rspec",
@@ -1057,7 +1055,7 @@ module Gitlab
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            builds = config_processor.builds_for_stage_and_ref("test", "master")
+            builds = config_processor.pipeline_stage_builds("test", pipeline(ref: "master"))
             expect(builds.size).to eq(1)
             expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
           end
@@ -1072,7 +1070,7 @@ module Gitlab
         end
 
         let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
-        let(:builds) { processor.builds_for_stage_and_ref('deploy', 'master') }
+        let(:builds) { processor.pipeline_stage_builds('deploy', pipeline(ref: 'master')) }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -1229,7 +1227,7 @@ module Gitlab
 
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.builds_for_stage_and_ref("test", "master") }
+        subject { config_processor.pipeline_stage_builds("test", pipeline(ref: "master")) }
 
         shared_examples 'hidden_job_handling' do
           it "doesn't create jobs that start with dot" do
@@ -1277,7 +1275,7 @@ module Gitlab
 
       describe "YAML Alias/Anchor" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
-        subject { config_processor.builds_for_stage_and_ref("build", "master") }
+        subject { config_processor.pipeline_stage_builds("build", pipeline(ref: "master")) }
 
         shared_examples 'job_templates_handling' do
           it "is correctly supported for jobs" do
@@ -1693,6 +1691,10 @@ EOT
             expect(Gitlab::Ci::YamlProcessor.validation_message(content)).to be_nil
           end
         end
+      end
+
+      def pipeline(**attributes)
+         build_stubbed(:ci_empty_pipeline, **attributes)
       end
     end
   end

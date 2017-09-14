@@ -22,26 +22,10 @@ module Gitlab
       end
 
 
-      # REFACTORING STUB, remove this method, used only in tests.
-      #
-      def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
-        pipeline_stage_builds(stage, ::Ci::Pipeline.new(ref: ref, source: source, tag: tag))
-      end
-
       def builds
         @jobs.map do |name, _|
           build_attributes(name)
         end
-      end
-
-      def stage_seeds(pipeline)
-        seeds = @stages.uniq.map do |stage|
-          builds = pipeline_stage_builds(stage, pipeline)
-
-          Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
-        end
-
-        seeds.compact
       end
 
       def build_attributes(name)
@@ -71,6 +55,32 @@ module Gitlab
           }.compact }
       end
 
+      def pipeline_stage_builds(stage, pipeline)
+        selected_jobs = @jobs.select do |_, job|
+          next unless job[:stage] == stage
+
+          only_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:only, {}))
+          except_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:except, {}))
+
+          only_specs.all? { |spec| spec.satisfied_by?(pipeline, path: @path) } &&
+            except_specs.none? { |spec| spec.satisfied_by?(pipeline, path: @path) }
+        end
+
+        selected_jobs.map { |_, job| build_attributes(job[:name]) }
+      end
+
+      def stage_seeds(pipeline)
+        seeds = @stages.uniq.map do |stage|
+          builds = pipeline_stage_builds(stage, pipeline)
+
+          Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
+        end
+
+        seeds.compact
+      end
+
       def self.validation_message(content)
         return 'Please provide content of .gitlab-ci.yml' if content.blank?
 
@@ -83,22 +93,6 @@ module Gitlab
       end
 
       private
-
-      def pipeline_stage_builds(stage, pipeline)
-        stage_jobs = @jobs.select do |_, job|
-          next unless job[:stage] == stage
-
-          only_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:only, {}))
-          except_specs = Gitlab::Ci::Build::Policy
-            .fabricate(job.fetch(:except, {}))
-
-          only_specs.all? { |spec| spec.satisfied_by?(pipeline, path: @path) } &&
-            except_specs.none? { |spec| spec.satisfied_by?(pipeline, path: @path) }
-        end
-
-        stage_jobs.map { |_, job| build_attributes(job[:name]) }
-      end
 
       def initial_parsing
         ##

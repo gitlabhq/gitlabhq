@@ -26,7 +26,7 @@ module Gitlab
 
           def matches_pattern?(pattern, pipeline)
             return true if pipeline.tag? && pattern == 'tags'
-            return true if !pipeline.tag? && pattern == 'branches'
+            return true if pipeline.branch? && pattern == 'branches'
             return true if source_to_pattern(pipeline.source) == pattern
 
             if pattern.first == "/" && pattern.last == "/"
