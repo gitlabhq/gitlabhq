@@ -36,9 +36,9 @@
       <div class="controls">
         <div class="transparent"></div>
         <div class="drag-track">
-          <div class="dragger" style="left: 0px"></div>
-          <div class="opaque"></div>
+          <div class="dragger"></div>
         </div>
+        <div class="opaque"></div>
       </div>
     </div>
   </div>
