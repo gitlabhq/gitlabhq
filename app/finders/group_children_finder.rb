@@ -38,7 +38,7 @@ class GroupChildrenFinder
   private
 
   def children
-    @children ||= subgroups + projects
+    @children ||= subgroups.with_route.includes(:route, :parent) + projects.with_route.includes(:route, :namespace)
   end
 
   def base_groups
@@ -64,7 +64,7 @@ class GroupChildrenFinder
              else
                base_groups
              end
-    groups.sort(params[:sort]).includes(:route)
+    groups.sort(params[:sort])
   end
 
   def base_projects
@@ -85,6 +85,6 @@ class GroupChildrenFinder
                else
                  base_projects
                end
-    projects.sort(params[:sort]).includes(:route, :namespace)
+    projects.sort(params[:sort])
   end
 end

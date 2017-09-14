@@ -300,22 +300,28 @@ describe GroupsController do
         let(:expected_queries_per_group) { 5 }
         let(:expected_queries_per_project) { 0 }
 
+        before do
+          # Create the group before anything so it doesn't get tracked by the
+          # query recorder
+          group
+        end
+
         def get_list
           get :children, id: group.to_param, format: :json
         end
 
         it 'queries the expected amount for a group row' do
-          control_count = ActiveRecord::QueryRecorder.new { get_list }.count
+          control = ActiveRecord::QueryRecorder.new { get_list }
           _new_group = create(:group, :public, parent: group)
 
-          expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
         end
 
         it 'queries the expected amount for a project row' do
-          control_count = ActiveRecord::QueryRecorder.new { get_list }.count
+          control = ActiveRecord::QueryRecorder.new { get_list }
           _new_project = create(:project, :public, namespace: group)
 
-          expect { get_list }.not_to exceed_query_limit(control_count + expected_queries_per_project)
+          expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project)
         end
 
         context 'when rendering hierarchies' do
@@ -326,41 +332,42 @@ describe GroupsController do
           it 'queries the expected amount when nested rows are rendered for a group' do
             matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
 
-            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+            control = ActiveRecord::QueryRecorder.new { get_filtered_list }
             nested_group = create(:group, :public, parent: public_subgroup)
             matched_group.update!(parent: nested_group)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
           end
 
           it 'queries the expected amount when a new group match is added' do
             create(:group, :public, parent: public_subgroup, name: 'filterme')
 
-            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+            control = ActiveRecord::QueryRecorder.new { get_filtered_list }
+
             create(:group, :public, parent: public_subgroup, name: 'filterme2')
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
           end
 
           it 'queries the expected amount when nested rows are rendered for a project' do
             matched_project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
 
-            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+            control = ActiveRecord::QueryRecorder.new { get_filtered_list }
 
             nested_group = create(:group, :public, parent: public_subgroup)
             matched_project.update!(namespace: nested_group)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_group)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
           end
 
           it 'queries the expected amount when a new project match is added' do
             create(:project, :public, namespace: public_subgroup, name: 'filterme')
 
-            control_count = ActiveRecord::QueryRecorder.new { get_filtered_list }.count
+            control = ActiveRecord::QueryRecorder.new { get_filtered_list }
 
             create(:project, :public, namespace: public_subgroup, name: 'filterme2')
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control_count + expected_queries_per_project)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project)
           end
         end
       end
