@@ -2,6 +2,10 @@ class FixProjectsWithoutProjectFeature < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    # Deletes corrupted project features
+    sql = "DELETE FROM project_features WHERE project_id IS NULL"
+    execute(sql)
+
     # Creates missing project features with private visibility
     sql =
       %Q{
@@ -16,7 +20,7 @@ class FixProjectsWithoutProjectFeature < ActiveRecord::Migration
           10 as snippets_access_level,
           projects.created_at,
           projects.updated_at
-          FROM "projects"
+          FROM projects
           LEFT OUTER JOIN project_features ON project_features.project_id = projects.id
           WHERE (project_features.id IS NULL)
       }

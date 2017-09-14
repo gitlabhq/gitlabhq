@@ -1113,7 +1113,7 @@ ActiveRecord::Schema.define(version: 20170913180600) do
   add_index "project_authorizations", ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
 
   create_table "project_features", force: :cascade do |t|
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
     t.integer "wiki_access_level"
