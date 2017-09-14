@@ -3,8 +3,6 @@
 @import "bootstrap/variables";
 
 $active-background: rgba(0, 0, 0, .04);
-$active-border: $indigo-500;
-$active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
@@ -210,7 +208,6 @@ $new-sidebar-collapsed-width: 50px;
         &:hover,
         &:focus {
           background: $active-background;
-          color: $active-color;
         }
       }
     }
@@ -310,7 +307,6 @@ $new-sidebar-collapsed-width: 50px;
       }
 
       .badge {
-        color: $active-color;
         font-weight: $gl-font-weight-bold;
       }
 
@@ -486,14 +482,4 @@ $new-sidebar-collapsed-width: 50px;
 
 .with-performance-bar .boards-list {
   height: calc(100vh - #{$new-navbar-height} - #{$performance-bar-height});
-}
-
-
-// Change color of all horizontal tabs to match the new indigo color
-.nav-links li.active a {
-  border-bottom-color: $active-border;
-
-  .badge {
-    font-weight: $gl-font-weight-bold;
-  }
 }
