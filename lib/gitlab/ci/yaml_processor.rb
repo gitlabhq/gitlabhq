@@ -89,13 +89,14 @@ module Gitlab
 
         builds.select do |build|
           job = @jobs[build.fetch(:name).to_sym]
-          has_kubernetes = pipeline.has_kubernetes_active?
-          only_kubernetes = job.dig(:only, :kubernetes)
-          except_kubernetes = job.dig(:except, :kubernetes)
 
-          [!only_kubernetes && !except_kubernetes,
-           only_kubernetes && has_kubernetes,
-           except_kubernetes && !has_kubernetes].any?
+          only_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:only, {}))
+          except_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:except, {}))
+
+          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
+            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
         end
       end
 

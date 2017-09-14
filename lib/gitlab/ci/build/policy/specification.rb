@@ -18,9 +18,6 @@ module Gitlab
           def satisfied_by?(pipeline, **metadata)
             raise NotImplementedError
           end
-
-          def self.fabricate_all(*specs)
-          end
         end
       end
     end
