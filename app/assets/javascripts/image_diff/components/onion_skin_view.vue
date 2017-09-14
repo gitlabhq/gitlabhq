@@ -14,6 +14,7 @@
         file,
         initDraggable: gl.ImageFile.prototype.initDraggable,
       };
+      // TODO: Create tech debt issue for refactoring gl.ImageFile
       gl.ImageFile.prototype.views['onion-skin'].call(context);
     },
   };
