@@ -4,7 +4,7 @@
 **not recommended for production use**.
 
 This is a step-by-step guide to deploying a project hosted on GitLab.com to
-Google Cloud, using Auto DevOps.
+Google Cloud, using [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/).
 
 We made a minimal [Ruby
 application](https://gitlab.com/gitlab-examples/minimal-ruby-app) to use as an
