@@ -3,6 +3,7 @@ module EE
     module Changes
       def audit_changes(column, options = {})
         column = options[:column] || column
+        @model = options[:model]
 
         return unless changed?(column)
 
@@ -12,7 +13,7 @@ module EE
       protected
 
       def model
-        raise NotImplementedError, "#{self} does not implement #{__method__}"
+        @model
       end
 
       private
@@ -38,8 +39,8 @@ module EE
       end
 
       def audit_event(options)
-        ::AuditEventService.new(@current_user, model, options).
-          for_changes.security_event
+        ::AuditEventService.new(@current_user, model, options)
+          .for_changes.security_event
       end
     end
   end

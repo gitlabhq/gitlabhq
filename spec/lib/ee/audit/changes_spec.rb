@@ -15,7 +15,7 @@ describe EE::Audit::Changes do
       it 'does not call the audit event service' do
         user.update!(name: 'new name')
 
-        expect{ foo_instance.audit_changes(:email) }.not_to change { SecurityEvent.count }
+        expect { foo_instance.audit_changes(:email) }.not_to change { SecurityEvent.count }
       end
     end
 
@@ -23,7 +23,7 @@ describe EE::Audit::Changes do
       it 'calls the audit event service' do
         user.update!(name: 'new name')
 
-        expect{ foo_instance.audit_changes(:name) }.to change { SecurityEvent.count }.by(1)
+        expect { foo_instance.audit_changes(:name) }.to change { SecurityEvent.count }.by(1)
       end
     end
   end
