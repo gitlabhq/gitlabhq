@@ -82,7 +82,7 @@ stages:
   <<: *pull-cache
   stage: test
   script:
-    - export EVENT_PROF=sidekiq.inline
+    - export FDOC=1
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
