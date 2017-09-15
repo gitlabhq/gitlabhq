@@ -1,7 +1,6 @@
-
-import Clipboard from 'vendor/clipboard';
-
 <script>
+  import Clipboard from 'vendor/clipboard';
+
   export default {
     name: 'clipboardButton',
     props: {
