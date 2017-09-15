@@ -149,13 +149,11 @@
       label: Average
       unit: MB
   - title: "CPU Utilization"
-    y_label: "CPU Utilization (%)"
+    y_label: "CPU Utilization (Cores)"
     required_metrics:
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) by (cpu)  * 100'
+    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m]))'
       label: CPU
-      unit: "%"
-      series:
-        - label: cpu
+      unit: "cores"
