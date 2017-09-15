@@ -66,7 +66,7 @@
       :added="images.added"
       :deleted="images.deleted"
     />
-    <div class="btn-group">
+    <div class="btn-group btn-group-gray-link">
       <button
         class="btn btn-link"
         :class="[{ active: isCurrentViewTwoUp }]"
