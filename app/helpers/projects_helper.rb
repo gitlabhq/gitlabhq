@@ -320,7 +320,7 @@ module ProjectsHelper
 
   def git_user_name
     if current_user
-      current_user.name
+      current_user.name.gsub('"', '\"')
     else
       _("Your name")
     end

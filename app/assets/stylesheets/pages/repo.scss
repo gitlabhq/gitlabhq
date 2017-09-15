@@ -71,6 +71,11 @@
     height: 100%;
 
     .monaco-editor.vs {
+      .current-line {
+        border: none;
+        background: $well-light-border;
+      }
+
       .line-numbers {
         cursor: pointer;
 
@@ -81,6 +86,13 @@
 
       .cursor {
         display: none !important;
+      }
+    }
+
+    .blob-no-preview {
+      .vertical-center {
+        justify-content: center;
+        width: 100%;
       }
     }
 
@@ -103,7 +115,7 @@
       overflow: auto;
 
       > div,
-      .file-content {
+      .file-content:not(.wiki) {
         display: flex;
       }
 

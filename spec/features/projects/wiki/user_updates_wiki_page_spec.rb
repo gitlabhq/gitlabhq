@@ -58,18 +58,8 @@ describe 'User updates wiki page' do
   end
 
   context 'when wiki is not empty' do
-    # This facory call is shorter:
-    #
-    # create(:wiki_page, wiki: create(:project, namespace: user.namespace).wiki, attrs: { title: 'home', content: 'Home page' })
-    #
-    # But it always fails with this:
-    #
-    # Failure/Error: click_link('Edit')
-    # Capybara::ElementNotFound:
-    #   Unable to find visible link "Edit"
-
-    let(:project) { create(:project, namespace: user.namespace) }
-    let!(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: 'Home page' }) }
+    let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
+    let!(:wiki_page) { create(:wiki_page, wiki: project_wiki, attrs: { title: 'home', content: 'Home page' }) }
 
     before do
       visit(project_wikis_path(project))

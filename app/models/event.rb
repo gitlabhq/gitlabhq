@@ -241,13 +241,7 @@ class Event < ActiveRecord::Base
 
   def action_name
     if push?
-      if new_ref?
-        "pushed new"
-      elsif rm_ref?
-        "deleted"
-      else
-        "pushed to"
-      end
+      push_action_name
     elsif closed?
       "closed"
     elsif merged?
@@ -263,11 +257,7 @@ class Event < ActiveRecord::Base
     elsif commented?
       "commented on"
     elsif created_project?
-      if project.external_import?
-        "imported"
-      else
-        "created"
-      end
+      created_project_action_name
     else
       "opened"
     end
@@ -359,6 +349,24 @@ class Event < ActiveRecord::Base
   end
 
   private
+
+  def push_action_name
+    if new_ref?
+      "pushed new"
+    elsif rm_ref?
+      "deleted"
+    else
+      "pushed to"
+    end
+  end
+
+  def created_project_action_name
+    if project.external_import?
+      "imported"
+    else
+      "created"
+    end
+  end
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
