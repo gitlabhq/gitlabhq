@@ -145,6 +145,13 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
+## Fast-forward merge requests
+
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+[Read more about fast-forward merge requests.](fast_forward_merge.md)
+
 ## Merge request approvals
 
 > Included in [GitLab Enterprise Edition Starter][products].
@@ -166,15 +173,6 @@ succeeded, the target branch build will also succeed after merging.
 
 Navigate to a project's settings, select the **Merge commit with semi-linear
 history** option under **Merge Requests: Merge method** and save your changes.
-
-## Fast-forward merge requests
-
-> Included in [GitLab Enterprise Edition Starter][products].
-
-If you prefer a linear Git history and a way to accept merge requests without
-creating merge commits, you can configure this on a per-project basis.
-
-[Read more about fast-forward merge requests.](fast_forward_merge.md)
 
 ## Code Quality reports
 
