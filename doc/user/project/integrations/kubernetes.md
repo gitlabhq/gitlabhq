@@ -96,10 +96,8 @@ the need to leave GitLab.
 
 ### Kubernetes monitoring
 
-GitLab has support for automatically detecting and monitoring Kubernetes metrics.
-Kubernetes exposes Node level metrics out of the box via the built-in
-[Prometheus metrics support in cAdvisor](https://github.com/google/cadvisor).
-No additional services or exporters are needed.
+Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
+NGINX ingress is also supported.
 
 [> Read more about Kubernetes monitoring](./prometheus_library/kubernetes.md)
 
@@ -118,7 +116,7 @@ with no configuration, including: **Auto Build**, **Auto Test**, **Auto Code Qua
 
 NOTE: **Note:**
 Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
-to use terminals. Support is currently limited to the first container in the
+to use terminals. Support is limited to the first container in the
 first pod of your environment.
 
 When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)

@@ -3,6 +3,10 @@
 
 GitLab has support for automatically detecting and monitoring HAProxy. This is provided by leveraging the [HAProxy Exporter](https://github.com/prometheus/haproxy_exporter), which translates HAProxy statistics into a Prometheus readable form.
 
+## Requirements
+
+The [Prometheus service](../prometheus/index.md) must be enabled.
+
 ## Metrics supported
 
 | Name | Query |
