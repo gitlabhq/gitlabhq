@@ -35,7 +35,8 @@ Keep in mind that:
 - Secondaries talk to primary to get user data for logins (API), to
   clone/pull from repositories (SSH) and to retrieve LFS Objects and Attachments 
   (HTTPS + JWT).
-- Since 10.0 Primary no longer talks to secondaries to notify for changes (API).
+- Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to 
+  secondaries to notify for changes (API).
 
 ## Use-cases
 
@@ -88,13 +89,13 @@ updated on the disk of the local instance (for example, download new assets,
 fetch new LFS Objects or fetch changes from a repository that has recently been
 updated).
 
-Because the replicated instance is read-only we need this additional instance
+Because the replicated instance is read-only, we need this additional instance
 per secondary location.
 
 ### Geo Log Cursor
 
 This daemon reads a log of events replicated by the primary node to the secondary
-database and updates the Geo Tracking Database with changes that needs to be
+database and updates the Geo Tracking Database with changes that need to be
 executed.
 
 When something is marked to be updated in the tracking database, asynchronous
@@ -103,7 +104,8 @@ update the state.
 
 This new architecture allows us to be resilient to connectivity issues between the
 nodes. It doesn't matter if it was just a few minutes or days. The secondary
-instance will be able to replay all the events and get in sync again.
+instance will be able to replay all the events in the correct order and get in 
+sync again.
 
 ## Setup instructions
 
