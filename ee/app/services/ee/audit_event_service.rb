@@ -57,15 +57,15 @@ module EE
 
     def for_changes
       @details =
-          {
-              change: @details[:as] || @details[:column],
-              from: @details[:from],
-              to: @details[:to],
-              author_name: @author.name,
-              target_id: @entity.id,
-              target_type: @entity.class,
-              target_details: @entity.name
-          }
+        {
+            change: @details[:as] || @details[:column],
+            from: @details[:from],
+            to: @details[:to],
+            author_name: @author.name,
+            target_id: @entity.id,
+            target_type: @entity.class,
+            target_details: @entity.name
+        }
       self
     end
 
@@ -110,7 +110,7 @@ module EE
     def method_missing(method_sym, *arguments, &block)
       super(method_sym, *arguments, &block) unless respond_to?(method_sym)
 
-      for_custom_model(method_sym.to_s.slice('for_'), *arguments)
+      for_custom_model(method_sym.to_s.split('for_').last, *arguments)
     end
 
     def respond_to?(method, include_private = false)
@@ -125,24 +125,24 @@ module EE
       model_class = model.camelize
 
       @details =
-          case action
-            when :destroy
-              {
-                  remove: model,
-                  author_name: author_name,
-                  target_id: key_title,
-                  target_type: model_class,
-                  target_details: key_title
-              }
-            when :create
-              {
-                  add: model,
-                  author_name: author_name,
-                  target_id: key_title,
-                  target_type: model_class,
-                  target_details: key_title
-              }
-          end
+        case action
+        when :destroy
+          {
+              remove: model,
+              author_name: author_name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        when :create
+          {
+              add: model,
+              author_name: author_name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        end
 
       self
     end
