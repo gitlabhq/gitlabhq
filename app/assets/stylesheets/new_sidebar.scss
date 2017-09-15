@@ -442,7 +442,6 @@ $new-sidebar-collapsed-width: 50px;
   padding: 6px 16px;
   margin: 0 16px 0 -15px;
   height: 46px;
-  border-right: 1px solid $gl-text-color-quaternary;
 
   i {
     font-size: 20px;
@@ -451,8 +450,8 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
-    height: 16px;
-    padding: 0 16px;
+    position: absolute;
+    top: 2px;
 
     i {
       font-size: 18px;
