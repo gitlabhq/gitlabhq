@@ -156,6 +156,18 @@ class Notify < BaseMailer
     mail_thread(model, headers)
   end
 
+  def mail_answer_note_thread(model, note, headers = {})
+    headers['Message-ID'] = message_id(note)
+    headers['In-Reply-To'] = message_id(note.replies_to)
+    headers['References'] = message_id(model)
+
+    headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
+
+    headers[:subject]&.prepend('Re: ')
+
+    mail_thread(model, headers)
+  end
+
   def reply_key
     @reply_key ||= SentNotification.reply_key
   end

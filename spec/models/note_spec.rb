@@ -756,6 +756,31 @@ describe Note do
     end
   end
 
+  describe '#replies_to' do
+    context 'when part of a discussion' do
+      let(:note) { create(:discussion_note_on_issue) }
+
+      it 'returns noteable when there are not earlier notes in the discussion' do
+        expect(note.replies_to).to eq(note.noteable)
+      end
+
+      it 'returns previous note in discussion' do
+        reply = create(:discussion_note_on_issue, in_reply_to: note)
+
+        expect(reply.replies_to).to eq(note)
+      end
+    end
+
+    context 'when not part of a discussion' do
+      subject { create(:note) }
+      let(:note) { create(:note, in_reply_to: subject) }
+
+      it 'returns the noteable' do
+        expect(note.replies_to).to eq(note.noteable)
+      end
+    end
+  end
+
   describe 'expiring ETag cache' do
     let(:note) { build(:note_on_issue) }
 
