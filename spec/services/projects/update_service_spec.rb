@@ -163,7 +163,7 @@ describe Projects::UpdateService, '#execute' do
       result = update_project(project, admin, path: 'existing')
 
       expect(result).to include(status: :error)
-      expect(result[:message]).to match('Project could not be updated!')
+      expect(result[:message]).to match('There is already a repository with that name on disk')
       expect(project).not_to be_valid
       expect(project.errors.messages).to have_key(:base)
       expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
