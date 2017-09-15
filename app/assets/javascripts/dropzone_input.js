@@ -75,7 +75,7 @@ window.DropzoneInput = (function() {
 
         let uploadMarkdown = response.link.markdown;
         if (header.width && header.height) {
-          uploadMarkdown = uploadMarkdown.replace(response.link.url, `${response.link.url}?wi=${header.width}&he=${header.height}`);
+          uploadMarkdown = uploadMarkdown.replace(response.link.url, `${response.link.url}?w=${header.width}&h=${header.height}`);
         }
         pasteText(uploadMarkdown, shouldPad);
 

@@ -7,15 +7,16 @@ module Banzai
         doc.xpath('descendant-or-self::img').each do |img|
           img['class'] ||= '' << 'lazy'
           img['data-src'] = img['src']
-          if img['src'].include?('?wi=')
+          if img['src'].include?('?w=') && img['src'].include?('&h=')
             uri = URI.parse(img['src'])
-            sizeParameters = URI.decode_www_form(uri.query).to_h
+            sizeParameters = CGI.parse(img['src'])
             
-            img['width'] = sizeParameters['wi']
-            img['height'] = sizeParameters['he']
+            img_width = sizeParameters['w'].to_i
+            img_height = sizeParameters['h'].to_i
 
-            img_width = sizeParameters['wi'].to_i
-            img_height = sizeParameters['he'].to_i
+            img['width'] = img_width
+            img['height'] = img_height
+            
             if img_width > img_height
               aspect = img_height / (img_width * 0.01)
               img['style'] = '' << "height:0;padding-bottom:#{aspect}%"
