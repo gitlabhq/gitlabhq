@@ -507,7 +507,7 @@ module SystemNoteService
   # Returns an Array of Strings
   def new_commit_summary(new_commits)
     new_commits.collect do |commit|
-      "* #{commit.short_id} - #{escape_html(commit.title)}"
+      "* #{commit.short_id} - #{strip_html_tags(commit.title)}"
     end
   end
 
@@ -658,8 +658,8 @@ module SystemNoteService
     "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
   end
 
-  def escape_html(text)
-    Rack::Utils.escape_html(text)
+  def strip_html_tags(text)
+    ActionController::Base.helpers.strip_tags(text)
   end
 
   def url_helpers
