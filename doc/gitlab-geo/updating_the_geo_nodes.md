@@ -10,7 +10,9 @@ all you need to do is update GitLab itself:
 
 1. Log into each node (primary and secondaries)
 1. [Update GitLab][update]
-1. Test primary and secondary nodes, and check version in each.
+1. [Update tracking database on secondary node](#update-tracking-database-on-secondary-node) when
+   the tracking database is enabled.
+1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
 ## Special update notes for 9.0.x
 
@@ -149,68 +151,18 @@ everything is working correctly:
 1. Test the data replication by pushing code to the primary and see if it
    is received by the secondaries
 
-## Enable tracking database
+## Update tracking database on secondary node
 
-NOTE: This step is required only if you want to enable the new Disaster
-Recovery feature in Alpha shipped in GitLab 9.0.
+After updating a secondary node, you might need to run migrations on
+the tracking database. The tracking database was added in GitLab 9.1,
+and it is required since 10.0.
 
-Geo secondary nodes now can keep track of replication status and recover
-automatically from some replication issues. To get this feature enabled,
-you need to activate the Tracking Database.
-
-> **IMPORTANT:** For this feature to work correctly, all nodes must be
-with their clocks synchronized. It is not required for all nodes to be set to
-the same time zone, but when the respective times are converted to UTC time,
-the clocks must be synchronized to within 60 seconds of each other.
-
-1. Setup clock synchronization service in your Linux distro.
-   This can easily be done via any NTP-compatible daemon. For example,
-   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```
-    geo_postgresql['enable'] = true
-    ```
-
-1. Create `database_geo.yml` with the information of your secondary PostgreSQL
-   database.  Note that GitLab will set up another database instance separate
-   from the primary, since this is where the secondary will track its internal
-   state:
-
-    ```
-    sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
-    ```
-
-1. Edit the content of `database_geo.yml` in `production:` like the example below:
-    
-   ```yaml
-   #
-   # PRODUCTION
-   #
-   production:
-     adapter: postgresql
-     encoding: unicode
-     database: gitlabhq_geo_production
-     pool: 10
-     username: gitlab_geo
-     # password:
-     host: /var/opt/gitlab/geo-postgresql
-     port: 5431
-    
-   ```
-
-1. Reconfigure GitLab:
-
-    ```
-    sudo gitlab-ctl start
-    sudo gitlab-ctl reconfigure
-    ```
-
-1. Set up the Geo tracking database:
+1. Run database migrations on tracking database
 
     ```
     sudo gitlab-rake geo:db:migrate
     ```
+
+1. Repeat this step for every secondary node
 
 [update]: ../update/README.md

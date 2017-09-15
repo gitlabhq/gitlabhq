@@ -1,6 +1,7 @@
 # GitLab Geo
 
-NOTE: GitLab Geo is in ALPHA development. It is considered experimental and
+>**Note:**
+GitLab Geo is in **Beta** development. It is considered experimental and
 not production-ready. It will undergo significant changes over the next year,
 and there is significant chance of data loss. For the latest updates, check the
 [meta issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/846).
@@ -32,9 +33,10 @@ and the replicated read-only ones as **secondaries**.
 
 Keep in mind that:
 
-- Secondaries talk to primary to get user data for logins (API), and to
-  clone/pull from repositories (HTTP(S)/SSH).
-- Primary talks to secondaries to notify for changes (API).
+- Secondaries talk to primary to authorize user logins (OAuth),
+  to synchronize data (database replication), and to clone/pull from
+  repositories (SSH).
+- Primary talks to secondaries to get their status (API).
 
 ## Use-cases
 

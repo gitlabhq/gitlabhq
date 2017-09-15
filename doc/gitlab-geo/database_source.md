@@ -8,7 +8,7 @@ using the Omnibus GitLab packages, follow the
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the secondary Geo node. Do not login or set up anything else
    in the secondary node for the moment.
-1. **Setup the database replication (`primary (read-write) <-> secondary (read-only)` topology).**
+1. **Setup the database replication topology:** `primary (read-write) <-> secondary (read-only)`
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.
 1. [Follow the after setup steps](after_setup.md).
@@ -25,12 +25,17 @@ in your testing/production environment.
 ## PostgreSQL replication
 
 The GitLab primary node where the write operations happen will connect to
-`primary` database server, and the secondary ones which are read-only will
-connect to `secondary` database servers (which are read-only too).
+primary database server, and the secondary ones which are read-only will
+connect to secondary database servers (which are read-only too).
 
 >**Note:**
-In many databases documentation you will see `primary` being references as `master`
-and `secondary` as either `slave` or `standby` server (read-only).
+In many databases documentation you will see "primary" being referenced as "master"
+and "secondary" as either "slave" or "standby" server (read-only).
+
+Since GitLab 9.4: We recommend using [PostgreSQL replication
+slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
+to ensure the primary retains all the data necessary for the secondaries to
+recover. See below for more details.
 
 ### Prerequisites
 
@@ -41,13 +46,15 @@ The following guide assumes that:
   PostgreSQL version for Geo.
 - You have a primary server already set up (the GitLab server you are
   replicating from), and you have a new secondary server set up on the same OS
-  and PostgreSQL version.
+  and PostgreSQL version. Also make sure the GitLab version is the same on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
-  secondary's IP will be `5.6.7.8`.
+  secondary's IP will be `5.6.7.8`. Note that the primary and secondary servers
+  **must** be able to communicate over these addresses. These IP addresses can either
+  be public or private.
 
 ### Step 1. Configure the primary server
 
-1. SSH into your database **primary** server and login as root:
+1. SSH into your GitLab **primary** server and login as root:
 
     ```
     sudo -i
@@ -125,10 +132,11 @@ The following guide assumes that:
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
+1. Continue to [set up the secondary server](#step-2-configure-the-secondary-server).
 
 ### Step 2. Configure the secondary server
 
-1. SSH into your database **secondary** server and login as root:
+1. SSH into your GitLab **secondary** server and login as root:
 
     ```
     sudo -i
@@ -151,7 +159,7 @@ The following guide assumes that:
     ```
 
 1. Edit `postgresql.conf` to configure the secondary for streaming replication
-   (for Debian/Ubuntu that would be `/etc/postgresql/9.x/main/postgresql.conf`):
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.*/main/postgresql.conf`):
 
     ```bash
     wal_level = hot_standby
@@ -162,7 +170,61 @@ The following guide assumes that:
     ```
 
 1. Restart PostgreSQL for the changes to take effect.
-1. Continue to [initiate the replication process](#step-3-initiate-the-replication-process).
+
+1. Optional since GitLab 9.1, and required for GitLab 10.0 or higher:
+   [Enable tracking database on the secondary server](#enable-tracking-database-on-the-secondary-server)
+
+1. Otherwise, continue to [initiate the replication process](#step-3-initiate-the-replication-process).
+
+#### Enable tracking database on the secondary server
+
+Geo secondary nodes use a tracking database to keep track of replication status and recover
+automatically from some replication issues.
+
+It is added in GitLab 9.1, and since GitLab 10.0 it is required.
+
+> **IMPORTANT:** For this feature to work correctly, all nodes must be
+with their clocks synchronized. It is not required for all nodes to be set to
+the same time zone, but when the respective times are converted to UTC time,
+the clocks must be synchronized to within 60 seconds of each other.
+
+1. Setup clock synchronization service in your Linux distro.
+   This can easily be done via any NTP-compatible daemon. For example,
+   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
+
+1. Create `database_geo.yml` with the information of your secondary PostgreSQL
+   database.  Note that GitLab will set up another database instance separate
+   from the primary, since this is where the secondary will track its internal
+   state:
+
+    ```
+    sudo cp /home/git/gitlab/config/database_geo.yml.postgresql /home/git/gitlab/config/database_geo.yml
+    ```
+
+1. Edit the content of `database_geo.yml` in `production:` like the example below:
+
+     ```yaml
+     #
+     # PRODUCTION
+     #
+     production:
+       adapter: postgresql
+       encoding: unicode
+       database: gitlabhq_geo_production
+       pool: 10
+       username: gitlab_geo
+       # password:
+       host: /var/opt/gitlab/geo-postgresql
+     ```
+
+1. Create the database `gitlabhq_geo_production` in that PostgreSQL
+   instance.
+
+1. Set up the Geo tracking database:
+
+    ```
+    bundle exec rake geo:db:migrate
+    ```
 
 ### Step 3. Initiate the replication process
 
