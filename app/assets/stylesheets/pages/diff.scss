@@ -601,8 +601,7 @@
 
 .frame.click-to-comment {
   position: relative;
-  // TODO: Use custom image cursor
-  cursor: wait;
+  cursor: url(icon_image_comment.svg), auto;
 
   .badge {
     position: absolute;
