@@ -55,19 +55,6 @@ import './board_new_form';
       showDelete() {
         return this.boards.length > 1;
       },
-      title() {
-        if (this.currentPage === 'edit') {
-          return 'Edit board name';
-        } else if (this.currentPage === 'milestone') {
-          return 'Edit board milestone';
-        } else if (this.currentPage === 'new') {
-          return 'Create new board';
-        } else if (this.currentPage === 'delete') {
-          return 'Delete board';
-        }
-
-        return 'Go to a board';
-      },
     },
     methods: {
       showPage(page) {

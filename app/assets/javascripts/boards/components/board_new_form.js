@@ -48,14 +48,18 @@ import extraMilestones from '../mixins/extra_milestones';
 
         return 'Save';
       },
-      milestoneToggleText() {
-        return this.board.milestone.title || 'Milestone';
-      },
-      submitDisabled() {
-        if (this.currentPage !== 'milestone') {
-          return this.board.name === '';
+      title() {
+        if (this.currentPage === 'new') {
+          return 'Create new board';
         }
 
+        // TODO check for readonly
+        return 'Edit board';
+      },
+      milestoneToggleText() {
+        return this.board.milestone ? this.board.milestone.title : 'Milestone';
+      },
+      submitDisabled() {
         return false;
       },
     },
@@ -83,10 +87,10 @@ import extraMilestones from '../mixins/extra_milestones';
             if (this.currentBoard && this.currentPage !== 'new') {
               this.currentBoard.name = this.board.name;
 
-              if (this.currentPage === 'milestone') {
-                // We reload the page to make sure the store & state of the app are correct
-                this.refreshPage();
-              }
+              // We reload the page to make sure the store & state of the app are correct
+              this.refreshPage();
+
+              $('#edit-board-modal').modal('hide');
 
               // Enable the button thanks to our jQuery disabling it
               $(this.$refs.submitBtn).enable();
