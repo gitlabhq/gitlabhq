@@ -106,6 +106,8 @@ module API
       private
 
       def route_authentication_setting
+        return {} unless respond_to?(:route_setting)
+
         route_setting(:authentication) || {}
       end
 
