@@ -3,7 +3,6 @@ export function validator(value) {
 }
 
 export const mixin = {
-  // TODO: Get feedback on whether mixin props is a good idea or not
   props: {
     added: {
       type: Object,

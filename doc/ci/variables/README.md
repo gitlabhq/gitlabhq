@@ -158,17 +158,17 @@ script:
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
 
-GitLab CI allows you to define per-project or per-group **secret variables**
-that are set in the build environment. The secret variables are stored out of
-the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
-making them available in the build environment. It's the recommended method to
-use for storing things like passwords, secret keys and credentials.
+GitLab CI allows you to define per-project or per-group secret variables
+that are set in the pipeline environment. The secret variables are stored out of
+the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available during a pipeline run. It's the recommended method to
+use for storing things like passwords, SSH keys and credentials.
 
 Project-level secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 
 Likewise, group-level secret variables can be added by going to your group's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 Any variables of [subgroups] will be inherited recursively.
 
 Once you set them, they will be available for all subsequent pipelines. You can also
@@ -185,8 +185,8 @@ protected, it would only be securely passed to pipelines running on the
 protected variables.
 
 Protected variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
-**Secret variables**, and check *Protected*.
+**Settings > CI/CD**, then finding the section called
+**Secret variables**, and check "Protected".
 
 Once you set them, they will be available for all subsequent pipelines.
 

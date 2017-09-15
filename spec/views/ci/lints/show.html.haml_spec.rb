@@ -4,7 +4,7 @@ describe 'ci/lints/show' do
   include Devise::Test::ControllerHelpers
 
   describe 'XSS protection' do
-    let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }
+    let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
     before do
       assign(:status, true)
       assign(:builds, config_processor.builds)
@@ -59,7 +59,7 @@ describe 'ci/lints/show' do
     }
   end
 
-  let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }
+  let(:config_processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(content)) }
 
   context 'when the content is valid' do
     before do

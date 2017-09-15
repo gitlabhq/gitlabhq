@@ -1,10 +1,6 @@
 import Vue from 'vue';
 import imageDiffApp from './components/image_diff_app.vue';
 
-// TODO: not sure if this is a good idea or not,
-// need to instantiate multiple image vue diff
-// apps based on number of image diffs
-
 document.querySelectorAll('.js-vue-image-diff').forEach(
   () => new Vue({
     el: '.js-vue-image-diff',

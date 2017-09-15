@@ -1,0 +1,6 @@
+---
+title: Fix Pipeline Triggers to show triggered label and predefined variables (e.g.
+  CI_PIPELINE_TRIGGERED)
+merge_request: 14244
+author:
+type: fixed
