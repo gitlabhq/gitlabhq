@@ -34,12 +34,12 @@ export const isInIssuePage = () => {
 };
 window.gl.utils.isInIssuePage = isInGroupsPage;
 
-window.gl.utils.ajaxGet = url => $.ajax({
+export const ajaxGet = url => $.ajax({
   type: 'GET',
   url,
   dataType: 'script',
 });
-export const ajaxGet = window.gl.utils.ajaxGet;
+window.gl.utils.ajaxGet = ajaxGet;
 
 export const ajaxPost = (url, data) => $.ajax({
   type: 'POST',
@@ -48,10 +48,7 @@ export const ajaxPost = (url, data) => $.ajax({
 });
 window.gl.utils.ajaxPost = ajaxPost;
 
-// TODO: This function seems not to be used anywhere
-// window.gl.utils.extractLast = term => this.split(term).pop();
-
-export const rstrip = function rstrip(val) {
+export const rstrip = (val) => {
   if (val) {
     return val.replace(/\s+$/, '');
   }
@@ -68,7 +65,8 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
   if (rstrip(field.val()) === '') {
     closestSubmit.disable();
   }
-  return field.on(eventName, () => {
+  // eslint-disable-next-line func-names
+  return field.on(eventName, function () {
     if (rstrip($(this).val()) === '') {
       return closestSubmit.disable();
     }
