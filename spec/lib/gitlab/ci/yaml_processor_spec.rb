@@ -1694,7 +1694,7 @@ EOT
       end
 
       def pipeline(**attributes)
-         build_stubbed(:ci_empty_pipeline, **attributes)
+        build_stubbed(:ci_empty_pipeline, **attributes)
       end
     end
   end

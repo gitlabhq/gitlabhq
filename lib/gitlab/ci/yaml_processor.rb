@@ -21,7 +21,6 @@ module Gitlab
         raise ValidationError, e.message
       end
 
-
       def builds
         @jobs.map do |name, _|
           build_attributes(name)
