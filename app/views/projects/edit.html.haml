@@ -97,7 +97,7 @@
       = render 'shared/promotions/promote_mr_features'
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
-        = render 'merge_request_settings', form: f
+        = render 'projects/ee/merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
   = render 'projects/ee/service_desk_settings'
