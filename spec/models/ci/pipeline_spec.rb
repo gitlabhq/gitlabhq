@@ -1444,6 +1444,26 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#latest_builds_with_artifacts' do
+    let!(:pipeline) { create(:ci_pipeline, :success) }
+
+    let!(:build) do
+      create(:ci_build, :success, :artifacts, pipeline: pipeline)
+    end
+
+    it 'returns the latest builds' do
+      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    end
+
+    it 'memoizes the returned relation' do
+      query_count = ActiveRecord::QueryRecorder
+        .new { 2.times { pipeline.latest_builds_with_artifacts.to_a } }
+        .count
+
+      expect(query_count).to eq(1)
+    end
+  end
+
   describe '#codeclimate_artifact' do
     context 'has codequality job' do
       let!(:build) do
