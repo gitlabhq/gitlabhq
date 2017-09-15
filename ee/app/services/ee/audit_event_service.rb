@@ -80,7 +80,7 @@ module EE
     end
 
     def add_security_event_admin_details!
-      @details.merge!(ip_address: @author.current_sign_in_ip,
+      @details.merge!(ip_address: ip_address,
                       entity_path: @entity.full_path)
     end
 
@@ -97,11 +97,13 @@ module EE
     def unauth_security_event
       return unless audit_events_enabled?
 
+
       @details.delete(:ip_address) unless admin_audit_log_enabled?
+      @details[:entity_path] = @entity&.full_path
 
       SecurityEvent.create(
-        author_id: -1,
-        entity_id: -1,
+        author_id: @author&.id || -1,
+        entity_id: @entity&.id || -1,
         entity_type: 'User',
         details: @details
       )
@@ -121,30 +123,43 @@ module EE
 
     def for_custom_model(model, key_title)
       action = @details[:action]
-      author_name = @author.name
       model_class = model.camelize
+      custom_message = @details[:custom_message]
 
       @details =
-        case action
-        when :destroy
-          {
-              remove: model,
-              author_name: author_name,
-              target_id: key_title,
-              target_type: model_class,
-              target_details: key_title
-          }
-        when :create
-          {
-              add: model,
-              author_name: author_name,
-              target_id: key_title,
-              target_type: model_class,
-              target_details: key_title
-          }
-        end
+          case action
+          when :destroy
+            {
+                remove: model,
+                author_name: @author.name,
+                target_id: key_title,
+                target_type: model_class,
+                target_details: key_title
+            }
+          when :create
+            {
+                add: model,
+                author_name: @author.name,
+                target_id: key_title,
+                target_type: model_class,
+                target_details: key_title
+            }
+          when :custom
+            {
+                custom_message: custom_message,
+                author_name: @author&.name,
+                target_id: key_title,
+                target_type: model_class,
+                target_details: key_title,
+                ip_address: @details[:ip_address]
+            }
+          end
 
       self
+    end
+
+    def ip_address
+      @author&.current_sign_in_ip || @details[:ip_address]
     end
   end
 end
