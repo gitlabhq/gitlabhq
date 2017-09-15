@@ -25,6 +25,10 @@ class IssuableFinder
 
   NONE = '0'.freeze
 
+  SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
+  ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
+  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
+
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
