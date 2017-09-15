@@ -1,0 +1,5 @@
+---
+title: "Disallow NULL values for environments.project_id"
+merge_request:
+author:
+type: other

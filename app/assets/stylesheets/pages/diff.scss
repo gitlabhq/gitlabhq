@@ -674,8 +674,16 @@
     padding-top: 8px;
     padding-bottom: 8px;
   }
+
+  .diff-changed-file {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .diff-file-changes-path {
-  @include str-truncated(78%);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -13,6 +13,7 @@ $sidebar-breakpoint: 1024px;
 $darken-normal-factor: 7%;
 $darken-dark-factor: 10%;
 $darken-border-factor: 5%;
+$darken-border-dashed-factor: 25%;
 
 $white-light: #fff;
 $white-normal: #f0f0f0;
@@ -134,6 +135,7 @@ $border-white-normal: darken($white-normal, $darken-border-factor);
 
 $border-gray-light: darken($gray-light, $darken-border-factor);
 $border-gray-normal: darken($gray-normal, $darken-border-factor);
+$border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
 $border-gray-dark: darken($white-normal, $darken-border-factor);
 
 /*

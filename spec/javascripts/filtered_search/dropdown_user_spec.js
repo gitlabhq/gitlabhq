@@ -10,6 +10,7 @@ describe('Dropdown User', () => {
     beforeEach(() => {
       spyOn(gl.DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
+      spyOn(gl.DropdownUser.prototype, 'getGroupId').and.callFake(() => {});
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
       dropdownUser = new gl.DropdownUser({
@@ -38,6 +39,7 @@ describe('Dropdown User', () => {
     beforeEach(() => {
       spyOn(gl.DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
+      spyOn(gl.DropdownUser.prototype, 'getGroupId').and.callFake(() => {});
     });
 
     it('should return endpoint', () => {

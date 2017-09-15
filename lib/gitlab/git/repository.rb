@@ -610,43 +610,43 @@ module Gitlab
         # TODO: implement this method
       end
 
-      def add_branch(branch_name, committer:, target:)
+      def add_branch(branch_name, user:, target:)
         target_object = Ref.dereference_object(lookup(target))
         raise InvalidRef.new("target not found: #{target}") unless target_object
 
-        OperationService.new(committer, self).add_branch(branch_name, target_object.oid)
+        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
         find_branch(branch_name)
       rescue Rugged::ReferenceError => ex
         raise InvalidRef, ex
       end
 
-      def add_tag(tag_name, committer:, target:, message: nil)
+      def add_tag(tag_name, user:, target:, message: nil)
         target_object = Ref.dereference_object(lookup(target))
         raise InvalidRef.new("target not found: #{target}") unless target_object
 
-        committer = Committer.from_user(committer) if committer.is_a?(User)
+        user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
 
         options = nil # Use nil, not the empty hash. Rugged cares about this.
         if message
           options = {
             message: message,
-            tagger: Gitlab::Git.committer_hash(email: committer.email, name: committer.name)
+            tagger: Gitlab::Git.committer_hash(email: user.email, name: user.name)
           }
         end
 
-        OperationService.new(committer, self).add_tag(tag_name, target_object.oid, options)
+        OperationService.new(user, self).add_tag(tag_name, target_object.oid, options)
 
         find_tag(tag_name)
       rescue Rugged::ReferenceError => ex
         raise InvalidRef, ex
       end
 
-      def rm_branch(branch_name, committer:)
-        OperationService.new(committer, self).rm_branch(find_branch(branch_name))
+      def rm_branch(branch_name, user:)
+        OperationService.new(user, self).rm_branch(find_branch(branch_name))
       end
 
-      def rm_tag(tag_name, committer:)
-        OperationService.new(committer, self).rm_tag(find_tag(tag_name))
+      def rm_tag(tag_name, user:)
+        OperationService.new(user, self).rm_tag(find_tag(tag_name))
       end
 
       def find_tag(name)
