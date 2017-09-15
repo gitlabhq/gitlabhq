@@ -152,6 +152,10 @@ describe GroupsController do
 
   describe 'GET #show' do
     context 'pagination' do
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      end
+
       context 'with only projects' do
         let!(:other_project) { create(:project, :public, namespace: group) }
         let!(:first_page_projects) { create_list(:project, Kaminari.config.default_per_page, :public, namespace: group ) }
@@ -287,6 +291,14 @@ describe GroupsController do
 
           expect(group_json['id']).to eq(public_subgroup.id)
           expect(matched_group_json['id']).to eq(matched_group.id)
+        end
+
+        it 'includes pagination headers' do
+          2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
+
+          get :children, id: group.to_param, filter: 'filter', per_page: 1, format: :json
+
+          expect(response).to include_pagination_headers
         end
       end
 

@@ -1,18 +1,20 @@
 class GroupChildSerializer < BaseSerializer
   include WithPagination
 
-  attr_reader :hierarchy_root
+  attr_reader :hierarchy_root, :should_expand_hierarchy
 
   entity GroupChildEntity
 
   def expand_hierarchy(hierarchy_root = nil)
-    @hierarchy_root = hierarchy_root
-    @expand_hierarchy = true
-    self
+    tap do
+      @hierarchy_root = hierarchy_root
+      @should_expand_hierarchy = true
+    end
   end
 
   def represent(resource, opts = {}, entity_class = nil)
-    if @expand_hierarchy
+    if should_expand_hierarchy
+      paginator.paginate(resource) if paginated?
       represent_hierarchies(resource, opts)
     else
       super(resource, opts)
@@ -33,15 +35,15 @@ class GroupChildSerializer < BaseSerializer
   def represent_hierarchy(hierarchy, opts)
     serializer = self.class.new(parameters)
 
-    result = if hierarchy.is_a?(Hash)
-               hierarchy.map do |parent, children|
-                 serializer.represent(parent, opts)
-                   .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
-               end
-             else
-               serializer.represent(hierarchy, opts)
-             end
-
-    result
+    if hierarchy.is_a?(Hash)
+      hierarchy.map do |parent, children|
+        serializer.represent(parent, opts)
+          .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
+      end
+    elsif hierarchy.is_a?(Array)
+      hierarchy.map { |child| serializer.represent_hierarchy(child, opts) }
+    else
+      serializer.represent(hierarchy, opts)
+    end
   end
 end

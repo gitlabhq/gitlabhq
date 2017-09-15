@@ -1,10 +1,12 @@
 module WithPagination
+  attr_accessor :paginator
+
   def with_pagination(request, response)
-    tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }
+    tap { self.paginator = Gitlab::Serializer::Pagination.new(request, response) }
   end
 
   def paginated?
-    @paginator.present?
+    paginator.present?
   end
 
   # super is `BaseSerializer#represent` here.
