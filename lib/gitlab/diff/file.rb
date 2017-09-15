@@ -35,11 +35,6 @@ module Gitlab
           new_path: new_path,
           old_line: line.old_line,
           new_line: line.new_line,
-          file_type: "image",
-          width: 100,
-          height: 100,
-          x_axis: 1,
-          y_axis: 100,
           diff_refs: diff_refs
         )
       end
