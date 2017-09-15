@@ -78,6 +78,7 @@ class Issue < ActiveRecord::Base
     assignee_ids = self.assignee_ids
 
     attrs = {
+      url: Gitlab::UrlBuilder.build(self),
       total_time_spent: total_time_spent,
       human_total_time_spent: human_total_time_spent,
       human_time_estimate: human_time_estimate,

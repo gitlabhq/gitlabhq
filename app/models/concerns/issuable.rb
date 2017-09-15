@@ -256,13 +256,19 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user)
+  def to_hook_data(user, old_labels: [])
+    changes = previous_changes
+    if old_labels != labels
+      changes[:labels] = [old_labels.map(&:name), labels.map(&:name)]
+    end
+
     hook_data = {
       object_kind: self.class.name.underscore,
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
       labels: labels.map(&:hook_attrs),
+      changes: changes,
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }

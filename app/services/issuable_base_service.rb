@@ -255,7 +255,7 @@ class IssuableBaseService < BaseService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
-        execute_hooks(issuable, 'update')
+        execute_hooks(issuable, 'update', old_labels: old_labels)
 
         issuable.update_project_counter_caches if update_project_counters
       end

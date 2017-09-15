@@ -1,10 +1,10 @@
 module Issues
   class BaseService < ::IssuableBaseService
-    def hook_data(issue, action)
-      issue_data = issue.to_hook_data(current_user)
-      issue_url = Gitlab::UrlBuilder.build(issue)
-      issue_data[:object_attributes].merge!(url: issue_url, action: action)
-      issue_data
+    def hook_data(issue, action, old_labels: [])
+      hook_data = issue.to_hook_data(current_user, old_labels: old_labels)
+      hook_data[:object_attributes][:action] = action
+
+      hook_data
     end
 
     def reopen_service
@@ -22,8 +22,8 @@ module Issues
         issue, issue.project, current_user, old_assignees)
     end
 
-    def execute_hooks(issue, action = 'open')
-      issue_data  = hook_data(issue, action)
+    def execute_hooks(issue, action = 'open', old_labels: [])
+      issue_data  = hook_data(issue, action, old_labels: old_labels)
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
       issue.project.execute_hooks(issue_data, hooks_scope)
       issue.project.execute_services(issue_data, hooks_scope)

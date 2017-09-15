@@ -589,6 +589,7 @@ class MergeRequest < ActiveRecord::Base
 
   def hook_attrs
     attrs = {
+      url: Gitlab::UrlBuilder.build(self),
       source: source_project.try(:hook_attrs),
       target: target_project.hook_attrs,
       last_commit: nil,

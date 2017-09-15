@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issuable do
   let(:issuable_class) { Issue }
-  let(:issue) { create(:issue) }
+  let(:issue) { create(:issue, title: 'An issue', description: 'A description') }
   let(:user) { create(:user) }
 
   describe "Associations" do
@@ -265,17 +265,17 @@ describe Issuable do
   end
 
   describe "#to_hook_data" do
-    let(:data) { issue.to_hook_data(user) }
-    let(:project) { issue.project }
+    it_behaves_like 'issuable hook data', 'issue' do
+      let(:issuable) { create(:issue, description: 'A description') }
+    end
 
-    it "returns correct hook data" do
-      expect(data[:object_kind]).to eq("issue")
-      expect(data[:user]).to eq(user.hook_attrs)
-      expect(data[:object_attributes]).to eq(issue.hook_attrs)
-      expect(data).not_to have_key(:assignee)
+    it_behaves_like 'issuable hook data', 'merge_request' do
+      let(:issuable) { create(:merge_request, description: 'A description') }
     end
 
     context "issue is assigned" do
+      let(:data) { issue.to_hook_data(user) }
+
       before do
         issue.assignees << user
       end
@@ -296,23 +296,12 @@ describe Issuable do
       it "returns correct hook data" do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
         expect(data[:assignee]).to eq(user.hook_attrs)
+        expect(data[:changes]).to match(hash_including({
+          'assignee_id' => [nil, user.id],
+          'updated_at' => [a_kind_of(ActiveSupport::TimeWithZone), a_kind_of(ActiveSupport::TimeWithZone)]
+        }))
       end
     end
-
-    context 'issue has labels' do
-      let(:labels) { [create(:label), create(:label)] }
-
-      before do
-        issue.update_attribute(:labels, labels)
-      end
-
-      it 'includes labels in the hook data' do
-        expect(data[:labels]).to eq(labels.map(&:hook_attrs))
-      end
-    end
-
-    include_examples 'project hook data'
-    include_examples 'deprecated repository hook data'
   end
 
   describe '#labels_array' do
