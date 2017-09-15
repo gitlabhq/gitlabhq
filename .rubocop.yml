@@ -1,6 +1,7 @@
 require:
   - rubocop-rspec
   - rubocop-gitlab-security
+  - test_prof/rubocop
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
@@ -26,6 +27,11 @@ AllCops:
     - 'bin/**/*'
     - 'generator_templates/**/*'
     - 'builds/**/*'
+
+RSpec/AggregateFailures:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
 
 # Gems in consecutive lines should be alphabetically sorted
 Bundler/OrderedGems:
