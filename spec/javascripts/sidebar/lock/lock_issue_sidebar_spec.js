@@ -10,9 +10,7 @@ describe('LockIssueSidebar', () => {
 
     const mediator = {
       service: {
-        update: () => new Promise((resolve) => {
-          resolve(true);
-        }),
+        update: Promise.resolve(true),
       },
 
       store: {

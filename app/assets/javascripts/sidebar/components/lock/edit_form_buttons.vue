@@ -22,7 +22,7 @@ export default {
       return this.isLocked ? this.__('Unlock') : this.__('Lock');
     },
 
-    updateLockedBool() {
+    toggleLock() {
       return !this.isLocked;
     },
   },
@@ -42,7 +42,7 @@ export default {
     <button
       type="button"
       class="btn btn-close"
-      @click.prevent="updateLockedAttribute(updateLockedBool)"
+      @click.prevent="updateLockedAttribute(toggleLock)"
     >
       {{ buttonText }}
     </button>

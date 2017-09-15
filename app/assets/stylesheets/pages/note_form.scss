@@ -122,14 +122,14 @@
   line-height: 1.5;
   padding: 16px;
 
-  p {
+  .text {
     color: $text-color;
   }
 
   .sidebar-item-warning-message-actions {
     display: flex;
 
-    button {
+    .btn {
       flex-grow: 1;
     }
   }

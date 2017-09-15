@@ -1,5 +1,5 @@
 ---
-title: Create system notes for MR too, improve doc + clean up code
+title: Add lock feature to issue and merge request sidebar
 merge_request:
 author:
 type: added

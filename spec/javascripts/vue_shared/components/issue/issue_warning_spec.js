@@ -5,6 +5,7 @@ import mountComponent from '../../../helpers/vue_mount_component_helper';
 const IssueWarning = Vue.extend(issueWarning);
 
 function formatWarning(string) {
+  // Replace newlines with a space then replace multiple spaces with one space
   return string.trim().replace(/\n/g, ' ').replace(/\s\s+/g, ' ');
 }
 
