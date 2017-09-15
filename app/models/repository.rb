@@ -214,8 +214,8 @@ class Repository
   end
 
   def ref_exists?(ref)
-    !!raw_repository&.ref_exists?(ref)
-  rescue ArgumentError
+    raw_repository.ref_exists?(ref)
+  rescue Gitlab::Git::Repository::NoRepository, ArgumentError
     false
   end
 

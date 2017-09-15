@@ -810,13 +810,11 @@ class MergeRequest < ActiveRecord::Base
 
   def ref_fetched?
     super ||
-      if project.repository.exists?
+      begin
         computed_value = project.repository.ref_exists?(ref_path)
         update_column(:ref_fetched, true) if computed_value
 
         computed_value
-      else
-        false
       end
   end
 
