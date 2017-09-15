@@ -11,7 +11,6 @@ class License < ActiveRecord::Base
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
-  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
   FILE_LOCKS_FEATURE = 'GitLab_FileLocks'.freeze
   GEO_FEATURE = 'GitLab_Geo'.freeze
   GROUP_WEBHOOKS_FEATURE = 'GitLab_GroupWebhooks'.freeze
@@ -57,7 +56,6 @@ class License < ActiveRecord::Base
     cross_project_pipelines: CROSS_PROJECT_PIPELINES_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
-    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
     file_locks: FILE_LOCKS_FEATURE,
     group_webhooks: GROUP_WEBHOOKS_FEATURE,
     issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
@@ -88,7 +86,6 @@ class License < ActiveRecord::Base
     { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { GROUP_WEBHOOKS_FEATURE => 1 },
     { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
@@ -146,7 +143,6 @@ class License < ActiveRecord::Base
     { DEPLOY_BOARD_FEATURE => 1 },
     { ELASTIC_SEARCH_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
     { GEO_FEATURE => 1 },
     { GROUP_WEBHOOKS_FEATURE => 1 },

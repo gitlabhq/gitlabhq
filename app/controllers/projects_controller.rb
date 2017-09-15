@@ -347,6 +347,7 @@ class ProjectsController < Projects::ApplicationController
       :tag_list,
       :visibility_level,
       :template_name,
+      :merge_method,
 
       project_feature_attributes: %i[
         builds_access_level

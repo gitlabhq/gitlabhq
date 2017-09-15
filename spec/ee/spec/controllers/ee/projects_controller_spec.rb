@@ -109,38 +109,6 @@ describe ProjectsController do
       end
     end
 
-    it 'updates Fast Forward Merge attributes' do
-      params = {
-        merge_method: :ff
-      }
-
-      put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: params
-
-      expect(response).to have_http_status(302)
-      params.each do |param, value|
-        expect(project.public_send(param)).to eq(value)
-      end
-    end
-
-    it 'updates Fast Forward Merge attributes' do
-      params = {
-        merge_method: :ff
-      }
-
-      put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: params
-
-      expect(response).to have_http_status(302)
-      params.each do |param, value|
-        expect(project.public_send(param)).to eq(value)
-      end
-    end
-
     it 'updates Service Desk attributes' do
       allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
       allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
