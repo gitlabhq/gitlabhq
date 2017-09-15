@@ -10,11 +10,8 @@
     },
     methods: {
       loadMeta(imageType, event) {
-        // TODO: Determine why this doesn't render after change
-        this.$nextTick(() => {
-          this[imageType].width = event.target.naturalWidth;
-          this[imageType].height = event.target.naturalHeight;
-        });
+        this.$set(this[imageType], 'width', event.target.naturalWidth);
+        this.$set(this[imageType], 'height', event.target.naturalHeight);
       },
     },
   };
