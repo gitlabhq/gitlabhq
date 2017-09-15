@@ -11,7 +11,7 @@
     .col-sm-10
       .checkbox
         = f.check_box :access_level, {}, 'ref_protected', 'not_protected'
-        %span.light This runner will only run on pipelines trigged on protected branches
+        %span.light This runner will only run on pipelines triggered on protected branches
   .form-group
     = label :run_untagged, 'Run untagged jobs', class: 'control-label'
     .col-sm-10
