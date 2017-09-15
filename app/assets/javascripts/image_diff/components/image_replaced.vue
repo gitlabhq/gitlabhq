@@ -7,12 +7,12 @@
 
   export default {
     name: 'imageReplaced',
+    mixins: [imageDiffProps],
     data() {
       return {
         currentView: constants.TWO_UP,
       };
     },
-    mixins: [imageDiffProps],
     components: {
       twoUpView,
       swipeView,
