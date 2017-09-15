@@ -17,5 +17,4 @@
   - old_image = { path: old_blob_raw_path, alt: diff_file.old_path, size: number_to_human_size(old_blob.size) }.to_json
   - data = { deleted: old_image, added: latest_image }
 
--# TODO: Extract into api call
 .js-vue-image-diff{ data: data }
