@@ -83,7 +83,7 @@ Then enable Elasticsearch indexing and run repository indexing tasks:
 sudo gitlab-rake gitlab:elastic:index
 
 # Installations from source
-bundle exec rake gitlab:elastic:index
+bundle exec rake gitlab:elastic:index RAILS_ENV=production
 ```
 
 Enable Elasticsearch search.
@@ -160,16 +160,26 @@ If you want to run several tasks in parallel (probably in separate terminal
 windows) you can provide the `ID_FROM` and `ID_TO` parameters:
 
 ```
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000 RAILS_ENV=production
 ```
 
 Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
 As an example, if you have 3,000 repositories and you want to run three separate indexing tasks, you might run:
 
 ```
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories ID_TO=1000
 sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=1001 ID_TO=2000
 sudo gitlab-rake gitlab:elastic:index_repositories ID_FROM=2001
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_TO=1000
+bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_FROM=1001 ID_TO=2000
+bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production ID_FROM=2001
 ```
 
 Sometimes your repository index process `gitlab:elastic:index_repositories` or
@@ -183,7 +193,11 @@ it will check every project repository again to make sure that every commit in
 that repository is indexed, it can be useful in case if your index is outdated:
 
 ```
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories UPDATE_INDEX=true ID_TO=1000
+
+# Installations from source
+bundle exec rake gitlab:elastic:index_repositories UPDATE_INDEX=true ID_TO=1000 RAILS_ENV=production
 ```
 
 You can also use the `gitlab:elastic:clear_index_status` Rake task to force the
