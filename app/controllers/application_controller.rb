@@ -11,8 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :authenticate_user_from_personal_access_token!
-  before_action :authenticate_user_from_rss_token!
+  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -100,6 +99,7 @@ class ApplicationController < ActionController::Base
     return try(:authenticated_user)
   end
 
+<<<<<<< HEAD
   def authenticate_user_from_personal_access_token!
     token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
 
@@ -121,6 +121,14 @@ class ApplicationController < ActionController::Base
     user = User.find_by_rss_token(token)
 
     sessionless_sign_in(user)
+=======
+  # This filter handles private tokens, personal access tokens, and atom
+  # requests with rss tokens
+  def authenticate_sessionless_user!
+    user = Gitlab::Auth.find_sessionless_user(request)
+
+    sessionless_sign_in(user) if user
+>>>>>>> Add request throttles
   end
 
   def log_exception(exception)

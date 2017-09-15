@@ -82,6 +82,36 @@ module Gitlab
         end
       end
 
+      # request may be Rack::Attack::Request which is just a Rack::Request, so
+      # we cannot use ActionDispatch::Request methods.
+      def find_user_by_private_token(request)
+        token = request.params['private_token'].presence || request.env['HTTP_PRIVATE_TOKEN'].presence
+
+        return unless token.present?
+
+        User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+      end
+
+      # request may be Rack::Attack::Request which is just a Rack::Request, so
+      # we cannot use ActionDispatch::Request methods.
+      def find_user_by_rss_token(request)
+        return unless request.params['format'] == 'atom'
+
+        token = request.params['rss_token'].presence
+
+        return unless token.present?
+
+        User.find_by_rss_token(token)
+      end
+
+      def find_session_user(request)
+        request.env['warden']&.authenticate
+      end
+
+      def find_sessionless_user(request)
+        find_user_by_private_token(request) || find_user_by_rss_token(request)
+      end
+
       private
 
       def service_request_check(login, password, project)
