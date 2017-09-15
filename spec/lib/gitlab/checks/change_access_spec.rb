@@ -249,6 +249,14 @@ describe Gitlab::Checks::ChangeAccess do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
         end
 
+        context 'when the ref is not a branch ref' do
+          let(:ref) { 'a/ref/thats/not/abranch' }
+
+          it 'allows the creation' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
         context 'when no commits are present' do
           before do
             allow(project.repository).to receive(:new_commits) { [] }

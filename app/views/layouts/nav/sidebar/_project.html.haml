@@ -35,7 +35,7 @@
                 %span= _('Cycle Analytics')
 
       - if project_nav_tab? :files
-        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
+        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks)) do
           = sidebar_link project_tree_path(@project), title: _('Repository'),  css: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('doc_text')
@@ -43,7 +43,7 @@
               Repository
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network), html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks), html_options: { class: "fly-out-top-item" } ) do
               = link_to project_tree_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Repository') }
@@ -124,9 +124,9 @@
                   List
 
             = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Board' do
+              = link_to project_boards_path(@project), title: boards_link_text do
                 %span
-                  Board
+                  = boards_link_text
                 .feature-highlight.js-feature-highlight{ disabled: true, data: { trigger: 'manual', container: 'body', toggle: 'popover', placement: 'right', highlight: 'issue-boards' } }
               .feature-highlight-popover-content
                 = render 'feature_highlight/issue_boards.svg'
@@ -245,7 +245,7 @@
                   #{ _('Snippets') }
 
       - if project_nav_tab? :settings
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
+        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index]) do
           = sidebar_link edit_project_path(@project), title: _('Settings'), css: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('settings')
@@ -255,7 +255,7 @@
           %ul.sidebar-sub-level-items
             - can_edit = can?(current_user, :admin_project, @project)
             - if can_edit
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show], html_options: { class: "fly-out-top-item" } ) do
+              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index], html_options: { class: "fly-out-top-item" } ) do
                 = link_to edit_project_path(@project) do
                   %strong.fly-out-top-item-name
                     #{ _('Settings') }

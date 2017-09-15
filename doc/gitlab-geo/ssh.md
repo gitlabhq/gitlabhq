@@ -6,6 +6,9 @@ single source of truth, Geo needs to be configured to perform SSH fingerprint
 lookups via database lookup. This approach is also much faster than scanning a
 file.
 
+>**Note:**
+GitLab 10.0 and higher require database lookups for SSH keys.
+
 Note this feature is only available on operating systems that support OpenSSH
 6.9 and above. For CentOS 6 and 7, see the [instructions on building custom
 version of OpenSSH for your server]
