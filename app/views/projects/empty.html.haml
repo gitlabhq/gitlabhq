@@ -6,6 +6,10 @@
 = render "projects/head"
 = render "home_panel"
 
+%div{ 'class' => container_class }
+  - if show_auto_devops_callout?(@project)
+    = render 'shared/auto_devops_callout'
+
 .row-content-block.second-block.center
   %h3.page-title
     The repository for this project is empty
