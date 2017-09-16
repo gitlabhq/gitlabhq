@@ -10,7 +10,6 @@ describe 'User visits the profile account page' do
   end
 
   it 'shows correct menu item' do
-    expect(find('.sidebar-top-level-items > li.active')).to have_content('Account')
-    expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
+    expect(page).to have_active_navigation('Account')
   end
 end
