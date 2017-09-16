@@ -8,7 +8,13 @@ describe ProjectAutoDevops do
   it { is_expected.to respond_to(:created_at) }
   it { is_expected.to respond_to(:updated_at) }
 
-  describe 'variables' do
+  describe '#has_domain?' do
+    let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: 'domain.com') }
+
+    it { is_expected.to have_domain }
+  end
+
+  describe '#variables' do
     let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: domain) }
 
     context 'when domain is defined' do
