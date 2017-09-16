@@ -8,13 +8,13 @@ module SystemCheck
 
       def self.current_version
         @current_version ||= begin
-          client = Gitlab::Elastic::Client.build(current_application_settings.elasticsearch_config)
+          client = Gitlab::Elastic::Client.build(Gitlab::CurrentSettings.current_application_settings.elasticsearch_config)
           Gitlab::VersionInfo.parse(client.info['version']['number'])
         end
       end
 
       def skip?
-        !current_application_settings.elasticsearch_indexing?
+        !Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?
       end
 
       def check?
