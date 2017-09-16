@@ -332,6 +332,7 @@ module API
     end
 
     class IssueBasic < ProjectEntity
+      expose :closed_at
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
