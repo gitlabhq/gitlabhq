@@ -10,7 +10,10 @@ describe('Pipelines Empty State', () => {
 
     component = new EmptyStateComponent({
       propsData: {
+        newPipelinePath: 'foo',
+        hasCiEnabled: false,
         helpPagePath: 'foo',
+        canCreatePipeline: true,
       },
     }).$mount();
   });
@@ -24,7 +27,7 @@ describe('Pipelines Empty State', () => {
 
     expect(
       component.$el.querySelector('p').textContent,
-    ).toContain('Continous Integration can help catch bugs by running your tests automatically');
+    ).toContain('Continuous Integration can help catch bugs by running your tests automatically');
 
     expect(
       component.$el.querySelector('p').textContent,

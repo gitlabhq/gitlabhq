@@ -166,7 +166,7 @@
         :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
         :ciLintPath="ciLintPath"
-        :can-create-pipeline="canCreatePipelineParsed "
+        :can-create-pipeline="canCreatePipelineParsed"
         />
     </div>
 
@@ -180,7 +180,10 @@
 
       <empty-state
         v-if="shouldRenderEmptyState"
+        :new-pipeline-path="newPipelinePath"
+        :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
+        :can-create-pipeline="canCreatePipelineParsed"
         />
 
       <error-state v-if="shouldRenderErrorState" />

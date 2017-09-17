@@ -32,14 +32,14 @@ export default {
 <template>
   <div class="nav-controls">
     <a
-      v-if="canCreatePipeline"
+      v-if="hasCiEnabled && canCreatePipeline"
       :href="newPipelinePath"
       class="btn btn-create">
       Run Pipeline
     </a>
 
     <a
-      v-if="!hasCiEnabled"
+      v-if="!hasCiEnabled && canCreatePipeline"
       :href="helpPagePath"
       class="btn btn-info">
       Get started with Pipelines
