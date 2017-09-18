@@ -96,7 +96,7 @@ describe Gitlab::LDAP::Person do
     it_behaves_like 'normalizes the DN'
   end
 
-  describe '.is_dn?' do
+  describe '.dn?' do
     where(:test_description, :given, :expected) do
       'given a DN with a single RDN'                     | 'uid=John C. Smith'                                 | true
       'given a DN with multiple RDNs'                    | 'uid=John C. Smith,ou=People,dc=example,dc=com'     | true
@@ -110,7 +110,7 @@ describe Gitlab::LDAP::Person do
 
     with_them do
       it 'returns the expected boolean' do
-        assert_generic_test(test_description, described_class.is_dn?(given), expected)
+        assert_generic_test(test_description, described_class.dn?(given), expected)
       end
     end
   end

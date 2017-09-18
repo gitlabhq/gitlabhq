@@ -38,7 +38,7 @@ module Gitlab
 
       # Returns the UID or DN in a normalized form
       def self.normalize_uid_or_dn(uid_or_dn)
-        if is_dn?(uid_or_dn)
+        if dn?(uid_or_dn)
           normalize_dn(uid_or_dn)
         else
           normalize_uid(uid_or_dn)
@@ -49,7 +49,7 @@ module Gitlab
       #
       # An empty string is technically a valid DN (null DN), although we should
       # never need to worry about that.
-      def self.is_dn?(uid_or_dn)
+      def self.dn?(uid_or_dn)
         uid_or_dn.blank? || uid_or_dn.include?('=')
       end
 
