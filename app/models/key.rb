@@ -28,8 +28,6 @@ class Key < ActiveRecord::Base
 
   delegate :name, :email, to: :user, prefix: true
 
-  alias_attribute :full_path, :title
-
   after_commit :add_to_shell, on: :create
   after_create :post_create_hook
   after_commit :remove_from_shell, on: :destroy
