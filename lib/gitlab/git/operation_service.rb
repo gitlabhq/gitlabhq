@@ -1,6 +1,11 @@
 module Gitlab
   module Git
     class OperationService
+      WithBranchResult = Struct.new(:newrev, :repo_created, :branch_created) do
+        alias_method :repo_created?, :repo_created
+        alias_method :branch_created?, :branch_created
+      end
+
       attr_reader :user, :repository
 
       def initialize(user, new_repository)
@@ -107,7 +112,7 @@ module Gitlab
         ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
         update_ref_in_hooks(ref, newrev, oldrev)
 
-        [newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev)]
+        WithBranchResult.new(newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev))
       end
 
       def find_oldrev_from_branch(newrev, branch)
