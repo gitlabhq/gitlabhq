@@ -948,7 +948,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -1109,7 +1109,7 @@ describe API::Runner do
                 expect(response).to have_gitlab_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(71759)
+                expect(stored_artifacts_size).to eq(72821)
               end
             end
 

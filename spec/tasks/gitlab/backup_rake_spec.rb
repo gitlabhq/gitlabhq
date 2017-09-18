@@ -24,6 +24,7 @@ describe 'gitlab:app namespace rake task' do
 
     # We need this directory to run `gitlab:backup:create` task
     FileUtils.mkdir_p('public/uploads')
+    FileUtils.mkdir_p(Rails.root.join('tmp/tests/artifacts'))
   end
 
   before do

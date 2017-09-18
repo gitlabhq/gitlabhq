@@ -155,38 +155,15 @@ FactoryGirl.define do
     end
 
     trait :artifacts do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-                             'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                             'application/x-gzip')
-
-        build.save!
+      after(:create) do |build|
+        create(:ci_job_artifact, job: build)
+        create(:ci_job_metadata, job: build)
+        build.reload
       end
     end
 
-    trait :remote_store do
-      artifacts_file_store ArtifactUploader::REMOTE_STORE
-      artifacts_metadata_store ArtifactUploader::REMOTE_STORE
-    end
-
-    trait :artifacts_expired do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-            'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-            'application/x-gzip')
-
-        build.artifacts_expire_at = 1.minute.ago
-
-        build.save!
-      end
+    trait :expired do
+      artifacts_expire_at 1.minute.ago
     end
 
     trait :with_commit do
