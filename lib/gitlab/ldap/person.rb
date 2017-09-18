@@ -50,7 +50,7 @@ module Gitlab
       # An empty string is technically a valid DN (null DN), although we should
       # never need to worry about that.
       def self.dn?(uid_or_dn)
-        uid_or_dn.blank? || uid_or_dn.include?('=')
+        uid_or_dn.blank? || !!uid_or_dn.match(/(?<!\\)=/)
       end
 
       # Returns the UID in a normalized form.

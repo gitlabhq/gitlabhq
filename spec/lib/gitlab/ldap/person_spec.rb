@@ -100,12 +100,13 @@ describe Gitlab::LDAP::Person do
     where(:test_description, :given, :expected) do
       'given a DN with a single RDN'                     | 'uid=John C. Smith'                                 | true
       'given a DN with multiple RDNs'                    | 'uid=John C. Smith,ou=People,dc=example,dc=com'     | true
-      'given a UID'                                      | 'John C. Smith'                                     | false
       'given a DN with a single RDN with excess spaces'  | ' uid=John C. Smith   '                             | true
       'given a DN with multiple RDNs with excess spaces' | '  uid=John C. Smith,ou=People,dc=example,dc=com  ' | true
-      'given a UID with excess spaces'                   | '   John C. Smith '                                 | false
       'given a DN with an escaped equal sign'            | 'uid=John C. Smith,ou=People\\='                    | true
       'given a DN with an equal sign in escaped hex'     | 'uid=John C. Smith,ou=People\\3D'                   | true
+      'given a UID'                                      | 'John C. Smith'                                     | false
+      'given a UID with excess spaces'                   | '   John C. Smith '                                 | false
+      'given a UID with an escaped equal sign'           | 'John C. \\= Smith'                                 | false
     end
 
     with_them do
