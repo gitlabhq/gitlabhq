@@ -29,6 +29,9 @@ export default {
     statusIcon,
   },
   computed: {
+    shouldShowMergeWhenPipelineSucceedsText() {
+      return this.mr.isPipelineActive;
+    },
     commitMessageLinkTitle() {
       const withDesc = 'Include description in commit message';
       const withoutDesc = "Don't include description in commit message";
@@ -56,7 +59,7 @@ export default {
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return 'Merge in progress';
-      } else if (this.mr.isPipelineActive) {
+      } else if (this.shouldShowMergeWhenPipelineSucceedsText) {
         return 'Merge when pipeline succeeds';
       }
 
@@ -68,7 +71,7 @@ export default {
     isMergeButtonDisabled() {
       const { commitMessage } = this;
       return Boolean(!commitMessage.length
-        || !this.isMergeAllowed()
+        || !this.shouldShowMergeControls()
         || this.isMakingRequest
         || this.isApprovalNeeded
         || this.mr.preventMerge);
@@ -86,7 +89,12 @@ export default {
   },
   methods: {
     isMergeAllowed() {
-      return !(this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.isPipelineFailed);
+      return !this.mr.onlyAllowMergeIfPipelineSucceeds ||
+        this.mr.isPipelinePassing ||
+        this.mr.isPipelineSkipped;
+    },
+    shouldShowMergeControls() {
+      return this.isMergeAllowed() || this.shouldShowMergeWhenPipelineSucceedsText;
     },
     updateCommitMessage() {
       const cmwd = this.mr.commitMessageWithDescription;
@@ -265,7 +273,7 @@ export default {
             </ul>
           </span>
           <div class="media-body space-children">
-            <template v-if="isMergeAllowed()">
+            <template v-if="shouldShowMergeControls()">
               <label>
                 <input
                   id="remove-source-branch-input"
@@ -294,7 +302,7 @@ export default {
             </template>
             <template v-else>
               <span class="bold">
-                The pipeline for this merge request failed. Please retry the job or push a new commit to fix the failure
+                The pipeline for this merge request has not succeeded yet
               </span>
             </template>
           </div>
