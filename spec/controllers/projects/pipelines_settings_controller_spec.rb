@@ -17,14 +17,26 @@ describe Projects::PipelinesSettingsController do
         namespace_id: project.namespace.to_param,
         project_id: project,
         project: {
-          auto_devops_attributes: { enabled: false, domain: 'mempmep.md' }
+          auto_devops_attributes: params
         }
     end
 
     context 'when updating the auto_devops settings' do
+      let(:params) { { enabled: '', domain: 'mepmep.md' } }
+
       it 'redirects to the settings page' do
         expect(response).to have_http_status(302)
         expect(flash[:notice]).to eq("Pipelines settings for '#{project.name}' were successfully updated.")
+      end
+
+      context 'following the instance default' do
+        let(:params) { { enabled: '' } }
+
+        it 'allows enabled to be set to nil' do
+          project_auto_devops.reload
+
+          expect(project_auto_devops.enabled).to be_nil
+        end
       end
     end
   end

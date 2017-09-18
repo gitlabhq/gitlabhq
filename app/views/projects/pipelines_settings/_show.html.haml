@@ -25,8 +25,8 @@
                 %span.descr
                   A specific .gitlab-ci.yml file needs to be specified before you can begin using Continious Integration and Delivery.
             .radio
-              = form.label :enabled do
-                = form.radio_button :enabled, nil
+              = form.label :enabled_nil do
+                = form.radio_button :enabled, ''
                 %strong
                   Instance default (status: #{current_application_settings.auto_devops_enabled?})
                 %br
