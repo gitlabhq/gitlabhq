@@ -34,7 +34,7 @@ export const canShowActiveSubItems = (el) => {
 export const canShowSubItems = () => bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md' || bp.getBreakpointSize() === 'lg';
 
 export const getHideSubItemsInterval = () => {
-  if (!currentOpenMenu) return 0;
+  if (!currentOpenMenu || mousePos.length >= 1) return 0;
 
   const currentMousePos = mousePos[mousePos.length - 1];
   const prevMousePos = mousePos[0];
