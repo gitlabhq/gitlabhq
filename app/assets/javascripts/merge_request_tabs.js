@@ -241,11 +241,10 @@ import bp from './breakpoints';
       const CommitPipelinesTable = gl.CommitPipelinesTable;
       const hasCiEnabled = (pipelineTableViewEl.dataset.hasCi !== undefined);
       const canCreatePipeline = gl.utils.convertPermissionToBoolean(pipelineTableViewEl.dataset.canCreatePipeline);
-      const newPipelinePath = String(pipelineTableViewEl.dataset.newPipelinePath);
       this.commitPipelinesTable = new CommitPipelinesTable({
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
-          newPipelinePath: newPipelinePath,
+          newPipelinePath: pipelineTableViewEl.dataset.newPipelinePath,
           hasCiEnabled: hasCiEnabled,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
           canCreatePipeline: canCreatePipeline,
