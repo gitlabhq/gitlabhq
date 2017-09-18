@@ -1417,56 +1417,24 @@ describe User do
   end
 
   describe "#recent_push" do
-    subject { create(:user) }
-    let!(:project1) { create(:project, :repository) }
-    let!(:project2) { create(:project, :repository, forked_from_project: project1) }
+    let(:user) { build(:user) }
+    let(:project) { build(:project) }
+    let(:event) { build(:push_event) }
 
-    let!(:push_event) do
-      event = create(:push_event, project: project2, author: subject)
+    it 'returns the last push event for the user' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:last_event_for_user)
+        .and_return(event)
 
-      create(:push_event_payload,
-             event: event,
-             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-             commit_count: 0,
-             ref: 'master')
-
-      event
+      expect(user.recent_push).to eq(event)
     end
 
-    before do
-      project1.team << [subject, :master]
-      project2.team << [subject, :master]
-    end
+    it 'returns the last push event for a project when one is given' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:last_event_for_project)
+        .and_return(event)
 
-    it "includes push event" do
-      expect(subject.recent_push).to eq(push_event)
-    end
-
-    it "excludes push event if branch has been deleted" do
-      allow_any_instance_of(Repository).to receive(:branch_exists?).with('master').and_return(false)
-
-      expect(subject.recent_push).to eq(nil)
-    end
-
-    it "excludes push event if MR is opened for it" do
-      create(:merge_request, source_project: project2, target_project: project1, source_branch: project2.default_branch, target_branch: 'fix', author: subject)
-
-      expect(subject.recent_push).to eq(nil)
-    end
-
-    it "includes push events on any of the provided projects" do
-      expect(subject.recent_push(project1)).to eq(nil)
-      expect(subject.recent_push(project2)).to eq(push_event)
-
-      push_event1 = create(:push_event, project: project1, author: subject)
-
-      create(:push_event_payload,
-             event: push_event1,
-             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-             commit_count: 0,
-             ref: 'master')
-
-      expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
+      expect(user.recent_push(project)).to eq(event)
     end
   end
 

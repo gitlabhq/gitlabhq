@@ -12,12 +12,7 @@ module Gitlab
       MissingEndDelimiter = Class.new(ParserError)
 
       def parse(text, our_path:, their_path:, parent_file: nil)
-        raise UnmergeableFile if text.blank? # Typically a binary file
-        raise UnmergeableFile if text.length > 200.kilobytes
-
-        text.force_encoding('UTF-8')
-
-        raise UnsupportedEncoding unless text.valid_encoding?
+        validate_text!(text)
 
         line_obj_index = 0
         line_old = 1
@@ -32,15 +27,15 @@ module Gitlab
           full_line = line.delete("\n")
 
           if full_line == conflict_start
-            raise UnexpectedDelimiter unless type.nil?
+            validate_delimiter!(type.nil?)
 
             type = 'new'
           elsif full_line == conflict_middle
-            raise UnexpectedDelimiter unless type == 'new'
+            validate_delimiter!(type == 'new')
 
             type = 'old'
           elsif full_line == conflict_end
-            raise UnexpectedDelimiter unless type == 'old'
+            validate_delimiter!(type == 'old')
 
             type = nil
           elsif line[0] == '\\'
@@ -58,6 +53,21 @@ module Gitlab
         raise MissingEndDelimiter unless type.nil?
 
         lines
+      end
+
+      private
+
+      def validate_text!(text)
+        raise UnmergeableFile if text.blank? # Typically a binary file
+        raise UnmergeableFile if text.length > 200.kilobytes
+
+        text.force_encoding('UTF-8')
+
+        raise UnsupportedEncoding unless text.valid_encoding?
+      end
+
+      def validate_delimiter!(condition)
+        raise UnexpectedDelimiter unless condition
       end
     end
   end

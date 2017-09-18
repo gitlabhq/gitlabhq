@@ -1,6 +1,6 @@
 module Ci
   class Pipeline < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasStatus
     include Importable
     include AfterCommitQueue
@@ -349,8 +349,8 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.full_path)
-      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        Gitlab::Ci::YamlProcessor.new(ci_yaml_file, project.full_path)
+      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
         self.yaml_errors = e.message
         nil
       rescue

@@ -8,7 +8,7 @@ GitLab has support for automatically detecting and monitoring Kubernetes metrics
 | Name | Query |
 | ---- | ----- |
 | Average Memory Usage (MB) | (sum(container_memory_usage_bytes{container_name!="POD",%{environment_filter}}) / count(container_memory_usage_bytes{container_name!="POD",%{environment_filter}})) /1024/1024 |
-| Average CPU Utilization (%) | sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}) * 100 |
+| Average CPU Utilization (%) | sum(rate(container_cpu_usage_seconds_total{container_name!="POD",%{environment_filter}}[2m])) by (cpu)  * 100 |
 
 ## Configuring Prometheus to monitor for Kubernetes node metrics
 

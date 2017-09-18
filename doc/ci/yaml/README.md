@@ -1366,25 +1366,31 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-## Hidden keys
+## Hidden keys (jobs)
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-Keys that start with a dot (`.`) will be not processed by GitLab CI. You can
-use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden keys
-into templates.
+If you want to temporarily 'disable' a job, rather than commenting out all the
+lines where the job is defined:
 
-In the following example, `.key_name` will be ignored:
-
-```yaml
-.key_name:
-  script:
-    - rake spec
+```
+#hidden_job:
+#  script:
+#    - run test
 ```
 
-Hidden keys can be hashes like normal CI jobs, but you are also allowed to use
-different types of structures to leverage special YAML features.
+you can instead start its name with a dot (`.`) and it will not be processed by
+GitLab CI. In the following example, `.hidden_job` will be ignored:
+
+```yaml
+.hidden_job:
+  script:
+    - run test
+```
+
+Use this feature to ignore jobs, or use the
+[special YAML features](#special-yaml-features) and transform the hidden keys
+into templates.
 
 ## Special YAML features
 
@@ -1400,7 +1406,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 
 YAML has a handy feature called 'anchors', which lets you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden keys](#hidden-keys)
+properties, and is a perfect example to be used with [hidden keys](#hidden-keys-jobs)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,

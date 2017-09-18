@@ -72,10 +72,6 @@ export default {
       required: false,
       default: () => [],
     },
-    isConfidential: {
-      type: Boolean,
-      required: true,
-    },
     markdownPreviewPath: {
       type: String,
       required: true,
@@ -131,7 +127,6 @@ export default {
         this.showForm = true;
         this.store.setFormState({
           title: this.state.titleText,
-          confidential: this.isConfidential,
           description: this.state.descriptionText,
           lockedWarningVisible: false,
           updateLoading: false,
@@ -147,8 +142,6 @@ export default {
         .then((data) => {
           if (location.pathname !== data.web_url) {
             gl.utils.visitUrl(data.web_url);
-          } else if (data.confidential !== this.isConfidential) {
-            gl.utils.visitUrl(location.pathname);
           }
 
           return this.service.getData();
