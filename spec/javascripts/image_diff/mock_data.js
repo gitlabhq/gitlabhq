@@ -1,18 +1,18 @@
 export const imageReplacedData = {
   added: {
-    path: 'https://host.invalid/added.png',
+    path: `${gl.TEST_HOST}/added.png`,
     alt: 'added',
     size: '100 KB',
   },
   deleted: {
-    path: 'https://host.invalid/deleted.png',
+    path: `${gl.TEST_HOST}/deleted.png`,
     alt: 'deleted',
     size: '50 KB',
   },
 };
 
 export const imageFrameData = {
-  src: 'https://host.invalid/gitlab.png',
+  src: `${gl.TEST_HOST}/gitlab.png`,
   alt: 'gitlab-image',
   className: 'class-name',
 };
