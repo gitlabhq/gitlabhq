@@ -100,7 +100,7 @@ module Gitlab
       private
 
       def self.normalize_dn_part(part)
-        cleaned = part.strip
+        cleaned = part.strip.downcase
 
         if cleaned.ends_with?('\\')
           # If it ends with an escape character that is not followed by a

@@ -68,10 +68,18 @@ describe Gitlab::LDAP::AuthHash do
 
   describe '#uid' do
     context 'when there is extraneous (but valid) whitespace' do
-      let(:given_uid) { 'uid     =John Smith ,  ou = People, dc=  example,dc =com' }
+      let(:given_uid) { 'uid     =john smith ,  ou = people, dc=  example,dc =com' }
 
       it 'removes the extraneous whitespace' do
-        expect(auth_hash.uid).to eq('uid=John Smith,ou=People,dc=example,dc=com')
+        expect(auth_hash.uid).to eq('uid=john smith,ou=people,dc=example,dc=com')
+      end
+    end
+
+    context 'when there are upper case characters' do
+      let(:given_uid) { 'UID=John Smith,ou=People,dc=example,dc=com' }
+
+      it 'downcases' do
+        expect(auth_hash.uid).to eq('uid=john smith,ou=people,dc=example,dc=com')
       end
     end
   end
