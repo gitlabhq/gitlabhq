@@ -1,9 +1,9 @@
 <script>
-  import imageDiffProps from './../mixins/image_diff_props';
+  import imageDiffProps from '../mixins/image_diff_props';
   import twoUpView from './two_up_view.vue';
   import swipeView from './swipe_view.vue';
   import onionSkinView from './onion_skin_view.vue';
-  import * as constants from './../constants';
+  import * as constants from '../constants';
 
   export default {
     name: 'imageReplaced',

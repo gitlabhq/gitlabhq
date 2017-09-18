@@ -1,5 +1,5 @@
 <script>
-  import * as imageReplacedProps from './../mixins/image_replaced_props';
+  import * as imageReplacedProps from '../mixins/image_replaced_props';
   import imageFrame from './image_frame.vue';
 
   export default {

@@ -1,5 +1,5 @@
 <script>
-  import imageDiffProps from './../mixins/image_diff_props';
+  import imageDiffProps from '../mixins/image_diff_props';
   import imageReplaced from './image_replaced.vue';
   import imageFrame from './image_frame.vue';
 
