@@ -77,10 +77,11 @@ export const hideMenu = (el) => {
 export const moveSubItemsToPosition = (el, subItems) => {
   const boundingRect = el.getBoundingClientRect();
   const top = calculateTop(boundingRect, subItems.offsetHeight);
+  const left = sidebar ? sidebar.offsetWidth : 50;
   const isAbove = top < boundingRect.top;
 
   subItems.classList.add('fly-out-list');
-  subItems.style.transform = `translate3d(0, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
+  subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
 
   const subItemsRect = subItems.getBoundingClientRect();
 

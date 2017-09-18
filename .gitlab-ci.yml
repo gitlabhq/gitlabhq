@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-60.0-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
@@ -191,6 +191,9 @@ review-docs-deploy:
   stage: build
   environment:
     name: review-docs/$CI_COMMIT_REF_NAME
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
+    url: http://$CI_COMMIT_REF_SLUG-built-from-ce-ee.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
     - gem install gitlab --no-doc

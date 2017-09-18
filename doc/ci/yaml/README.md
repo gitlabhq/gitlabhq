@@ -727,6 +727,9 @@ deployment to the `production` environment.
 - Before GitLab 8.11, the name of an environment could be defined as a string like
   `environment: production`. The recommended way now is to define it under the
   `name` keyword.
+- The `name` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 The `environment` name can contain:
 
@@ -762,6 +765,9 @@ deploy to production:
 - Introduced in GitLab 8.11.
 - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
   recommended way now is to define it in `.gitlab-ci.yml`.
+- The `url` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 This is an optional value that when set, it exposes buttons in various places
 in GitLab which when clicked take you to the defined URL.
@@ -841,10 +847,9 @@ The `stop_review_app` job is **required** to have the following keywords defined
 **Notes:**
 - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
 - The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
-
-`environment` can also represent a configuration hash with `name` and `url`.
-These parameters can use any of the defined [CI variables](#variables)
-(including predefined, secure variables and `.gitlab-ci.yml` variables).
+- The `name` and `url` parameters can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 For example:
 
