@@ -1,14 +1,9 @@
-window.gl = window.gl || {};
-window.gl.utils = window.gl.utils || {};
 
 export const getPagePath = (index = 0) => $('body').data('page').split(':')[index];
-window.gl.utils.getPagePath = getPagePath;
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
-window.gl.utils.isInGroupsPage = isInGroupsPage;
 
 export const isInProjectPage = () => getPagePath() === 'projects';
-window.gl.utils.isInProjectPage = isInProjectPage;
 
 export const getProjectSlug = () => {
   if (isInProjectPage()) {
@@ -16,7 +11,6 @@ export const getProjectSlug = () => {
   }
   return null;
 };
-window.gl.utils.getProjectSlug = getProjectSlug;
 
 export const getGroupSlug = () => {
   if (isInGroupsPage()) {
@@ -24,7 +18,6 @@ export const getGroupSlug = () => {
   }
   return null;
 };
-window.gl.utils.getGroupSlug = getGroupSlug;
 
 export const isInIssuePage = () => {
   const page = getPagePath(1);
@@ -32,21 +25,18 @@ export const isInIssuePage = () => {
 
   return page === 'issues' && action === 'show';
 };
-window.gl.utils.isInIssuePage = isInGroupsPage;
 
 export const ajaxGet = url => $.ajax({
   type: 'GET',
   url,
   dataType: 'script',
 });
-window.gl.utils.ajaxGet = ajaxGet;
 
 export const ajaxPost = (url, data) => $.ajax({
   type: 'POST',
   url,
   data,
 });
-window.gl.utils.ajaxPost = ajaxPost;
 
 export const rstrip = (val) => {
   if (val) {
@@ -54,10 +44,8 @@ export const rstrip = (val) => {
   }
   return val;
 };
-window.gl.utils.rstrip = rstrip;
 
 export const updateTooltipTitle = ($tooltipEl, newTitle) => $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
-window.gl.utils.updateTooltipTitle = updateTooltipTitle;
 
 export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventName = 'input') => {
   const field = $(fieldSelector);
@@ -73,7 +61,6 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
     return closestSubmit.enable();
   });
 };
-window.gl.utils.disableButtonIfEmptyField = disableButtonIfEmptyField;
 
 // automatically adjust scroll position for hash urls taking the height of the navbar into account
 // https://github.com/twitter/bootstrap/issues/1768
@@ -111,7 +98,6 @@ export const handleLocationHash = () => {
     window.scrollBy(0, adjustment);
   }
 };
-window.gl.utils.handleLocationHash = handleLocationHash;
 
 // Check if element scrolled into viewport from above or below
 // Courtesy http://stackoverflow.com/a/7557433/414749
@@ -125,14 +111,12 @@ export const isInViewport = (el) => {
     rect.right <= window.innerWidth
   );
 };
-window.gl.utils.isInViewport = isInViewport;
 
 export const parseUrl = (url) => {
   const parser = document.createElement('a');
   parser.href = url;
   return parser;
 };
-window.gl.utils.parseUrl = parseUrl;
 
 export const parseUrlPathname = (url) => {
   const parsedUrl = parseUrl(url);
@@ -140,7 +124,6 @@ export const parseUrlPathname = (url) => {
   // We have to make sure we always have an absolute path.
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
-window.gl.utils.parseUrlPathname = parseUrlPathname;
 
 // We can trust that each param has one & since values containing & will be encoded
 // Remove the first character of search as it is always ?
@@ -148,17 +131,14 @@ export const getUrlParamsArray = () => window.location.search.slice(1).split('&'
   const split = param.split('=');
   return [decodeURI(split[0]), split[1]].join('=');
 });
-window.gl.utils.getUrlParamsArray = getUrlParamsArray;
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
-window.gl.utils.isMetaKey = isMetaKey;
 
 // Identify following special clicks
 // 1) Cmd + Click on Mac (e.metaKey)
 // 2) Ctrl + Click on PC (e.ctrlKey)
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
-window.gl.utils.isMetaClick = isMetaClick;
 
 export const scrollToElement = ($el) => {
   const top = $el.offset().top;
@@ -169,7 +149,6 @@ export const scrollToElement = ($el) => {
     scrollTop: top - mrTabsHeight - headerHeight,
   }, 200);
 };
-window.gl.utils.scrollToElement = scrollToElement;
 
 /**
   this will take in the `name` of the param you want to parse in the url
@@ -185,7 +164,6 @@ export const getParameterByName = (name, urlToParse) => {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
-window.gl.utils.getParameterByName = getParameterByName;
 
 export const getSelectedFragment = () => {
   const selection = window.getSelection();
@@ -198,7 +176,6 @@ export const getSelectedFragment = () => {
 
   return documentFragment;
 };
-window.gl.utils.getSelectedFragment = getSelectedFragment;
 
 // TODO: Update this name, there is a gl.text.insertText function.
 export const insertText = (target, text) => {
@@ -226,7 +203,6 @@ export const insertText = (target, text) => {
   event.initEvent('autosize:update', true, false);
   target.dispatchEvent(event);
 };
-window.gl.utils.insertText = insertText;
 
 export const nodeMatchesSelector = (node, selector) => {
   const matches = Element.prototype.matches ||
@@ -253,7 +229,6 @@ export const nodeMatchesSelector = (node, selector) => {
   const matchingNodes = parentNode.querySelectorAll(selector);
   return Array.prototype.indexOf.call(matchingNodes, node) !== -1;
 };
-window.gl.utils.nodeMatchesSelector = nodeMatchesSelector;
 
 /**
   this will take in the headers from an API response and normalize them
@@ -431,4 +406,32 @@ export const setCiStatusFavicon = (pageUrl) => {
       resetFavicon();
     },
   });
+};
+
+window.gl = window.gl || {};
+window.gl.utils = {
+  ...(window.gl.utils || {}),
+  getPagePath,
+  isInGroupsPage,
+  isInProjectPage,
+  getProjectSlug,
+  getGroupSlug,
+  isInIssuePage,
+  ajaxGet,
+  ajaxPost,
+  rstrip,
+  updateTooltipTitle,
+  disableButtonIfEmptyField,
+  handleLocationHash,
+  isInViewport,
+  parseUrl,
+  parseUrlPathname,
+  getUrlParamsArray,
+  isMetaKey,
+  isMetaClick,
+  scrollToElement,
+  getParameterByName,
+  getSelectedFragment,
+  insertText,
+  nodeMatchesSelector,
 };
