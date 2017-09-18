@@ -66,4 +66,14 @@ describe Profiles::KeysController do
       end
     end
   end
+
+  describe '#create' do
+    it 'logs the audit event' do
+      sign_in(user)
+
+      key = build(:key)
+      
+      expect { post :create, key: key.attributes }.to change{ SecurityEvent.count }.by(1)
+    end
+  end
 end
