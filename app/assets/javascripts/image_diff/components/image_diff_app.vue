@@ -1,5 +1,5 @@
 <script>
-  import { mapActions } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   import store from '../stores/';
   import imageDiffProps from './../mixins/image_diff_props';
   import imageReplaced from './image_replaced.vue';
@@ -12,21 +12,16 @@
         type: Array,
         required: true,
       },
+      uid: {
+        type: Number,
+        required: true,
+      },
     },
     store,
     mixins: [imageDiffProps],
     components: {
       imageReplaced,
       imageFrame,
-    },
-    methods: {
-      ...mapActions({
-        setImages: 'setImages',
-        setCoordinates: 'setCoordinates',
-      }),
-      styleCoordinate(coordinate) {
-        return `left: ${coordinate.x}px; top: ${coordinate.y}px`;
-      },
     },
     computed: {
       isImageReplaced() {
@@ -42,9 +37,43 @@
         return !this.isImageReplaced && this.isImageAdded ? 'added' : 'deleted';
       },
     },
+    methods: {
+      // ...mapGetters({
+      //   getImages: 'images',
+      // }),
+      ...mapActions({
+        addImageDiff: 'addImageDiff',
+        actionAddCoordinate: 'addCoordinate',
+      }),
+      addCoordinate(event) {
+        const container = event.target.parentElement;
+        const x = event.offsetX ? (event.offsetX) : event.pageX - container.offsetLeft;
+        const y = event.offsetY ? (event.offsetY) : event.pageY - container.offsetTop;
+
+        // TODO: Include cursor image offset into x, y calculation
+        // debugger
+        // TODO: Do not allow multiple copies of the same coordinate
+        // this.actionAddCoordinate({
+        //   x,
+        //   y,
+        // });
+
+        this.actionAddCoordinate({
+          imageDiffId: this.uid,
+          x,
+          y,
+        })
+      },
+    },
     created() {
-      this.setImages(this.images);
-      this.setCoordinates(this.coordinates);
+      // this.setImages(this.images);
+      // this.setCoordinates(this.coordinates);
+
+      this.addImageDiff({
+        id: this.uid,
+        images: this.images,
+        coordinates: this.coordinates,
+      });
     },
   };
 </script>
@@ -59,17 +88,9 @@
         :className="currentImageFrameClass"
         :src="currentImage.path"
         :alt="currentImage.alt"
-      >
-        <!-- TODO: Display coordinates after image load -->
-        <button
-          v-for="(coordinate, index) in coordinates"
-          :key="index"
-          class="badge"
-          :style="styleCoordinate(coordinate)"
-        >
-          {{index + 1}}
-        </button>
-      </image-frame>
+        @click="addCoordinate"
+        :coordinates="coordinates"
+      />
       <p class="image-info">
         {{currentImage.size}}
       </p>

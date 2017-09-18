@@ -1,6 +1,11 @@
 <script>
   export default {
     name: 'imageFrame',
+    data() {
+      return {
+        imageLoaded: false,
+      };
+    },
     props: {
       src: {
         type: String,
@@ -14,13 +19,21 @@
         type: String,
         required: false,
       },
+      coordinates: {
+        type: Array,
+        required: false,
+      },
     },
     methods: {
       load(event) {
+        this.imageLoaded = true;
         this.$emit('imageLoaded', event);
       },
       click() {
         this.$emit('click', event);
+      },
+      styleCoordinate(coordinate) {
+        return `left: ${coordinate.x}px; top: ${coordinate.y}px`;
       },
     },
   };
@@ -37,6 +50,14 @@
       :src="src"
       :alt="alt"
     />
-    <slot />
+    <!-- <slot v-if="imageLoaded" /> -->
+    <button
+      v-for="(coordinate, index) in coordinates"
+      :key="index"
+      class="badge"
+      :style="styleCoordinate(coordinate)"
+    >
+      {{index + 1}}
+    </button>
   </div>
 </template>

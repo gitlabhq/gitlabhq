@@ -8,8 +8,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    images: [],
-    comments: [],
+    imageDiffs: {},
   },
   actions,
   getters,
