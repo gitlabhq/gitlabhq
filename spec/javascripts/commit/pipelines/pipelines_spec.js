@@ -29,6 +29,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            newPipelinePath: 'foo',
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
