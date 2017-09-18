@@ -37,6 +37,8 @@ module API
     end
 
     resource :groups do
+      include CustomAttributesEndpoints
+
       desc 'Get a groups list' do
         success Entities::Group
       end
@@ -51,7 +53,12 @@ module API
         use :pagination
       end
       get do
-        find_params = { all_available: params[:all_available], owned: params[:owned] }
+        find_params = {
+          all_available: params[:all_available],
+          owned: params[:owned],
+          custom_attributes: params[:custom_attributes]
+        }
+
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?

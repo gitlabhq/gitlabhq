@@ -1,8 +1,9 @@
 # Custom Attributes API
 
 Every API call to custom attributes must be authenticated as administrator.
-Custom attributes are currently available on users and projects, which will
-be referred to as "resource" in this documentation.
+
+Custom attributes are currently available on users, groups, and projects,
+which will be referred to as "resource" in this documentation.
 
 ## List custom attributes
 
@@ -10,6 +11,7 @@ Get all custom attributes on a resource.
 
 ```
 GET /users/:id/custom_attributes
+GET /groups/:id/custom_attributes
 GET /projects/:id/custom_attributes
 ```
 
@@ -42,6 +44,7 @@ Get a single custom attribute on a resource.
 
 ```
 GET /users/:id/custom_attributes/:key
+GET /groups/:id/custom_attributes/:key
 GET /projects/:id/custom_attributes/:key
 ```
 
@@ -70,6 +73,7 @@ or newly created otherwise.
 
 ```
 PUT /users/:id/custom_attributes/:key
+PUT /groups/:id/custom_attributes/:key
 PUT /projects/:id/custom_attributes/:key
 ```
 
@@ -98,6 +102,7 @@ Delete a custom attribute on a resource.
 
 ```
 DELETE /users/:id/custom_attributes/:key
+DELETE /groups/:id/custom_attributes/:key
 DELETE /projects/:id/custom_attributes/:key
 ```
 

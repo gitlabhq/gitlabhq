@@ -693,6 +693,17 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "gpg_signatures", ["gpg_key_subkey_id"], name: "index_gpg_signatures_on_gpg_key_subkey_id", using: :btree
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
+  create_table "group_custom_attributes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "group_id", null: false
+    t.string "key", null: false
+    t.string "value", null: false
+  end
+
+  add_index "group_custom_attributes", ["group_id", "key"], name: "index_group_custom_attributes_on_group_id_and_key", unique: true, using: :btree
+  add_index "group_custom_attributes", ["key", "value"], name: "index_group_custom_attributes_on_key_and_value", using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -1840,6 +1851,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
+  add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
