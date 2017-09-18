@@ -134,6 +134,8 @@
               width: maxWidth + 1,
               height: maxHeight + 2
             });
+
+            // Set swipeBar left position to match image frame
             $swipeBar.css({
               left: 1
             });

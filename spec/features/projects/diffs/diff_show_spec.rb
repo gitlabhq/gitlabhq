@@ -71,6 +71,20 @@ feature 'Diff file viewer', :js do
         expect(page).to have_css('img[alt="files/images/6049019_460s.jpg"]')
       end
     end
+
+    it 'shows view replaced and view file links' do
+      expect(page.all('.file-actions a').length).to eq 2
+    end
+  end
+
+  context 'Image file added' do
+    before do
+      visit_commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+    end
+
+    it 'shows view file link ' do
+      expect(page.all('.file-actions a').length).to eq 1
+    end
   end
 
   context 'ISO file (stored in LFS)' do

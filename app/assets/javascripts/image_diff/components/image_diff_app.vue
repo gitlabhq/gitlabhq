@@ -28,7 +28,7 @@
         return this.images.added && this.images.deleted;
       },
       isImageAdded() {
-        return this.images.added !== null;
+        return !!this.images.added;
       },
       currentImage() {
         return this.images.added || this.images.deleted;
@@ -80,8 +80,12 @@
 
 <template>
   <div class="image">
+    <image-replaced
+      v-if="isImageReplaced"
+      :images="images"
+    />
     <span
-      v-if="!isImageReplaced"
+      v-else
       class="wrap"
     >
       <image-frame
@@ -95,9 +99,5 @@
         {{currentImage.size}}
       </p>
     </span>
-    <image-replaced
-      v-else
-      :images="images"
-    />
   </div>
 </template>
