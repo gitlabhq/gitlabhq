@@ -252,6 +252,8 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
+>**Note:** The `cache:key` variable cannot contain the `/` character.
+
 ---
 
 **Example configurations**
