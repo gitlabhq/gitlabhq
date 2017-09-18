@@ -4,11 +4,7 @@ module Gitlab
       module Policy
         def self.fabricate(specs)
           specifications = specs.to_h.map do |spec, value|
-            begin
-              self.const_get(spec.to_s.camelize).new(value)
-            rescue NameError
-              next
-            end
+            self.const_get(spec.to_s.camelize).new(value)
           end
 
           specifications.compact

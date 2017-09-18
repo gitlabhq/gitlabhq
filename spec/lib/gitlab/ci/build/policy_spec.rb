@@ -20,11 +20,8 @@ describe Gitlab::Ci::Build::Policy do
 
     context 'when some policies are not defined' do
       it 'gracefully skips unknown policies' do
-        specs = described_class.fabricate(something: 'first', else: 'unknown')
-
-        expect(specs).to be_an Array
-        expect(specs).to be_one
-        expect(policy).to have_received(:new).with('first')
+        expect { described_class.fabricate(unknown: 'first') }
+          .to raise_error(NameError)
       end
     end
 
