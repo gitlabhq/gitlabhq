@@ -7,6 +7,7 @@ class DeleteModal {
     this.$branchName = $('.js-branch-name', this.$modal);
     this.$confirmInput = $('.js-delete-branch-input', this.$modal);
     this.$deleteBtn = $('.js-delete-branch', this.$modal);
+    this.$notMerged = $('.js-not-merged', this.$modal);
     this.bindEvents();
   }
 
@@ -16,8 +17,10 @@ class DeleteModal {
   }
 
   setModalData(e) {
-    this.branchName = e.currentTarget.dataset.branchName || '';
-    this.deletePath = e.currentTarget.dataset.deletePath || '';
+    const branchData = e.currentTarget.dataset;
+    this.branchName = branchData.branchName || '';
+    this.deletePath = branchData.deletePath || '';
+    this.isMerged = !!branchData.isMerged;
     this.updateModal();
   }
 
@@ -30,6 +33,7 @@ class DeleteModal {
     this.$confirmInput.val('');
     this.$deleteBtn.attr('href', this.deletePath);
     this.$deleteBtn.attr('disabled', true);
+    this.$notMerged.toggleClass('hidden', this.isMerged);
   }
 }
 

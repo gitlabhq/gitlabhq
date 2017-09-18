@@ -54,9 +54,9 @@ describe API::Projects do
 
     shared_examples_for 'projects response without N + 1 queries' do
       it 'avoids N + 1 queries' do
-        control_count = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new do
           get api('/projects', current_user)
-        end.count
+        end
 
         if defined?(additional_project)
           additional_project
@@ -66,7 +66,7 @@ describe API::Projects do
 
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control_count + 8)
+        end.not_to exceed_query_limit(control).with_threshold(8)
       end
     end
 

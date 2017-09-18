@@ -105,7 +105,8 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   &.sidebar-icons-only {
-    width: $new-sidebar-collapsed-width;
+    width: auto;
+    min-width: $new-sidebar-collapsed-width;
 
     .nav-sidebar-inner-scroll {
       overflow-x: hidden;
@@ -123,6 +124,10 @@ $new-sidebar-collapsed-width: 50px;
 
     .fly-out-top-item {
       display: block;
+    }
+
+    .avatar-container {
+      margin-right: 0;
     }
   }
 
@@ -187,7 +192,7 @@ $new-sidebar-collapsed-width: 50px;
 .nav-sidebar-inner-scroll {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: scroll;
 }
 
 .with-performance-bar .nav-sidebar {
@@ -248,7 +253,7 @@ $new-sidebar-collapsed-width: 50px;
         @media (min-width: $screen-sm-min) {
           position: fixed;
           top: 0;
-          left: $new-sidebar-width;
+          left: 0;
           min-width: 150px;
           margin-top: -1px;
           padding: 4px 1px;
@@ -386,10 +391,6 @@ $new-sidebar-collapsed-width: 50px;
     }
 
     .sidebar-sub-level-items {
-      @media (min-width: $screen-sm-min) {
-        left: $new-sidebar-collapsed-width;
-      }
-
       &:not(.flyout-list) {
         display: none;
       }
