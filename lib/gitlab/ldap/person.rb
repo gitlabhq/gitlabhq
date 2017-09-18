@@ -36,6 +36,35 @@ module Gitlab
         ]
       end
 
+      # Returns the UID or DN in a normalized form
+      def self.normalize_uid_or_dn(uid_or_dn)
+        if is_dn?(uid_or_dn)
+          normalize_dn(uid_or_dn)
+        else
+          normalize_uid(uid_or_dn)
+        end
+      end
+
+      # Returns true if the string looks like a DN rather than a UID.
+      #
+      # An empty string is technically a valid DN (null DN), although we should
+      # never need to worry about that.
+      def self.is_dn?(uid_or_dn)
+        uid_or_dn.blank? || uid_or_dn.include?('=')
+      end
+
+      # Returns the UID in a normalized form.
+      #
+      # 1. Excess spaces are stripped
+      # 2. The string is downcased (for case-insensitivity)
+      def self.normalize_uid(uid)
+        normalize_dn_part(uid)
+      end
+
+      # Returns the DN in a normalized form.
+      #
+      # 1. Excess spaces around attribute names and values are stripped
+      # 2. The string is downcased (for case-insensitivity)
       def self.normalize_dn(dn)
         dn.split(/([,+=])/).map do |part|
           normalize_dn_part(part)
