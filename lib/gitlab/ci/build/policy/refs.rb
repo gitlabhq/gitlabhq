@@ -27,20 +27,13 @@ module Gitlab
           def matches_pattern?(pattern, pipeline)
             return true if pipeline.tag? && pattern == 'tags'
             return true if pipeline.branch? && pattern == 'branches'
-            return true if source_to_pattern(pipeline.source) == pattern
+            return true if pipeline.source == pattern
+            return true if pipeline.source&.pluralize == pattern
 
             if pattern.first == "/" && pattern.last == "/"
               Regexp.new(pattern[1...-1]) =~ pipeline.ref
             else
               pattern == pipeline.ref
-            end
-          end
-
-          def source_to_pattern(source)
-            if %w[api external web].include?(source)
-              source
-            else
-              source&.pluralize
             end
           end
         end
