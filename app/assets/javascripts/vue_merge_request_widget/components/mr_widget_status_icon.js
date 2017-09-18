@@ -26,6 +26,7 @@ export default {
       <ci-icon v-else :status="statusObj" />
       <button
         v-if="showDisabledButton"
+        ref="mergeButton"
         type="button"
         class="btn btn-success btn-sm"
         disabled="true">

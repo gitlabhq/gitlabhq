@@ -284,7 +284,14 @@ export default {
                 :mr="mr"
                 :is-merge-button-disabled="isMergeButtonDisabled" />
 
+              <span
+                v-if="mr.ffOnlyEnabled"
+                ref="fastForwardMessage">
+                Fast-forward merge without a merge commit
+              </span>
               <button
+                v-else
+                ref="modifyCommitMessageButton"
                 @click="toggleCommitMessageEditor"
                 :disabled="isMergeButtonDisabled"
                 class="btn btn-default btn-xs"
