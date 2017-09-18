@@ -90,7 +90,7 @@ describe Audit::Details do
       end
 
       it 'humanizes the removal action' do
-        expect(described_class.humanize(action)).to eq('Removed deploy key')
+        expect(described_class.humanize(action)).to eq('Changed email from a@b.com to c@b.com')
       end
     end
   end
