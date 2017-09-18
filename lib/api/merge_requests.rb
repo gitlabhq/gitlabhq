@@ -2,7 +2,7 @@ module API
   class MergeRequests < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
 
@@ -55,6 +55,7 @@ module API
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
+        authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
         options = { with: Entities::MergeRequestBasic,
