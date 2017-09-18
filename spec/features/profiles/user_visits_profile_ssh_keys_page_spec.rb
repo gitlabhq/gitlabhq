@@ -10,7 +10,6 @@ describe 'User visits the profile SSH keys page' do
   end
 
   it 'shows correct menu item' do
-    expect(find('.sidebar-top-level-items > li.active')).to have_content('SSH Keys')
-    expect(page).to have_selector('.sidebar-top-level-items > li.active', count: 1)
+    expect(page).to have_active_navigation('SSH Keys')
   end
 end

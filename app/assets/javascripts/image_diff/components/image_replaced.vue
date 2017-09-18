@@ -66,24 +66,27 @@
       :added="images.added"
       :deleted="images.deleted"
     />
-    <div class="btn-group">
+    <div class="btn-group btn-group-gray-link">
       <button
+        type="button"
         class="btn btn-link"
-        :class="[{ active: isCurrentViewTwoUp }]"
+        :class="{ active: isCurrentViewTwoUp }"
         @click="goToTwoUpView"
       >
         2-up
       </button>
       <button
+        type="button"
         class="btn btn-link"
-        :class="[{ active: isCurrentViewSwipe }]"
+        :class="{ active: isCurrentViewSwipe }"
         @click="goToSwipeView"
       >
         Swipe
       </button>
       <button
+        type="button"
         class="btn btn-link"
-        :class="[{ active: isCurrentViewOnionSkin }]"
+        :class="{ active: isCurrentViewOnionSkin }"
         @click="goToOnionSkinView"
       >
         Onion skin

@@ -653,6 +653,43 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
+      def merge(user, source_sha, target_branch, message)
+        committer = Gitlab::Git.committer_hash(email: user.email, name: user.name)
+
+        OperationService.new(user, self).with_branch(target_branch) do |start_commit|
+          our_commit = start_commit.sha
+          their_commit = source_sha
+
+          raise 'Invalid merge target' unless our_commit
+          raise 'Invalid merge source' unless their_commit
+
+          merge_index = rugged.merge_commits(our_commit, their_commit)
+          break if merge_index.conflicts?
+
+          options = {
+            parents: [our_commit, their_commit],
+            tree: merge_index.write_tree(rugged),
+            message: message,
+            author: committer,
+            committer: committer
+          }
+
+          commit_id = create_commit(options)
+
+          yield commit_id
+
+          commit_id
+        end
+      rescue Gitlab::Git::CommitError # when merge_index.conflicts?
+        nil
+      end
+
+      def create_commit(params = {})
+        params[:message].delete!("\r")
+
+        Rugged::Commit.create(rugged, params)
+      end
+
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
         gitaly_migrate(:delete_branch) do |is_enabled|

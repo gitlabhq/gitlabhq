@@ -22,7 +22,7 @@ module Gitlab
     def base_and_ancestors
       return ancestors_base unless Group.supports_nested_groups?
 
-      base_and_ancestors_cte.apply_to(model.all)
+      read_only(base_and_ancestors_cte.apply_to(model.all))
     end
 
     # Returns a relation that includes the descendants_base set of groups
@@ -30,7 +30,7 @@ module Gitlab
     def base_and_descendants
       return descendants_base unless Group.supports_nested_groups?
 
-      base_and_descendants_cte.apply_to(model.all)
+      read_only(base_and_descendants_cte.apply_to(model.all))
     end
 
     # Returns a relation that includes the base groups, their ancestors,
@@ -67,11 +67,13 @@ module Gitlab
       union = SQL::Union.new([model.unscoped.from(ancestors_table),
                               model.unscoped.from(descendants_table)])
 
-      model
+      relation = model
         .unscoped
         .with
         .recursive(ancestors.to_arel, descendants.to_arel)
         .from("(#{union.to_sql}) #{model.table_name}")
+
+      read_only(relation)
     end
 
     private
@@ -106,6 +108,13 @@ module Gitlab
 
     def groups_table
       model.arel_table
+    end
+
+    def read_only(relation)
+      # relations using a CTE are not safe to use with update_all as it will
+      # throw away the CTE, hence we mark them as read-only.
+      relation.extend(Gitlab::Database::ReadOnlyRelation)
+      relation
     end
   end
 end
