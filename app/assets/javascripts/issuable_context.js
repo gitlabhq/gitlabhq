@@ -73,7 +73,7 @@ const PARTICIPANTS_ROW_COUNT = 7;
 
       $(".js-participants-hidden").toggle();
 
-      gl.lazyLoader.loadCheck();
+      if (gl.lazyLoader) gl.lazyLoader.loadCheck();
     };
 
     return IssuableContext;

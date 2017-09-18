@@ -47,8 +47,7 @@ import Cookies from 'js-cookie';
         if (!triggered) {
           Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
         }
-        console.log('loadCheck')
-        gl.lazyLoader.loadCheck();
+        if (gl.lazyLoader) gl.lazyLoader.loadCheck();
       });
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
     };
