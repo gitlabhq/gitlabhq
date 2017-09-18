@@ -24,7 +24,7 @@ describe Gitlab::Ci::Build::Policy::Kubernetes do
   context 'when kubernetes policy is invalid' do
     it 'raises an error' do
       expect { described_class.new('unknown') }
-        .to raise_error described_class::UnknownPolicyError
+        .to raise_error(described_class::UnknownPolicyError)
     end
   end
 end
