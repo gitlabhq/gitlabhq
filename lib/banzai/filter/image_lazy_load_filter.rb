@@ -8,15 +8,14 @@ module Banzai
           img['class'] ||= '' << 'lazy'
           img['data-src'] = img['src']
           if img['src'].include?('?w=') && img['src'].include?('&h=')
-            uri = URI.parse(img['src'])
-            sizeParameters = CGI.parse(img['src'])
-            
-            img_width = sizeParameters['w'].to_i
-            img_height = sizeParameters['h'].to_i
+            size_parameters = CGI.parse(URI.parse(img['src']).query)
+
+            img_width = size_parameters['w'].first.to_i
+            img_height = size_parameters['h'].first.to_i
 
             img['width'] = img_width
             img['height'] = img_height
-            
+
             if img_width > img_height
               aspect = img_height / (img_width * 0.01)
               img['style'] = '' << "height:0;padding-bottom:#{aspect}%"
