@@ -11,9 +11,9 @@ class Profiles::KeysController < Profiles::ApplicationController
   end
 
   def create
-    @key = current_user.keys.new(key_params)
+    @key = Keys::CreateService.new(current_user, key_params).execute
 
-    if @key.save
+    if @key.persisted?
       redirect_to profile_key_path(@key)
     else
       @keys = current_user.keys.select(&:persisted?)

@@ -15,6 +15,11 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         params: {
           per_page: 20,
           active: true,
+<<<<<<< HEAD
+=======
+          group_id: this.getGroupId(),
+          project_id: this.getProjectId(),
+>>>>>>> ce-com/master
           current_user: true,
           ...this.projectOrGroupId(),
         },

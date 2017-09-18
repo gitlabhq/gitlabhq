@@ -1463,6 +1463,7 @@ describe Ci::Pipeline, :mailer do
       expect(query_count).to eq(1)
     end
   end
+<<<<<<< HEAD
 
   describe '#codeclimate_artifact' do
     context 'has codequality job' do
@@ -1491,4 +1492,6 @@ describe Ci::Pipeline, :mailer do
       it { expect(pipeline.codeclimate_artifact).to be_nil }
     end
   end
+=======
+>>>>>>> ce-com/master
 end

@@ -12,7 +12,11 @@ module Boards
     def index
       issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
       issues = issues.page(params[:page]).per(params[:per] || 20)
+<<<<<<< HEAD
       make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
+=======
+      make_sure_position_is_set(issues)
+>>>>>>> ce-com/master
       issues = issues.preload(:project,
                               :milestone,
                               :assignees,

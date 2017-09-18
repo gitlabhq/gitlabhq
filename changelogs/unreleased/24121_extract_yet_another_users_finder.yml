@@ -1,0 +1,5 @@
+---
+title: Extract AutocompleteController#users into finder
+merge_request: 13778
+author: Maxim Rydkin, Mayra Cabrera
+type: other

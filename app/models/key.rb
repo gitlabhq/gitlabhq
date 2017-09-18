@@ -31,7 +31,6 @@ class Key < ActiveRecord::Base
   delegate :name, :email, to: :user, prefix: true
 
   after_commit :add_to_shell, on: :create
-  after_commit :notify_user, on: :create
   after_create :post_create_hook
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
@@ -120,9 +119,5 @@ class Key < ActiveRecord::Base
         .to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
 
     "type is forbidden. Must be #{allowed_types}"
-  end
-
-  def notify_user
-    NotificationService.new.new_key(self)
   end
 end

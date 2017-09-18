@@ -97,6 +97,12 @@ class Repository
     )
   end
 
+  # we need to have this method here because it is not cached in ::Git and
+  # the method is called multiple times for every request
+  def has_visible_content?
+    branch_count > 0
+  end
+
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
   end
@@ -771,6 +777,7 @@ class Repository
 
   def with_cache_hooks
     result = yield
+<<<<<<< HEAD
 
     return unless result
 
@@ -780,6 +787,17 @@ class Repository
     result.newrev
   end
 
+=======
+
+    return unless result
+
+    after_create if result.repo_created?
+    after_create_branch if result.branch_created?
+
+    result.newrev
+  end
+
+>>>>>>> ce-com/master
   def with_branch(user, *args)
     with_cache_hooks do
       Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
@@ -850,6 +868,7 @@ class Repository
     end
   end
 
+<<<<<<< HEAD
   def ff_merge(user, source, target_branch, merge_request: nil)
     our_commit = rugged.branches[target_branch].target
     their_commit =
@@ -869,6 +888,8 @@ class Repository
     end
   end
 
+=======
+>>>>>>> ce-com/master
   def merge(user, source_sha, merge_request, message)
     with_cache_hooks do
       raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|

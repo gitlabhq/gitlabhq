@@ -158,11 +158,23 @@
     box-shadow: inset 4px 0 0 $color-700;
 
     > a {
-      color: $color-900;
+      color: $color-800;
     }
 
     svg {
-      fill: $color-900;
+      fill: $color-800;
+    }
+  }
+
+  .sidebar-top-level-items > li.active .badge {
+    color: $color-800;
+  }
+
+  .nav-links li.active a {
+    border-bottom-color: $color-500;
+
+    .badge {
+      font-weight: $gl-font-weight-bold;
     }
   }
 }
@@ -260,6 +272,10 @@ body {
       svg {
         fill: $theme-gray-900;
       }
+    }
+
+    .sidebar-top-level-items > li.active .badge {
+      color: $theme-gray-900;
     }
   }
 }

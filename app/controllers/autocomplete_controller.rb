@@ -2,6 +2,7 @@ class AutocompleteController < ApplicationController
   AWARD_EMOJI_MAX = 100
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
+<<<<<<< HEAD
   before_action :load_project, only: [:users, :project_groups]
   before_action :find_users, only: [:users]
 
@@ -28,6 +29,13 @@ class AutocompleteController < ApplicationController
         @users = [author, *@users].uniq if author
       end
     end
+=======
+  before_action :load_project, only: [:users]
+  before_action :load_group, only: [:users]
+
+  def users
+    @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, project: @project, group: @group).execute
+>>>>>>> ce-com/master
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
@@ -64,6 +72,7 @@ class AutocompleteController < ApplicationController
 
   private
 
+<<<<<<< HEAD
   def load_users_by_ability
     ability = :push_code_to_protected_branches if params[:push_code_to_protected_branches].present?
     ability = :push_code if params[:push_code].present?
@@ -87,15 +96,16 @@ class AutocompleteController < ApplicationController
 
         User.where(id: user_ids)
       elsif params[:group_id].present?
+=======
+  def load_group
+    @group ||= begin
+      if @project.blank? && params[:group_id].present?
+>>>>>>> ce-com/master
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
-
-        group.users
-      elsif current_user
-        User.all
-      else
-        User.none
+        group
       end
+    end
   end
 
   def load_project
