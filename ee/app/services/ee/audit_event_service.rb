@@ -101,8 +101,8 @@ module EE
       @details[:entity_path] = @entity&.full_path
 
       SecurityEvent.create(
-        author_id: @author.respond_to?(:id)? @author.id : -1,
-        entity_id: @entity.respond_to?(:id)? @entity.id : -1,
+        author_id: @author.respond_to?(:id) ? @author.id : -1,
+        entity_id: @entity.respond_to?(:id) ? @entity.id : -1,
         entity_type: 'User',
         details: @details
       )

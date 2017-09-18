@@ -72,8 +72,8 @@ describe Profiles::KeysController do
       sign_in(user)
 
       key = build(:key)
-      
-      expect { post :create, key: key.attributes }.to change{ SecurityEvent.count }.by(1)
+
+      expect { post :create, key: key.attributes }.to change { SecurityEvent.count }.by(1)
     end
   end
 end
