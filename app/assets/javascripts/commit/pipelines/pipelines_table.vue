@@ -9,8 +9,20 @@
         type: String,
         required: true,
       },
+      newPipelinePath: {
+        type: String,
+        required: true,
+      },
+      hasCiEnabled: {
+        type: Boolean,
+        required: true,
+      },
       helpPagePath: {
         type: String,
+        required: true,
+      },
+      canCreatePipeline: {
+        type: Boolean,
         required: true,
       },
       autoDevopsHelpPath: {
@@ -86,7 +98,10 @@
 
     <empty-state
       v-if="shouldRenderEmptyState"
+      :new-pipeline-path="newPipelinePath"
+      :has-ci-enabled="hasCiEnabled"
       :help-page-path="helpPagePath"
+      :can-create-pipeline="canCreatePipeline"
       />
 
     <error-state

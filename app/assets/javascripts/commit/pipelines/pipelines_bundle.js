@@ -31,10 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
+      const hasCiEnabled = (pipelineTableViewEl.dataset.hasCi !== undefined);
+      const canCreatePipeline = gl.utils.convertPermissionToBoolean(pipelineTableViewEl.dataset.canCreatePipeline);
+      const newPipelinePath = String(pipelineTableViewEl.dataset.newPipelinePath);
       const table = new CommitPipelinesTable({
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
+          newPipelinePath: newPipelinePath,
+          hasCiEnabled: hasCiEnabled,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          canCreatePipeline: canCreatePipeline,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();

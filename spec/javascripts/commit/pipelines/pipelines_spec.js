@@ -28,8 +28,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
         this.component = new PipelinesTable({
           propsData: {
             endpoint: 'endpoint',
-            helpPagePath: 'foo',
             newPipelinePath: 'foo',
+            hasCiEnabled: false,
+            helpPagePath: 'foo',
+            canCreatePipeline: true,
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -65,7 +67,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
         this.component = new PipelinesTable({
           propsData: {
             endpoint: 'endpoint',
+            newPipelinePath: 'foo',
+            hasCiEnabled: false,
             helpPagePath: 'foo',
+            canCreatePipeline: true,
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -117,7 +122,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
         this.component = new PipelinesTable({
           propsData: {
             endpoint: 'endpoint',
+            newPipelinePath: 'foo',
+            hasCiEnabled: false,
             helpPagePath: 'foo',
+            canCreatePipeline: true,
             autoDevopsHelpPath: 'foo',
           },
         }).$mount();
@@ -139,7 +147,10 @@ describe('Pipelines table in Commits and Merge requests', () => {
       this.component = new PipelinesTable({
         propsData: {
           endpoint: 'endpoint',
+          newPipelinePath: 'foo',
+          hasCiEnabled: false,
           helpPagePath: 'foo',
+          canCreatePipeline: true,
           autoDevopsHelpPath: 'foo',
         },
       }).$mount();

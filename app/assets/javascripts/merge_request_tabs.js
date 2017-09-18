@@ -239,10 +239,16 @@ import bp from './breakpoints';
     mountPipelinesView() {
       const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
       const CommitPipelinesTable = gl.CommitPipelinesTable;
+      const hasCiEnabled = (pipelineTableViewEl.dataset.hasCi !== undefined);
+      const canCreatePipeline = gl.utils.convertPermissionToBoolean(pipelineTableViewEl.dataset.canCreatePipeline);
+      const newPipelinePath = String(pipelineTableViewEl.dataset.newPipelinePath);
       this.commitPipelinesTable = new CommitPipelinesTable({
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
+          newPipelinePath: newPipelinePath,
+          hasCiEnabled: hasCiEnabled,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          canCreatePipeline: canCreatePipeline,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
