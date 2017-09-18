@@ -7,21 +7,21 @@ module Gitlab
             @patterns = Array(refs)
           end
 
-          def satisfied_by?(pipeline, path: nil)
+          def satisfied_by?(pipeline)
             @patterns.any? do |pattern|
-              pattern, ref_path = pattern.split('@', 2)
+              pattern, path = pattern.split('@', 2)
 
-              matches_path?(ref_path, path) &&
+              matches_path?(path, pipeline) &&
                 matches_pattern?(pattern, pipeline)
             end
           end
 
           private
 
-          def matches_path?(ref_path, expected_path)
-            return true unless ref_path
+          def matches_path?(path, pipeline)
+            return true unless path
 
-            expected_path == ref_path
+            pipeline.project_full_path == path
           end
 
           def matches_pattern?(pattern, pipeline)

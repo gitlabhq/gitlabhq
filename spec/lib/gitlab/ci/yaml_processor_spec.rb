@@ -340,14 +340,20 @@ module Gitlab
           end
 
           it "returns builds if only has current repository path" do
+            seed_pipeline = pipeline(ref: 'deploy')
+
             config = YAML.dump({
                                  before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, only: ["branches@path"] }
+                                 rspec: {
+                                   script: "rspec",
+                                   type: type,
+                                   only: ["branches@#{seed_pipeline.project_full_path}"]
+                                 }
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(1)
+            expect(config_processor.pipeline_stage_builds(type, seed_pipeline).size).to eq(1)
           end
 
           it "does not return builds if only has different repository path" do
@@ -517,14 +523,19 @@ module Gitlab
           end
 
           it "does not return builds if except has current repository path" do
+            seed_pipeline = pipeline(ref: 'deploy')
+
             config = YAML.dump({
                                  before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: type, except: ["branches@path"] }
+                                 rspec: {
+                                   script: "rspec",
+                                   type: type,
+                                   except: ["branches@#{seed_pipeline.project_full_path}"] }
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, path)
 
-            expect(config_processor.pipeline_stage_builds(type, pipeline(ref: "deploy")).size).to eq(0)
+            expect(config_processor.pipeline_stage_builds(type, seed_pipeline).size).to eq(0)
           end
 
           it "returns builds if except has different repository path" do
@@ -539,18 +550,22 @@ module Gitlab
           end
 
           it "returns build except specified type" do
+            master_pipeline = pipeline(ref: 'master')
+            test_pipeline = pipeline(ref: 'test')
+            deploy_pipeline = pipeline(ref: 'deploy')
+
             config = YAML.dump({
                                  before_script: ["pwd"],
-                                 rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@fork"] },
+                                 rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@#{test_pipeline.project_full_path}"] },
                                  staging: { script: "deploy", type: "deploy", except: ["master"] },
-                                 production: { script: "deploy", type: "deploy", except: ["master@fork"] }
+                                 production: { script: "deploy", type: "deploy", except: ["master@#{master_pipeline.project_full_path}"] }
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config, 'fork')
 
-            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "deploy")).size).to eq(2)
-            expect(config_processor.pipeline_stage_builds("test", pipeline(ref: "test")).size).to eq(0)
-            expect(config_processor.pipeline_stage_builds("deploy", pipeline(ref: "master")).size).to eq(0)
+            expect(config_processor.pipeline_stage_builds("deploy", deploy_pipeline).size).to eq(2)
+            expect(config_processor.pipeline_stage_builds("test", test_pipeline).size).to eq(0)
+            expect(config_processor.pipeline_stage_builds("deploy", master_pipeline).size).to eq(0)
           end
 
           context 'for invalid value' do

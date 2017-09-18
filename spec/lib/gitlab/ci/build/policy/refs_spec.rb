@@ -46,13 +46,13 @@ describe Gitlab::Ci::Build::Policy::Refs do
       end
 
       it 'is satisfied when provided patch matches specified one' do
-        expect(described_class.new(%w[master@some/repository]))
-          .to be_satisfied_by(pipeline, path: 'some/repository')
+        expect(described_class.new(%W[master@#{pipeline.project_full_path}]))
+          .to be_satisfied_by(pipeline)
       end
 
       it 'is not satisfied when path differs' do
         expect(described_class.new(%w[master@some/fork/repository]))
-          .not_to be_satisfied_by(pipeline, path: 'some/repository')
+          .not_to be_satisfied_by(pipeline)
       end
     end
 

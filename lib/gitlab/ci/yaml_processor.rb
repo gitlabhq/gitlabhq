@@ -63,8 +63,8 @@ module Gitlab
           except_specs = Gitlab::Ci::Build::Policy
             .fabricate(job.fetch(:except, {}))
 
-          only_specs.all? { |spec| spec.satisfied_by?(pipeline, path: @path) } &&
-            except_specs.none? { |spec| spec.satisfied_by?(pipeline, path: @path) }
+          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
+            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
         end
 
         selected_jobs.map { |_, job| build_attributes(job[:name]) }

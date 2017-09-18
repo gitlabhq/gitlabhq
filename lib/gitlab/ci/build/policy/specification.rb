@@ -3,7 +3,7 @@ module Gitlab
     module Build
       module Policy
         ##
-        # Abstract class that defines an intereface of job policy
+        # Abstract class that defines an interface of job policy
         # specification.
         #
         # Used for job's only/except policy configuration.
@@ -15,7 +15,7 @@ module Gitlab
             @spec = spec
           end
 
-          def satisfied_by?(pipeline, **metadata)
+          def satisfied_by?(pipeline)
             raise NotImplementedError
           end
         end
