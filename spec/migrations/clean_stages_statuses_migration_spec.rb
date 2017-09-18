@@ -23,6 +23,7 @@ describe CleanStagesStatusesMigration, :migration, :sidekiq, :redis do
       end
     end
   end
+
   context 'when there are no background migrations pending' do
     it 'does nothing' do
       Sidekiq::Testing.disable! do
@@ -30,6 +31,21 @@ describe CleanStagesStatusesMigration, :migration, :sidekiq, :redis do
 
         expect(migration).not_to have_received(:perform)
       end
+    end
+  end
+
+  context 'when there are still unmigrated stages afterwards' do
+    let(:stages) { table('ci_stages') }
+
+    before do
+      stages.create!(status: nil, name: 'build')
+      stages.create!(status: nil, name: 'test')
+    end
+
+    it 'migrates statuses sequentially in batches' do
+      migrate!
+
+      expect(migration).to have_received(:perform).once
     end
   end
 end
