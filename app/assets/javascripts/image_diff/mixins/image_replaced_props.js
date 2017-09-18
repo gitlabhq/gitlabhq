@@ -1,5 +1,5 @@
 export function validator(value) {
-  return value.path && value.alt;
+  return value.path && value.alt && value.size;
 }
 
 export const mixin = {

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import imageDiffApp from './components/image_diff_app.vue';
 
 document.querySelectorAll('.js-vue-image-diff').forEach(
-  (el) => new Vue({
+  el => new Vue({
     el,
     components: {
       imageDiffApp,
