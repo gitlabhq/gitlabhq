@@ -64,10 +64,10 @@
     color: $gl-text-color;
     position: sticky;
     position: -webkit-sticky;
-    top: $header-height;
+    top: $new-navbar-height;
 
     &.affix {
-      top: $header-height;
+      top: $new-navbar-height;
     }
 
     // with sidebar
@@ -174,10 +174,10 @@
 
 .with-performance-bar .build-page {
   .top-bar {
-    top: $header-height + $performance-bar-height;
+    top: $new-navbar-height + $performance-bar-height;
 
     &.affix {
-      top: $header-height + $performance-bar-height;
+      top: $new-navbar-height + $performance-bar-height;
     }
   }
 }

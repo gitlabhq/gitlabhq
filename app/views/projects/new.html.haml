@@ -16,7 +16,9 @@
         New project
       - if import_sources_enabled?
         %p
-          Create or Import your project from popular Git services
+          A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), #{link_to 'among other things', help_page_path("user/project/index.md", anchor: "projects-features"), target: '_blank'}.
+        %p
+          All features are enabled when you create a project, but you can disable the ones you don’t need in the project settings.
     .col-lg-9.js-toggle-container
       = form_for @project, html: { class: 'new_project' } do |f|
         .create-project-options
