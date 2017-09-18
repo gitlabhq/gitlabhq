@@ -29,8 +29,12 @@
 
 <template>
   <div class="image">
+    <image-replaced
+      v-if="isImageReplaced"
+      :images="images"
+    />
     <span
-      v-if="!isImageReplaced"
+      v-else
       class="wrap"
     >
       <image-frame
@@ -42,9 +46,5 @@
         {{currentImage.size}}
       </p>
     </span>
-    <image-replaced
-      v-else
-      :images="images"
-    />
   </div>
 </template>
