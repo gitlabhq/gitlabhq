@@ -84,7 +84,6 @@ describe NotificationService, :mailer do
       let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
-      it { should_email(key.user) }
 
       describe 'never emails the ghost user' do
         let(:key_options) { { user: User.ghost } }

@@ -2,7 +2,7 @@ module Gitlab
   module Auth
     MissingPersonalTokenError = Class.new(StandardError)
 
-    REGISTRY_SCOPES = [:read_registry].freeze
+    REGISTRY_SCOPES = Gitlab.config.registry.enabled ? [:read_registry].freeze : [].freeze
 
     # Scopes used for GitLab API access
     API_SCOPES = [:api, :read_user].freeze

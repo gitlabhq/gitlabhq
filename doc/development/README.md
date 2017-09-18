@@ -43,6 +43,7 @@
 - [Object state models](object_state_models.md)
 - [Building a package for testing purposes](build_test_package.md)
 - [Manage feature flags](feature_flags.md)
+- [View sent emails or preview mailers](emails.md)
 
 ## Databases
 
@@ -60,6 +61,7 @@
 - [Ordering Table Columns](ordering_table_columns.md)
 - [Verifying Database Capabilities](verifying_database_capabilities.md)
 - [Hash Indexes](hash_indexes.md)
+- [Swapping Tables](swapping_tables.md)
 
 ## i18n
 

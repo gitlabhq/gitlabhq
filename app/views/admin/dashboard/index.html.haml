@@ -111,6 +111,11 @@
               GitLab API
               %span.pull-right
                 = API::API::version
+            - if Gitlab.config.pages.enabled
+              %p
+                GitLab Pages
+                %span.pull-right
+                  = Gitlab::Pages::VERSION
             %p
               Git
               %span.pull-right
