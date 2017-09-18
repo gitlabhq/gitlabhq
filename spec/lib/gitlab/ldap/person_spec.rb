@@ -40,7 +40,10 @@ describe Gitlab::LDAP::Person do
         'does not strip the unescaped trailing newline in an attribute value'                        | 'uid=John Smith\n ,ou=People,dc=example,dc=com'                                                       | 'uid=John Smith\n,ou=People,dc=example,dc=com'
         'does not modify casing'                                                                     | 'UID=John Smith,ou=People,dc=example,dc=com'                                                          | 'UID=John Smith,ou=People,dc=example,dc=com'
         'does not strip non whitespace'                                                              | 'uid=John Smith,ou=People,dc=example,dc=com'                                                          | 'uid=John Smith,ou=People,dc=example,dc=com'
-        'for a malformed DN (when an equal sign is escaped), returns the DN completely unmodified'   | 'uid= foo\\=bar'                                                                                      | 'uid= foo\\=bar'
+        'does not treat escaped equal signs as attribute delimiters'                                 | 'uid= foo  \\=  bar'                                                                                  | 'uid=foo  \\=  bar'
+        'does not treat escaped hex equal signs as attribute delimiters'                             | 'uid= foo  \\3D  bar'                                                                                 | 'uid=foo  \\3D  bar'
+        'does not treat escaped commas as attribute delimiters'                                      | 'uid= John C. Smith, ou=San Francisco\\, CA'                                                          | 'uid=John C. Smith,ou=San Francisco\\, CA'
+        'does not treat escaped hex commas as attribute delimiters'                                  | 'uid= John C. Smith, ou=San Francisco\\2C CA'                                                         | 'uid=John C. Smith,ou=San Francisco\\2C CA'
       end
 
       with_them do
@@ -62,6 +65,10 @@ describe Gitlab::LDAP::Person do
         'does not strip the unescaped trailing newline in an attribute value' | '  John Smith\n   '                     | 'John Smith\n'
         'does not modify casing'                                              | ' John Smith  '                         | 'John Smith'
         'does not strip non whitespace'                                       | 'John Smith'                            | 'John Smith'
+        'does not treat escaped equal signs as attribute delimiters'          | ' foo  \\=  bar'                        | 'foo  \\=  bar'
+        'does not treat escaped hex equal signs as attribute delimiters'      | ' foo  \\3D  bar'                       | 'foo  \\3D  bar'
+        'does not treat escaped commas as attribute delimiters'               | ' Smith\\, John C.'                     | 'Smith\\, John C.'
+        'does not treat escaped hex commas as attribute delimiters'           | ' Smith\\2C John C.'                    | 'Smith\\2C John C.'
       end
 
       with_them do
@@ -85,6 +92,10 @@ describe Gitlab::LDAP::Person do
         'does not strip the unescaped trailing newline in an attribute value' | '  John Smith\n   '                     | 'John Smith\n'
         'does not modify casing'                                              | ' John Smith  '                         | 'John Smith'
         'does not strip non whitespace'                                       | 'John Smith'                            | 'John Smith'
+        'does not treat escaped equal signs as attribute delimiters'          | ' foo  \\=  bar'                        | 'foo  \\=  bar'
+        'does not treat escaped hex equal signs as attribute delimiters'      | ' foo  \\3D  bar'                       | 'foo  \\3D  bar'
+        'does not treat escaped commas as attribute delimiters'               | ' Smith\\, John C.'                     | 'Smith\\, John C.'
+        'does not treat escaped hex commas as attribute delimiters'           | ' Smith\\2C John C.'                    | 'Smith\\2C John C.'
       end
 
       with_them do
@@ -117,7 +128,10 @@ describe Gitlab::LDAP::Person do
       'does not strip the unescaped trailing newline in an attribute value'                        | 'uid=John Smith\n ,ou=People,dc=example,dc=com'                                                       | 'uid=John Smith\n,ou=People,dc=example,dc=com'
       'does not modify casing'                                                                     | 'UID=John Smith,ou=People,dc=example,dc=com'                                                          | 'UID=John Smith,ou=People,dc=example,dc=com'
       'does not strip non whitespace'                                                              | 'uid=John Smith,ou=People,dc=example,dc=com'                                                          | 'uid=John Smith,ou=People,dc=example,dc=com'
-      'for a malformed DN (when an equal sign is escaped), returns the DN completely unmodified'   | 'uid= foo\\=bar'                                                                                      | 'uid= foo\\=bar'
+      'does not treat escaped equal signs as attribute delimiters'                                 | 'uid= foo  \\=  bar'                                                                                  | 'uid=foo  \\=  bar'
+      'does not treat escaped hex equal signs as attribute delimiters'                             | 'uid= foo  \\3D  bar'                                                                                 | 'uid=foo  \\3D  bar'
+      'does not treat escaped commas as attribute delimiters'                                      | 'uid= John C. Smith, ou=San Francisco\\, CA'                                                          | 'uid=John C. Smith,ou=San Francisco\\, CA'
+      'does not treat escaped hex commas as attribute delimiters'                                  | 'uid= John C. Smith, ou=San Francisco\\2C CA'                                                         | 'uid=John C. Smith,ou=San Francisco\\2C CA'
     end
 
     with_them do

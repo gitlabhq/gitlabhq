@@ -66,7 +66,7 @@ module Gitlab
       # 1. Excess spaces around attribute names and values are stripped
       # 2. The string is downcased (for case-insensitivity)
       def self.normalize_dn(dn)
-        dn.split(/([,+=])/).map do |part|
+        dn.split(/(?<!\\)([,+=])/).map do |part|
           normalize_dn_part(part)
         end.join('')
       end
