@@ -43,6 +43,11 @@ module Gitlab
         else
           normalize_uid(uid_or_dn)
         end
+      rescue StandardError => e
+        Rails.logger.info("Returning original DN \"#{uid_or_dn}\" due to error during normalization attempt: #{e.message}")
+        Rails.logger.info(e.backtrace.join("\n"))
+
+        uid_or_dn
       end
 
       # Returns true if the string looks like a DN rather than a UID.
@@ -59,6 +64,11 @@ module Gitlab
       # 2. The string is downcased (for case-insensitivity)
       def self.normalize_uid(uid)
         normalize_dn_part(uid)
+      rescue StandardError => e
+        Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
+        Rails.logger.info(e.backtrace.join("\n"))
+
+        uid
       end
 
       # Returns the DN in a normalized form.
@@ -69,6 +79,11 @@ module Gitlab
         dn.split(/(?<!\\)([,+=])/).map do |part|
           normalize_dn_part(part)
         end.join('')
+      rescue StandardError => e
+        Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}")
+        Rails.logger.info(e.backtrace.join("\n"))
+
+        dn
       end
 
       def initialize(entry, provider)
