@@ -4,7 +4,7 @@ describe Gitlab::LDAP::AuthHash do
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(
-        uid: '123456',
+        uid: given_uid,
         provider: 'ldapmain',
         info: info,
         extra: {
@@ -32,6 +32,8 @@ describe Gitlab::LDAP::AuthHash do
   end
 
   context "without overridden attributes" do
+    let(:given_uid) { 'uid=John Smith,ou=People,dc=example,dc=com' }
+
     it "has the correct username" do
       expect(auth_hash.username).to eq("123456")
     end
@@ -42,6 +44,8 @@ describe Gitlab::LDAP::AuthHash do
   end
 
   context "with overridden attributes" do
+    let(:given_uid) { 'uid=John Smith,ou=People,dc=example,dc=com' }
+
     let(:attributes) do
       {
         'username'  => %w(mail email),
@@ -59,6 +63,16 @@ describe Gitlab::LDAP::AuthHash do
 
     it "has the correct name" do
       expect(auth_hash.name).to eq("John Smith")
+    end
+  end
+
+  describe '#uid' do
+    context 'when there is extraneous (but valid) whitespace' do
+      let(:given_uid) { 'uid     =John Smith ,  ou = People, dc=  example,dc =com' }
+
+      it 'removes the extraneous whitespace' do
+        expect(auth_hash.uid).to eq('uid=John Smith,ou=People,dc=example,dc=com')
+      end
     end
   end
 end
