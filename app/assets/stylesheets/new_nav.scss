@@ -375,8 +375,6 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
-  padding-top: $gl-padding;
-  padding-bottom: $gl-padding;
   align-items: center;
   border-bottom: 1px solid $border-color;
 }
@@ -390,7 +388,6 @@ header.navbar-gitlab-new {
 
   @media (max-width: $screen-xs-max) {
     padding-left: 17px;
-    margin-left: 33px;
     border-left: 1px solid $gl-text-color-quaternary;
   }
 

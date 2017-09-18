@@ -440,7 +440,7 @@ $new-sidebar-collapsed-width: 50px;
   background-color: transparent;
   border: 0;
   padding: 6px 16px;
-  margin: 0 16px 0 -15px;
+  margin: 0 0 0 -15px;
   height: 46px;
 
   i {
@@ -449,9 +449,8 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   @media (max-width: $screen-xs-max) {
-    display: inline-block;
-    position: absolute;
-    top: 2px;
+    display: flex;
+    align-items: center;
 
     i {
       font-size: 18px;
