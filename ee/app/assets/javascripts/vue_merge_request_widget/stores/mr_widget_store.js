@@ -28,7 +28,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.rebaseInProgress = data.rebase_in_progress;
     this.approvalsLeft = !data.approved;
     this.rebasePath = data.rebase_path;
-    this.ffOnlyEnabled = data.ff_only_enabled;
   }
 
   initGeo(data) {
