@@ -5,7 +5,7 @@
   import twoUpView from './two_up_view.vue';
   import swipeView from './swipe_view.vue';
   import onionSkinView from './onion_skin_view.vue';
-  import * as constants from '../constants';
+  import viewTypes from '../constants';
 
   Vue.use(Translate);
 
@@ -14,7 +14,8 @@
     mixins: [imageDiffProps],
     data() {
       return {
-        currentView: constants.TWO_UP,
+        currentView: viewTypes.TWO_UP,
+        viewTypes,
       };
     },
     components: {
@@ -24,30 +25,19 @@
     },
     computed: {
       isCurrentViewTwoUp() {
-        return this.currentView === constants.TWO_UP;
+        return this.currentView === viewTypes.TWO_UP;
       },
       isCurrentViewSwipe() {
-        return this.currentView === constants.SWIPE;
+        return this.currentView === viewTypes.SWIPE;
       },
       isCurrentViewOnionSkin() {
-        return this.currentView === constants.ONION_SKIN;
+        return this.currentView === viewTypes.ONION_SKIN;
       },
     },
     methods: {
-      changeView(viewType) {
+      goToView(viewType, event) {
+        event.target.blur();
         this.currentView = viewType;
-      },
-      goToTwoUpView(event) {
-        event.target.blur();
-        this.changeView(constants.TWO_UP);
-      },
-      goToSwipeView(event) {
-        event.target.blur();
-        this.changeView(constants.SWIPE);
-      },
-      goToOnionSkinView(event) {
-        event.target.blur();
-        this.changeView(constants.ONION_SKIN);
       },
     },
   };
@@ -75,7 +65,7 @@
         type="button"
         class="btn btn-link"
         :class="{ active: isCurrentViewTwoUp }"
-        @click="goToTwoUpView"
+        @click="goToView(viewTypes.TWO_UP, $event)"
       >
         {{ __('2-up') }}
       </button>
@@ -83,7 +73,7 @@
         type="button"
         class="btn btn-link"
         :class="{ active: isCurrentViewSwipe }"
-        @click="goToSwipeView"
+        @click="goToView(viewTypes.SWIPE, $event)"
       >
         {{ __('Swipe') }}
       </button>
@@ -91,7 +81,7 @@
         type="button"
         class="btn btn-link"
         :class="{ active: isCurrentViewOnionSkin }"
-        @click="goToOnionSkinView"
+        @click="goToView(viewTypes.ONION_SKIN, $event)"
       >
         {{ __('Onion skin') }}
       </button>

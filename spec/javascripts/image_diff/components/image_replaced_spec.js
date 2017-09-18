@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import imageReplaced from '~/image_diff/components/image_replaced.vue';
-import * as constants from '~/image_diff/constants';
+import viewTypes from '~/image_diff/constants';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 import * as mockData from '../mock_data';
 
@@ -30,20 +30,20 @@ describe('imageReplaced component', () => {
   });
 
   it('should only render swipe-view if currentView is swipe', () => {
-    vm.currentView = constants.SWIPE;
+    vm.currentView = viewTypes.SWIPE;
     expect(vm.$el.querySelector('.swipe.view')).toBeDefined();
   });
 
   it('should only render onion-skin-view if currentView is onion-skin', () => {
-    vm.currentView = constants.ONION_SKIN;
+    vm.currentView = viewTypes.ONION_SKIN;
     expect(vm.$el.querySelector('.onion-skin.view')).toBeDefined();
   });
 
   it('should change currentView when btn-group is toggled', () => {
     vm.$el.querySelector('.btn-group .btn:last-child').click();
-    expect(vm.currentView).toEqual(constants.ONION_SKIN);
+    expect(vm.currentView).toEqual(viewTypes.ONION_SKIN);
 
     vm.$el.querySelector('.btn-group .btn:first-child').click();
-    expect(vm.currentView).toEqual(constants.TWO_UP);
+    expect(vm.currentView).toEqual(viewTypes.TWO_UP);
   });
 });
