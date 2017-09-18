@@ -127,7 +127,7 @@ module ActiveRecord
               orders = desc_order_columns.any? ? Hash[desc_order_columns.map {|order_column| [order_column, :desc]}] : {}
               where = inddef.scan(/WHERE (.+)$/).flatten[0]
               using = inddef.scan(/USING (.+?) /).flatten[0].to_sym
-              opclasses = Hash[inddef.scan(/\((.+)\)$/).flatten[0].split(',').map do |column_and_opclass|
+              opclasses = Hash[inddef.scan(/\((.+?)\)(?:$| WHERE )/).flatten[0].split(',').map do |column_and_opclass|
                                  column, opclass = column_and_opclass.split(' ').map(&:strip)
                                  [column, opclass] if opclass
                                end.compact]
