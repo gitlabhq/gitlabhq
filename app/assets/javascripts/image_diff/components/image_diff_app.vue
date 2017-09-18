@@ -15,7 +15,7 @@
         return this.images.added && this.images.deleted;
       },
       isImageAdded() {
-        return this.images.added !== null;
+        return !!this.images.added;
       },
       currentImage() {
         return this.images.added || this.images.deleted;
