@@ -15,9 +15,9 @@ GitLab Shell provides a way to authorize SSH users via a fast, indexed lookup to
 > **Warning:** OpenSSH version 6.9+ is required because
 `AuthorizedKeysCommand` must be able to accept a fingerprint. These
 instructions will break installations using older versions of OpenSSH, such as
-those included with CentOS as of May 2017. If you want to use this feature for
-CentOS, follow [the instructions on how to build and install a custom OpenSSH package]
-(#compiling-a-custom-version-of-openssh-for-centos) before continuing.
+those included with CentOS 6 as of September 2017. If you want to use this
+feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package]
+(#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
 Create this file at `/opt/gitlab-shell/authorized_keys`:
 
@@ -73,14 +73,18 @@ This is a brief overview. Please refer to the above instructions for more contex
 1. Reload sshd: `sudo service sshd reload`
 1. Remove the `/opt/gitlab-shell/authorized_keys` file
 
-## Compiling a custom version of OpenSSH for CentOS
+## Compiling a custom version of OpenSSH for CentOS 6
 
 Building a custom version of OpenSSH is not necessary for Ubuntu 16.04 users,
 since Ubuntu 16.04 ships with OpenSSH 7.2.
 
-However, CentOS users must build their own OpenSSH package to enable SSH
-lookups via the database. The following instructions can be used to build
-OpenSSH 7.5 for CentOS 6 and 7:
+It is also unnecessary for CentOS 7.4 users, as that version ships with
+OpenSSH 7.4. If you are using CentOS 7.0 - 7.3, we strongly recommend that you
+upgrade to CentOS 7.4 instead of following this procedure. This should be as
+simple as running `yum update`.
+
+CentOS 6 users must build their own OpenSSH package to enable SSH lookups via
+the database. The following instructions can be used to build OpenSSH 7.5:
 
 1. First, download the package and install the required packages:
 
