@@ -97,7 +97,6 @@ module EE
     def unauth_security_event
       return unless audit_events_enabled?
 
-
       @details.delete(:ip_address) unless admin_audit_log_enabled?
       @details[:entity_path] = @entity&.full_path
 
@@ -127,33 +126,33 @@ module EE
       custom_message = @details[:custom_message]
 
       @details =
-          case action
-          when :destroy
-            {
-                remove: model,
-                author_name: @author.name,
-                target_id: key_title,
-                target_type: model_class,
-                target_details: key_title
-            }
-          when :create
-            {
-                add: model,
-                author_name: @author.name,
-                target_id: key_title,
-                target_type: model_class,
-                target_details: key_title
-            }
-          when :custom
-            {
-                custom_message: custom_message,
-                author_name: @author&.name,
-                target_id: key_title,
-                target_type: model_class,
-                target_details: key_title,
-                ip_address: @details[:ip_address]
-            }
-          end
+        case action
+        when :destroy
+          {
+              remove: model,
+              author_name: @author.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        when :create
+          {
+              add: model,
+              author_name: @author.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        when :custom
+          {
+              custom_message: custom_message,
+              author_name: @author&.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title,
+              ip_address: @details[:ip_address]
+          }
+        end
 
       self
     end

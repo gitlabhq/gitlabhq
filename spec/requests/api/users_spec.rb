@@ -489,14 +489,6 @@ describe API::Users do
       expect(user.reload.organization).to eq('GitLab')
     end
 
-    it 'updates user with a new email' do
-      put api("/users/#{user.id}", admin), email: 'new@email.com'
-
-      expect(response).to have_http_status(200)
-      expect(user.reload.notification_email).to eq('new@email.com')
-      expect(AuditEvent.count).to eq(1)
-    end
-
     it 'updates user with avatar' do
       put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
