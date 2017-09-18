@@ -514,7 +514,7 @@ describe 'Pipelines', :js do
     context 'when project is public' do
       let(:project) { create(:project, :public, :repository) }
 
-      it { expect(page).to have_content 'Build with confidence' }
+      it { expect(page).to have_content 'There are no pipelines to show' }
       it { expect(page).to have_http_status(:success) }
     end
 
