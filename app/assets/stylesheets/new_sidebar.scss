@@ -3,8 +3,6 @@
 @import "bootstrap/variables";
 
 $active-background: rgba(0, 0, 0, .04);
-$active-border: $indigo-500;
-$active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
@@ -107,7 +105,8 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   &.sidebar-icons-only {
-    width: $new-sidebar-collapsed-width;
+    width: auto;
+    min-width: $new-sidebar-collapsed-width;
 
     .nav-sidebar-inner-scroll {
       overflow-x: hidden;
@@ -125,6 +124,10 @@ $new-sidebar-collapsed-width: 50px;
 
     .fly-out-top-item {
       display: block;
+    }
+
+    .avatar-container {
+      margin-right: 0;
     }
   }
 
@@ -162,15 +165,8 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   li.active {
-    box-shadow: inset 4px 0 0 $active-border;
-
     > a {
-      color: $active-color;
       font-weight: $gl-font-weight-bold;
-    }
-
-    svg {
-      fill: $active-color;
     }
   }
 
@@ -196,7 +192,7 @@ $new-sidebar-collapsed-width: 50px;
 .nav-sidebar-inner-scroll {
   height: 100%;
   width: 100%;
-  overflow: auto;
+  overflow: scroll;
 }
 
 .with-performance-bar .nav-sidebar {
@@ -224,7 +220,6 @@ $new-sidebar-collapsed-width: 50px;
         &:hover,
         &:focus {
           background: $active-background;
-          color: $active-color;
         }
       }
     }
@@ -258,7 +253,7 @@ $new-sidebar-collapsed-width: 50px;
         @media (min-width: $screen-sm-min) {
           position: fixed;
           top: 0;
-          left: $new-sidebar-width;
+          left: 0;
           min-width: 150px;
           margin-top: -1px;
           padding: 4px 1px;
@@ -324,7 +319,6 @@ $new-sidebar-collapsed-width: 50px;
       }
 
       .badge {
-        color: $active-color;
         font-weight: $gl-font-weight-bold;
       }
 
@@ -397,10 +391,6 @@ $new-sidebar-collapsed-width: 50px;
     }
 
     .sidebar-sub-level-items {
-      @media (min-width: $screen-sm-min) {
-        left: $new-sidebar-collapsed-width;
-      }
-
       &:not(.flyout-list) {
         display: none;
       }
@@ -500,14 +490,4 @@ $new-sidebar-collapsed-width: 50px;
 
 .with-performance-bar .boards-list {
   height: calc(100vh - #{$new-navbar-height} - #{$performance-bar-height});
-}
-
-
-// Change color of all horizontal tabs to match the new indigo color
-.nav-links li.active a {
-  border-bottom-color: $active-border;
-
-  .badge {
-    font-weight: $gl-font-weight-bold;
-  }
 }

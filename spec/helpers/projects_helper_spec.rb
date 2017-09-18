@@ -469,4 +469,15 @@ describe ProjectsHelper do
       expect(recorder.count).to eq(1)
     end
   end
+
+  describe '#git_user_name' do
+    let(:user) { double(:user, name: 'John "A" Doe53') }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'parses quotes in name' do
+      expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
+    end
+  end
 end

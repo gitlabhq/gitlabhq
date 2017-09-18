@@ -8,12 +8,9 @@ describe Repository, models: true do
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
-  let(:committer) { Gitlab::Git::Committer.from_user(user) }
+  let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
 
-  let(:commit_options) do
-    author = repository.user_to_committer(user)
-    { message: 'Test message', committer: author, author: author }
-  end
+  let(:message) { 'Test message' }
 
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
@@ -21,7 +18,7 @@ describe Repository, models: true do
     merge_commit_id = repository.merge(user,
                                        merge_request.diff_head_sha,
                                        merge_request,
-                                       commit_options)
+                                       message)
 
     repository.commit(merge_commit_id)
   end
@@ -886,7 +883,7 @@ describe Repository, models: true do
     context 'when pre hooks were successful' do
       it 'runs without errors' do
         expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-          .with(committer, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
+          .with(git_user, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -932,20 +929,20 @@ describe Repository, models: true do
         service = Gitlab::Git::HooksService.new
         expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, target_repository.raw_repository, old_rev, new_rev, updating_ref)
+          .with(git_user, target_repository.raw_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
-        service = Gitlab::Git::OperationService.new(committer, repository.raw_repository)
+        service = Gitlab::Git::OperationService.new(git_user, repository.raw_repository)
 
         expect(service).to receive(:update_autocrlf_option)
 
@@ -956,7 +953,7 @@ describe Repository, models: true do
         it 'updates the head' do
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
 
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
 
@@ -974,7 +971,7 @@ describe Repository, models: true do
           expect(target_project.repository.raw_repository).to receive(:fetch_ref)
             .and_call_original
 
-          Gitlab::Git::OperationService.new(committer, target_repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
             .with_branch(
               'master',
               start_repository: project.repository.raw_repository,
@@ -990,7 +987,7 @@ describe Repository, models: true do
         it 'does not fetch_ref and just pass the commit' do
           expect(target_repository).not_to receive(:fetch_ref)
 
-          Gitlab::Git::OperationService.new(committer, target_repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
             .with_branch('feature', start_repository: project.repository.raw_repository) { new_rev }
         end
       end
@@ -1009,7 +1006,7 @@ describe Repository, models: true do
         end
 
         expect do
-          Gitlab::Git::OperationService.new(committer, target_project.repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_project.repository.raw_repository)
             .with_branch('feature',
                          start_repository: project.repository.raw_repository,
                          &:itself)
@@ -1031,7 +1028,7 @@ describe Repository, models: true do
         repository.add_branch(user, branch, old_rev)
 
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch(branch) do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.not_to raise_error
@@ -1049,7 +1046,7 @@ describe Repository, models: true do
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch(branch) do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.to raise_error(Gitlab::Git::CommitError)
@@ -1061,7 +1058,7 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
@@ -1287,10 +1284,7 @@ describe Repository, models: true do
   describe '#merge' do
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
 
-    let(:commit_options) do
-      author = repository.user_to_committer(user)
-      { message: 'Test \r\n\r\n message', committer: author, author: author }
-    end
+    let(:message) { 'Test \r\n\r\n message' }
 
     it 'merges the code and returns the commit id' do
       expect(merge_commit).to be_present
@@ -1298,19 +1292,19 @@ describe Repository, models: true do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
 
     it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
-      expect(repository.commit(merge_commit_id).message).to eq(commit_options[:message].delete("\r"))
+      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
     end
 
-    def merge(repository, user, merge_request, options = {})
-      repository.merge(user, merge_request.diff_head_sha, merge_request, options)
+    def merge(repository, user, merge_request, message)
+      repository.merge(user, merge_request.diff_head_sha, merge_request, message)
     end
   end
 

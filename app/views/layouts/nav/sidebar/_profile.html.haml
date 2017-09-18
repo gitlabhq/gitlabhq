@@ -7,7 +7,7 @@
         .sidebar-context-title User Settings
     %ul.sidebar-top-level-items
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
-        = sidebar_link profile_path, title: _('Profile Settings') do
+        = link_to profile_path do
           .nav-icon-container
             = custom_icon('profile')
           %span.nav-item-name
@@ -18,7 +18,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Profile') }
       = nav_link(controller: [:accounts, :two_factor_auths]) do
-        = sidebar_link profile_account_path, title: _('Account') do
+        = link_to profile_account_path do
           .nav-icon-container
             = custom_icon('account')
           %span.nav-item-name
@@ -30,7 +30,7 @@
                 #{ _('Account') }
       - if current_application_settings.user_oauth_applications?
         = nav_link(controller: 'oauth/applications') do
-          = sidebar_link applications_profile_path, title: _('Applications') do
+          = link_to applications_profile_path do
             .nav-icon-container
               = custom_icon('applications')
             %span.nav-item-name
@@ -41,7 +41,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Applications') }
       = nav_link(controller: :chat_names) do
-        = sidebar_link profile_chat_names_path, title: _('Chat') do
+        = link_to profile_chat_names_path do
           .nav-icon-container
             = custom_icon('chat')
           %span.nav-item-name
@@ -52,7 +52,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Chat') }
       = nav_link(controller: :personal_access_tokens) do
-        = sidebar_link profile_personal_access_tokens_path, title: _('Access Tokens') do
+        = link_to profile_personal_access_tokens_path do
           .nav-icon-container
             = custom_icon('access_tokens')
           %span.nav-item-name
@@ -63,7 +63,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Access Tokens') }
       = nav_link(controller: :emails) do
-        = sidebar_link profile_emails_path, title: _('Emails') do
+        = link_to profile_emails_path do
           .nav-icon-container
             = custom_icon('emails')
           %span.nav-item-name
@@ -75,7 +75,7 @@
                 #{ _('Emails') }
       - unless current_user.ldap_user?
         = nav_link(controller: :passwords) do
-          = sidebar_link edit_profile_password_path, title: _('Password') do
+          = link_to edit_profile_password_path do
             .nav-icon-container
               = custom_icon('lock')
             %span.nav-item-name
@@ -86,7 +86,7 @@
                 %strong.fly-out-top-item-name
                   #{ _('Password') }
       = nav_link(controller: :notifications) do
-        = sidebar_link profile_notifications_path, title: _('Notifications') do
+        = link_to profile_notifications_path do
           .nav-icon-container
             = custom_icon('notifications')
           %span.nav-item-name
@@ -97,7 +97,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Notifications') }
       = nav_link(controller: :keys) do
-        = sidebar_link profile_keys_path, title: _('SSH Keys') do
+        = link_to profile_keys_path do
           .nav-icon-container
             = custom_icon('key')
           %span.nav-item-name
@@ -108,7 +108,7 @@
               %strong.fly-out-top-item-name
                 #{ _('SSH Keys') }
       = nav_link(controller: :gpg_keys) do
-        = sidebar_link profile_gpg_keys_path, title: _('GPG Keys') do
+        = link_to profile_gpg_keys_path do
           .nav-icon-container
             = custom_icon('key_2')
           %span.nav-item-name
@@ -119,7 +119,7 @@
               %strong.fly-out-top-item-name
                 #{ _('GPG Keys') }
       = nav_link(controller: :preferences) do
-        = sidebar_link profile_preferences_path, title: _('Preferences') do
+        = link_to profile_preferences_path do
           .nav-icon-container
             = custom_icon('preferences')
           %span.nav-item-name
@@ -130,7 +130,7 @@
               %strong.fly-out-top-item-name
                 #{ _('Preferences') }
       = nav_link(path: 'profiles#audit_log') do
-        = sidebar_link audit_log_profile_path, title: _('Authentication log') do
+        = link_to audit_log_profile_path do
           .nav-icon-container
             = custom_icon('authentication_log')
           %span.nav-item-name
