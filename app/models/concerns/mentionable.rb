@@ -5,7 +5,6 @@
 #
 # Used by Issue, Note, MergeRequest, and Commit.
 #
-# # rubocop:disable Cop/ModuleWithInstanceVariables
 module Mentionable
   extend ActiveSupport::Concern
 
@@ -44,6 +43,7 @@ module Mentionable
     self
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def all_references(current_user = nil, extractor: nil)
     @extractors ||= {}
 

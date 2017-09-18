@@ -3,7 +3,6 @@ module QA
     module Namespace
       extend self
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
       def time
         @time ||= Time.now
       end

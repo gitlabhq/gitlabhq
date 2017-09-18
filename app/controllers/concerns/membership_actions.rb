@@ -76,7 +76,6 @@ module MembershipActions
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def source_type
     @source_type ||= membershipable.class.to_s.humanize(capitalize: false)
   end

@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   module Emoji
     extend self
@@ -32,8 +31,7 @@ module Gitlab
     end
 
     def emoji_unicode_version(name)
-      @emoji_unicode_versions_by_name ||= JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
-      @emoji_unicode_versions_by_name[name]
+      emoji_unicode_versions_by_name[name]
     end
 
     def normalize_emoji_name(name)
@@ -56,6 +54,13 @@ module Gitlab
       }
 
       ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], title: emoji_info['description'], data: data)
+    end
+
+    private
+
+    def emoji_unicode_versions_by_name
+      @emoji_unicode_versions_by_name ||=
+        JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
     end
   end
 end

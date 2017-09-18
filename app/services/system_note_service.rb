@@ -662,7 +662,6 @@ module SystemNoteService
     Rack::Utils.escape_html(text)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def url_helpers
     @url_helpers ||= Gitlab::Routing.url_helpers
   end

@@ -1,4 +1,4 @@
-## Usually modules with instance variables considered harmful
+## Modules with instance variables could be considered harmful
 
 ### Background
 
@@ -43,7 +43,7 @@ instance variables in the final giant object, and that's where the problem is.
 ### Solutions
 
 We should split the giant object into multiple objects, and they communicate
-each other with the API, i.e. public methods. In short, composition over
+with each other with the API, i.e. public methods. In short, composition over
 inheritance. This way, each smaller objects would have their own respective
 limited states, i.e. instance variables. If one instance variable goes wrong,
 we would be very clear that it's from that single small object, because
@@ -53,36 +53,67 @@ With clearly defined API, this would make things less coupled and much easier
 to debug and track, and much more extensible for other objects to use, because
 they communicate in a clear way, rather than implicit dependencies.
 
-### Exceptions
+### Acceptable use
 
 However, it's not all that bad when using instance variables in a module,
 as long as it's contained in the same module, that is no other modules or
 objects are touching them. If that's the case, then it would be an acceptable
-use. Unfortunately it's a bit hard to code this principle in the cop, so
-for now we rely on people turning off the cops, if they think that the use
-conform this rule.
+use.
 
-Here's an acceptable case:
+We especially allow the case where a single instance variable is used with
+`||=` to setup the value. This would look like:
 
 ``` ruby
-# This is ok, as long as `@attributes` is never used anywhere else.
-# Consider adding some prefix or suffix to avoid name conflicts though.
-# rubocop:disable Cop/ModuleWithInstanceVariables
-module Rugged
-  class Repository
-    module UseGitlabGitAttributes
-      def fetch_attributes(name, *)
-        @attributes ||= Gitlab::Git::Attributes.new(path)
-        @attributes.attributes(name)
-      end
-    end
-
-    prepend UseGitlabGitAttributes
+module M
+  def f
+    @f ||= true
   end
 end
 ```
 
-Here's a bad example which we should rewrite:
+Unfortunately it's not easy to code more complex rules into the cop, so
+we rely on people's best judge. If we could find another good pattern we
+could easily add to the cop, we should do it.
+
+### How to rewrite and avoid disabling this cop
+
+Even if we could just disable the cop, we should avoid doing so. Some code
+could be easily rewritten in simple form. Here's an example. Consider this
+acceptable method:
+
+``` ruby
+module Gitlab
+  module Emoji
+    def emoji_unicode_version(name)
+      @emoji_unicode_versions_by_name ||=
+        JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
+      @emoji_unicode_versions_by_name[name]
+    end
+  end
+end
+```
+
+It's still offending because it's not just `||=`, but We could split this
+method into two:
+
+``` ruby
+module Gitlab
+  module Emoji
+    def emoji_unicode_version(name)
+      emoji_unicode_versions_by_name[name]
+    end
+
+    private
+
+    def emoji_unicode_versions_by_name
+      @emoji_unicode_versions_by_name ||=
+        JSON.parse(File.read(Rails.root.join('fixtures', 'emojis', 'emoji-unicode-version-map.json')))
+    end
+  end
+end
+```
+
+Now the cop won't complain. Here's another bad example which we could rewrite:
 
 ``` ruby
 module SpamCheckService
@@ -146,7 +177,7 @@ end
 This way, all those instance variables are isolated in `SpamCheckService`
 rather than who ever include the module, and those modules which were also
 included, making it much easier to track down the issues if there's any,
-and it also reduce the chance of having name conflicts.
+and it also reduces the chance of having name conflicts.
 
 ### Things we might need to ignore right now
 

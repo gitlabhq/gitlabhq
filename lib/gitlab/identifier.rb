@@ -52,7 +52,6 @@ module Gitlab
       end
     end
 
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def identification_cache
       @identification_cache ||= {
         email: {},

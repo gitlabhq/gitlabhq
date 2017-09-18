@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module API
   module Helpers
     include Gitlab::Utils
@@ -33,6 +32,7 @@ module API
       end
     end
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -396,6 +396,7 @@ module API
       warden.try(:authenticate) if verified_request?
     end
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
@@ -411,6 +412,7 @@ module API
       end
     end
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def sudo!
       return unless sudo_identifier
       return unless initial_current_user

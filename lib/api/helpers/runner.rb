@@ -21,7 +21,6 @@ module API
         forbidden! unless current_runner
       end
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
       def current_runner
         @runner ||= ::Ci::Runner.find_by_token(params[:token].to_s)
       end

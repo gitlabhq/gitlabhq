@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module RelativePositioning
   extend ActiveSupport::Concern
 
@@ -45,6 +44,7 @@ module RelativePositioning
     next_pos
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_between(before, after)
     return move_after(before) unless after
     return move_before(after) unless before
@@ -59,6 +59,7 @@ module RelativePositioning
     self.relative_position = position_between(before.relative_position, after.relative_position)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_after(before = self)
     pos_before = before.relative_position
     pos_after = before.next_relative_position
@@ -74,6 +75,7 @@ module RelativePositioning
     self.relative_position = position_between(pos_before, pos_after)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_before(after = self)
     pos_after = after.relative_position
     pos_before = after.prev_relative_position
@@ -133,6 +135,7 @@ module RelativePositioning
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def save_positionable_neighbours
     return unless @positionable_neighbours
 

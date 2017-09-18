@@ -1,7 +1,7 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module CreatesCommit
   extend ActiveSupport::Concern
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     if can?(current_user, :push_code, @project)
       @project_to_commit_into = @project
@@ -78,6 +78,7 @@ module CreatesCommit
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def new_merge_request_path
     project_new_merge_request_path(
       @project_to_commit_into,
@@ -94,6 +95,7 @@ module CreatesCommit
     project_merge_request_path(@project, @merge_request)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
@@ -101,10 +103,12 @@ module CreatesCommit
       .find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def different_project?
     @project_to_commit_into != @project
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def create_merge_request?
     # Even if the field is set, if we're checking the same branch
     # as the target branch in the same project,

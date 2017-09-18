@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   module Regex
     extend self

@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module Gitlab
   module SlashCommands
     module Presenters
@@ -11,14 +10,17 @@ module Gitlab
           issuable.open? ? 'Open' : 'Closed'
         end
 
+        # rubocop:disable Cop/ModuleWithInstanceVariables
         def project
           @resource.project
         end
 
+        # rubocop:disable Cop/ModuleWithInstanceVariables
         def author
           @resource.author
         end
 
+        # rubocop:disable Cop/ModuleWithInstanceVariables
         def fields
           [
             {

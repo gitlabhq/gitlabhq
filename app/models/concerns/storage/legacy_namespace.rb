@@ -49,7 +49,6 @@ module Storage
 
     private
 
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def old_repository_storage_paths
       @old_repository_storage_paths ||= repository_storage_paths
     end

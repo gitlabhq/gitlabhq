@@ -56,7 +56,6 @@ module Gitlab
           query
         end
 
-        # rubocop:disable Cop/ModuleWithInstanceVariables
         def available_metrics
           @available_metrics ||= client_label_values || []
         end

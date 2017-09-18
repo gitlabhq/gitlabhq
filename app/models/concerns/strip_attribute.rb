@@ -17,7 +17,6 @@ module StripAttribute
       strip_attrs.concat(attrs)
     end
 
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def strip_attrs
       @strip_attrs ||= []
     end

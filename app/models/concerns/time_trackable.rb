@@ -4,7 +4,6 @@
 #
 # Used by Issue and MergeRequest.
 #
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module TimeTrackable
   extend ActiveSupport::Concern
 
@@ -21,6 +20,7 @@ module TimeTrackable
     has_many :timelogs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def spend_time(options)
     @time_spent = options[:duration]
     @time_spent_user = options[:user]
@@ -50,6 +50,7 @@ module TimeTrackable
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def reset_spent_time
     timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user)
   end
@@ -58,6 +59,7 @@ module TimeTrackable
     timelogs.new(time_spent: time_spent, user: @time_spent_user)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def check_negative_time_spent
     return if time_spent.nil? || time_spent == :reset
 

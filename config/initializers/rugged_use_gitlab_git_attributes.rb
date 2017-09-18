@@ -11,10 +11,10 @@
 # anyway, and there is no great efficiency gain from just fetching the listed
 # attributes with our implementation, so we ignore the additional arguments.
 #
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module Rugged
   class Repository
     module UseGitlabGitAttributes
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def fetch_attributes(name, *)
         @attributes ||= Gitlab::Git::Attributes.new(path)
         @attributes.attributes(name)

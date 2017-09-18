@@ -5,7 +5,6 @@ module Gitlab
         "ci_"
       end
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
       def model_name
         @model_name ||= ActiveModel::Name.new(self, nil, self.name.split("::").last)
       end

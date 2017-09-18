@@ -1,8 +1,8 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module MergeRequestsAction
   extend ActiveSupport::Concern
   include IssuableCollections
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def merge_requests
     @label = merge_requests_finder.labels.first
 

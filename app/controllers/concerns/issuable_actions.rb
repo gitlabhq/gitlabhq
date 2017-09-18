@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module IssuableActions
   extend ActiveSupport::Concern
 
@@ -8,6 +7,7 @@ module IssuableActions
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def destroy
     issuable.destroy
     destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
@@ -36,6 +36,7 @@ module IssuableActions
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def render_conflict_response
     respond_to do |format|
       format.html do
@@ -53,6 +54,7 @@ module IssuableActions
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def labels
     @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
   end
@@ -63,6 +65,7 @@ module IssuableActions
     end
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def authorize_admin_issuable!
     unless can?(current_user, :"admin_#{resource_name}", @project)
       return access_denied!

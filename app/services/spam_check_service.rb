@@ -6,8 +6,8 @@
 # Dependencies:
 # - params with :request
 #
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module SpamCheckService
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def filter_spam_check_params
     @request            = params.delete(:request)
     @api                = params.delete(:api)
@@ -18,6 +18,7 @@ module SpamCheckService
   # In order to be proceed to the spam check process, @spammable has to be
   # a dirty instance, which means it should be already assigned with the new
   # attribute values.
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def spam_check(spammable, user)
     spam_service = SpamService.new(spammable, @request)
 

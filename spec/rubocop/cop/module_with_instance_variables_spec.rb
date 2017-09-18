@@ -19,12 +19,20 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
     end
   end
 
+  shared_examples('not registering offense') do
+    it 'does not register offenses' do
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when source is a regular module' do
     let(:source) do
       <<~RUBY
         module M
           def f
-            @f ||= true
+            @f = true
           end
         end
       RUBY
@@ -59,7 +67,7 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
         module N
           module M
             def f
-              @f ||= true
+              @f = true
             end
 
             def g
@@ -79,39 +87,86 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
     it_behaves_like 'registering offense'
   end
 
-  context 'when source is offending but it is a rails helper' do
-    before do
-      allow(cop).to receive(:rails_helper?).and_return(true)
-    end
-
-    it 'does not register offenses' do
-      inspect_source(cop, <<~RUBY)
-        module M
-          def f
-            @f ||= true
-          end
-        end
-      RUBY
-
-      expect(cop.offenses).to be_empty
-    end
-  end
-
-  context 'when source is offending but it is a rails mailer' do
-    before do
-      allow(cop).to receive(:rails_mailer?).and_return(true)
-    end
-
-    it 'does not register offenses' do
-      inspect_source(cop, <<~RUBY)
+  context 'with regular ivar assignment' do
+    let(:source) do
+      <<~RUBY
         module M
           def f
             @f = true
           end
         end
       RUBY
-
-      expect(cop.offenses).to be_empty
     end
+
+    context 'when source is offending but it is a rails helper' do
+      before do
+        allow(cop).to receive(:rails_helper?).and_return(true)
+      end
+
+      it_behaves_like 'not registering offense'
+    end
+
+    context 'when source is offending but it is a rails mailer' do
+      before do
+        allow(cop).to receive(:rails_mailer?).and_return(true)
+      end
+
+      it_behaves_like 'not registering offense'
+    end
+
+    context 'when source is offending but it is a spec helper' do
+      before do
+        allow(cop).to receive(:spec_helper?).and_return(true)
+      end
+
+      it_behaves_like 'not registering offense'
+    end
+  end
+
+  context 'when source is using simple or ivar assignment' do
+    let(:source) do
+      <<~RUBY
+        module M
+          def f
+            @f ||= true
+          end
+        end
+      RUBY
+    end
+
+    it_behaves_like 'not registering offense'
+  end
+
+  context 'when source is using simple or ivar assignment with other ivar' do
+    let(:source) do
+      <<~RUBY
+        module M
+          def f
+            @f ||= g(@g)
+          end
+        end
+      RUBY
+    end
+
+    let(:offending_lines) { [3] }
+
+    it_behaves_like 'registering offense'
+  end
+
+  context 'when source is using or ivar assignment with something else' do
+    let(:source) do
+      <<~RUBY
+        module M
+          def f
+            @f ||= true
+            @f.to_s
+          end
+        end
+      RUBY
+    end
+
+    let(:offending_lines) { [3, 4] }
+
+    it_behaves_like 'registering offense'
   end
 end

@@ -20,7 +20,6 @@ module AfterCommitQueue
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def _after_commit_queue
     @after_commit_queue ||= []
   end

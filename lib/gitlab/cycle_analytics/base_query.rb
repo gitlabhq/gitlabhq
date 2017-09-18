@@ -7,11 +7,11 @@ module Gitlab
 
       private
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
       def base_query
         @base_query ||= stage_query
       end
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def stage_query
         query = mr_closing_issues_table.join(issue_table).on(issue_table[:id].eq(mr_closing_issues_table[:issue_id]))
           .join(issue_metrics_table).on(issue_table[:id].eq(issue_metrics_table[:issue_id]))

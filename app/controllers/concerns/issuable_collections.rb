@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module IssuableCollections
   extend ActiveSupport::Concern
   include SortingHelper
@@ -11,6 +10,7 @@ module IssuableCollections
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def set_issues_index
     @collection_type    = "Issue"
     @issues             = issues_collection
@@ -85,6 +85,7 @@ module IssuableCollections
     finder_class.new(current_user, filter_params)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def filter_params
     set_sort_order_from_cookie
     set_default_state

@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module API
   module Helpers
     module InternalHelpers
@@ -7,18 +6,18 @@ module API
         'git-upload-pack' => :ssh_upload_pack
       }.freeze
 
+      attr_reader :redirected_path
+
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def wiki?
         set_project unless defined?(@wiki)
         @wiki
       end
 
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def project
         set_project unless defined?(@project)
         @project
-      end
-
-      def redirected_path
-        @redirected_path
       end
 
       def ssh_authentication_abilities

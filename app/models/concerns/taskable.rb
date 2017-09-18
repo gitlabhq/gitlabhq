@@ -6,7 +6,6 @@ require 'task_list/filter'
 # bugs".
 #
 # Used by MergeRequest and Issue
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module Taskable
   COMPLETED    = 'completed'.freeze
   INCOMPLETE   = 'incomplete'.freeze
@@ -37,6 +36,7 @@ module Taskable
   end
 
   # Called by `TaskList::Summary`
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def task_list_items
     return [] if description.blank?
 

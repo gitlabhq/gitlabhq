@@ -12,7 +12,6 @@ module Noteable
   #
   #   noteable.class           # => MergeRequest
   #   noteable.human_class_name # => "merge request"
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def human_class_name
     @human_class_name ||= base_class_name.titleize.downcase
   end
@@ -35,7 +34,6 @@ module Noteable
 
   delegate :find_discussion, to: :discussion_notes
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def discussions
     @discussions ||= discussion_notes
       .inc_relations_for_view
@@ -70,7 +68,6 @@ module Noteable
     discussions_resolvable? && !discussions_resolved?
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def discussions_to_be_resolved
     @discussions_to_be_resolved ||= resolvable_discussions.select(&:to_be_resolved?)
   end

@@ -13,7 +13,6 @@ module Gitlab
         #   script: ...
         #   artifacts: ...
         #
-        # rubocop:disable Cop/ModuleWithInstanceVariables
         module Configurable
           extend ActiveSupport::Concern
 
@@ -25,6 +24,7 @@ module Gitlab
             end
           end
 
+          # rubocop:disable Cop/ModuleWithInstanceVariables
           def compose!(deps = nil)
             return unless valid?
 

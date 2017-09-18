@@ -55,16 +55,17 @@ module Participable
   # This method processes attributes of objects in breadth-first order.
   #
   # Returns an Array of User instances.
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def participants(current_user = nil)
-    @participants ||= Hash.new do |hash, user|
-      hash[user] = raw_participants(user)
-    end
-
-    @participants[current_user]
+    all_participants[current_user]
   end
 
   private
+
+  def all_participants
+    @all_participants ||= Hash.new do |hash, user|
+      hash[user] = raw_participants(user)
+    end
+  end
 
   def raw_participants(current_user = nil)
     current_user ||= author

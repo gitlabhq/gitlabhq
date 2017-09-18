@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module ResolvableDiscussion
   extend ActiveSupport::Concern
 
@@ -31,12 +30,14 @@ module ResolvableDiscussion
               allow_nil: true
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def resolvable?
     return @resolvable if @resolvable.present?
 
     @resolvable = potentially_resolvable? && notes.any?(&:resolvable?)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def resolved?
     return @resolved if @resolved.present?
 
@@ -47,12 +48,14 @@ module ResolvableDiscussion
     @first_note ||= notes.first
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def first_note_to_resolve
     return unless resolvable?
 
     @first_note_to_resolve ||= notes.find(&:to_be_resolved?)
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def last_resolved_note
     return unless resolved?
 
@@ -89,6 +92,7 @@ module ResolvableDiscussion
 
   private
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def update
     # Do not select `Note.resolvable`, so that system notes remain in the collection
     notes_relation = Note.where(id: notes.map(&:id))

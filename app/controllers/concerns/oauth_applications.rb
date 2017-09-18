@@ -13,8 +13,7 @@ module OauthApplications
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def load_scopes
-    @scopes = Doorkeeper.configuration.scopes
+    @scopes ||= Doorkeeper.configuration.scopes
   end
 end

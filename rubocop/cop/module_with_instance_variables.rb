@@ -45,10 +45,28 @@ module RuboCop
 
       def check_method_definition(node)
         node.each_child_node(:def) do |definition|
-          definition.each_descendant(:ivar, :ivasgn) do |offense|
-            add_offense(offense, :expression)
+          # We allow this pattern:
+          # def f
+          #   @f ||= true
+          # end
+          if only_ivar_or_assignment?(definition)
+            # We don't allow if any other ivar is used
+            definition.each_descendant(:ivar) do |offense|
+              add_offense(offense, :expression)
+            end
+          else
+            definition.each_descendant(:ivar, :ivasgn) do |offense|
+              add_offense(offense, :expression)
+            end
           end
         end
+      end
+
+      def only_ivar_or_assignment?(definition)
+        node = definition.child_nodes.last
+
+        definition.child_nodes.size == 2 &&
+          node.or_asgn_type? && node.child_nodes.first.ivasgn_type?
       end
     end
   end

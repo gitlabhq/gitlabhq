@@ -2,7 +2,6 @@
 
 require 'rack/oauth2'
 
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module API
   module APIGuard
     extend ActiveSupport::Concern
@@ -43,6 +42,8 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
+      attr_reader :current_user
+
       # Invokes the doorkeeper guard.
       #
       # If token is presented and valid, then it sets @current_user.
@@ -61,6 +62,7 @@ module API
       #   scopes: (optional) scopes required for this guard.
       #           Defaults to empty array.
       #
+      # rubocop:disable Cop/ModuleWithInstanceVariables
       def doorkeeper_guard(scopes: [])
         access_token = find_access_token
         return nil unless access_token
@@ -86,10 +88,6 @@ module API
         return nil unless token_string.present?
 
         find_user_by_authentication_token(token_string) || find_user_by_personal_access_token(token_string, scopes)
-      end
-
-      def current_user
-        @current_user
       end
 
       private
