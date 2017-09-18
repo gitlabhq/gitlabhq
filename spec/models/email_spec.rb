@@ -24,8 +24,6 @@ describe Email do
       email = user.emails.create(email: 'new@email.com')
       expect(user).to receive(:update_invalid_gpg_signatures)
       email.confirm
-      # email.save
     end
   end
-
 end

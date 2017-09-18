@@ -4,7 +4,7 @@ feature 'Profile > Emails' do
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'User adds an email' do

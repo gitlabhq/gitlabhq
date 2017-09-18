@@ -161,15 +161,16 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
-
-  after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
+  before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record?}
   after_save :ensure_namespace_correct
-  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
-  after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
+  after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
+  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
+
+  after_initialize :set_projects_limit
 
   # User's Layout preference
   enum layout: [:fixed, :fluid]
@@ -220,6 +221,11 @@ class User < ActiveRecord::Base
           "administrator if you think this is an error."
       end
     end
+  end
+
+  # see if the new email is already a verified secondary email 
+  def check_for_verified_email
+    skip_reconfirmation! if emails.find_by(email: self.email).try(:confirmed?)
   end
 
   mount_uploader :avatar, AvatarUploader
@@ -523,14 +529,18 @@ class User < ActiveRecord::Base
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
   end
 
+  # note: the use of the Emails services will cause `saves` on the user object, running
+  # through the callbacks again and can have side effects, such as the `previous_changes`
+  # hash getting cleared.  
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
+      previous_email = previous_changes[:email][0]
       Emails::DestroyService.new(self).execute(primary_email_record)
 
       # the original primary email was confirmed, and we want that to carry over.  We don't
       # have access to the original confirmation values at this point, so just set confirmed_at
-      Emails::CreateService.new(self, email: email_was).execute(confirmed_at: confirmed_at_was)
+      Emails::CreateService.new(self, email: previous_email).execute(confirmed_at: confirmed_at)
     end
   end
 
