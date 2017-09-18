@@ -202,8 +202,8 @@ export default {
     <div class="mr-widget-body media">
       <status-icon status="success" />
       <div class="media-body">
-        <div class="media space-children">
-          <span class="btn-group">
+        <div class="mr-widget-body-controls media space-children">
+          <span class="btn-group append-bottom-5">
             <button
               @click="handleMergeButtonClick()"
               :disabled="isMergeButtonDisabled"
@@ -260,7 +260,7 @@ export default {
               </li>
             </ul>
           </span>
-          <div class="media-body space-children">
+          <div class="media-body-wrap space-children">
             <template v-if="isMergeAllowed()">
               <label>
                 <input
