@@ -21,6 +21,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     @application.owner = current_user
 
     if @application.save
+      log_audit_event
+
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
       redirect_to oauth_application_url(@application)
     else

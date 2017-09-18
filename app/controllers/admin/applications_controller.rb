@@ -22,6 +22,8 @@ class Admin::ApplicationsController < Admin::ApplicationController
     @application = Doorkeeper::Application.new(application_params)
 
     if @application.save
+      log_audit_event
+
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
       redirect_to admin_application_url(@application)
     else

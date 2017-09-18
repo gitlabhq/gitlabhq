@@ -38,6 +38,7 @@ describe Admin::ApplicationsController do
 
       expect(response).to redirect_to(admin_application_path(application))
       expect(application).to have_attributes(create_params.except(:uid, :owner_type))
+      expect(SecurityEvent.count).to eq(1)
     end
 
     it 'renders the application form on errors' do
