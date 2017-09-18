@@ -11,4 +11,21 @@ describe Email do
     expect(described_class.new(email: ' inFO@exAMPLe.com ').email)
       .to eq 'info@example.com'
   end
+
+  describe '#update_invalid_gpg_signatures' do
+    let(:user) do
+      create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+        user.skip_reconfirmation!
+      end
+    end
+    let(:user) { create(:user) }
+
+    it 'synchronizes the gpg keys when the email is updated' do
+      email = user.emails.create(email: 'new@email.com')
+      expect(user).to receive(:update_invalid_gpg_signatures)
+      email.confirm
+      # email.save
+    end
+  end
+
 end
