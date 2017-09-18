@@ -212,7 +212,7 @@ describe 'Board with milestone', :js do
 
       click_button 'Milestone'
 
-      click_link milestone.title
+      find('a', text: milestone.title).trigger('click')
 
       click_button 'Create'
     end
