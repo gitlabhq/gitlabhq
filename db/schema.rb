@@ -226,6 +226,20 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
+  create_table "ci_artifacts", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "ci_build_id", null: false
+    t.integer "size", limit: 8, default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expire_at"
+    t.integer "erased_by_id", null: false
+    t.datetime "erased_at"
+    t.text "file"
+  end
+
+  add_index "ci_artifacts", ["project_id", "ci_build_id"], name: "index_ci_artifacts_on_project_id_and_ci_build_id", unique: true, using: :btree
+
   create_table "ci_build_trace_section_names", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -1901,6 +1915,8 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
+  add_foreign_key "ci_artifacts", "ci_builds", on_delete: :cascade
+  add_foreign_key "ci_artifacts", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
