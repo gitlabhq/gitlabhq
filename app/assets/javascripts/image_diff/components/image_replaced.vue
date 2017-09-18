@@ -1,9 +1,13 @@
 <script>
+  import Vue from 'vue';
+  import Translate from '../../vue_shared/translate';
   import imageDiffProps from '../mixins/image_diff_props';
   import twoUpView from './two_up_view.vue';
   import swipeView from './swipe_view.vue';
   import onionSkinView from './onion_skin_view.vue';
   import * as constants from '../constants';
+
+  Vue.use(Translate);
 
   export default {
     name: 'imageReplaced',
@@ -73,7 +77,7 @@
         :class="{ active: isCurrentViewTwoUp }"
         @click="goToTwoUpView"
       >
-        2-up
+        {{ __('2-up') }}
       </button>
       <button
         type="button"
@@ -81,7 +85,7 @@
         :class="{ active: isCurrentViewSwipe }"
         @click="goToSwipeView"
       >
-        Swipe
+        {{ __('Swipe') }}
       </button>
       <button
         type="button"
@@ -89,7 +93,7 @@
         :class="{ active: isCurrentViewOnionSkin }"
         @click="goToOnionSkinView"
       >
-        Onion skin
+        {{ __('Onion skin') }}
       </button>
     </div>
   </div>
