@@ -5,12 +5,11 @@ module Gitlab
 
       include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
-      attr_reader :path, :cache, :stages, :jobs
+      attr_reader :cache, :stages, :jobs
 
-      def initialize(config, path = nil)
+      def initialize(config)
         @ci_config = Gitlab::Ci::Config.new(config)
         @config = @ci_config.to_hash
-        @path = path
 
         unless @ci_config.valid?
           raise ValidationError, @ci_config.errors.first
