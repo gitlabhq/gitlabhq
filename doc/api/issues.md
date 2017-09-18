@@ -95,6 +95,7 @@ Example response:
          "username" : "root"
       },
       "updated_at" : "2016-01-04T15:31:51.081Z",
+      "closed_at" : null,
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
@@ -205,6 +206,7 @@ Example response:
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
+      "closed_at" : null,
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
@@ -311,6 +313,7 @@ Example response:
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
+      "closed_at" : "2016-01-05T15:31:46.176Z",
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
@@ -358,7 +361,8 @@ Example response:
       "id" : 11,
       "title" : "v3.0",
       "created_at" : "2016-01-04T15:31:39.788Z",
-      "updated_at" : "2016-01-04T15:31:39.788Z"
+      "updated_at" : "2016-01-04T15:31:39.788Z",
+      "closed_at" : "2016-01-05T15:31:46.176Z"
    },
    "author" : {
       "state" : "active",
@@ -465,6 +469,7 @@ Example response:
    },
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
+   "closed_at" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
@@ -533,6 +538,7 @@ Example response:
    "project_id" : 4,
    "description" : null,
    "updated_at" : "2016-01-07T12:55:16.213Z",
+   "closed_at" : "2016-01-08T12:55:16.213Z",
    "iid" : 15,
    "labels" : [
       "bug"
@@ -615,6 +621,7 @@ Example response:
   "state": "opened",
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
+  "closed_at": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -692,6 +699,7 @@ Example response:
   "state": "opened",
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
+  "closed_at": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
