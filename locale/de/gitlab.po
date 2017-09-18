@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"PO-Revision-Date: 2017-09-15 05:22-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -70,7 +70,7 @@ msgid "Account"
 msgstr ""
 
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 msgid "Activity"
 msgstr ""
@@ -82,7 +82,7 @@ msgid "Add Contribution guide"
 msgstr "Mitarbeitsanleitung hinzufügen"
 
 msgid "Add License"
-msgstr ""
+msgstr "Lizenz hinzufügen"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
 msgstr "Füge einen SSH Schlüssel zu deinem Profil hinzu, um mittels SSH zu übertragen (push) oder abzurufen (pull)."
@@ -94,10 +94,10 @@ msgid "All"
 msgstr "Alle"
 
 msgid "Appearances"
-msgstr ""
+msgstr "Erscheinungsbild"
 
 msgid "Applications"
-msgstr ""
+msgstr "Anwendungen"
 
 msgid "Archived project! Repository is read-only"
 msgstr "Archiviertes Projekt! Repository ist nicht änderbar."
@@ -213,10 +213,10 @@ msgid "CI / CD"
 msgstr ""
 
 msgid "CI configuration"
-msgstr ""
+msgstr "CI-Konfiguration"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 msgid "Cancel edit"
 msgstr "Bearbeitung abbrechen"
@@ -487,7 +487,7 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "Pipeline Zeitplan bearbeiten %{id}"
 
 msgid "Emails"
-msgstr ""
+msgstr "E-Mails"
 
 msgid "EventFilterBy|Filter by all"
 msgstr "Filtere alle"
@@ -573,7 +573,7 @@ msgid "GoToYourFork|Fork"
 msgstr "Ableger"
 
 msgid "Group overview"
-msgstr ""
+msgstr "Gruppen-Übersicht"
 
 msgid "Health Check"
 msgstr "Systemzustand"
@@ -662,7 +662,7 @@ msgid "Leave project"
 msgstr "Verlasse das Projekt"
 
 msgid "License"
-msgstr ""
+msgstr "Lizenz"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
@@ -670,13 +670,13 @@ msgstr[0] "Limitiere die Anzeige auf höchstens %d Ereignis"
 msgstr[1] "Limitiere die Anzeige auf höchstens %d Ereignisse"
 
 msgid "Locked Files"
-msgstr ""
+msgstr "Gesperrte Dateien"
 
 msgid "Median"
-msgstr ""
+msgstr "Median"
 
 msgid "Members"
-msgstr ""
+msgstr "Mitglieder"
 
 msgid "Merge Requests"
 msgstr ""
@@ -795,7 +795,7 @@ msgid "NotificationLevel|Watch"
 msgstr "Beobachten"
 
 msgid "Notifications"
-msgstr ""
+msgstr "Benachrichtigungen"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filter"
@@ -807,13 +807,13 @@ msgid "Options"
 msgstr "Optionen"
 
 msgid "Overview"
-msgstr ""
+msgstr "Übersicht"
 
 msgid "Owner"
 msgstr "Besitzer"
 
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 msgid "Pipeline"
 msgstr ""
@@ -984,6 +984,24 @@ msgid "ProjectNetworkGraph|Graph"
 msgstr "Diagramm"
 
 msgid "Push Rules"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "Push events"
