@@ -461,7 +461,7 @@ module EE
     alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
 
     def merge_requests_ff_only_enabled
-      super && feature_available?(:fast_forward_merge)
+      super
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
