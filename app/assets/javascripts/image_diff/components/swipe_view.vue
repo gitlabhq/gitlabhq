@@ -23,13 +23,13 @@
   <div class="swipe view">
     <div class="swipe-frame">
       <image-frame
-        className="deleted"
+        class-name="deleted"
         :src="deleted.path"
         :alt="deleted.alt"
       />
       <div class="swipe-wrap">
         <image-frame
-          className="added"
+          class-name="added"
           :src="added.path"
           :alt="added.alt"
         />

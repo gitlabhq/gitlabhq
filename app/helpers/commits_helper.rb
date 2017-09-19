@@ -176,7 +176,7 @@ module CommitsHelper
     end
   end
 
-  def view_file_button(commit_sha, diff_new_path, project, replaced = false)
+  def view_file_button(commit_sha, diff_new_path, project, replaced: false)
     title = replaced ? _('View replaced file @ ') : _('View file @ ')
 
     link_to(

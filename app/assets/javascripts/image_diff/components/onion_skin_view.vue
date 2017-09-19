@@ -23,12 +23,12 @@
   <div class="onion-skin view">
     <div class="onion-skin-frame">
       <image-frame
-        className="deleted"
+        class-name="deleted"
         :src="deleted.path"
         :alt="deleted.alt"
       />
       <image-frame
-        className="added"
+        class-name="added"
         :src="added.path"
         :alt="added.alt"
       />
