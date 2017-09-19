@@ -36,6 +36,7 @@
   - [Revert changes in the UI](../user/project/merge_requests/revert_changes.md)
   - [Merge requests versions](../user/project/merge_requests/versions.md)
   - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
+  - [Fast-forward merge requests](../user/project/merge_requests/fast_forward_merge.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
 - [Todos](todos.md)
