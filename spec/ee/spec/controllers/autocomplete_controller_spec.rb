@@ -19,7 +19,7 @@ describe AutocompleteController do
           get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
         end
 
-        it 'returns authorized users' do
+        it 'returns authorized users', :aggregate_failures do
           expect(json_response).to be_kind_of(Array)
           expect(json_response.size).to eq(1)
           expect(json_response.map { |u| u["username"] }).to match_array([user.username])
@@ -34,7 +34,7 @@ describe AutocompleteController do
           get(:users, project_id: project.id, push_code: 'true')
         end
 
-        it 'returns authorized users' do
+        it 'returns authorized users', :aggregate_failures do
           expect(json_response).to be_kind_of(Array)
           expect(json_response.size).to eq(2)
           expect(json_response.map { |user| user["username"] }).to match_array([user.username, user2.username])
@@ -46,7 +46,7 @@ describe AutocompleteController do
           get(:users, project_id: project.id, push_code_to_protected_branches: true, current_user: true)
         end
 
-        it 'returns authorized users' do
+        it 'returns authorized users', :aggregate_failures do
           expect(json_response).to be_kind_of(Array)
           expect(json_response.size).to eq(1)
           expect(json_response.map { |u| u["username"] }).to match_array([user.username])
@@ -70,7 +70,7 @@ describe AutocompleteController do
         get(:project_groups, project_id: project.id)
       end
 
-      it 'returns a single group' do
+      it 'returns a single group', :aggregate_failures do
         expect(json_response).to be_kind_of(Array)
         expect(json_response.size).to eq(1)
         expect(json_response.first.values_at('id', 'name')).to eq [matching_group.id, matching_group.name]

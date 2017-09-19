@@ -58,6 +58,21 @@ describe Projects::UpdateService, '#execute' do
         end
       end
     end
+
+    context 'When project visibility is higher than parent group' do
+      let(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+      before do
+        project.update(namespace: group, visibility_level: group.visibility_level)
+      end
+
+      it 'does not update project visibility level' do
+        result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+        expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal group.' })
+        expect(project.reload).to be_internal
+      end
+    end
   end
 
   describe 'when updating project that has forks' do
@@ -149,7 +164,7 @@ describe Projects::UpdateService, '#execute' do
       result = update_project(project, admin, path: 'existing')
 
       expect(result).to include(status: :error)
-      expect(result[:message]).to match('Project could not be updated!')
+      expect(result[:message]).to match('There is already a repository with that name on disk')
       expect(project).not_to be_valid
       expect(project.errors.messages).to have_key(:base)
       expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
@@ -160,8 +175,10 @@ describe Projects::UpdateService, '#execute' do
     it 'returns an error result when record cannot be updated' do
       result = update_project(project, admin, { name: 'foo&bar' })
 
-      expect(result).to eq({ status: :error,
-                             message: 'Project could not be updated!' })
+      expect(result).to eq({
+        status: :error,
+        message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
+      })
     end
   end
 
@@ -228,7 +245,7 @@ describe Projects::UpdateService, '#execute' do
   it 'returns an error result when record cannot be updated' do
     result = update_project(project, admin, { name: 'foo&bar' })
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated!' })
+    expect(result).to eq({ status: :error, message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'." })
   end
 
   def update_project(project, user, opts)

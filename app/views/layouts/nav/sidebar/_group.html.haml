@@ -100,7 +100,7 @@
             Members
         %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
-            = link_to merge_requests_group_path(@group) do
+            = link_to group_group_members_path(@group) do
               %strong.fly-out-top-item-name
                 #{ _('Members') }
       - if current_user && can?(current_user, :admin_group, @group)
