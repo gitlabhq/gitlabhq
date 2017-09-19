@@ -1311,7 +1311,6 @@ describe Repository, models: true do
 
     def merge(repository, user, merge_request, message)
       repository.merge(user, merge_request.diff_head_sha, merge_request, message)
-<<<<<<< HEAD
     end
   end
 
@@ -1340,8 +1339,6 @@ describe Repository, models: true do
                                             merge_request: merge_request)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
-=======
->>>>>>> ce-com/master
     end
   end
 
