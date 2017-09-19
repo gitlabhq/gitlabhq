@@ -1,0 +1,8 @@
+.top-area
+  %ul.nav-links
+    = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
+      = link_to dashboard_projects_path do
+        #{ s_('DashboardProjects|All') }
+    = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
+      = link_to filter_projects_path(personal: true) do
+        #{ s_('DashboardProjects|Personal') }

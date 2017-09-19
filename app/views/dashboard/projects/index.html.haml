@@ -12,6 +12,7 @@
 %div{ class: container_class }
   - if has_projects_or_name?(@projects, params)
     = render 'dashboard/projects_head'
+    = render 'nav'
     = render 'projects'
   - else
     = render "zero_authorized_projects"
