@@ -65,6 +65,60 @@ module Backup
       end
     end
 
+    class BackupFile
+      def initialize(path)
+        @path = path
+      end
+
+      def valid?
+        passes_regex?
+      end
+
+      def delete_if_expired
+        return if never_expires?
+        return unless valid?
+        return unless expired?
+
+        FileUtils.rm(@path)
+
+        true
+      end
+
+      private
+
+      def passes_regex?
+        regex_matches
+      end
+
+      def expired?
+        Time.at(timestamp) < expire_before
+      end
+
+      def expire_before
+        Time.now - keep_time
+      end
+
+      def keep_time
+        Gitlab.config.backup.keep_time.to_i
+      end
+
+      def never_expires?
+        keep_time <= 0
+      end
+
+      def timestamp
+        regex_matches[1].to_i
+      end
+
+      def regex_matches
+        # For backward compatibility, there are 3 names the backups can have:
+        # - 1495527122_gitlab_backup.tar
+        # - 1495527068_2017_05_23_gitlab_backup.tar
+        # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
+        @regex_matches ||= @path.match(/(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/)
+      end
+    end
+
     def remove_old
       # delete backups
       $progress.print "Deleting old backups ... "
@@ -75,21 +129,12 @@ module Backup
 
         Dir.chdir(backup_path) do
           backup_file_list.each do |file|
-            # For backward compatibility, there are 3 names the backups can have:
-            # - 1495527122_gitlab_backup.tar
-            # - 1495527068_2017_05_23_gitlab_backup.tar
-            # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
-
-            timestamp = $1.to_i
-
-            if Time.at(timestamp) < (Time.now - keep_time)
-              begin
-                FileUtils.rm(file)
+            begin
+              if BackupFile.new(file).delete_if_expired
                 removed += 1
-              rescue => e
-                $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
+            rescue => e
+              $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
             end
           end
         end
