@@ -18,9 +18,9 @@ module AutoDevopsHelper
       }
 
       if missing_domain
-        _('Auto Review Apps and Auto Deploy need a domain name and the %s to work correctly.') % params
+        _('Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly.') % params
       else
-        _('Auto Review Apps and Auto Deploy need the %s to work correctly.') % params
+        _('Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly.') % params
       end
     elsif missing_domain
       _('Auto Review Apps and Auto Deploy need a domain name to work correctly.')
