@@ -71,6 +71,19 @@ internally by the secondary node to record what data has been replicated.
 
 In the secondary nodes there is an additional daemon: Geo Log Cursor.
 
+## Geo Requirements
+
+We highly recommend that you install Geo on an operating system that supports
+OpenSSH 6.9 or higher. The following operating systems are known to ship with a
+current version of OpenSSH:
+
+    * CentOS 7.4
+    * Ubuntu 16.04
+
+Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
+support a feature that Geo requires. See the [documentation on GitLab Geo SSH
+access](ssh.md) for more details.
+
 ### LDAP
 
 We recommend that if you use LDAP on your primary that you also set up a
