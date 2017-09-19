@@ -38,7 +38,7 @@ class GroupDescendantsFinder
   private
 
   def children
-    @children ||= subgroups.with_route.includes(:parent) + projects.with_route.includes(:namespace)
+    @children ||= subgroups.with_route.includes(parent: [:route, :parent]) + projects.with_route.includes(namespace: [:route, :parent])
   end
 
   def direct_child_groups

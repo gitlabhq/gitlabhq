@@ -304,19 +304,10 @@ describe GroupsController do
 
       context 'queries per rendered element', :request_store do
         # The expected extra queries for the rendered group are:
-        # 1. Count of memberships of the group
-        # 2. Count of visible projects in the element
-        # 3. Count of visible subgroups in the element
-        # 4. Every parent
-        # 5. The route for a parent
-        let(:expected_queries_per_group) { 5 }
+        # 1. Count of visible projects in the element
+        # 2. Count of visible subgroups in the element
+        let(:expected_queries_per_group) { 2 }
         let(:expected_queries_per_project) { 0 }
-
-        before do
-          # Create the group before anything so it doesn't get tracked by the
-          # query recorder
-          group
-        end
 
         def get_list
           get :children, id: group.to_param, format: :json
@@ -324,6 +315,7 @@ describe GroupsController do
 
         it 'queries the expected amount for a group row' do
           control = ActiveRecord::QueryRecorder.new { get_list }
+
           _new_group = create(:group, :public, parent: group)
 
           expect { get_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
@@ -337,18 +329,26 @@ describe GroupsController do
         end
 
         context 'when rendering hierarchies' do
+          # Extra queries per group when rendering a hierarchy:
+          # The route and the namespace are `included` for all matched elements
+          # But the parent's above those are not, so there's 2 extra queries per
+          # nested level:
+          # 1. Loading the parent that wasn't loaded yet
+          # 2. Loading the route for that parent.
+          let(:extra_queries_per_nested_level) { expected_queries_per_group + 2 }
+
           def get_filtered_list
             get :children, id: group.to_param, filter: 'filter', format: :json
           end
 
-          it 'queries the expected amount when nested rows are rendered for a group' do
-            matched_group = create(:group, :public, parent: public_subgroup, name: 'filterme')
+          it 'queries the expected amount when nested rows are increased for a group' do
+            matched_group = create(:group, :public, parent: group, name: 'filterme')
 
             control = ActiveRecord::QueryRecorder.new { get_filtered_list }
-            nested_group = create(:group, :public, parent: public_subgroup)
-            matched_group.update!(parent: nested_group)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
+            matched_group.update!(parent: public_subgroup)
+
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_per_nested_level)
           end
 
           it 'queries the expected amount when a new group match is added' do
@@ -358,18 +358,17 @@ describe GroupsController do
 
             create(:group, :public, parent: public_subgroup, name: 'filterme2')
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_per_nested_level)
           end
 
-          it 'queries the expected amount when nested rows are rendered for a project' do
-            matched_project = create(:project, :public, namespace: public_subgroup, name: 'filterme')
+          it 'queries the expected amount when nested rows are increased for a project' do
+            matched_project = create(:project, :public, namespace: group, name: 'filterme')
 
             control = ActiveRecord::QueryRecorder.new { get_filtered_list }
 
-            nested_group = create(:group, :public, parent: public_subgroup)
-            matched_project.update!(namespace: nested_group)
+            matched_project.update!(namespace: public_subgroup)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_group)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_per_nested_level)
           end
 
           it 'queries the expected amount when a new project match is added' do
@@ -377,9 +376,10 @@ describe GroupsController do
 
             control = ActiveRecord::QueryRecorder.new { get_filtered_list }
 
-            create(:project, :public, namespace: public_subgroup, name: 'filterme2')
+            nested_group = create(:group, :public, parent: group)
+            create(:project, :public, namespace: nested_group, name: 'filterme2')
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(expected_queries_per_project)
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_per_nested_level)
           end
         end
       end
