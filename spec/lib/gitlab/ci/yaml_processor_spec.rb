@@ -529,7 +529,8 @@ module Gitlab
                                  rspec: {
                                    script: "rspec",
                                    type: type,
-                                   except: ["branches@#{seed_pipeline.project_full_path}"] }
+                                   except: ["branches@#{seed_pipeline.project_full_path}"]
+                                 }
                                })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
