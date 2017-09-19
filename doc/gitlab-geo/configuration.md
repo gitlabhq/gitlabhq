@@ -300,12 +300,25 @@ not create them manually.
 
 ### Upgrading Geo
 
-To avoid having to maintain consistency of the `authorized_keys` file for SSH access,
-we encourage all **Geo** users to
-[switch to SSH key lookups via the database](ssh.md).
-This will be necessary once Geo system hooks are removed.
+#### Upgrading to GitLab 10.0
 
-We highly recommend using replication slots. The easiest way to do this in Omnibus is the following:
+Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
+the database](ssh.md) to avoid having to maintain consistency of the
+`authorized_keys` file for SSH access. Failing to do this will prevent users
+from being able to clone via SSH.
+
+#### Upgrading from GitLab 9.3 or older
+
+If you started running Geo on GitLab 9.3 or older, we recommend that you
+resync your secondary PostgreSQL databases to use replication slots. If you
+started using Geo with GitLab 9.4 or 10.x, no further action should be
+required because replication slots are used by default. However, if you
+started with GitLab 9.3 and upgraded later, you should still follow the
+instructions below.
+
+When in doubt, it does not hurt to do a resync. The easiest way to do this in
+Omnibus is the following:
+
   1. Install GitLab on the primary server
   1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
   1. Install GitLab on the secondary server.
