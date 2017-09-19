@@ -202,14 +202,13 @@ describe 'Merge request', :js do
     end
   end
 
-  context 'view merge request with MWPS enabled but fast-forward merge is not possible' do
+  context 'view merge request where fast-forward merge is not possible' do
     before do
       project.update(merge_requests_ff_only_enabled: true)
 
       merge_request.update(
-        merge_when_pipeline_succeeds: true,
         merge_user: merge_request.author,
-        state: :can_be_merged
+        merge_status: :cannot_be_merged
       )
 
       visit project_merge_request_path(project, merge_request)
