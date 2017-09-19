@@ -1036,7 +1036,7 @@ module API
         expose :steps, using: Step
         expose :image, using: Image
         expose :services, using: Service
-        expose :artifacts, using: Artifacts
+        expose :artifacts_options, as: :artifacts, using: Artifacts
         expose :cache, using: Cache
         expose :credentials, using: Credentials
         expose :dependencies, using: Dependency

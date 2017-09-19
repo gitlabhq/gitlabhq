@@ -1,5 +1,6 @@
 module Ci
   class Build < CommitStatus
+    prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
@@ -10,6 +11,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+    has_many :artifacts, class_name: 'Ci::Artifact', foreign_key: :ci_build_id
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
@@ -326,14 +328,6 @@ module Ci
       project.running_or_pending_build_count(force: true)
     end
 
-    def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
-    end
-
-    def artifacts_metadata?
-      artifacts? && artifacts_metadata.exists?
-    end
-
     def artifacts_metadata_entry(path, **options)
       metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
         artifacts_metadata.path,
@@ -429,7 +423,7 @@ module Ci
       Gitlab::Ci::Build::Image.from_services(self)
     end
 
-    def artifacts
+    def artifacts_options
       [options[:artifacts]]
     end
 
@@ -468,6 +462,12 @@ module Ci
 
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
+    end
+
+    def update_project_statistics
+      return unless project
+
+      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
 
     private
@@ -560,11 +560,6 @@ module Ci
       pipeline.config_processor.build_attributes(name)
     end
 
-    def update_project_statistics
-      return unless project
-
-      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
-    end
 
     def update_project_statistics_after_save
       if previous_changes.include?('artifacts_size')

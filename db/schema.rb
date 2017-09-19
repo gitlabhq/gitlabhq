@@ -229,12 +229,10 @@ ActiveRecord::Schema.define(version: 20171124150326) do
   create_table "ci_artifacts", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "ci_build_id", null: false
+    t.integer "type", default: 0, null: false
     t.integer "size", limit: 8, default: 0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "expire_at"
-    t.integer "erased_by_id", null: false
-    t.datetime "erased_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "file"
   end
 

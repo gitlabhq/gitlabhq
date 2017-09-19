@@ -23,6 +23,8 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
+  it { is_expected.to be_a(ArtifactMigratable) }
+
   describe 'callbacks' do
     context 'when running after_create callback' do
       it 'triggers asynchronous build hooks worker' do
@@ -130,33 +132,26 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
+    let(:build) { create(:ci_build, :artifacts) }
+
     subject { build.artifacts? }
 
     context 'artifacts archive does not exist' do
-      before do
-        build.update_attributes(artifacts_file: nil)
-      end
+      let(:build) { create(:ci_build) }
 
       it { is_expected.to be_falsy }
     end
 
     context 'artifacts archive exists' do
-      let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
 
       context 'is expired' do
-        before do
-          build.update(artifacts_expire_at: Time.now - 7.days)
-        end
+        let(:build) { create(:ci_build, :artifacts, :expired) }
 
         it { is_expected.to be_falsy }
       end
 
       context 'is not expired' do
-        before do
-          build.update(artifacts_expire_at: Time.now + 7.days)
-        end
-
         it { is_expected.to be_truthy }
       end
     end

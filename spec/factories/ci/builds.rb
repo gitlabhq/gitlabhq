@@ -156,32 +156,13 @@ FactoryGirl.define do
 
     trait :artifacts do
       after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-                             'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                             'application/x-gzip')
-
-        build.save!
+        create(:artifact, build: build)
+        create(:artifact_metadata, build: build)
       end
     end
 
-    trait :artifacts_expired do
-      after(:create) do |build, _|
-        build.artifacts_file =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-            'application/zip')
-
-        build.artifacts_metadata =
-          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-            'application/x-gzip')
-
-        build.artifacts_expire_at = 1.minute.ago
-
-        build.save!
-      end
+    trait :expired do
+      artifacts_expire_at = 1.minute.ago
     end
 
     trait :with_commit do

@@ -12,6 +12,10 @@ class ArtifactUploader < GitlabUploader
   end
 
   def initialize(job, field)
+    # Temporairy conditional, needed to move artifacts to their own table,
+    # but keeping compat with Ci::Build for the time being
+    job = job.build if job.respond_to?(:build)
+
     @job, @field = job, field
   end
 
