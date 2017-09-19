@@ -245,7 +245,7 @@ describe Projects::UpdateService, '#execute' do
   it 'returns an error result when record cannot be updated' do
     result = update_project(project, admin, { name: 'foo&bar' })
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated!' })
+    expect(result).to eq({ status: :error, message: "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'." })
   end
 
   def update_project(project, user, opts)
