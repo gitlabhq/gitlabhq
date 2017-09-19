@@ -124,7 +124,7 @@ module Gitlab
       def send_artifacts_entry(build, entry)
         params = {
           'Archive' => build.artifacts_file.path,
-          'Entry' => Base64.encode64(entry.path)
+          'Entry' => Base64.encode64(entry.to_s)
         }
 
         [

@@ -163,12 +163,6 @@
     }
   }
 
-  &.dropdown-menu-empty-link {
-    &.is-focused {
-      background-color: $dropdown-empty-row-bg;
-    }
-  }
-
   &.dropdown-menu-user-link {
     line-height: 16px;
   }
@@ -189,7 +183,7 @@
   width: auto;
   top: 100%;
   left: 0;
-  z-index: 200;
+  z-index: 300;
   min-width: 240px;
   max-width: 500px;
   margin-top: 2px;
@@ -254,6 +248,13 @@
 
   a {
     @include dropdown-link;
+  }
+
+  .dropdown-menu-empty-item a {
+    &:hover,
+    &:focus {
+      background-color: transparent;
+    }
   }
 
   .dropdown-header {
@@ -733,6 +734,11 @@
   overflow: hidden;
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+}
+
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
@@ -759,6 +765,10 @@
         padding: 8px 16px;
       }
 
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
       a,
       button,
       .menu-item {
@@ -766,6 +776,7 @@
         box-shadow: none;
         padding: 8px 16px;
         text-align: left;
+        white-space: normal;
         width: 100%;
 
         // make sure the text color is not overriden
@@ -777,6 +788,8 @@
         &:hover,
         &:active,
         &:focus {
+          @include dropdown-item-hover;
+
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
 
@@ -797,6 +810,13 @@
             top: 50%;
             transform: translateY(-50%);
           }
+        }
+      }
+
+      &.dropdown-menu-empty-item a {
+        &:hover,
+        &:focus {
+          background-color: transparent;
         }
       }
     }
@@ -828,16 +848,30 @@
   }
 }
 
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+}
+
+@include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
 header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;
-
-  @media (max-width: $screen-xs-max) {
-    display: table;
-    left: -50px;
-    min-width: 300px;
-  }
 }
 
 .projects-dropdown-container {

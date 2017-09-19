@@ -1,4 +1,5 @@
 /* global BoardService */
+/* global mockBoardService */
 import Vue from 'vue';
 import '~/boards/stores/boards_store';
 import boardBlankState from '~/boards/components/board_blank_state';
@@ -12,7 +13,7 @@ describe('Boards blank state', () => {
     const Comp = Vue.extend(boardBlankState);
 
     gl.issueBoards.BoardsStore.create();
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
 
     spyOn(gl.boardService, 'generateDefaultLists').and.callFake(() => new Promise((resolve, reject) => {
       if (fail) {

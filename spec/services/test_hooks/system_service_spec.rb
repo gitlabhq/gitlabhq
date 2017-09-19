@@ -24,36 +24,39 @@ describe TestHooks::SystemService do
 
     context 'push_events' do
       let(:trigger) { 'push_events' }
+      let(:trigger_key) { :push_hooks }
 
       it 'executes hook' do
         allow(project).to receive(:empty_repo?).and_return(false)
         expect(Gitlab::DataBuilder::Push).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
 
     context 'tag_push_events' do
       let(:trigger) { 'tag_push_events' }
+      let(:trigger_key) { :tag_push_hooks }
 
       it 'executes hook' do
         allow(project.repository).to receive(:tags).and_return(['tag'])
         expect(Gitlab::DataBuilder::Push).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Push::SAMPLE_DATA, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end
 
     context 'repository_update_events' do
       let(:trigger) { 'repository_update_events' }
+      let(:trigger_key) { :repository_update_hooks }
 
       it 'executes hook' do
         allow(project).to receive(:empty_repo?).and_return(false)
         expect(Gitlab::DataBuilder::Repository).to receive(:sample_data).and_call_original
 
-        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Repository::SAMPLE_DATA, trigger).and_return(success_result)
+        expect(hook).to receive(:execute).with(Gitlab::DataBuilder::Repository::SAMPLE_DATA, trigger_key).and_return(success_result)
         expect(service.execute).to include(success_result)
       end
     end

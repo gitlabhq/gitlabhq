@@ -2,7 +2,6 @@
 
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import SidebarHeightManager from './sidebar_height_manager';
 
 (function() {
   this.Sidebar = (function() {
@@ -23,7 +22,6 @@ import SidebarHeightManager from './sidebar_height_manager';
     };
 
     Sidebar.prototype.addEventListeners = function() {
-      SidebarHeightManager.init();
       const $document = $(document);
 
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);

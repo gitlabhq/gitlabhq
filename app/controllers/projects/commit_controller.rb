@@ -20,7 +20,12 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html
+      format.html do
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37599
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
+      end
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
@@ -127,7 +132,7 @@ class Projects::CommitController < Projects::ApplicationController
     @discussions = commit.discussions
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
-    @notes = prepare_notes_for_rendering(@notes)
+    @notes = prepare_notes_for_rendering(@notes, @commit)
   end
 
   def assign_change_commit_vars

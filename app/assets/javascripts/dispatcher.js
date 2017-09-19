@@ -41,7 +41,6 @@ import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
-import GroupName from './group_name';
 import GroupsList from './groups_list';
 import ProjectsList from './projects_list';
 import setupProjectEdit from './project_edit';
@@ -160,6 +159,9 @@ import initChangesDropdown from './init_changes_dropdown';
           if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
+          }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
@@ -343,6 +345,7 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -361,6 +364,9 @@ import initChangesDropdown from './init_changes_dropdown';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
+          break;
+        case 'projects:pipelines:index':
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -419,6 +425,7 @@ import initChangesDropdown from './init_changes_dropdown';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -489,6 +496,8 @@ import initChangesDropdown from './init_changes_dropdown';
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
         case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
@@ -554,9 +563,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'root':
           new UserCallout();
           break;
-        case 'groups':
-          new GroupName();
-          break;
         case 'profiles':
           new NotificationsForm();
           new NotificationsDropdown();
@@ -564,7 +570,6 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects':
           new Project();
           new ProjectAvatar();
-          new GroupName();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
@@ -572,6 +577,9 @@ import initChangesDropdown from './init_changes_dropdown';
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
+              import(/* webpackChunkName: 'project_permissions' */ './projects/permissions')
+                .then(permissions => permissions.default())
+                .catch(() => {});
               break;
             case 'new':
               new ProjectNew();

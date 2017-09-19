@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def provider
-        @provider ||= Gitlab::Utils.force_utf8(auth_hash.provider.to_s)
+        @provider ||= auth_hash.provider.to_s
       end
 
       def name
@@ -32,8 +32,21 @@ module Gitlab
         @password ||= Gitlab::Utils.force_utf8(Devise.friendly_token[0, 8].downcase)
       end
 
-      def has_email?
-        get_info(:email).present?
+      def location
+        location = get_info(:address)
+        if location.is_a?(Hash)
+          [location.locality.presence, location.country.presence].compact.join(', ')
+        else
+          location
+        end
+      end
+
+      def has_attribute?(attribute)
+        if attribute == :location
+          get_info(:address).present?
+        else
+          get_info(attribute).present?
+        end
       end
 
       private

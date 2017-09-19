@@ -401,7 +401,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
   end
 
-  describe '#stats' do
+  shared_examples '#stats' do
     subject { commit.stats }
 
     describe '#additions' do
@@ -413,6 +413,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
       subject { super().deletions }
       it { is_expected.to eq(6) }
     end
+  end
+
+  describe '#stats with gitaly on' do
+    it_should_behave_like '#stats'
+  end
+
+  describe '#stats with gitaly disabled', skip_gitaly_mock: true do
+    it_should_behave_like '#stats'
   end
 
   describe '#to_diff' do

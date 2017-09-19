@@ -37,7 +37,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I goto the Merge Requests page' do
     page.within '.nav-sidebar' do
-      click_link "Merge Requests"
+      first(:link, "Merge Requests").click
     end
   end
 
@@ -52,7 +52,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I visit the forks page of the "Shop" project' do
-    @project = Project.where(name: 'Shop').last
+    @project = Project.where(name: 'Shop').first
     visit project_forks_path(@project)
   end
 

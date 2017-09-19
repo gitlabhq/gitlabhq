@@ -72,6 +72,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "theme_id": 1,
     "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
@@ -105,6 +106,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "theme_id": 1,
     "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
@@ -215,6 +217,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -299,10 +302,7 @@ e.g. when renaming the email address to some existing one.
 ## User deletion
 
 Deletes a user. Available only for administrators.
-This is an idempotent function, calling this function for a non-existent user id
-still returns a status code `200 OK`.
-The JSON response differs if the user was actually deleted or not.
-In the former the user is returned and in the latter not.
+This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
 ```
 DELETE /users/:id
@@ -344,6 +344,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -390,6 +391,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "theme_id": 1,
   "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
@@ -524,8 +526,7 @@ Parameters:
 ## Delete SSH key for current user
 
 Deletes key owned by currently authenticated user.
-This is an idempotent function and calling it on a key that is already deleted
-or not available results in `200 OK`.
+This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
 ```
 DELETE /user/keys/:key_id
@@ -547,8 +548,6 @@ Parameters:
 
 - `id` (required) - id of specified user
 - `key_id` (required)  - SSH key ID
-
-Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
 
 ## List all GPG keys
 
@@ -865,8 +864,7 @@ Parameters:
 ## Delete email for current user
 
 Deletes email owned by currently authenticated user.
-This is an idempotent function and calling it on a email that is already deleted
-or not available results in `200 OK`.
+This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
 ```
 DELETE /user/emails/:email_id
@@ -888,8 +886,6 @@ Parameters:
 
 - `id` (required) - id of specified user
 - `email_id` (required)  - email ID
-
-Will return `200 OK` on success, or `404 Not found` if either user or email cannot be found.
 
 ## Block user
 

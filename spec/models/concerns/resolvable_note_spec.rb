@@ -189,8 +189,8 @@ describe Note, ResolvableNote do
         allow(subject).to receive(:resolvable?).and_return(false)
       end
 
-      it "returns nil" do
-        expect(subject.resolve!(current_user)).to be_nil
+      it "returns false" do
+        expect(subject.resolve!(current_user)).to be_falsey
       end
 
       it "doesn't set resolved_at" do
@@ -224,8 +224,8 @@ describe Note, ResolvableNote do
           subject.resolve!(user)
         end
 
-        it "returns nil" do
-          expect(subject.resolve!(current_user)).to be_nil
+        it "returns false" do
+          expect(subject.resolve!(current_user)).to be_falsey
         end
 
         it "doesn't change resolved_at" do
@@ -279,8 +279,8 @@ describe Note, ResolvableNote do
         allow(subject).to receive(:resolvable?).and_return(false)
       end
 
-      it "returns nil" do
-        expect(subject.unresolve!).to be_nil
+      it "returns false" do
+        expect(subject.unresolve!).to be_falsey
       end
     end
 
@@ -320,8 +320,8 @@ describe Note, ResolvableNote do
       end
 
       context "when not resolved" do
-        it "returns nil" do
-          expect(subject.unresolve!).to be_nil
+        it "returns false" do
+          expect(subject.unresolve!).to be_falsey
         end
       end
     end

@@ -39,7 +39,6 @@ import './commit/file';
 import './commit/image_file';
 
 // lib/utils
-import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
@@ -144,6 +143,7 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
+import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
 
@@ -180,6 +180,8 @@ $(function () {
   var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
+
+  initBreadcrumbs();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';

@@ -17,7 +17,7 @@ describe SearchHelper do
       end
     end
 
-    context "with a user" do
+    context "with a standard user" do
       let(:user)   { create(:user) }
 
       before do
@@ -29,7 +29,11 @@ describe SearchHelper do
       end
 
       it "includes default sections" do
-        expect(search_autocomplete_opts("adm").size).to eq(1)
+        expect(search_autocomplete_opts("dash").size).to eq(1)
+      end
+
+      it "does not include admin sections" do
+        expect(search_autocomplete_opts("admin").size).to eq(0)
       end
 
       it "does not allow regular expression in search term" do
@@ -65,6 +69,18 @@ describe SearchHelper do
           expect(search_autocomplete_opts("Files").size).to eq(1)
           expect(search_autocomplete_opts("Commits").size).to eq(1)
         end
+      end
+    end
+
+    context 'with an admin user' do
+      let(:admin) { create(:admin) }
+
+      before do
+        allow(self).to receive(:current_user).and_return(admin)
+      end
+
+      it "includes admin sections" do
+        expect(search_autocomplete_opts("admin").size).to eq(1)
       end
     end
   end

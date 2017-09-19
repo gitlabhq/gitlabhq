@@ -202,9 +202,18 @@
   .btn-group.open .dropdown-toggle {
     box-shadow: none;
   }
+
+  .pipeline-tags .label-container {
+    white-space: normal;
+  }
 }
 
 .stage-cell {
+  @media (min-width: $screen-md-min) {
+    min-width: 148px;
+    margin-right: -4px;
+  }
+
   .mini-pipeline-graph-dropdown-toggle svg {
     height: $ci-action-icon-size;
     width: $ci-action-icon-size;
@@ -931,4 +940,9 @@ button.mini-pipeline-graph-dropdown-toggle {
 
 .pipelines-container .top-area .nav-controls > .btn:last-child {
   float: none;
+}
+
+.autodevops-title {
+  font-weight: $gl-font-weight-normal;
+  line-height: 1.5;
 }

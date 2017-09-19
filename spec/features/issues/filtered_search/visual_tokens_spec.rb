@@ -28,7 +28,7 @@ describe 'Visual tokens', js: true do
     sign_in(user)
     create(:issue, project: project)
 
-    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+    page.driver.set_cookie('sidebar_collapsed', 'true')
 
     visit project_issues_path(project)
   end

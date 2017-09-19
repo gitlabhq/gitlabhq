@@ -56,6 +56,12 @@ module API
       @project ||= find_project!(params[:id])
     end
 
+    def wiki_page
+      page = user_project.wiki.find_page(params[:slug])
+
+      page || not_found!('Wiki Page')
+    end
+
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
@@ -87,7 +93,7 @@ module API
     end
 
     def find_group(id)
-      if id =~ /^\d+$/
+      if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -128,6 +134,10 @@ module API
       merge_request
     end
 
+    def find_build!(id)
+      user_project.builds.find(id.to_i)
+    end
+
     def authenticate!
       unauthorized! unless current_user && can?(initial_current_user, :access_api)
     end
@@ -158,6 +168,14 @@ module API
 
     def authorize_admin_project
       authorize! :admin_project, user_project
+    end
+
+    def authorize_read_builds!
+      authorize! :read_build, user_project
+    end
+
+    def authorize_update_builds!
+      authorize! :update_build, user_project
     end
 
     def require_gitlab_workhorse!
@@ -210,7 +228,7 @@ module API
 
     def bad_request!(attribute)
       message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given"
+      message << "\"" + attribute.to_s + "\" not given" if attribute
       render_api_error!(message.join(' '), 400)
     end
 
@@ -430,6 +448,10 @@ module API
 
     def send_git_archive(repository, ref:, format:)
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    end
+
+    def send_artifacts_entry(build, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
     # The Grape Error Middleware only has access to env but no params. We workaround this by

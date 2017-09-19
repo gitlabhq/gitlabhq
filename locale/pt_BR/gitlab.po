@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 14:15+0530\n"
-"PO-Revision-Date: 2017-08-23 10:14-0400\n"
+"POT-Creation-Date: 2017-09-06 08:32+0200\n"
+"PO-Revision-Date: 2017-09-15 05:18-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -57,7 +57,16 @@ msgstr "Uma coleção de gráficos sobre Integração Contínua"
 msgid "About auto deploy"
 msgstr "Sobre o deploy automático"
 
+msgid "Abuse Reports"
+msgstr ""
+
+msgid "Access Tokens"
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
+
+msgid "Account"
 msgstr ""
 
 msgid "Active"
@@ -84,6 +93,12 @@ msgstr "Adicionar novo diretório"
 msgid "All"
 msgstr ""
 
+msgid "Appearances"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "Projeto arquivado! O repositório é somente leitura"
 
@@ -104,6 +119,63 @@ msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Para anexar arquivo, arraste e solte ou %{upload_link}"
+
+msgid "Authentication log"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
 
 msgid "Branch"
 msgid_plural "Branches"
@@ -137,6 +209,9 @@ msgstr "Navegar pelos arquivos"
 msgid "ByAuthor|by"
 msgstr "por"
 
+msgid "CI / CD"
+msgstr ""
+
 msgid "CI configuration"
 msgstr "Configuração da IC"
 
@@ -163,6 +238,9 @@ msgstr "Registro de mudanças"
 
 msgid "Charts"
 msgstr "Gráficos"
+
+msgid "Chat"
+msgstr ""
 
 msgid "Cherry-pick this commit"
 msgstr "Cherry-pick esse commit"
@@ -259,11 +337,17 @@ msgstr "Commit feito por"
 msgid "Compare"
 msgstr "Comparar"
 
+msgid "Container Registry"
+msgstr ""
+
 msgid "Contribution guide"
 msgstr "Guia de contribuição"
 
 msgid "Contributors"
 msgstr "Contribuidores"
+
+msgid "Copy SSH public key to clipboard"
+msgstr ""
 
 msgid "Copy URL to clipboard"
 msgstr "Copiar URL para área de transferência"
@@ -351,6 +435,9 @@ msgid_plural "Deploys"
 msgstr[0] "Implantação"
 msgstr[1] "Implantações"
 
+msgid "Deploy Keys"
+msgstr ""
+
 msgid "Description"
 msgstr "Descrição"
 
@@ -398,6 +485,9 @@ msgstr "Alterar"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "Alterar Agendamento do Pipeline %{id}"
+
+msgid "Emails"
+msgstr ""
 
 msgid "EventFilterBy|Filter by all"
 msgstr ""
@@ -464,6 +554,12 @@ msgstr "Da abertura de tarefas até a implantação para a produção"
 msgid "From merge request merge until deploy to production"
 msgstr "Do merge request até a implantação em produção"
 
+msgid "GPG Keys"
+msgstr ""
+
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -475,6 +571,9 @@ msgstr "Ir para seu fork"
 
 msgid "GoToYourFork|Fork"
 msgstr "Fork"
+
+msgid "Group overview"
+msgstr ""
 
 msgid "Health Check"
 msgstr ""
@@ -497,6 +596,9 @@ msgstr ""
 msgid "Home"
 msgstr "Início"
 
+msgid "Hooks"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr "Manutenção iniciada com sucesso"
 
@@ -515,20 +617,17 @@ msgstr "Apresentando a Análise de Ciclo"
 msgid "Issue events"
 msgstr ""
 
-msgid "Jobs for last month"
-msgstr "Jobs no último mês"
-
-msgid "Jobs for last week"
-msgstr "Jobs na última semana"
-
-msgid "Jobs for last year"
-msgstr "Jobs no último ano"
+msgid "Issues"
+msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr "Desabilitado"
 
 msgid "LFSStatus|Enabled"
 msgstr "Habilitado"
+
+msgid "Labels"
+msgstr ""
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -562,19 +661,37 @@ msgstr "Sair do grupo"
 msgid "Leave project"
 msgstr "Sair do projeto"
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] "Limitado a mostrar %d evento, no máximo"
 msgstr[1] "Limitado a mostrar %d eventos, no máximo"
 
+msgid "Locked Files"
+msgstr ""
+
 msgid "Median"
 msgstr "Mediana"
+
+msgid "Members"
+msgstr ""
+
+msgid "Merge Requests"
+msgstr ""
 
 msgid "Merge events"
 msgstr ""
 
+msgid "Messages"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "adicione uma chave SSH"
+
+msgid "Monitoring"
+msgstr ""
 
 msgid "More information is available|here"
 msgstr ""
@@ -677,6 +794,9 @@ msgstr "Participar"
 msgid "NotificationLevel|Watch"
 msgstr "Observar"
 
+msgid "Notifications"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtrar"
 
@@ -686,8 +806,14 @@ msgstr "Aberto"
 msgid "Options"
 msgstr "Opções"
 
+msgid "Overview"
+msgstr ""
+
 msgid "Owner"
 msgstr "Proprietário"
+
+msgid "Password"
+msgstr ""
 
 msgid "Pipeline"
 msgstr ""
@@ -700,6 +826,9 @@ msgstr "Agendamento da Pipeline"
 
 msgid "Pipeline Schedules"
 msgstr "Agendamentos da Pipeline"
+
+msgid "Pipeline quota"
+msgstr ""
 
 msgid "PipelineCharts|Failed:"
 msgstr "Falhou:"
@@ -764,6 +893,15 @@ msgstr ""
 msgid "Pipelines charts"
 msgstr "Gráficos de pipelines"
 
+msgid "Pipelines for last month"
+msgstr ""
+
+msgid "Pipelines for last week"
+msgstr ""
+
+msgid "Pipelines for last year"
+msgstr ""
+
 msgid "Pipeline|all"
 msgstr "todos"
 
@@ -775,6 +913,12 @@ msgstr "com etapa"
 
 msgid "Pipeline|with stages"
 msgstr "com etapas"
+
+msgid "Preferences"
+msgstr ""
+
+msgid "Profile Settings"
+msgstr ""
 
 msgid "Project"
 msgstr ""
@@ -812,6 +956,9 @@ msgstr "Exportação do projeto iniciada. Um link para baixá-la será enviado p
 msgid "Project home"
 msgstr "Página inicial do projeto"
 
+msgid "Project overview"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -835,6 +982,27 @@ msgstr "Etapa"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Árvore"
+
+msgid "Push Rules"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
 
 msgid "Push events"
 msgstr ""
@@ -896,6 +1064,9 @@ msgstr "Reverter este commit"
 msgid "Revert this merge request"
 msgstr "Reverter esse merge request"
 
+msgid "SSH Keys"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr "Salvar agendamento da pipeline"
 
@@ -920,6 +1091,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr "Selecionar branch de destino"
 
+msgid "Service Templates"
+msgstr ""
+
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Defina uma senha para sua conta para aceitar ou entregar código via %{protocol}."
 
@@ -935,13 +1109,22 @@ msgstr "Configurar implantação automática"
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "defina uma senha"
 
+msgid "Settings"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "Mostrando %d evento"
 msgstr[1] "Mostrando %d eventos"
 
+msgid "Snippets"
+msgstr ""
+
 msgid "Source code"
 msgstr "Código-fonte"
+
+msgid "Spam Logs"
+msgstr ""
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
@@ -1219,6 +1402,9 @@ msgstr "Precisa visualizar os dados? Solicite acesso ao administrador."
 msgid "We don't have enough data to show this stage."
 msgstr "Esta etapa não possui dados suficientes para exibição."
 
+msgid "Wiki"
+msgstr ""
+
 msgid "Withdraw Access Request"
 msgstr "Remover Requisição de Acesso"
 
@@ -1285,3 +1471,4 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] "pai"
 msgstr[1] "pais"
+

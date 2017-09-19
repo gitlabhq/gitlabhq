@@ -8,19 +8,24 @@ class Projects::NetworkController < Projects::ApplicationController
   before_action :assign_commit
 
   def show
-    @url = project_network_path(@project, @ref, @options.merge(format: :json))
-    @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37602
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      @url = project_network_path(@project, @ref, @options.merge(format: :json))
+      @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")
 
-    respond_to do |format|
-      format.html do
-        if @options[:extended_sha1] && !@commit
-          flash.now[:alert] = "Git revision '#{@options[:extended_sha1]}' does not exist."
+      respond_to do |format|
+        format.html do
+          if @options[:extended_sha1] && !@commit
+            flash.now[:alert] = "Git revision '#{@options[:extended_sha1]}' does not exist."
+          end
+        end
+
+        format.json do
+          @graph = Network::Graph.new(project, @ref, @commit, @options[:filter_ref])
         end
       end
 
-      format.json do
-        @graph = Network::Graph.new(project, @ref, @commit, @options[:filter_ref])
-      end
+      render
     end
   end
 

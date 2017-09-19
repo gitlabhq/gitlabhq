@@ -24,7 +24,7 @@ plus premium features available in each version: **Enterprise Edition Starter**
 
 Shortcuts to GitLab's most visited docs:
 
-| [GitLab CI](ci/README.md) | Other |
+| [GitLab CI/CD](ci/README.md) | Other |
 | :----- | :----- |
 | [Quick start guide](ci/quick_start/README.md) | [API](api/README.md) |
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) | [SSH authentication](ssh/README.md) |
@@ -41,6 +41,7 @@ Shortcuts to GitLab's most visited docs:
   - See also [GitLab Workflow - an overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 - [GitLab Markdown](user/markdown.md): GitLab's advanced formatting system (GitLab Flavored Markdown).
 - [GitLab Quick Actions](user/project/quick_actions.md): Textual shortcuts for common actions on issues or merge requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+- [Auto DevOps](topics/autodevops/index.md)
 
 ### User account
 
@@ -52,6 +53,7 @@ Shortcuts to GitLab's most visited docs:
 ### Projects and groups
 
 - [Projects](user/project/index.md):
+  - [Project settings](user/project/settings/index.md)
   - [Create a project](gitlab-basics/create-project.md)
   - [Fork a project](gitlab-basics/fork-project.md)
   - [Importing and exporting projects between instances](user/project/settings/import_export.md).
@@ -67,24 +69,25 @@ Shortcuts to GitLab's most visited docs:
 
 Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
-- Files
+- [Files](user/project/repository/index.md#files)
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
   - [Upload a file](user/project/repository/web_editor.md#upload-a-file)
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
-- Branches
+- [Branches](user/project/repository/branches/index.md)
+  - [Default branch](user/project/repository/branches/index.md#default-branch)
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
-- Commits
+- [Commits](user/project/repository/index.md#commits)
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Issues and Merge Requests (MRs)
 
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
-- [Issue Board](user/project/issue_board.md)
+- [Project issue Board](user/project/issue_board.md)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)

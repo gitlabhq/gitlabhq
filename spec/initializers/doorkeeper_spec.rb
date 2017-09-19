@@ -9,8 +9,8 @@ describe Doorkeeper.configuration do
   end
 
   describe '#optional_scopes' do
-    it 'matches Gitlab::Auth::OPTIONAL_SCOPES' do
-      expect(subject.optional_scopes).to eq Gitlab::Auth::OPTIONAL_SCOPES
+    it 'matches Gitlab::Auth.optional_scopes' do
+      expect(subject.optional_scopes).to eq Gitlab::Auth.optional_scopes - Gitlab::Auth::REGISTRY_SCOPES
     end
   end
 

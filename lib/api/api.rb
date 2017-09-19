@@ -2,6 +2,16 @@ module API
   class API < Grape::API
     include APIGuard
 
+    LOG_FILENAME = Rails.root.join("log", "api_json.log")
+
+    use GrapeLogging::Middleware::RequestLogger,
+        logger: Logger.new(LOG_FILENAME),
+        formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
+        include: [
+          GrapeLogging::Loggers::FilterParameters.new,
+          GrapeLogging::Loggers::ClientEnv.new
+        ]
+
     allow_access_with_scope :api
     prefix :api
 
@@ -108,6 +118,7 @@ module API
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Jobs
+    mount ::API::JobArtifacts
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
@@ -143,6 +154,7 @@ module API
     mount ::API::Variables
     mount ::API::GroupVariables
     mount ::API::Version
+    mount ::API::Wikis
 
     route :any, '*path' do
       error!('404 Not Found', 404)

@@ -90,6 +90,12 @@ class Repository
     )
   end
 
+  # we need to have this method here because it is not cached in ::Git and
+  # the method is called multiple times for every request
+  def has_visible_content?
+    branch_count > 0
+  end
+
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
   end
@@ -166,7 +172,7 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    branch = raw_repository.add_branch(branch_name, committer: user, target: ref)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
     after_create_branch
 
@@ -176,7 +182,7 @@ class Repository
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    raw_repository.add_tag(tag_name, committer: user, target: target, message: message)
+    raw_repository.add_tag(tag_name, user: user, target: target, message: message)
   rescue Gitlab::Git::Repository::InvalidRef
     false
   end
@@ -184,7 +190,7 @@ class Repository
   def rm_branch(user, branch_name)
     before_remove_branch
 
-    raw_repository.rm_branch(branch_name, committer: user)
+    raw_repository.rm_branch(branch_name, user: user)
 
     after_remove_branch
     true
@@ -193,7 +199,7 @@ class Repository
   def rm_tag(user, tag_name)
     before_remove_tag
 
-    raw_repository.rm_tag(tag_name, committer: user)
+    raw_repository.rm_tag(tag_name, user: user)
 
     after_remove_tag
     true
@@ -762,17 +768,23 @@ class Repository
     multi_action(**options)
   end
 
+  def with_cache_hooks
+    result = yield
+
+    return unless result
+
+    after_create if result.repo_created?
+    after_create_branch if result.branch_created?
+
+    result.newrev
+  end
+
   def with_branch(user, *args)
-    result = Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
-      yield start_commit
+    with_cache_hooks do
+      Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
+        yield start_commit
+      end
     end
-
-    newrev, should_run_after_create, should_run_after_create_branch = result
-
-    after_create if should_run_after_create
-    after_create_branch if should_run_after_create_branch
-
-    newrev
   end
 
   # rubocop:disable Metrics/ParameterLists
@@ -837,30 +849,13 @@ class Repository
     end
   end
 
-  def merge(user, source, merge_request, options = {})
-    with_branch(
-      user,
-      merge_request.target_branch) do |start_commit|
-      our_commit = start_commit.sha
-      their_commit = source
-
-      raise 'Invalid merge target' unless our_commit
-      raise 'Invalid merge source' unless their_commit
-
-      merge_index = rugged.merge_commits(our_commit, their_commit)
-      break if merge_index.conflicts?
-
-      actual_options = options.merge(
-        parents: [our_commit, their_commit],
-        tree: merge_index.write_tree(rugged)
-      )
-
-      commit_id = create_commit(actual_options)
-      merge_request.update(in_progress_merge_commit_sha: commit_id)
-      commit_id
+  def merge(user, source_sha, merge_request, message)
+    with_cache_hooks do
+      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
+        merge_request.update(in_progress_merge_commit_sha: commit_id)
+        nil # Return value does not matter.
+      end
     end
-  rescue Gitlab::Git::CommitError # when merge_index.conflicts?
-    false
   end
 
   def revert(
@@ -988,6 +983,7 @@ class Repository
   def empty_repo?
     !exists? || !has_visible_content?
   end
+  cache_method :empty_repo?, memoize_only: true
 
   def search_files_by_content(query, ref)
     return [] if empty_repo? || query.blank?
@@ -1149,12 +1145,6 @@ class Repository
 
   def repository_event(event, tags = {})
     Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
-  end
-
-  def create_commit(params = {})
-    params[:message].delete!("\r")
-
-    Rugged::Commit.create(rugged, params)
   end
 
   def last_commit_for_path_by_gitaly(sha, path)
