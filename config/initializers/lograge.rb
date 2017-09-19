@@ -12,13 +12,18 @@ unless Sidekiq.server?
     config.lograge.logger = ActiveSupport::Logger.new(filename)
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
-      {
+      payload = {
         time: event.time.utc.iso8601(3),
         params: event.payload[:params].except(*%w(controller action format)),
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username]
       }
+
+      gitaly_calls = Gitlab::GitalyClient.get_request_count
+      payload[:gitaly_calls] = gitaly_calls if gitaly_calls > 0
+
+      payload
     end
   end
 end
