@@ -9,6 +9,10 @@
 .container-image-head {
   padding: 0 16px;
   line-height: 4em;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .table.tags {

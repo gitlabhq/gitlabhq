@@ -52,9 +52,15 @@
             #{escape_once(@project.container_registry_url)}/optional-image-name:tag
             #{escape_once(@project.container_registry_url)}/optional-name/optional-image-name:tag
 
-    - if @images.blank?
-      %p.settings-message.text-center.append-bottom-default
-        No container images stored for this project. Add one by following the
-        instructions above.
-    - else
-      = render partial: 'image', collection: @images
+    #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json)}}
+
+    = page_specific_javascript_bundle_tag('common_vue')
+    = page_specific_javascript_bundle_tag('registry_list')
+
+
+    -# - if @images.blank?
+    -#   %p.settings-message.text-center.append-bottom-default
+    -#     No container images stored for this project. Add one by following the
+    -#     instructions above.
+    -# - else
+    -#   = render partial: 'image', collection: @images

@@ -14,11 +14,11 @@
       },
     },
     mounted() {
-      return new Clipboard(this.$refs.btn, {
-        text: () => {
-          return this.text;
-        },
-      });
+      // return new Clipboard(this.$refs.btn, {
+      //   text: () => {
+      //     return this.text;
+      //   },
+      // });
     }
   };
 </script>

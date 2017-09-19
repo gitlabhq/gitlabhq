@@ -6,6 +6,37 @@ module Projects
 
       def index
         @images = project.container_repositories
+
+        respond_to do |format|
+          format.html
+          format.json do
+           # render json: @images
+            render json: [
+              {
+                name: 'gitlab-org/omnibus-gitlab/foo',
+                tags_path: 'foo',
+                destroy_path: 'bar',
+                location: 'foo',
+                id: '134',
+                destroy_path: 'bar'
+              },
+              {
+                name: 'gitlab-org/omnibus-gitlab',
+                tags_path: 'foo',
+                destroy_path: 'bar',
+                location: 'foo',
+                id: '123',
+              },
+              {
+                name: 'gitlab-org/omnibus-gitlab/bar',
+                tags_path: 'foo',
+                destroy_path: 'bar',
+                location: 'foo',
+                id: '973',
+              }
+            ]
+          end
+        end
       end
 
       def destroy

@@ -16,13 +16,13 @@ export const fetchRepos = ({ commit, state }) => {
 };
 
 export const fetchList = ({ commit }, list) => {
-  commit(types.TOGGLE_IMAGE_LOADING, list);
+  commit(types.TOGGLE_REGISTRY_LIST_LOADING, list);
 
   return Vue.http.get(list.path)
     .then(res => res.json())
     .then((response) => {
-      commit(types.TOGGLE_IMAGE_LOADING, list);
-      commit(types.SET_IMAGES_LIST, list, response);
+      commit(types.TOGGLE_REGISTRY_LIST_LOADING, list);
+      commit(types.SET_REGISTRY_LIST, list, response);
     });
 };
 
@@ -32,8 +32,11 @@ export const deleteRepo = ({ commit }, repo) => Vue.http.delete(repo.path)
     commit(types.DELETE_REPO, repo);
   });
 
-export const deleteImage = ({ commit }, image) => Vue.http.delete(image.path)
+export const deleteRegistry = ({ commit }, image) => Vue.http.delete(image.path)
   .then(res => res.json())
   .then(() => {
     commit(types.DELETE_IMAGE, image);
   });
+
+export const setMainEndpoint = ({ commit }, data) => commit(types.SET_MAIN_ENDPOINT, data);
+export const toggleIsLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);
