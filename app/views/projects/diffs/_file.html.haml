@@ -22,7 +22,7 @@
 
 
         - if image_diff && image_replaced
-          = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, true)
+          = view_file_button(diff_file.old_content_sha, diff_file.old_path, project, replaced: true)
 
         = view_file_button(diff_file.content_sha, diff_file.file_path, project)
         = view_on_environment_button(diff_file.content_sha, diff_file.file_path, environment) if environment
