@@ -117,20 +117,6 @@
               = link_to project_boards_path(@project), title: boards_link_text do
                 %span
                   = boards_link_text
-                .feature-highlight.js-feature-highlight{ disabled: true, data: { trigger: 'manual', container: 'body', toggle: 'popover', placement: 'right', highlight: 'issue-boards' } }
-              .feature-highlight-popover-content
-                = render 'feature_highlight/issue_boards.svg'
-                .feature-highlight-popover-sub-content
-                  %span= _('Use')
-                  = link_to 'Issue Boards', project_boards_path(@project)
-                  %span= _('to create customized software development workflows like')
-                  %strong= _('Scrum')
-                  %span= _('or')
-                  %strong= _('Kanban')
-                  %hr
-                  %button.btn-link.dismiss-feature-highlight{ type: 'button' }
-                    %span= _("Got it! Don't show this again")
-                    = custom_icon('thumbs_up')
 
             = nav_link(controller: :labels) do
               = link_to project_labels_path(@project), title: 'Labels' do
