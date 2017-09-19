@@ -11,10 +11,10 @@ module SystemCheck
       ].freeze
 
       set_name 'Git user has default SSH configuration?'
-      set_skip_reason 'skipped (git user is not present or configured)'
+      set_skip_reason 'skipped (GitLab read-only, or git user is not present / configured)'
 
       def skip?
-        !home_dir || !File.directory?(home_dir)
+        Gitlab::Database.read_only? || !home_dir || !File.directory?(home_dir)
       end
 
       def check?

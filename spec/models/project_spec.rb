@@ -692,6 +692,44 @@ describe Project do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
     end
+
+    it 'does not cache data when in a read-only GitLab instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.not_to change { project.has_external_issue_tracker }
+    end
+  end
+
+  describe '#cache_has_external_wiki' do
+    let(:project) { create(:project, has_external_wiki: nil) }
+
+    it 'stores true if there is any external_wikis' do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(true)
+    end
+
+    it 'stores false if there is no external_wikis' do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(false)
+    end
+
+    it 'does not cache data when in a read-only GitLab instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect do
+        project.cache_has_external_wiki
+      end.not_to change { project.has_external_wiki }
+    end
   end
 
   describe '#has_wiki?' do
@@ -2446,7 +2484,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_truthy
       end
 
-      it 'flags as readonly' do
+      it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
       end
 
@@ -2573,7 +2611,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_nil
       end
 
-      it 'does not flag as readonly' do
+      it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
       end
     end

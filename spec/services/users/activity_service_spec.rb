@@ -38,6 +38,18 @@ describe Users::ActivityService do
         end
       end
     end
+
+    context 'when in GitLab read-only instance' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      it 'does not update last_activity_at' do
+        service.execute
+
+        expect(last_hour_user_ids).to eq([])
+      end
+    end
   end
 
   def last_hour_user_ids
