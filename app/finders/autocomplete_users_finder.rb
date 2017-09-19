@@ -32,9 +32,7 @@ class AutocompleteUsersFinder
     items = items.where.not(id: skip_users) if skip_users.present?
 
     # EE
-    items_by_push_ability = load_users_by_push_ability(items)
-    items = items.page(page).per(per_page) unless items_by_push_ability
-    # EE
+    items = load_users_by_push_ability(items) || items.page(page).per(per_page)
 
     if params[:todo_filter].present? && current_user
       items = items.todo_authors(current_user.id, params[:todo_state_filter])
