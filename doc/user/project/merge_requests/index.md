@@ -23,7 +23,7 @@ With GitLab merge requests, you can:
 - Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
-- Enable [fast-forward merge requests](https://docs.gitlab.com/ce/user/project/merge_requests/fast_forward_merge.html)
+- Enable [fast-forward merge requests](#fast-forward-merge-requests)
 
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
@@ -91,8 +91,6 @@ in a merged merge requests or a commit.
 [Learn more about cherry-picking changes.](cherry_pick_changes.md)
 
 ## Fast-forward merge requests
-
-> Included in [GitLab Enterprise Edition Starter][products].
 
 If you prefer a linear Git history and a way to accept merge requests without
 creating merge commits, you can configure this on a per-project basis.
