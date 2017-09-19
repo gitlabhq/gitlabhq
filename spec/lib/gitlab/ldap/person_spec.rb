@@ -77,21 +77,6 @@ describe Gitlab::LDAP::Person do
     end
   end
 
-  describe '.normalize_uid_or_dn' do
-    subject { described_class.normalize_uid_or_dn(given) }
-
-    it_behaves_like 'normalizes the DN'
-    it_behaves_like 'normalizes the UID'
-
-    context 'with an exception during normalization' do
-      let(:given) { described_class } # just something that will cause an exception
-
-      it 'returns the given object unmodified' do
-        expect(subject).to eq(given)
-      end
-    end
-  end
-
   describe '.normalize_uid' do
     subject { described_class.normalize_uid(given) }
 
@@ -116,26 +101,6 @@ describe Gitlab::LDAP::Person do
 
       it 'returns the given DN unmodified' do
         expect(subject).to eq(given)
-      end
-    end
-  end
-
-  describe '.dn?' do
-    where(:test_description, :given, :expected) do
-      'given a DN with a single RDN'                     | 'uid=John C. Smith'                                 | true
-      'given a DN with multiple RDNs'                    | 'uid=John C. Smith,ou=People,dc=example,dc=com'     | true
-      'given a DN with a single RDN with excess spaces'  | ' uid=John C. Smith   '                             | true
-      'given a DN with multiple RDNs with excess spaces' | '  uid=John C. Smith,ou=People,dc=example,dc=com  ' | true
-      'given a DN with an escaped equal sign'            | 'uid=John C. Smith,ou=People\\='                    | true
-      'given a DN with an equal sign in escaped hex'     | 'uid=John C. Smith,ou=People\\3D'                   | true
-      'given a UID'                                      | 'John C. Smith'                                     | false
-      'given a UID with excess spaces'                   | '   John C. Smith '                                 | false
-      'given a UID with an escaped equal sign'           | 'John C. \\= Smith'                                 | false
-    end
-
-    with_them do
-      it 'returns the expected boolean' do
-        assert_generic_test(test_description, described_class.dn?(given), expected)
       end
     end
   end

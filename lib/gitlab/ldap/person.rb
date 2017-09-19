@@ -36,28 +36,6 @@ module Gitlab
         ]
       end
 
-      # Returns the UID or DN in a normalized form
-      def self.normalize_uid_or_dn(uid_or_dn)
-        if dn?(uid_or_dn)
-          normalize_dn(uid_or_dn)
-        else
-          normalize_uid(uid_or_dn)
-        end
-      rescue StandardError => e
-        Rails.logger.info("Returning original DN \"#{uid_or_dn}\" due to error during normalization attempt: #{e.message}")
-        Rails.logger.info(e.backtrace.join("\n"))
-
-        uid_or_dn
-      end
-
-      # Returns true if the string looks like a DN rather than a UID.
-      #
-      # An empty string is technically a valid DN (null DN), although we should
-      # never need to worry about that.
-      def self.dn?(uid_or_dn)
-        uid_or_dn.blank? || !!uid_or_dn.match(/(?<!\\)=/)
-      end
-
       # Returns the UID in a normalized form.
       #
       # 1. Excess spaces are stripped
