@@ -76,29 +76,14 @@ module EE
         return super
       end
 
-      super if audit_events_enabled?
-    end
-
-    def add_security_event_admin_details!
-      @details.merge!(ip_address: ip_address,
-                      entity_path: @entity.full_path)
-    end
-
-    def audit_events_enabled?
-      return true unless @entity.respond_to?(:feature_available?)
-
-      @entity.feature_available?(:audit_events)
-    end
-
-    def admin_audit_log_enabled?
-      License.feature_available?(:admin_audit_log)
+      super if audit_events_enabled? || entity_audit_events_enabled?
     end
 
     def unauth_security_event
       return unless audit_events_enabled?
 
       @details.delete(:ip_address) unless admin_audit_log_enabled?
-      @details[:entity_path] = @entity&.full_path
+      @details[:entity_path] = @entity&.full_path if admin_audit_log_enabled?
 
       SecurityEvent.create(
         author_id: @author.respond_to?(:id) ? @author.id : -1,
@@ -159,6 +144,24 @@ module EE
 
     def ip_address
       @author&.current_sign_in_ip || @details[:ip_address]
+    end
+
+    def add_security_event_admin_details!
+      @details.merge!(ip_address: ip_address,
+                      entity_path: @entity.full_path)
+    end
+
+    def entity_audit_events_enabled?
+      @entity.respond_to?(:feature_available?) && @entity.feature_available?(:audit_events)
+    end
+
+    def audit_events_enabled?
+      # Always log auth events. Log all other events if `extended_audit_events` is enabled
+      @details[:with] || License.feature_available?(:extended_audit_events)
+    end
+
+    def admin_audit_log_enabled?
+      License.feature_available?(:admin_audit_log)
     end
   end
 end
