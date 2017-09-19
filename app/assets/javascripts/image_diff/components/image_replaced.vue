@@ -70,7 +70,7 @@
         :class="{ active: isCurrentViewTwoUp }"
         @click="goToView(viewTypes.TWO_UP, $event)"
       >
-        {{ __('2-up') }}
+        {{ s__('ImageDiff|2-up') }}
       </button>
       <button
         type="button"
@@ -78,7 +78,7 @@
         :class="{ active: isCurrentViewSwipe }"
         @click="goToView(viewTypes.SWIPE, $event)"
       >
-        {{ __('Swipe') }}
+        {{ s__('ImageDiff|Swipe') }}
       </button>
       <button
         type="button"
@@ -86,7 +86,7 @@
         :class="{ active: isCurrentViewOnionSkin }"
         @click="goToView(viewTypes.ONION_SKIN, $event)"
       >
-        {{ __('Onion skin') }}
+        {{ s__('ImageDiff|Onion skin') }}
       </button>
     </div>
   </div>
