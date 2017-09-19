@@ -1,7 +1,7 @@
 module Issues
   class BaseService < ::IssuableBaseService
-    def hook_data(issue, action, old_labels: [])
-      hook_data = issue.to_hook_data(current_user, old_labels: old_labels)
+    def hook_data(issue, action, old_labels: [], old_assignees: [])
+      hook_data = issue.to_hook_data(current_user, old_labels: old_labels, old_assignees: old_assignees)
       hook_data[:object_attributes][:action] = action
 
       hook_data
@@ -22,8 +22,8 @@ module Issues
         issue, issue.project, current_user, old_assignees)
     end
 
-    def execute_hooks(issue, action = 'open', old_labels: [])
-      issue_data  = hook_data(issue, action, old_labels: old_labels)
+    def execute_hooks(issue, action = 'open', old_labels: [], old_assignees: [])
+      issue_data  = hook_data(issue, action, old_labels: old_labels, old_assignees: old_assignees)
       hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
       issue.project.execute_hooks(issue_data, hooks_scope)
       issue.project.execute_services(issue_data, hooks_scope)

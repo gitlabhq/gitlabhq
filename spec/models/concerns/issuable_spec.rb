@@ -264,41 +264,55 @@ describe Issuable do
     end
   end
 
-  describe "#to_hook_data" do
-    it_behaves_like 'issuable hook data', 'issue' do
-      let(:issuable) { create(:issue, description: 'A description') }
-    end
-
-    it_behaves_like 'issuable hook data', 'merge_request' do
-      let(:issuable) { create(:merge_request, description: 'A description') }
-    end
-
-    context "issue is assigned" do
-      let(:data) { issue.to_hook_data(user) }
+  describe '#to_hook_data' do
+    context 'labels are updated' do
+      let(:labels) { create_list(:label, 2) }
+      let(:data) { issue.to_hook_data(user, old_labels: [labels[0]]) }
 
       before do
-        issue.assignees << user
+        issue.update(labels: [labels[1]])
       end
 
-      it "returns correct hook data" do
-        expect(data[:assignees].first).to eq(user.hook_attrs)
-      end
-    end
-
-    context "merge_request is assigned" do
-      let(:merge_request) { create(:merge_request) }
-      let(:data) { merge_request.to_hook_data(user) }
-
-      before do
-        merge_request.update_attribute(:assignee, user)
-      end
-
-      it "returns correct hook data" do
-        expect(data[:object_attributes]['assignee_id']).to eq(user.id)
-        expect(data[:assignee]).to eq(user.hook_attrs)
+      it 'includes labels in the hook data' do
+        expect(data[:labels]).to eq([labels[1].hook_attrs])
         expect(data[:changes]).to match(hash_including({
-          'assignee_id' => [nil, user.id],
-          'updated_at' => [a_kind_of(ActiveSupport::TimeWithZone), a_kind_of(ActiveSupport::TimeWithZone)]
+          labels: [[labels[0].hook_attrs], [labels[1].hook_attrs]]
+        }))
+      end
+    end
+
+    context 'issue is assigned' do
+      let(:user2) { create(:user) }
+      let(:data) { issue.to_hook_data(user, old_assignees: [user]) }
+
+      before do
+        issue.assignees << user << user2
+      end
+
+      it 'returns correct hook data' do
+        expect(data[:assignees]).to eq([user.hook_attrs, user2.hook_attrs])
+        expect(data[:changes]).to match(hash_including({
+          assignees: [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+        }))
+      end
+    end
+
+    context 'merge_request is assigned' do
+      let(:merge_request) { create(:merge_request) }
+      let(:user2) { create(:user) }
+      let(:data) { merge_request.to_hook_data(user, old_assignees: [user]) }
+
+      before do
+        merge_request.update(assignee: user)
+        merge_request.update(assignee: user2)
+      end
+
+      it 'returns correct hook data' do
+        expect(data[:object_attributes]['assignee_id']).to eq(user2.id)
+        expect(data[:assignee]).to eq(user2.hook_attrs)
+        expect(data[:changes]).to match(hash_including({
+          assignee_id: [user.id, user2.id],
+          assignee: [user.hook_attrs, user2.hook_attrs]
         }))
       end
     end

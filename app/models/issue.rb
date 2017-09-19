@@ -18,6 +18,36 @@ class Issue < ActiveRecord::Base
   DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
 
+  SAFE_HOOK_ATTRIBUTES = %i[
+    assignee_id
+    author_id
+    branch_name
+    closed_at
+    confidential
+    created_at
+    deleted_at
+    description
+    due_date
+    id
+    iid
+    last_edited_at
+    last_edited_by_id
+    milestone_id
+    moved_to_id
+    project_id
+    relative_position
+    state
+    time_estimate
+    title
+    updated_at
+    updated_by_id
+  ].freeze
+
+  SAFE_HOOK_RELATIONS = %i[
+    assignees
+    labels
+  ].freeze
+
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
@@ -74,21 +104,6 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def hook_attrs
-    assignee_ids = self.assignee_ids
-
-    attrs = {
-      url: Gitlab::UrlBuilder.build(self),
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate,
-      assignee_ids: assignee_ids,
-      assignee_id: assignee_ids.first # This key is deprecated
-    }
-
-    attributes.merge!(attrs)
-  end
-
   def self.reference_prefix
     '#'
   end
@@ -130,6 +145,30 @@ class Issue < ActiveRecord::Base
       .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
+  end
+
+  def self.safe_hook_attributes
+    SAFE_HOOK_ATTRIBUTES
+  end
+
+  def self.safe_hook_relations
+    SAFE_HOOK_RELATIONS
+  end
+
+  def hook_attrs
+    assignee_ids = self.assignee_ids
+
+    attrs = {
+      url: Gitlab::UrlBuilder.build(self),
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate,
+      assignee_ids: assignee_ids,
+      assignee_id: assignee_ids.first # This key is deprecated
+    }
+
+    attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
+      .merge!(attrs)
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata

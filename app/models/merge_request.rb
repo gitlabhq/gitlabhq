@@ -7,6 +7,41 @@ class MergeRequest < ActiveRecord::Base
   include IgnorableColumn
   include CreatedAtFilterable
 
+  SAFE_HOOK_ATTRIBUTES = %i[
+    assignee_id
+    author_id
+    created_at
+    deleted_at
+    description
+    head_pipeline_id
+    id
+    iid
+    last_edited_at
+    last_edited_by_id
+    merge_commit_sha
+    merge_error
+    merge_params
+    merge_status
+    merge_user_id
+    merge_when_pipeline_succeeds
+    milestone_id
+    ref_fetched
+    source_branch
+    source_project_id
+    state
+    target_branch
+    target_project_id
+    time_estimate
+    title
+    updated_at
+    updated_by_id
+  ].freeze
+
+  SAFE_HOOK_RELATIONS = %i[
+    assignee
+    labels
+  ].freeze
+
   ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
@@ -177,6 +212,30 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
+  def self.safe_hook_attributes
+    SAFE_HOOK_ATTRIBUTES
+  end
+
+  def self.safe_hook_relations
+    SAFE_HOOK_RELATIONS
+  end
+
+  def hook_attrs
+    attrs = {
+      url: Gitlab::UrlBuilder.build(self),
+      source: source_project.try(:hook_attrs),
+      target: target_project.hook_attrs,
+      last_commit: diff_head_commit&.hook_attrs,
+      work_in_progress: work_in_progress?,
+      total_time_spent: total_time_spent,
+      human_total_time_spent: human_total_time_spent,
+      human_time_estimate: human_time_estimate
+    }
+
+    attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
+      .merge!(attrs)
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -585,25 +644,6 @@ class MergeRequest < ActiveRecord::Base
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
     !discussions_to_be_resolved?
-  end
-
-  def hook_attrs
-    attrs = {
-      url: Gitlab::UrlBuilder.build(self),
-      source: source_project.try(:hook_attrs),
-      target: target_project.hook_attrs,
-      last_commit: nil,
-      work_in_progress: work_in_progress?,
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate
-    }
-
-    if diff_head_commit
-      attrs[:last_commit] = diff_head_commit.hook_attrs
-    end
-
-    attributes.merge!(attrs)
   end
 
   def for_fork?

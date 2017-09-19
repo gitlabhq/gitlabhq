@@ -18,8 +18,8 @@ module MergeRequests
       super if changed_title
     end
 
-    def hook_data(merge_request, action, old_rev: nil, old_labels: [])
-      hook_data = merge_request.to_hook_data(current_user, old_labels: old_labels)
+    def hook_data(merge_request, action, old_rev: nil, old_labels: [], old_assignees: [])
+      hook_data = merge_request.to_hook_data(current_user, old_labels: old_labels, old_assignees: old_assignees)
       hook_data[:object_attributes][:action] = action
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
@@ -28,9 +28,9 @@ module MergeRequests
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_labels: [])
+    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_labels: [], old_assignees: [])
       if merge_request.project
-        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_labels: old_labels)
+        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_labels: old_labels, old_assignees: old_assignees)
         merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end

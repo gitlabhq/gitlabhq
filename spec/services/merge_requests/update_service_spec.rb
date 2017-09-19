@@ -78,8 +78,9 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks)
-                               .with(@merge_request, 'update', old_labels: [])
+        expect(service)
+          .to have_received(:execute_hooks)
+                .with(@merge_request, 'update', old_labels: [], old_assignees: [user3])
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do

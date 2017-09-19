@@ -702,15 +702,39 @@ describe Issue do
   describe '#hook_attrs' do
     let(:attrs_hash) { subject.hook_attrs }
 
-    it 'includes time tracking attrs' do
+    it 'includes safe attribute' do
+      %w[
+        assignee_id
+        author_id
+        branch_name
+        closed_at
+        confidential
+        created_at
+        deleted_at
+        description
+        due_date
+        id
+        iid
+        last_edited_at
+        last_edited_by_id
+        milestone_id
+        moved_to_id
+        project_id
+        relative_position
+        state
+        time_estimate
+        title
+        updated_at
+        updated_by_id
+      ].each do |key|
+        expect(attrs_hash).to include(key)
+      end
+    end
+
+    it 'includes additional attrs' do
       expect(attrs_hash).to include(:total_time_spent)
       expect(attrs_hash).to include(:human_time_estimate)
       expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
-    end
-
-    it 'includes assignee_ids and deprecated assignee_id' do
-      expect(attrs_hash).to include(:assignee_id)
       expect(attrs_hash).to include(:assignee_ids)
     end
   end

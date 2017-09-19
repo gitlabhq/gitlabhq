@@ -660,19 +660,53 @@ describe MergeRequest do
     end
   end
 
-  describe "#hook_attrs" do
+  describe '#hook_attrs' do
     let(:attrs_hash) { subject.hook_attrs }
 
-    [:source, :target].each do |key|
+    it 'includes safe attribute' do
+      %w[
+        assignee_id
+        author_id
+        created_at
+        deleted_at
+        description
+        head_pipeline_id
+        id
+        iid
+        last_edited_at
+        last_edited_by_id
+        merge_commit_sha
+        merge_error
+        merge_params
+        merge_status
+        merge_user_id
+        merge_when_pipeline_succeeds
+        milestone_id
+        ref_fetched
+        source_branch
+        source_project_id
+        state
+        target_branch
+        target_project_id
+        time_estimate
+        title
+        updated_at
+        updated_by_id
+      ].each do |key|
+        expect(attrs_hash).to include(key)
+      end
+    end
+
+    %i[source target].each do |key|
       describe "#{key} key" do
         include_examples 'project hook data', project_key: key do
           let(:data)    { attrs_hash }
-          let(:project) { subject.send("#{key}_project") }
+          let(:project) { subject.public_send("#{key}_project") }
         end
       end
     end
 
-    it "has all the required keys" do
+    it 'includes additional attrs' do
       expect(attrs_hash).to include(:source)
       expect(attrs_hash).to include(:target)
       expect(attrs_hash).to include(:last_commit)
@@ -680,7 +714,6 @@ describe MergeRequest do
       expect(attrs_hash).to include(:total_time_spent)
       expect(attrs_hash).to include(:human_time_estimate)
       expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
     end
   end
 
