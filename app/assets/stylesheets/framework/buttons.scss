@@ -280,16 +280,13 @@
   }
 }
 
-.btn-group.btn-group-gray-link .btn {
-  background-color: transparent;
-  box-shadow: none;
-  border-color: transparent;
+.btn-group-dark-lines .btn {
   border-right: 1px solid $diff-view-modes-border;
   padding: 0 $gl-padding;
-  color: $diff-view-modes-color;
 
   &.active {
-    color: $black;
+    text-decoration: underline;
+    background-color: transparent;
   }
 
   &:last-child {

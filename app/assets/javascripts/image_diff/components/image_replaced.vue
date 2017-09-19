@@ -63,10 +63,10 @@
       :added="images.added"
       :deleted="images.deleted"
     />
-    <div class="btn-group btn-group-gray-link">
+    <div class="btn-group btn-group-dark-lines">
       <button
         type="button"
-        class="btn btn-link"
+        class="btn btn-link btn-transparent"
         :class="{ active: isCurrentViewTwoUp }"
         @click="goToView(viewTypes.TWO_UP, $event)"
       >
@@ -74,7 +74,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-link"
+        class="btn btn-link btn-transparent"
         :class="{ active: isCurrentViewSwipe }"
         @click="goToView(viewTypes.SWIPE, $event)"
       >
@@ -82,7 +82,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-link"
+        class="btn btn-link btn-transparent"
         :class="{ active: isCurrentViewOnionSkin }"
         @click="goToView(viewTypes.ONION_SKIN, $event)"
       >
