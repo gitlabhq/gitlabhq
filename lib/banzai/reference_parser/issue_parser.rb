@@ -34,7 +34,8 @@ module Banzai
                 { namespace: :owner },
                 { group: [:owners, :group_members] },
                 :invited_groups,
-                :project_members
+                :project_members,
+                :project_feature
               ]
             }
           ),
