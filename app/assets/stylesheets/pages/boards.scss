@@ -510,8 +510,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width .2s,
-                padding .2s;
+    transition: width $right-sidebar-transition-duration,
+                padding $right-sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,
