@@ -72,8 +72,8 @@ end
 ```
 
 Unfortunately it's not easy to code more complex rules into the cop, so
-we rely on people's best judge. If we could find another good pattern we
-could easily add to the cop, we should do it.
+we rely on people's best judgement. If we could find another good pattern
+we could easily add to the cop, we should do it.
 
 ### How to rewrite and avoid disabling this cop
 
