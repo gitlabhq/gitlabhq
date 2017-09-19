@@ -259,7 +259,7 @@ describe Projects::IssuesController do
 
         context 'when captcha is not verified' do
           def update_spam_issue
-            update_issue(title: 'Spam Title', description: 'Spam lives here')
+            update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
           end
 
           before do
@@ -267,7 +267,6 @@ describe Projects::IssuesController do
           end
 
           it 'rejects an issue recognized as a spam' do
-            expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
             expect { update_spam_issue }.not_to change { issue.reload.title }
           end
 
@@ -285,14 +284,6 @@ describe Projects::IssuesController do
             expect(spam_logs.count).to eq(1)
             expect(spam_logs.first.title).to eq('Spam Title')
             expect(spam_logs.first.recaptcha_verified).to be_falsey
-          end
-
-          context 'as HTML' do
-            it 'renders verify template' do
-              update_spam_issue
-
-              expect(response).to render_template(:verify)
-            end
           end
 
           context 'as JSON' do
@@ -318,7 +309,7 @@ describe Projects::IssuesController do
           def update_verified_issue
             update_issue({ title: spammy_title },
                          { spam_log_id: spam_logs.last.id,
-                           recaptcha_verification: true })
+                           recaptcha_verification: true, format: :json })
           end
 
           before do
@@ -326,11 +317,8 @@ describe Projects::IssuesController do
               .and_return(true)
           end
 
-          it 'redirect to issue page' do
-            update_verified_issue
-
-            expect(response)
-              .to redirect_to(project_issue_path(project, issue))
+          it 'returns 200 status' do
+            expect(response).to have_http_status(200)
           end
 
           it 'accepts an issue after recaptcha is verified' do
@@ -574,26 +562,16 @@ describe Projects::IssuesController do
       end
     end
 
-    describe 'GET #edit' do
-      it_behaves_like 'restricted action', success: 200
-
-      def go(id:)
-        get :edit,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id
-      end
-    end
-
     describe 'PUT #update' do
-      it_behaves_like 'restricted action', success: 302
+      it_behaves_like 'restricted action', success: 200
 
       def go(id:)
         put :update,
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: id,
-          issue: { title: 'New title' }
+          issue: { title: 'New title' },
+          format: :json
       end
     end
   end
