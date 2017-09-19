@@ -174,7 +174,8 @@ build-package:
 # Review docs base
 .review-docs: &review-docs
   image: ruby:2.4-alpine
-  before_script: []
+  before_script:
+    - gem install gitlab --no-doc
   services: []
   variables:
     SETUP_DB: "false"
@@ -193,10 +194,9 @@ review-docs-deploy:
     name: review-docs/$CI_COMMIT_REF_NAME
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
-    url: http://$CI_COMMIT_REF_SLUG-built-from-ce-ee.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
+    url: http://preview-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - gem install gitlab --no-doc
     - scripts/trigger-build-docs deploy
 
 # Cleanup remote environment of gitlab-docs
@@ -207,7 +207,6 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - gem install gitlab --no-doc
     - scripts/trigger-build-docs cleanup
 
 # Retrieve knapsack and rspec_flaky reports
