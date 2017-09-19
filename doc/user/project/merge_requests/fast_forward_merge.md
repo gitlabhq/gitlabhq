@@ -28,8 +28,8 @@ Now, when you visit the merge request page, you will be able to accept it
 ![Fast forward merge request](img/ff_merge_mr.png)
 
 If the target branch is ahead of the source branch, you need to rebase the
-source branch before you will be able to do a fast-forward merge.
+source branch locally before you will be able to do a fast-forward merge.
 
-![Fast forward merge rebase](img/ff_merge_rebase.png)
+![Fast forward merge rebase locally](img/ff_merge_rebase_locally.png)
 
 [ffonly]: https://git-scm.com/docs/git-merge#git-merge---ff-only
