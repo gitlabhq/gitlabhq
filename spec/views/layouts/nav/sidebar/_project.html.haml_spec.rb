@@ -15,7 +15,6 @@ describe 'layouts/nav/sidebar/_project' do
     it 'has boards tab when multiple issue boards available' do
       render
 
-<<<<<<< HEAD
       expect(rendered).to have_css('a[title="Boards"]')
     end
 
@@ -25,8 +24,6 @@ describe 'layouts/nav/sidebar/_project' do
 
       render
 
-=======
->>>>>>> ce-com/master
       expect(rendered).to have_css('a[title="Board"]')
     end
   end
