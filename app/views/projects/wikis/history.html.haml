@@ -29,13 +29,13 @@
                                                      commit.id, index == 0) do
               = truncate_sha(commit.id)
           %td
-            = commit.author.name
+            = commit.author_name
           %td
             = commit.message
           %td
             #{time_ago_with_tooltip(version.authored_date)}
           %td
             %strong
-              = @page.page.wiki.page(@page.page.name, commit.id).try(:format)
+              = version.format
 
 = render 'sidebar'

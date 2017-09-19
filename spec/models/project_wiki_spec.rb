@@ -6,12 +6,9 @@ describe ProjectWiki do
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project_wiki) { described_class.new(project, user) }
+  let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo') }
 
   subject { project_wiki }
-
-  before do
-    project_wiki.wiki
-  end
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
@@ -61,8 +58,8 @@ describe ProjectWiki do
   end
 
   describe "#wiki" do
-    it "contains a Gollum::Wiki instance" do
-      expect(subject.wiki).to be_a Gollum::Wiki
+    it "contains a Gitlab::Git::Wiki instance" do
+      expect(subject.wiki).to be_a Gitlab::Git::Wiki
     end
 
     it "creates a new wiki repo if one does not yet exist" do
@@ -70,20 +67,18 @@ describe ProjectWiki do
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      allow(project_wiki).to receive(:init_repo).and_return(false)
-      expect { project_wiki.send(:create_repo!) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
+      # Create a fresh project which will not have a wiki
+      project_wiki = described_class.new(create(:project), user)
+      gitlab_shell = double(:gitlab_shell)
+      allow(gitlab_shell).to receive(:add_repository)
+      allow(project_wiki).to receive(:gitlab_shell).and_return(gitlab_shell)
+
+      expect { project_wiki.send(:wiki) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
     end
   end
 
   describe "#empty?" do
     context "when the wiki repository is empty" do
-      before do
-        allow_any_instance_of(Gitlab::Shell).to receive(:add_repository) do
-          create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
-        end
-        allow(project).to receive(:full_path).and_return("non-existant")
-      end
-
       describe '#empty?' do
         subject { super().empty? }
         it { is_expected.to be_truthy }
@@ -154,13 +149,13 @@ describe ProjectWiki do
     before do
       file = Gollum::File.new(subject.wiki)
       allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('image.jpg', 'master', true)
+                   .to receive(:file).with('image.jpg', 'master')
                    .and_return(file)
       allow_any_instance_of(Gollum::File)
                    .to receive(:mime_type)
                    .and_return('image/jpeg')
       allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('non-existant', 'master', true)
+                   .to receive(:file).with('non-existant', 'master')
                    .and_return(nil)
     end
 
@@ -178,9 +173,9 @@ describe ProjectWiki do
       expect(subject.find_file('non-existant')).to eq(nil)
     end
 
-    it 'returns a Gollum::File instance' do
+    it 'returns a Gitlab::Git::WikiFile instance' do
       file = subject.find_file('image.jpg')
-      expect(file).to be_a Gollum::File
+      expect(file).to be_a Gitlab::Git::WikiFile
     end
   end
 
@@ -222,9 +217,9 @@ describe ProjectWiki do
   describe "#update_page" do
     before do
       create_page("update-page", "some content")
-      @gollum_page = subject.wiki.paged("update-page")
+      @gitlab_git_wiki_page = subject.wiki.page(title: "update-page")
       subject.update_page(
-        @gollum_page,
+        @gitlab_git_wiki_page,
         content: "some other content",
         format: :markdown,
         message: "updated page"
@@ -246,7 +241,7 @@ describe ProjectWiki do
 
     it 'updates project activity' do
       subject.update_page(
-        @gollum_page,
+        @gitlab_git_wiki_page,
         content: 'Yet more content',
         format: :markdown,
         message: 'Updated page again'
@@ -262,7 +257,7 @@ describe ProjectWiki do
   describe "#delete_page" do
     before do
       create_page("index", "some content")
-      @page = subject.wiki.paged("index")
+      @page = subject.wiki.page(title: "index")
     end
 
     it "deletes the page" do
@@ -282,27 +277,28 @@ describe ProjectWiki do
 
   describe '#create_repo!' do
     it 'creates a repository' do
-      expect(subject).to receive(:init_repo)
-        .with(subject.full_path)
-        .and_return(true)
-
+      expect(raw_repository.exists?).to eq(false)
       expect(subject.repository).to receive(:after_create)
 
-      expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+      subject.send(:create_repo!, raw_repository)
+
+      expect(raw_repository.exists?).to eq(true)
     end
   end
 
   describe '#ensure_repository' do
     it 'creates the repository if it not exist' do
-      allow(subject).to receive(:repository_exists?).and_return(false)
+      expect(raw_repository.exists?).to eq(false)
 
-      expect(subject).to receive(:create_repo!)
-
+      expect(subject).to receive(:create_repo!).and_call_original
       subject.ensure_repository
+
+      expect(raw_repository.exists?).to eq(true)
     end
 
     it 'does not create the repository if it exists' do
-      allow(subject).to receive(:repository_exists?).and_return(true)
+      subject.wiki
+      expect(raw_repository.exists?).to eq(true)
 
       expect(subject).not_to receive(:create_repo!)
 
@@ -329,7 +325,7 @@ describe ProjectWiki do
   end
 
   def commit_details
-    { name: user.name, email: user.email, message: "test commit" }
+    Gitlab::Git::Wiki::CommitDetails.new(user.name, user.email, "test commit")
   end
 
   def create_page(name, content)
@@ -337,6 +333,6 @@ describe ProjectWiki do
   end
 
   def destroy_page(page)
-    subject.wiki.delete_page(page, commit_details)
+    subject.delete_page(page, commit_details)
   end
 end
