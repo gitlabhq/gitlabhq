@@ -5,7 +5,7 @@
   import twoUpView from './two_up_view.vue';
   import swipeView from './swipe_view.vue';
   import onionSkinView from './onion_skin_view.vue';
-  import viewTypes from '../constants';
+  import constantViewTypes from '../constants';
 
   Vue.use(Translate);
 
@@ -14,8 +14,8 @@
     mixins: [imageDiffProps],
     data() {
       return {
-        currentView: viewTypes.TWO_UP,
-        viewTypes,
+        // Use constantViewTypes because computed viewTypes() is not defined yet
+        currentView: constantViewTypes.TWO_UP,
       };
     },
     components: {
@@ -24,14 +24,17 @@
       onionSkinView,
     },
     computed: {
+      viewTypes() {
+        return constantViewTypes;
+      },
       isCurrentViewTwoUp() {
-        return this.currentView === viewTypes.TWO_UP;
+        return this.currentView === this.viewTypes.TWO_UP;
       },
       isCurrentViewSwipe() {
-        return this.currentView === viewTypes.SWIPE;
+        return this.currentView === this.viewTypes.SWIPE;
       },
       isCurrentViewOnionSkin() {
-        return this.currentView === viewTypes.ONION_SKIN;
+        return this.currentView === this.viewTypes.ONION_SKIN;
       },
     },
     methods: {
