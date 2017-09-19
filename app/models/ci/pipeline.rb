@@ -466,13 +466,10 @@ module Ci
         .fabricate!
     end
 
-<<<<<<< HEAD
     def codeclimate_artifact
       artifacts.codequality.find(&:has_codeclimate_json?)
     end
 
-=======
->>>>>>> ce-com/master
     def latest_builds_with_artifacts
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts
     end
