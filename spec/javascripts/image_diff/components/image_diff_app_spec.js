@@ -60,7 +60,7 @@ describe('imageDiffApp component', () => {
       });
     });
 
-    it('should not render image replaced if there is only one image', () => {
+    it('should render image replaced', () => {
       expect(vm.$el.querySelector('.image .wrap .image-info')).toBeNull();
       expect(vm.$el.querySelector('.two-up.view')).toBeDefined();
     });
