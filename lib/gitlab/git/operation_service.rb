@@ -15,9 +15,7 @@ module Gitlab
         end
 
         # Refactoring aid
-        unless new_repository.is_a?(Gitlab::Git::Repository)
-          raise "expected a Gitlab::Git::Repository, got #{new_repository}"
-        end
+        Gitlab::Git.check_namespace!(new_repository)
 
         @repository = new_repository
       end

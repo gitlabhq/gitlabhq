@@ -57,6 +57,15 @@ module Gitlab
       def version
         Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} --version)).first)
       end
+
+      def check_namespace!(*objects)
+        expected_namespace = self.name + '::'
+        objects.each do |object|
+          unless object.class.name.start_with?(expected_namespace)
+            raise ArgumentError, "expected object in #{expected_namespace}, got #{object}"
+          end
+        end
+      end
     end
   end
 end
