@@ -45,8 +45,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    @children = GroupChildrenFinder.new(current_user, parent_group: @group, params: params).execute
-    @children = @children.page(params[:page])
+    setup_children(@group)
 
     respond_to do |format|
       format.html
@@ -69,8 +68,7 @@ class GroupsController < Groups::ApplicationController
       render_404
     end
 
-    @children = GroupChildrenFinder.new(current_user, parent_group: parent, params: params).execute
-    @children = @children.page(params[:page])
+    setup_children(parent)
 
     respond_to do |format|
       format.json do
@@ -118,6 +116,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   protected
+
+  def setup_children(parent)
+    @children = GroupChildrenFinder.new(current_user, parent_group: parent, params: params).execute
+    @children = @children.page(params[:page])
+  end
 
   def setup_projects
     set_non_archived_param
