@@ -35,11 +35,7 @@
                 %span= _('Cycle Analytics')
 
       - if project_nav_tab? :files
-<<<<<<< HEAD
         = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks)) do
-=======
-        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
->>>>>>> ce-com/master
           = link_to project_tree_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('doc_text')
@@ -249,11 +245,7 @@
                   #{ _('Snippets') }
 
       - if project_nav_tab? :settings
-<<<<<<< HEAD
         = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index]) do
-=======
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
->>>>>>> ce-com/master
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
               = custom_icon('settings')
