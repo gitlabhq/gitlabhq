@@ -6,6 +6,7 @@
           %h5 Auto DevOps (Beta)
           %p
             Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.
+            This will happen starting with the next event (e.g.: push) that occurs to the project.
             = link_to 'Learn more about Auto DevOps', help_page_path('topics/autodevops/index.md')
             - message = auto_devops_warning_message(@project)
             - if message
