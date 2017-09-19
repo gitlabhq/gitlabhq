@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe API::AccessRequests do
-  let(:master) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:access_requester) { create(:user) }
-  let(:stranger) { create(:user) }
+  set(:master) { create(:user) }
+  set(:developer) { create(:user) }
+  set(:access_requester) { create(:user) }
+  set(:stranger) { create(:user) }
 
-  let(:project) do
+  set(:project) do
     create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
       project.team << [developer, :developer]
       project.team << [master, :master]
@@ -14,7 +14,7 @@ describe API::AccessRequests do
     end
   end
 
-  let(:group) do
+  set(:group) do
     create(:group, :public, :access_requestable) do |group|
       group.add_developer(developer)
       group.add_owner(master)
