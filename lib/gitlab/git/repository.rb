@@ -25,7 +25,11 @@ module Gitlab
         def create(storage_path, name, bare: true, symlink_hooks_to: nil)
           repo_path = File.join(storage_path, name)
           repo_path += '.git' unless repo_path.end_with?('.git')
+          create_at_path(repo_path, bare, symlink_hooks_to)
+        end
 
+        # Used internally by gitaly-ruby
+        def create_at_path(repo_path, bare:, symlink_hooks_to:)
           FileUtils.mkdir_p(repo_path, mode: 0770)
 
           # Equivalent to `git --git-path=#{repo_path} init [--bare]`
