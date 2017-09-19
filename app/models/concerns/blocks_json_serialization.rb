@@ -5,7 +5,7 @@
 module BlocksJsonSerialization
   extend ActiveSupport::Concern
 
-  def to_json
+  def to_json(*args)
     raise SecurityError,
       "JSON serialization has been disabled on #{self.class.name}"
   end
