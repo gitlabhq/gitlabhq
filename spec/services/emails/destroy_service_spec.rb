@@ -6,6 +6,10 @@ describe Emails::DestroyService do
 
   subject(:service) { described_class.new(user, user, email: email.email) }
 
+  before do
+    stub_licensed_features(extended_audit_events: true)
+  end
+
   describe '#execute' do
     it 'removes an email' do
       expect { service.execute }.to change { user.emails.count }.by(-1)

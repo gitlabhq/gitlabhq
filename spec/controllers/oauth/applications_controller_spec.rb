@@ -28,6 +28,8 @@ describe Oauth::ApplicationsController do
 
     describe 'POST #create' do
       it 'logs the audit event' do
+        stub_licensed_features(extended_audit_events: true)
+        
         sign_in(user)
 
         application = build(:oauth_application)

@@ -28,6 +28,8 @@ describe Admin::ApplicationsController do
 
   describe 'POST #create' do
     it 'creates the application' do
+      stub_licensed_features(extended_audit_events: true)
+
       create_params = attributes_for(:application, trusted: true)
 
       expect do

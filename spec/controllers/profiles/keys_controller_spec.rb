@@ -69,6 +69,8 @@ describe Profiles::KeysController do
 
   describe '#create' do
     it 'logs the audit event' do
+      stub_licensed_features(extended_audit_events: true)
+
       sign_in(user)
 
       key = build(:key)
