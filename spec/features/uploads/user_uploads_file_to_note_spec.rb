@@ -77,7 +77,7 @@ feature 'User uploads file to note' do
       wait_for_requests
 
       expect(find('a.no-attachment-icon img[alt="dk"]')['src'])
-        .to match(%r{/#{project.full_path}/uploads/\h{32}/dk\.png\?w=460\&=322$})
+        .to match(%r{/#{project.full_path}/uploads/\h{32}/dk\.png\?w=460\&h=322$})
     end
   end
 end

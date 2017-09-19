@@ -17,11 +17,11 @@ module Banzai
             img['height'] = img_height
 
             if img_width > img_height
-              aspect = img_height / (img_width * 0.01)
-              img['style'] = '' << "height:0;padding-bottom:#{aspect}%"
+              aspect_ratio = img_height / (img_width * 0.01)
+              img['style'] = '' << "height:0;padding-bottom:#{aspect_ratio}%"
             else
-              aspect = img_width / (img_height * 0.01)
-              img['style'] = '' << "width:0;padding-right:#{aspect}%"
+              aspect_ratio = img_width / (img_height * 0.01)
+              img['style'] = '' << "width:0;padding-right:#{aspect_ratio}%"
             end
           end
         end
