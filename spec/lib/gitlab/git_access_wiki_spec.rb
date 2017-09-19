@@ -25,15 +25,13 @@ describe Gitlab::GitAccessWiki do
 
       it { expect { subject }.not_to raise_error }
 
-      context 'when in a secondary gitlab geo node' do
+      context 'when in a read-only GitLab instance' do
         before do
-          allow(Gitlab::Geo).to receive(:enabled?) { true }
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive(:license_allows?) { true }
+          allow(Gitlab::Database).to receive(:readonly?) { true }
         end
 
         it 'does not give access to upload wiki code' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a secondary GitLab Geo node.")
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can't push code to a read-only GitLab instance.")
         end
       end
     end

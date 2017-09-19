@@ -20,7 +20,7 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       readonly: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_secondary_geo: "You can't push code to a secondary GitLab Geo node."
+      cannot_push_to_readonly: "You can't push code to a read-only GitLab instance."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -176,8 +176,8 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:readonly]
       end
 
-      if Gitlab::Geo.secondary?
-        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_secondary_geo]
+      if Gitlab::Database.readonly?
+        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_readonly]
       end
 
       if deploy_key

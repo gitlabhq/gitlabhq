@@ -477,6 +477,18 @@ class User < ActiveRecord::Base
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
+  def remember_me!
+    raise NotImplementedError unless defined?(super)
+
+    super unless ::Gitlab::Database.readonly?
+  end
+
+  def forget_me!
+    raise NotImplementedError unless defined?(super)
+
+    super unless ::Gitlab::Database.readonly?
+  end
+
   def disable_two_factor!
     transaction do
       update_attributes(

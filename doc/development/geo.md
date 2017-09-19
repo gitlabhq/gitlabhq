@@ -84,13 +84,13 @@ All **Secondary** nodes are read-only.
 
 We have a Rails Middleware that filters any potentially writing operations
 and prevent user from trying to update the database and getting a 500 error
-(see `Gitlab::Middleware::ReadonlyGeo`).
+(see `Gitlab::Middleware::Readonly`).
 
 Database will already be read-only in a replicated setup, so we don't need to
 take any extra step for that.
 
-We do use our feature toggle `.secondary?` to coordinate Git operations and do
-the correct authorization (denying writing on any secondary node).
+We do use our feature toggle `Gitlab::Database.readonly?` to deny write operations
+on a node that is in read-only mode. This toggle is also available in CE.
 
 ## File Transfers
 

@@ -152,7 +152,7 @@ module Routable
   end
 
   def update_route
-    return if Gitlab::Geo.secondary?
+    return if Gitlab::Database.readonly?
 
     prepare_route
     route.save

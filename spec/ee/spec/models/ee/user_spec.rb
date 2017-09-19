@@ -83,8 +83,8 @@ describe EE::User do
       expect(subject.reload.remember_created_at).to be_nil
     end
 
-    it 'does not clear remember_created_at when in a Geo secondary node' do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
+    it 'does not clear remember_created_at when in a GitLab readonly instance' do
+      allow(Gitlab::Database).to receive(:readonly?) { true }
 
       expect { subject.forget_me! }.not_to change(subject, :remember_created_at)
     end
@@ -99,8 +99,8 @@ describe EE::User do
       expect(subject.reload.remember_created_at).not_to be_nil
     end
 
-    it 'does not update remember_created_at when in a Geo secondary node' do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
+    it 'does not update remember_created_at when in a Geo readonly instance' do
+      allow(Gitlab::Database).to receive(:readonly?) { true }
 
       expect { subject.remember_me! }.not_to change(subject, :remember_created_at)
     end

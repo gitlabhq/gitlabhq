@@ -163,9 +163,9 @@ module Banzai
       Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    # GitLab EE needs to disable updates on GET requests in Geo
+    # GitLab needs to disable updates on GET requests if database is readonly
     def self.update_object?(object)
-      !Gitlab::Geo.secondary?
+      !Gitlab::Database.readonly?
     end
   end
 end

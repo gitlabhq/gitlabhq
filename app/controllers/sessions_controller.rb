@@ -115,7 +115,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def gitlab_geo_login
-    return unless Gitlab::Geo.secondary?
+    return unless Gitlab::Geo.secondary? # TODO?
     return if signed_in?
 
     oauth = Gitlab::Geo::OauthSession.new
@@ -128,7 +128,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def gitlab_geo_logout
-    return unless Gitlab::Geo.secondary?
+    return unless Gitlab::Geo.secondary? # TODO?
 
     oauth = Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
     @geo_logout_state = oauth.generate_logout_state

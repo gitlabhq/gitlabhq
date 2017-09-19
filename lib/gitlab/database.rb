@@ -1,5 +1,7 @@
 module Gitlab
   module Database
+    extend ::EE::Gitlab::Database
+
     # The max value of INTEGER type is the same between MySQL and PostgreSQL:
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
@@ -27,6 +29,10 @@ module Gitlab
 
     def self.postgresql?
       adapter_name.casecmp('postgresql').zero?
+    end
+
+    def self.readonly?
+      false
     end
 
     def self.version

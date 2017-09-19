@@ -1,7 +1,7 @@
 module Gitlab
   class GitAccessWiki < GitAccess
     ERROR_MESSAGES = {
-      geo:           "You can't push code to a secondary GitLab Geo node.",
+      readonly:      "You can't push code to this read-only GitLab instance.",
       write_to_wiki: "You are not allowed to write to this project's wiki."
     }.freeze
 
@@ -18,8 +18,8 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:write_to_wiki]
       end
 
-      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-        raise UnauthorizedError, ERROR_MESSAGES[:geo]
+      if Gitlab::Geo.enabled? && Gitlab::Database.readonly?
+        raise UnauthorizedError, ERROR_MESSAGES[:readonly]
       end
 
       true

@@ -39,9 +39,9 @@ describe Users::ActivityService do
       end
     end
 
-    context 'when in Geo secondary node' do
+    context 'when in GitLab read-only instance' do
       before do
-        allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+        allow(Gitlab::Database).to receive(:readonly?).and_return(true)
       end
 
       it 'does not update last_activity_at' do

@@ -54,6 +54,10 @@ module Gitlab
       Gitlab::Geo.primary_node.present?
     end
 
+    def self.secondary_with_primary?
+      self.secondary? && self.primary_node_configured?
+    end
+
     def self.license_allows?
       ::License.feature_available?(:geo)
     end

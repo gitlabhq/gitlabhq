@@ -84,7 +84,7 @@
                 %p
                   .js-health
 
-          - unless Gitlab::Geo.secondary?
+          - unless Gitlab::Database.readonly?
             .node-actions
               - if Gitlab::Geo.license_allows?
                 - if node.missing_oauth_application?
