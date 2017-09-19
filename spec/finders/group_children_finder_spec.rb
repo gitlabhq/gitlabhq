@@ -4,7 +4,9 @@ describe GroupChildrenFinder do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:params) { {} }
-  subject(:finder) { described_class.new(user, parent_group: group, params: params) }
+  subject(:finder) do
+    described_class.new(current_user: user, parent_group: group, params: params)
+  end
 
   before do
     group.add_owner(user)

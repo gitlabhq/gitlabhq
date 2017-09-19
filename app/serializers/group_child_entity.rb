@@ -55,7 +55,8 @@ class GroupChildEntity < Grape::Entity
          unless: lambda { |_instance, _options| project? }
 
   def children_finder
-    @children_finder ||= GroupChildrenFinder.new(request.current_user, parent_group: object)
+    @children_finder ||= GroupChildrenFinder.new(current_user: request.current_user,
+                                                 parent_group: object)
   end
 
   def children_count

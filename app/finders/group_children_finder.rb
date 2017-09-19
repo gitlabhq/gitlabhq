@@ -3,7 +3,7 @@ class GroupChildrenFinder
 
   attr_reader :current_user, :parent_group, :params
 
-  def initialize(current_user = nil, parent_group:, params: {})
+  def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
     @params = params
