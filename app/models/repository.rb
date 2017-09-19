@@ -983,6 +983,7 @@ class Repository
   def empty_repo?
     !exists? || !has_visible_content?
   end
+  cache_method :empty_repo?, memoize_only: true
 
   def search_files_by_content(query, ref)
     return [] if empty_repo? || query.blank?

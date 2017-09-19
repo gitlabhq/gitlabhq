@@ -415,8 +415,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    merge_request_diffs.create
-    reload_merge_request_diff
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      merge_request_diffs.create
+      reload_merge_request_diff
+    end
   end
 
   def reload_merge_request_diff
