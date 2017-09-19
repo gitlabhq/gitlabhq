@@ -124,7 +124,7 @@ module Gitlab
 
       def get_formatter_class(type)
         type ||= "text"
-        class_name = (type + FORMATTER_CLASS_SUFFIX).classify
+        class_name = (type.to_s + FORMATTER_CLASS_SUFFIX).classify
 
         Gitlab::Diff::Formatters.const_get(class_name)
       end

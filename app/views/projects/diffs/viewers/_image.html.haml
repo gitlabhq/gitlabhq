@@ -4,6 +4,12 @@
 - blob_raw_path = diff_file_blob_raw_path(diff_file)
 - old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
 
+/ For test test purposes
+- image_point = Gitlab::Diff::ImagePoint.new(300,300, 1, 300) # Point on top left corner
+- position_code = diff_file.line_code(image_point)
+.comment-test-button
+  = add_diff_note_button(position_code, diff_file.position(image_point, :image))
+
 - if diff_file.new_file? || diff_file.deleted_file?
   .image
     %span.wrap

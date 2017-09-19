@@ -27,22 +27,28 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(line)
+      def position(line, file_type=:text)
         return unless diff_refs
 
         Position.new(
+          file_type: file_type,
           old_path: old_path,
           new_path: new_path,
-          old_line: line.old_line,
-          new_line: line.new_line,
+          # Move these into separate objects
+          old_line: line.try(:old_line),
+          new_line: line.try(:new_line),
+          x_axis: line.try(:x_axis),
+          y_axis: line.try(:y_axis),
+          width: line.try(:width),
+          height: line.try(:height),
           diff_refs: diff_refs
         )
       end
 
-      def line_code(line)
-        return if line.meta?
+      def line_code(marker)
+        return if marker.meta?
 
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+        Gitlab::Diff::LineCode.generate(file_path, marker.key_attributes)
       end
 
       def line_for_line_code(code)
