@@ -41,14 +41,14 @@ class GroupChildrenFinder
     @children ||= subgroups.with_route.includes(:route, :parent) + projects.with_route.includes(:route, :namespace)
   end
 
-  def base_groups
+  def direct_subgroups
     GroupsFinder.new(current_user,
                      parent: parent_group,
                      all_available: true).execute
   end
 
   def all_subgroups
-    Gitlab::GroupHierarchy.new(Group.where(id: parent_group)).all_groups
+    Gitlab::GroupHierarchy.new(Group.where(id: parent_group)).base_and_descendants
   end
 
   def subgroups_matching_filter
@@ -62,12 +62,12 @@ class GroupChildrenFinder
     groups = if params[:filter]
                subgroups_matching_filter
              else
-               base_groups
+               direct_subgroups
              end
     groups.sort(params[:sort])
   end
 
-  def base_projects
+  def direct_child_projects
     GroupProjectsFinder.new(group: parent_group, params: params, current_user: current_user).execute
   end
 
@@ -83,7 +83,7 @@ class GroupChildrenFinder
     projects = if params[:filter]
                  projects_matching_filter
                else
-                 base_projects
+                 direct_child_projects
                end
     projects.sort(params[:sort])
   end
