@@ -1,11 +1,9 @@
 module Emails
   class CreateService < ::Emails::BaseService
+    prepend EE::Emails::CreateService
+
     def execute
-      email = @user.emails.create(email: @email)
-
-      log_audit_event(action: :create)
-
-      email
+      @user.emails.create(email: @email)
     end
   end
 end

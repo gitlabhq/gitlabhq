@@ -1,9 +1,9 @@
 module Emails
   class DestroyService < ::Emails::BaseService
+    prepend EE::Emails::DestroyService
+
     def execute
       Email.find_by_email!(@email).destroy && update_secondary_emails!
-
-      log_audit_event(action: :destroy)
     end
 
     private
