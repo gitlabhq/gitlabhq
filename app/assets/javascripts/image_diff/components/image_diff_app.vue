@@ -38,7 +38,7 @@
       class="wrap"
     >
       <image-frame
-        :className="currentImageFrameClass"
+        :class-name="currentImageFrameClass"
         :src="currentImage.path"
         :alt="currentImage.alt"
       />

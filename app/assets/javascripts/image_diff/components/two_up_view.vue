@@ -22,7 +22,7 @@
     <div class="image-container">
       <image-frame
         @imageLoaded="loadMeta('deleted', $event)"
-        className="deleted"
+        class-name="deleted"
         :src="deleted.path"
         :alt="deleted.alt"
       />
@@ -46,7 +46,7 @@
     <div class="image-container">
       <image-frame
         @imageLoaded="loadMeta('added', $event)"
-        className="added"
+        class-name="added"
         :src="added.path"
         :alt="added.alt"
       />
