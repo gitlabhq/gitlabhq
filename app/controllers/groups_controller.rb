@@ -118,9 +118,9 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def setup_children(parent)
-    @children = GroupChildrenFinder.new(current_user: current_user,
-                                        parent_group: parent,
-                                        params: params).execute
+    @children = GroupDescendantsFinder.new(current_user: current_user,
+                                           parent_group: parent,
+                                           params: params).execute
     @children = @children.page(params[:page])
   end
 

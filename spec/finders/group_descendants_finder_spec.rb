@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupChildrenFinder do
+describe GroupDescendantsFinder do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:params) { {} }

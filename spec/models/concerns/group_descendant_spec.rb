@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupHierarchy, :nested_groups do
+describe GroupDescendant, :nested_groups do
   let(:parent) { create(:group) }
   let(:subgroup) { create(:group, parent: parent) }
   let(:subsub_group) { create(:group, parent: subgroup) }
@@ -140,6 +140,33 @@ describe GroupHierarchy, :nested_groups do
         expected_hierarchy = { parent => subgroup }
 
         expect(described_class.merge_hierarchies([parent, subgroup])).to eq(expected_hierarchy)
+      end
+
+      it 'merges complex hierarchies' do
+        project = create(:project, namespace: parent)
+        sub_project = create(:project, namespace: subgroup)
+        subsubsub_group = create(:group, parent: subsub_group)
+        subsub_project = create(:project, namespace: subsub_group)
+        subsubsub_project = create(:project, namespace: subsubsub_group)
+        other_subgroup = create(:group, parent: parent)
+        other_subproject = create(:project, namespace: other_subgroup)
+
+        projects = [project, subsubsub_project, sub_project, other_subproject, subsub_project]
+
+        expected_hierarchy = [
+          project,
+          {
+            subgroup => [
+              { subsub_group => [{ subsubsub_group => subsubsub_project }, subsub_project] },
+              sub_project
+            ]
+          },
+          { other_subgroup => other_subproject }
+        ]
+
+        actual_hierarchy = described_class.merge_hierarchies(projects, parent)
+
+        expect(actual_hierarchy).to eq(expected_hierarchy)
       end
     end
   end

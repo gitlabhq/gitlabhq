@@ -17,7 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
-  include GroupHierarchy
+  include GroupDescendant
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -1519,10 +1519,6 @@ class Project < ActiveRecord::Base
     return unless map
 
     map.public_path_for_source_path(path)
-  end
-
-  def parent
-    namespace
   end
 
   def parent_changed?

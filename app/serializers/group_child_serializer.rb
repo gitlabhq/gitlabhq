@@ -24,10 +24,10 @@ class GroupChildSerializer < BaseSerializer
   protected
 
   def represent_hierarchies(children, opts)
-    if children.is_a?(GroupHierarchy)
+    if children.is_a?(GroupDescendant)
       represent_hierarchy(children.hierarchy(hierarchy_root), opts).first
     else
-      hierarchies = Array.wrap(GroupHierarchy.merge_hierarchies(children, hierarchy_root))
+      hierarchies = Array.wrap(GroupDescendant.merge_hierarchies(children, hierarchy_root))
       hierarchies.map { |hierarchy| represent_hierarchy(hierarchy, opts) }.flatten
     end
   end

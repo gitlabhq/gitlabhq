@@ -1,4 +1,4 @@
-class GroupChildrenFinder
+class GroupDescendantsFinder
   include Gitlab::Allowable
 
   attr_reader :current_user, :parent_group, :params
@@ -38,31 +38,33 @@ class GroupChildrenFinder
   private
 
   def children
-    @children ||= subgroups.with_route.includes(:route, :parent) + projects.with_route.includes(:route, :namespace)
+    @children ||= subgroups.with_route.includes(:parent) + projects.with_route.includes(:namespace)
   end
 
-  def direct_subgroups
+  def direct_child_groups
     GroupsFinder.new(current_user,
                      parent: parent_group,
                      all_available: true).execute
   end
 
-  def all_subgroups
+  def all_descendant_groups
     Gitlab::GroupHierarchy.new(Group.where(id: parent_group)).base_and_descendants
   end
 
   def subgroups_matching_filter
-    all_subgroups.where.not(id: parent_group).search(params[:filter])
+    all_descendant_groups.where.not(id: parent_group).search(params[:filter])
   end
 
   def subgroups
     return Group.none unless Group.supports_nested_groups?
     return Group.none unless can?(current_user, :read_group, parent_group)
 
+    # When filtering subgroups, we want to find all matches withing the tree of
+    # descendants to show to the user
     groups = if params[:filter]
                subgroups_matching_filter
              else
-               direct_subgroups
+               direct_child_groups
              end
     groups.sort(params[:sort])
   end
@@ -74,7 +76,7 @@ class GroupChildrenFinder
   def projects_matching_filter
     ProjectsFinder.new(current_user: current_user).execute
       .search(params[:filter])
-      .where(namespace: all_subgroups)
+      .where(namespace: all_descendant_groups)
   end
 
   def projects
