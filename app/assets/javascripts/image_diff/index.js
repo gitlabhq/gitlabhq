@@ -11,18 +11,18 @@ document.querySelectorAll('.js-vue-image-diff').forEach(
       const dataset = el.dataset;
 
       return {
-        images: {
+        initialImages: {
           added: dataset.added ? JSON.parse(dataset.added) : null,
           deleted: dataset.deleted ? JSON.parse(dataset.deleted) : null,
         },
-        coordinates: JSON.parse(dataset.coordinates),
+        initialCoordinates: JSON.parse(dataset.coordinates),
       };
     },
     render(createElement) {
       return createElement('image-diff-app', {
         props: {
-          images: this.images,
-          coordinates: this.coordinates,
+          initialImages: this.initialImages,
+          initialCoordinates: this.initialCoordinates,
           uid: index,
         },
       });

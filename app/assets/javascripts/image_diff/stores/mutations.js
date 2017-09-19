@@ -1,18 +1,7 @@
+import Vue from 'vue';
 import * as types from './mutation_types';
 
 export default {
-  // [types.SET_IMAGES](state, images) {
-  //   Object.assign(state, {
-  //     images,
-  //   });
-  // },
-
-  // [types.SET_COORDINATES](state, coordinates) {
-  //   Object.assign(state, {
-  //     coordinates,
-  //   });
-  // },
-
   [types.ADD_COORDINATE](state, data) {
     const { imageDiffId, coordinate } = data;
 
@@ -22,9 +11,9 @@ export default {
   [types.ADD_IMAGE_DIFF](state, imageDiff) {
     const { id, images, coordinates } = imageDiff;
 
-    state.imageDiffs[id] = {
-      images,
-      coordinates,
-    };
+    Vue.set(state.imageDiffs, id, {
+      images: Object.assign({}, images),
+      coordinates: coordinates.slice(),
+    });
   },
 };

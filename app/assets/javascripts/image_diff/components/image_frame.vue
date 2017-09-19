@@ -49,8 +49,8 @@
       @load="load"
       :src="src"
       :alt="alt"
+      draggable="false"
     />
-    <!-- <slot v-if="imageLoaded" /> -->
     <button
       v-for="(coordinate, index) in coordinates"
       :key="index"

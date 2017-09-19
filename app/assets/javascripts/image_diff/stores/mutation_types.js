@@ -1,1 +1,2 @@
 export const ADD_IMAGE_DIFF = 'ADD_IMAGE_DIFF';
+export const ADD_COORDINATE = 'ADD_COORDINATE';
