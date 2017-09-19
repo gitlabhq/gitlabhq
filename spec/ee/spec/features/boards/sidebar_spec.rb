@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'Issue Boards', :js do
+  include BoardHelpers
+
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
   let(:project)      { create(:project, :public) }
@@ -135,21 +137,6 @@ describe 'Issue Boards', :js do
 
         expect(find('.dropdown-menu')).to have_selector('.is-active')
       end
-    end
-  end
-
-  def click_card(card)
-    page.within(card) do
-      first('.card-number').click
-    end
-
-    wait_for_sidebar
-  end
-
-  def wait_for_sidebar
-    # loop until the CSS transition is complete
-    Timeout.timeout(0.5) do
-      loop until evaluate_script('$(".right-sidebar").outerWidth()') == 290
     end
   end
 end
