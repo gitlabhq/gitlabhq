@@ -2,7 +2,8 @@ class GeoNodeStatus < ActiveRecord::Base
   belongs_to :geo_node
 
   # Whether we were successful in reaching this node
-  attr_accessor :success, :health_status, :version, :revision
+  attr_accessor :success, :version, :revision
+  attr_writer :health_status
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
