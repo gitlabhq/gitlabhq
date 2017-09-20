@@ -16,15 +16,12 @@
   text-align: center;
 }
 
-.issuable-sidebar-item {
-  .not-active,
-  .is-active {
-    border-radius: $border-radius-default;
-    padding: 5px;
-    margin: 0 3px 0 -4px;
-  }
+.sidebar-item-icon {
+  border-radius: $border-radius-default;
+  padding: 5px;
+  margin: 0 3px 0 -4px;
 
-  .is-active {
+  &.is-active {
     color: $orange-600;
     background-color: $orange-50;
   }

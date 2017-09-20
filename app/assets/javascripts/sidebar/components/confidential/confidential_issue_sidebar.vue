@@ -70,11 +70,11 @@ export default {
         :update-confidential-attribute="updateConfidentialAttribute"
       />
       <div v-if="!isConfidential" class="no-value sidebar-item-value">
-        <i class="fa fa-eye not-active"></i>
+        <i class="fa fa-eye sidebar-item-icon"></i>
         Not confidential
       </div>
       <div v-else class="value sidebar-item-value hide-collapsed">
-        <i aria-hidden="true" class="fa fa-eye-slash is-active"></i>
+        <i aria-hidden="true" class="fa fa-eye-slash sidebar-item-icon is-active"></i>
         This issue is confidential
       </div>
     </div>

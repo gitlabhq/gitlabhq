@@ -95,12 +95,12 @@ export default {
       />
 
       <div v-if="isLocked" class="value sidebar-item-value">
-        <i aria-hidden="true" class="fa fa-lock is-active"></i>
+        <i aria-hidden="true" class="fa fa-lock sidebar-item-icon is-active"></i>
         {{ __('Locked') }}
       </div>
 
       <div v-else class="no-value sidebar-item-value hide-collapsed">
-        <i aria-hidden="true" class="fa fa-unlock not-active"></i>
+        <i aria-hidden="true" class="fa fa-unlock sidebar-item-icon"></i>
         {{ __('Unlocked') }}
       </div>
     </div>
