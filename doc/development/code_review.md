@@ -9,8 +9,18 @@ There are a few rules to get your merge request accepted:
     **approved by a [backend maintainer][projects]**.
   1. If your merge request includes only frontend changes [^1], it must be
     **approved by a [frontend maintainer][projects]**.
+  1. If your merge request includes UX changes [^1], it must
+    be **approved by a [UX team member][team]**.
+  1. If your merge request includes adding a new JavaScript library [^1], it must be
+    **approved by a [frontend lead][team]**.
+  1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+    **approved by a [UX lead][team]**.
   1. If your merge request includes frontend and backend changes [^1], it must
     be **approved by a [frontend and a backend maintainer][projects]**.
+  1. If your merge request includes UX and frontend changes [^1], it must
+    be **approved by a [UX team member and a frontend maintainer][team]**.
+  1. If your merge request includes UX, frontend and backend changes [^1], it must
+    be **approved by a [UX team member, a frontend and a backend maintainer][team]**.
   1. If your merge request includes a new dependency or a filesystem change, it must
     be **approved by a [Build team member][team]**. See [how to work with the Build team][build handbook] for more details.
 1. To lower the amount of merge requests maintainers need to review, you can
