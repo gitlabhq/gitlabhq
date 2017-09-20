@@ -115,6 +115,7 @@ module Gitlab
             when '0'..'9', 'a'..'f' then
               state = :value_normal_escape_hex
               hex_buffer = char
+            when ' ' then state = :value_normal_escape_space; value << char
             else state = :value_normal; value << char
             end
           when :value_normal_escape_hex then
@@ -123,6 +124,16 @@ module Gitlab
               state = :value_normal
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise "DN badly formed"
+            end
+          when :value_normal_escape_space then
+            case char
+            when '\\' then state = :value_normal_escape
+            when ',' then
+              state = :key
+              yield key.string.strip, value.string # Don't strip trailing escaped space!
+              key = StringIO.new
+              value = StringIO.new;
+            else value << char
             end
           when :value_quoted then
             case char
