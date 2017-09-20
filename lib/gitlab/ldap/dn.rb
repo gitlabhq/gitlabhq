@@ -225,6 +225,12 @@ module Gitlab
       # if necessary (i.e. leading or trailing space).
       NORMAL_ESCAPES = [',', '+', '"', '\\', '<', '>', ';', '=']
 
+      # The following must be represented as escaped hex
+      HEX_ESCAPES = {
+        "\n" => '\0a',
+        "\r" => '\0d'
+      }
+
       # Compiled character class regexp using the keys from the above hash, and
       # checking for a space or # at the start, or space at the end, of the
       # string.
@@ -232,10 +238,15 @@ module Gitlab
                              NORMAL_ESCAPES.map { |e| Regexp.escape(e) }.join +
                              "])")
 
+      HEX_ESCAPE_RE = Regexp.new("([" +
+                             HEX_ESCAPES.keys.map { |e| Regexp.escape(e) }.join +
+                             "])")
+
       ##
       # Escape a string for use in a DN value
       def self.escape(string)
-        string.gsub(ESCAPE_RE) { |char| "\\" + char }
+        escaped = string.gsub(ESCAPE_RE) { |char| "\\" + char }
+        escaped.gsub(HEX_ESCAPE_RE) { |char| HEX_ESCAPES[char] }
       end
 
       ##

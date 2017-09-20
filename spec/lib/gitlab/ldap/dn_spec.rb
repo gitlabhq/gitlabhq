@@ -31,6 +31,9 @@ describe Gitlab::LDAP::DN do
       'converts an escaped hex equal sign to an escaped equal sign in an attribute value'            | 'uid= foo  \\3D  bar'                                                                                 | 'uid=foo  \\=  bar'
       'does not modify an escaped comma in an attribute value'                                       | 'uid= John C. Smith, ou=San Francisco\\, CA'                                                          | 'uid=john c. smith,ou=san francisco\\, ca'
       'converts an escaped hex comma to an escaped comma in an attribute value'                      | 'uid= John C. Smith, ou=San Francisco\\2C CA'                                                         | 'uid=john c. smith,ou=san francisco\\, ca'
+      'does not modify an escaped hex carriage return character in an attribute value'               | 'uid= John C. Smith, ou=San Francisco\\,\\0DCA'                                                       | 'uid=john c. smith,ou=san francisco\\,\\0dca'
+      'does not modify an escaped hex line feed character in an attribute value'                     | 'uid= John C. Smith, ou=San Francisco\\,\\0ACA'                                                       | 'uid=john c. smith,ou=san francisco\\,\\0aca'
+      'does not modify an escaped hex CRLF in an attribute value'                                    | 'uid= John C. Smith, ou=San Francisco\\,\\0D\\0ACA'                                                   | 'uid=john c. smith,ou=san francisco\\,\\0d\\0aca'
     end
 
     with_them do
