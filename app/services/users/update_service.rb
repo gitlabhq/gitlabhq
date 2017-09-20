@@ -14,8 +14,6 @@ module Users
 
       assign_attributes(&block)
 
-      user_exists = @user.persisted?
-
       if @user.save(validate: validate)
         notify_success
       else
