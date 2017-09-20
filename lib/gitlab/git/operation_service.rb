@@ -1,6 +1,8 @@
 module Gitlab
   module Git
     class OperationService
+      include Gitlab::Git::Popen
+
       WithBranchResult = Struct.new(:newrev, :repo_created, :branch_created) do
         alias_method :repo_created?, :repo_created
         alias_method :branch_created?, :branch_created
@@ -150,7 +152,7 @@ module Gitlab
         # (and have!) accidentally reset the ref to an earlier state, clobbering
         # commits. See also https://github.com/libgit2/libgit2/issues/1534.
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        _, status = Gitlab::Popen.popen(
+        _, status = popen(
           command,
           repository.path) do |stdin|
           stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")

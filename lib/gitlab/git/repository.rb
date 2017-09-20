@@ -490,7 +490,7 @@ module Gitlab
 
             # Not found -> ["", 0]
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            Gitlab::Popen.popen(args, @path).first.split.last
+            popen(args, @path).first.split.last
           end
         end
       end
@@ -792,9 +792,7 @@ module Gitlab
         end
 
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        message, status = Gitlab::Popen.popen(
-          command,
-          path) do |stdin|
+        message, status = popen(command, path) do |stdin|
           stdin.write(instructions.join)
         end
 
