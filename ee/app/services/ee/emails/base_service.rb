@@ -10,7 +10,7 @@ module EE
       private
 
       def log_audit_event(options = {})
-        AuditEventService.new(@current_user, @user, options)
+        ::AuditEventService.new(@current_user, @user, options)
             .for_email(@email).security_event
       end
     end
