@@ -412,12 +412,12 @@ downtime_check:
 
 ee_compat_check:
   <<: *rake-exec
-  only:
-    - branches@gitlab-org/gitlab-ce
   except:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - branches@gitlab-org/gitlab-ee
+    - branches@gitlab/gitlab-ee
   allow_failure: yes
   cache:
     key: "ee_compat_check_repo"
