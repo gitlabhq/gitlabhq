@@ -38,7 +38,7 @@ module Gitlab
           buffer << "," if index % 2 == 0 && index != 0
 
           if index < args.length - 1 || index % 2 == 1
-            buffer << Net::LDAP::DN.escape(args[index])
+            buffer << self.class.escape(args[index])
           else
             buffer << args[index]
           end
@@ -197,6 +197,12 @@ module Gitlab
       # Return the DN as an escaped string.
       def to_s
         @dn
+      end
+
+      ##
+      # Return the DN as an escaped and normalized string.
+      def to_s_normalized
+        self.class.new(*to_a).to_s
       end
 
       # http://tools.ietf.org/html/rfc2253 section 2.4 lists these exceptions
