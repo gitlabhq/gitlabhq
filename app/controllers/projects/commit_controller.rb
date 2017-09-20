@@ -20,7 +20,12 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html
+      format.html do
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37599
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
+      end
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end

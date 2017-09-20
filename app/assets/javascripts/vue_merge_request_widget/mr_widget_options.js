@@ -57,7 +57,7 @@ export default {
       return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
-      return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
+      return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
       return this.mr.relatedLinks;

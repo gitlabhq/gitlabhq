@@ -2,6 +2,11 @@ module Projects
   # Base class for the various service classes that count project data (e.g.
   # issues or forks).
   class CountService
+    # The version of the cache format. This should be bumped whenever the
+    # underlying logic changes. This removes the need for explicitly flushing
+    # all caches.
+    VERSION = 1
+
     def initialize(project)
       @project = project
     end
@@ -37,7 +42,7 @@ module Projects
     end
 
     def cache_key
-      ['projects', @project.id, cache_key_name]
+      ['projects', 'count_service', VERSION, @project.id, cache_key_name]
     end
   end
 end

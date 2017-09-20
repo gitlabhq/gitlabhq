@@ -784,6 +784,7 @@ ul.notes {
   background-color: transparent;
   border: none;
   outline: 0;
+  color: $gray-darkest;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
@@ -807,7 +808,7 @@ ul.notes {
   }
 
   svg {
-    fill: $gray-darkest;
+    fill: currentColor;
     height: 16px;
     width: 16px;
   }

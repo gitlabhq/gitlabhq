@@ -131,7 +131,7 @@ Parameters:
   "message": null
 }
 ```
-The message will be `nil` when creating a lightweight tag otherwise
+The message will be `null` when creating a lightweight tag otherwise
 it will contain the annotation.
 
 In case of an error,

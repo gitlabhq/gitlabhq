@@ -52,7 +52,7 @@ describe MergeRequests::CloseService do
       end
     end
 
-    it 'refreshes the number of open merge requests for a valid MR' do
+    it 'refreshes the number of open merge requests for a valid MR', :use_clean_rails_memory_store_caching do
       service = described_class.new(project, user, {})
 
       expect { service.execute(merge_request) }

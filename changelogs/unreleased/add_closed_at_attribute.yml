@@ -1,0 +1,5 @@
+---
+title: Add 'closed_at' attribute to Issues API
+merge_request: 14316
+author: Vitaliy @blackst0ne Klachkov
+type: added
