@@ -1,0 +1,5 @@
+---
+title: Fix errors when moving issue with reference to a group milestone
+merge_request: 14294
+author:
+type: fixed
