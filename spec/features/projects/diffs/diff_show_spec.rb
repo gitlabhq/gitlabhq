@@ -62,13 +62,43 @@ feature 'Diff file viewer', :js do
   end
 
   context 'Image file' do
-    before do
-      visit_commit('2f63565e7aac07bcdadb654e253078b727143ec4')
+    context 'Replaced' do
+      before do
+        visit_commit('2f63565e7aac07bcdadb654e253078b727143ec4')
+      end
+
+      it 'shows a rendered image' do
+        within('.diff-file[id="e986451b8f7397b617dbb6fffcb5539328c56921"]') do
+          expect(page).to have_css('img[alt="files/images/6049019_460s.jpg"]')
+        end
+      end
+
+      it 'shows view replaced and view file links' do
+        expect(page.all('.file-actions a').length).to eq 2
+        expect(page.all('.file-actions a')[0]).to have_content 'View replaced file @'
+        expect(page.all('.file-actions a')[1]).to have_content 'View file @'
+      end
     end
 
-    it 'shows a rendered image' do
-      within('.diff-file[id="e986451b8f7397b617dbb6fffcb5539328c56921"]') do
-        expect(page).to have_css('img[alt="files/images/6049019_460s.jpg"]')
+    context 'Added' do
+      before do
+        visit_commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+      end
+
+      it 'shows view file link' do
+        expect(page.all('.file-actions a').length).to eq 1
+        expect(page.all('.file-actions a')[0]).to have_content 'View file @'
+      end
+    end
+
+    context 'Deleted' do
+      before do
+        visit_commit('7fd7a459706ee87be6f855fd98ce8c552b15529a')
+      end
+
+      it 'shows view file link' do
+        expect(page.all('.file-actions a').length).to eq 1
+        expect(page.all('.file-actions a')[0]).to have_content 'View file @'
       end
     end
   end

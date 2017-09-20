@@ -15,8 +15,7 @@
     .two-up.view
       %span.wrap
         .frame.deleted
-          %a{ href: project_blob_path(@project, tree_join(diff_file.old_content_sha, diff_file.old_path)) }
-            = image_tag(old_blob_raw_path, alt: diff_file.old_path)
+          = image_tag(old_blob_raw_path, alt: diff_file.old_path)
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(old_blob.size)
           |
@@ -27,8 +26,7 @@
           %span.meta-height
       %span.wrap
         .frame.added
-          %a{ href: project_blob_path(@project, tree_join(diff_file.content_sha, diff_file.new_path)) }
-            = image_tag(blob_raw_path, alt: diff_file.new_path)
+          = image_tag(blob_raw_path, alt: diff_file.new_path)
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(blob.size)
           |

@@ -176,13 +176,15 @@ module CommitsHelper
     end
   end
 
-  def view_file_button(commit_sha, diff_new_path, project)
+  def view_file_button(commit_sha, diff_new_path, project, replaced: false)
+    title = replaced ? _('View replaced file @ ') : _('View file @ ')
+
     link_to(
       project_blob_path(project,
                                   tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file'
     ) do
-      raw('View file @ ') + content_tag(:span, Commit.truncate_sha(commit_sha),
+      raw(title) + content_tag(:span, Commit.truncate_sha(commit_sha),
                                        class: 'commit-sha')
     end
   end
