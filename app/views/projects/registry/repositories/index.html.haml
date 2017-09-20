@@ -8,7 +8,7 @@
       = _('With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images.')
     %p.append-bottom-0
       = succeed '.' do
-        Learn more about
+        = _('Learn more about')
         = link_to _('Container Registry'), help_page_path('user/project/container_registry'), target: '_blank'
   .row
     .col-lg-12
@@ -20,14 +20,14 @@
           %p
             = _('First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have')
             = link_to _('2FA enabled'), help_page_path('user/profile/account/two_factor_authentication'), target: '_blank'
-            you need to use a
+            = _('you need to use a')
             = succeed ':' do
               = link_to _('personal access token'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'personal-access-tokens'), target: '_blank'
           %pre
             docker login #{Gitlab.config.registry.host_port}
           %br
           %p
-            = _("Once you log in, you&rsquo;re free to create and upload a container image using the common")
+            = _('Once you log in, you&rsquo;re free to create and upload a container image using the common')
             %code
               = _('build')
             = _('and')
@@ -37,7 +37,6 @@
             :plain
               docker build -t #{escape_once(@project.container_registry_url)} .
               docker push #{escape_once(@project.container_registry_url)}
-
           %hr
           %h5.prepend-top-default
             = _('Use different image names')
@@ -48,8 +47,6 @@
               #{escape_once(@project.container_registry_url)}:tag
               #{escape_once(@project.container_registry_url)}/optional-image-name:tag
               #{escape_once(@project.container_registry_url)}/optional-name/optional-image-name:tag
-
-
   .row
     .col-lg-12
       #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json)}}

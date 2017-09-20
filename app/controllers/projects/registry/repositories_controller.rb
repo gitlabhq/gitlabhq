@@ -10,7 +10,7 @@ module Projects
         respond_to do |format|
           format.html
           format.json do
-           # render json: @images
+           # Remove code below
             render json: [
               {
                 name: 'gitlab-org/omnibus-gitlab/foo',
@@ -41,13 +41,27 @@ module Projects
 
       def destroy
         if image.destroy
-          redirect_to project_container_registry_index_path(@project),
-                      status: 302,
-                      notice: 'Image repository has been removed successfully!'
+          respond_to do |format|
+            # TODO: @Kamil, I don't think this is used ever. Should we keep it or remove it?
+            format.html do
+              redirect_to project_container_registry_index_path(@project),
+              status: 302,
+              notice: 'Image repository has been removed successfully!'
+            end
+
+            format.json { head :no_content }
+          end
         else
-          redirect_to project_container_registry_index_path(@project),
-                      status: 302,
-                      alert: 'Failed to remove image repository!'
+          respond_to do |format|
+            # TODO: @Kamil, I don't think this is used ever. Should we keep it or remove it?
+            format.html do
+              redirect_to project_container_registry_index_path(@project),
+              status: 302,
+              alert: 'Failed to remove image repository!'
+            end
+
+            format.json { head :no_content }
+          end
         end
       end
 

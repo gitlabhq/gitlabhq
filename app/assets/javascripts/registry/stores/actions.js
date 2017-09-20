@@ -27,16 +27,10 @@ export const fetchList = ({ commit }, list) => {
 };
 
 export const deleteRepo = ({ commit }, repo) => Vue.http.delete(repo.path)
-  .then(res => res.json())
-  .then(() => {
-    commit(types.DELETE_REPO, repo);
-  });
+  .then(res => res.json());
 
 export const deleteRegistry = ({ commit }, image) => Vue.http.delete(image.path)
-  .then(res => res.json())
-  .then(() => {
-    commit(types.DELETE_IMAGE, image);
-  });
+  .then(res => res.json());
 
 export const setMainEndpoint = ({ commit }, data) => commit(types.SET_MAIN_ENDPOINT, data);
-export const toggleIsLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);
+export const toggleLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);

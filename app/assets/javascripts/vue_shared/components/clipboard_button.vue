@@ -1,5 +1,7 @@
 <script>
-  import Clipboard from 'vendor/clipboard';
+  /**
+   * Falls back to the code used in `copy_to_clipboard.js`
+   */
 
   export default {
     name: 'clipboardButton',
@@ -13,13 +15,6 @@
         required: true,
       },
     },
-    mounted() {
-      // return new Clipboard(this.$refs.btn, {
-      //   text: () => {
-      //     return this.text;
-      //   },
-      // });
-    }
   };
 </script>
 
@@ -28,9 +23,7 @@
     type="button"
     class="btn btn-transparent btn-clipboard"
     :data-title="title"
-    :data-clipboard-text="text"
-    ref="btn"
-    >
+    :data-clipboard-text="text">
       <i
         aria-hidden="true"
         class="fa fa-clipboard">

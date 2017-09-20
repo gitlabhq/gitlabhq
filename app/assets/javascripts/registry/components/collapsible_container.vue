@@ -2,6 +2,7 @@
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
+  import timeagoMixin from '../../vue_shared/mixins/timeago';
 
   export default {
     name: 'collapsibeContainerRegisty',
@@ -15,6 +16,9 @@
       clipboardButton,
       loadingIcon,
     },
+    mixins: [
+      timeagoMixin,
+    ],
     directives: {
       tooltip,
     },
@@ -28,16 +32,18 @@
         const pluralize = gl.text.pluralize('layer', item.layers);
         return `${item.layers} ${pluralize}`;
       },
+
       toggleRepo() {
         if (this.isOpen === false) {
-          // consider not fetching data the second time it is toggled? :fry:
           this.$emit('fetchRegistryList', this.repo);
         }
         this.isOpen = !this.isOpen;
       },
+
       handleDeleteRepository() {
         this.$emit('deleteRepository', this.repo)
       },
+
       handleDeleteRegistry(registry) {
         this.$emit('deleteRegistry', this.repo, registry);
       },
@@ -51,7 +57,8 @@
       class="container-image-head">
       <a
         role="button"
-        @click="toggleRepo">
+        @click="toggleRepo"
+        class="js-toggle-repo">
         <i
           class="fa"
           :class="{
@@ -63,13 +70,17 @@
         {{repo.name}}
       </a>
 
-      <clipboard-button text="foo" title="bar" />
+      <clipboard-button
+        v-if="repo.location"
+        :text="__(`docker pull ${repo.location}`)"
+        :title="repo.location"
+        />
 
       <div class="controls hidden-xs pull-right">
         <button
           v-if="repo.canDelete"
           type="button"
-          class="btn btn-remove"
+          class="js-remove-repo btn btn-remove"
           :title="__('Remove repository')"
           v-tooltip
           @click="handleDeleteRepository">
@@ -90,14 +101,16 @@
       v-else-if="!repo.isLoading && isOpen"
       class="container-image-tags">
 
-      <table class="table tags" v-if="repo.list.length">
+      <table
+        class="table tags"
+        v-if="repo.list.length">
         <thead>
           <tr>
             <th>{{__("Tag")}}</th>
             <th>{{__("Tag ID")}}</th>
             <th>{{__("Size")}}</th>
             <th>{{__("Created")}}</th>
-            <th v-if="true"></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -109,16 +122,16 @@
               {{item.tag}}
 
               <clipboard-button
-                :title="item.tag"
-                :text="item.tag"
+                v-if="item.location"
+                :title="item.location"
+                :text="__(`docker pull ${item.location}`)"
                 />
             </td>
             <td>
               <span
                 v-tooltip
                 :title="item.revision"
-                data-placement="bottom"
-                >
+                data-placement="bottom">
                 {{item.shortRevision}}
                 </span>
             </td>
@@ -128,34 +141,38 @@
                 &middot;
                 {{layers(item)}}
               </template>
-              <div v-else class="light">
+              <div
+                v-else
+                class="light">
                 \-
               </div>
             </td>
 
             <td>
               <template v-if="item.createdAt">
-                format {{item.createdAt}}
+                {{timeFormated(item.createdAt)}}
               </template>
-              <div v-else class="light">
+              <div
+                v-else
+                class="light">
                 \-
               </div>
             </td>
 
             <td class="content">
-              <div class="controls hidden-xs pull-right">
-                <button
-                  type="button"
-                  class="btn btn-remove"
-                  title="Remove tag"
-                  v-tooltip
-                  @click="handleDeleteRegistry(item)">
-                  <i
-                    class="fa fa-trash"
-                    aria-hidden="true">
-                  </i>
-                </button>
-              </div>
+              <button
+                v-if="item.canDelete"
+                type="button"
+                class="js-delete-registry btn btn-remove hidden-xs pull-right"
+                :title="__('Remove tag')"
+                data-container="body"
+                v-tooltip
+                @click="handleDeleteRegistry(item)">
+                <i
+                  class="fa fa-trash"
+                  aria-hidden="true">
+                </i>
+              </button>
             </td>
           </tr>
         </tbody>

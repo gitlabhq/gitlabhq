@@ -33,7 +33,7 @@
         'fetchList',
         'deleteRepo',
         'deleteRegistry',
-        'toggleIsLoading',
+        'toggleLoading',
       ]),
 
       fetchRegistryList(repo) {
@@ -49,7 +49,7 @@
 
       deleteRepository(repo) {
         this.deleteRepo(repo)
-          .then(() => this.fetchRepo())
+          .then(() => this.fetchRepos())
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
