@@ -1062,7 +1062,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
 
       def gitaly_operations_client
