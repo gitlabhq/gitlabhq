@@ -227,6 +227,12 @@ describe Projects::IssuesController do
 
         expect(assigns(:issues)).to contain_exactly(service_desk_issue_2)
       end
+
+      it 'allows an assignee to be specified by id' do
+        get_service_desk(assignee_id: other_user.id)
+
+        expect(assigns(:users)).to contain_exactly(other_user, support_bot)
+      end
     end
 
     context 'when Service Desk is not available on the project' do
