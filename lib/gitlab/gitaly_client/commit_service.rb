@@ -221,7 +221,7 @@ module Gitlab
           repository: @gitaly_repo,
           left_commit_id: parent_id,
           right_commit_id: commit.id,
-          paths: options.fetch(:paths, [])
+          paths: options.fetch(:paths, []).map { |path| GitalyClient.encode(path) }
         }
       end
 

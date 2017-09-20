@@ -39,7 +39,7 @@ export default {
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
     mergeButtonClass() {
-      const defaultClass = 'btn btn-small btn-success accept-merge-request';
+      const defaultClass = 'btn btn-sm btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
       const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
@@ -231,7 +231,7 @@ export default {
               v-if="shouldShowMergeOptionsDropdown"
               :disabled="isMergeButtonDisabled"
               type="button"
-              class="btn btn-small btn-info dropdown-toggle js-merge-moment"
+              class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
               data-toggle="dropdown"
               aria-label="Select merge moment">
               <i

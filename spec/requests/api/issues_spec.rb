@@ -22,7 +22,8 @@ describe API::Issues, :mailer do
            state: :closed,
            milestone: milestone,
            created_at: generate(:past_time),
-           updated_at: 3.hours.ago
+           updated_at: 3.hours.ago,
+           closed_at: 1.hour.ago
   end
   let!(:confidential_issue) do
     create :issue,
@@ -742,6 +743,7 @@ describe API::Issues, :mailer do
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['description']).to eq(issue.description)
       expect(json_response['state']).to eq(issue.state)
+      expect(json_response['closed_at']).to be_falsy
       expect(json_response['created_at']).to be_present
       expect(json_response['updated_at']).to be_present
       expect(json_response['labels']).to eq(issue.label_names)
@@ -750,6 +752,13 @@ describe API::Issues, :mailer do
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
+    end
+
+    it "exposes the 'closed_at' attribute" do
+      get api("/projects/#{project.id}/issues/#{closed_issue.iid}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['closed_at']).to be_present
     end
 
     context 'links exposure' do

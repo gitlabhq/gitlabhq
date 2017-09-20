@@ -106,21 +106,84 @@ CE and EE.
 
 ## Previewing the changes live
 
-If you want to preview your changes live, you can use the manual `build-docs`
-job in your merge request.
+If you want to preview the doc changes of your merge request live, you can use
+the manual `review-docs-deploy` job in your merge request.
+
+TIP: **Tip:**
+If your branch contains only documentation changes, you can use
+[special branch names](#testing) to avoid long running pipelines.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 
 This job will:
 
 1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-com/gitlab-docs)
-   project named after the scheme: `<CE/EE-branch-slug>-built-from-ce-ee`
-1. Trigger a pipeline and build the docs site with your changes
+   project named after the scheme: `preview-<branch-slug>`
+1. Trigger a cross project pipeline and build the docs site with your changes
 
-Look for the docs URL at the output of the `build-docs` job.
+After a few minutes, the Review App will be deployed and you will be able to
+preview the changes. The docs URL can be found in two places:
 
->**Note:**
+- In the merge request widget
+- In the output of the `review-docs-deploy` job, which also includes the
+  triggered pipeline so that you can investigate whether something went wrong
+
+In case the Review App URL returns 404, follow these steps to debug:
+
+1. **Did you follow the URL from the merge request widget?** If yes, then check if
+   the link is the same as the one in the job output. It can happen that if the
+   branch name slug is longer than 35 characters, it is automatically
+   truncated. That means that the merge request widget will not show the proper
+   URL due to a limitation of how `environment: url` works, but you can find the
+   real URL from the output of the `review-docs-deploy` job.
+1. **Did you follow the URL from the job output?** If yes, then it means that
+   either the site is not yet deployed or something went wrong with the remote
+   pipeline. Give it a few minutes and it should appear online, otherwise you
+   can check the status of the remote pipeline from the link in the job output.
+   If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
+
+TIP: **Tip:**
+Someone that has no merge rights to the CE/EE projects (think of forks from
+contributors) will not be able to run the manual job. In that case, you can
+ask someone from the GitLab team who has the permissions to do that for you.
+
+NOTE: **Note:**
 Make sure that you always delete the branch of the merge request you were
 working on. If you don't, the remote docs branch won't be removed either,
 and the server where the Review Apps are hosted will eventually be out of
 disk space.
+
+### Behind the scenes
+
+If you want to know the hot details, here's what's really happening:
+
+1. You manually run the `review-docs-deploy` job in a CE/EE merge request.
+1. The job runs the [`scirpts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/trigger-build-docs)
+   script with the `deploy` flag, which in turn:
+   1. Takes your branch name and applies the following:
+      - The slug of the branch name is used to avoid special characters since
+        ultimately this will be used by NGINX.
+      - The `preview-` prefix is added to avoid conflicts if there's a remote branch
+        with the same name that you created in the merge request.
+      - The final branch name is truncated to 42 characters to avoid filesystem
+        limitations with long branch names (> 63 chars).
+   1. The remote branch is then created if it doesn't exist (meaning you can
+      re-run the manual job as many times as you want and this step will be skipped).
+   1. A new cross-project pipeline is triggered in the docs project.
+   1. The preview URL is shown both at the job output and in the merge request
+      widget. You also get the link to the remote pipeline.
+1. In the docs project, the pipeline is created and it
+   [skips the test jobs](https://gitlab.com/gitlab-com/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
+   to lower the build time.
+1. Once the docs site is built, the HTML files are uploaded as artifacts.
+1. A specific Runner tied only to the docs project, runs the Review App job
+   that downloads the artifacts and uses `rsync` to transfer the files over
+   to a location where NGINX serves them.
+
+The following GitLab features are used among others:
+
+- [Manual actions](../ci/yaml/README.md#manual-actions)
+- [Multi project pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
+- [Review Apps](../ci/review_apps/index.md)
+- [Artifacts](../ci/yaml/README.md#artifacts)
+- [Specific Runner](../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)

@@ -317,7 +317,7 @@ ActiveRecord::Schema.define(version: 20170918223303) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-  add_index "ci_builds", ["id"], name: "index_for_ci_builds_retried_migration", where: "(retried IS NULL)", using: :btree, opclasses: {"id)"=>"WHERE"}
+  add_index "ci_builds", ["id"], name: "index_for_ci_builds_retried_migration", where: "(retried IS NULL)", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree

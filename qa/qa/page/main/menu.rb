@@ -11,7 +11,7 @@ module QA
         end
 
         def go_to_admin_area
-          within_top_menu { click_link 'Admin area' }
+          within_top_menu { find('.admin-icon').click }
         end
 
         def sign_out

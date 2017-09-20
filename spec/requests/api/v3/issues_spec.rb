@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe API::V3::Issues, :mailer do
-  let(:user)        { create(:user) }
-  let(:user2)       { create(:user) }
-  let(:non_member)  { create(:user) }
-  let(:guest)       { create(:user) }
-  let(:author)      { create(:author) }
-  let(:assignee)    { create(:assignee) }
-  let(:admin)       { create(:user, :admin) }
+  set(:user)        { create(:user) }
+  set(:user2)       { create(:user) }
+  set(:non_member)  { create(:user) }
+  set(:guest)       { create(:user) }
+  set(:author)      { create(:author) }
+  set(:assignee)    { create(:assignee) }
+  set(:admin)       { create(:user, :admin) }
   let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
@@ -824,7 +824,8 @@ describe API::V3::Issues, :mailer do
     end
 
     context 'resolving issues in a merge request' do
-      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+      set(:diff_note_on_merge_request) { create(:diff_note_on_merge_request) }
+      let(:discussion) { diff_note_on_merge_request.to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
       before do
@@ -1217,7 +1218,7 @@ describe API::V3::Issues, :mailer do
     end
 
     context "when the user is project owner" do
-      let(:owner)     { create(:user) }
+      set(:owner)     { create(:user) }
       let(:project)   { create(:project, namespace: owner.namespace) }
 
       it "deletes the issue if an admin requests it" do
