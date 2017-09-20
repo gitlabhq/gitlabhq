@@ -1,0 +1,8 @@
+---
+title: Remove varchar length limits leftover in databases that were migrateid from
+  MySQL in the past. This means altering any tables that have varchar(255) or varchar(510)
+  to just be plain varchar. This brings these databases closer into sync with the
+  bundled schema.rb.
+merge_request:
+author:
+type: other
