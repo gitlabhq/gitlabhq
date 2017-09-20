@@ -2,14 +2,8 @@ require 'spec_helper'
 
 module Gitlab
   module Ci
-<<<<<<< HEAD
     describe YamlProcessor do
-      subject { described_class.new(config, path) }
-      let(:path) { 'path' }
-=======
-    describe YamlProcessor, :lib do
       subject { described_class.new(config) }
->>>>>>> upstream/master
 
       describe 'our current .gitlab-ci.yml' do
         let(:config) { File.read("#{Rails.root}/.gitlab-ci.yml") }
