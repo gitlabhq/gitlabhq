@@ -12,12 +12,8 @@ module Users
 
       assign_attributes(&block)
 
-      user_exists = @user.persisted?
-
       if @user.save(validate: validate)
-        notify_new_user(@user, nil) unless user_exists
-
-        success
+        notify_success
       else
         error(@user.errors.full_messages.uniq.join('. '))
       end
@@ -32,6 +28,12 @@ module Users
     end
 
     private
+
+    def notify_success
+      notify_new_user(@user, nil) unless @user.persisted?
+
+      success
+    end
 
     def assign_attributes(&block)
       if @user.user_synced_attributes_metadata

@@ -136,7 +136,7 @@ module API
 
         codes = nil
 
-        ::Users::UpdateService.new(user).execute! do |user|
+        ::Users::UpdateService.new(current_user, user).execute! do |user|
           codes = user.generate_otp_backup_codes!
         end
 

@@ -166,7 +166,7 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+        result = ::Users::UpdateService.new(current_user, user, user_params.except(:extern_uid, :provider)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic
@@ -326,7 +326,7 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(current_user, user, declared_params(include_missing: false)).execute
 
         if email.errors.blank?
           NotificationService.new.new_email(email)
@@ -367,7 +367,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user, email: email.email).execute
         end
 
         user.update_secondary_emails!
@@ -672,7 +672,7 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = Emails::CreateService.new(current_user, declared_params).execute
+        email = Emails::CreateService.new(current_user, current_user, declared_params).execute
 
         if email.errors.blank?
           NotificationService.new.new_email(email)
@@ -691,7 +691,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, current_user, email: email.email).execute
         end
 
         current_user.update_secondary_emails!
