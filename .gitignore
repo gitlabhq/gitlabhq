@@ -54,6 +54,7 @@ eslint-report.html
 /shared/artifacts/
 /spec/javascripts/fixtures/blob/pdf/
 /spec/javascripts/fixtures/blob/balsamiq/
+/fixtures/pages/*
 /rails_best_practices_output.html
 /tags
 /tmp/*

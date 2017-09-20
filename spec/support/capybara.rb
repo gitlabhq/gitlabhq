@@ -52,4 +52,21 @@ RSpec.configure do |config|
     Capybara.reset_sessions! unless example.exception
     block_and_wait_for_requests_complete
   end
+
+  config.after(:example) do |example|
+    puts "#{page.html.length} #{example.metadata[:full_description]}"
+    if page.html.length > 0
+      out = File.join(Rails.root, 'fixtures', 'pages', "#{example.metadata[:full_description]}.html")
+      begin
+        # Only create the file if it doesn't already exist
+        File.open(out, File::WRONLY | File::CREAT | File::EXCL) do |handle|
+          handle.write(page.html)
+        end
+      rescue
+        # noop
+      end
+    else
+      puts "Page did not contain any HTML (probably failed), #{example.metadata[:full_description]}"
+    end
+  end
 end

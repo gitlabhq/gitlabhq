@@ -75,6 +75,7 @@ RSpec.configure do |config|
     config.default_retry_count = 4
     config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
   end
+  config.default_retry_count = 2
 
   config.before(:suite) do
     Timecop.safe_mode = true

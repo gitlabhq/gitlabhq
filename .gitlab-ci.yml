@@ -104,6 +104,7 @@ stages:
       - knapsack/
       - rspec_flaky/
       - tmp/capybara/
+      - fixtures/pages/
 
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
