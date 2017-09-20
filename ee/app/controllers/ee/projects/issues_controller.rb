@@ -12,7 +12,7 @@ module EE
 
       def service_desk
         if params[:assignee_id].present?
-          assignee = User.find_by_id(params[:assignee_id])
+          assignee = ::User.find_by_id(params[:assignee_id])
           @users.push(assignee) if assignee
         end
 
