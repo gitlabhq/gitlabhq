@@ -306,8 +306,8 @@ ActiveRecord::Schema.define(version: 20170918223303) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
-    t.integer "artifacts_file_store"
-    t.integer "artifacts_metadata_store"
+    t.integer "artifacts_file_store", default: 1, null: false
+    t.integer "artifacts_metadata_store", default: 1, null: false
     t.boolean "protected"
     t.integer "failure_reason"
   end
