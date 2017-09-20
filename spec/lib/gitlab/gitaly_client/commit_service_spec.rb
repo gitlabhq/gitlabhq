@@ -51,6 +51,10 @@ describe Gitlab::GitalyClient::CommitService do
 
       expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
+
+    it 'encodes paths correctly' do
+      expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt']) }.not_to raise_error
+    end
   end
 
   describe '#commit_deltas' do

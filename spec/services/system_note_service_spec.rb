@@ -232,7 +232,9 @@ describe SystemNoteService do
 
       context 'when milestone added' do
         it 'sets the note text' do
-          expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+          reference = milestone.to_reference(format: :iid)
+
+          expect(subject.note).to eq "changed milestone to #{reference}"
         end
       end
 
