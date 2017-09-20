@@ -169,6 +169,12 @@
       }
     }
 
+    .tree-item-file-external-link {
+      span {
+        text-decoration: inherit;
+      }
+    }
+
     .tree_commit {
       max-width: 320px;
 
