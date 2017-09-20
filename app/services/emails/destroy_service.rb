@@ -3,7 +3,7 @@ module Emails
     prepend EE::Emails::DestroyService
 
     def execute
-      Email.find_by_email!(@email).destroy && update_secondary_emails!
+      update_secondary_emails! if Email.find_by_email!(@email).destroy
     end
 
     private
