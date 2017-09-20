@@ -4,7 +4,7 @@ feature 'Profile > GPG Keys' do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'User adds a key' do
