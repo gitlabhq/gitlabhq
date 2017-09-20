@@ -17,6 +17,7 @@ module TestEnv
     'feature_conflict'                   => 'bb5206f',
     'fix'                                => '48f0be4',
     'improve/awesome'                    => '5937ac0',
+    'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
     'master'                             => 'b83d6e3',
