@@ -507,7 +507,7 @@ db:check-schema-pg:
   <<: *db-migrate-reset
   <<: *use-pg
   script:
-    - source scripts/schema_changed.sh
+    - sh scripts/schema_changed.sh
 
 # Frontend-related jobs
 gitlab:assets:compile:
