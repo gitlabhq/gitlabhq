@@ -17,7 +17,8 @@ if Gitlab::Database.mysql?
         if options[:null] != false
           sql << ' NULL'
         elsif options[:column].default.nil?
-          sql << ' DEFAULT 0'
+          # See: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14383
+          sql << ' DEFAULT now()'
         end
       end
 

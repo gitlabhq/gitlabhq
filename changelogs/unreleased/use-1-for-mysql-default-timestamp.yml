@@ -1,0 +1,5 @@
+---
+title: Use now() as default timestamp for MySQL
+merge_request: 14383
+author:
+type: fixed
