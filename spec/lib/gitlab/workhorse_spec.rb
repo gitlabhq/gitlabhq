@@ -218,7 +218,8 @@ describe Gitlab::Workhorse do
           storage_name: 'default',
           relative_path: project.full_path + '.git',
           git_object_directory: '',
-          git_alternate_object_directories: []
+          git_alternate_object_directories: [],
+          gl_repository: ''
         } }
 
         expect(subject).to include(repo_param)
