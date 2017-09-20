@@ -202,7 +202,7 @@ module Gitlab
       # Returns the DN as an array in the form expected by the constructor.
       def to_a
         a = []
-        self.each_pair { |key, value| a << key << value }
+        self.each_pair { |key, value| a << key << value } unless @dn.empty?
         a
       end
 
