@@ -44,14 +44,9 @@ describe ProjectPolicy do
 
   let(:master_permissions) do
     %i[
-<<<<<<< HEAD
       push_code_to_protected_branches delete_protected_branch
       update_project_snippet update_environment
-      update_deployment admin_milestone admin_project_snippet
-=======
-      delete_protected_branch update_project_snippet update_environment
       update_deployment admin_project_snippet
->>>>>>> upstream/master
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment
