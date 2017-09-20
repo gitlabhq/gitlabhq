@@ -1,10 +1,9 @@
 module Users
   class UpdateService < BaseService
-    include EE::Audit::Changes
     include NewUserNotifier
+    prepend EE::Users::UpdateService
 
-    def initialize(current_user, user, params = {})
-      @current_user = current_user
+    def initialize(user, params = {})
       @user = user
       @params = params.dup
     end
@@ -17,9 +16,6 @@ module Users
       user_exists = @user.persisted?
 
       if @user.save(validate: validate)
-        audit_changes(:email, as: 'email address')
-        audit_changes(:encrypted_password, as: 'password', skip_changes: true)
-
         notify_new_user(@user, nil) unless user_exists
 
         success
@@ -39,15 +35,7 @@ module Users
     private
 
     def assign_attributes(&block)
-      if @user.user_synced_attributes_metadata
-        params.except!(*@user.user_synced_attributes_metadata.read_only_attributes)
-      end
-
       @user.assign_attributes(params) if params.any?
-    end
-
-    def model
-      @user
     end
   end
 end
