@@ -14,6 +14,7 @@ module MergeRequests
         todo_service.close_merge_request(merge_request, current_user)
         execute_hooks(merge_request, 'close')
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
+        merge_request.update_project_counter_caches
       end
 
       merge_request
