@@ -21,6 +21,9 @@
 # class also helps take care of that.
 module Gitlab
   module LDAP
+    MalformedDnError = Class.new(StandardError)
+    UnsupportedDnFormatError = Class.new(StandardError)
+
     class DN
       ##
       # Initialize a DN, escaping as required. Pass in attributes in name/value
@@ -69,19 +72,19 @@ module Gitlab
               state = :key_oid
               key << char
             when ' ' then state = :key
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Unrecognized first character of an RDN attribute type name \"#{char}\"")
             end
           when :key_normal then
             case char
             when '=' then state = :value
             when 'a'..'z', '0'..'9', '-', ' ' then key << char
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Unrecognized RDN attribute type name character \"#{char}\"")
             end
           when :key_oid then
             case char
             when '=' then state = :value
             when '0'..'9', '.', ' ' then key << char
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Unrecognized RDN OID attribute type name character \"#{char}\"")
             end
           when :value then
             case char
@@ -124,7 +127,7 @@ module Gitlab
             when '0'..'9', 'a'..'f' then
               state = :value_normal
               value << "#{hex_buffer}#{char}".to_i(16).chr
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
             end
           when :value_normal_escape_space then
             case char
@@ -157,7 +160,7 @@ module Gitlab
             when '0'..'9', 'a'..'f' then
               state = :value_quoted
               value << "#{hex_buffer}#{char}".to_i(16).chr
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"#{char}\"")
             end
           when :value_hexstring then
             case char
@@ -170,14 +173,14 @@ module Gitlab
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
               value = StringIO.new;
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Expected the first character of a hex pair, but got \"#{char}\"")
             end
           when :value_hexstring_hex then
             case char
             when '0'..'9', 'a'..'f' then
               state = :value_hexstring
               value << char
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Expected the second character of a hex pair, but got \"#{char}\"")
             end
           when :value_end then
             case char
@@ -187,14 +190,14 @@ module Gitlab
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
               value = StringIO.new;
-            else raise "DN badly formed"
+            else raise(MalformedDnError, "Expected the end of an attribute value, but got \"#{char}\"")
             end
           else raise "Fell out of state machine"
           end
         end
 
         # Last pair
-        raise "DN badly formed" unless
+        raise(MalformedDnError, 'DN string ended unexpectedly') unless
           [:value, :value_normal, :value_hexstring, :value_end].include? state
 
         yield key.string.strip, value.string.rstrip
