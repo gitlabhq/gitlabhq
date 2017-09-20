@@ -116,11 +116,14 @@ module ExtractsPath
 
     @commit = @repo.commit(@ref)
 
-    if @path.empty? && !@commit && @id.ends_with?('.atom')
-      @id = @ref = extract_ref_without_atom(@id)
-      @commit = @repo.commit(@ref)
-
-      request.format = :atom if @commit
+    if @path.empty? && @id.ends_with?('.atom')
+      if @commit
+        request.format = :html
+      else
+        @id = @ref = extract_ref_without_atom(@id)
+        @commit = @repo.commit(@ref)
+        request.format = :atom if @commit
+      end
     end
 
     raise InvalidPathError unless @commit
