@@ -52,7 +52,6 @@ describe('MergeRequestStore', () => {
         expect(store.isPipelineSkipped).toBe(false);
       });
     });
-<<<<<<< HEAD
   });
 
   describe('setCodeclimateHeadMetrics', () => {
@@ -94,7 +93,5 @@ describe('MergeRequestStore', () => {
     it('should return the resolved issues', () => {
       expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(baseIssues[1]);
     });
-=======
->>>>>>> upstream/master
   });
 });
