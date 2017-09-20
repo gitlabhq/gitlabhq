@@ -218,10 +218,12 @@ module Gitlab
         self.class.new(*to_a).to_s
       end
 
-      # http://tools.ietf.org/html/rfc2253 section 2.4 lists these exceptions
-      # for dn values. All of the following must be escaped in any normal string
-      # using a single backslash ('\') as escape.
-      NORMAL_ESCAPES = [',', '+', '"', '\\', '<', '>', ';']
+      # https://tools.ietf.org/html/rfc4514 section 2.4 lists these exceptions
+      # for DN values. All of the following must be escaped in any normal string
+      # using a single backslash ('\') as escape. The space character is left
+      # out here because in a "normalized" string, spaces should only be escaped
+      # if necessary (i.e. leading or trailing space).
+      NORMAL_ESCAPES = [',', '+', '"', '\\', '<', '>', ';', '=']
 
       # Compiled character class regexp using the keys from the above hash, and
       # checking for a space or # at the start, or space at the end, of the
