@@ -37,10 +37,12 @@ module Gitlab
           buffer << "=" if index % 2 == 1
           buffer << "," if index % 2 == 0 && index != 0
 
+          arg = args[index].downcase
+
           if index < args.length - 1 || index % 2 == 1
-            buffer << self.class.escape(args[index])
+            buffer << self.class.escape(arg)
           else
-            buffer << args[index]
+            buffer << arg
           end
         end
 
@@ -60,7 +62,7 @@ module Gitlab
           case state
           when :key then
             case char
-            when 'a'..'z', 'A'..'Z' then
+            when 'a'..'z' then
               state = :key_normal
               key << char
             when '0'..'9' then
@@ -72,7 +74,7 @@ module Gitlab
           when :key_normal then
             case char
             when '=' then state = :value
-            when 'a'..'z', 'A'..'Z', '0'..'9', '-', ' ' then key << char
+            when 'a'..'z', '0'..'9', '-', ' ' then key << char
             else raise "DN badly formed"
             end
           when :key_oid then
@@ -110,14 +112,14 @@ module Gitlab
             end
           when :value_normal_escape then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_normal_escape_hex
               hex_buffer = char
             else state = :value_normal; value << char
             end
           when :value_normal_escape_hex then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_normal
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise "DN badly formed"
@@ -130,7 +132,7 @@ module Gitlab
             end
           when :value_quoted_escape then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_quoted_escape_hex
               hex_buffer = char
             else
@@ -139,14 +141,14 @@ module Gitlab
             end
           when :value_quoted_escape_hex then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_quoted
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise "DN badly formed"
             end
           when :value_hexstring then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_hexstring_hex
               value << char
             when ' ' then state = :value_end
@@ -159,7 +161,7 @@ module Gitlab
             end
           when :value_hexstring_hex then
             case char
-            when '0'..'9', 'a'..'f', 'A'..'F' then
+            when '0'..'9', 'a'..'f' then
               state = :value_hexstring
               value << char
             else raise "DN badly formed"
