@@ -529,9 +529,11 @@ class User < ActiveRecord::Base
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
   end
 
-  # note: the use of the Emails services will cause `saves` on the user object, running
+  # Note: the use of the Emails services will cause `saves` on the user object, running
   # through the callbacks again and can have side effects, such as the `previous_changes`
-  # hash getting cleared.  
+  # hash and `_was` variables getting munged.
+  # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
+  # scenario, though it then requires us to use the `previous_changes` hash
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
