@@ -1,19 +1,9 @@
 import Vue from 'vue';
 import conflictsComponent from '~/vue_merge_request_widget/components/states/mr_widget_conflicts';
+import mountComponent from '../../../helpers/vue_mount_component_helper';
 
+const ConflictsComponent = Vue.extend(conflictsComponent);
 const path = '/conflicts';
-const createComponent = (customConfig = {}) => {
-  const Component = Vue.extend(conflictsComponent);
-
-  const config = Object.assign({
-    mr: {},
-  }, customConfig);
-
-  return new Component({
-    el: document.createElement('div'),
-    propsData: config,
-  });
-};
 
 describe('MRWidgetConflicts', () => {
   describe('props', () => {
@@ -30,7 +20,7 @@ describe('MRWidgetConflicts', () => {
       let vm;
 
       beforeEach(() => {
-        vm = createComponent({
+        vm = mountComponent(ConflictsComponent, {
           mr: {
             canMerge: true,
             conflictResolutionPath: path,
@@ -65,7 +55,7 @@ describe('MRWidgetConflicts', () => {
       let vm;
 
       beforeEach(() => {
-        vm = createComponent({
+        vm = mountComponent(ConflictsComponent, {
           mr: {
             canMerge: false,
           },
@@ -87,7 +77,7 @@ describe('MRWidgetConflicts', () => {
       let vm;
 
       beforeEach(() => {
-        vm = createComponent({
+        vm = mountComponent(ConflictsComponent, {
           mr: {
             ffOnlyEnabled: true,
           },
