@@ -3,7 +3,8 @@ module Users
     include NewUserNotifier
     prepend EE::Users::UpdateService
 
-    def initialize(user, params = {})
+    def initialize(current_user, user, params = {})
+      @current_user = current_user
       @user = user
       @params = params.dup
     end
@@ -16,9 +17,7 @@ module Users
       user_exists = @user.persisted?
 
       if @user.save(validate: validate)
-        notify_new_user(@user, nil) unless user_exists
-
-        success
+        notify_success
       else
         error(@user.errors.full_messages.uniq.join('. '))
       end
@@ -30,6 +29,14 @@ module Users
       raise ActiveRecord::RecordInvalid.new(@user) unless result[:status] == :success
 
       true
+    end
+
+    protected
+
+    def notify_success
+      notify_new_user(@user, nil) unless @user.persisted?
+
+      success
     end
 
     private

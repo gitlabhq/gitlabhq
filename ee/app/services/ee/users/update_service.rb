@@ -3,24 +3,16 @@ module EE
     module UpdateService
       include EE::Audit::Changes
 
-      def initialize(current_user, user, params = {})
-        @current_user = current_user
-
-        super(user, params)
-      end
-
-      def execute(*args, &block)
-        result = super(*args, &block)
-
-        if result[:status] == :success
-          audit_changes(:email, as: 'email address')
-          audit_changes(:encrypted_password, as: 'password', skip_changes: true)
-        end
-
-        result
-      end
-
       private
+
+      def notify_success
+        notify_new_user(@user, nil) unless @user.persisted?
+
+        audit_changes(:email, as: 'email address')
+        audit_changes(:encrypted_password, as: 'password', skip_changes: true)
+
+        success
+      end
 
       def model
         @user
