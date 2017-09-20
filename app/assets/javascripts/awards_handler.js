@@ -541,12 +541,12 @@ class AwardsHandler {
    * the menu being opened and closed. */
 
   showMenuElement($emojiMenu) {
+    $emojiMenu.addClass(IS_RENDERED);
+
     // enqueues animation as a microtask, so it begins ASAP once IS_RENDERED added
     Promise.resolve().then(() => { // eslint-disable-line promise/catch-or-return
       $emojiMenu.addClass(IS_VISIBLE);
     });
-
-    $emojiMenu.addClass(IS_RENDERED);
   }
 
   hideMenuElement($emojiMenu) {
