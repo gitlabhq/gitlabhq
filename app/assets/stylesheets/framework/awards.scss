@@ -9,6 +9,7 @@
 }
 
 .emoji-menu {
+  display: none;
   position: absolute;
   top: 0;
   margin-top: 3px;
@@ -29,10 +30,6 @@
 
   &.is-rendered {
     display: block;
-  }
-
-  &:not(.is-rendered) {
-    display: none;
   }
 
   &.is-aligned-right {
