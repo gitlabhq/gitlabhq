@@ -1,0 +1,5 @@
+---
+title: Fix delta size check to handle commit or nil objects
+merge_request:
+author:
+type: fixed
