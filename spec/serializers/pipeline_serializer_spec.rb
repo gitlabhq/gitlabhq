@@ -103,9 +103,15 @@ describe PipelineSerializer do
       let(:project) { create(:project) }
 
       before do
-        Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
-          create_pipeline(status)
+        # Since RequestStore.active? is true we have to allow the
+        # gitaly calls in this block
+        # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+            create_pipeline(status)
+          end
         end
+        Gitlab::GitalyClient.reset_counts
       end
 
       shared_examples 'no N+1 queries' do

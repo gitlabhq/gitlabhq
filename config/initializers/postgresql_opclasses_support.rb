@@ -139,6 +139,7 @@ module ActiveRecord
             indkey = row[2].split(" ").map(&:to_i)
             inddef = row[3]
             oid = row[4]
+<<<<<<< HEAD
             comment = row[5]
 
             using, expressions, where = inddef.scan(/ USING (\w+?) \((.+?)\)(?: WHERE (.+))?\z/).flatten
@@ -168,6 +169,30 @@ module ActiveRecord
               if columns.count == opclasses.count && opclasses.values.uniq.count == 1
                 opclasses = opclasses.values.first
               end
+=======
+
+            columns = Hash[query(<<-SQL, "SCHEMA")]
+            SELECT a.attnum, a.attname
+            FROM pg_attribute a
+            WHERE a.attrelid = #{oid}
+            AND a.attnum IN (#{indkey.join(",")})
+            SQL
+
+            column_names = columns.values_at(*indkey).compact
+
+            unless column_names.empty?
+              # add info on sort order for columns (only desc order is explicitly specified, asc is the default)
+              desc_order_columns = inddef.scan(/(\w+) DESC/).flatten
+              orders = desc_order_columns.any? ? Hash[desc_order_columns.map {|order_column| [order_column, :desc]}] : {}
+              where = inddef.scan(/WHERE (.+)$/).flatten[0]
+              using = inddef.scan(/USING (.+?) /).flatten[0].to_sym
+              opclasses = Hash[inddef.scan(/\((.+?)\)(?:$| WHERE )/).flatten[0].split(',').map do |column_and_opclass|
+                                 column, opclass = column_and_opclass.split(' ').map(&:strip)
+                                 [column, opclass] if opclass
+                               end.compact]
+
+              IndexDefinition.new(table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses)
+>>>>>>> a09d032b2a64c7b6652dcd589de2d9bcba7d9613
             end
 
             IndexDefinition.new(table_name, index_name, unique, columns, [], orders, where, nil, using.to_sym, opclasses, comment.presence)

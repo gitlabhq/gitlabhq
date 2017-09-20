@@ -1,6 +1,6 @@
 module Ci
   class Trigger < ApplicationRecord
-    extend Ci::Model
+    extend Gitlab::Ci::Model
 
     acts_as_paranoid
 

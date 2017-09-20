@@ -73,7 +73,7 @@
       </span>
       <a
         v-if="deployKey.can_edit"
-        class="btn btn-small"
+        class="btn btn-sm"
         :href="editDeployKeyPath"
       >
         Edit

@@ -11,14 +11,19 @@ export default class NewNavSidebar {
   initDomElements() {
     this.$page = $('.page-with-sidebar');
     this.$sidebar = $('.nav-sidebar');
+    this.$innerScroll = $('.nav-sidebar-inner-scroll', this.$sidebar);
     this.$overlay = $('.mobile-overlay');
     this.$openSidebar = $('.toggle-mobile-nav');
     this.$closeSidebar = $('.close-nav-button');
     this.$sidebarToggle = $('.js-toggle-sidebar');
-    this.$topLevelLinks = $('.sidebar-top-level-items > li > a');
   }
 
   bindEvents() {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
+        this.toggleCollapsedSidebar(true);
+      }
+    });
     this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
@@ -52,9 +57,15 @@ export default class NewNavSidebar {
     }
     NewNavSidebar.setCollapsedCookie(collapsed);
 
-    this.$topLevelLinks.attr('title', function updateTopLevelTitle() {
-      return collapsed ? this.getAttribute('aria-label') : '';
-    });
+    this.toggleSidebarOverflow();
+  }
+
+  toggleSidebarOverflow() {
+    if (this.$innerScroll.prop('scrollHeight') > this.$innerScroll.prop('offsetHeight')) {
+      this.$innerScroll.css('overflow-y', 'scroll');
+    } else {
+      this.$innerScroll.css('overflow-y', '');
+    }
   }
 
   render() {
@@ -63,7 +74,7 @@ export default class NewNavSidebar {
     if (breakpoint === 'sm' || breakpoint === 'md') {
       this.toggleCollapsedSidebar(true);
     } else if (breakpoint === 'lg') {
-      const collapse = this.$sidebar.hasClass('sidebar-icons-only');
+      const collapse = Cookies.get('sidebar_collapsed') === 'true';
       this.toggleCollapsedSidebar(collapse);
     }
   }

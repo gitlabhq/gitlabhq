@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"PO-Revision-Date: 2017-09-15 05:22-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Bulgarian\n"
 "Language: bg_BG\n"
@@ -984,6 +984,24 @@ msgid "ProjectNetworkGraph|Graph"
 msgstr "Графика"
 
 msgid "Push Rules"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "Push events"

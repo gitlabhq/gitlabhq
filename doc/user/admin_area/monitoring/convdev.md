@@ -23,7 +23,7 @@ If you have just started using GitLab, it may take a few weeks for data to be
 collected before this feature is available.
 
 This feature is accessible only to a system admin, at
-**Admin area > Monitoring > ConvDev Index**.
+**Admin area > Overview > ConvDev Index**.
 
 [ce-30469]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30469
 [ping]: ../settings/usage_statistics.md#usage-ping

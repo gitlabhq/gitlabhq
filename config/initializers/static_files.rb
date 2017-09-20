@@ -30,7 +30,7 @@ if app.config.public_file_server.enabled
       settings.merge!(
         host: Gitlab.config.gitlab.host,
         port: Gitlab.config.gitlab.port,
-        https: Gitlab.config.gitlab.https
+        https: false
       )
       app.config.middleware.insert_before(
         Gitlab::Middleware::Static,

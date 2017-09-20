@@ -10,6 +10,22 @@ module IssuableCollections
 
   private
 
+  def set_issues_index
+    @collection_type    = "Issue"
+    @issues             = issues_collection
+    @issues             = @issues.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+    @total_pages        = issues_page_count(@issues)
+
+    return if redirect_out_of_range(@issues, @total_pages)
+
+    if params[:label_name].present?
+      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    end
+
+    @users = []
+  end
+
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignees, :labels, :milestone, project: :namespace)
   end

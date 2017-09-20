@@ -21,7 +21,10 @@ module API
       get ':id/repository/branches' do
         branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
-        present paginate(branches), with: Entities::RepoBranch, project: user_project
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          present paginate(branches), with: Entities::RepoBranch, project: user_project
+        end
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do

@@ -286,7 +286,10 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it can be helpful to create a mockup first.
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should 
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may 
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself. 
+
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
@@ -421,7 +424,7 @@ request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
-1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
+1. Write [tests](https://docs.gitlab.com/ee/development/rake_tasks.html#run-tests) and code
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]

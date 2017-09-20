@@ -127,7 +127,12 @@ class Label < ApplicationRecord
   end
 
   def priority(project)
-    priorities.find_by(project: project).try(:priority)
+    priority = if priorities.loaded?
+                 priorities.first { |p| p.project == project }
+               else
+                 priorities.find_by(project: project)
+               end
+    priority.try(:priority)
   end
 
   def template?

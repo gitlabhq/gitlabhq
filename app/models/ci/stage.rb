@@ -1,6 +1,6 @@
 module Ci
   class Stage < ApplicationRecord
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include Importable
     include HasStatus
     include Gitlab::OptimisticLocking

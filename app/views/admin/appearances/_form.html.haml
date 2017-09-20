@@ -21,7 +21,7 @@
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :logo_cache
       = f.file_field :logo, class: ""
@@ -38,7 +38,7 @@
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :header_logo_cache
       = f.file_field :header_logo, class: ""

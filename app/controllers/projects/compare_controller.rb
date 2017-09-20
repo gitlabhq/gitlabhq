@@ -17,6 +17,10 @@ class Projects::CompareController < Projects::ApplicationController
 
   def show
     apply_diff_view_cookie!
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37430
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      render
+    end
   end
 
   def diff_for_path
@@ -27,7 +31,7 @@ class Projects::CompareController < Projects::ApplicationController
 
   def create
     if params[:from].blank? || params[:to].blank?
-      flash[:alert] = "You must select from and to branches"
+      flash[:alert] = "You must select a Source and a Target revision"
       from_to_vars = {
         from: params[:from].presence,
         to: params[:to].presence

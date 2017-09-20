@@ -204,6 +204,14 @@ module Gitlab
         response.sum(&:data)
       end
 
+      def commit_stats(revision)
+        request = Gitaly::CommitStatsRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request)
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
@@ -213,7 +221,7 @@ module Gitlab
           repository: @gitaly_repo,
           left_commit_id: parent_id,
           right_commit_id: commit.id,
-          paths: options.fetch(:paths, [])
+          paths: options.fetch(:paths, []).map { |path| GitalyClient.encode(path) }
         }
       end
 

@@ -244,6 +244,8 @@ class IssuableFinder
   end
 
   def by_scope(items)
+    return items.none if current_user_related? && !current_user
+
     case params[:scope]
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)

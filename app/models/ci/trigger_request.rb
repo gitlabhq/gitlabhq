@@ -1,6 +1,6 @@
 module Ci
   class TriggerRequest < ApplicationRecord
-    extend Ci::Model
+    extend Gitlab::Ci::Model
 
     belongs_to :trigger
     belongs_to :pipeline, foreign_key: :commit_id
