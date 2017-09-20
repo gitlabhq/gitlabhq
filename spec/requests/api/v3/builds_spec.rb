@@ -3,21 +3,12 @@ require 'spec_helper'
 describe API::V3::Builds do
   set(:user) { create(:user) }
   let(:api_user) { user }
-<<<<<<< HEAD
   let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
-=======
-  set(:project) { create(:project, :repository, creator: user, public_builds: false) }
-  set(:developer) { create(:project_member, :developer, user: user, project: project) }
-  set(:reporter) { create(:project_member, :reporter, project: project) }
-  set(:guest) { create(:project_member, :guest, project: project) }
-  set(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
->>>>>>> upstream/master
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }

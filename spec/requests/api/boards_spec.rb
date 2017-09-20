@@ -1,27 +1,13 @@
 require 'spec_helper'
 
 describe API::Boards do
-<<<<<<< HEAD
-  let(:user)        { create(:user) }
-  let(:non_member)  { create(:user) }
-  let(:guest)       { create(:user) }
-  let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
-
-  # EE only
-  let(:milestone)   { create(:milestone, project: project) }
-
-  let!(:dev_label) do
-=======
   set(:user)        { create(:user) }
-  set(:user2)       { create(:user) }
   set(:non_member)  { create(:user) }
   set(:guest)       { create(:user) }
   set(:admin)       { create(:user, :admin) }
   set(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
 
   set(:dev_label) do
->>>>>>> upstream/master
     create(:label, title: 'Development', color: '#FFAABB', project: project)
   end
 
@@ -41,13 +27,11 @@ describe API::Boards do
     create(:list, label: test_label, position: 2)
   end
 
-<<<<<<< HEAD
-  let!(:board) do
-    create(:board, project: project, milestone: milestone, lists: [dev_list, test_list])
-=======
+  # EE only
+  set(:milestone) { create(:milestone, project: project) }
+
   set(:board) do
-    create(:board, project: project, lists: [dev_list, test_list])
->>>>>>> upstream/master
+    create(:board, project: project, milestone: milestone, lists: [dev_list, test_list])
   end
 
   before do
