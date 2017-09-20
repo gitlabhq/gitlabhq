@@ -291,19 +291,25 @@ describe Projects::MergeRequestsController do
       let(:upstream) { create(:project, :repository) }
       let(:project) { create(:project, :repository, forked_from_project: upstream) }
 
-      before do
-        project.add_developer(user)
-        upstream.add_developer(user)
-        upstream.update_attributes(approvals_before_merge: 2)
-      end
-
       context 'when the MR target upstream' do
         let(:merge_request) { create(:merge_request, title: 'This is targeting upstream', source_project: project, target_project: upstream) }
+
+        before do
+          upstream.add_developer(user)
+          upstream.update_attributes(approvals_before_merge: 2)
+        end
 
         it_behaves_like 'approvals_before_merge param'
       end
 
       context 'when the MR target the fork' do
+        let(:merge_request) { create(:merge_request, title: 'This is targeting the fork', source_project: project, target_project: project) }
+
+        before do
+          project.add_developer(user)
+          project.update_attributes(approvals_before_merge: 0)
+        end
+
         it_behaves_like 'approvals_before_merge param'
       end
     end

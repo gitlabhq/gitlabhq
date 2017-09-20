@@ -36,7 +36,7 @@ module EE
         def clamp_approvals_before_merge(mr_params)
           return mr_params unless mr_params[:approvals_before_merge]
 
-          # target the MR target project in priority, else it depends wether the project
+          # Target the MR target project in priority, else it depends whether the project
           # is forked.
           target_project = if @merge_request
                              @merge_request.target_project
