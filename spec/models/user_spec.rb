@@ -374,7 +374,7 @@ describe User do
     end
   end
 
-  describe 'after update hook' do
+  describe 'after commit hook' do
     describe '.update_invalid_gpg_signatures' do
       let(:user) do
         create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
@@ -388,7 +388,7 @@ describe User do
       end
 
       it 'synchronizes the gpg keys when the email is updated' do
-        expect(user).to receive(:update_invalid_gpg_signatures)
+        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
         user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
       end
     end
@@ -407,11 +407,11 @@ describe User do
         @user.update_attributes!(email: 'new_primary@example.com')
       end
 
-      it 'does not add old primary to secondary emails' do
+      it 'adds old primary to secondary emails when secondary is a new email ' do
         @user.update_attributes!(email: 'new_primary@example.com')
         @user.reload
-        expect(@user.emails.count).to eq 1
-        expect(@user.emails.first.email).to eq @secondary.email
+        expect(@user.emails.count).to eq 2
+        expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com'])
       end
 
       it 'adds old primary to secondary emails if secondary is becoming a primary' do

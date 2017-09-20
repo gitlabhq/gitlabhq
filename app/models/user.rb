@@ -535,15 +535,13 @@ class User < ActiveRecord::Base
   # By using an `after_commit` instead of `after_update`, we avoid the recursive callback
   # scenario, though it then requires us to use the `previous_changes` hash
   def update_emails_with_primary_email
+    previous_email = previous_changes[:email][0]  # grab this before the DestroyService is called
     primary_email_record = emails.find_by(email: email)
-    if primary_email_record
-      previous_email = previous_changes[:email][0]
-      Emails::DestroyService.new(self).execute(primary_email_record)
+    Emails::DestroyService.new(self).execute(primary_email_record) if primary_email_record
 
-      # the original primary email was confirmed, and we want that to carry over.  We don't
-      # have access to the original confirmation values at this point, so just set confirmed_at
-      Emails::CreateService.new(self, email: previous_email).execute(confirmed_at: confirmed_at)
-    end
+    # the original primary email was confirmed, and we want that to carry over.  We don't
+    # have access to the original confirmation values at this point, so just set confirmed_at
+    Emails::CreateService.new(self, email: previous_email).execute(confirmed_at: confirmed_at)
   end
 
   def update_invalid_gpg_signatures
