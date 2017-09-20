@@ -108,6 +108,7 @@ module Gitlab
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
               value = StringIO.new;
+            when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
             else value << char
             end
           when :value_normal_escape then
@@ -133,6 +134,7 @@ module Gitlab
               yield key.string.strip, value.string # Don't strip trailing escaped space!
               key = StringIO.new
               value = StringIO.new;
+            when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
             else value << char
             end
           when :value_quoted then

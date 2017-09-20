@@ -16,8 +16,6 @@ describe Gitlab::LDAP::DN do
       'strips extraneous whitespace'                                                                 | 'uid     =John Smith ,  ou = People, dc=  example,dc =com'                                            | 'uid=john smith,ou=people,dc=example,dc=com'
       'strips extraneous whitespace for a DN with a single RDN'                                      | 'uid  =  John Smith'                                                                                  | 'uid=john smith'
       'unescapes non-reserved, non-special Unicode characters'                                       | 'uid   =  Sebasti\\c3\\a1n\\ C.\\20Smith\\   ,   ou=People (aka. \\22humans\\")  ,dc=example, dc=com' | 'uid=sebastián c. smith  \\ ,ou=people (aka. \\"humans\\"),dc=example,dc=com'
-      'strips extraneous whitespace without modifying the multivalued RDN'                           | 'uid = John Smith  + telephoneNumber  = +1 555-555-5555 , ou = People,dc=example,dc=com'              | 'uid=john smith+telephonenumber=+1 555-555-5555,ou=people,dc=example,dc=com'
-      'strips the space after the plus sign in the telephoneNumber'                                  | 'uid = John Smith  + telephoneNumber  = + 1 555-555-5555 , ou = People,dc=example,dc=com'             | 'uid=john smith+telephonenumber=+1 555-555-5555,ou=people,dc=example,dc=com'
       'downcases the whole string'                                                                   | 'UID=John Smith,ou=People,dc=example,dc=com'                                                          | 'uid=john smith,ou=people,dc=example,dc=com'
       'for a null DN (empty string), returns empty string and does not error'                        | ''                                                                                                    | ''
       'does not strip an escaped leading space in an attribute value'                                | 'uid=\\ John Smith,ou=People,dc=example,dc=com'                                                       | 'uid=\\ john smith,ou=people,dc=example,dc=com'
@@ -39,6 +37,36 @@ describe Gitlab::LDAP::DN do
     with_them do
       it 'normalizes the DN' do
         assert_generic_test(test_description, subject, expected)
+      end
+    end
+
+    context 'when we do not support the given DN format' do
+      context 'multivalued RDNs' do
+        context 'without extraneous whitespace' do
+          let(:given) { 'uid=john smith+telephonenumber=+1 555-555-5555,ou=people,dc=example,dc=com' }
+
+          it 'raises UnsupportedDnFormatError' do
+            expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+          end
+        end
+
+        context 'with extraneous whitespace' do
+          context 'around the phone number plus sign' do
+            let(:given) { 'uid = John Smith  + telephoneNumber  = + 1 555-555-5555 , ou = People,dc=example,dc=com' }
+
+            it 'raises UnsupportedDnFormatError' do
+              expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+            end
+          end
+
+          context 'not around the phone number plus sign' do
+            let(:given) { 'uid = John Smith  + telephoneNumber  = +1 555-555-5555 , ou = People,dc=example,dc=com' }
+
+            it 'raises UnsupportedDnFormatError' do
+              expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+            end
+          end
+        end
       end
     end
 
