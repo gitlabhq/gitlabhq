@@ -676,16 +676,6 @@ describe API::MergeRequests do
       end
 
       context 'when target_branch is specified' do
-        it 'returns 422 if not a forked project' do
-          post api("/projects/#{project.id}/merge_requests", user),
-               title: 'Test merge_request',
-               target_branch: 'master',
-               source_branch: 'markdown',
-               author: user,
-               target_project_id: fork_project.id
-          expect(response).to have_gitlab_http_status(422)
-        end
-
         it 'returns 422 if targeting a different fork' do
           post api("/projects/#{fork_project.id}/merge_requests", user2),
                title: 'Test merge_request',

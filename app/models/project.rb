@@ -1128,8 +1128,19 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def in_fork_network_of?(project)
-    forked? && project.fork_network == fork_network
+  def forked_from?(other_project)
+    forked? && forked_from_project == other_project
+  end
+
+  def in_fork_network_of?(other_project)
+    # TODO: Remove this in a next release when all fork_networks are populated
+    # This makes sure all MergeRequests remain valid while the projects don't
+    # have a fork_network yet.
+    return true if forked_from?(other_project)
+
+    return false if fork_network.nil? || other_project.fork_network.nil?
+
+    fork_network == other_project.fork_network
   end
 
   def origin_merge_requests
