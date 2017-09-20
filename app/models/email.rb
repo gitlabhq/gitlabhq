@@ -7,6 +7,8 @@ class Email < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true, email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
+
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
   devise :confirmable
@@ -19,7 +21,7 @@ class Email < ActiveRecord::Base
   def unique_email
     self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
   end
-
+  
   # once email is confirmed, update the gpg signatures
   def update_invalid_gpg_signatures
     user.update_invalid_gpg_signatures if confirmed?

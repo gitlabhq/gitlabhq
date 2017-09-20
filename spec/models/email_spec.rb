@@ -26,4 +26,15 @@ describe Email do
       email.confirm
     end
   end
+  
+  describe 'scopes' do
+    let(:user) { create(:user) }
+
+    it 'scopes confirmed emails' do
+      create(:email, :confirmed, user: user)
+      expect(user.emails.count).to eq 1
+      expect(user.emails.unconfirmed.count).to eq 0
+      expect(user.emails.confirmed.count).to eq 1
+    end
+  end
 end

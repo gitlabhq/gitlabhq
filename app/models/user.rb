@@ -837,12 +837,13 @@ class User < ActiveRecord::Base
   def verified_emails
     verified_emails = []
     verified_emails << email if primary_email_verified?
-    verified_emails.concat(emails.where.not(confirmed_at: nil).pluck(:email))
+    verified_emails.concat(emails.confirmed.pluck(:email))
     verified_emails
   end
 
   def verified_email?(check_email)
-    (email == check_email && primary_email_verified?) || verified_emails.include?(check_email)
+    downcased = check_email.downcase
+    (email == downcased && primary_email_verified?) || emails.confirmed.where(email: downcased).exists?
   end
 
   def hook_attrs

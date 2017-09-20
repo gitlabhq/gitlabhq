@@ -1173,7 +1173,7 @@ describe User do
       user.reload
 
       expect(user.verified_email?(user.email)).to be_truthy
-      expect(user.verified_email?(email_confirmed.email)).to be_truthy
+      expect(user.verified_email?(email_confirmed.email.titlecase)).to be_truthy
     end
 
     it 'returns false when the email is not verified/confirmed' do
