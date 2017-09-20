@@ -11,10 +11,12 @@ module Users
     def execute(validate: true, &block)
       yield(@user) if block_given?
 
+      user_exists = @user.persisted?
+
       assign_attributes(&block)
 
       if @user.save(validate: validate)
-        notify_success
+        notify_success(user_exists)
       else
         error(@user.errors.full_messages.uniq.join('. '))
       end
@@ -30,8 +32,8 @@ module Users
 
     private
 
-    def notify_success
-      notify_new_user(@user, nil) unless @user.persisted?
+    def notify_success(user_exists)
+      notify_new_user(@user, nil) unless user_exists
 
       success
     end
