@@ -1,7 +1,7 @@
 module EE
   module Emails
     module CreateService
-      include EE::Emails::BaseService
+      include ::EE::Emails::BaseService
 
       def execute
         email = super

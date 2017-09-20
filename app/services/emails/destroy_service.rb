@@ -1,6 +1,6 @@
 module Emails
   class DestroyService < ::Emails::BaseService
-    prepend EE::Emails::DestroyService
+    prepend ::EE::Emails::DestroyService
 
     def execute
       update_secondary_emails! if Email.find_by_email!(@email).destroy

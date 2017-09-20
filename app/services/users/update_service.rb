@@ -14,8 +14,10 @@ module Users
 
       assign_attributes(&block)
 
+      user_exists = @user.persisted?
+
       if @user.save(validate: validate)
-        notify_success
+        notify_success(user_exists)
       else
         error(@user.errors.full_messages.uniq.join('. '))
       end
@@ -31,8 +33,8 @@ module Users
 
     protected
 
-    def notify_success
-      notify_new_user(@user, nil) unless @user.persisted?
+    def notify_success(user_exists)
+      notify_new_user(@user, nil) unless user_exists
 
       success
     end
@@ -40,6 +42,10 @@ module Users
     private
 
     def assign_attributes(&block)
+      if @user.user_synced_attributes_metadata
+        params.except!(*@user.user_synced_attributes_metadata.read_only_attributes)
+      end
+
       @user.assign_attributes(params) if params.any?
     end
   end

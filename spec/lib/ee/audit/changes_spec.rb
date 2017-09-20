@@ -6,8 +6,11 @@ describe EE::Audit::Changes do
     let(:foo_instance) { Class.new { include EE::Audit::Changes }.new }
 
     before do
+      stub_licensed_features(extended_audit_events: true)
+
       foo_instance.instance_variable_set(:@current_user, user)
       foo_instance.instance_variable_set(:@user, user)
+
       allow(foo_instance).to receive(:model).and_return(user)
     end
 

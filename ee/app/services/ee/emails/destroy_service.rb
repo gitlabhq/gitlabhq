@@ -1,7 +1,7 @@
 module EE
   module Emails
     module DestroyService
-      include EE::Emails::BaseService
+      include ::EE::Emails::BaseService
 
       def execute
         result = super
