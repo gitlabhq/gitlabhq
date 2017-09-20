@@ -2254,6 +2254,65 @@ describe Project do
     end
   end
 
+  context 'forks' do
+    let(:project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(project) }
+
+    def fork_project(project)
+      Projects::ForkService.new(project, create(:user)).execute
+    end
+
+    describe '#fork_network' do
+      it 'includes a fork of the project' do
+        expect(project.fork_network).to include(forked_project)
+      end
+
+      it 'includes a fork of a fork' do
+        other_fork = fork_project(forked_project)
+
+        expect(project.fork_network).to include(other_fork)
+      end
+
+      it 'includes sibling forks' do
+        other_fork = fork_project(project)
+
+        expect(forked_project.fork_network).to include(other_fork)
+      end
+
+      it 'includes the base project' do
+        expect(forked_project.fork_network).to include(project)
+      end
+    end
+
+    describe '#in_fork_network_of?' do
+      it 'is false when the project is not a fork' do
+        expect(project.in_fork_network_of?(double)).to be_falsy
+      end
+
+      it 'is true for a real fork' do
+        expect(forked_project.in_fork_network_of?(project)).to be_truthy
+      end
+
+      it 'is true for a fork of a fork', :postgresql do
+        other_fork = fork_project(forked_project)
+
+        expect(other_fork.in_fork_network_of?(project)).to be_truthy
+      end
+
+      it 'is true for sibling forks' do
+        sibling = fork_project(project)
+
+        expect(sibling.in_fork_network_of?(forked_project)).to be_truthy
+      end
+
+      it 'is false when another project is given' do
+        other_project = build_stubbed(:project)
+
+        expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
+      end
+    end
+  end
+
   describe '#pushes_since_gc' do
     let(:project) { create(:project) }
 

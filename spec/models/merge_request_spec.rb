@@ -49,6 +49,19 @@ describe MergeRequest do
         expect(subject).to be_valid
       end
     end
+
+    context 'for forks' do
+      let(:project) { create(:project) }
+      let(:fork1) { create(:forked_project_link, forked_from_project: project).forked_to_project }
+      let(:fork2) { create(:forked_project_link, forked_from_project: project).forked_to_project }
+
+      it 'allows merge requests for sibling-forks' do
+        subject.source_project = fork1
+        subject.target_project = fork2
+
+        expect(subject).to be_valid
+      end
+    end
   end
 
   describe 'respond to' do
@@ -1809,7 +1822,7 @@ describe MergeRequest do
 
   describe "#source_project_missing?" do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:fork_project) { create(:forked_project_link, forked_from_project: project).forked_to_project }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1830,7 +1843,7 @@ describe MergeRequest do
     end
 
     context "when the fork does not exist" do
-      let(:merge_request) do
+      let!(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
           target_project: project)
