@@ -421,12 +421,6 @@ describe IssuesFinder do
           expect(subject).to include(public_issue)
           expect(subject).not_to include(confidential_issue)
         end
-
-        it 'does not filter by confidentiality' do
-          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
-        end
       end
 
       context 'for a user without project membership' do
@@ -449,12 +443,6 @@ describe IssuesFinder do
           expect(subject).to include(public_issue)
           expect(subject).not_to include(confidential_issue)
         end
-
-        it 'filters by confidentiality' do
-          expect(Issue).to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
-        end
       end
 
       context 'for a project member with access to view confidential issues' do
@@ -462,12 +450,6 @@ describe IssuesFinder do
 
         it 'returns all issues' do
           expect(subject).to include(public_issue, confidential_issue)
-        end
-
-        it 'does not filter by confidentiality' do
-          expect(Issue).not_to receive(:where).with(a_string_matching('confidential'), anything)
-
-          subject
         end
       end
     end
