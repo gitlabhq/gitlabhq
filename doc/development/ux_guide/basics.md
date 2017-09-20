@@ -33,9 +33,12 @@ This is the typeface used for code blocks and references to commits, branches, a
 
 ## Icons
 
-GitLab has a strong and unique personality. When you look at any screen, you should know immediately that this is GitLab. Iconography is a powerful visual cue to the user and should reflect our particular sense of style.
+GitLab has a strong, unique personality. When you look at any screen, you should know immediately know that it is GitLab. 
+Iconography is a powerful visual cue to the user and is a great way for us to reflect our particular sense of style.
 
 ![Icon sampler](img/icon-spec.png)
+
+> TODO: List all icons, proper usage, hover, and active states.
 
 ---
 
