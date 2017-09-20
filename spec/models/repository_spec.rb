@@ -815,45 +815,70 @@ describe Repository do
   end
 
   describe '#add_branch' do
-    context 'when pre hooks were successful' do
-      it 'runs without errors' do
-        hook = double(trigger: [true, nil])
-        expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
+    let(:branch_name) { 'new_feature' }
+    let(:target) { 'master' }
 
-        expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
+    subject { repository.add_branch(user, branch_name, target) }
+
+    context 'with Gitaly enabled' do
+      it "calls Gitaly's OperationService" do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+          .to receive(:user_create_branch).with(branch_name, user, target)
+          .and_return(nil)
+
+        subject
       end
 
-      it 'creates the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-        branch = repository.add_branch(user, 'new_feature', 'master')
-
-        expect(branch.name).to eq('new_feature')
+      it 'creates_the_branch' do
+        expect(subject.name).to eq(branch_name)
+        expect(repository.find_branch(branch_name)).not_to be_nil
       end
 
-      it 'calls the after_create_branch hook' do
-        expect(repository).to receive(:after_create_branch)
+      context 'with a non-existing target' do
+        let(:target) { 'fake-target' }
 
-        repository.add_branch(user, 'new_feature', 'master')
+        it "returns false and doesn't create the branch" do
+          expect(subject).to be(false)
+          expect(repository.find_branch(branch_name)).to be_nil
+        end
       end
     end
 
-    context 'when pre hooks failed' do
-      it 'gets an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+    context 'with Gitaly disabled', skip_gitaly_mock: true do
+      context 'when pre hooks were successful' do
+        it 'runs without errors' do
+          hook = double(trigger: [true, nil])
+          expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
-        expect do
-          repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          expect { subject }.not_to raise_error
+        end
+
+        it 'creates the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+
+          expect(subject.name).to eq(branch_name)
+        end
+
+        it 'calls the after_create_branch hook' do
+          expect(repository).to receive(:after_create_branch)
+
+          subject
+        end
       end
 
-      it 'does not create the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+      context 'when pre hooks failed' do
+        it 'gets an error' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
-        expect do
-          repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-        expect(repository.find_branch('new_feature')).to be_nil
+          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end
+
+        it 'does not create the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          expect(repository.find_branch(branch_name)).to be_nil
+        end
       end
     end
   end
