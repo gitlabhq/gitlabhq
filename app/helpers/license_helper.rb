@@ -78,7 +78,7 @@ module LicenseHelper
     if @project && @project.group
       group_billings_path(@project.group)
     elsif @group
-        group_billings_path(@group)
+      group_billings_path(@group)
     else
       profile_billings_path
     end
