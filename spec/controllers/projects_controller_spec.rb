@@ -289,6 +289,24 @@ describe ProjectsController do
       end
     end
 
+    it 'updates Fast Forward Merge attributes' do
+      controller.instance_variable_set(:@project, project)
+
+      params = {
+        merge_method: :ff
+      }
+
+      put :update,
+          namespace_id: project.namespace,
+          id: project.id,
+          project: params
+
+      expect(response).to have_http_status(302)
+      params.each do |param, value|
+        expect(project.public_send(param)).to eq(value)
+      end
+    end
+
     def update_project(**parameters)
       put :update,
           namespace_id: project.namespace.path,
