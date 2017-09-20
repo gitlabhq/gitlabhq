@@ -36,6 +36,10 @@ This is the typeface used for code blocks and references to commits, branches, a
 GitLab has a strong, unique personality. When you look at any screen, you should know immediately know that it is GitLab. 
 Iconography is a powerful visual cue to the user and is a great way for us to reflect our particular sense of style.
 
+- **Standard size:** 16px * 16px
+- **Border thickness:** 2px
+- **Border radius:** 3px
+
 ![Icon sampler](img/icon-spec.png)
 
 > TODO: List all icons, proper usage, hover, and active states.
