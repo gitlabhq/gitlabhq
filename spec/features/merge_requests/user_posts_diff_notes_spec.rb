@@ -6,7 +6,8 @@ feature 'Merge requests > User posts diff notes', :js do
   let(:project) { merge_request.source_project }
 
   before do
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    visit '/'
+    page.driver.browser.manage.add_cookie(name: 'sidebar_collapsed', value: 'true')
 
     project.add_developer(user)
     sign_in(user)
