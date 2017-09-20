@@ -26,7 +26,7 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
-      get api("/projects/#{project.id}/jobs", api_user), query
+      get api("/projects/#{project.id}/jobs", api_user), params: query
     end
 
     context 'authorized user' do
@@ -89,7 +89,7 @@ describe API::Jobs do
     let(:query) { Hash.new }
 
     before do
-      get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+      get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), params: query
     end
 
     context 'authorized user' do
@@ -245,9 +245,8 @@ describe API::Jobs do
           get_artifact_file(artifact)
 
           expect(response).to have_http_status(200)
-          expect(response.headers)
-            .to include('Content-Type' => 'application/json',
-                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+          expect(response.headers['Content-Type']).to eq('application/json')
+          expect(response.headers['Gitlab-Workhorse-Send-Data']).to match(/artifacts-entry/)
         end
       end
     end
@@ -311,7 +310,7 @@ describe API::Jobs do
     end
 
     def get_for_ref(ref = pipeline.ref, job_name = job.name)
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), job: job_name
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: { job: job_name }
     end
 
     context 'when not logged in' do
