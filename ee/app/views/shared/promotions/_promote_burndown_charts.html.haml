@@ -1,4 +1,4 @@
-- if show_promotions? && show_callout?('promote_burndown_charts_dismissed')
+- if show_project_feature_promotion?(:burndown_charts, 'promote_burndown_charts_dismissed')
   .user-callout.promotion-callout#promote_burndown_charts{ data: { uid: 'promote_burndown_charts_dismissed' } }
     .bordered-box.content-block
       %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss burndown charts promotion' }

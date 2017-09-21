@@ -10,7 +10,7 @@
     .row
       .col-md-4
         .info-well
-          .well-segment.admin-well
+          .well-segment.admin-well.admin-well-statistics
             %h4 Statistics
             %p
               Forks
@@ -46,7 +46,7 @@
                 = number_with_delimiter(User.active.count)
       .col-md-4
         .info-well
-          .well-segment.admin-well
+          .well-segment.admin-well.admin-well-features
             %h4 Features
             - sign_up = "Sign up"
             %p{ "aria-label" => "#{sign_up}: status " + (signup_enabled? ? "on" : "off") }
@@ -126,6 +126,10 @@
               GitLab API
               %span.pull-right
                 = API::API::version
+            %p
+              Gitaly
+              %span.pull-right
+                = Gitlab::GitalyClient.expected_server_version
             - if Gitlab.config.pages.enabled
               %p
                 GitLab Pages
