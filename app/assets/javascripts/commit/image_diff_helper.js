@@ -29,7 +29,7 @@ export function getTargetSelection(event) {
       y: y * heightRatio,
       width: actualWidth,
       height: actualHeight,
-    }
+    },
   };
 }
 
@@ -40,7 +40,7 @@ export function setLineCodeCoordinates(el, x, y) {
   // Until backend strips this out for us
   const lineCodeWithoutCoordinates = lineCode.match(/^(.*?)_/)[0];
 
-  el.dataset.lineCode = `${lineCodeWithoutCoordinates}${x}_${y}`;
+  el.setAttribute('dataset-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
 }
 
 export function setPositionCoordinates(el, x, y) {
@@ -49,7 +49,7 @@ export function setPositionCoordinates(el, x, y) {
   positionObject.x_axis = x;
   positionObject.y_axis = y;
 
-  el.dataset.position = JSON.stringify(positionObject);
+  el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
 export function setCommentSelectionIndicator(containerEl, x, y) {

@@ -666,6 +666,7 @@
     position: absolute;
 
     .image-comment-dark {
+      // Override styling set by .image .frame
       background-image: inherit;
       border: none;
       background-position: inherit;

@@ -47,9 +47,6 @@ module NotesHelper
     # Use text or image, todo: make this better
     data[:component_type] = component_type
 
-
-    puts component_type
-
     data
   end
 
