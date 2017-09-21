@@ -154,9 +154,9 @@ feature 'Login' do
       end
 
       it 'creates a security event after failed OAuth login' do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
         stub_licensed_features(extended_audit_events: true)
 
-        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
         user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
         gitlab_sign_in_via('saml', user, 'wrong-uid')
 
