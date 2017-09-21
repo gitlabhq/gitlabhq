@@ -8,6 +8,7 @@ import GroupItem from './components/group_item.vue';
 import GroupsStore from './stores/groups_store';
 import GroupsService from './services/groups_service';
 import eventHub from './event_hub';
+import { getParameterByName } from '../lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('dashboard-group-app');
@@ -58,17 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
           this.isLoading = true;
         }
 
-        pageParam = gl.utils.getParameterByName('page');
+        pageParam = getParameterByName('page');
         if (pageParam) {
           page = pageParam;
         }
 
-        filterGroupsParam = gl.utils.getParameterByName('filter_groups');
+        filterGroupsParam = getParameterByName('filter_groups');
         if (filterGroupsParam) {
           filterGroups = filterGroupsParam;
         }
 
-        sortParam = gl.utils.getParameterByName('sort');
+        sortParam = getParameterByName('sort');
         if (sortParam) {
           sort = sortParam;
         }

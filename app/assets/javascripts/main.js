@@ -40,7 +40,7 @@ import './commit/image_file';
 
 // lib/utils
 import './lib/utils/bootstrap_linked_tabs';
-import './lib/utils/common_utils';
+import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
@@ -160,10 +160,10 @@ document.addEventListener('beforeunload', function () {
   $('[data-toggle="popover"]').popover('destroy');
 });
 
-window.addEventListener('hashchange', gl.utils.handleLocationHash);
+window.addEventListener('hashchange', handleLocationHash);
 window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
-  gl.utils.handleLocationHash();
+  handleLocationHash();
 }, false);
 
 gl.lazyLoader = new LazyLoader({
@@ -189,7 +189,7 @@ $(function () {
   $body.on('click', 'a[href^="#"]', function() {
     var href = this.getAttribute('href');
     if (href.substr(1) === gl.utils.getLocationHash()) {
-      setTimeout(gl.utils.handleLocationHash, 1);
+      setTimeout(handleLocationHash, 1);
     }
   });
 
