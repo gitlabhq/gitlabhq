@@ -2,10 +2,7 @@
 /* global List */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-<<<<<<< HEAD
 import boardsStoreEE from 'ee/boards/stores/boards_store_ee';
-=======
->>>>>>> ce/master
 import { getUrlParamsArray } from '../../lib/utils/common_utils';
 
 window.gl = window.gl || {};

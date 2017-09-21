@@ -65,7 +65,6 @@ export default {
 
     canCreateEnvironmentParsed() {
       return convertPermissionToBoolean(this.canCreateEnvironment);
-<<<<<<< HEAD
     },
 
     /**
@@ -76,8 +75,6 @@ export default {
      */
     shouldRenderPagination() {
       return this.state.paginationInformation && this.state.paginationInformation.totalPages > 1;
-=======
->>>>>>> ce/master
     },
   },
 
