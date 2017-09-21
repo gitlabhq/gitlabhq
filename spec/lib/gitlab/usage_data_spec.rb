@@ -23,6 +23,7 @@ describe Gitlab::UsageData do
         counts
         historical_max_users
         license_add_ons
+        license_plan
         license_expires_at
         license_starts_at
         license_user_count

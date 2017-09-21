@@ -179,14 +179,11 @@ module EE
       !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
     end
 
-    # Checks licensed feature availability if `feature` matches any
-    # key on License::FEATURE_CODES. Otherwise, check feature availability
-    # through ProjectFeature.
     def feature_available?(feature, user = nil)
-      if License::FEATURE_CODES.key?(feature)
-        licensed_feature_available?(feature)
-      else
+      if ProjectFeature::FEATURES.include?(feature)
         super
+      else
+        licensed_feature_available?(feature)
       end
     end
 
