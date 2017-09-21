@@ -421,7 +421,7 @@ describe Projects::JobsController do
 
       it 'send a trace file' do
         expect(response).to have_http_status(:ok)
-        expect(response.content_type).to eq 'text/plain; charset=utf-8'
+        expect(response.headers['Content-Type']).to eq 'text/plain; charset=utf-8'
         expect(response.body).to eq 'BUILD TRACE'
       end
     end
