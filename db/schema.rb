@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170918223303) do
+ActiveRecord::Schema.define(version: 20170921105519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1662,7 +1662,7 @@ ActiveRecord::Schema.define(version: 20170918223303) do
     t.datetime "updated_at"
     t.string "type", default: "ProjectHook"
     t.integer "service_id"
-    t.boolean "push_events", default: true, null: false
+    t.boolean "push_events", default: false, null: false
     t.boolean "issues_events", default: false, null: false
     t.boolean "merge_requests_events", default: false, null: false
     t.boolean "tag_push_events", default: false
@@ -1672,7 +1672,7 @@ ActiveRecord::Schema.define(version: 20170918223303) do
     t.string "token"
     t.boolean "pipeline_events", default: false, null: false
     t.boolean "confidential_issues_events", default: false, null: false
-    t.boolean "repository_update_events", default: false, null: false
+    t.boolean "repository_update_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
   end
 
