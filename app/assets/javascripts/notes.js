@@ -527,7 +527,6 @@ export default class Notes {
     // fix classes
     form.removeClass('js-new-note-form');
     form.addClass('js-main-target-form');
-    form.find('#component_type').remove();
     form.find('#note_line_code').remove();
     form.find('#note_position').remove();
     form.find('#note_type').val('');
@@ -567,8 +566,6 @@ export default class Notes {
 
       // DiffNote
       form.find('#note_position').val(),
-
-      form.find('#component_type').val(),
     ];
     return new Autosave(textarea, key);
   }
@@ -878,11 +875,6 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
-    const componentType = dataHolder.attr('data-component-type');
-    if (componentType) {
-      form.find('#component_type').val(componentType);
-    }
-
     form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
@@ -939,7 +931,7 @@ export default class Notes {
     }
 
     imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
-    imageDiffHelper.setPositionCoordinates($link[0], selection.actual.x, selection.actual.y);
+    imageDiffHelper.setPositionDataAttribute($link[0], selection.actual.x, selection.actual.y);
 
     const noteContainer = $link.closest('.diff-viewer').find('.note-container');
 

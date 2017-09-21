@@ -43,11 +43,12 @@ export function setLineCodeCoordinates(el, x, y) {
   el.setAttribute('dataset-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
 }
 
-export function setPositionCoordinates(el, x, y) {
+export function setPositionDataAttribute(el, x, y) {
   const position = el.dataset.position;
   const positionObject = JSON.parse(position);
   positionObject.x_axis = x;
   positionObject.y_axis = y;
+  positionObject.component_type = 'image';
 
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }
