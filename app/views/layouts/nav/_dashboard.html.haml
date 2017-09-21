@@ -60,7 +60,7 @@
       = link_to sherlock_transactions_path, class: 'admin-icon', title: 'Sherlock Transactions',
         data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = icon('tachometer fw')
-  - if Gitlab::Geo.secondary?
+  - if Gitlab::Geo.secondary? && Gitlab::Geo.primary_node.present?
     %li
       = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = icon('globe fw')
