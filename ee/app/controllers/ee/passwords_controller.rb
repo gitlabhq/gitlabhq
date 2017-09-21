@@ -1,5 +1,7 @@
 module EE
   module PasswordsController
+    extend ActiveSupport::Concern
+
     prepended do
       before_action :log_audit_event, only: [:create]
     end
@@ -7,7 +9,7 @@ module EE
     private
 
     def log_audit_event
-      AuditEventService.new(current_user,
+      ::AuditEventService.new(current_user,
                             resource,
                             action: :custom,
                             custom_message: 'Ask for password reset',

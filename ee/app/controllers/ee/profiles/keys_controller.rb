@@ -14,7 +14,7 @@ module EE
       private
 
       def log_audit_event
-        AuditEventService.new(current_user,
+        ::AuditEventService.new(current_user,
                               current_user,
                               action: :custom,
                               custom_message: 'Added SSH key',
