@@ -161,7 +161,7 @@ class Project < ActiveRecord::Base
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
-  has_one :project_feature
+  has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
 
   # Container repositories need to remove data from the container registry,
@@ -190,9 +190,9 @@ class Project < ActiveRecord::Base
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
-  accepts_nested_attributes_for :project_feature
+  accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
-  accepts_nested_attributes_for :auto_devops
+  accepts_nested_attributes_for :auto_devops, update_only: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -1161,6 +1161,23 @@ class Project < ActiveRecord::Base
     return unless sha
 
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
+  end
+
+  def latest_successful_pipeline_for_default_branch
+    if defined?(@latest_successful_pipeline_for_default_branch)
+      return @latest_successful_pipeline_for_default_branch
+    end
+
+    @latest_successful_pipeline_for_default_branch =
+      pipelines.latest_successful_for(default_branch)
+  end
+
+  def latest_successful_pipeline_for(ref = nil)
+    if ref && ref != default_branch
+      pipelines.latest_successful_for(ref)
+    else
+      latest_successful_pipeline_for_default_branch
+    end
   end
 
   def enable_ci

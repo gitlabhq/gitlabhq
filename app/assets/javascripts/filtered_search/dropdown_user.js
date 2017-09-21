@@ -15,6 +15,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         params: {
           per_page: 20,
           active: true,
+          group_id: this.getGroupId(),
           project_id: this.getProjectId(),
           current_user: true,
         },
@@ -45,6 +46,10 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   renderContent(forceShowList = false) {
     this.droplab.changeHookList(this.hookId, this.dropdown, [AjaxFilter], this.config);
     super.renderContent(forceShowList);
+  }
+
+  getGroupId() {
+    return this.input.getAttribute('data-group-id');
   }
 
   getProjectId() {

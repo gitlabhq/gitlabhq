@@ -140,18 +140,6 @@ describe GpgKey do
     end
   end
 
-  describe 'notification', :mailer do
-    let(:user) { create(:user) }
-
-    it 'sends a notification' do
-      perform_enqueued_jobs do
-        create(:gpg_key, user: user)
-      end
-
-      should_email(user)
-    end
-  end
-
   describe '#revoke' do
     it 'invalidates all associated gpg signatures and destroys the key' do
       gpg_key = create :gpg_key

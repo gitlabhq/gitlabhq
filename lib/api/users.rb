@@ -88,7 +88,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : {}
+        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
         present user, opts
       end
 

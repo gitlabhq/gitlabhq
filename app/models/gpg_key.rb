@@ -36,7 +36,6 @@ class GpgKey < ActiveRecord::Base
 
   before_validation :extract_fingerprint, :extract_primary_keyid
   after_commit :update_invalid_gpg_signatures, on: :create
-  after_commit :notify_user, on: :create
 
   def primary_keyid
     super&.upcase
@@ -106,9 +105,5 @@ class GpgKey < ActiveRecord::Base
     # we can assume that the result only contains one item as the validation
     # only allows one key
     self.primary_keyid = Gitlab::Gpg.primary_keyids_from_key(key).first
-  end
-
-  def notify_user
-    NotificationService.new.new_gpg_key(self)
   end
 end

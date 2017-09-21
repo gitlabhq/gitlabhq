@@ -1,6 +1,6 @@
 module Ci
   class Runner < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour

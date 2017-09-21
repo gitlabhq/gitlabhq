@@ -164,9 +164,9 @@ feature 'Jobs' do
         end
 
         it 'links to issues/new with the title and description filled in' do
-          button_title = "Build Failed ##{job.id}"
-          job_path = project_job_path(project, job)
-          options = { issue: { title: button_title, description: job_path } }
+          button_title = "Job Failed ##{job.id}"
+          job_url = project_job_path(project, job)
+          options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
 

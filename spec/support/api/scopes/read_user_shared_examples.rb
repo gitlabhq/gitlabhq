@@ -23,6 +23,10 @@ shared_examples_for 'allows the "read_user" scope' do
     context 'when the requesting token does not have any required scope' do
       let(:token) { create(:personal_access_token, scopes: ['read_registry'], user: user) }
 
+      before do
+        stub_container_registry_config(enabled: true)
+      end
+
       it 'returns a "401" response' do
         get api_call.call(path, user, personal_access_token: token)
 

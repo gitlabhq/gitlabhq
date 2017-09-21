@@ -446,8 +446,8 @@ module Ci
       return unless trace
 
       trace = trace.dup
-      Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Ci::MaskSecret.mask!(trace, token)
+      Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Gitlab::Ci::MaskSecret.mask!(trace, token)
       trace
     end
 

@@ -147,6 +147,12 @@ describe SubmoduleHelper do
         expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
       end
 
+      it 'sanitizes invalid URL with extended ASCII' do
+        stub_url('é')
+
+        expect(helper.submodule_links(submodule_item)).to eq([nil, nil])
+      end
+
       it 'returns original' do
         stub_url('http://mygitserver.com/gitlab-org/gitlab-ce')
         expect(submodule_links(submodule_item)).to eq([repo.submodule_url_for, nil])

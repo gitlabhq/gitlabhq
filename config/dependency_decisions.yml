@@ -416,3 +416,39 @@
     :why: https://gitlab.com/gitlab-com/organization/issues/117
     :versions: []
     :when: 2017-09-04 12:59:51.150798717 Z
+- - :approve
+  - console-browserify
+  - :who: Mike Greiling
+    :why: https://github.com/Raynos/console-browserify/blob/f0a8898487e2a47b8a5dc8734b91059fa2825506/LICENCE
+    :versions: []
+    :when: 2017-09-16 05:13:07.073651000 Z
+- - :approve
+  - duplexer
+  - :who: Mike Greiling
+    :why: https://github.com/Raynos/duplexer/blob/master/LICENCE
+    :versions: []
+    :when: 2017-09-16 05:14:15.774643000 Z
+- - :approve
+  - json3
+  - :who: Mike Greiling
+    :why: https://github.com/bestiejs/json3/blob/v3.3.2/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:15:16.273892000 Z
+- - :approve
+  - mime
+  - :who: Mike Greiling
+    :why: https://github.com/broofa/node-mime/blob/v1.3.4/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:16:21.135542000 Z
+- - :approve
+  - querystring-es3
+  - :who: Mike Greiling
+    :why: https://github.com/mike-spainhower/querystring/blob/v0.2.0/License.md
+    :versions: []
+    :when: 2017-09-16 05:17:20.372089000 Z
+- - :approve
+  - utils-merge
+  - :who: Mike Greiling
+    :why: https://github.com/jaredhanson/utils-merge/blob/v1.0.0/LICENSE
+    :versions: []
+    :when: 2017-09-16 05:18:26.193764000 Z

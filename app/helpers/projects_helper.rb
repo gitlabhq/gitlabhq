@@ -137,15 +137,7 @@ module ProjectsHelper
   end
 
   def last_push_event
-    return unless current_user
-    return current_user.recent_push unless @project
-
-    project_ids = [@project.id]
-    if fork = current_user.fork_of(@project)
-      project_ids << fork.id
-    end
-
-    current_user.recent_push(project_ids)
+    current_user&.recent_push(@project)
   end
 
   def project_feature_access_select(field)
@@ -328,7 +320,7 @@ module ProjectsHelper
 
   def git_user_name
     if current_user
-      current_user.name
+      current_user.name.gsub('"', '\"')
     else
       _("Your name")
     end

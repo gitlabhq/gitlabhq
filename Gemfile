@@ -116,7 +116,7 @@ gem 'seed-fu', '~> 2.3.5'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.5.1'
+gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 4.2'
@@ -362,6 +362,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'test-prof', '~> 0.2.5'
 end
 
 gem 'octokit', '~> 4.6.2'
@@ -407,4 +408,4 @@ gem 'flipper-active_record', '~> 0.10.2'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
-gem 'grape_logging', '~> 1.6'
+gem 'grape_logging', '~> 1.7'

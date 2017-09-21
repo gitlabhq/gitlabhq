@@ -10,9 +10,6 @@
 = render "projects/last_push"
 
 %div{ class: container_class }
-  - if show_callout?('user_callout_dismissed')
-    = render 'shared/user_callout'
-
   - if has_projects_or_name?(@projects, params)
     = render 'dashboard/projects_head'
     = render 'projects'

@@ -4,6 +4,8 @@
 
 import Vue from 'vue';
 
+import '../mixins/discussion';
+
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
   props: {

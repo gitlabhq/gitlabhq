@@ -77,6 +77,33 @@ and use [an application password](https://support.google.com/mail/answer/185833)
 To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 [Postfix setup documentation](reply_by_email_postfix_setup.md).
 
+### Security Concerns
+
+**WARNING:** Be careful when choosing the domain used for receiving incoming
+email.
+
+For the sake of example, suppose your top-level company domain is `hooli.com`.
+All employees in your company have an email address at that domain via Google
+Apps, and your company's private Slack instance requires a valid `@hooli.com`
+email address in order to sign up.
+
+If you also host a public-facing GitLab instance at `hooli.com` and set your
+incoming email domain to `hooli.com`, an attacker could abuse the "Create new
+issue by email" feature by using a project's unique address as the email when
+signing up for Slack, which would send a confirmation email, which would create
+a new issue on the project owned by the attacker, allowing them to click the
+confirmation link and validate their account on your company's private Slack
+instance.
+
+We recommend receiving incoming email on a subdomain, such as
+`incoming.hooli.com`, and ensuring that you do not employ any services that
+authenticate solely based on access to an email domain such as `*.hooli.com.`
+Alternatively, use a dedicated domain for GitLab email communications such as
+`hooli-gitlab.com`.
+
+See GitLab issue [#30366](https://gitlab.com/gitlab-org/gitlab-ce/issues/30366)
+for a real-world example of this exploit.
+
 ### Omnibus package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the
@@ -141,7 +168,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
     # The IDLE command timeout.
     gitlab_rails['incoming_email_idle_timeout'] = 60
     ```
-    
+
     ```ruby
     # Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes mailbox incoming@exchange.example.com
     gitlab_rails['incoming_email_enabled'] = true
@@ -253,7 +280,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
       # The IDLE command timeout.
       idle_timeout: 60
     ```
-    
+
     ```yaml
     # Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes mailbox incoming@exchange.example.com
     incoming_email:

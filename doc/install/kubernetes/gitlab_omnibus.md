@@ -2,13 +2,15 @@
 > **Note:**
 * This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
 * GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
-* Officially supported cloud providers are Google Container Service and Azure Container Service.
+* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
 
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
 ## Introduction
 
-This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned as well via [Let's Encrypt](https://letsencrypt.org/).
+This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
 
 The deployment includes:
 
@@ -19,7 +21,13 @@ The deployment includes:
 - [NGINX Ingress](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
 - Persistent Volume Claims for Data, Registry, Postgres, and Redis
 
-A video demonstration of GitLab utilizing this chart [is available](https://about.gitlab.com/handbook/sales/demo/).
+### Limitations
+
+* This chart is suited for small to medium size deployments, because [High Availability](https://docs.gitlab.com/ee/administration/high_availability/) and [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) will not be supported.
+* It is in beta. Additional features to support production deployments, like backups, are [in development](https://gitlab.com/charts/charts.gitlab.io/issues/68). Once completed, this chart will be generally available.
+* A new generation of [cloud native charts](index.md#upcoming-cloud-native-helm-charts) is in development, and will eventually deprecate these. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment. We do not expect these to be production ready before the second half of 2018.
+
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
 ## Prerequisites
 
@@ -46,7 +54,7 @@ Finally, set the `baseIP` setting to this IP address when [deploying GitLab](#co
 
 #### Load Balancer IP
 
-If you do not specify a `baseIP`, an ephemeral IP will be assigned to the Load Balancer or Ingress. You can retrieve this IP by running the following command *after* deploying GitLab:
+If you do not specify a `baseIP`, an IP will be assigned to the Load Balancer or Ingress. You can retrieve this IP by running the following command *after* deploying GitLab:
 
 `kubectl get svc -w --namespace nginx-ingress nginx`
 

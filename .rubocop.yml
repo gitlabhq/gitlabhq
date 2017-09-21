@@ -643,7 +643,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 14
+  Max: 13
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -665,7 +665,7 @@ Metrics/ParameterLists:
 # A complexity metric geared towards measuring complexity for a human reader.
 Metrics/PerceivedComplexity:
   Enabled: true
-  Max: 17
+  Max: 15
 
 # Lint ########################################################################
 

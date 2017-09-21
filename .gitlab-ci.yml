@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
@@ -128,7 +128,7 @@ stages:
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
-    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" -b || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -b -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
     when: always
@@ -174,7 +174,8 @@ build-package:
 # Review docs base
 .review-docs: &review-docs
   image: ruby:2.4-alpine
-  before_script: []
+  before_script:
+    - gem install gitlab --no-doc
   services: []
   variables:
     SETUP_DB: "false"
@@ -191,9 +192,11 @@ review-docs-deploy:
   stage: build
   environment:
     name: review-docs/$CI_COMMIT_REF_NAME
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
+    url: http://preview-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - gem install gitlab --no-doc
     - scripts/trigger-build-docs deploy
 
 # Cleanup remote environment of gitlab-docs
@@ -204,7 +207,6 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - gem install gitlab --no-doc
     - scripts/trigger-build-docs cleanup
 
 # Retrieve knapsack and rspec_flaky reports
@@ -410,12 +412,12 @@ downtime_check:
 
 ee_compat_check:
   <<: *rake-exec
-  only:
-    - branches@gitlab-org/gitlab-ce
   except:
     - master
     - tags
     - /^[\d-]+-stable(-ee)?/
+    - branches@gitlab-org/gitlab-ee
+    - branches@gitlab/gitlab-ee
   allow_failure: yes
   cache:
     key: "ee_compat_check_repo"
@@ -448,6 +450,7 @@ db:migrate:reset-mysql:
 .migration-paths: &migration-paths
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   variables:
     SETUP_DB: "false"
@@ -513,6 +516,12 @@ db:seed_fu-mysql:
   <<: *db-seed_fu
   <<: *use-mysql
 
+db:check-schema-pg:
+  <<: *db-migrate-reset
+  <<: *use-pg
+  script:
+    - source scripts/schema_changed.sh
+
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-runner
@@ -542,7 +551,7 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-60.0-node-7.1-postgresql-9.6"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"

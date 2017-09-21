@@ -81,6 +81,13 @@
       formatMetricUsage(series) {
         return `${formatRelevantDigits(series.values[this.currentDataIndex].value)} ${this.unitOfDisplay}`;
       },
+
+      createSeriesString(index, series) {
+        if (series.metricTag) {
+          return `${series.metricTag} ${this.formatMetricUsage(series)}`;
+        }
+        return `${this.legendTitle} series ${index + 1} ${this.formatMetricUsage(series)}`;
+      },
     },
     mounted() {
       this.$nextTick(() => {
@@ -164,7 +171,7 @@
         ref="legendTitleSvg"
         x="38"
         :y="graphHeight - 30">
-        {{legendTitle}} Series {{index + 1}} {{formatMetricUsage(series)}}
+        {{createSeriesString(index, series)}}
       </text>
       <text
         v-else

@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def repository_storages
-          @repository_storage ||= Gitlab::CurrentSettings.current_application_settings.repository_storages
+          @repository_storage ||= storages_paths.keys
         end
 
         def storages_paths

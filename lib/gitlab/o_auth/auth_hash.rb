@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def provider
-        @provider ||= Gitlab::Utils.force_utf8(auth_hash.provider.to_s)
+        @provider ||= auth_hash.provider.to_s
       end
 
       def name

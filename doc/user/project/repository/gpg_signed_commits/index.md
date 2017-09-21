@@ -113,7 +113,7 @@ started:
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format 0xLONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.
@@ -167,7 +167,7 @@ key to use.
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format 0xLONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.

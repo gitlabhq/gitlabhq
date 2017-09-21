@@ -1,0 +1,5 @@
+---
+title: Remove unnecessary loading of discussions in `IssuesController#show`
+merge_request:
+author:
+type: fixed

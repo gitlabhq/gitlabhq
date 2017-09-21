@@ -47,7 +47,7 @@ describe Gitlab::DataBuilder::Push do
     include_examples 'deprecated repository hook data'
 
     it 'does not raise an error when given nil commits' do
-      expect { described_class.build(spy, spy, spy, spy, spy, nil) }
+      expect { described_class.build(spy, spy, spy, spy, 'refs/tags/v1.1.0', nil) }
         .not_to raise_error
     end
   end

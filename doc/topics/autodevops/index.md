@@ -323,6 +323,23 @@ container registry. **Restarting a pod, scaling a service, or other actions whic
 require on-going access to the registry will fail**. On-going secure access is
 planned for a subsequent release.
 
+## Disable the banner instance wide
+
+If an administrater would like to disable the banners on an instance level, this
+feature can be disabled either through the console:
+
+```basb
+$ gitlab-rails console
+[1] pry(main)> Feature.get(:auto_devops_banner_disabled).disable
+=> true
+```
+
+Or through the HTTP API with the admin access token:
+
+```
+curl --data "value=true" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+```
+
 ## Troubleshooting
 
 - Auto Build and Auto Test may fail in detecting your language/framework. There

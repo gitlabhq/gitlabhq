@@ -10,6 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
+  before_action :set_issues_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -23,20 +24,6 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @collection_type    = "Issue"
-    @issues             = issues_collection
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
-    @total_pages        = issues_page_count(@issues)
-
-    return if redirect_out_of_range(@issues, @total_pages)
-
-    if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    end
-
-    @users = []
-
     if params[:assignee_id].present?
       assignee = User.find_by_id(params[:assignee_id])
       @users.push(assignee) if assignee
@@ -84,9 +71,6 @@ class Projects::IssuesController < Projects::ApplicationController
     @noteable = @issue
     @note     = @project.notes.new(noteable: @issue)
 
-    @discussions = @issue.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
-
     respond_to do |format|
       format.html
       format.json do
@@ -100,9 +84,9 @@ class Projects::IssuesController < Projects::ApplicationController
       .inc_relations_for_view
       .includes(:noteable)
       .fresh
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    prepare_notes_for_rendering(notes)
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     discussions = Discussion.build_collection(notes, @issue)
 

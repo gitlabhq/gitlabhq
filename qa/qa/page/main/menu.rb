@@ -3,20 +3,19 @@ module QA
     module Main
       class Menu < Page::Base
         def go_to_groups
-          within_global_menu { click_link 'Groups' }
+          within_top_menu { click_link 'Groups' }
         end
 
         def go_to_projects
-          within_global_menu { click_link 'Projects' }
+          within_top_menu { click_link 'Projects' }
         end
 
         def go_to_admin_area
-          within_user_menu { click_link 'Admin area' }
+          within_top_menu { find('.admin-icon').click }
         end
 
         def sign_out
           within_user_menu do
-            find('.header-user-dropdown-toggle').click
             click_link('Sign out')
           end
         end
@@ -27,17 +26,19 @@ module QA
 
         private
 
-        def within_global_menu
-          find('.global-dropdown-toggle').click
-
-          page.within('.global-dropdown-menu') do
+        def within_top_menu
+          page.within('.navbar') do
             yield
           end
         end
 
         def within_user_menu
-          page.within('.navbar-nav') do
-            yield
+          within_top_menu do
+            find('.header-user-dropdown-toggle').click
+
+            page.within('.dropdown-menu-nav') do
+              yield
+            end
           end
         end
       end

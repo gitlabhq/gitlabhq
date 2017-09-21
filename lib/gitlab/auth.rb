@@ -13,11 +13,6 @@ module Gitlab
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
 
-    AVAILABLE_SCOPES = (API_SCOPES + REGISTRY_SCOPES).freeze
-
-    # Other available scopes
-    OPTIONAL_SCOPES = (AVAILABLE_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
-
     class << self
       include Gitlab::CurrentSettings
 
@@ -132,7 +127,7 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_scoped_token?(token, AVAILABLE_SCOPES)
+        if token && valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
@@ -229,6 +224,21 @@ module Gitlab
       # The currently used auth method doesn't allow any actions for this scope
       def read_user_scope_authentication_abilities
         []
+      end
+
+      def available_scopes
+        API_SCOPES + registry_scopes
+      end
+
+      # Other available scopes
+      def optional_scopes
+        available_scopes + OPENID_SCOPES - DEFAULT_SCOPES
+      end
+
+      def registry_scopes
+        return [] unless Gitlab.config.registry.enabled
+
+        REGISTRY_SCOPES
       end
     end
   end
