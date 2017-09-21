@@ -6,7 +6,7 @@ class GroupDescendantsFinder
   def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
-    @params = params
+    @params = params.reverse_merge(non_archived: true)
   end
 
   def execute
@@ -74,7 +74,7 @@ class GroupDescendantsFinder
   end
 
   def projects_matching_filter
-    ProjectsFinder.new(current_user: current_user).execute
+    ProjectsFinder.new(current_user: current_user, params: params).execute
       .search(params[:filter])
       .where(namespace: all_descendant_groups)
   end

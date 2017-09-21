@@ -19,6 +19,12 @@ describe GroupDescendantsFinder do
       expect(finder.execute).to contain_exactly(project)
     end
 
+    it 'does not include archived projects' do
+      _archived_project = create(:project, :archived, namespace: group)
+
+      expect(finder.execute).to be_empty
+    end
+
     context 'with a filter' do
       let(:params) { { filter: 'test' } }
 
