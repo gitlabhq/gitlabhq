@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the gitlab package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 08:32+0200\n"
+"POT-Creation-Date: 2017-09-21 14:20+0530\n"
+"PO-Revision-Date: 2017-09-21 14:20+0530\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -52,6 +53,9 @@ msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1st contribution!"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
@@ -94,7 +98,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
@@ -118,64 +122,37 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr ""
 
-msgid "Authentication log"
+msgid "Authentication Log"
 msgstr ""
 
-msgid "Billing"
+msgid "Auto DevOps (Beta)"
 msgstr ""
 
-msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
 msgstr ""
 
-msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgid "Auto DevOps documentation"
 msgstr ""
 
-msgid "BillingPlans|Current plan"
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
 msgstr ""
 
-msgid "BillingPlans|Customer Support"
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
 msgstr ""
 
-msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
 msgstr ""
 
-msgid "BillingPlans|Manage plan"
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
-msgid "BillingPlans|Please contact %{customer_support_link} in that case."
-msgstr ""
-
-msgid "BillingPlans|See all %{plan_name} features"
-msgstr ""
-
-msgid "BillingPlans|This group uses the plan associated with its parent group."
-msgstr ""
-
-msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
-msgstr ""
-
-msgid "BillingPlans|Upgrade"
-msgstr ""
-
-msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr ""
-
-msgid "BillingPlans|frequently asked questions"
-msgstr ""
-
-msgid "BillingPlans|monthly"
-msgstr ""
-
-msgid "BillingPlans|paid annually at %{price_per_year}"
-msgstr ""
-
-msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Billinglans|Downgrade"
+msgid "Board"
 msgstr ""
 
 msgid "Branch"
@@ -193,6 +170,12 @@ msgid "BranchSwitcherTitle|Switch branch"
 msgstr ""
 
 msgid "Branches"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
 msgid "Browse Directory"
@@ -338,16 +321,10 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
-msgid "Container Registry"
-msgstr ""
-
 msgid "Contribution guide"
 msgstr ""
 
 msgid "Contributors"
-msgstr ""
-
-msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -490,6 +467,9 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
+msgid "Enable in settings"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -515,6 +495,9 @@ msgid "Every month (on the 1st at 4:00am)"
 msgstr ""
 
 msgid "Every week (Sundays at 4:00am)"
+msgstr ""
+
+msgid "Explore projects"
 msgstr ""
 
 msgid "Failed to change the owner"
@@ -558,9 +541,6 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
-msgid "Geo Nodes"
-msgstr ""
-
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -573,7 +553,28 @@ msgstr ""
 msgid "GoToYourFork|Fork"
 msgstr ""
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
@@ -597,9 +598,6 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-msgid "Hooks"
-msgstr ""
-
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -619,6 +617,9 @@ msgid "Issue events"
 msgstr ""
 
 msgid "Issues"
+msgstr ""
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -662,16 +663,10 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-msgid "License"
-msgstr ""
-
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Locked Files"
-msgstr ""
 
 msgid "Median"
 msgstr ""
@@ -813,6 +808,18 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Pagination|Last »"
+msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -826,9 +833,6 @@ msgid "Pipeline Schedule"
 msgstr ""
 
 msgid "Pipeline Schedules"
-msgstr ""
-
-msgid "Pipeline quota"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -918,10 +922,7 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -957,9 +958,6 @@ msgstr ""
 msgid "Project home"
 msgstr ""
 
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -984,13 +982,10 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
-msgid "Push Rules"
+msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|Projects you visit often will appear here"
@@ -999,7 +994,10 @@ msgstr ""
 msgid "ProjectsDropdown|Search your projects"
 msgstr ""
 
-msgid "ProjectsDropdown|Something went wrong on our end"
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
@@ -1074,6 +1072,9 @@ msgstr ""
 msgid "Schedule a new pipeline"
 msgstr ""
 
+msgid "Schedules"
+msgstr ""
+
 msgid "Scheduling Pipelines"
 msgstr ""
 
@@ -1113,6 +1114,12 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
@@ -1133,6 +1140,9 @@ msgstr ""
 msgid "StarProject|Star"
 msgstr ""
 
+msgid "Starred projects"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
@@ -1140,6 +1150,9 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Switch branch/tag"
+msgstr ""
+
+msgid "System Hooks"
 msgstr ""
 
 msgid "Tag"
@@ -1205,6 +1218,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1455,6 +1471,9 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your projects"
 msgstr ""
 
 msgid "day"
