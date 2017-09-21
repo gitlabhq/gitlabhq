@@ -32,6 +32,8 @@ describe Gitlab::LDAP::DN do
       'does not modify an escaped hex carriage return character in an attribute value'               | 'uid= John C. Smith, ou=San Francisco\\,\\0DCA'                                                       | 'uid=john c. smith,ou=san francisco\\,\\0dca'
       'does not modify an escaped hex line feed character in an attribute value'                     | 'uid= John C. Smith, ou=San Francisco\\,\\0ACA'                                                       | 'uid=john c. smith,ou=san francisco\\,\\0aca'
       'does not modify an escaped hex CRLF in an attribute value'                                    | 'uid= John C. Smith, ou=San Francisco\\,\\0D\\0ACA'                                                   | 'uid=john c. smith,ou=san francisco\\,\\0d\\0aca'
+      'allows attribute type name OIDs'                                                              | '0.9.2342.19200300.100.1.25=Example,0.9.2342.19200300.100.1.25=Com'                                   | '0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com'
+      'strips extraneous whitespace from attribute type name OIDs'                                   | '0.9.2342.19200300.100.1.25 = Example, 0.9.2342.19200300.100.1.25 = Com'                              | '0.9.2342.19200300.100.1.25=example,0.9.2342.19200300.100.1.25=com'
     end
 
     with_them do
