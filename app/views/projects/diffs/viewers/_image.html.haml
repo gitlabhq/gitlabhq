@@ -11,8 +11,8 @@
 - if diff_file.new_file? || diff_file.deleted_file?
   .image{ data: diff_view_data }
     %span.wrap
-      .frame.js-add-image-diff-note-button{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: diff_view_position_data(position_code, diff_file.position(image_point, :image), nil, component_type: 'image') }
-        = image_tag(blob_raw_path, alt: diff_file.file_path)
+      .frame.js-add-image-diff-note-button.click-to-comment{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: diff_view_position_data(position_code, diff_file.position(image_point, :image), nil, component_type: 'image') }
+        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
       %p.image-info= number_to_human_size(blob.size)
   .note-container
 - else

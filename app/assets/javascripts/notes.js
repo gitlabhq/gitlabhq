@@ -23,6 +23,7 @@ import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
+import * as imageDiffHelper from './commit/image_diff_helper';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -925,14 +926,20 @@ export default class Notes {
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
 
-    const container = event.target.parentElement;
-    const x = event.offsetX ? (event.offsetX) : event.pageX - container.offsetLeft;
-    const y = event.offsetY ? (event.offsetY) : event.pageY - container.offsetTop;
+    const selection = imageDiffHelper.getTargetSelection(event);
 
-    console.log(x, y)
-    // debugger
+    const $container = $(event.target.parentElement);
+    const $commentSelection = $container.find('.comment-selection');
 
-    $(container).append(`<button class="badge" style="position: absolute;left: ${x}px; top: ${y}px;">Test</button>`)
+    if ($commentSelection.length !== 0) {
+      $commentSelection.css('left', selection.browser.x);
+      $commentSelection.css('top', selection.browser.y);
+    } else {
+      imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
+    }
+
+    imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
+    imageDiffHelper.setPositionCoordinates($link[0], selection.actual.x, selection.actual.y);
 
     const noteContainer = $link.closest('.diff-viewer').find('.note-container');
 

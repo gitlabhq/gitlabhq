@@ -657,3 +657,20 @@
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }
+
+.frame.click-to-comment {
+  position: relative;
+  cursor: url(icon_image_comment.svg), auto;
+
+  .comment-selection {
+    position: absolute;
+
+    .image-comment-dark {
+      background-image: inherit;
+      border: none;
+      background-position: inherit;
+      background-size: inherit;
+      max-width: inherit;
+    }
+  }
+}
