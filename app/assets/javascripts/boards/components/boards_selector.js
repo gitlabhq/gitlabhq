@@ -29,6 +29,7 @@ import './board_new_form';
         loading: true,
         boards: [],
         state: Store.state,
+        milestoneTitle: 'Milestone',
       };
     },
     watch: {

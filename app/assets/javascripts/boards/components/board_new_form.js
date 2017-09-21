@@ -1,6 +1,7 @@
 /* global BoardService */
 
 import Vue from 'vue';
+import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import boardMilestoneSelect from './milestone_select';
 import extraMilestones from '../mixins/extra_milestones';
 
@@ -25,6 +26,7 @@ import extraMilestones from '../mixins/extra_milestones';
           milestone: extraMilestones[0],
           milestone_id: extraMilestones[0].id,
         },
+        issue: {},
         currentBoard: Store.state.currentBoard,
         currentPage: Store.state.currentPage,
         milestones: [],
@@ -34,6 +36,7 @@ import extraMilestones from '../mixins/extra_milestones';
     },
     components: {
       boardMilestoneSelect,
+      PopupDialog,
     },
     mounted() {
       if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
@@ -89,8 +92,6 @@ import extraMilestones from '../mixins/extra_milestones';
 
               // We reload the page to make sure the store & state of the app are correct
               this.refreshPage();
-
-              $('#edit-board-modal').modal('hide');
 
               // Enable the button thanks to our jQuery disabling it
               $(this.$refs.submitBtn).enable();

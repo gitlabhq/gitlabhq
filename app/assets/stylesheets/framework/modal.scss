@@ -35,3 +35,31 @@ body.modal-open {
     width: 98%;
   }
 }
+
+.modal-dialog {
+  // TODO: this needs top and bottom padding (inside content area)
+  max-height: calc(100vh - #{$new-navbar-height});
+  padding: $gl-padding;
+}
+
+.modal-header,
+.modal-footer {
+  padding: $gl-padding;
+  background-color: $gray-light;
+  border-top: 1px solid $border-color;
+}
+
+.modal.popup-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      width: 600px;
+      margin-top: $new-navbar-height;
+    }
+  }
+}

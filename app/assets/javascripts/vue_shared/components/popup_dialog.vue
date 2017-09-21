@@ -5,11 +5,11 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
     },
     body: {
       type: String,
-      required: true,
+      required: false,
     },
     kind: {
       type: String,
@@ -23,7 +23,7 @@ export default {
     },
     primaryButtonLabel: {
       type: String,
-      required: true,
+      required: false,
     },
   },
 
@@ -63,21 +63,25 @@ export default {
         <h4 class="modal-title">{{this.title}}</h4>
       </div>
       <div class="modal-body">
-        <p>{{this.body}}</p>
+        <slot name="body">
+          <p>{{this.body}}</p>
+        </slot>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-default"
-          @click="emitSubmit(false)">
-            {{closeButtonLabel}}
-        </button>
-        <button type="button"
-          class="btn"
-          :class="btnKindClass"
-          @click="emitSubmit(true)">
-            {{primaryButtonLabel}}
-        </button>
+        <slot name="footer">
+          <button
+            type="button"
+            class="btn btn-default"
+            @click="emitSubmit(false)">
+              {{closeButtonLabel}}
+          </button>
+          <button type="button"
+            class="btn"
+            :class="btnKindClass"
+            @click="emitSubmit(true)">
+              {{primaryButtonLabel}}
+          </button>
+        </slot>
       </div>
     </div>
   </div>
