@@ -2,7 +2,8 @@ class PasswordsController < Devise::PasswordsController
   before_action :resource_from_email, only: [:create]
   before_action :prevent_ldap_reset, only: [:create]
   before_action :throttle_reset,      only: [:create]
-  before_action :log_audit_event,      only: [:create]
+
+  prepend EE::PasswordsController
 
   def edit
     super
@@ -53,16 +54,5 @@ class PasswordsController < Devise::PasswordsController
     # avoid user enumeration attack.
     redirect_to new_user_session_path,
       notice: I18n.t('devise.passwords.send_paranoid_instructions')
-  end
-
-  private
-
-  def log_audit_event
-    AuditEventService.new(current_user,
-                          resource,
-                          action: :custom,
-                          custom_message: 'Ask for password reset',
-                          ip_address: request.remote_ip)
-        .for_user(resource_params[:email]).unauth_security_event
   end
 end
