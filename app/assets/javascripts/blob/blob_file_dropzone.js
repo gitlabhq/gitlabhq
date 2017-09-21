@@ -3,6 +3,7 @@
 
 import '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
+import csrf from '../lib/utils/csrf';
 
 function toggleLoading($el, $icon, loading) {
   if (loading) {
@@ -36,9 +37,7 @@ export default class BlobFileDropzone {
       maxFiles: 1,
       addRemoveLinks: true,
       previewsContainer: '.dropzone-previews',
-      headers: {
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-      },
+      headers: csrf.headers,
       init: function () {
         this.on('addedfile', function () {
           toggleLoading(submitButton, submitButtonLoadingIcon, false);
