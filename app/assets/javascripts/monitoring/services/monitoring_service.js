@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import statusCodes from '../../lib/utils/http_status';
+import { backOff } from '../../lib/utils/common_utils';
 
 Vue.use(VueResource);
 
@@ -8,7 +9,7 @@ const MAX_REQUESTS = 3;
 
 function backOffRequest(makeRequestCallback) {
   let requestCounter = 0;
-  return gl.utils.backOff((next, stop) => {
+  return backOff((next, stop) => {
     makeRequestCallback().then((resp) => {
       if (resp.status === statusCodes.NO_CONTENT) {
         requestCounter += 1;
