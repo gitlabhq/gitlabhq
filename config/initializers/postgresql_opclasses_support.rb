@@ -87,25 +87,29 @@ module ActiveRecord
   end
 end
 
-module ActiveRecord
-  module ConnectionAdapters # :nodoc:
-    class PostgreSQLAdapter
-      private
+if Gitlab::Database.postgresql?
+  require 'active_record/connection_adapters/postgresql_adapter'
 
-      def add_index_opclass(column_names, options = {})
-        opclass = if options[:opclasses].is_a?(Hash)
-                    options[:opclasses].symbolize_keys
-                  else
-                    Hash.new { |hash, column| hash[column] = options[:opclasses].to_s }
-                  end
-        column_names.each do |name, column|
-          column << " #{opclass[name]}" if opclass[name].present?
+  module ActiveRecord
+    module ConnectionAdapters # :nodoc:
+      class PostgreSQLAdapter
+        private
+
+        def add_index_opclass(column_names, options = {})
+          opclass = if options[:opclasses].is_a?(Hash)
+                      options[:opclasses].symbolize_keys
+                    else
+                      Hash.new { |hash, column| hash[column] = options[:opclasses].to_s }
+                    end
+          column_names.each do |name, column|
+            column << " #{opclass[name]}" if opclass[name].present?
+          end
         end
-      end
 
-      def add_options_for_index_columns(quoted_columns, **options)
-        quoted_columns = add_index_opclass(quoted_columns, options)
-        super
+        def add_options_for_index_columns(quoted_columns, **options)
+          quoted_columns = add_index_opclass(quoted_columns, options)
+          super
+        end
       end
     end
   end
