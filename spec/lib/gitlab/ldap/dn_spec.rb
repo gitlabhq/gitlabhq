@@ -48,7 +48,7 @@ describe Gitlab::LDAP::DN do
           let(:given) { 'uid=john smith+telephonenumber=+1 555-555-5555,ou=people,dc=example,dc=com' }
 
           it 'raises UnsupportedDnFormatError' do
-            expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+            expect { subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
           end
         end
 
@@ -57,7 +57,7 @@ describe Gitlab::LDAP::DN do
             let(:given) { 'uid = John Smith  + telephoneNumber  = + 1 555-555-5555 , ou = People,dc=example,dc=com' }
 
             it 'raises UnsupportedDnFormatError' do
-              expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+              expect { subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
             end
           end
 
@@ -65,7 +65,7 @@ describe Gitlab::LDAP::DN do
             let(:given) { 'uid = John Smith  + telephoneNumber  = +1 555-555-5555 , ou = People,dc=example,dc=com' }
 
             it 'raises UnsupportedDnFormatError' do
-              expect{ subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
+              expect { subject }.to raise_error(Gitlab::LDAP::UnsupportedDnFormatError)
             end
           end
         end
@@ -77,7 +77,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'uid=John Smith,' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
         end
       end
 
@@ -85,7 +85,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aa aa' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the end of an attribute value, but got \"a\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the end of an attribute value, but got \"a\"")
         end
       end
 
@@ -93,7 +93,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaXaaa' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the first character of a hex pair, but got \"x\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the first character of a hex pair, but got \"x\"")
         end
       end
 
@@ -101,7 +101,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaaYaa' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair, but got \"y\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair, but got \"y\"")
         end
       end
 
@@ -109,7 +109,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'uid="Sebasti\\cX\\a1n"' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"x\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"x\"")
         end
       end
 
@@ -117,7 +117,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'John' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
         end
       end
 
@@ -125,7 +125,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'cn="James' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
         end
       end
 
@@ -133,7 +133,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'cn=J\ames' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Invalid escaped hex code "\am"')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Invalid escaped hex code "\am"')
         end
       end
 
@@ -141,7 +141,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'cn=\\' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
         end
       end
 
@@ -149,7 +149,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '1.2.d=Value' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN OID attribute type name character "d"')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN OID attribute type name character "d"')
         end
       end
 
@@ -157,7 +157,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'd1.2=Value' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN attribute type name character "."')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN attribute type name character "."')
         end
       end
 
@@ -165,7 +165,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { ' -uid=John Smith' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized first character of an RDN attribute type name "-"')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized first character of an RDN attribute type name "-"')
         end
       end
 
@@ -173,7 +173,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'uid\\=john' }
 
         it 'raises MalformedDnError' do
-          expect{ subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN attribute type name character "\\"')
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Unrecognized RDN attribute type name character "\\"')
         end
       end
     end

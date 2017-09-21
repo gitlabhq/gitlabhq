@@ -37,16 +37,16 @@ module Gitlab
         buffer = StringIO.new
 
         args.each_index do |index|
-          buffer << "=" if index % 2 == 1
-          buffer << "," if index % 2 == 0 && index != 0
+          buffer << "=" if index.odd?
+          buffer << "," if index.even? && index != 0
 
           arg = args[index].downcase
 
-          if index < args.length - 1 || index % 2 == 1
-            buffer << self.class.escape(arg)
-          else
-            buffer << arg
-          end
+          buffer << if index < args.length - 1 || index.odd?
+                      self.class.escape(arg)
+                    else
+                      arg
+                    end
         end
 
         @dn = buffer.string
@@ -55,6 +55,9 @@ module Gitlab
       ##
       # Parse a DN into key value pairs using ASN from
       # http://tools.ietf.org/html/rfc2253 section 3.
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
       def each_pair
         state = :key
         key = StringIO.new
@@ -98,7 +101,7 @@ module Gitlab
               state = :key
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
-              value = StringIO.new;
+              value = StringIO.new
             else
               state = :value_normal
               value << char
@@ -110,7 +113,7 @@ module Gitlab
               state = :key
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
-              value = StringIO.new;
+              value = StringIO.new
             when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
             else value << char
             end
@@ -119,8 +122,12 @@ module Gitlab
             when '0'..'9', 'a'..'f' then
               state = :value_normal_escape_hex
               hex_buffer = char
-            when /\s/ then state = :value_normal_escape_whitespace; value << char
-            else state = :value_normal; value << char
+            when /\s/ then
+              state = :value_normal_escape_whitespace
+              value << char
+            else
+              state = :value_normal
+              value << char
             end
           when :value_normal_escape_hex then
             case char
@@ -136,7 +143,7 @@ module Gitlab
               state = :key
               yield key.string.strip, value.string # Don't strip trailing escaped space!
               key = StringIO.new
-              value = StringIO.new;
+              value = StringIO.new
             when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
             else value << char
             end
@@ -152,7 +159,7 @@ module Gitlab
               state = :value_quoted_escape_hex
               hex_buffer = char
             else
-              state = :value_quoted;
+              state = :value_quoted
               value << char
             end
           when :value_quoted_escape_hex then
@@ -172,7 +179,7 @@ module Gitlab
               state = :key
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
-              value = StringIO.new;
+              value = StringIO.new
             else raise(MalformedDnError, "Expected the first character of a hex pair, but got \"#{char}\"")
             end
           when :value_hexstring_hex then
@@ -189,7 +196,7 @@ module Gitlab
               state = :key
               yield key.string.strip, value.string.rstrip
               key = StringIO.new
-              value = StringIO.new;
+              value = StringIO.new
             else raise(MalformedDnError, "Expected the end of an attribute value, but got \"#{char}\"")
             end
           else raise "Fell out of state machine"
@@ -228,13 +235,13 @@ module Gitlab
       # using a single backslash ('\') as escape. The space character is left
       # out here because in a "normalized" string, spaces should only be escaped
       # if necessary (i.e. leading or trailing space).
-      NORMAL_ESCAPES = [',', '+', '"', '\\', '<', '>', ';', '=']
+      NORMAL_ESCAPES = [',', '+', '"', '\\', '<', '>', ';', '='].freeze
 
       # The following must be represented as escaped hex
       HEX_ESCAPES = {
         "\n" => '\0a',
         "\r" => '\0d'
-      }
+      }.freeze
 
       # Compiled character class regexp using the keys from the above hash, and
       # checking for a space or # at the start, or space at the end, of the
@@ -257,6 +264,7 @@ module Gitlab
       ##
       # Proxy all other requests to the string object, because a DN is mainly
       # used within the library as a string
+      # rubocop:disable GitlabSecurity/PublicSend
       def method_missing(method, *args, &block)
         @dn.send(method, *args, &block)
       end
