@@ -1,7 +1,7 @@
 class Event < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
-  default_scope { reorder(nil).where.not(author_id: nil) }
+  default_scope { reorder(nil) }
 
   CREATED   = 1
   UPDATED   = 2
@@ -76,6 +76,12 @@ class Event < ActiveRecord::Base
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
+
+  # Authors are required as they're used to display who pushed data.
+  #
+  # We're just validating the presence of the ID here as foreign key constraints
+  # should ensure the ID points to a valid user.
+  validates :author_id, presence: true
 
   self.inheritance_column = 'action'
 
