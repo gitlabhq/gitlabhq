@@ -264,6 +264,20 @@ Ensure your GitLab database configuration file uses a proper connection encoding
 
 [Restart your GitLab instance](../administration/restart_gitlab.md).
 
+## Disable MySQL strict mode
+
+Due to various reasons, and the complexity involved with it, we don't support
+running MySQL in strict mode.
+
+Ensure your GitLab database configuration file disable strict mode:
+
+```sudo -u git -H editor config/database.yml```
+
+    production:
+      adapter: mysql2
+      strict: false
+
+[Restart your GitLab instance](../administration/restart_gitlab.md).
 
 ## MySQL strings limits
 

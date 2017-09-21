@@ -10,6 +10,7 @@ production:
   pool: 10
   username: git
   password: "secure password"
+  strict: false
   # host: localhost
   # socket: /tmp/mysql.sock
 
@@ -25,6 +26,7 @@ development:
   pool: 5
   username: root
   password: "secure password"
+  strict: false
   # host: localhost
   # socket: /tmp/mysql.sock
 
@@ -40,6 +42,7 @@ test: &test
   pool: 5
   username: root
   password:
+  strict: false
   # host: localhost
   # socket: /tmp/mysql.sock
   prepared_statements: false
