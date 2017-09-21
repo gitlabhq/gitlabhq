@@ -32,6 +32,7 @@ import {
   notify,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
+import tooltip from '../vue_shared/directives/tooltip';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -256,10 +257,10 @@ export default {
         >
           <strong>Removes</strong> source branch
           <i
-            title=""
+            v-tooltip
             class="fa fa-question-circle"
-            aria-label="A user with write access to the source branch selected this option"
-            data-original-title="A user with write access to the source branch selected this option"
+            title="A user with write access to the source branch selected this option"
+            aria-label="Source Branch Removal Info"
           >
           </i>
         </p>
