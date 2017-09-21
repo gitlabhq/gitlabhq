@@ -1,9 +1,8 @@
-- todo_external_artifacts_path = 'https://google.com'
-- is_external_link = !todo_external_artifacts_path.blank?
-- path_to_file = todo_external_artifacts_path || file_project_job_artifacts_path(@project, @build, path: file.path)
+- blob = file.blob
+- is_external_link = external_link?(blob)
+- path_to_file = link_to_artifact(@project, @build, file)
 
 %tr.tree-item.js-artifact-tree-row{ data: { link: path_to_file, external_link: "#{is_external_link}" } }
-  - blob = file.blob
   %td.tree-item-file-name
     = tree_icon('file', blob.mode, blob.name)
     = link_to path_to_file,
