@@ -1,7 +1,7 @@
 class Event < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
-  default_scope { reorder(nil).where.not(author_id: nil) }
+  default_scope { reorder(nil) }
 
   CREATED   = 1
   UPDATED   = 2
@@ -82,6 +82,12 @@ class Event < ActiveRecord::Base
   scope :closed, -> { where(action: CLOSED) }
   scope :merged, -> { where(action: MERGED) }
   scope :totals_by_author, -> { group(:author_id).count }
+
+  # Authors are required as they're used to display who pushed data.
+  #
+  # We're just validating the presence of the ID here as foreign key constraints
+  # should ensure the ID points to a valid user.
+  validates :author_id, presence: true
 
   self.inheritance_column = 'action'
 

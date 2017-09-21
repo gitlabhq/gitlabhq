@@ -1,0 +1,5 @@
+---
+title: Fix image diff swipe handle offset to correctly align with the frame
+merge_request:
+author:
+type: fixed
