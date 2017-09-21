@@ -75,10 +75,9 @@ module LicenseHelper
   end
 
   def upgrade_plan_url
-    if @project && @project.group
-      group_billings_path(@project.group)
-    elsif @group
-      group_billings_path(@group)
+    group = @project&.group || @group
+    if group
+      group_billings_path(group)
     else
       profile_billings_path
     end
