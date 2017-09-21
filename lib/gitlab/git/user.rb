@@ -7,10 +7,6 @@ module Gitlab
         new(gitlab_user.name, gitlab_user.email, Gitlab::GlId.gl_id(gitlab_user))
       end
 
-      def self.from_gitaly(gitaly_user)
-        new(gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
-      end
-
       def initialize(name, email, gl_id)
         @name = name
         @email = email
