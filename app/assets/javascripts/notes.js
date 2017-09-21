@@ -918,16 +918,18 @@ export default class Notes {
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
 
-    const selection = imageDiffHelper.getTargetSelection(event);
-
     const $container = $(event.target.parentElement);
     const $commentSelection = $container.find('.comment-selection');
+    const selection = imageDiffHelper.getTargetSelection(event);
 
+    // Set comment selection indicator
     if ($commentSelection.length !== 0) {
       $commentSelection.css('left', selection.browser.x);
       $commentSelection.css('top', selection.browser.y);
     } else {
-      imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
+      const button = imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
+      // TODO: Use button to focus the comment input
+      $(button).on('click', e => e.stopPropagation());
     }
 
     imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
@@ -938,7 +940,7 @@ export default class Notes {
     if (noteContainer.find('form').length === 0) {
       const newForm = this.cleanForm(this.formClone.clone());
       newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
-      return this.setupDiscussionNoteForm($link, newForm);
+      this.setupDiscussionNoteForm($link, newForm);
     } else {
       // change coordinates of existing form
     }

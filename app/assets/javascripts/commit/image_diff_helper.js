@@ -71,4 +71,6 @@ export function setCommentSelectionIndicator(containerEl, x, y) {
 
   button.appendChild(image);
   containerEl.appendChild(button);
+
+  return button;
 }
