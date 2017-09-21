@@ -1,4 +1,4 @@
-import '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/common_utils';
 import '~/lib/utils/url_utility';
 
 (() => {
@@ -9,7 +9,7 @@ import '~/lib/utils/url_utility';
     init(limit = 0, preload = false, disable = false, prepareData = $.noop, callback = $.noop) {
       this.url = $('.content_list').data('href') || gl.utils.removeParams(['limit', 'offset']);
       this.limit = limit;
-      this.offset = parseInt(gl.utils.getParameterByName('offset'), 10) || this.limit;
+      this.offset = parseInt(getParameterByName('offset'), 10) || this.limit;
       this.disable = disable;
       this.prepareData = prepareData;
       this.callback = callback;

@@ -192,7 +192,11 @@ $new-sidebar-collapsed-width: 50px;
 .nav-sidebar-inner-scroll {
   height: 100%;
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
+
+  @media (min-width: $screen-sm-min) {
+    overflow: hidden;
+  }
 }
 
 .with-performance-bar .nav-sidebar {
@@ -441,9 +445,8 @@ $new-sidebar-collapsed-width: 50px;
   background-color: transparent;
   border: 0;
   padding: 6px 16px;
-  margin: 0 16px 0 -15px;
+  margin: 0 0 0 -15px;
   height: 46px;
-  border-right: 1px solid $gl-text-color-quaternary;
 
   i {
     font-size: 20px;
@@ -451,7 +454,12 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   @media (max-width: $screen-xs-max) {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+
+    i {
+      font-size: 18px;
+    }
   }
 }
 

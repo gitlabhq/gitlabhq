@@ -1311,24 +1311,25 @@ describe Repository, models: true do
   describe '#revert' do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+    let(:message) { 'revert message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already reverted' do
       it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master')
+        repository.revert(user, update_image_commit, 'master', message)
 
-        expect { repository.revert(user, update_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be reverted' do
       it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
+        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1337,7 +1338,7 @@ describe Repository, models: true do
         merge_commit
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
 
-        repository.revert(user, merge_commit, 'master')
+        repository.revert(user, merge_commit, 'master', message)
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
       end
     end
@@ -1347,24 +1348,25 @@ describe Repository, models: true do
     let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
     let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+    let(:message) { 'cherry-pick message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.cherry_pick(user, conflict_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already cherry-picked' do
       it 'raises an error' do
-        repository.cherry_pick(user, pickable_commit, 'master')
+        repository.cherry_pick(user, pickable_commit, 'master', message)
 
-        expect { repository.cherry_pick(user, pickable_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be cherry-picked' do
       it 'cherry-picks the changes' do
-        expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
+        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1372,11 +1374,11 @@ describe Repository, models: true do
       it 'cherry-picks the changes' do
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
         cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
 
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
-        expect(cherry_pick_commit_message).to include('cherry picked from')
+        expect(cherry_pick_commit_message).to eq(message)
       end
     end
   end

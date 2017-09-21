@@ -51,13 +51,16 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
-    @logs = contents[@offset, @limit].to_a.map do |content|
-      file = @path ? File.join(@path, content.name) : content.name
-      last_commit = @repo.last_commit_for_path(@commit.id, file)
-      {
-        file_name: content.name,
-        commit: last_commit
-      }
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
+    @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
+      contents[@offset, @limit].to_a.map do |content|
+        file = @path ? File.join(@path, content.name) : content.name
+        last_commit = @repo.last_commit_for_path(@commit.id, file)
+        {
+          file_name: content.name,
+          commit: last_commit
+        }
+      end
     end
 
     offset = (@offset + @limit)

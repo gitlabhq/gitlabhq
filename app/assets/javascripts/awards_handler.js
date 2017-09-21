@@ -2,6 +2,7 @@
 /* global Flash */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -237,7 +238,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
 
-    if (gl.utils.isInIssuePage() && !isMainAwardsBlock) {
+    if (isInIssuePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       $('.emoji-menu').removeClass('is-visible');
@@ -288,7 +289,7 @@ class AwardsHandler {
   }
 
   getVotesBlock() {
-    if (gl.utils.isInIssuePage()) {
+    if (isInIssuePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {
@@ -452,11 +453,11 @@ class AwardsHandler {
   userAuthored($emojiButton) {
     const oldTitle = this.getAwardTooltip($emojiButton);
     const newTitle = 'You cannot vote on your own issue, MR and note';
-    gl.utils.updateTooltipTitle($emojiButton, newTitle).tooltip('show');
+    updateTooltipTitle($emojiButton, newTitle).tooltip('show');
     // Restore tooltip back to award list
     return setTimeout(() => {
       $emojiButton.tooltip('hide');
-      gl.utils.updateTooltipTitle($emojiButton, oldTitle);
+      updateTooltipTitle($emojiButton, oldTitle);
     }, 2800);
   }
 

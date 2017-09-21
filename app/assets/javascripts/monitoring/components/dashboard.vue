@@ -7,6 +7,7 @@
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
+  import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
 
@@ -17,7 +18,7 @@
       return {
         store,
         state: 'gettingStarted',
-        hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
+        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
         documentationPath: metricsData.documentationPath,
         settingsPath: metricsData.settingsPath,
         metricsEndpoint: metricsData.additionalMetrics,
