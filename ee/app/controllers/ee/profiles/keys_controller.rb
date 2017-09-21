@@ -1,6 +1,6 @@
 module EE
-  module Admin
-    module ApplicationsController
+  module Profiles
+    module KeysController
       protected
 
       def redirect_to_profile_key_path
