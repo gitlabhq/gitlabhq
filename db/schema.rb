@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170921115009) do
+ActiveRecord::Schema.define(version: 20170921203824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,6 +213,28 @@ ActiveRecord::Schema.define(version: 20170921115009) do
 
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
+
+  create_table "board_filter_labels", force: :cascade do |t|
+    t.integer "board_filter_id", null: false
+    t.integer "label_id", null: false
+  end
+
+  add_index "board_filter_labels", ["board_filter_id"], name: "index_board_filter_labels_on_board_filter_id", using: :btree
+  add_index "board_filter_labels", ["label_id"], name: "index_board_filter_labels_on_label_id", using: :btree
+
+  create_table "board_filters", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "milestone_id"
+    t.integer "weight"
+    t.integer "author_id"
+    t.integer "assignee_id"
+  end
+
+  add_index "board_filters", ["assignee_id"], name: "index_board_filters_on_assignee_id", using: :btree
+  add_index "board_filters", ["author_id"], name: "index_board_filters_on_author_id", using: :btree
+  add_index "board_filters", ["board_id"], name: "index_board_filters_on_board_id", using: :btree
+  add_index "board_filters", ["milestone_id"], name: "index_board_filters_on_milestone_id", using: :btree
+  add_index "board_filters", ["weight"], name: "index_board_filters_on_weight", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
@@ -2047,6 +2069,12 @@ ActiveRecord::Schema.define(version: 20170921115009) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "board_filter_labels", "board_filters", on_delete: :cascade
+  add_foreign_key "board_filter_labels", "labels", on_delete: :cascade
+  add_foreign_key "board_filters", "boards", on_delete: :cascade
+  add_foreign_key "board_filters", "milestones", on_delete: :nullify
+  add_foreign_key "board_filters", "users", column: "assignee_id", on_delete: :nullify
+  add_foreign_key "board_filters", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
