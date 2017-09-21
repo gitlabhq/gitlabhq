@@ -847,7 +847,11 @@ export default class Notes {
    */
   setupDiscussionNoteForm(dataHolder, form) {
     // setup note target
-    const diffFileData = dataHolder.closest('.text-file');
+    let diffFileData = dataHolder.closest('.text-file');
+
+    if (diffFileData.length === 0) {
+      diffFileData = dataHolder.closest('.image');
+    }
 
     var discussionID = dataHolder.data('discussionId');
 
@@ -920,21 +924,25 @@ export default class Notes {
 
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
-    const newForm = this.cleanForm(this.formClone.clone());
-    // debugger
-    newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
-    // // show the form
-    return this.setupDiscussionNoteForm($link, newForm);
 
-    // e.preventDefault();
-    // const link = e.currentTarget || e.target;
-    // const $link = $(link);
-    // const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
-    // this.toggleDiffNote({
-    //   target: $link,
-    //   lineType: link.dataset.lineType,
-    //   showReplyInput
-    // });
+    const container = event.target.parentElement;
+    const x = event.offsetX ? (event.offsetX) : event.pageX - container.offsetLeft;
+    const y = event.offsetY ? (event.offsetY) : event.pageY - container.offsetTop;
+
+    console.log(x, y)
+    // debugger
+
+    $(container).append(`<button class="badge" style="position: absolute;left: ${x}px; top: ${y}px;">Test</button>`)
+
+    const noteContainer = $link.closest('.diff-viewer').find('.note-container');
+
+    if (noteContainer.find('form').length === 0) {
+      const newForm = this.cleanForm(this.formClone.clone());
+      newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
+      return this.setupDiscussionNoteForm($link, newForm);
+    } else {
+      // change coordinates of existing form
+    }
   }
 
   toggleDiffNote({
