@@ -58,11 +58,11 @@ module Gitlab
         end
 
         def repository_storages
-          @repository_storage ||= storages_paths.keys
+          storages_paths.keys
         end
 
         def storages_paths
-          @storage_paths ||= Gitlab.config.repositories.storages
+          Gitlab.config.repositories.storages
         end
 
         def exec_with_timeout(cmd_args, *args, &block)
