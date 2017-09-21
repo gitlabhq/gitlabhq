@@ -25,8 +25,9 @@ export function getTargetSelection(event) {
       height,
     },
     actual: {
-      x: x * widthRatio,
-      y: y * heightRatio,
+      // Round x, y so that we don't need to deal with decimals
+      x: Math.round(x * widthRatio),
+      y: Math.round(y * heightRatio),
       width: actualWidth,
       height: actualHeight,
     },
@@ -43,11 +44,14 @@ export function setLineCodeCoordinates(el, x, y) {
   el.setAttribute('dataset-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
 }
 
-export function setPositionDataAttribute(el, x, y) {
+export function setPositionDataAttribute(el, options) {
+  const { x, y, width, height } = options;
   const position = el.dataset.position;
   const positionObject = JSON.parse(position);
   positionObject.x_axis = x;
   positionObject.y_axis = y;
+  positionObject.width = width;
+  positionObject.height = height;
   positionObject.component_type = 'image';
 
   el.setAttribute('data-position', JSON.stringify(positionObject));

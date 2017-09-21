@@ -931,7 +931,7 @@ export default class Notes {
     }
 
     imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
-    imageDiffHelper.setPositionDataAttribute($link[0], selection.actual.x, selection.actual.y);
+    imageDiffHelper.setPositionDataAttribute($link[0], selection.actual);
 
     const noteContainer = $link.closest('.diff-viewer').find('.note-container');
 
