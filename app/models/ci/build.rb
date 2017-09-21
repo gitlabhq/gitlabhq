@@ -11,9 +11,14 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
-    has_many :artifacts, class_name: 'Ci::Artifact', foreign_key: :ci_build_id
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
+
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
+    has_one :job_archive, -> () { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
+    has_one :job_metadata, -> () { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
+
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -33,7 +38,9 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts, ->() do
+      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)', '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.ci_job_id'))
+    end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -423,7 +430,7 @@ module Ci
       Gitlab::Ci::Build::Image.from_services(self)
     end
 
-    def artifacts_options
+    def artifacts
       [options[:artifacts]]
     end
 
@@ -462,12 +469,6 @@ module Ci
 
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
-    end
-
-    def update_project_statistics
-      return unless project
-
-      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
     end
 
     private
@@ -560,6 +561,11 @@ module Ci
       pipeline.config_processor.build_attributes(name)
     end
 
+    def update_project_statistics
+      return unless project
+
+      ProjectCacheWorker.perform_async(project_id, [], [:build_artifacts_size])
+    end
 
     def update_project_statistics_after_save
       if previous_changes.include?('artifacts_size')

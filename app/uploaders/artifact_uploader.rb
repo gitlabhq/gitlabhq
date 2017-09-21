@@ -12,10 +12,6 @@ class ArtifactUploader < GitlabUploader
   end
 
   def initialize(job, field)
-    # Temporairy conditional, needed to move artifacts to their own table,
-    # but keeping compat with Ci::Build for the time being
-    job = job.build if job.respond_to?(:build)
-
     @job, @field = job, field
   end
 
@@ -38,6 +34,8 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_path
-    File.join(job.created_at.utc.strftime('%Y_%m'), job.project_id.to_s, job.id.to_s)
+    File.join(job.project_id.to_s,
+              job.created_at.utc.strftime('%Y_%m'),
+              job.id.to_s)
   end
 end

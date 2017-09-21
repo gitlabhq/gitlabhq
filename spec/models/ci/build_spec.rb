@@ -146,7 +146,7 @@ describe Ci::Build do
       it { is_expected.to be_truthy }
 
       context 'is expired' do
-        let(:build) { create(:ci_build, :artifacts, :expired) }
+        let!(:build) { create(:ci_build, :artifacts, :expired) }
 
         it { is_expected.to be_falsy }
       end

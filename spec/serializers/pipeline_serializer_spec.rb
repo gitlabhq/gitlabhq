@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PipelineSerializer do
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
 
   let(:serializer) do
     described_class.new(current_user: user)

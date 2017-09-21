@@ -226,18 +226,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   add_index "chat_teams", ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
 
-  create_table "ci_artifacts", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "ci_build_id", null: false
-    t.integer "type", default: 0, null: false
-    t.integer "size", limit: 8, default: 0
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.text "file"
-  end
-
-  add_index "ci_artifacts", ["project_id", "ci_build_id"], name: "index_ci_artifacts_on_project_id_and_ci_build_id", unique: true, using: :btree
-
   create_table "ci_build_trace_section_names", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -331,6 +319,20 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   add_index "ci_group_variables", ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
 
+  create_table "ci_job_artifacts", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "ci_job_id", null: false
+    t.integer "size", limit: 8
+    t.integer "file_type", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "file"
+  end
+
+  add_index "ci_job_artifacts", ["ci_job_id"], name: "index_ci_job_artifacts_on_ci_job_id", using: :btree
+  add_index "ci_job_artifacts", ["file_type"], name: "index_ci_job_artifacts_on_file_type", using: :btree
+  add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
+
   create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -391,9 +393,9 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.integer "config_source"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "config_source"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -1913,8 +1915,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
-  add_foreign_key "ci_artifacts", "ci_builds", on_delete: :cascade
-  add_foreign_key "ci_artifacts", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_build_trace_section_names", column: "section_name_id", name: "fk_264e112c66", on_delete: :cascade
   add_foreign_key "ci_build_trace_sections", "ci_builds", column: "build_id", name: "fk_4ebe41f502", on_delete: :cascade
@@ -1923,6 +1923,7 @@ ActiveRecord::Schema.define(version: 20171124150326) do
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
+  add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
