@@ -727,6 +727,12 @@ ul.notes {
     border-bottom-left-radius: 0;
   }
 
+  .btn {
+    svg path {
+      fill: $gray-darkest;
+    }
+  }
+
   .btn.discussion-create-issue-btn {
     margin-left: -4px;
     border-radius: 0;
@@ -740,10 +746,6 @@ ul.notes {
         text-decoration: none;
         border: 0;
       }
-    }
-
-    .new-issue-for-discussion path {
-      fill: $gray-darkest;
     }
   }
 }
@@ -815,16 +817,6 @@ ul.notes {
 
 .line-resolve-text {
   vertical-align: middle;
-}
-
-.discussion-next-btn {
-  svg {
-    margin: 0;
-
-    path {
-      fill: $gray-darkest;
-    }
-  }
 }
 
 // Merge request notes in diffs
