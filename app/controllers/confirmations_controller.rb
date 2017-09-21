@@ -1,5 +1,5 @@
 class ConfirmationsController < Devise::ConfirmationsController
-  include EE::Audit::Changes
+  prepend ::EE::ConfirmationsController
 
   def almost_there
     flash[:notice] = nil
@@ -14,12 +14,14 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def after_confirmation_path_for(resource_name, resource)
     if signed_in?(resource_name)
-      audit_changes(:email, as: 'email address', model: resource)
-
-      after_sign_in_path_for(resource)
+      after_sign_in(resource)
     else
       flash[:notice] += " Please sign in."
       new_session_path(resource_name)
     end
+  end
+
+  def after_sign_in(resource)
+    after_sign_in_path_for(resource)
   end
 end
