@@ -127,16 +127,10 @@ export default {
 
     /**
      * Toggles the visibility of the deploy boards of the clicked environment.
-     *
-     * @param  {Object} model
-     * @return {Object}
+     * @param {Object} model
      */
     toggleDeployBoard(model) {
       this.store.toggleDeployBoard(model.id);
-
-      if (!model.isDeployboardVisible) {
-        this.fetchDeployBoard(model, true);
-      }
     },
 
     toggleFolder(folder) {
@@ -203,34 +197,12 @@ export default {
       if (openFolders.length) {
         openFolders.forEach(folder => this.fetchChildEnvironments(folder));
       }
-
-      const openDeployBoards = this.store.getOpenDeployBoards();
-      if (openDeployBoards.length) {
-        openDeployBoards.forEach(env => this.fetchDeployBoard(env));
-      }
     },
 
     errorCallback() {
       this.isLoading = false;
       // eslint-disable-next-line no-new
       new Flash('An error occurred while fetching the environments.');
-    },
-
-    fetchDeployBoard(environment, showLoader = false) {
-      this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', showLoader);
-
-      this.service.getDeployBoard(environment.rollout_status_path)
-        .then(resp => resp.json())
-        .then((data) => {
-          this.store.storeDeployBoard(environment.id, data);
-          this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', false);
-        })
-        .catch(() => {
-          this.store.updateEnvironmentProp(environment, 'isLoadingDeployBoard', false);
-          this.store.updateEnvironmentProp(environment, 'hasErrorDeployBoard', true);
-          // eslint-disable-next-line no-new
-          new Flash('An error occurred while fetching the deploy board.');
-        });
     },
   },
 };

@@ -37,12 +37,11 @@ describe('Environment item', () => {
       size: 1,
       environment_path: 'url',
       id: 1,
-      rollout_status_path: 'url',
       hasDeployBoard: true,
       deployBoardData: deployBoardMockData,
       isDeployBoardVisible: true,
       isLoadingDeployBoard: false,
-      hasErrorDeployBoard: false,
+      isEmptyDeployBoard: false,
     };
 
     const component = new EnvironmentTable({
@@ -66,7 +65,6 @@ describe('Environment item', () => {
       size: 1,
       environment_path: 'url',
       id: 1,
-      rollout_status_path: 'url',
       hasDeployBoard: true,
       deployBoardData: {
         instances: [

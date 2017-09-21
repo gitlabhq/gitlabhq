@@ -8,6 +8,7 @@
    * - Button Actions.
    * [Mockup](https://gitlab.com/gitlab-org/gitlab-ce/uploads/2f655655c0eadf655d0ae7467b53002a/environments__deploy-graphic.png)
    */
+  import _ from 'underscore';
   import deployBoardSvg from 'empty_states/icons/_deploy_board.svg';
   import instanceComponent from './deploy_board_instance_component.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -26,39 +27,26 @@
         type: Boolean,
         required: true,
       },
-      hasError: {
+      isEmpty: {
         type: Boolean,
         required: true,
       },
     },
-    data() {
-      return {
-        deployBoardSvg,
-      };
-    },
     computed: {
       canRenderDeployBoard() {
-        return !this.isLoading && !this.hasError && this.deployBoardData.valid;
+        return !this.isLoading && !this.isEmpty && !_.isEmpty(this.deployBoardData);
       },
       canRenderEmptyState() {
-        return !this.isLoading && !this.hasError && !this.deployBoardData.valid;
-      },
-      canRenderErrorState() {
-        return !this.isLoading && this.hasError;
+        return !this.isLoading && this.isEmpty;
       },
       instanceTitle() {
-        let title;
-
-        if (this.deployBoardData.instances.length === 1) {
-          title = 'Instance';
-        } else {
-          title = 'Instances';
-        }
-
-        return title;
+        return gl.text.pluralize('Instance', this.deployBoardData.instances);
       },
       projectName() {
         return '<projectname>';
+      },
+      deployBoardSvg() {
+        return deployBoardSvg;
       },
     },
   };
@@ -127,12 +115,6 @@
           <code>{{projectName}}</code> and labeled with <code>app=$CI_ENVIRONMENT_SLUG</code>.
         </span>
       </section>
-    </div>
-
-    <div
-      v-if="canRenderErrorState"
-      class="deploy-board-error-message">
-      We can't fetch the data right now. Please try again later.
     </div>
   </div>
 </script>
