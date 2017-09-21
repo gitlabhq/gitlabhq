@@ -3,9 +3,11 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../vue_shared/translate';
-import LimitWarningComponent from './components/limit_warning_component';
-import './components/stage_code_component';
-import './components/stage_issue_component';
+import Store from './cycle_analytics_store';
+import stageComponent from './components/stage_component.vue';
+import limitWarningComponent from './components/limit_warning_component.vue';
+import stateCodeComponent from './components/stage_code_component.vue';
+import stageIssueComponent from './components/stage_issue_component.vue';
 import './components/stage_plan_component';
 import './components/stage_production_component';
 import './components/stage_review_component';
@@ -13,7 +15,6 @@ import './components/stage_staging_component';
 import './components/stage_test_component';
 import './components/total_time_component';
 import './cycle_analytics_service';
-import './cycle_analytics_store';
 
 Vue.use(Translate);
 
@@ -43,9 +44,10 @@ $(() => {
       },
     },
     components: {
-      'stage-issue-component': gl.cycleAnalytics.StageIssueComponent,
+      stageComponent,
+      stageIssueComponent,
       'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
-      'stage-code-component': gl.cycleAnalytics.StageCodeComponent,
+      stateCodeComponent,
       'stage-test-component': gl.cycleAnalytics.StageTestComponent,
       'stage-review-component': gl.cycleAnalytics.StageReviewComponent,
       'stage-staging-component': gl.cycleAnalytics.StageStagingComponent,
@@ -132,6 +134,6 @@ $(() => {
   });
 
   // Register global components
-  Vue.component('limit-warning', LimitWarningComponent);
+  Vue.component('limit-warning', limitWarningComponent);
   Vue.component('total-time', gl.cycleAnalytics.TotalTimeComponent);
 });

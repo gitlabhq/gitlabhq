@@ -1,11 +1,6 @@
-/* eslint-disable no-param-reassign */
-
 import { __ } from '../locale';
 import '../lib/utils/text_utility';
 import DEFAULT_EVENT_OBJECTS from './default_event_objects';
-
-const global = window.gl || (window.gl = {});
-global.cycleAnalytics = global.cycleAnalytics || {};
 
 const EMPTY_STAGE_TEXTS = {
   issue: __('The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.'),
@@ -17,88 +12,73 @@ const EMPTY_STAGE_TEXTS = {
   production: __('The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle.'),
 };
 
-global.cycleAnalytics.CycleAnalyticsStore = {
-  state: {
-    summary: '',
-    stats: '',
-    analytics: '',
-    events: [],
-    stages: [],
-  },
+export default class CycleAnalyticsStore {
+  constructor() {
+    this.state = {
+      summary: '',
+      stats: '',
+      analytics: '',
+      events: [],
+      stages: [],
+    };
+  }
+
   setCycleAnalyticsData(data) {
-    this.state = Object.assign(this.state, this.decorateData(data));
-  },
-  decorateData(data) {
-    const newData = {};
-
-    newData.stages = data.stats || [];
-    newData.summary = data.summary || [];
-
-    newData.summary.forEach((item) => {
-      item.value = item.value || '-';
+    const summary = data.summary.map(item => Object.assign({}, item, { value: item.value || '-' }));
+    const stages = data.stages.map((el) => {
+      const stageSlug = gl.text.dasherize(el.name.toLowerCase());
+      return Object.assign({}, el, {
+        active: false,
+        isUserAllowed: data.permissions[stageSlug],
+        emptyStageText: EMPTY_STAGE_TEXTS[stageSlug],
+        component: `stage-${stageSlug}-component`,
+        slug: stageSlug,
+      });
     });
 
-    newData.stages.forEach((item) => {
-      const stageSlug = gl.text.dasherize(item.name.toLowerCase());
-      item.active = false;
-      item.isUserAllowed = data.permissions[stageSlug];
-      item.emptyStageText = EMPTY_STAGE_TEXTS[stageSlug];
-      item.component = `stage-${stageSlug}-component`;
-      item.slug = stageSlug;
+    this.state = Object.assign(this.state, {
+      stages: stages || [],
+      summary: summary || [],
+      analytics: data,
     });
-    newData.analytics = data;
-    return newData;
-  },
+  }
+
   setLoadingState(state) {
     this.state.isLoading = state;
-  },
+  }
+
   setErrorState(state) {
     this.state.hasError = state;
-  },
+  }
+
   deactivateAllStages() {
-    this.state.stages.forEach((stage) => {
-      stage.active = false;
-    });
-  },
+    this.state.stages = this.state.map(stage => Object.assign({}, stage, { active: false }));
+  }
+
   setActiveStage(stage) {
     this.deactivateAllStages();
-    stage.active = true;
-  },
+    Object.assign(stage, { active: true });
+  }
+
   setStageEvents(events, stage) {
-    this.state.events = this.decorateEvents(events, stage);
-  },
-  decorateEvents(events, stage) {
-    const newEvents = [];
-
-    events.forEach((item) => {
-      if (!item) return;
-
-      const eventItem = Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], item);
-
-      eventItem.totalTime = eventItem.total_time;
-
-      if (eventItem.author) {
-        eventItem.author.webUrl = eventItem.author.web_url;
-        eventItem.author.avatarUrl = eventItem.author.avatar_url;
+    this.state.events = events.map((event) => {
+      if (event) {
+        return Object.assign({}, DEFAULT_EVENT_OBJECTS[stage.slug], event, {
+          totalTime: event.total_time,
+          author: event.author ? {
+            webUrl: event.author.web_url,
+            avatarUrl: event.author.avatar_url,
+          } : {},
+          createdAt: event.created_at,
+          shortSha: event.short_sha,
+          commitUrl: event.commit_url,
+        });
       }
-
-      if (eventItem.created_at) eventItem.createdAt = eventItem.created_at;
-      if (eventItem.short_sha) eventItem.shortSha = eventItem.short_sha;
-      if (eventItem.commit_url) eventItem.commitUrl = eventItem.commit_url;
-
-      delete eventItem.author.web_url;
-      delete eventItem.author.avatar_url;
-      delete eventItem.total_time;
-      delete eventItem.created_at;
-      delete eventItem.short_sha;
-      delete eventItem.commit_url;
-
-      newEvents.push(eventItem);
+      return event;
     });
+  }
 
-    return newEvents;
-  },
   currentActiveStage() {
     return this.state.stages.find(stage => stage.active);
-  },
-};
+  }
+}
