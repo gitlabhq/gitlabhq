@@ -647,3 +647,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.note-container {
+  background-color: $gray-light;
+  border-top: 1px solid $white-normal;
+}
+
+.diff-file .note-container .new-note {
+  margin-left: 100px;
+  border-left: 1px solid $white-normal;
+}

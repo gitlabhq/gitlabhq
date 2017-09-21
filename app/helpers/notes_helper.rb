@@ -29,7 +29,7 @@ module NotesHelper
     @new_diff_note_attrs.slice(:noteable_id, :noteable_type, :commit_id)
   end
 
-  def diff_view_position_data(position_code, position, type)
+  def diff_view_position_data(position_code, position, type, component_type: 'text')
     return if @diff_notes_disabled
 
     data = {
@@ -43,6 +43,12 @@ module NotesHelper
       data[:note_type] = DiffNote.name
       data[:position] = position.to_json
     end
+
+    # Use text or image, todo: make this better
+    data[:component_type] = component_type
+
+
+    puts component_type
 
     data
   end

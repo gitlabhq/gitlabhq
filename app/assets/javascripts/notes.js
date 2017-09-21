@@ -41,6 +41,7 @@ export default class Notes {
     this.visibilityChange = this.visibilityChange.bind(this);
     this.cancelDiscussionForm = this.cancelDiscussionForm.bind(this);
     this.onAddDiffNote = this.onAddDiffNote.bind(this);
+    this.onAddImageDiffNote = this.onAddImageDiffNote.bind(this);
     this.setupDiscussionNoteForm = this.setupDiscussionNoteForm.bind(this);
     this.onReplyToDiscussionNote = this.onReplyToDiscussionNote.bind(this);
     this.removeNote = this.removeNote.bind(this);
@@ -113,6 +114,8 @@ export default class Notes {
     $(document).on('click', '.js-discussion-reply-button', this.onReplyToDiscussionNote);
     // add diff note
     $(document).on('click', '.js-add-diff-note-button', this.onAddDiffNote);
+    // add diff note for images
+    $(document).on('click', '.js-add-image-diff-note-button', this.onAddImageDiffNote);
     // hide diff note form
     $(document).on('click', '.js-close-discussion-note-form', this.cancelDiscussionForm);
     // toggle commit list
@@ -139,6 +142,7 @@ export default class Notes {
     $(document).off('click', '.js-note-attachment-delete');
     $(document).off('click', '.js-discussion-reply-button');
     $(document).off('click', '.js-add-diff-note-button');
+    $(document).off('click', '.js-add-image-diff-note-button');
     $(document).off('visibilitychange');
     $(document).off('keyup input', '.js-note-text');
     $(document).off('click', '.js-note-target-reopen');
@@ -522,6 +526,7 @@ export default class Notes {
     // fix classes
     form.removeClass('js-new-note-form');
     form.addClass('js-main-target-form');
+    form.find('#component_type').remove();
     form.find('#note_line_code').remove();
     form.find('#note_position').remove();
     form.find('#note_type').val('');
@@ -560,7 +565,9 @@ export default class Notes {
       form.find('#note_line_code').val(),
 
       // DiffNote
-      form.find('#note_position').val()
+      form.find('#note_position').val(),
+
+      form.find('#component_type').val(),
     ];
     return new Autosave(textarea, key);
   }
@@ -866,6 +873,11 @@ export default class Notes {
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
 
+    const componentType = dataHolder.attr('data-component-type');
+    if (componentType) {
+      form.find('#component_type').val(componentType);
+    }
+
     form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
     form.find('.js-note-target-close').remove();
     form.find('.js-note-new-discussion').remove();
@@ -904,6 +916,25 @@ export default class Notes {
       lineType: link.dataset.lineType,
       showReplyInput
     });
+  }
+
+  onAddImageDiffNote(e) {
+    const $link = $(e.currentTarget || e.target);
+    const newForm = this.cleanForm(this.formClone.clone());
+    // debugger
+    newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
+    // // show the form
+    return this.setupDiscussionNoteForm($link, newForm);
+
+    // e.preventDefault();
+    // const link = e.currentTarget || e.target;
+    // const $link = $(link);
+    // const showReplyInput = !$link.hasClass('js-diff-comment-avatar');
+    // this.toggleDiffNote({
+    //   target: $link,
+    //   lineType: link.dataset.lineType,
+    //   showReplyInput
+    // });
   }
 
   toggleDiffNote({

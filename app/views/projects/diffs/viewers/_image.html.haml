@@ -5,17 +5,16 @@
 - old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
 
 / For test test purposes
-- image_point = Gitlab::Diff::ImagePoint.new(300,300, 1, 300) # Point on top left corner
+- image_point = Gitlab::Diff::ImagePoint.new(300, 300, 0, 0) # Point on top left corner
 - position_code = diff_file.line_code(image_point)
-.comment-test-button
-  = add_diff_note_button(position_code, diff_file.position(image_point, :image))
 
 - if diff_file.new_file? || diff_file.deleted_file?
   .image
     %span.wrap
-      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added') }
+      .frame.js-add-image-diff-note-button{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: diff_view_position_data(position_code, diff_file.position(image_point, :image), nil, component_type: 'image') }
         = image_tag(blob_raw_path, alt: diff_file.file_path)
       %p.image-info= number_to_human_size(blob.size)
+  .note-container
 - else
   .image
     .two-up.view

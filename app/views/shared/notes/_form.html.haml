@@ -12,6 +12,9 @@
   = hidden_field_tag :in_reply_to_discussion_id
   = hidden_field_tag :note_project_id
 
+  -# ImageDiff
+  = hidden_field_tag :component_type
+
   = note_target_fields(@note)
   = f.hidden_field :noteable_type
   = f.hidden_field :noteable_id
@@ -23,6 +26,7 @@
 
   -# DiffNote
   = f.hidden_field :position
+
 
   = render layout: 'projects/md_preview', locals: { url: preview_url, referenced_users: true } do
     = render 'projects/zen', f: f,
