@@ -3,12 +3,6 @@ class PushEvent < Event
   # different "action" value.
   validate :validate_push_action
 
-  # Authors are required as they're used to display who pushed data.
-  #
-  # We're just validating the presence of the ID here as foreign key constraints
-  # should ensure the ID points to a valid user.
-  validates :author_id, presence: true
-
   # The project is required to build links to commits, commit ranges, etc.
   #
   # We're just validating the presence of the ID here as foreign key constraints
