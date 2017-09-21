@@ -1,5 +1,7 @@
 module Keys
   class LastUsedService
+    prepend ::EE::Keys::LastUsedService
+
     TIMEOUT = 1.day.to_i
 
     attr_reader :key
