@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import serviceDeskRoot from './components/service_desk_root.vue';
+import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
   const serviceDeskRootElement = document.querySelector('.js-service-desk-setting-root');
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data() {
         const dataset = serviceDeskRootElement.dataset;
         return {
-          initialIsEnabled: gl.utils.convertPermissionToBoolean(
+          initialIsEnabled: convertPermissionToBoolean(
             dataset.enabled,
           ),
           endpoint: dataset.endpoint,

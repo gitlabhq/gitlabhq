@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
 import _ from 'underscore';
-import './lib/utils/common_utils';
+import { insertText, getSelectedFragment, nodeMatchesSelector } from './lib/utils/common_utils';
 import { placeholderImage } from './lazy_loader';
 
 const gfmRules = {
@@ -295,7 +295,7 @@ class CopyAsGFM {
     const clipboardData = e.originalEvent.clipboardData;
     if (!clipboardData) return;
 
-    const documentFragment = window.gl.utils.getSelectedFragment();
+    const documentFragment = getSelectedFragment();
     if (!documentFragment) return;
 
     const el = transformer(documentFragment.cloneNode(true));
@@ -412,7 +412,7 @@ class CopyAsGFM {
       for (const selector in rules) {
         const func = rules[selector];
 
-        if (!window.gl.utils.nodeMatchesSelector(node, selector)) continue;
+        if (!nodeMatchesSelector(node, selector)) continue;
 
         let result;
         if (func.length === 2) {

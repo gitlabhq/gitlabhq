@@ -7,6 +7,7 @@ import * as constants from '../constants';
 import service from '../services/issue_notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
+import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
@@ -211,7 +212,7 @@ export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
 };
 
 export const scrollToNoteIfNeeded = (context, el) => {
-  if (!gl.utils.isInViewport(el[0])) {
-    gl.utils.scrollToElement(el);
+  if (!isInViewport(el[0])) {
+    scrollToElement(el);
   }
 };
