@@ -44,7 +44,7 @@ describe Projects::BlobController do
               namespace_id: project.namespace,
               project_id: project,
               id: id,
-              format: :json)
+              blob_format: :json)
         end
 
         it do
