@@ -525,9 +525,9 @@ On those a default key should not be provided.
 ### The Javascript/Vue Accord
 The goal of this accord is to make sure we are all on the same page.
 
-1. When writing Vue, you may not use jQuery in your application. 
+1. When writing Vue, you may not use jQuery in your application.
   1. If you need to grab data from the DOM, you may query the DOM once while bootstrapping your application to grab data attributes using `dataset`. You can do this without jQuery.
-  1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html). 
+  1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
   1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use jQuery event listeners.
   1. We will avoid adding new jQuery events when they are not required. Instead of adding new jQuery events take a look at [different methods to do the same task](https://vuejs.org/v2/api/#vm-emit).
 1. You may query the `window` object once, while bootstrapping your application for application specific data (e.g. `scrollTo` is ok to access anytime). Do this access during the bootstrapping of your application.
