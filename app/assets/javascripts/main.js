@@ -101,7 +101,6 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
-import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';

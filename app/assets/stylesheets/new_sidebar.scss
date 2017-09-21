@@ -192,7 +192,11 @@ $new-sidebar-collapsed-width: 50px;
 .nav-sidebar-inner-scroll {
   height: 100%;
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
+
+  @media (min-width: $screen-sm-min) {
+    overflow: hidden;
+  }
 }
 
 .with-performance-bar .nav-sidebar {

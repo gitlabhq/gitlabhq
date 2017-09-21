@@ -374,6 +374,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'test-prof', '~> 0.2.5'
 end
 
 gem 'octokit', '~> 4.6.2'

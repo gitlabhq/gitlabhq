@@ -11,6 +11,7 @@ export default class NewNavSidebar {
   initDomElements() {
     this.$page = $('.page-with-sidebar');
     this.$sidebar = $('.nav-sidebar');
+    this.$innerScroll = $('.nav-sidebar-inner-scroll', this.$sidebar);
     this.$overlay = $('.mobile-overlay');
     this.$openSidebar = $('.toggle-mobile-nav');
     this.$closeSidebar = $('.close-nav-button');
@@ -55,6 +56,16 @@ export default class NewNavSidebar {
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
     NewNavSidebar.setCollapsedCookie(collapsed);
+
+    this.toggleSidebarOverflow();
+  }
+
+  toggleSidebarOverflow() {
+    if (this.$innerScroll.prop('scrollHeight') > this.$innerScroll.prop('offsetHeight')) {
+      this.$innerScroll.css('overflow-y', 'scroll');
+    } else {
+      this.$innerScroll.css('overflow-y', '');
+    }
   }
 
   render() {

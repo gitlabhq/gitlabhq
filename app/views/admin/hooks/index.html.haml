@@ -22,7 +22,7 @@
       - @hooks.each do |hook|
         %li
           .controls
-            = render 'shared/web_hooks/test_button', triggers: SystemHook::TRIGGERS, hook: hook, button_class: 'btn-small'
+            = render 'shared/web_hooks/test_button', triggers: SystemHook::TRIGGERS, hook: hook, button_class: 'btn-sm'
             = link_to 'Edit', edit_admin_hook_path(hook), class: 'btn btn-sm'
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
           .monospace= hook.url

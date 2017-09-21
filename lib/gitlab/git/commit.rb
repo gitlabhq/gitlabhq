@@ -413,6 +413,10 @@ module Gitlab
                            end
       end
 
+      def merge_commit?
+        parent_ids.size > 1
+      end
+
       private
 
       def init_from_hash(hash)
