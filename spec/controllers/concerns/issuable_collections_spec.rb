@@ -8,11 +8,12 @@ describe IssuableCollections do
       def self.helper_method(name); end
 
       include IssuableCollections
+      include RequestHelper
     end
 
     controller = klass.new
 
-    allow(controller).to receive(:params).and_return(state: 'opened')
+    allow(controller).to receive(:params).and_return(ActionController::Parameters.new(state: 'opened'))
 
     controller
   end
