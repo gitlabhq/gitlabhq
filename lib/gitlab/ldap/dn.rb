@@ -119,7 +119,7 @@ module Gitlab
             when '0'..'9', 'a'..'f' then
               state = :value_normal_escape_hex
               hex_buffer = char
-            when ' ' then state = :value_normal_escape_space; value << char
+            when /\s/ then state = :value_normal_escape_whitespace; value << char
             else state = :value_normal; value << char
             end
           when :value_normal_escape_hex then
@@ -129,7 +129,7 @@ module Gitlab
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise(MalformedDnError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
             end
-          when :value_normal_escape_space then
+          when :value_normal_escape_whitespace then
             case char
             when '\\' then state = :value_normal_escape
             when ',' then
