@@ -436,6 +436,14 @@ describe License do
           expect(license.features_from_add_ons).to match_array([:deploy_board, :file_locks])
         end
       end
+
+      context 'with nil add-ons' do
+        it 'returns an empty array' do
+          license = build_license_with_add_ons({ 'GitLab_DeployBoard' => nil, 'GitLab_FileLocks' => nil })
+
+          expect(license.features_from_add_ons).to eq([])
+        end
+      end
     end
 
     describe '#feature_available?' do
