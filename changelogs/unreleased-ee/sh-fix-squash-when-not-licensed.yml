@@ -1,5 +1,0 @@
----
-title: Fix merges not working when project is not licensed for squash
-merge_request:
-author:
-type: fixed

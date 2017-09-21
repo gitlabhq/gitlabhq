@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.5 (2017-09-18)
+
+- [FIXED] Fix division by zero error in blame age mapping. !13803 (Jeff Stubler)
+- [FIXED] Fix problems sanitizing URLs with empty passwords. !14083
+- [FIXED] Fix a wrong `X-Gitlab-Event` header when testing webhooks. !14108
+- [FIXED] Fixes the 500 errors caused by a race condition in GPG's tmp directory handling. !14194 (Alexis Reigel)
+- [FIXED] Fix Pipeline Triggers to show triggered label and predefined variables (e.g. CI_PIPELINE_TRIGGERED). !14244
+- [FIXED] Disable GitLab Project Import Button if source disabled.
+- [FIXED] Fix project feature being deleted when updating project with invalid visibility level.
+- [FIXED] Fix new navigation wrapping and causing height to grow.
+- [FIXED] Normalize styles for empty state combo button.
+- [FIXED] Fix buttons with different height in merge request widget.
+- [FIXED] Fix broken svg in jobs dropdown for success status.
+- [FIXED] Improve migrations using triggers.
+- [CHANGED] Update the GPG verification semantics: A GPG signature must additionally match the committer in order to be verified. !13771 (Alexis Reigel)
+- [OTHER] Fix repository equality check and avoid fetching ref if the commit is already available. This affects merge request creation performance. !13685
+- [OTHER] Update documentation for confidential issue. !14117
+
 ## 9.5.4 (2017-09-06)
 
 - [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)

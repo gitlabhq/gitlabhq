@@ -1,5 +1,0 @@
----
-title: Geo - Whitelist LFS requests to download objects on a secondary node
-merge_request: 2758
-author:
-type: fixed
