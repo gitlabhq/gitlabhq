@@ -1,6 +1,7 @@
 module Gitlab
   module Geo
     OauthApplicationUndefinedError = Class.new(StandardError)
+    GeoNodeNotFoundError = Class.new(StandardError)
 
     CACHE_KEYS = %i(
       geo_primary_node
