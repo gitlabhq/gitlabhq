@@ -44,6 +44,25 @@ feature 'Creating a merge request from a fork', :js do
       expect { click_button 'Submit merge request' }
         .to change { target_project.merge_requests.reload.size }.by(1)
     end
+
+    it 'updates the branches when selecting a new target project' do
+      target_project_member = target_project.owner
+      CreateBranchService.new(target_project, target_project_member)
+        .execute('a-brand-new-branch-to-test', 'master')
+
+      visit project_new_merge_request_path(source_project)
+
+      first('.js-target-project').click
+      find('.dropdown-target-project .dropdown-content a', text: target_project.full_path).click
+
+      wait_for_requests
+
+      first('.js-target-branch').click
+
+      within('.dropdown-target-branch .dropdown-content') do
+        expect(page).to have_content('a-brand-new-branch-to-test')
+      end
+    end
   end
 
   context 'creating to the source of a fork' do
