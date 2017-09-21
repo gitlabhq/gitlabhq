@@ -115,7 +115,7 @@ module Github
       url = "/repos/#{repo}/labels"
 
       while url
-        response = Github::Client.new(options).get(url)
+        response = Github::Client.new(options).get(url, per_page: 100)
 
         response.body.each do |raw|
           begin
@@ -139,7 +139,7 @@ module Github
       url = "/repos/#{repo}/milestones"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all)
+        response = Github::Client.new(options).get(url, state: :all, per_page: 100)
 
         response.body.each do |raw|
           begin
@@ -168,7 +168,7 @@ module Github
       url = "/repos/#{repo}/pulls"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc, per_page: 100)
 
         response.body.each do |raw|
           pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
@@ -224,7 +224,7 @@ module Github
       url = "/repos/#{repo}/issues"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc, per_page: 100)
 
         response.body.each { |raw| populate_issue(raw) }
 
@@ -276,7 +276,7 @@ module Github
 
     def fetch_comments(noteable, type, url, klass = Note)
       while url
-        comments = Github::Client.new(options).get(url)
+        comments = Github::Client.new(options).get(url, per_page: 100)
 
         ActiveRecord::Base.no_touching do
           comments.body.each do |raw|
@@ -308,7 +308,7 @@ module Github
       url = "/repos/#{repo}/releases"
 
       while url
-        response = Github::Client.new(options).get(url)
+        response = Github::Client.new(options).get(url, per_page: 100)
 
         response.body.each do |raw|
           representation = Github::Representation::Release.new(raw)
