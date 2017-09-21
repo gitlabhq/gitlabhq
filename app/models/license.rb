@@ -38,6 +38,7 @@ class License < ActiveRecord::Base
     cross_project_pipelines
     db_load_balancing
     deploy_board
+    extended_audit_events
     file_locks
     geo
     group_issue_boards
