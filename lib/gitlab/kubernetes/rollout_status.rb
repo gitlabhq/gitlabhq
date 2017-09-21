@@ -6,26 +6,42 @@ module Gitlab
     # other resources, unified by an `app=` label. The rollout status sums the
     # Kubernetes deployments together.
     class RolloutStatus
-      attr_reader :deployments, :instances, :completion
+      attr_reader :deployments, :instances, :completion, :status
 
       def complete?
         completion == 100
       end
 
-      def valid?
-        @valid
+      def status
+        @status
+      end
+
+      def loading?
+        @status == :loading
+      end
+
+      def not_found?
+        @status == :not_found
+      end
+
+      def found?
+        @status == :found
       end
 
       def self.from_specs(*specs)
-        return new([], valid: false) if specs.empty?
+        return new([], status: :not_found) if specs.empty?
 
         deployments = specs.map { |spec| ::Gitlab::Kubernetes::Deployment.new(spec) }
         deployments.sort_by!(&:order)
         new(deployments)
       end
 
-      def initialize(deployments, valid: true)
-        @valid        = valid
+      def self.loading_rollout
+        new([], status: :loading)
+      end
+
+      def initialize(deployments, status: :found)
+        @status       = status
         @deployments  = deployments
         @instances    = deployments.flat_map(&:instances)
 

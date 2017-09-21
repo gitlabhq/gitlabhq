@@ -1,11 +1,11 @@
 class RolloutStatusEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :instances
-  expose :completion
-  expose :valid?, as: :valid
+  expose :status, as: :status
 
-  expose :is_completed do |rollout_status|
+  expose :instances, if: -> (rollout_status, _) { rollout_status.found? }
+  expose :completion, if: -> (rollout_status, _) { rollout_status.found? }
+  expose :is_completed, if: -> (rollout_status, _) { rollout_status.found? } do |rollout_status|
     rollout_status.complete?
   end
 end

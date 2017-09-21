@@ -1,11 +1,12 @@
 module EE
   module KubernetesService
     def rollout_status(environment)
-      with_reactive_cache do |data|
+      result = with_reactive_cache do |data|
         specs = filter_by_label(data[:deployments], app: environment.slug)
 
         ::Gitlab::Kubernetes::RolloutStatus.from_specs(*specs)
       end
+      result || ::Gitlab::Kubernetes::RolloutStatus.loading_status
     end
 
     def calculate_reactive_cache

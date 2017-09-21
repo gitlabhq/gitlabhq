@@ -9,6 +9,10 @@ class EnvironmentEntity < Grape::Entity
   expose :last_deployment, using: DeploymentEntity
   expose :stop_action?
 
+  expose :rollout_status,
+    if: -> (environment, _) { can?(request.current_user, :read_deploy_board, environment.project) },
+    using: RolloutStatusEntity
+
   expose :metrics_path, if: -> (environment, _) { environment.has_metrics? } do |environment|
     metrics_project_environment_path(environment.project, environment)
   end
@@ -24,11 +28,6 @@ class EnvironmentEntity < Grape::Entity
   expose :terminal_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
     can?(request.current_user, :admin_environment, environment.project) &&
       terminal_project_environment_path(environment.project, environment)
-  end
-
-  expose :rollout_status_path, if: ->(environment, _) { environment.deployment_service_ready? } do |environment|
-    can?(request.current_user, :read_deploy_board, environment.project) &&
-      status_project_environment_path(environment.project, environment, format: :json)
   end
 
   expose :folder_path do |environment|

@@ -1,12 +1,11 @@
 class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
-  before_action :authorize_read_deploy_board!, only: :status
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_create_deployment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics, :status]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   def index
@@ -129,25 +128,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         render json: @metrics, status: @metrics.any? ? :ok : :no_content
       end
-    end
-  end
-
-  # The rollout status of an enviroment
-  def status
-    unless @environment.deployment_service_ready?
-      render text: 'Not found', status: 404
-      return
-    end
-
-    rollout_status = @environment.rollout_status
-
-    Gitlab::PollingInterval.set_header(response, interval: 3000) unless rollout_status.try(:complete?)
-
-    if rollout_status.nil?
-      render body: nil, status: 204 # no result yet
-    else
-      serializer = RolloutStatusSerializer.new(project: @project, current_user: @current_user)
-      render json: serializer.represent(rollout_status)
     end
   end
 
