@@ -1,7 +1,7 @@
 class MergeRequestTargetProjectFinder
   attr_reader :current_user, :source_project
 
-  def initialize(current_user: nil, source_project:, params: {})
+  def initialize(current_user: nil, source_project:)
     @current_user = current_user
     @source_project = source_project
   end
