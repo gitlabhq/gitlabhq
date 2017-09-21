@@ -84,9 +84,9 @@ class Projects::IssuesController < Projects::ApplicationController
       .inc_relations_for_view
       .includes(:noteable)
       .fresh
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    prepare_notes_for_rendering(notes)
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     discussions = Discussion.build_collection(notes, @issue)
 
