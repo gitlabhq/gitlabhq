@@ -10,31 +10,9 @@ module Projects
         respond_to do |format|
           format.html
           format.json do
-           # Remove code below
-            render json: [
-              {
-                name: 'gitlab-org/omnibus-gitlab/foo',
-                tags_path: 'foo',
-                destroy_path: 'bar',
-                location: 'foo',
-                id: '134',
-                destroy_path: 'bar'
-              },
-              {
-                name: 'gitlab-org/omnibus-gitlab',
-                tags_path: 'foo',
-                destroy_path: 'bar',
-                location: 'foo',
-                id: '123',
-              },
-              {
-                name: 'gitlab-org/omnibus-gitlab/bar',
-                tags_path: 'foo',
-                destroy_path: 'bar',
-                location: 'foo',
-                id: '973',
-              }
-            ]
+            render json: ContainerRepositoriesSerializer
+              .new(project: project, current_user: current_user)
+              .represent(@images)
           end
         end
       end
@@ -42,25 +20,11 @@ module Projects
       def destroy
         if image.destroy
           respond_to do |format|
-            # TODO: @Kamil, I don't think this is used ever. Should we keep it or remove it?
-            format.html do
-              redirect_to project_container_registry_index_path(@project),
-              status: 302,
-              notice: 'Image repository has been removed successfully!'
-            end
-
             format.json { head :no_content }
           end
         else
           respond_to do |format|
-            # TODO: @Kamil, I don't think this is used ever. Should we keep it or remove it?
-            format.html do
-              redirect_to project_container_registry_index_path(@project),
-              status: 302,
-              alert: 'Failed to remove image repository!'
-            end
-
-            format.json { head :no_content }
+            format.json { head :bad_request }
           end
         end
       end
