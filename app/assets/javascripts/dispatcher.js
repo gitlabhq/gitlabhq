@@ -84,12 +84,15 @@ import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
+=======
+>>>>>>> ce/master
 
 (function() {
   var Dispatcher;

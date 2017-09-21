@@ -184,6 +184,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
+      issuable.update_project_counter_caches
     end
 
     issuable
@@ -195,8 +196,6 @@ class IssuableBaseService < BaseService
 
   def after_create(issuable)
     # To be overridden by subclasses
-
-    issuable.update_project_counter_caches
   end
 
   def before_update(issuable)
@@ -205,8 +204,6 @@ class IssuableBaseService < BaseService
 
   def after_update(issuable)
     # To be overridden by subclasses
-
-    issuable.update_project_counter_caches
   end
 
   def update(issuable)
@@ -231,6 +228,10 @@ class IssuableBaseService < BaseService
 
       before_update(issuable)
 
+      # We have to perform this check before saving the issuable as Rails resets
+      # the changed fields upon calling #save.
+      update_project_counters = issuable.update_project_counter_caches?
+
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
@@ -251,6 +252,8 @@ class IssuableBaseService < BaseService
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(issuable, 'update')
+
+        issuable.update_project_counter_caches if update_project_counters
       end
     end
 

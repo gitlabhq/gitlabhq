@@ -74,7 +74,9 @@
       %h4.prepend-top-0.warning-title
         Change username
       %p
-        Changing your username will change path to all personal projects!
+        Changing your username can have unintended side effects.
+        = succeed '.' do
+          = link_to 'Learn more', help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
     .col-lg-8
       = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group

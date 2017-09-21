@@ -166,9 +166,7 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
-  def to_reference(from_project = nil, format: :iid, full: false)
-    return if group_milestone? && format != :name
-
+  def to_reference(from_project = nil, format: :name, full: false)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
@@ -244,6 +242,10 @@ class Milestone < ActiveRecord::Base
 
   def milestone_format_reference(format = :iid)
     raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+
+    if group_milestone? && format == :iid
+      raise ArgumentError, 'Cannot refer to a group milestone by an internal id!'
+    end
 
     if format == :name && !name.include?('"')
       %("#{name}")

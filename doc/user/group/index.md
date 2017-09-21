@@ -188,6 +188,27 @@ Besides giving you the option to edit any settings you've previously
 set when [creating the group](#create-a-new-group), you can also
 access further configurations for your group.
 
+#### Changing a group's path
+
+> **Note:** If you want to retain ownership over the original namespace and
+protect the URL redirects, then instead of changing a group's path or renaming a
+username, you can create a new group and transfer projects to it.
+
+Changing a group's path can have unintended side effects.
+
+* Existing web URLs for the group and anything under it (i.e. projects) will
+redirect to the new URLs
+* Existing Git remote URLs for projects under the group will no longer work, but
+Git responses will show an error with the new remote URL
+* The original namespace can be claimed again by any group or user, which will
+destroy web redirects and Git remote warnings
+* If you are vacating the path so it can be claimed by another group or user,
+you may need to rename the group name as well since both names and paths must be
+unique
+
+> It is currently not possible to rename a namespace if it contains a
+project with container registry tags, because the project cannot be moved.
+
 #### Enforce 2FA to group members
 
 Add a security layer to your group by

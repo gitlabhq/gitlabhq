@@ -240,7 +240,7 @@ describe Milestone do
       let(:milestone) { build_stubbed(:milestone, iid: 1, project: project, name: 'milestone') }
 
       it 'returns a String reference to the object' do
-        expect(milestone.to_reference).to eq '%1'
+        expect(milestone.to_reference).to eq '%"milestone"'
       end
 
       it 'returns a reference by name when the format is set to :name' do
@@ -248,23 +248,28 @@ describe Milestone do
       end
 
       it 'supports a cross-project reference' do
-        expect(milestone.to_reference(another_project)).to eq 'sample-project%1'
+        expect(milestone.to_reference(another_project)).to eq 'sample-project%"milestone"'
       end
     end
 
     context 'for a group milestone' do
       let(:milestone) { build_stubbed(:milestone, iid: 1, group: group, name: 'milestone') }
 
-      it 'returns nil with the default format' do
-        expect(milestone.to_reference).to be_nil
+      it 'returns a group milestone reference with a default format' do
+        expect(milestone.to_reference).to eq '%"milestone"'
       end
 
       it 'returns a reference by name when the format is set to :name' do
         expect(milestone.to_reference(format: :name)).to eq '%"milestone"'
       end
 
-      it 'does not supports cross-project references' do
+      it 'does supports cross-project references within a group' do
         expect(milestone.to_reference(another_project, format: :name)).to eq '%"milestone"'
+      end
+
+      it 'raises an error when using iid format' do
+        expect { milestone.to_reference(format: :iid) }
+          .to raise_error(ArgumentError, 'Cannot refer to a group milestone by an internal id!')
       end
     end
   end

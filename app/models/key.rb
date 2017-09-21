@@ -4,8 +4,6 @@ class Key < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Sortable
 
-  LAST_USED_AT_REFRESH_TIME = 1.day.to_i
-
   belongs_to :user
 
   before_validation :generate_fingerprint
@@ -57,10 +55,7 @@ class Key < ActiveRecord::Base
   end
 
   def update_last_used_at
-    lease = Gitlab::ExclusiveLease.new("key_update_last_used_at:#{id}", timeout: LAST_USED_AT_REFRESH_TIME)
-    return unless lease.try_obtain
-
-    UseKeyWorker.perform_async(id)
+    Keys::LastUsedService.new(self).execute
   end
 
   def add_to_shell

@@ -1,0 +1,5 @@
+---
+title: Remove redundant WHERE from event queries
+merge_request:
+author:
+type: other
