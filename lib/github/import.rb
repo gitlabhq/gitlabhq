@@ -115,7 +115,7 @@ module Github
       url = "/repos/#{repo}/labels"
 
       while url
-        response = Github::Client.new(options).get(url, per_page: 100)
+        response = Github::Client.new(options).get(url)
 
         response.body.each do |raw|
           begin
@@ -139,7 +139,7 @@ module Github
       url = "/repos/#{repo}/milestones"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, per_page: 100)
+        response = Github::Client.new(options).get(url, state: :all)
 
         response.body.each do |raw|
           begin
@@ -168,7 +168,7 @@ module Github
       url = "/repos/#{repo}/pulls"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc, per_page: 100)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each do |raw|
           pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
@@ -202,13 +202,8 @@ module Github
             merge_request.save!(validate: false)
             merge_request.merge_request_diffs.create
 
-            # Fetch review comments
             review_comments_url = "/repos/#{repo}/pulls/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
-
-            # Fetch comments
-            comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
-            fetch_comments(merge_request, :comment, comments_url)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
@@ -224,7 +219,7 @@ module Github
       url = "/repos/#{repo}/issues"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc, per_page: 100)
+        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
 
         response.body.each { |raw| populate_issue(raw) }
 
@@ -241,12 +236,17 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return unless representation.has_labels?
+          return if !representation.has_labels? && !representation.has_comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
-          merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+
+          if representation.has_labels?
+            merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+          end
+
+          fetch_comments_conditionally(merge_request, representation)
         else
-          return if Issue.where(iid: representation.iid, project_id: project.id).exists?
+          return if Issue.exists?(iid: representation.iid, project_id: project.id)
 
           author_id          = user_id(representation.author, project.creator_id)
           issue              = Issue.new
@@ -263,20 +263,23 @@ module Github
           issue.updated_at   = representation.updated_at
           issue.save!(validate: false)
 
-          # Fetch comments
-          if representation.has_comments?
-            comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
-            fetch_comments(issue, :comment, comments_url)
-          end
+          fetch_comments_conditionally(issue, representation)
         end
       rescue => e
         error(:issue, representation.url, e.message)
       end
     end
 
+    def fetch_comments_conditionally(issuable, representation)
+      if representation.has_comments?
+        comments_url = "/repos/#{repo}/issues/#{issuable.iid}/comments"
+        fetch_comments(issuable, :comment, comments_url)
+      end
+    end
+
     def fetch_comments(noteable, type, url, klass = Note)
       while url
-        comments = Github::Client.new(options).get(url, per_page: 100)
+        comments = Github::Client.new(options).get(url)
 
         ActiveRecord::Base.no_touching do
           comments.body.each do |raw|
@@ -308,7 +311,7 @@ module Github
       url = "/repos/#{repo}/releases"
 
       while url
-        response = Github::Client.new(options).get(url, per_page: 100)
+        response = Github::Client.new(options).get(url)
 
         response.body.each do |raw|
           representation = Github::Representation::Release.new(raw)
