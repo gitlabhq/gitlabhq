@@ -1,5 +1,0 @@
----
-title: Fix a regression breaking projects with an empty import URL
-merge_request: 2824
-author:
-type: fixed
