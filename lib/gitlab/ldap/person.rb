@@ -49,21 +49,6 @@ module Gitlab
         uid
       end
 
-      # Returns the DN in a normalized form.
-      #
-      # 1. Excess spaces around attribute names and values are stripped
-      # 2. The string is downcased (for case-insensitivity)
-      def self.normalize_dn(dn)
-        dn.split(/(?<!\\)([,+=])/).map do |part|
-          normalize_dn_part(part)
-        end.join('')
-      rescue StandardError => e
-        Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}")
-        Rails.logger.info(e.backtrace.join("\n"))
-
-        dn
-      end
-
       def initialize(entry, provider)
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
@@ -87,7 +72,7 @@ module Gitlab
       end
 
       def dn
-        self.class.normalize_dn(entry.dn)
+        DN.new(entry.dn).to_s_normalized
       end
 
       private
