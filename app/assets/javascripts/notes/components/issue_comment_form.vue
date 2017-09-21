@@ -2,6 +2,7 @@
   /* global Flash, Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
+  import autosize from 'vendor/autosize';
   import '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
@@ -124,6 +125,7 @@
           }
           this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
+          this.resizeTextarea();
 
           this.saveNote(noteData)
             .then((res) => {
@@ -174,6 +176,7 @@
 
         if (shouldClear) {
           this.note = '';
+          this.resizeTextarea();
         }
 
         // reset autostave
@@ -203,6 +206,11 @@
           dataType: 'note',
           fieldName: 'note',
           selector: '.notes',
+        });
+      },
+      resizeTextarea() {
+        this.$nextTick(() => {
+          autosize.update(this.$refs.textarea);
         });
       },
     },
