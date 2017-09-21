@@ -295,75 +295,6 @@ header.navbar-gitlab-new {
   margin-top: 4px;
 }
 
-.search {
-  margin: 4px 8px 0;
-
-  form {
-    height: 32px;
-    border: 0;
-    border-radius: $border-radius-default;
-    transition: border-color ease-in-out 0.15s, background-color ease-in-out 0.15s;
-
-    &:hover {
-      box-shadow: none;
-    }
-  }
-
-  &.search-active form {
-    box-shadow: none;
-
-    .search-input {
-      color: $gl-text-color;
-      transition: color ease-in-out 0.15s;
-    }
-
-    .search-input::placeholder {
-      color: $gl-text-color-tertiary;
-    }
-
-    .search-input-wrap {
-      .search-icon,
-      .clear-icon {
-        color: $gl-text-color-tertiary;
-        transition: color ease-in-out 0.15s;
-      }
-    }
-  }
-
-  .search-input {
-    color: $white-light;
-    background: none;
-    transition: color ease-in-out 0.15s;
-  }
-
-  .search-input::placeholder {
-    transition: color ease-in-out 0.15s;
-  }
-
-  .location-badge {
-    font-size: 12px;
-    margin: -4px 4px -4px -4px;
-    line-height: 25px;
-    padding: 4px 8px;
-    border-radius: 2px 0 0 2px;
-    height: 32px;
-    transition: border-color ease-in-out 0.15s;
-  }
-
-  &.search-active {
-    .location-badge {
-      background-color: $nav-badge-bg;
-      border-color: $border-color;
-    }
-
-    .search-input-wrap {
-      .clear-icon {
-        color: $white-light;
-      }
-    }
-  }
-}
-
 .breadcrumbs {
   display: flex;
   min-height: 48px;
@@ -375,6 +306,8 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  padding-top: $gl-padding;
+  padding-bottom: $gl-padding;
   align-items: center;
   border-bottom: 1px solid $border-color;
 }
@@ -385,11 +318,6 @@ header.navbar-gitlab-new {
   min-width: 0;
   align-self: center;
   color: $gl-text-color-secondary;
-
-  @media (max-width: $screen-xs-max) {
-    padding-left: 17px;
-    border-left: 1px solid $gl-text-color-quaternary;
-  }
 
   .avatar-tile {
     margin-right: 4px;
