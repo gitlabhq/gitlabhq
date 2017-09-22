@@ -17,6 +17,18 @@ module IconsHelper
     options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
   end
 
+  def custom_icon(icon_name, size: 16)
+    # We can't simply do the below, because there are some .erb SVGs.
+    #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
+    render "shared/icons/#{icon_name}.svg", size: size
+  end
+
+  def sprite_icon(icon_name, size: nil, css_class: nil)
+    css_classes = size ? "s#{size}" : nil
+    css_classes << " #{css_class}" unless css_class.blank?
+    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{image_path('icons.svg')}##{icon_name}" } ), class: css_classes)
+  end
+
   def audit_icon(names, options = {})
     case names
     when "standard"
