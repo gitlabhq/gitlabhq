@@ -21,7 +21,7 @@ class FileMover
   end
 
   def update_markdown
-    updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown, uploader.to_markdown)
+    updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown[0..-2], uploader.to_markdown[0..-2])
     model.update_attribute(update_field, updated_text)
 
     true
