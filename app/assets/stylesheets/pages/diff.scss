@@ -660,10 +660,12 @@
 
 .frame.click-to-comment {
   position: relative;
-  cursor: url(icon_image_comment.svg), auto;
+  cursor: url(icon_image_comment.svg)
+    $image-comment-cursor-left-offset $image-comment-cursor-top-offset, auto;
 
   .comment-indicator {
     position: absolute;
+    padding: 0;
 
     .image-comment-dark {
       // Override styling set by .image .frame
@@ -672,6 +674,12 @@
       background-position: inherit;
       background-size: inherit;
       max-width: inherit;
+
+      // Compensate for cursor offsets
+      position: absolute;
+      left: (-1px * $image-comment-cursor-left-offset);
+      // TODO: Fix pixel calculation due to empty white space in cursor image
+      top: (-1px * $image-comment-cursor-top-offset);
     }
   }
 }
