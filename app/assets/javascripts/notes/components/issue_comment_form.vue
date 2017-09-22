@@ -182,6 +182,7 @@
         if (shouldClear) {
           this.note = '';
           this.resizeTextarea();
+          this.$refs.markdownField.previewMarkdown = false;
         }
 
         // reset autostave
@@ -260,7 +261,8 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isConfidentialIssue">
+                :is-confidential-issue="isConfidentialIssue"
+                ref="markdownField">
                 <textarea
                   id="note-body"
                   name="note[note]"
