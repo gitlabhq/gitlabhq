@@ -81,87 +81,87 @@ module SortingHelper
   end
 
   def sort_title_priority
-    'Priority'
+    s_('SortOptions|Priority')
   end
 
   def sort_title_label_priority
-    'Label priority'
+    s_('SortOptions|Label priority')
   end
 
   def sort_title_oldest_updated
-    'Oldest updated'
+    s_('SortOptions|Oldest updated')
   end
 
   def sort_title_recently_updated
-    'Last updated'
+    s_('SortOptions|Last updated')
   end
 
   def sort_title_oldest_activity
-    'Oldest updated'
+    s_('SortOptions|Oldest updated')
   end
 
   def sort_title_latest_activity
-    'Last updated'
+    s_('SortOptions|Last updated')
   end
 
   def sort_title_oldest_created
-    'Oldest created'
+    s_('SortOptions|Oldest created')
   end
 
   def sort_title_recently_created
-    'Last created'
+    s_('SortOptions|Last created')
   end
 
   def sort_title_milestone_soon
-    'Milestone due soon'
+    s_('SortOptions|Milestone due soon')
   end
 
   def sort_title_milestone_later
-    'Milestone due later'
+    s_('SortOptions|Milestone due later')
   end
 
   def sort_title_due_date_soon
-    'Due soon'
+    s_('SortOptions|Due soon')
   end
 
   def sort_title_due_date_later
-    'Due later'
+    s_('SortOptions|Due later')
   end
 
   def sort_title_start_date_soon
-    'Start soon'
+    s_('SortOptions|Start soon')
   end
 
   def sort_title_start_date_later
-    'Start later'
+    s_('SortOptions|Start later')
   end
 
   def sort_title_name
-    'Name'
+    s_('SortOptions|Name')
   end
 
   def sort_title_largest_repo
-    'Largest repository'
+    s_('SortOptions|Largest repository')
   end
 
   def sort_title_largest_group
-    'Largest group'
+    s_('SortOptions|Largest group')
   end
 
   def sort_title_recently_signin
-    'Recent sign in'
+    s_('SortOptions|Recent sign in')
   end
 
   def sort_title_oldest_signin
-    'Oldest sign in'
+    s_('SortOptions|Oldest sign in')
   end
 
   def sort_title_downvotes
-    'Least popular'
+    s_('SortOptions|Least popular')
   end
 
   def sort_title_upvotes
-    'Most popular'
+    s_('SortOptions|Most popular')
   end
 
   def sort_title_more_weight
@@ -173,27 +173,27 @@ module SortingHelper
   end
 
   def sort_title_last_joined
-    'Last joined'
+    s_('SortOptions|Last joined')
   end
 
   def sort_title_oldest_joined
-    'Oldest joined'
+    s_('SortOptions|Oldest joined')
   end
 
   def sort_title_access_level_asc
-    'Access level, ascending'
+    s_('SortOptions|Access level, ascending')
   end
 
   def sort_title_access_level_desc
-    'Access level, descending'
+    s_('SortOptions|Access level, descending')
   end
 
   def sort_title_name_asc
-    'Name, ascending'
+    s_('SortOptions|Name, ascending')
   end
 
   def sort_title_name_desc
-    'Name, descending'
+    s_('SortOptions|Name, descending')
   end
 
   def sort_value_last_joined
