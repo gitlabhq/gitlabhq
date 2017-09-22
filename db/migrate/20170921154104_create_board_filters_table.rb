@@ -1,5 +1,9 @@
 class CreateBoardFiltersTable < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
+
+  disable_ddl_transaction!
 
   def up
     create_table :board_filters do |t|
@@ -11,10 +15,10 @@ class CreateBoardFiltersTable < ActiveRecord::Migration
       t.integer :assignee_id, index: true
     end
 
-    add_foreign_key :board_filters, :boards, column: :board_id, on_delete: :cascade
-    add_foreign_key :board_filters, :milestones, column: :milestone_id, on_delete: :nullify
-    add_foreign_key :board_filters, :users, column: :author_id, on_delete: :nullify
-    add_foreign_key :board_filters, :users, column: :assignee_id, on_delete: :nullify
+    add_concurrent_foreign_key :board_filters, :boards, column: :board_id, on_delete: :cascade
+    add_concurrent_foreign_key :board_filters, :milestones, column: :milestone_id, on_delete: :nullify
+    add_concurrent_foreign_key :board_filters, :users, column: :author_id, on_delete: :nullify
+    add_concurrent_foreign_key :board_filters, :users, column: :assignee_id, on_delete: :nullify
   end
 
   def down
