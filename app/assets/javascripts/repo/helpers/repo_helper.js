@@ -130,6 +130,10 @@ const RepoHelper = {
     return isRoot;
   },
 
+  getCommitData() {
+    console.log('get commit data');
+  },
+
   getContent(treeOrFile) {
     let file = treeOrFile;
     return Service.getContent()
@@ -191,8 +195,6 @@ const RepoHelper = {
 
   serializeBlob(blob) {
     const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
-    simpleBlob.lastCommitMessage = blob.last_commit.message;
-    simpleBlob.lastCommitUpdate = blob.last_commit.committed_date;
     simpleBlob.loading = false;
 
     return simpleBlob;
@@ -263,7 +265,8 @@ const RepoHelper = {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError() {
+  loadingError(e) {
+    console.log(e)
     Flash('Unable to load this content at this time.');
   },
 };

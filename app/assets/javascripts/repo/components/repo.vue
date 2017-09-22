@@ -24,7 +24,13 @@ export default {
   },
 
   mounted() {
-    Helper.getContent().catch(Helper.loadingError);
+    Helper.getContent()
+    .then(() => {
+      if(!this.isMini) {
+        Helper.getCommitData();
+      }
+    })
+    .catch(Helper.loadingError);
   },
 
   methods: {
