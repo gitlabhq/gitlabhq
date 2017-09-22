@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Variables::Collection do
   describe '.new' do
     it 'can be initialized with an array' do
-      variable = { key: 'SOME_VAR', value: 'Some Value'}
+      variable = { key: 'SOME_VAR', value: 'Some Value' }
       collection = described_class.new([variable])
 
       expect(collection.first.to_h).to include variable
@@ -39,7 +39,7 @@ describe Gitlab::Ci::Variables::Collection do
   describe '#+' do
     it 'makes it possible to combine with an array' do
       collection = described_class.new([{ key: 'TEST', value: 1 }])
-      variables = [{ key: 'TEST', value: 'something'}]
+      variables = [{ key: 'TEST', value: 'something' }]
 
       expect((collection + variables).count).to eq 2
     end
