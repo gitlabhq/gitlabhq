@@ -101,16 +101,18 @@ describe Banzai::Filter::SanitizationFilter do
       expect(filter(act).to_html).to eq exp
     end
 
-    it 'disallows the `name` attribute globally' do
+    it 'disallows the `name` attribute globally, allows on `a`' do
       html = <<~HTML
         <img name="getElementById" src="">
         <span name="foo" class="bar">Hi</span>
+        <a name="foo" class="bar">Bye</a>
       HTML
 
       doc = filter(html)
 
       expect(doc.at_css('img')).not_to have_attribute('name')
       expect(doc.at_css('span')).not_to have_attribute('name')
+      expect(doc.at_css('a')).to have_attribute('name')
     end
 
     it 'allows `summary` elements' do
