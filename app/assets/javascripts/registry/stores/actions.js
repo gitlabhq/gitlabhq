@@ -15,14 +15,17 @@ export const fetchRepos = ({ commit, state }) => {
     });
 };
 
-export const fetchList = ({ commit }, list) => {
-  commit(types.TOGGLE_REGISTRY_LIST_LOADING, list);
+export const fetchList = ({ commit }, { repo, page }) => {
+  commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);
 
-  return Vue.http.get(list.path)
-    .then(res => res.json())
+  return Vue.http.get(repo.tagsPath, { params: { page } })
     .then((response) => {
-      commit(types.TOGGLE_REGISTRY_LIST_LOADING, list);
-      commit(types.SET_REGISTRY_LIST, list, response);
+      const headers = response.headers;
+
+      return response.json().then((resp) => {
+        commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);
+        commit(types.SET_REGISTRY_LIST, { repo, resp, headers });
+      });
     });
 };
 

@@ -39,16 +39,40 @@ describe('Mutations Registry Store', () => {
   describe('SET_REGISTRY_LIST', () => {
     it('should set a list of registries in a specific repository', () => {
       mutations[types.SET_REPOS_LIST](mockState, reposServerResponse);
-      mutations[types.SET_REGISTRY_LIST](mockState, mockState.repos[0], registryServerResponse);
+      mutations[types.SET_REGISTRY_LIST](mockState, {
+        repo: mockState.repos[0],
+        resp: registryServerResponse,
+        headers: {
+          'x-per-page': 2,
+          'x-page': 1,
+          'x-total': 10,
+        },
+      });
 
       expect(mockState.repos[0].list).toEqual(parsedRegistryServerResponse);
+      expect(mockState.repos[0].pagination).toEqual({
+        perPage: 2,
+        page: 1,
+        total: 10,
+        totalPages: NaN,
+        nextPage: NaN,
+        previousPage: NaN,
+      });
     });
   });
 
   describe('TOGGLE_REGISTRY_LIST_LOADING', () => {
     it('should toggle isLoading property for a specific repository', () => {
       mutations[types.SET_REPOS_LIST](mockState, reposServerResponse);
-      mutations[types.SET_REGISTRY_LIST](mockState, mockState.repos[0], registryServerResponse);
+      mutations[types.SET_REGISTRY_LIST](mockState, {
+        repo: mockState.repos[0],
+        resp: registryServerResponse,
+        headers: {
+          'x-per-page': 2,
+          'x-page': 1,
+          'x-total': 10,
+        },
+      });
 
       mutations[types.TOGGLE_REGISTRY_LIST_LOADING](mockState, mockState.repos[0]);
       expect(mockState.repos[0].isLoading).toEqual(true);

@@ -18,7 +18,7 @@
             = _('How to use the Container Registry')
         .panel-body
           %p
-            = _('First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have')
+            = _('First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have').html_safe
             = link_to _('2FA enabled'), help_page_path('user/profile/account/two_factor_authentication'), target: '_blank'
             = _('you need to use a')
             = succeed ':' do
@@ -27,7 +27,7 @@
             docker login #{Gitlab.config.registry.host_port}
           %br
           %p
-            = _('Once you log in, you&rsquo;re free to create and upload a container image using the common')
+            = _('Once you log in, you&rsquo;re free to create and upload a container image using the common').html_safe
             %code
               = _('build')
             = _('and')

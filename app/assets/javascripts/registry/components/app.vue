@@ -12,7 +12,7 @@
     props: {
       endpoint: {
         type: String,
-        required: true
+        required: true,
       },
     },
     store,
@@ -37,8 +37,8 @@
       ]),
 
       fetchRegistryList(repo) {
-        this.fetchList(repo)
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY))
+        this.fetchList({ repo })
+          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
       },
 
       deleteRegistry(repo, registry) {
@@ -53,9 +53,14 @@
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
-      showError(message){
-        Flash(__(errorMessages[message]));
-      }
+      showError(message) {
+        Flash(this.__(errorMessages[message]));
+      },
+
+      onPageChange(repo, page) {
+        this.fetchList({ repo, page })
+          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
+      },
     },
     created() {
       this.setMainEndpoint(this.endpoint);
@@ -63,7 +68,7 @@
     mounted() {
       this.fetchRepos()
         .catch(() => this.showError(errorMessagesTypes.FETCH_REPOS));
-    }
+    },
   };
 </script>
 <template>
@@ -81,10 +86,11 @@
       @fetchRegistryList="fetchRegistryList"
       @deleteRepository="deleteRepository"
       @deleteRegistry="deleteRegistry"
+      @pageChange="onPageChange"
       />
 
     <p v-else-if="!isLoading && !repos.length">
-      {{__("No container images stored for this project. Add one by following the instructions above")}}
+      {{__("No container images stored for this project. Add one by following the instructions above.")}}
     </p>
   </div>
 </template>

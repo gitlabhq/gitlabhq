@@ -9,14 +9,14 @@ export const reposServerResponse = [
     destroy_path: 'path',
     id: '123',
     location: 'location',
-    name: 'foo',
+    path: 'foo',
     tags_path: 'tags_path',
   },
   {
     destroy_path: 'path_',
     id: '456',
     location: 'location_',
-    name: 'bar',
+    path: 'bar',
     tags_path: 'tags_path_',
   },
 ];
@@ -50,7 +50,7 @@ export const parsedReposServerResponse = [
     isLoading: false,
     list: [],
     location: reposServerResponse[0].location,
-    name: reposServerResponse[0].name,
+    name: reposServerResponse[0].path,
     tagsPath: reposServerResponse[0].tags_path,
   },
   {
@@ -60,7 +60,7 @@ export const parsedReposServerResponse = [
     isLoading: false,
     list: [],
     location: reposServerResponse[1].location,
-    name: reposServerResponse[1].name,
+    name: reposServerResponse[1].path,
     tagsPath: reposServerResponse[1].tags_path,
   },
 ];

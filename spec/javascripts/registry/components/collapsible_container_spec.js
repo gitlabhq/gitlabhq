@@ -30,6 +30,14 @@ describe('collapsible registry container', () => {
       location: 'location',
       name: 'foo',
       tagsPath: 'path',
+      pagination: {
+        perPage: 5,
+        page: 1,
+        total: 13,
+        totalPages: 1,
+        nextPage: null,
+        previousPage: null,
+      },
     };
     vm = mountComponent(Component, { repo: mockData });
   });
@@ -106,6 +114,17 @@ describe('collapsible registry container', () => {
           vm.$el.querySelector('.table tbody tr .js-delete-registry'),
         ).toBeDefined();
         done();
+      });
+    });
+
+    describe('pagination', () => {
+      it('should be possible to change the page', (done) => {
+        vm.$el.querySelector('.js-toggle-repo').click();
+
+        Vue.nextTick(() => {
+          expect(vm.$el.querySelector('.gl-pagination')).toBeDefined();
+          done();
+        });
       });
     });
   });

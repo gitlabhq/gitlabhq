@@ -1,5 +1,8 @@
 import Vue from 'vue';
 import registryApp from './components/app.vue';
+import Translate from '../vue_shared/translate';
+
+Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#js-vue-registry-images',

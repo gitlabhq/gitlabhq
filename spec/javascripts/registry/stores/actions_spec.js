@@ -59,7 +59,7 @@ describe('Actions Registry Store', () => {
       it('should set received list', (done) => {
         mockedState.repos = parsedReposServerResponse;
 
-        testAction(actions.fetchList, mockedState.repos[1], mockedState, [
+        testAction(actions.fetchList, { repo: mockedState.repos[1] }, mockedState, [
           { type: types.TOGGLE_REGISTRY_LIST_LOADING },
           { type: types.SET_REGISTRY_LIST, payload: registryServerResponse },
         ], done);

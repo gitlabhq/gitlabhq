@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
 
 export default {
 
@@ -15,7 +16,7 @@ export default {
         isLoading: false,
         list: [],
         location: el.location,
-        name: el.name,
+        name: el.path,
         tagsPath: el.tags_path,
       })),
     });
@@ -25,10 +26,15 @@ export default {
     Object.assign(state, { isLoading: !state.isLoading });
   },
 
-  [types.SET_REGISTRY_LIST](state, repo, list) {
+  [types.SET_REGISTRY_LIST](state, { repo, resp, headers }) {
     const listToUpdate = state.repos.find(el => el.id === repo.id);
 
-    listToUpdate.list = list.map(element => ({
+    const normalizedHeaders = normalizeHeaders(headers);
+    const pagination = parseIntPagination(normalizedHeaders);
+
+    listToUpdate.pagination = pagination;
+
+    listToUpdate.list = resp.map(element => ({
       tag: element.name,
       revision: element.revision,
       shortRevision: element.short_revision,
