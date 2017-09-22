@@ -870,7 +870,7 @@ export default class Notes {
     form.find('#note_type').val(dataHolder.data('noteType'));
 
     // LegacyDiffNote
-    form.find('#note_line_code').val(dataHolder.data('lineCode'));
+    form.find('#note_line_code').val(dataHolder.attr('data-line-code'));
 
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
@@ -932,18 +932,22 @@ export default class Notes {
       $(button).on('click', e => e.stopPropagation());
     }
 
+    // Setup coordinates data for comment form
     imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
     imageDiffHelper.setPositionDataAttribute($link[0], selection.actual);
 
-    const noteContainer = $link.closest('.diff-viewer').find('.note-container');
+    // Setup comment form
+    let newForm;
+    const $noteContainer = $link.closest('.diff-viewer').find('.note-container');
 
-    if (noteContainer.find('form').length === 0) {
-      const newForm = this.cleanForm(this.formClone.clone());
-      newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
-      this.setupDiscussionNoteForm($link, newForm);
+    if ($noteContainer.find('form').length === 0) {
+      newForm = this.cleanForm(this.formClone.clone());
+      newForm.appendTo($noteContainer);
     } else {
-      // TODO: change coordinates of existing form
+      newForm = $noteContainer.find('form');
     }
+
+    this.setupDiscussionNoteForm($link, newForm);
   }
 
   toggleDiffNote({
