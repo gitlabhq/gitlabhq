@@ -69,8 +69,8 @@ export default class EnvironmentsStore {
         filtered = Object.assign({}, filtered, {
           hasDeployBoard: true,
           isDeployBoardVisible: oldEnvironmentState.isDeployBoardVisible === false ?
-          oldEnvironmentState.isDeployBoardVisible :
-          true,
+            oldEnvironmentState.isDeployBoardVisible :
+            true,
           deployBoardData: filtered.rollout_status.status === 'found' ? filtered.rollout_status : {},
           isLoadingDeployBoard: filtered.rollout_status.status === 'loading',
           isEmptyDeployBoard: filtered.rollout_status.status === 'not_found',
