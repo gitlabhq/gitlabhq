@@ -58,10 +58,10 @@ export function setPositionDataAttribute(el, options) {
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
-export function addCommentSelectionIndicator(containerEl, coordinate) {
+export function addCommentIndicator(containerEl, coordinate) {
   const { x, y } = coordinate;
   const button = document.createElement('button');
-  button.classList.add('btn-transparent', 'comment-selection');
+  button.classList.add('btn-transparent', 'comment-indicator');
   button.setAttribute('type', 'button');
   button.style.left = `${x}px`;
   button.style.top = `${y}px`;
@@ -69,7 +69,7 @@ export function addCommentSelectionIndicator(containerEl, coordinate) {
   const image = document.createElement('img');
   image.classList.add('image-comment-dark');
   image.src = '/assets/icon_image_comment_dark.svg';
-  image.alt = 'comment selection indicator';
+  image.alt = 'comment indicator';
 
   button.appendChild(image);
   containerEl.appendChild(button);
@@ -77,7 +77,7 @@ export function addCommentSelectionIndicator(containerEl, coordinate) {
   return button;
 }
 
-export function commentSelectionIndicatorOnClick(e) {
+export function commentIndicatorOnClick(e) {
   // Prevent from triggering onAddImageDiffNote in notes.js
   e.stopPropagation();
 

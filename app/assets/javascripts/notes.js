@@ -918,7 +918,7 @@ export default class Notes {
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
 
-    imageDiff.showCommentSelectionIndicator(e);
+    imageDiff.showCommentIndicator(e);
     imageDiff.setupCoordinatesData(e);
 
     // Setup comment form

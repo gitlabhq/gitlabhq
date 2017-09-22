@@ -1,18 +1,18 @@
 import * as imageDiffHelper from './image_diff_helper';
 
-export function showCommentSelectionIndicator(event) {
+export function showCommentIndicator(event) {
   const container = event.target.parentElement;
-  const commentSelection = container.querySelector('.comment-selection');
+  const commentIndicator = container.querySelector('.comment-indicator');
   const selection = imageDiffHelper.getTargetSelection(event);
 
-  if (commentSelection) {
-    commentSelection.style.left = `${selection.browser.x}px`;
-    commentSelection.style.top = `${selection.browser.y}px`;
+  if (commentIndicator) {
+    commentIndicator.style.left = `${selection.browser.x}px`;
+    commentIndicator.style.top = `${selection.browser.y}px`;
   } else {
     const button = imageDiffHelper
-      .addCommentSelectionIndicator(container, selection.browser);
+      .addCommentIndicator(container, selection.browser);
 
-    button.addEventListener('click', imageDiffHelper.commentSelectionIndicatorOnClick);
+    button.addEventListener('click', imageDiffHelper.commentIndicatorOnClick);
   }
 }
 
