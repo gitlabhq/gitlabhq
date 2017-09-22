@@ -26,7 +26,9 @@ module Github
       end
 
       def exists?
-        @exists ||= branch_exists? && commit_exists?
+        return @exists if defined?(@exists)
+
+        @exists = repository.branch_exists?(ref)
       end
 
       def valid?
@@ -46,14 +48,6 @@ module Github
       end
 
       private
-
-      def branch_exists?
-        repository.branch_exists?(ref)
-      end
-
-      def commit_exists?
-        repository.branch_names_contains(sha).include?(ref)
-      end
 
       def repository
         @repository ||= options.fetch(:repository)

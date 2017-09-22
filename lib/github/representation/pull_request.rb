@@ -27,6 +27,8 @@ module Github
       end
 
       def target_branch_exists?
+        return @target_branch_exists if defined?(@target_branch_exists)
+
         @target_branch_exists ||= target_branch.exists?
       end
 
