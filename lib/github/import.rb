@@ -144,8 +144,6 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
-            pull_request.restore_branches!
-
             author_id   = user_id(pull_request.author, project.creator_id)
             description = format_description(pull_request.description, pull_request.author)
 
@@ -174,8 +172,6 @@ module Github
             fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
-          ensure
-            pull_request.remove_tmp_branches!
           end
         end
 

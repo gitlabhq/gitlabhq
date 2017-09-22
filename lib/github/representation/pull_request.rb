@@ -9,13 +9,9 @@ module Github
       end
 
       def source_branch_name
-        @source_branch_name ||= source_branch_exists? ? source_branch_ref : tmp_source_branch
-      end
-
-      def source_branch_exists?
-        return @source_branch_exists if defined?(@source_branch_exists)
-
-        @source_branch_exists = !cross_project? && source_branch.exists?
+        # Mimic the "user:branch" displayed in the MR widget,
+        # i.e. "Request to merge rymai:add-external-mounts into master"
+        cross_project? ? "#{source_branch_user}:#{source_branch_ref}" : source_branch_ref
       end
 
       def target_project
@@ -23,13 +19,7 @@ module Github
       end
 
       def target_branch_name
-        @target_branch_name ||= target_branch_exists? ? target_branch_ref : tmp_target_branch
-      end
-
-      def target_branch_exists?
-        return @target_branch_exists if defined?(@target_branch_exists)
-
-        @target_branch_exists ||= target_branch.exists?
+        target_branch_ref
       end
 
       def state
@@ -45,18 +35,6 @@ module Github
 
       def valid?
         source_branch.valid? && target_branch.valid?
-      end
-
-      def restore_branches!
-        restore_source_branch!
-        restore_target_branch!
-      end
-
-      def remove_tmp_branches!
-        return if opened?
-
-        remove_tmp_source_branch!
-        remove_tmp_target_branch!
       end
 
       private
@@ -77,32 +55,6 @@ module Github
         return true if source_branch_repo.nil?
 
         source_branch_repo.id != target_branch_repo.id
-      end
-
-      def restore_source_branch!
-        return if source_branch_exists?
-
-        source_branch.restore!(source_branch_name)
-      end
-
-      def restore_target_branch!
-        return if target_branch_exists?
-
-        target_branch.restore!(target_branch_name)
-      end
-
-      def remove_tmp_source_branch!
-        # We should remove the source/target branches only if they were
-        # restored. Otherwise, we'll remove branches like 'master' that
-        # target_branch_exists? returns true. In other words, we need
-        # to clean up only the restored branches that (source|target)_branch_exists?
-        # returns false for the first time it has been called, because of
-        # this that is important to memoize these values.
-        source_branch.remove!(source_branch_name) unless source_branch_exists?
-      end
-
-      def remove_tmp_target_branch!
-        target_branch.remove!(target_branch_name) unless target_branch_exists?
       end
     end
   end
