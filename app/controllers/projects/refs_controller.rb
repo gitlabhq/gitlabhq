@@ -68,10 +68,7 @@ class Projects::RefsController < Projects::ApplicationController
       @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
     end
 
-    respond_to do |format|
-      format.html { render_404 }
-      format.js
-    end
+    render json: @logs
   end
 
   private
