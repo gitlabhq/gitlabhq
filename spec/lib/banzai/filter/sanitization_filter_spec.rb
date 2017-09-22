@@ -47,9 +47,11 @@ describe Banzai::Filter::SanitizationFilter do
   describe 'custom whitelist' do
     it 'customizes the whitelist only once' do
       instance = described_class.new('Foo')
+      control_count = instance.whitelist[:transformers].size
+
       3.times { instance.whitelist }
 
-      expect(instance.whitelist[:transformers].size).to eq 5
+      expect(instance.whitelist[:transformers].size).to eq control_count
     end
 
     it 'sanitizes `class` attribute from all elements' do
