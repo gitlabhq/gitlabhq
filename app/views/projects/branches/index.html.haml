@@ -1,18 +1,18 @@
 - @no_container = true
-- page_title "Branches"
-- add_to_breadcrumbs("Repository", project_tree_path(@project))
+- page_title _('Branches')
+- add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 = render "projects/commits/head"
 
 %div{ class: container_class }
   .top-area.adjust
     - if can?(current_user, :admin_project, @project)
       .nav-text
-        Protected branches can be managed in
-        = link_to 'project settings', project_protected_branches_path(@project)
+        - project_settings_link = link_to s_('Branches|project settings'), project_protected_branches_path(@project)
+        = s_('Branches|Protected branches can be managed in %{project_settings_link}').html_safe % { project_settings_link: project_settings_link }
 
     .nav-controls
       = form_tag(filter_branches_path, method: :get) do
-        = search_field_tag :search, params[:search], { placeholder: 'Filter by branch name', id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
+        = search_field_tag :search, params[:search], { placeholder: s_('Branches|Filter by branch name'), id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
       .dropdown.inline>
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
@@ -21,16 +21,21 @@
           = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
           %li.dropdown-header
-            Sort by
+            = s_('Branches|Sort by')
           - branches_sort_options_hash.each do |value, title|
             %li
               = link_to title, filter_branches_path(sort: value), class: ("is-active" if @sort == value)
 
       - if can? current_user, :push_code, @project
-        = link_to project_merged_branches_path(@project), class: 'btn btn-inverted btn-remove has-tooltip', title: "Delete all branches that are merged into '#{@project.repository.root_ref}'", method: :delete, data: { confirm: "Deleting the merged branches cannot be undone. Are you sure?", container: 'body' } do
-          Delete merged branches
+        = link_to project_merged_branches_path(@project),
+          class: 'btn btn-inverted btn-remove has-tooltip',
+          title: s_("Branches|Delete all branches that are merged into '%{default_branch}'") % { default_branch: @project.repository.root_ref },
+          method: :delete,
+          data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
+            container: 'body' } do
+          = s_('Branches|Delete merged branches')
         = link_to new_project_branch_path(@project), class: 'btn btn-create' do
-          New branch
+          = s_('Branches|New branch')
   = render 'projects/commits/mirror_status'
   - if @branches.any?
     %ul.content-list.all-branches
@@ -38,6 +43,7 @@
         = render "projects/branches/branch", branch: branch
     = paginate @branches, theme: 'gitlab'
   - else
-    .nothing-here-block No branches to show
+    .nothing-here-block
+      = s_('Branches|No branches to show')
 
 = render 'projects/branches/delete_protected_modal'
