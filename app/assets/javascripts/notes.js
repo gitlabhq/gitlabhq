@@ -23,7 +23,7 @@ import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
-import * as imageDiffHelper from './commit/image_diff_helper';
+import * as imageDiff from './image_diff/image_diff';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -918,22 +918,8 @@ export default class Notes {
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
 
-    const $container = $(event.target.parentElement);
-    const $commentSelection = $container.find('.comment-selection');
-    const selection = imageDiffHelper.getTargetSelection(event);
-
-    // Set comment selection indicator
-    if ($commentSelection.length !== 0) {
-      $commentSelection.css('left', selection.browser.x);
-      $commentSelection.css('top', selection.browser.y);
-    } else {
-      const button = imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
-      $(button).on('click', imageDiffHelper.commentSelectionIndicatorOnClick);
-    }
-
-    // Setup coordinates data for comment form
-    imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
-    imageDiffHelper.setPositionDataAttribute($link[0], selection.actual);
+    imageDiff.setCommentSelectionIndicator(e);
+    imageDiff.setupCoordinatesData(e);
 
     // Setup comment form
     let newForm;

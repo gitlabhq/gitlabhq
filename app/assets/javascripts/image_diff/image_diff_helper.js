@@ -34,7 +34,8 @@ export function getTargetSelection(event) {
   };
 }
 
-export function setLineCodeCoordinates(el, x, y) {
+export function setLineCodeCoordinates(el, coordinate) {
+  const { x, y } = coordinate;
   const lineCode = el.dataset.lineCode;
 
   // TODO: Temporarily remove the trailing numbers that define the x and y coordinates
@@ -57,7 +58,8 @@ export function setPositionDataAttribute(el, options) {
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
-export function setCommentSelectionIndicator(containerEl, x, y) {
+export function addCommentSelectionIndicator(containerEl, coordinate) {
+  const { x, y } = coordinate;
   const button = document.createElement('button');
   button.classList.add('btn-transparent', 'comment-selection');
   button.setAttribute('type', 'button');
