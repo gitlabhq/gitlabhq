@@ -1,14 +1,15 @@
 # Auto DevOps: quick start guide
 
-> [Introduced][ce-37115] in GitLab 10.0. Auto DevOps is currently in Beta and
-**not recommended for production use**.
+DANGER: Auto DevOps is currently in **Beta** and _not recommended for production use_.
+
+> [Introduced][ce-37115] in GitLab 10.0.
 
 This is a step-by-step guide to deploying a project hosted on GitLab.com to
 Google Cloud, using Auto DevOps.
 
 We made a minimal [Ruby
-application](https://gitlab.com/gitlab-examples/minimal-ruby-app) to use as an
-example for this guide. It contains two files:
+application](https://gitlab.com/auto-devops-examples/minimal-ruby-app) to use
+as an example for this guide. It contains two main files:
 
 * `server.rb` - our application. It will start an HTTP server on port 5000 and
   render "Hello, world!"
@@ -113,11 +114,9 @@ assigned to the cluster IP.
 In your GitLab.com project, go to **Settings > CI/CD** and find the Auto DevOps
 section. Select "Enable Auto DevOps", add in your base domain, and save.
 
-![auto devops settings](img/auto_devops_settings.png)
-
 Next, a pipeline needs to be triggered. Since the test project doesn't have a
 `.gitlab-ci.yml`, you need to either push a change to the repository or
-manually visit `https://gitlab.com/<username>/minimal-ruby-app/pipelines/run`,
+manually visit `https://gitlab.com/<username>/minimal-ruby-app/pipelines/new`,
 where `<username>` is your username.
 
 This will create a new pipeline with several jobs: `build`, `test`, `codequality`,

@@ -1,6 +1,0 @@
----
-title: Ensure correct visibility level options shown on all Project, Group, and Snippets
-  forms
-merge_request: 13442
-author:
-type: fixed

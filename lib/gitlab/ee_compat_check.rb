@@ -284,13 +284,18 @@ module Gitlab
         EE/master, and no `#{ee_branch_prefix}` or `#{ee_branch_suffix}` branch
         was found in the EE repository.
 
+        If you're a community contributor, don't worry, someone from
+        GitLab Inc. will take care of this, and you don't have to do anything.
+        If you're willing to help, and are ok to contribute to EE as well,
+        you're welcome to help. You could follow the instructions below.
+
         #{conflicting_files_msg}
 
         We advise you to create a `#{ee_branch_prefix}` or `#{ee_branch_suffix}`
         branch that includes changes from `#{ce_branch}` but also specific changes
         than can be applied cleanly to EE/master. In some cases, the conflicts
         are trivial and you can ignore the warning from this job. As always,
-        use your best judgment!
+        use your best judgement!
 
         There are different ways to create such branch:
 
