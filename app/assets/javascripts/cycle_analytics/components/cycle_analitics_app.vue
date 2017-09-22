@@ -1,17 +1,41 @@
 <script>
+  import Cookies from 'js-cookie';
   import stageComponent from './stage_component.vue';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import pipelineHealth from './pipeline_health.vue';
+  import panelHeader from './panel_header.vue';
+  import iconLock from '~/icons/icon_lock.svg';
+  import iconNoData from '~/icons/icon_no_data.svg';
   import Store from '../cycle_analytics_store';
   import Service from '../cycle_analytics_service';
-  import iconCycleAnalyticsSplash from 'icons/icon_cycle_analytics_splash.svg';
+
+  const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
   export default {
     name: 'cycleAnaliticsApp',
+    props: {
+      endpoint: {
+        type: String,
+        required: true,
+      },
+      helpPath: {
+        type: String,
+        required: true,
+      },
+      noData: {
+        type: Boolean,
+        required: true,
+      },
+    },
     components: {
+      loadingIcon,
+      panelHeader,
+      pipelineHealth,
       stageComponent,
     },
     data() {
       const store = new Store();
-      const service = new Service();
+      const service = new Service(this.endpoint);
 
       return {
         store,
@@ -29,28 +53,32 @@
       currentStage() {
         return this.store.currentActiveStage();
       },
-      iconCycleAnalyticsSplash() {
-        return iconCycleAnalyticsSplash;
-      }
+      iconLock() {
+        return iconLock;
+      },
     },
     methods: {
       handleError() {
         this.store.setErrorState(true);
         return Flash('There was an error while fetching cycle analytics data.');
       },
-      initDropdown() {
-        const $dropdown = $('.js-ca-dropdown');
-        const $label = $dropdown.find('.dropdown-label');
-
-        $dropdown.find('li a').off('click').on('click', (e) => {
-          e.preventDefault();
-          const $target = $(e.currentTarget);
-          this.startDate = $target.data('value');
-
-          $label.text($target.text().trim());
-          this.fetchCycleAnalyticsData({ startDate: this.startDate });
-        });
+      onClickDropdown(value) {
+        this.startDate = value;
+        this.fetchCycleAnalyticsData({ startDate: this.startDate });
       },
+      // initDropdown() {
+      //   const $dropdown = $('.js-ca-dropdown');
+      //   const $label = $dropdown.find('.dropdown-label');
+
+      //   $dropdown.find('li a').off('click').on('click', (e) => {
+      //     e.preventDefault();
+      //     const $target = $(e.currentTarget);
+      //     this.startDate = $target.data('value');
+
+      //     $label.text($target.text().trim());
+      //     this.fetchCycleAnalyticsData({ startDate: this.startDate });
+      //   });
+      // },
       fetchCycleAnalyticsData(options) {
         const fetchOptions = options || { startDate: this.startDate };
 
@@ -112,169 +140,88 @@
 </script>
 <template>
   <div>
-    <div
+    <banner
       v-if="noData && !isOverviewDialogDismissed"
-      class="landing content-block">
-        <button
-          type="button"
-          class="dismiss-button"
-          aria-label="Dismiss Cycle Analytics introduction box"
-          @click="dismissOverviewDialog">
-          <i
-            class="fa fa-times"
-            aria-hidden="true">
-          </i>
-        </button>
-        <div
-          class="svg-container"
-          v-html="iconCycleAnalyticsSplash">
-        </div>
-        <div class="inner-content">
-          <h4>
-            {{ __('Introducing Cycle Analytics') }}
-          </h4>
-          <p>
-            {{ __('Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project.') }}
-          </p>
-          <p>
-            <a href="TODO" class="btn">
-              {{ __('Read more')}}
-            </a>
-          </p>
-        </div>
-    </div>
-    <div v-if="!isLoading && !hasError && !noData" class="wrapper">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          {{ __('Pipeline Health') }}
-        </div>
-        <div class="content-block">
-          <div class="container-fluid">
-            <div class="row">
+      @dimissBanner="dismissOverviewDialog"
+      :help-path="helpPath"
+      />
+    <template v-if="!isLoading && !hasError">
+      <pipeline-health
+        :analytics-data="state"
+        @onClickDropdown="onClickDropdown"
+        />
+
+      <div class="panel panel-default stage-panel">
+        <panel-heading :current-state="currentStage" />
+
+        <div class="stage-panel-body">
+          <div class="nav stage-nav">
+            <ul>
+              <li
+                class="stage-nav-item"
+                :class="{ active: stage.active }"
+                @click="selectStage(stage)"
+                v-for="(stage, i) in stage.stages">
+                <div class="stage-nav-item-cell stage-name">
+                  {{ stage.title }}
+                </div>
+                <div class="stage-nav-item-cell stage-median">
+                  <template v-if="stage.isUserAllowed">
+                    <span v-if="stage.value">
+                      {{stage.value}}
+                    </span>
+                    <span
+                      v-else
+                      class="stage-empty">
+                      {{ __('Not enough data') }}
+                      </span>
+                  </template>
+                  <template v-else>
+                    <span class="not-available">
+                      {{ __('Not available') }}
+                    </span>
+                  </template>
+                </div>
+                </li>
+            </ul>
+          </div>
+          <div class="section stage-events">
+            <loading-icon v-if="isLoadingStage" />
+            <div
+              v-if="currentStage && !currentStage.isUserAlllowed"
+              class="no-access-stage">
+              <div class="icon-lock" v-html="iconLock">
+              </div>
+              <h4>
+                {{ __('You need permission.') }}
+              </h4>
+              <p>
+                {{ __('Want to see the data? Please ask an administrator for access.') }}
+              </p>
+            </div>
+            <template v-else>
               <div
-                class="col-sm-3 col-xs-12 column"
-                v-for="(item, i) in state.summary"
-                :key="i">
-                <h3 class="header">
-                  {{item.value}}
-                </h3>
-                <p class="text">
-                  {{item.title}}
+                v-if="isEmptyStage && !isLoadingStage"
+                class="empty-stage">
+                <div class="icon-no-data" v-html="iconNoData"></div>
+                <h4>
+                  {{ __('We don\'t have enough data to show this stage.') }}
+                </h4>
+                <p>
+                  {{currentStage.emptyStageText}}
                 </p>
               </div>
-              <div class="col-sm-3 col-xs-12 column">
-                <div class="dropdown inline js-ca-dropdown">
-                  <button
-                    type="button"
-                    data-toggle="dropdown"
-                    class="dropdown-menu-toggle">
-                    <span class="dropdown-label">
-                      {{ n__('Last %d day', 'Last %d days', 30) }}
-                    </span>
-                    <i
-                      class="fa fa-chevron-down"
-                      aria-hidden="true">
-                    </i>
-                  </button>
-                  <ul class="dropdown-menu dropdowm-menu-align-right">
-                    <li>
-                      <a href="#" data-value="7">
-                        {{ n__('Last %d day', 'Last %d days', 7) }}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" data-value="30">
-                        {{ n__('Last %d day', 'Last %d days', 30) }}
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" data-value="90">
-                        {{ n__('Last %d day', 'Last %d days', 90) }}
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+              <template v-else>
+                <component
+                  :is="currentStage.component"
+                  :stage="currentStage"
+                  :items="state.events"
+                  />
               </div>
-            </div>
+            </template>
           </div>
         </div>
       </div>
-      <div class="stage-pane-container">
-        <div class="panel panel-default stage-panel">
-          <div class="panel-heading">
-            <div class="nav col-headers">
-              <ul>
-                <li class="stage-header">
-                  <span class="stage-name">
-                    {{s__('ProjectLifecycle|Stage')}}
-                  </span>
-                  <i
-                    class="fa fa-question-circle"
-                    v-tooltip
-                    :title="_("The phase of the development lifecycle.")"
-                    data-placement="top"
-                    aria-hidden="true">
-                  </i>
-                </li>
-                <li class="median-header">
-                  <span class="stage-name">
-                    {{ __('Median') }}
-                  </span>
-                  <i
-                    class="fa fa-question-circle"
-                    v-tooltip
-                    :title="_("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.")"
-                    data-placement="top"
-                    aria-hidden="true">
-                  </i>
-                </li>
-                <li class="event-header">
-                  <span class="stage-name">
-                    {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
-                  </span>
-                  <i
-                    class="fa fa-question-circle"
-                    v-tooltip
-                    :title="_("The collection of events added to the data gathered for that stage.")"
-                    data-placement="top"
-                    aria-hidden="true">
-                  </i>
-                </li>
-                <li class="total-time-header">
-                  <span class="stage-name">
-                    {{ __('Total Time') }}
-                  </span>
-                  <i
-                    class="fa fa-question-circle"
-                    v-tooltip
-                    :title="_("The time taken by each data entry gathered by that stage.")"
-                    data-placement="top"
-                    aria-hidden="true">
-                  </i>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="stage-panel-body">
-            <div class="nav stage-nav">
-              <ul>
-                <li
-                  class="stage-nav-item"
-                  :class="{ active: stage.active }"
-                  @click="selectStage(stage)"
-                  v-for="(stage, i) in stage.stages">
-                  <div class="stage-nav-item-cell stage-name">
-                    {{ stage.title }}
-                  </div>
-                  <div class="stage-nav-item-cell stage-median">
-
-                  </div>
-                  </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
