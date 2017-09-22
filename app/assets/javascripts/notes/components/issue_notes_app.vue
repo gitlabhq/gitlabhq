@@ -76,6 +76,7 @@
       getComponentData(note) {
         return note.individual_note ? note.notes[0] : note;
       },
+
       fetchNotes() {
         const options = {
           path: this.getNotesDataByProp('discussionsPath'),
@@ -103,15 +104,6 @@
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
         this.poll();
-      },
-      checkLocationHash() {
-        const hash = gl.utils.getLocationHash();
-        const element = document.getElementById(hash);
-
-        if (hash && element) {
-          this.setTargetNoteHash(hash);
-          this.scrollToNoteIfNeeded($(element));
-        }
       },
     },
     created() {

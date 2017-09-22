@@ -18,8 +18,14 @@ export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NO
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
+const getNoteIdFromHash = () => {
+  const hash = gl.utils.getLocationHash();
+  return hash ? parseInt(hash.split('_')[1]) : false;
+}
+
 export const fetchNotes = ({ commit, dispatch }, data) => {
   let { path, params } = data;
+  const noteID = getNoteIdFromHash()
   params = params || {};
 
   function innerFetchNotes(path, params) {
@@ -29,14 +35,19 @@ export const fetchNotes = ({ commit, dispatch }, data) => {
       .then((res) => {
         if (res.length > 0) {
           const newParams = params;
+          delete params.note_id;
           const lastNotes = res[res.length-1].notes;
           const lastNoteLength = lastNotes.length;
 
           newParams.after = lastNotes[lastNoteLength-1].id;
           commit(types.SET_INITIAL_NOTES, res);
+
           return innerFetchNotes(path, newParams);
         }
       });
+  }
+  if(noteID) {
+    params = { note_id: noteID };
   }
   return innerFetchNotes(path, params);
 }

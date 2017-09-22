@@ -97,22 +97,31 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def discussions
     limit = params.has_key?('limit') ? params[:limit] : 3
-    notes = @issue.notes
-      .limit(limit)
-      .inc_relations_for_view
 
-    notes = notes.after_id(params[:after]) if params.has_key?('after')
-    notes = notes.before_id(params[:before]) if params.has_key?('before')
+    if params.has_key?('note_id')
+      note = @issue.notes.includes(:noteable).find(params[:note_id])
+      notes = [note]
+      prepare_notes_for_rendering(notes)
+      discussions = Discussion.build_collection(notes, @issue)
+      render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
+    else    
+      notes = @issue.notes
+        .limit(limit)
+        .inc_relations_for_view
 
-    notes = notes.includes(:noteable)
-      .fresh
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+      notes = notes.after_id(params[:after]) if params.has_key?('after')
+      notes = notes.before_id(params[:before]) if params.has_key?('before')
 
-    prepare_notes_for_rendering(notes)
+      notes = notes.includes(:noteable)
+        .fresh
+        .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    discussions = Discussion.build_collection(notes, @issue)
+      prepare_notes_for_rendering(notes)
 
-    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
+      discussions = Discussion.build_collection(notes, @issue)
+
+      render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
+    end
   end
 
   def create
