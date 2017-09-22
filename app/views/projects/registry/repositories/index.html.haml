@@ -10,7 +10,14 @@
       = succeed '.' do
         = _('Learn more about')
         = link_to _('Container Registry'), help_page_path('user/project/container_registry'), target: '_blank'
-  .row
+  .row.registry-placeholder.prepend-bottom-10
+    .col-lg-12
+      #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json) } }
+
+      = page_specific_javascript_bundle_tag('common_vue')
+      = page_specific_javascript_bundle_tag('registry_list')
+
+  .row.prepend-top-10
     .col-lg-12
       .panel.panel-default
         .panel-heading
@@ -47,9 +54,3 @@
               #{escape_once(@project.container_registry_url)}:tag
               #{escape_once(@project.container_registry_url)}/optional-image-name:tag
               #{escape_once(@project.container_registry_url)}/optional-name/optional-image-name:tag
-  .row
-    .col-lg-12
-      #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json)}}
-
-      = page_specific_javascript_bundle_tag('common_vue')
-      = page_specific_javascript_bundle_tag('registry_list')
