@@ -40,7 +40,7 @@ describe GroupDescendant, :nested_groups do
       end
     end
 
-    describe '.merge_hierarchies' do
+    describe '.build_hierarchy' do
       it 'combines hierarchies until the top' do
         other_subgroup = create(:group, parent: parent)
         other_subsub_group = create(:group, parent: subgroup)
@@ -49,7 +49,7 @@ describe GroupDescendant, :nested_groups do
 
         expected_hierarchy = { parent => [other_subgroup, { subgroup => [subsub_group, other_subsub_group] }] }
 
-        expect(described_class.merge_hierarchies(groups)).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy(groups)).to eq(expected_hierarchy)
       end
 
       it 'combines upto a given parent' do
@@ -60,7 +60,7 @@ describe GroupDescendant, :nested_groups do
 
         expected_hierarchy = [other_subgroup, { subgroup => [subsub_group, other_subsub_group] }]
 
-        expect(described_class.merge_hierarchies(groups, parent)).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy(groups, parent)).to eq(expected_hierarchy)
       end
 
       it 'handles building a tree out of order' do
@@ -71,7 +71,7 @@ describe GroupDescendant, :nested_groups do
         groups = [subsub_group, other_subgroup2, other_subsub_group]
         expected_hierarchy = { parent => [{ subgroup => subsub_group }, other_subgroup2, { other_subgroup => other_subsub_group }] }
 
-        expect(described_class.merge_hierarchies(groups)).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy(groups)).to eq(expected_hierarchy)
       end
     end
   end
@@ -113,7 +113,7 @@ describe GroupDescendant, :nested_groups do
       end
     end
 
-    describe '.merge_hierarchies' do
+    describe '.build_hierarchy' do
       it 'combines hierarchies until the top' do
         other_project = create(:project, namespace: parent)
         other_subgroup_project = create(:project, namespace: subgroup)
@@ -122,7 +122,7 @@ describe GroupDescendant, :nested_groups do
 
         expected_hierarchy = { parent => [other_project, { subgroup => [subsub_group, other_subgroup_project] }] }
 
-        expect(described_class.merge_hierarchies(elements)).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy(elements)).to eq(expected_hierarchy)
       end
 
       it 'combines upto a given parent' do
@@ -133,13 +133,13 @@ describe GroupDescendant, :nested_groups do
 
         expected_hierarchy = [other_project, { subgroup => [subsub_group, other_subgroup_project] }]
 
-        expect(described_class.merge_hierarchies(elements, parent)).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy(elements, parent)).to eq(expected_hierarchy)
       end
 
       it 'merges to elements in the same hierarchy' do
         expected_hierarchy = { parent => subgroup }
 
-        expect(described_class.merge_hierarchies([parent, subgroup])).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy([parent, subgroup])).to eq(expected_hierarchy)
       end
 
       it 'merges complex hierarchies' do
@@ -164,7 +164,7 @@ describe GroupDescendant, :nested_groups do
           { other_subgroup => other_subproject }
         ]
 
-        actual_hierarchy = described_class.merge_hierarchies(projects, parent)
+        actual_hierarchy = described_class.build_hierarchy(projects, parent)
 
         expect(actual_hierarchy).to eq(expected_hierarchy)
       end

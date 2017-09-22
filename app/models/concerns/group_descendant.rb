@@ -1,46 +1,46 @@
 module GroupDescendant
-  def hierarchy(hierarchy_base = nil)
-    expand_hierarchy_for_child(self, self, hierarchy_base)
+  def hierarchy(hierarchy_top = nil)
+    expand_hierarchy_for_child(self, self, hierarchy_top)
   end
 
-  def expand_hierarchy_for_child(child, hierarchy, hierarchy_base)
-    if child.parent.nil? && hierarchy_base.present?
+  def expand_hierarchy_for_child(child, hierarchy, hierarchy_top)
+    if child.parent.nil? && hierarchy_top.present?
       raise ArgumentError.new('specified base is not part of the tree')
     end
 
-    if child.parent && child.parent != hierarchy_base
+    if child.parent && child.parent != hierarchy_top
       expand_hierarchy_for_child(child.parent,
                                  { child.parent => hierarchy },
-                                 hierarchy_base)
+                                 hierarchy_top)
     else
       hierarchy
     end
   end
 
-  def merge_hierarchy(other_element, hierarchy_base = nil)
-    GroupDescendant.merge_hierarchies([self, other_element], hierarchy_base)
+  def merge_hierarchy(other_element, hierarchy_top = nil)
+    GroupDescendant.build_hierarchy([self, other_element], hierarchy_top)
   end
 
-  def self.merge_hierarchies(hierarchies, hierarchy_base = nil)
-    hierarchies = Array.wrap(hierarchies)
-    return if hierarchies.empty?
+  def self.build_hierarchy(descendants, hierarchy_top = nil)
+    descendants = Array.wrap(descendants)
+    return if descendants.empty?
 
-    unless hierarchies.all? { |hierarchy| hierarchy.is_a?(GroupDescendant) }
+    unless descendants.all? { |hierarchy| hierarchy.is_a?(GroupDescendant) }
       raise ArgumentError.new('element is not a hierarchy')
     end
 
-    first_hierarchy, *other_hierarchies = hierarchies
-    merged = first_hierarchy.hierarchy(hierarchy_base)
+    first_descendant, *other_descendants = descendants
+    merged = first_descendant.hierarchy(hierarchy_top)
 
-    other_hierarchies.each do |child|
-      next_hierarchy = child.hierarchy(hierarchy_base)
-      merged = merge_values(merged, next_hierarchy)
+    other_descendants.each do |descendant|
+      next_descendant = descendant.hierarchy(hierarchy_top)
+      merged = merge_hash_tree(merged, next_descendant)
     end
 
     merged
   end
 
-  def self.merge_values(first_child, second_child)
+  def self.merge_hash_tree(first_child, second_child)
     # When the first is an array, we need to go over every element to see if
     # we can merge deeper. If no match is found, we add the element to the array
     #
@@ -55,7 +55,7 @@ module GroupDescendant
     # Handled cases:
     # [Hash, Hash]
     elsif first_child.is_a?(Hash) && second_child.is_a?(Hash)
-      first_child.deep_merge(second_child) { |key, first, second| merge_values(first, second) }
+      first_child.deep_merge(second_child) { |key, first, second| merge_hash_tree(first, second) }
     # If only one of them is a hash, and one of them is a GroupHierachy-object
     # we can check if its already in the hash. If so, we don't need to do anything
     #
@@ -77,7 +77,7 @@ module GroupDescendant
 
   def self.merge_hash_into_array(array, new_hash)
     if mergeable_index = array.index { |element| element.is_a?(Hash) && (element.keys & new_hash.keys).any? }
-      array[mergeable_index] = merge_values(array[mergeable_index], new_hash)
+      array[mergeable_index] = merge_hash_tree(array[mergeable_index], new_hash)
     else
       array << new_hash
     end

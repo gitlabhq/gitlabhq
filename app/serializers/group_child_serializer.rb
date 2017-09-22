@@ -27,7 +27,7 @@ class GroupChildSerializer < BaseSerializer
     if children.is_a?(GroupDescendant)
       represent_hierarchy(children.hierarchy(hierarchy_root), opts).first
     else
-      hierarchies = GroupDescendant.merge_hierarchies(children, hierarchy_root)
+      hierarchies = GroupDescendant.build_hierarchy(children, hierarchy_root)
       represent_hierarchy(hierarchies, opts)
     end
   end
