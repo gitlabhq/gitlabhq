@@ -17,6 +17,14 @@
         type: String,
         required: true,
       },
+      emptyStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      errorStateSvgPath: {
+        type: String,
+        required: true,
+      },
     },
     mixins: [
       pipelinesMixin,
@@ -87,10 +95,12 @@
     <empty-state
       v-if="shouldRenderEmptyState"
       :help-page-path="helpPagePath"
+      :empty-state-svg-path="emptyStateSvgPath"
       />
 
     <error-state
       v-if="shouldRenderErrorState"
+      :error-state-svg-path="errorStateSvgPath"
       />
 
     <div

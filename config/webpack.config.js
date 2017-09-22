@@ -45,6 +45,7 @@ var config = {
     group:                './group.js',
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
