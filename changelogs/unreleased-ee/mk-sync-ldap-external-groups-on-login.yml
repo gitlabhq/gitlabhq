@@ -1,5 +1,0 @@
----
-title: Check if LDAP users are in external groups on login
-merge_request: 2720
-author:
-type: security

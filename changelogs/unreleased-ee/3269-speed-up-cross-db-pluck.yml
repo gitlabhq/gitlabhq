@@ -1,5 +1,0 @@
----
-title: Improve Geo repository sync performance for larger databases
-merge_request: 2887
-author:
-type: fixed

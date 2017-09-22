@@ -1,4 +1,0 @@
----
-title: Fix a bug searching private projects with Elasticsearch as an admin or auditor
-merge_request: 2613
-author:

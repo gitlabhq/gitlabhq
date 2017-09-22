@@ -1,5 +1,49 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.0 (2017-09-22)
+
+- [SECURITY] Check if LDAP users are in external groups on login. !2720
+- [FIXED] Fix typo for `required` attribute. !2659
+- [FIXED] Fix global code search when using negation queries. !2709
+- [FIXED] Fixes activation of project mirror when new project is created. !2756
+- [FIXED] Geo - Whitelist LFS requests to download objects on a secondary node. !2758
+- [FIXED] Fix Geo::RepositorySyncWorker so attempts to sync all projects if some are failing. !2796
+- [FIXED] Fix unsetting credentials data for pull mirrors. !2810
+- [FIXED] Geo: Gracefully catch incorrect db key on primary. !2819
+- [FIXED] Fix a regression breaking projects with an empty import URL. !2824
+- [FIXED] Fix a 500 error in the SSH host keys lookup action. !2827
+- [FIXED] Handle Geo DB replication lag as 24h/day & 7d/week. !2833
+- [FIXED] Geo - Add a unique index on project_id to the Geo project_registry table. !2850
+- [FIXED] Improve Geo repository sync performance for larger databases. !2887
+- [FIXED] Ensure #route_setting is available before calling it. !2908
+- [FIXED] Fix searching by assignee in the service desk. !2969
+- [FIXED] Fix approvals before merge error while importing projects.
+- [FIXED] Fix the gap in approvals in merge request widget.
+- [FIXED] Fix branch name regex not saving in /admin/push_rule config.
+- [FIXED] Fix merges not working when project is not licensed for squash.
+- [CHANGED] Add Time estimate and Time spend fields in csv export. !2627 (g3dinua, LockiStrike)
+- [CHANGED] Improve copy so users will set up SSH from DB for Geo. !2644
+- [CHANGED] Support `codequality` job name for Code Quality feature. !2704
+- [CHANGED] Support Elasticsearch v5.1 - v5.5. !2751
+- [CHANGED] Geo primary nodes no longer require SSH keys. !2861
+- [CHANGED] Show Geo event log and cursor data in node status page.
+- [CHANGED] Use a logger for the artifacts migration rake task.
+- [ADDED] LFS files can be stored in remote object storage such as S3. !2760
+- [ADDED] Add LDAP sync endpoint to Groups API. !2785
+- [ADDED] Geo - Log a repository created event when a project is created. !2807
+- [ADDED] Show geo.log in the Admin area. !2845
+- [ADDED] Commits integration with Jira development panel.
+- [OTHER] Add missing indexes to geo_event_log table. !2836
+- [OTHER] Geo - Ignore S3-backed LFS objects on secondary nodes. !2889
+- Fix a bug searching private projects with Elasticsearch as an admin or auditor. !2613
+- Don't put the password in the SSH remote if using public-key authentication. !2837
+- Support handling of rename events in Geo Log Cursor.
+- Update delete board button text color to red and fix hover color.
+- Search for issues with multiple assignees.
+- Fix: When MR approvals are disabled, but approvers were previously assigned, all approvers receive a notification on every MR.
+- Add group issue boards.
+- Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
+
 ## 9.5.5 (2017-09-18)
 
 - [FIXED] Fixes activation of project mirror when new project is created. !2756
