@@ -41,7 +41,7 @@ export function setLineCodeCoordinates(el, x, y) {
   // Until backend strips this out for us
   const lineCodeWithoutCoordinates = lineCode.match(/^(.*?)_/)[0];
 
-  el.setAttribute('dataset-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
+  el.setAttribute('data-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
 }
 
 export function setPositionDataAttribute(el, options) {

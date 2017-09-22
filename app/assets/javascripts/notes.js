@@ -942,7 +942,7 @@ export default class Notes {
       newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
       this.setupDiscussionNoteForm($link, newForm);
     } else {
-      // change coordinates of existing form
+      // TODO: change coordinates of existing form
     }
   }
 
