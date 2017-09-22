@@ -57,7 +57,7 @@
             %li
               %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
                 Edit board name
-            - if parent.issue_board_milestone_available?(current_user)
+            - if parent.scoped_issue_board_available?(current_user)
               %li
                 %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
                   Edit board milestone

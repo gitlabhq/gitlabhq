@@ -17,7 +17,7 @@ class License < ActiveRecord::Base
   GROUP_WEBHOOKS_FEATURE = 'GitLab_GroupWebhooks'.freeze
   ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
-  ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
+  SCOPED_ISSUE_BOARD_FEATURE = 'GitLab_ScopedIssueBoard'.freeze
   GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
@@ -62,7 +62,7 @@ class License < ActiveRecord::Base
     group_webhooks: GROUP_WEBHOOKS_FEATURE,
     issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
     issue_board_focus_mode: ISSUE_BOARD_FOCUS_MODE_FEATURE,
-    issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
+    scoped_issue_board: SCOPED_ISSUE_BOARD_FEATURE,
     group_issue_boards: GROUP_ISSUE_BOARDS_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
     jenkins_integration: JENKINS_INTEGRATION_FEATURE,
@@ -92,7 +92,7 @@ class License < ActiveRecord::Base
     { GROUP_WEBHOOKS_FEATURE => 1 },
     { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
-    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
+    { SCOPED_ISSUE_BOARD_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { JENKINS_INTEGRATION_FEATURE => 1 },
     { LDAP_EXTRAS_FEATURE => 1 },
@@ -152,7 +152,7 @@ class License < ActiveRecord::Base
     { GROUP_WEBHOOKS_FEATURE => 1 },
     { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
     { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
-    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
+    { SCOPED_ISSUE_BOARD_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { JENKINS_INTEGRATION_FEATURE => 1 },
     { LDAP_EXTRAS_FEATURE => 1 },

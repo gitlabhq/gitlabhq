@@ -1532,8 +1532,8 @@ class Project < ActiveRecord::Base
     feature_available?(:multiple_issue_boards, user)
   end
 
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
+  def scoped_issue_board_available?(user = nil)
+    feature_available?(:scoped_issue_board, user)
   end
 
   def full_path_was

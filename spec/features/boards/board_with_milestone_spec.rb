@@ -17,7 +17,7 @@ describe 'Board with milestone', :js do
 
   context 'with the feature enabled' do
     before do
-      stub_licensed_features(issue_board_milestone: true)
+      stub_licensed_features(scoped_issue_board: true)
     end
 
     context 'new board' do
@@ -173,7 +173,7 @@ describe 'Board with milestone', :js do
 
   context 'with the feature disabled' do
     before do
-      stub_licensed_features(issue_board_milestone: false)
+      stub_licensed_features(scoped_issue_board: false)
       visit project_boards_path(project)
     end
 

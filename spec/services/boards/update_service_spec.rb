@@ -26,7 +26,7 @@ describe Boards::UpdateService do
     end
 
     it 'udpates the milestone with issue board milestones enabled' do
-      stub_licensed_features(issue_board_milestone: true)
+      stub_licensed_features(scoped_issue_board: true)
       milestone = create(:milestone, project: project)
 
       service = described_class.new(project, double, milestone_id: milestone.id)
@@ -36,7 +36,7 @@ describe Boards::UpdateService do
     end
 
     it 'udpates the milestone with the issue board milestones feature enabled' do
-      stub_licensed_features(issue_board_milestone: false)
+      stub_licensed_features(scoped_issue_board: false)
       milestone = create(:milestone, project: project)
 
       service = described_class.new(project, double, milestone_id: milestone.id)

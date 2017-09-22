@@ -795,7 +795,7 @@ module API
       expose :name
       expose :project, using: Entities::BasicProjectDetails
       expose :milestone,
-             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
+             if: -> (board, _) { board.project.feature_available?(:scoped_issue_board) }
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
