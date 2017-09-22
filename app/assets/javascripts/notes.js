@@ -928,8 +928,7 @@ export default class Notes {
       $commentSelection.css('top', selection.browser.y);
     } else {
       const button = imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
-      // TODO: Use button to focus the comment input
-      $(button).on('click', e => e.stopPropagation());
+      $(button).on('click', imageDiffHelper.commentSelectionIndicatorOnClick);
     }
 
     // Setup coordinates data for comment form

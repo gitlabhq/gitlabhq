@@ -74,3 +74,13 @@ export function setCommentSelectionIndicator(containerEl, x, y) {
 
   return button;
 }
+
+export function commentSelectionIndicatorOnClick(e) {
+  // Prevent from triggering onAddImageDiffNote in notes.js
+  e.stopPropagation();
+
+  const button = e.currentTarget;
+  const diffViewer = button.closest('.diff-viewer');
+  const textarea = diffViewer.querySelector('.note-container form .note-textarea');
+  textarea.focus();
+}
