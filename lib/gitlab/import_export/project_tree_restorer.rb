@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     class ProjectTreeRestorer
       # Relations which cannot have both group_id and project_id at the same time
-      RESTRICT_PROJECT_AND_GROUP = %i(milestones).freeze
+      RESTRICT_PROJECT_AND_GROUP = %i(milestones milestone group_milestones group_milestone).freeze
 
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')

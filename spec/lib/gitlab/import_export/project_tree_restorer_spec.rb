@@ -253,9 +253,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(project.milestones.count).to eq(1)
       end
 
-      it 'has issue' do
+      it 'has issue with milestone' do
         expect(project.issues.count).to eq(1)
         expect(project.issues.first.labels.count).to eq(2)
+        expect(project.issues.first.milestone).to be_present
       end
 
       it 'has issue with group label and project label' do
