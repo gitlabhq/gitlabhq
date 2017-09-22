@@ -16,6 +16,15 @@ export function showCommentIndicator(event) {
   }
 }
 
+export function hideCommentIndicator(event) {
+  const container = event.target.closest('.diff-viewer');
+  const commentIndicator = container.querySelector('.comment-indicator');
+
+  if (commentIndicator) {
+    commentIndicator.remove();
+  }
+}
+
 export function setupCoordinatesData(event) {
   const el = event.currentTarget;
   const selection = imageDiffHelper.getTargetSelection(event);

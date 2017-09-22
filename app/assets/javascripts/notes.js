@@ -1030,6 +1030,9 @@ export default class Notes {
     var form;
     e.preventDefault();
     form = $(e.target).closest('.js-discussion-note-form');
+
+    imageDiff.hideCommentIndicator(e);
+
     return this.removeDiscussionNoteForm(form);
   }
 
