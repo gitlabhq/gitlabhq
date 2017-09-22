@@ -1490,6 +1490,8 @@ export default class Notes {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
+        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+
         if (hasQuickActions) {
           $notesContainer.find(`#${systemNoteUniqueId}`).remove();
         }
