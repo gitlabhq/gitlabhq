@@ -19,15 +19,11 @@ module SystemNoteHelper
     'discussion' => 'comment',
     'moved' => 'arrow-right',
     'outdated' => 'pencil',
-<<<<<<< HEAD
     'duplicate' => 'issue-duplicate',
     'approved' => 'approval',
     'unapproved' => 'unapproval',
     'relate' => 'link',
     'unrelate' => 'unlink'
-=======
-    'duplicate' => 'issue-duplicate'
->>>>>>> upstream/master
   }.freeze
 
   def system_note_icon_name(note)

@@ -47,11 +47,8 @@ var config = {
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
     help:                 './help/help.js',
-<<<<<<< HEAD
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
-=======
->>>>>>> upstream/master
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
