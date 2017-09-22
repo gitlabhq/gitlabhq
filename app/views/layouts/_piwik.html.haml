@@ -5,11 +5,10 @@
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u="//#{extra_config.piwik_url}/";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setTrackerUrl', '//#{extra_config.piwik_url}/piwik.php']);
     _paq.push(['setSiteId', #{extra_config.piwik_site_id}]);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='//#{extra_config.has_key?('piwik_js_cdn_url') ? extra_config.piwik_js_cdn_url : extra_config.piwik_url}/piwik.js'; s.parentNode.insertBefore(g,s);
   })();
 <noscript><p><img src="//#{extra_config.piwik_url}/piwik.php?idsite=#{extra_config.piwik_site_id}" style="border:0;" alt="" /></p></noscript>
 <!-- End Piwik Code -->

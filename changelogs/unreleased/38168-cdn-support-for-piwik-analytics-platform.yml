@@ -1,0 +1,5 @@
+---
+title: Piwik.js is now CDN compatible through the extra_config parameter piwik_js_cdn_url
+merge_request:
+author:
+type: changed

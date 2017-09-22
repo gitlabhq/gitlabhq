@@ -613,6 +613,7 @@ production: &base
 
     ## Piwik analytics.
     # piwik_url: '_your_piwik_url'
+    # piwik_js_cdn_url: '_your_piwik_js_cdn_url'
     # piwik_site_id: '_your_piwik_site_id'
 
   rack_attack:
