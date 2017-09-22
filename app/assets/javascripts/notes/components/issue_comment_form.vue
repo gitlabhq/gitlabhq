@@ -97,6 +97,8 @@
     methods: {
       ...mapActions([
         'saveNote',
+        'stopPolling',
+        'restartPolling',
         'removePlaceholderNotes',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
@@ -126,10 +128,13 @@
           this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
           this.resizeTextarea();
+          this.stopPolling();
 
           this.saveNote(noteData)
             .then((res) => {
               this.isSubmitting = false;
+              this.restartPolling();
+
               if (res.errors) {
                 if (res.errors.commands_only) {
                   this.discard();
