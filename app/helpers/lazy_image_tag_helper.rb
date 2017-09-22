@@ -9,7 +9,11 @@ module LazyImageTagHelper
 
     unless options.delete(:lazy) == false
       options[:data] ||= {}
-      options[:data][:src] = path_to_image(source)
+      unless options.delete(:use_original_source) == true
+        options[:data][:src] = path_to_image(source)
+      else
+        options[:data][:src] = source
+      end
       options[:class] ||= ""
       options[:class] << " lazy"
 

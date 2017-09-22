@@ -12,7 +12,7 @@ module GroupsHelper
       group = Group.find_by_full_path(group)
     end
 
-    group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
+    group.try(:avatar_url, use_asset_path: false) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)
@@ -89,7 +89,12 @@ module GroupsHelper
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
         if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-          image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
+          if group.private?
+            puts "GROUP IS PRIVATE : " + group_icon(group)
+            image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15, use_original_source: true)
+          else
+            image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
+          end
         else
           ""
         end
