@@ -188,11 +188,7 @@ static analysis and other code checks on the current code. The report is
 created, and is uploaded as an artifact which you can later download and check
 out. In GitLab Enterprise Edition Starter, differences between the source and
 target branches are
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
->>>>>>> upstream/master
 
 ### Auto Review Apps
 
@@ -371,11 +367,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `AUTO_DEVOPS_DOMAIN`        | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops). |
 | `AUTO_DEVOPS_CHART`         | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app). |
 | `PRODUCTION_REPLICAS`       | The number of replicas to deploy in the production environment; defaults to 1. |
-<<<<<<< HEAD
 | `CANARY_PRODUCTION_REPLICAS`| The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. |
-=======
-| `CANARY_PRODUCTION_REPLICAS`| The number of canary replicas to deploy for [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html) in the production environment. |
->>>>>>> upstream/master
 | `POSTGRES_ENABLED`  | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
 | `POSTGRES_USER`     | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
 | `POSTGRES_PASSWORD` | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
