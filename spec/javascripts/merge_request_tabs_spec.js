@@ -78,8 +78,9 @@ import 'vendor/jquery.scrollTo';
       });
 
       describe('meta click', () => {
+        let metakeyEvent;
         beforeEach(function () {
-          spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
+          metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
         });
 
         it('opens page when commits link is clicked', function () {
@@ -89,7 +90,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a').click();
+          $('.merge-request-tabs .commits-tab a').trigger(metakeyEvent);
         });
 
         it('opens page when commits badge is clicked', function () {
@@ -99,7 +100,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a .badge').click();
+          $('.merge-request-tabs .commits-tab a .badge').trigger(metakeyEvent);
         });
       });
 

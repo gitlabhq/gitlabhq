@@ -23,7 +23,8 @@ import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
-import * as imageDiffHelper from './commit/image_diff_helper';
+import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import * as imageDiff from './image_diff/image_diff';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -83,7 +84,7 @@ export default class Notes {
     this.setViewType(view);
 
     // We are in the Merge Requests page so we need another edit form for Changes tab
-    if (gl.utils.getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests') {
       $('.note-edit-form').clone()
         .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
     }
@@ -180,7 +181,7 @@ export default class Notes {
 
   keydownNoteText(e) {
     var $textarea, discussionNoteForm, editNote, myLastNote, myLastNoteEditBtn, newText, originalText;
-    if (gl.utils.isMetaKey(e)) {
+    if (isMetaKey(e)) {
       return;
     }
 
@@ -649,10 +650,10 @@ export default class Notes {
     }
     else {
       var $buttons = $el.find('.note-form-actions');
-      var isWidgetVisible = gl.utils.isInViewport($el.get(0));
+      var isWidgetVisible = isInViewport($el.get(0));
 
       if (!isWidgetVisible) {
-        gl.utils.scrollToElement($el);
+        scrollToElement($el);
       }
 
       $el.find('.js-finish-edit-warning').show();
@@ -870,7 +871,7 @@ export default class Notes {
     form.find('#note_type').val(dataHolder.data('noteType'));
 
     // LegacyDiffNote
-    form.find('#note_line_code').val(dataHolder.data('lineCode'));
+    form.find('#note_line_code').val(dataHolder.attr('data-line-code'));
 
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
@@ -918,32 +919,21 @@ export default class Notes {
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
 
-    const $container = $(event.target.parentElement);
-    const $commentSelection = $container.find('.comment-selection');
-    const selection = imageDiffHelper.getTargetSelection(event);
+    imageDiff.showCommentIndicator(e);
+    imageDiff.setupCoordinatesData(e);
 
-    // Set comment selection indicator
-    if ($commentSelection.length !== 0) {
-      $commentSelection.css('left', selection.browser.x);
-      $commentSelection.css('top', selection.browser.y);
+    // Setup comment form
+    let newForm;
+    const $noteContainer = $link.closest('.diff-viewer').find('.note-container');
+
+    if ($noteContainer.find('form').length === 0) {
+      newForm = this.cleanForm(this.formClone.clone());
+      newForm.appendTo($noteContainer);
     } else {
-      const button = imageDiffHelper.setCommentSelectionIndicator($container[0], selection.browser.x, selection.browser.y);
-      // TODO: Use button to focus the comment input
-      $(button).on('click', e => e.stopPropagation());
+      newForm = $noteContainer.find('form');
     }
 
-    imageDiffHelper.setLineCodeCoordinates($link[0], selection.actual.x, selection.actual.y);
-    imageDiffHelper.setPositionDataAttribute($link[0], selection.actual);
-
-    const noteContainer = $link.closest('.diff-viewer').find('.note-container');
-
-    if (noteContainer.find('form').length === 0) {
-      const newForm = this.cleanForm(this.formClone.clone());
-      newForm.appendTo($link.closest('.diff-viewer').find('.note-container'));
-      this.setupDiscussionNoteForm($link, newForm);
-    } else {
-      // change coordinates of existing form
-    }
+    this.setupDiscussionNoteForm($link, newForm);
   }
 
   toggleDiffNote({
@@ -1038,10 +1028,12 @@ export default class Notes {
   }
 
   cancelDiscussionForm(e) {
-    var form;
     e.preventDefault();
-    form = $(e.target).closest('.js-discussion-note-form');
-    return this.removeDiscussionNoteForm(form);
+    const $form = $(e.target).closest('.js-discussion-note-form');
+
+    imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+
+    return this.removeDiscussionNoteForm($form);
   }
 
   /**
@@ -1228,7 +1220,7 @@ export default class Notes {
   }
 
   static checkMergeRequestStatus() {
-    if (gl.utils.getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests') {
       gl.mrWidget.checkStatus();
     }
   }
@@ -1366,7 +1358,7 @@ export default class Notes {
    * 2) Identify comment type; a) Main thread b) Discussion thread c) Discussion resolve
    * 3) Build temporary placeholder element (using `createPlaceholderNote`)
    * 4) Show placeholder note on UI
-   * 5) Perform network request to submit the note using `gl.utils.ajaxPost`
+   * 5) Perform network request to submit the note using `ajaxPost`
    *    a) If request is successfully completed
    *        1. Remove placeholder element
    *        2. Show submitted Note element
@@ -1448,10 +1440,12 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    gl.utils.ajaxPost(formAction, formData)
+    ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
+
+        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
 
         // Reset cached commands list when command is applied
         if (hasQuickActions) {
@@ -1496,6 +1490,8 @@ export default class Notes {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
+        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+
         if (hasQuickActions) {
           $notesContainer.find(`#${systemNoteUniqueId}`).remove();
         }
@@ -1521,7 +1517,7 @@ export default class Notes {
    *
    * 1) Get Form metadata
    * 2) Update note element with new content
-   * 3) Perform network request to submit the updated note using `gl.utils.ajaxPost`
+   * 3) Perform network request to submit the updated note using `ajaxPost`
    *    a) If request is successfully completed
    *        1. Show submitted Note element
    *    b) If request failed
@@ -1550,7 +1546,7 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-    gl.utils.ajaxPost(formAction, formData)
+    ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
         this.updateNote(note, $editingNote);

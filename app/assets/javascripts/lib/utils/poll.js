@@ -1,4 +1,5 @@
 import httpStatusCodes from './http_status';
+import { normalizeHeaders } from './common_utils';
 
 /**
  * Polling utility for handling realtime updates.
@@ -57,7 +58,7 @@ export default class Poll {
   }
 
   checkConditions(response) {
-    const headers = gl.utils.normalizeHeaders(response.headers);
+    const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
 
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {

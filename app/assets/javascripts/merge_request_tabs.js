@@ -7,6 +7,11 @@ import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
+import {
+  parseUrlPathname,
+  handleLocationHash,
+  isMetaClick,
+} from './lib/utils/common_utils';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -114,7 +119,7 @@ import bp from './breakpoints';
     }
 
     clickTab(e) {
-      if (e.currentTarget && gl.utils.isMetaClick(e)) {
+      if (e.currentTarget && isMetaClick(e)) {
         const targetLink = e.currentTarget.getAttribute('href');
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -243,6 +248,8 @@ import bp from './breakpoints';
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
@@ -260,7 +267,7 @@ import bp from './breakpoints';
 
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
-      const urlPathname = gl.utils.parseUrlPathname(source);
+      const urlPathname = parseUrlPathname(source);
 
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
@@ -309,7 +316,7 @@ import bp from './breakpoints';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
-            window.gl.utils.handleLocationHash();
+            handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');

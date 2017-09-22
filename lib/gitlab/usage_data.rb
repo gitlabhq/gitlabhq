@@ -9,10 +9,26 @@ module Gitlab
 
       def uncached_data
         license_usage_data.merge(system_usage_data)
+                          .merge(features_usage_data)
+                          .merge(components_usage_data)
       end
 
       def to_json(force_refresh: false)
         data(force_refresh: force_refresh).to_json
+      end
+
+      def license_usage_data
+        usage_data = {
+          uuid: current_application_settings.uuid,
+          hostname: Gitlab.config.gitlab.host,
+          version: Gitlab::VERSION,
+          active_user_count: User.active.count,
+          recorded_at: Time.now,
+          mattermost_enabled: Gitlab.config.mattermost.enabled,
+          edition: 'CE'
+        }
+
+        usage_data
       end
 
       def system_usage_data
@@ -54,18 +70,28 @@ module Gitlab
         }
       end
 
-      def license_usage_data
-        usage_data = {
-          uuid: current_application_settings.uuid,
-          hostname: Gitlab.config.gitlab.host,
-          version: Gitlab::VERSION,
-          active_user_count: User.active.count,
-          recorded_at: Time.now,
-          mattermost_enabled: Gitlab.config.mattermost.enabled,
-          edition: 'CE'
-        }
+      def features_usage_data
+        features_usage_data_ce
+      end
 
-        usage_data
+      def features_usage_data_ce
+        {
+          signup: current_application_settings.signup_enabled?,
+          ldap: Gitlab.config.ldap.enabled,
+          gravatar: current_application_settings.gravatar_enabled?,
+          omniauth: Gitlab.config.omniauth.enabled,
+          reply_by_email: Gitlab::IncomingEmail.enabled?,
+          container_registry: Gitlab.config.registry.enabled,
+          gitlab_shared_runners: Gitlab.config.gitlab_ci.shared_runners_enabled
+        }
+      end
+
+      def components_usage_data
+        {
+          gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
+          git: { version: Gitlab::Git.version },
+          database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
+        }
       end
 
       def services_usage

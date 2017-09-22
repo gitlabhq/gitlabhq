@@ -6,7 +6,7 @@ import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
-import '../../lib/utils/common_utils';
+import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 import Poll from '../../lib/utils/poll';
 import environmentsMixin from '../mixins/environments_mixin';
@@ -51,19 +51,19 @@ export default {
 
   computed: {
     scope() {
-      return gl.utils.getParameterByName('scope');
+      return getParameterByName('scope');
     },
 
     canReadEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canReadEnvironment);
+      return convertPermissionToBoolean(this.canReadEnvironment);
     },
 
     canCreateDeploymentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
+      return convertPermissionToBoolean(this.canCreateDeployment);
     },
 
     canCreateEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
+      return convertPermissionToBoolean(this.canCreateEnvironment);
     },
   },
 
@@ -72,8 +72,8 @@ export default {
    * Toggles loading property.
    */
   created() {
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const page = gl.utils.getParameterByName('page') || this.pageNumber;
+    const scope = getParameterByName('scope') || this.visibility;
+    const page = getParameterByName('page') || this.pageNumber;
 
     this.service = new EnvironmentsService(this.endpoint);
 
@@ -126,15 +126,15 @@ export default {
      * @return {String}
      */
     changePage(pageNumber) {
-      const param = gl.utils.setParamInURL('page', pageNumber);
+      const param = setParamInURL('page', pageNumber);
 
       gl.utils.visitUrl(param);
       return param;
     },
 
     fetchEnvironments() {
-      const scope = gl.utils.getParameterByName('scope') || this.visibility;
-      const page = gl.utils.getParameterByName('page') || this.pageNumber;
+      const scope = getParameterByName('scope') || this.visibility;
+      const page = getParameterByName('page') || this.pageNumber;
 
       this.isLoading = true;
 

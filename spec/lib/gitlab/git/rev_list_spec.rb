@@ -14,7 +14,7 @@ describe Gitlab::Git::RevList do
     let(:rev_list) { described_class.new(newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
 
     it 'calls out to `popen`' do
-      expect(Gitlab::Popen).to receive(:popen).with([
+      expect(rev_list).to receive(:popen).with([
         Gitlab.config.git.bin_path,
         "--git-dir=#{project.repository.path_to_repo}",
         'rev-list',
@@ -36,7 +36,7 @@ describe Gitlab::Git::RevList do
     let(:rev_list) { described_class.new(oldrev: 'oldrev', newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
 
     it 'calls out to `popen`' do
-      expect(Gitlab::Popen).to receive(:popen).with([
+      expect(rev_list).to receive(:popen).with([
         Gitlab.config.git.bin_path,
         "--git-dir=#{project.repository.path_to_repo}",
         'rev-list',

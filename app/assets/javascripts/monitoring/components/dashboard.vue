@@ -7,6 +7,7 @@
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
+  import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
 
@@ -17,11 +18,14 @@
       return {
         store,
         state: 'gettingStarted',
-        hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
+        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
         documentationPath: metricsData.documentationPath,
         settingsPath: metricsData.settingsPath,
         metricsEndpoint: metricsData.additionalMetrics,
         deploymentEndpoint: metricsData.deploymentEndpoint,
+        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
+        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
+        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
         showEmptyState: true,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
@@ -108,5 +112,8 @@
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
+    :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+    :empty-loading-svg-path="emptyLoadingSvgPath"
+    :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
   />
 </template>

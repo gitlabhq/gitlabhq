@@ -1,0 +1,5 @@
+---
+title: Add tooltip for milestone due date to issue and merge request lists
+merge_request: 14318
+author: Vitaliy @blackst0ne Klachkov
+type: added

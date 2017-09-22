@@ -5,7 +5,7 @@ module Gitlab
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
-        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, to: :diff, prefix: false
+        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, :has_binary_notice?, to: :diff, prefix: false
 
       # Finding a viewer for a diff file happens based only on extension and whether the
       # diff file blobs are binary or text, which means 1 diff file should only be matched by 1 viewer,
@@ -173,7 +173,7 @@ module Gitlab
       end
 
       def binary?
-        old_blob&.binary? || new_blob&.binary?
+        has_binary_notice? || old_blob&.binary? || new_blob&.binary?
       end
 
       def text?
