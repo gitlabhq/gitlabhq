@@ -220,7 +220,7 @@ class License < ActiveRecord::Base
   end
 
   def features_from_add_ons
-    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count > 0 }.compact
+    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count.to_i > 0 }.compact
   end
 
   def features
