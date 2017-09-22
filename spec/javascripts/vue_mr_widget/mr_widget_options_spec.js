@@ -59,23 +59,15 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('shouldRenderPipelines', () => {
-      it('should return true for the initial data', () => {
+      it('should return true when hasCI is true', () => {
+        vm.mr.hasCI = true;
+
         expect(vm.shouldRenderPipelines).toBeTruthy();
       });
 
-      it('should return true when pipeline is empty but MR.hasCI is set to true', () => {
-        vm.mr.pipeline = {};
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
-
-      it('should return true when pipeline available', () => {
+      it('should return false when hasCI is false', () => {
         vm.mr.hasCI = false;
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
 
-      it('should return false when there is no pipeline', () => {
-        vm.mr.pipeline = {};
-        vm.mr.hasCI = false;
         expect(vm.shouldRenderPipelines).toBeFalsy();
       });
     });
@@ -232,29 +224,41 @@ describe('mrWidgetOptions', () => {
     describe('handleMounted', () => {
       it('should call required methods to do the initial kick-off', () => {
         spyOn(vm, 'initDeploymentsPolling');
-        spyOn(vm, 'setFavicon');
+        spyOn(vm, 'setFaviconHelper');
 
         vm.handleMounted();
 
-        expect(vm.setFavicon).toHaveBeenCalled();
+        expect(vm.setFaviconHelper).toHaveBeenCalled();
         expect(vm.initDeploymentsPolling).toHaveBeenCalled();
       });
     });
 
     describe('setFavicon', () => {
-      it('should call setFavicon method', () => {
-        spyOn(gl.utils, 'setFavicon');
-        vm.setFavicon();
+      let faviconElement;
 
-        expect(gl.utils.setFavicon).toHaveBeenCalledWith(vm.mr.ciStatusFaviconPath);
+      beforeEach(() => {
+        const favicon = document.createElement('link');
+        favicon.setAttribute('id', 'favicon');
+        document.body.appendChild(favicon);
+
+        faviconElement = document.getElementById('favicon');
+      });
+
+      afterEach(() => {
+        document.body.removeChild(document.getElementById('favicon'));
+      });
+
+      it('should call setFavicon method', () => {
+        vm.setFaviconHelper();
+
+        expect(faviconElement.getAttribute('href')).toEqual(vm.mr.ciStatusFaviconPath);
       });
 
       it('should not call setFavicon when there is no ciStatusFaviconPath', () => {
-        spyOn(gl.utils, 'setFavicon');
         vm.mr.ciStatusFaviconPath = null;
-        vm.setFavicon();
+        vm.setFaviconHelper();
 
-        expect(gl.utils.setFavicon).not.toHaveBeenCalled();
+        expect(faviconElement.getAttribute('href')).toEqual(null);
       });
     });
 

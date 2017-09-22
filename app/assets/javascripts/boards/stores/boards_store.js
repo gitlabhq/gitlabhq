@@ -3,6 +3,7 @@
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import boardsStoreEE from 'ee/boards/stores/boards_store_ee';
+import { getUrlParamsArray } from '../../lib/utils/common_utils';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -26,7 +27,7 @@ gl.issueBoards.BoardsStore = {
   },
   create () {
     this.state.lists = [];
-    this.filter.path = gl.utils.getUrlParamsArray().join('&');
+    this.filter.path = getUrlParamsArray().join('&');
     this.detail = { issue: {} };
   },
   createNewListDropdownData() {

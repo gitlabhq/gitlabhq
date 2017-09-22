@@ -31,8 +31,8 @@ describe GitGarbageCollectWorker do
 
           expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
+          expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:branch_count).and_call_original
-          expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
 
           subject.perform(project.id, :gc, lease_key, lease_uuid)
         end
@@ -77,8 +77,8 @@ describe GitGarbageCollectWorker do
 
             expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
             expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
+            expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
             expect_any_instance_of(Gitlab::Git::Repository).to receive(:branch_count).and_call_original
-            expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
 
             subject.perform(project.id)
           end

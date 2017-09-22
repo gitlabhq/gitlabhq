@@ -28,7 +28,7 @@ const defaultValuesComponent = {
   currentDataIndex: 0,
 };
 
-const timeSeries = createTimeSeries(convertedMetrics[0].queries[0].result,
+const timeSeries = createTimeSeries(convertedMetrics[0].queries[0],
   defaultValuesComponent.graphWidth, defaultValuesComponent.graphHeight,
   defaultValuesComponent.graphHeightOffset);
 
@@ -89,13 +89,12 @@ describe('GraphLegend', () => {
     expect(component.$el.querySelectorAll('.rect-axis-text').length).toEqual(2);
   });
 
-  it('contains text to signal the usage, title and time', () => {
+  it('contains text to signal the usage, title and time with multiple time series', () => {
     const component = createComponent(defaultValuesComponent);
     const titles = component.$el.querySelectorAll('.legend-metric-title');
 
-    expect(getTextFromNode(component, '.legend-metric-title').indexOf(component.legendTitle)).not.toEqual(-1);
-    expect(titles[0].textContent.indexOf('Title')).not.toEqual(-1);
-    expect(titles[1].textContent.indexOf('Series')).not.toEqual(-1);
+    expect(titles[0].textContent.indexOf('1xx')).not.toEqual(-1);
+    expect(titles[1].textContent.indexOf('2xx')).not.toEqual(-1);
     expect(getTextFromNode(component, '.y-label-text')).toEqual(component.yAxisLabel);
   });
 

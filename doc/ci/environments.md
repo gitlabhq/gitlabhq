@@ -240,54 +240,17 @@ Remember that if your environment's name is `production` (all lowercase), then
 it will get recorded in [Cycle Analytics](../user/project/cycle_analytics.md).
 Double the benefit!
 
-## Web terminals
-
->**Note:**
-Web terminals were added in GitLab 8.15 and are only available to project
-masters and owners.
-
-If you deploy to your environments with the help of a deployment service (e.g.,
-the [Kubernetes service][kubernetes-service], GitLab can open
-a terminal session to your environment! This is a very powerful feature that
-allows you to debug issues without leaving the comfort of your web browser. To
-enable it, just follow the instructions given in the service documentation.
-
-Once enabled, your environments will gain a "terminal" button:
-
-![Terminal button on environment index](img/environments_terminal_button_on_index.png)
-
-You can also access the terminal button from the page for a specific environment:
-
-![Terminal button for an environment](img/environments_terminal_button_on_show.png)
-
-Wherever you find it, clicking the button will take you to a separate page to
-establish the terminal session:
-
-![Terminal page](img/environments_terminal_page.png)
-
-This works just like any other terminal - you'll be in the container created
-by your deployment, so you can run shell commands and get responses in real
-time, check the logs, try out configuration or code tweaks, etc. You can open
-multiple terminals to the same environment - they each get their own shell
-session -  and even a multiplexer like `screen` or `tmux`!
-
->**Note:**
-Container-based deployments often lack basic tools (like an editor), and may
-be stopped or restarted at any time. If this happens, you will lose all your
-changes! Treat this as a debugging tool, not a comprehensive online IDE.
-
----
-
-While this is fine for deploying to some stable environments like staging or
-production, what happens for branches? So far we haven't defined anything
-regarding deployments for branches other than `master`. Dynamic environments
-will help us achieve that.
-
 ## Dynamic environments
 
 As the name suggests, it is possible to create environments on the fly by just
 declaring their names dynamically in `.gitlab-ci.yml`. Dynamic environments is
 the basis of [Review apps](review_apps/index.md).
+
+>**Note:**
+The `name` and `url` parameters can use any of the defined CI variables,
+including predefined, secure variables and `.gitlab-ci.yml`
+[`variables`](yaml/README.md#variables).
+You however cannot use variables defined under `script` or on the Runner's side.
 
 GitLab Runner exposes various [environment variables][variables] when a job runs,
 and as such, you can use them as environment names. Let's add another job in
@@ -434,7 +397,8 @@ Let's briefly see where URL that's defined in the environments is exposed.
 
 ## Making use of the environment URL
 
-The environment URL is exposed in a few places within GitLab.
+The [environment URL](yaml/README.md#environments-url) is exposed in a few
+places within GitLab.
 
 | In a merge request widget as a link | In the Environments view as a button | In the Deployments view as a button |
 | -------------------- | ------------ | ----------- |
@@ -598,7 +562,7 @@ exist, you should see something like:
 
 >**Notes:**
 >
-- For the monitor dashboard to appear, you need to:
+- For the monitoring dashboard to appear, you need to:
   - Have enabled the [Prometheus integration][prom]
   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
 - With GitLab 9.2, all deployments to an environment are shown directly on the
@@ -608,8 +572,7 @@ If you have enabled [Prometheus for monitoring system and response metrics](http
 
 Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
 environment which has had a successful deployment. If monitoring data was
-successfully retrieved, a Monitoring button will appear on the environment's
-detail page.
+successfully retrieved, a Monitoring button will appear for each environment.
 
 ![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
 
@@ -622,6 +585,49 @@ which allows easy correlation between any changes in performance and a new
 version of the app, all without leaving GitLab.
 
 ![Monitoring dashboard](img/environments_monitoring.png)
+
+## Web terminals
+
+>**Note:**
+Web terminals were added in GitLab 8.15 and are only available to project
+masters and owners.
+
+If you deploy to your environments with the help of a deployment service (e.g.,
+the [Kubernetes service][kubernetes-service], GitLab can open
+a terminal session to your environment! This is a very powerful feature that
+allows you to debug issues without leaving the comfort of your web browser. To
+enable it, just follow the instructions given in the service documentation.
+
+Once enabled, your environments will gain a "terminal" button:
+
+![Terminal button on environment index](img/environments_terminal_button_on_index.png)
+
+You can also access the terminal button from the page for a specific environment:
+
+![Terminal button for an environment](img/environments_terminal_button_on_show.png)
+
+Wherever you find it, clicking the button will take you to a separate page to
+establish the terminal session:
+
+![Terminal page](img/environments_terminal_page.png)
+
+This works just like any other terminal - you'll be in the container created
+by your deployment, so you can run shell commands and get responses in real
+time, check the logs, try out configuration or code tweaks, etc. You can open
+multiple terminals to the same environment - they each get their own shell
+session -  and even a multiplexer like `screen` or `tmux`!
+
+>**Note:**
+Container-based deployments often lack basic tools (like an editor), and may
+be stopped or restarted at any time. If this happens, you will lose all your
+changes! Treat this as a debugging tool, not a comprehensive online IDE.
+
+---
+
+While this is fine for deploying to some stable environments like staging or
+production, what happens for branches? So far we haven't defined anything
+regarding deployments for branches other than `master`. Dynamic environments
+will help us achieve that.
 
 ## Checkout deployments locally
 

@@ -116,16 +116,13 @@ _The artifacts are stored by default in
     }
     ```
 
-    NOTE: If you are using AWS IAM profiles, you will need to specify a blank
-    AWS access key and ID until [this fog-aws
-    issue](https://github.com/fog/fog-aws/issues/162) is resolved. For example:
+    NOTE: For GitLab 9.4+, if you are using AWS IAM profiles, be sure to omit the
+    AWS access key and secret acces key/value pairs. For example:
 
     ```ruby
     gitlab_rails['artifacts_object_store_connection'] = {
       'provider' => 'AWS',
       'region' => 'eu-central-1',
-      'aws_access_key_id' => '',
-      'aws_secret_access_key' => '',
       'use_iam_profile' => true
     }
     ```

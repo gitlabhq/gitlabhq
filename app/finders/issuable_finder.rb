@@ -25,7 +25,7 @@ class IssuableFinder
 
   NONE = '0'.freeze
 
-  SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
+  SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight my_reaction_emoji).freeze
   ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
 
@@ -249,6 +249,8 @@ class IssuableFinder
   end
 
   def by_scope(items)
+    return items.none if current_user_related? && !current_user
+
     case params[:scope]
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)

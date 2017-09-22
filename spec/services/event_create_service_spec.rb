@@ -149,6 +149,14 @@ describe EventCreateService do
         .to change { user_activity(user) }
     end
 
+    it 'caches the last push event for the user' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:cache_last_push_event)
+        .with(an_instance_of(PushEvent))
+
+      service.push(project, user, push_data)
+    end
+
     it 'does not create any event data when an error is raised' do
       payload_service = double(:service)
 

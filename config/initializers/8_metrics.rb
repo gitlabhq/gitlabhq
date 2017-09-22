@@ -137,6 +137,8 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Bitbucket::Connection)
   instrumentation.instrument_instance_methods(Github::Client)
 
+  instrumentation.instrument_instance_methods(Geo::RepositorySyncWorker)
+
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 

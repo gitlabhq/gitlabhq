@@ -1,6 +1,7 @@
 # GitLab Geo
 
-NOTE: GitLab Geo is in ALPHA development. It is considered experimental and
+>**Note:**
+GitLab Geo is in **Beta** development. It is considered experimental and
 not production-ready. It will undergo significant changes over the next year,
 and there is significant chance of data loss. For the latest updates, check the
 [meta issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/846).
@@ -32,14 +33,16 @@ and the replicated read-only ones as **secondaries**.
 
 Keep in mind that:
 
-- Secondaries talk to primary to get user data for logins (API), and to
-  clone/pull from repositories (HTTP(S)/SSH).
-- Primary talks to secondaries to notify for changes (API).
+- Secondaries talk to primary to get user data for logins (API), to
+  clone/pull from repositories (SSH) and to retrieve LFS Objects and Attachments 
+  (HTTPS + JWT).
+- Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to 
+  secondaries to notify for changes (API).
 
 ## Use-cases
 
 - Can be used for cloning and fetching projects, in addition
-to reading any data
+to reading any data available in the GitLab web interface
 - Overcomes slow connection between distant offices, saving time by
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
@@ -51,11 +54,12 @@ The following diagram illustrates the underlying architecture of GitLab Geo:
 
 ![GitLab Geo architecture](img/geo-architecture.png)
 
-[Source diagram](https://docs.google.com/drawings/d/1VQIcj6jyE3idWKyt9MRUAaE3XXrkwx8g-Ne4pmURmwI/edit)
+[Source diagram](https://docs.google.com/drawings/d/1L44flo2Mxng928yAcHduaCJyGtKNEjk2WQkxaCU_cT8/edit)
 
 In this diagram, there is one Geo primary node and one secondary. The
 secondary clones repositories via git over SSH. Attachments, LFS objects, and
-other files are downloaded via HTTPS using a GitLab API to authenticate.
+other files are downloaded via HTTPS using the GitLab API to authenticate,
+with a special endpoint protected by JWT.
 
 Writes to the database and Git repositories can only be performed on the Geo
 primary node. The secondary node receives database updates via PostgreSQL
@@ -64,6 +68,21 @@ streaming replication.
 Note that the secondary needs two different PostgreSQL databases: a read-only
 instance that streams data from the main GitLab database and another used
 internally by the secondary node to record what data has been replicated.
+
+In the secondary nodes there is an additional daemon: Geo Log Cursor.
+
+## Geo Requirements
+
+We highly recommend that you install Geo on an operating system that supports
+OpenSSH 6.9 or higher. The following operating systems are known to ship with a
+current version of OpenSSH:
+
+    * CentOS 7.4
+    * Ubuntu 16.04
+
+Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
+support a feature that Geo requires. See the [documentation on GitLab Geo SSH
+access](ssh.md) for more details.
 
 ### LDAP
 
@@ -76,6 +95,31 @@ tokens will still work.
 Check with your LDAP provider for instructions on on how to set up
 replication. For example, OpenLDAP provides [these
 instructions](https://www.openldap.org/doc/admin24/replication.html).
+
+### Geo Tracking Database
+
+We use the tracking database as metadata to control what needs to be
+updated on the disk of the local instance (for example, download new assets,
+fetch new LFS Objects or fetch changes from a repository that has recently been
+updated).
+
+Because the replicated instance is read-only, we need this additional instance
+per secondary location.
+
+### Geo Log Cursor
+
+This daemon reads a log of events replicated by the primary node to the secondary
+database and updates the Geo Tracking Database with changes that need to be
+executed.
+
+When something is marked to be updated in the tracking database, asynchronous
+jobs running on the secondary node will execute the required operations and
+update the state.
+
+This new architecture allows us to be resilient to connectivity issues between the
+nodes. It doesn't matter if it was just a few minutes or days. The secondary
+instance will be able to replay all the events in the correct order and get in 
+sync again.
 
 ## Setup instructions
 

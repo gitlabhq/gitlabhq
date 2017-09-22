@@ -142,6 +142,24 @@ describe 'Merge request', :js do
     end
   end
 
+  context 'view merge request where project has CI setup but no CI status' do
+    before do
+      pipeline = create(:ci_pipeline, project: project,
+                                      sha: merge_request.diff_head_sha,
+                                      ref: merge_request.source_branch)
+      create(:ci_build, pipeline: pipeline)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'has pipeline error text' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      expect(page).to have_text('Could not connect to the CI server. Please check your settings and try again')
+    end
+  end
+
   context 'view merge request with MWPS enabled but automatically merge fails' do
     before do
       merge_request.update(

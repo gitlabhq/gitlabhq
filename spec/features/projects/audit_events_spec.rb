@@ -98,7 +98,7 @@ feature 'Projects > Audit Events', :js do
       end
 
       # This is to avoid a Capybara::Poltergeist::MouseEventFailed error
-      find('a[aria-label=Settings]').trigger('click')
+      find(:link, text: 'Settings').trigger('click')
 
       click_link 'Audit Events'
 

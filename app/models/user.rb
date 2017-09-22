@@ -670,20 +670,13 @@ class User < ActiveRecord::Base
     @personal_projects_count ||= personal_projects.count
   end
 
-  def recent_push(project_ids = nil)
-    # Get push events not earlier than 2 hours ago
-    events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
-    events = events.where(project_id: project_ids) if project_ids
+  def recent_push(project = nil)
+    service = Users::LastPushEventService.new(self)
 
-    # Use the latest event that has not been pushed or merged recently
-    events.includes(:project).recent.find do |event|
-      next unless event.project.repository.branch_exists?(event.branch_name)
-
-      merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
-        .where(source_project_id: event.project.id,
-               source_branch: event.branch_name)
-
-      merge_requests.empty?
+    if project
+      service.last_event_for_project(project)
+    else
+      service.last_event_for_user
     end
   end
 

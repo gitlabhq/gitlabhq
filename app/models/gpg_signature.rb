@@ -1,8 +1,5 @@
 class GpgSignature < ActiveRecord::Base
   include ShaAttribute
-  include IgnorableColumn
-
-  ignore_column :valid_signature
 
   sha_attribute :commit_sha
   sha_attribute :gpg_key_primary_keyid

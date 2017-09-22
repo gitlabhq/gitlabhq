@@ -3,31 +3,10 @@ class AutocompleteController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
   before_action :load_project, only: [:users, :project_groups]
-  before_action :find_users, only: [:users]
+  before_action :load_group, only: [:users]
 
   def users
-    @users = @users.non_ldap if params[:skip_ldap] == 'true'
-    @users = @users.active
-    @users = @users.reorder(:name)
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
-    @users = load_users_by_ability || @users.page(params[:page]).per(params[:per_page])
-
-    if params[:todo_filter].present? && current_user
-      @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
-    end
-
-    if params[:search].blank?
-      # Include current user if available to filter by "Me"
-      if params[:current_user].present? && current_user
-        @users = [current_user, *@users].uniq
-      end
-
-      if params[:author_id].present? && current_user
-        author = User.find_by_id(params[:author_id])
-        @users = [author, *@users].uniq if author
-      end
-    end
+    @users = AutocompleteUsersFinder.new(params: params, current_user: current_user, project: @project, group: @group).execute
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
@@ -64,38 +43,14 @@ class AutocompleteController < ApplicationController
 
   private
 
-  def load_users_by_ability
-    ability = :push_code_to_protected_branches if params[:push_code_to_protected_branches].present?
-    ability = :push_code if params[:push_code].present?
-
-    return if params[:project_id].blank?
-    return if ability.blank?
-
-    @users.to_a
-      .select { |user| user.can?(ability, @project) }
-      .take(params[:per_page]&.to_i || Kaminari.config.default_per_page)
-  end
-
-  def find_users
-    @users =
-      if @project
-        user_ids = @project.team.users.pluck(:id)
-
-        if params[:author_id].present?
-          user_ids << params[:author_id]
-        end
-
-        User.where(id: user_ids)
-      elsif params[:group_id].present?
+  def load_group
+    @group ||= begin
+      if @project.blank? && params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
-
-        group.users
-      elsif current_user
-        User.all
-      else
-        User.none
+        group
       end
+    end
   end
 
   def load_project

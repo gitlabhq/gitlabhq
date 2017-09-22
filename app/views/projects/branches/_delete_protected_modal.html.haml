@@ -6,13 +6,18 @@
         %h3.page-title
           Delete protected branch
           = surround "'", "'?" do
-            %span.js-branch-name>[branch name]
+            %span.js-branch-name.ref-name>[branch name]
 
       .modal-body
         %p
           You’re about to permanently delete the protected branch
           = succeed '.' do
-            %strong.js-branch-name [branch name]
+            %strong.js-branch-name.ref-name [branch name]
+        %p.js-not-merged
+          - default_branch = capture do
+            %span.ref-name= @repository.root_ref
+          = s_("Branches|This branch hasn’t been merged into %{default_branch}.").html_safe % { default_branch: default_branch }
+          = s_("Branches|To avoid data loss, consider merging this branch before deleting it.")
         %p
           Once you confirm and press
           = succeed ',' do

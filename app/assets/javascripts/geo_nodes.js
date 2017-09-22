@@ -1,5 +1,6 @@
 /* eslint-disable no-new*/
 import './smart_interval';
+import { parseSeconds, stringifyTime } from './lib/utils/pretty_time';
 
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
@@ -52,11 +53,11 @@ class GeoNodeStatus {
 
       // Replication lag can be nil if the secondary isn't actually streaming
       if (status.db_replication_lag) {
-        const parsedTime = gl.utils.prettyTime.parseSeconds(status.db_replication_lag, {
+        const parsedTime = parseSeconds(status.db_replication_lag, {
           hoursPerDay: 24,
           daysPerWeek: 7,
         });
-        this.$dbReplicationLag.text(gl.utils.prettyTime.stringifyTime(parsedTime));
+        this.$dbReplicationLag.text(stringifyTime(parsedTime));
       } else {
         this.$dbReplicationLag.text('UNKNOWN');
       }

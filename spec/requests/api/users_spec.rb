@@ -23,8 +23,7 @@ describe API::Users do
       it "returns the user when a valid `username` parameter is passed" do
         get api("/users"), username: user.username
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
+        expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
         expect(json_response[0]['id']).to eq(user.id)
         expect(json_response[0]['username']).to eq(user.username)
@@ -68,7 +67,7 @@ describe API::Users do
           it "renders 200" do
             get api("/users", user)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/user/basics')
           end
         end
 
@@ -76,7 +75,7 @@ describe API::Users do
           it "renders 200" do
             get api("/users", admin)
 
-            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/user/basics')
           end
         end
       end
@@ -84,9 +83,8 @@ describe API::Users do
       it "returns an array of users" do
         get api("/users", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
         username = user.username
         expect(json_response.detect do |user|
           user['username'] == username
@@ -99,18 +97,16 @@ describe API::Users do
 
         get api("/users?blocked=true", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
         expect(json_response).to all(include('state' => /(blocked|ldap_blocked)/))
       end
 
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
 
@@ -123,6 +119,7 @@ describe API::Users do
       it 'does not reveal the `is_admin` flag of the user' do
         get api('/users', user)
 
+        expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.first.keys).not_to include 'is_admin'
       end
     end
@@ -131,17 +128,8 @@ describe API::Users do
       it "returns an array of users" do
         get api("/users", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first.keys).to include 'email'
-        expect(json_response.first.keys).to include 'organization'
-        expect(json_response.first.keys).to include 'identities'
-        expect(json_response.first.keys).to include 'can_create_project'
-        expect(json_response.first.keys).to include 'two_factor_enabled'
-        expect(json_response.first.keys).to include 'last_sign_in_at'
-        expect(json_response.first.keys).to include 'confirmed_at'
-        expect(json_response.first.keys).to include 'is_admin'
       end
 
       it "returns an array of external users" do
@@ -149,17 +137,15 @@ describe API::Users do
 
         get api("/users?external=true", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
         expect(json_response).to all(include('external' => true))
       end
 
       it "returns one user by external UID" do
         get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}&provider=#{omniauth_user.identities.first.provider}", admin)
 
-        expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
@@ -181,7 +167,7 @@ describe API::Users do
 
         get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(user.username)
       end
@@ -191,7 +177,7 @@ describe API::Users do
 
         get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(0)
       end
 
@@ -200,7 +186,7 @@ describe API::Users do
 
         get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(user.username)
       end
@@ -223,22 +209,22 @@ describe API::Users do
     it "returns a user by id" do
       get api("/users/#{user.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/user/basic')
       expect(json_response['username']).to eq(user.username)
     end
 
     it "does not return the user's `is_admin` flag" do
       get api("/users/#{user.id}", user)
 
-      expect(response).to have_http_status(200)
-      expect(json_response['is_admin']).to be_nil
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include 'is_admin'
     end
 
     context 'when authenticated as admin' do
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['is_admin']).to be(false)
       end
     end
@@ -247,7 +233,7 @@ describe API::Users do
       it "returns a user by id" do
         get api("/users/#{user.id}")
 
-        expect(response).to have_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/user/basic')
         expect(json_response['username']).to eq(user.username)
       end
 
@@ -263,6 +249,7 @@ describe API::Users do
 
     it "returns a 404 error if user id not found" do
       get api("/users/9999", user)
+
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end

@@ -77,16 +77,16 @@ describe Gitlab::Shell do
     end
 
     describe '#push_remote_branches' do
+      let!(:args) { [projects_path, 'push-branches', 'current/storage', 'project/path.git', 'new/storage', '600', '--force', 'master'] }
+
       it 'executes the command' do
-        expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'push-branches', 'current/storage', 'project/path.git', 'new/storage', '600', 'master']).and_return([nil, 0])
+        expect(Gitlab::Popen).to receive(:popen).with(args).and_return([nil, 0])
 
         expect(gitlab_shell.push_remote_branches('current/storage', 'project/path', 'new/storage', ['master'])).to be true
       end
 
       it 'fails to execute the command' do
-        expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'push-branches', 'current/storage', 'project/path.git', 'new/storage', '600', 'master']).and_return(["error", 1])
+        expect(Gitlab::Popen).to receive(:popen).with(args).and_return(["error", 1])
 
         expect { gitlab_shell.push_remote_branches('current/storage', 'project/path', 'new/storage', ['master']) }.to raise_error(Gitlab::Shell::Error, "error")
       end

@@ -273,7 +273,10 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          options[:project].repository.merged_to_root_ref?(repo_branch.name)
+        end
       end
 
       expose :protected do |repo_branch, options|
@@ -361,6 +364,7 @@ module API
     end
 
     class IssueBasic < ProjectEntity
+      expose :closed_at
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort

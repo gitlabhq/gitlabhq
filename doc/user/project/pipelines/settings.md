@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ Pipelines**.
+**Settings ➔ CI/CD**.
 
 The following settings can be configured per project.
 

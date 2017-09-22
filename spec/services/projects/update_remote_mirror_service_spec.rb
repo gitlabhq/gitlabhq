@@ -81,6 +81,21 @@ describe Projects::UpdateRemoteMirrorService do
         subject.execute(remote_mirror)
       end
 
+      context 'when branch exists in local and remote repo' do
+        context 'when it has diverged' do
+          it 'syncs branches' do
+            allow(repository).to receive(:fetch_remote) do
+              sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+              update_remote_branch(repository, remote_mirror.ref_name, 'markdown')
+            end
+
+            expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['markdown'])
+
+            subject.execute(remote_mirror)
+          end
+        end
+      end
+
       describe 'for delete' do
         context 'when branch exists in local and remote repo' do
           it 'deletes the branch from remote repo' do
@@ -193,6 +208,14 @@ describe Projects::UpdateRemoteMirrorService do
       target = repository.find_branch(branch).try(:dereferenced_target)
       rugged.references.create("refs/remotes/#{remote_name}/#{branch}", target.id) if target
     end
+  end
+
+  def update_remote_branch(repository, remote_name, branch)
+    rugged = repository.rugged
+    masterrev = repository.find_branch('master').dereferenced_target.id
+
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch}", masterrev, force: true)
+    repository.expire_branches_cache
   end
 
   def update_branch(repository, branch)

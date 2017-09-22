@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"PO-Revision-Date: 2017-09-15 05:21-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -34,7 +34,7 @@ msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block 
 msgstr "已失敗 %{number_of_failures} 次，在失敗 %{maximum_failures} 次前 GitLab 會在 %{number_of_seconds} 秒後重試。"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
+msgstr "已失敗 %{number_of_failures} / %{maximum_failures} 次，GitLab 將不再自動重試。請在確認問題解決後手動重置儲存空間資訊。"
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
@@ -90,10 +90,10 @@ msgid "All"
 msgstr "全部"
 
 msgid "Appearances"
-msgstr ""
+msgstr "外觀"
 
 msgid "Applications"
-msgstr ""
+msgstr "應用程式"
 
 msgid "Archived project! Repository is read-only"
 msgstr "此專案已封存！檔案庫 (repository) 為唯讀狀態"
@@ -480,7 +480,7 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線 (pipeline) 排程"
 
 msgid "Emails"
-msgstr ""
+msgstr "電子郵件"
 
 msgid "EventFilterBy|Filter by all"
 msgstr "顯示全部"
@@ -565,7 +565,7 @@ msgid "GoToYourFork|Fork"
 msgstr "前往您的分支 (fork) "
 
 msgid "Group overview"
-msgstr ""
+msgstr "群組總覽"
 
 msgid "Health Check"
 msgstr "健康檢查"
@@ -610,7 +610,7 @@ msgid "Issue events"
 msgstr "議題 (issue) 事件"
 
 msgid "Issues"
-msgstr ""
+msgstr "議題"
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -619,7 +619,7 @@ msgid "LFSStatus|Enabled"
 msgstr "啟用"
 
 msgid "Labels"
-msgstr ""
+msgstr "標籤"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -666,7 +666,7 @@ msgid "Median"
 msgstr "中位數"
 
 msgid "Members"
-msgstr ""
+msgstr "成員"
 
 msgid "Merge Requests"
 msgstr ""
@@ -675,13 +675,13 @@ msgid "Merge events"
 msgstr "合併 (merge) 事件"
 
 msgid "Messages"
-msgstr ""
+msgstr "訊息"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新增 SSH 金鑰"
 
 msgid "Monitoring"
-msgstr ""
+msgstr "監控"
 
 msgid "More information is available|here"
 msgstr "健康檢查"
@@ -784,7 +784,7 @@ msgid "NotificationLevel|Watch"
 msgstr "關注"
 
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "篩選"
@@ -796,13 +796,13 @@ msgid "Options"
 msgstr "選項"
 
 msgid "Overview"
-msgstr ""
+msgstr "總覽"
 
 msgid "Owner"
 msgstr "所有權"
 
 msgid "Password"
-msgstr ""
+msgstr "密碼"
 
 msgid "Pipeline"
 msgstr "流水線 (pipeline) "
@@ -946,7 +946,7 @@ msgid "Project home"
 msgstr "專案首頁"
 
 msgid "Project overview"
-msgstr ""
+msgstr "專案總覽"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "訂閱"
@@ -973,6 +973,24 @@ msgid "ProjectNetworkGraph|Graph"
 msgstr "分支圖"
 
 msgid "Push Rules"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr ""
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr ""
+
+msgid "ProjectsDropdown|Something went wrong on our end"
+msgstr ""
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "Push events"
@@ -1063,7 +1081,7 @@ msgid "Select target branch"
 msgstr "選擇目標分支 (branch) "
 
 msgid "Service Templates"
-msgstr ""
+msgstr "服務範本"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "請先設定密碼，才能使用 %{protocol} 來上傳 (push) 或下載 (pull) 。"
@@ -1081,7 +1099,7 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr "設定密碼"
 
 msgid "Settings"
-msgstr ""
+msgstr "設定"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"

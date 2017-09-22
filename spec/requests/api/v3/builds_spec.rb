@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe API::V3::Builds do
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
   let(:api_user) { user }
   let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }

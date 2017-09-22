@@ -1761,17 +1761,9 @@ describe Gitlab::Diff::PositionTracer do
       let(:merge_commit) do
         update_file_again_commit
 
-        committer = repository.user_to_committer(current_user)
-
-        options = {
-          message: "Merge branches",
-          author: committer,
-          committer: committer
-        }
-
         merge_request = create(:merge_request, source_branch: second_create_file_commit.sha, target_branch: branch_name, source_project: project)
 
-        repository.merge(current_user, merge_request.diff_head_sha, merge_request, options)
+        repository.merge(current_user, merge_request.diff_head_sha, merge_request, "Merge branches")
 
         project.commit(branch_name)
       end

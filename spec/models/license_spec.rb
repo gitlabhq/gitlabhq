@@ -214,21 +214,21 @@ describe License do
     describe '.features_for_plan' do
       it 'returns features for starter plan' do
         expect(described_class.features_for_plan('starter'))
-          .to include({ 'GitLab_MultipleIssueAssignees' => 1 })
+          .to include(:multiple_issue_assignees)
       end
 
       it 'returns features for premium plan' do
         expect(described_class.features_for_plan('premium'))
-          .to include({ 'GitLab_MultipleIssueAssignees' => 1, 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 })
+          .to include(:multiple_issue_assignees, :deploy_board, :file_locks)
       end
 
       it 'returns features for early adopter plan' do
         expect(described_class.features_for_plan('premium'))
-          .to include({ 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 1 } )
+          .to include(:deploy_board, :file_locks)
       end
 
-      it 'returns empty Hash if no features for given plan' do
-        expect(described_class.features_for_plan('bronze')).to eq({})
+      it 'returns empty array if no features for given plan' do
+        expect(described_class.features_for_plan('bronze')).to eq([])
       end
     end
 
@@ -264,8 +264,8 @@ describe License do
         let(:plan) { 'premium' }
         let(:feature) { nil }
 
-        it 'raises KeyError' do
-          expect { subject }.to raise_error(KeyError)
+        it 'returns false' do
+          is_expected.to eq(false)
         end
       end
     end
@@ -420,48 +420,39 @@ describe License do
       end
     end
 
-    describe '#add_ons' do
+    describe '#features_from_add_ons' do
       context 'without add-ons' do
-        it 'returns an empty Hash' do
+        it 'returns an empty array' do
           license = build_license_with_add_ons({}, plan: 'unknown')
 
-          expect(license.add_ons).to eq({})
+          expect(license.features_from_add_ons).to eq([])
         end
       end
 
       context 'with add-ons' do
         it 'returns all available add-ons' do
-          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1, License::FILE_LOCKS_FEATURE => 2 })
+          license = build_license_with_add_ons({ 'GitLab_DeployBoard' => 1, 'GitLab_FileLocks' => 2 })
 
-          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, License::FILE_LOCKS_FEATURE)
-        end
-
-        it 'can return details about a single add-on' do
-          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 2 })
-
-          expect(license.add_ons[License::DEPLOY_BOARD_FEATURE]).to eq(2)
-        end
-      end
-
-      context 'with extra features mapped by plan' do
-        it 'returns all available add-ons and extra features' do
-          license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1 }, plan: License::PREMIUM_PLAN)
-          eep_features = License::EEP_FEATURES.reduce({}, :merge).keys
-
-          expect(license.add_ons.keys).to include(License::DEPLOY_BOARD_FEATURE, *eep_features)
+          expect(license.features_from_add_ons).to match_array([:deploy_board, :file_locks])
         end
       end
     end
 
     describe '#feature_available?' do
       it 'returns true if add-on exists and have a quantity greater than 0' do
-        license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 1 })
+        license = build_license_with_add_ons({ 'GitLab_DeployBoard' => 1 })
 
         expect(license.feature_available?(:deploy_board)).to eq(true)
       end
 
+      it 'returns true if the feature is included in the plan do' do
+        license = build_license_with_add_ons({}, plan: License::PREMIUM_PLAN)
+
+        expect(license.feature_available?(:auditor_user)).to eq(true)
+      end
+
       it 'returns false if add-on exists but have a quantity of 0' do
-        license = build_license_with_add_ons({ License::DEPLOY_BOARD_FEATURE => 0 })
+        license = build_license_with_add_ons({ 'GitLab_DeployBoard' => 0 })
 
         expect(license.feature_available?(:deploy_board)).to eq(false)
       end
@@ -470,23 +461,19 @@ describe License do
         license = build_license_with_add_ons({})
 
         expect(license.feature_available?(:deploy_board)).to eq(false)
-      end
-
-      it 'raises error if invalid symbol is sent' do
-        license = build_license_with_add_ons({})
-
-        expect { license.feature_available?(:invalid) }.to raise_error(KeyError)
+        expect(license.feature_available?(:auditor_user)).to eq(false)
       end
 
       context 'with an expired trial license' do
+        let(:license) { create(:license, trial: true, expired: true) }
+
         before(:all) do
           described_class.destroy_all
-          create(:license, trial: true, expired: true)
         end
 
-        ::License::FEATURE_CODES.keys do |feature_code|
-          it "returns false for #{feature_code}" do
-            expect(license.feature_available?(feature_code)).to eq(false)
+        ::License::EES_FEATURES.each do |feature|
+          it "returns false for #{feature}" do
+            expect(license.feature_available?(feature)).to eq(false)
           end
         end
       end

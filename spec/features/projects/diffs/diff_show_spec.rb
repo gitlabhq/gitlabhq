@@ -108,6 +108,19 @@ feature 'Diff file viewer', :js do
     end
   end
 
+  context 'renamed file' do
+    before do
+      visit_commit('6907208d755b60ebeacb2e9dfea74c92c3449a1f')
+    end
+
+    it 'shows the filename with diff highlight' do
+      within('.file-header-content') do
+        expect(page).to have_css('.idiff.left.right.deletion')
+        expect(page).to have_content('files/js/commit.coffee')
+      end
+    end
+  end
+
   context 'binary file that appears to be text in the first 1024 bytes' do
     before do
       # The file we're visiting is smaller than 10 KB and we want it collapsed

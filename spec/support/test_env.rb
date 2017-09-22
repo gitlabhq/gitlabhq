@@ -3,6 +3,8 @@ require 'rspec/mocks'
 module TestEnv
   extend self
 
+  ComponentFailedToInstallError = Class.new(StandardError)
+
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'signed-commits'                     => '2d1096e',
@@ -65,6 +67,11 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
+    unless Rails.env.test?
+      puts "\nTestEnv.init can only be run if `RAILS_ENV` is set to 'test' not '#{Rails.env}'!\n"
+      exit 1
+    end
+
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -124,50 +131,23 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    puts "\n==> Setting up Gitlab Shell..."
-    start = Time.now
-    gitlab_shell_dir = Gitlab.config.gitlab_shell.path
-    shell_needs_update = component_needs_update?(gitlab_shell_dir,
-      Gitlab::Shell.version_required)
-
-    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      puts "\nGitLab Shell failed to install, cleaning up #{gitlab_shell_dir}!\n"
-      FileUtils.rm_rf(gitlab_shell_dir)
-      exit 1
-    end
-
-    puts "    GitLab Shell setup in #{Time.now - start} seconds...\n"
+    component_timed_setup('GitLab Shell',
+      install_dir: Gitlab.config.gitlab_shell.path,
+      version: Gitlab::Shell.version_required,
+      task: 'gitlab:shell:install')
   end
 
   def setup_gitaly
-    puts "\n==> Setting up Gitaly..."
-    start = Time.now
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
-    if gitaly_dir_stale?(gitaly_dir)
-      puts "    Gitaly is outdated, cleaning up #{gitaly_dir}!"
-      FileUtils.rm_rf(gitaly_dir)
+    component_timed_setup('Gitaly',
+      install_dir: gitaly_dir,
+      version: Gitlab::GitalyClient.expected_server_version,
+      task: "gitlab:gitaly:install[#{gitaly_dir}]") do
+
+      start_gitaly(gitaly_dir)
     end
-
-    gitaly_needs_update = component_needs_update?(gitaly_dir,
-      Gitlab::GitalyClient.expected_server_version)
-
-    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      puts "\nGitaly failed to install, cleaning up #{gitaly_dir}!\n"
-      FileUtils.rm_rf(gitaly_dir)
-      exit 1
-    end
-
-    start_gitaly(gitaly_dir)
-    puts "    Gitaly setup in #{Time.now - start} seconds...\n"
-  end
-
-  def gitaly_dir_stale?(dir)
-    gitaly_executable = File.join(dir, 'gitaly')
-    return false unless File.exist?(gitaly_executable)
-
-    File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION'))
   end
 
   def start_gitaly(gitaly_dir)
@@ -319,6 +299,40 @@ module TestEnv
       # Before we used Git clone's --mirror option, bare repos could end up
       # with missing refs, clearing them and retrying should fix the issue.
       cleanup && clean_gitlab_test_path && init unless reset.call
+    end
+  end
+
+  def component_timed_setup(component, install_dir:, version:, task:)
+    puts "\n==> Setting up #{component}..."
+    start = Time.now
+
+    ensure_component_dir_name_is_correct!(component, install_dir)
+
+    if component_needs_update?(install_dir, version)
+      # Cleanup the component entirely to ensure we start fresh
+      FileUtils.rm_rf(install_dir)
+      unless system('rake', task)
+        raise ComponentFailedToInstallError
+      end
+    end
+
+    yield if block_given?
+
+  rescue ComponentFailedToInstallError
+    puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"
+    FileUtils.rm_rf(install_dir)
+    exit 1
+  ensure
+    puts "    #{component} setup in #{Time.now - start} seconds...\n"
+  end
+
+  def ensure_component_dir_name_is_correct!(component, path)
+    actual_component_dir_name = File.basename(path)
+    expected_component_dir_name = component.parameterize
+
+    unless actual_component_dir_name == expected_component_dir_name
+      puts "    #{component} install dir should be named '#{expected_component_dir_name}', not '#{actual_component_dir_name}' (full install path given was '#{path}')!\n"
+      exit 1
     end
   end
 

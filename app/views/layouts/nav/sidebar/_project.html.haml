@@ -9,9 +9,9 @@
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
-        = sidebar_link project_path(@project), title: _('Project overview'), css: 'shortcuts-project' do
+        = link_to project_path(@project), class: 'shortcuts-project' do
           .nav-icon-container
-            = custom_icon('project')
+            = sprite_icon('project')
           %span.nav-item-name
             Overview
 
@@ -35,15 +35,15 @@
                 %span= _('Cycle Analytics')
 
       - if project_nav_tab? :files
-        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network)) do
-          = sidebar_link project_tree_path(@project), title: _('Repository'),  css: 'shortcuts-tree' do
+        = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks)) do
+          = link_to project_tree_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('doc_text')
+              = sprite_icon('doc_text')
             %span.nav-item-name
               Repository
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network), html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks), html_options: { class: "fly-out-top-item" } ) do
               = link_to project_tree_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Repository') }
@@ -87,9 +87,9 @@
 
       - if project_nav_tab? :container_registry
         = nav_link(controller: %w[projects/registry/repositories]) do
-          = sidebar_link project_container_registry_index_path(@project), title: _('Container Registry'), css: 'shortcuts-container-registry' do
+          = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
             .nav-icon-container
-              = custom_icon('container_registry')
+              = sprite_icon('disk')
             %span.nav-item-name
               Registry
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -100,9 +100,9 @@
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-          = sidebar_link project_issues_path(@project), title: _('Issues'), css: 'shortcuts-issues' do
+          = link_to project_issues_path(@project), class: 'shortcuts-issues' do
             .nav-icon-container
-              = custom_icon('issues')
+              = sprite_icon('issues')
             %span.nav-item-name
               Issues
             - if @project.issues_enabled?
@@ -118,7 +118,7 @@
                   %span.badge.count.issue_counter.fly-out-badge
                     = number_with_delimiter(@project.open_issues_count)
             %li.divider.fly-out-top-item
-            = nav_link(controller: :issues) do
+            = nav_link(controller: :issues, action: :index) do
               = link_to project_issues_path(@project), title: 'Issues' do
                 %span
                   List
@@ -127,21 +127,6 @@
               = link_to project_boards_path(@project), title: boards_link_text do
                 %span
                   = boards_link_text
-                .feature-highlight.js-feature-highlight{ disabled: true, data: { trigger: 'manual', container: 'body', toggle: 'popover', placement: 'right', highlight: 'issue-boards' } }
-              .feature-highlight-popover-content
-                = render 'feature_highlight/issue_boards.svg'
-                .feature-highlight-popover-sub-content
-                  %span= _('Use')
-                  = link_to 'Issue Boards', project_boards_path(@project)
-                  %span= _('to create customized software development workflows like')
-                  %strong= _('Scrum')
-                  %span= _('or')
-                  %strong= _('Kanban')
-                  %hr
-                  %button.btn-link.dismiss-feature-highlight{ type: 'button' }
-                    %span= _("Got it! Don't show this again")
-                    = custom_icon('thumbs_up')
-
             = nav_link(controller: :labels) do
               = link_to project_labels_path(@project), title: 'Labels' do
                 %span
@@ -159,9 +144,9 @@
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
-          = sidebar_link project_merge_requests_path(@project), title: _('Merge Requests'), css: 'shortcuts-merge_requests' do
+          = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests' do
             .nav-icon-container
-              = custom_icon('mr_bold')
+              = sprite_icon('git-merge')
             %span.nav-item-name
               Merge Requests
             %span.badge.count.merge_counter.js-merge-counter
@@ -176,9 +161,9 @@
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
-          = sidebar_link project_pipelines_path(@project), title: _('CI / CD'), css: 'shortcuts-pipelines' do
+          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
             .nav-icon-container
-              = custom_icon('pipeline')
+              = sprite_icon('pipeline')
             %span.nav-item-name
               CI / CD
 
@@ -220,9 +205,9 @@
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
-          = sidebar_link get_project_wiki_path(@project), title: _('Wiki'), css: 'shortcuts-wiki' do
+          = link_to get_project_wiki_path(@project), class: 'shortcuts-wiki' do
             .nav-icon-container
-              = custom_icon('wiki')
+              = sprite_icon('book')
             %span.nav-item-name
               Wiki
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -233,9 +218,9 @@
 
       - if project_nav_tab? :snippets
         = nav_link(controller: :snippets) do
-          = sidebar_link project_snippets_path(@project), title: _('Snippets'), css: 'shortcuts-snippets' do
+          = link_to project_snippets_path(@project), class: 'shortcuts-snippets' do
             .nav-icon-container
-              = custom_icon('snippets')
+              = sprite_icon('snippet')
             %span.nav-item-name
               Snippets
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -245,17 +230,17 @@
                   #{ _('Snippets') }
 
       - if project_nav_tab? :settings
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
-          = sidebar_link edit_project_path(@project), title: _('Settings'), css: 'shortcuts-tree' do
+        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index]) do
+          = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('settings')
+              = sprite_icon('settings')
             %span.nav-item-name
               Settings
 
           %ul.sidebar-sub-level-items
             - can_edit = can?(current_user, :admin_project, @project)
             - if can_edit
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show], html_options: { class: "fly-out-top-item" } ) do
+              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index], html_options: { class: "fly-out-top-item" } ) do
                 = link_to edit_project_path(@project) do
                   %strong.fly-out-top-item-name
                     #{ _('Settings') }
@@ -294,7 +279,7 @@
         = nav_link(path: %w[members#show]) do
           = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('members')
+              = sprite_icon('users')
             %span.nav-item-name
               Members
 

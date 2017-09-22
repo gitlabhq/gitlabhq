@@ -74,11 +74,18 @@ class EventCreateService
     # We're using an explicit transaction here so that any errors that may occur
     # when creating push payload data will result in the event creation being
     # rolled back as well.
-    Event.transaction do
-      event = create_event(project, current_user, Event::PUSHED)
+    event = Event.transaction do
+      new_event = create_event(project, current_user, Event::PUSHED)
 
-      PushEventPayloadService.new(event, push_data).execute
+      PushEventPayloadService
+        .new(new_event, push_data)
+        .execute
+
+      new_event
     end
+
+    Users::LastPushEventService.new(current_user)
+      .cache_last_push_event(event)
 
     Users::ActivityService.new(current_user, 'push').execute
   end

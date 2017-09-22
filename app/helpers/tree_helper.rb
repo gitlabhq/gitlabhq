@@ -104,7 +104,7 @@ module TreeHelper
 
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?
-      return tree_join(tree.name, flatten_tree(subtree.first))
+      return tree_join(tree.name, flatten_tree(root_path, subtree.first))
     else
       return tree.name
     end

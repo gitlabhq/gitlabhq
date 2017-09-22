@@ -1,133 +1,53 @@
 class License < ActiveRecord::Base
   include ActionView::Helpers::NumberHelper
 
-  ADMIN_AUDIT_LOG_FEATURE = 'GitLab_AdminAuditLog'.freeze
-  AUDIT_EVENTS_FEATURE = 'GitLab_AuditEvents'.freeze
-  AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
-  BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
-  CONTRIBUTION_ANALYTICS_FEATURE = 'GitLab_ContributionAnalytics'.freeze
-  CROSS_PROJECT_PIPELINES_FEATURE = 'GitLab_CrossProjectPipelines'.freeze
-  DB_LOAD_BALANCING_FEATURE = 'GitLab_DbLoadBalancing'.freeze
-  DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
-  ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
-  EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
-  FAST_FORWARD_MERGE_FEATURE = 'GitLab_FastForwardMerge'.freeze
-  FILE_LOCKS_FEATURE = 'GitLab_FileLocks'.freeze
-  GEO_FEATURE = 'GitLab_Geo'.freeze
-  GROUP_WEBHOOKS_FEATURE = 'GitLab_GroupWebhooks'.freeze
-  ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
-  ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
-  ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
-  GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
-  ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
-  JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
-  JIRA_DEV_PANEL_INTEGRATION_FEATURE = 'GitLab_JiraDevelopmentPanelIntegration'.freeze
-  LDAP_EXTRAS_FEATURE = 'GitLab_LdapExtras'.freeze
-  MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
-  MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
-  MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
-  MULTIPLE_ISSUE_ASSIGNEES_FEATURE = 'GitLab_MultipleIssueAssignees'.freeze
-  MULTIPLE_ISSUE_BOARDS_FEATURE = 'GitLab_MultipleIssueBoards'.freeze
-  OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
-  PROTECTED_REFS_FOR_USERS_FEATURE = 'GitLab_RefPermissionsForUsers'.freeze
-  PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
-  RELATED_ISSUES_FEATURE = 'GitLab_RelatedIssues'.freeze
-  REPOSITORY_MIRRORS_FEATURE = 'GitLab_RepositoryMirrors'.freeze
-  REPOSITORY_SIZE_LIMIT_FEATURE = 'GitLab_RepositorySizeLimit'.freeze
-  SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
-  VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
-
-  FEATURE_CODES = {
-    admin_audit_log: ADMIN_AUDIT_LOG_FEATURE,
-    auditor_user: AUDITOR_USER_FEATURE,
-    db_load_balancing: DB_LOAD_BALANCING_FEATURE,
-    elastic_search: ELASTIC_SEARCH_FEATURE,
-    geo: GEO_FEATURE,
-    ldap_extras: LDAP_EXTRAS_FEATURE,
-    object_storage: OBJECT_STORAGE_FEATURE,
-    related_issues: RELATED_ISSUES_FEATURE,
-    repository_size_limit: REPOSITORY_SIZE_LIMIT_FEATURE,
-    service_desk: SERVICE_DESK_FEATURE,
-    variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
-
-    # Features that make sense to Namespace:
-    audit_events: AUDIT_EVENTS_FEATURE,
-    burndown_charts: BURNDOWN_CHARTS_FEATURE,
-    contribution_analytics: CONTRIBUTION_ANALYTICS_FEATURE,
-    cross_project_pipelines: CROSS_PROJECT_PIPELINES_FEATURE,
-    deploy_board: DEPLOY_BOARD_FEATURE,
-    export_issues: EXPORT_ISSUES_FEATURE,
-    fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
-    file_locks: FILE_LOCKS_FEATURE,
-    group_webhooks: GROUP_WEBHOOKS_FEATURE,
-    issuable_default_templates: ISSUABLE_DEFAULT_TEMPLATES_FEATURE,
-    issue_board_focus_mode: ISSUE_BOARD_FOCUS_MODE_FEATURE,
-    issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
-    group_issue_boards: GROUP_ISSUE_BOARDS_FEATURE,
-    issue_weights: ISSUE_WEIGHTS_FEATURE,
-    jenkins_integration: JENKINS_INTEGRATION_FEATURE,
-    jira_dev_panel_integration: JIRA_DEV_PANEL_INTEGRATION_FEATURE,
-    merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
-    merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
-    merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
-    multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
-    multiple_issue_boards: MULTIPLE_ISSUE_BOARDS_FEATURE,
-    protected_refs_for_users: PROTECTED_REFS_FOR_USERS_FEATURE,
-    push_rules: PUSH_RULES_FEATURE,
-    repository_mirrors: REPOSITORY_MIRRORS_FEATURE
-  }.freeze
-
   STARTER_PLAN = 'starter'.freeze
   PREMIUM_PLAN = 'premium'.freeze
   ULTIMATE_PLAN = 'ultimate'.freeze
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
-  EES_FEATURES = [
-    { AUDIT_EVENTS_FEATURE => 1 },
-    { BURNDOWN_CHARTS_FEATURE => 1 },
-    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
-    { ELASTIC_SEARCH_FEATURE => 1 },
-    { EXPORT_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
-    { GROUP_WEBHOOKS_FEATURE => 1 },
-    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
-    { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
-    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
-    { ISSUE_WEIGHTS_FEATURE => 1 },
-    { JENKINS_INTEGRATION_FEATURE => 1 },
-    { LDAP_EXTRAS_FEATURE => 1 },
-    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 },
-    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
-    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
-    { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
-    { PUSH_RULES_FEATURE => 1 },
-    { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 },
-    { REPOSITORY_MIRRORS_FEATURE => 1 },
-    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 }
+  EES_FEATURES = %i[
+    audit_events
+    burndown_charts
+    contribution_analytics
+    elastic_search
+    export_issues
+    fast_forward_merge
+    group_webhooks
+    issuable_default_templates
+    issue_board_focus_mode
+    issue_board_milestone
+    issue_weights
+    jenkins_integration
+    ldap_extras
+    merge_request_approvers
+    merge_request_rebase
+    merge_request_squash
+    multiple_issue_assignees
+    multiple_issue_boards
+    push_rules
+    protected_refs_for_users
+    related_issues
+    repository_mirrors
+    repository_size_limit
   ].freeze
 
-  EEP_FEATURES = [
-    *EES_FEATURES,
-    { ADMIN_AUDIT_LOG_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { CROSS_PROJECT_PIPELINES_FEATURE => 1 },
-    { DB_LOAD_BALANCING_FEATURE => 1 },
-    { DEPLOY_BOARD_FEATURE => 1 },
-    { FILE_LOCKS_FEATURE => 1 },
-    { GEO_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 },
-    { JIRA_DEV_PANEL_INTEGRATION_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
-    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 },
-    { GROUP_ISSUE_BOARDS_FEATURE => 1 }
+  EEP_FEATURES = EES_FEATURES + %i[
+    admin_audit_log
+    auditor_user
+    cross_project_pipelines
+    db_load_balancing
+    deploy_board
+    file_locks
+    geo
+    group_issue_boards
+    jira_dev_panel_integration
+    object_storage
+    service_desk
+    variable_environment_scope
   ].freeze
 
-  EEU_FEATURES = [
-    *EEP_FEATURES
-    # ..
-  ].freeze
+  EEU_FEATURES = EEP_FEATURES
 
   # List all features available for early adopters,
   # i.e. users that started using GitLab.com before
@@ -135,40 +55,32 @@ class License < ActiveRecord::Base
   # Obs.: Do not extend from other feature constants.
   # Early adopters should not earn new features as they're
   # introduced.
-  EARLY_ADOPTER_FEATURES = [
-    { ADMIN_AUDIT_LOG_FEATURE => 1 },
-    { AUDIT_EVENTS_FEATURE => 1 },
-    { AUDITOR_USER_FEATURE => 1 },
-    { BURNDOWN_CHARTS_FEATURE => 1 },
-    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
-    { CROSS_PROJECT_PIPELINES_FEATURE => 1 },
-    { DB_LOAD_BALANCING_FEATURE => 1 },
-    { DEPLOY_BOARD_FEATURE => 1 },
-    { ELASTIC_SEARCH_FEATURE => 1 },
-    { EXPORT_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
-    { FILE_LOCKS_FEATURE => 1 },
-    { GEO_FEATURE => 1 },
-    { GROUP_WEBHOOKS_FEATURE => 1 },
-    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
-    { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
-    { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
-    { ISSUE_WEIGHTS_FEATURE => 1 },
-    { JENKINS_INTEGRATION_FEATURE => 1 },
-    { LDAP_EXTRAS_FEATURE => 1 },
-    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 },
-    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
-    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
-    { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
-    { OBJECT_STORAGE_FEATURE => 1 },
-    { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
-    { PUSH_RULES_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 },
-    { REPOSITORY_MIRRORS_FEATURE => 1 },
-    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 },
-    { SERVICE_DESK_FEATURE => 1 },
-    { VARIABLE_ENVIRONMENT_SCOPE_FEATURE => 1 }
+  EARLY_ADOPTER_FEATURES = %i[
+    audit_events
+    burndown_charts
+    contribution_analytics
+    cross_project_pipelines
+    deploy_board
+    export_issues
+    fast_forward_merge
+    file_locks
+    group_webhooks
+    issuable_default_templates
+    issue_board_focus_mode
+    issue_board_milestone
+    issue_weights
+    jenkins_integration
+    merge_request_approvers
+    merge_request_rebase
+    merge_request_squash
+    multiple_issue_assignees
+    multiple_issue_boards
+    protected_refs_for_users
+    push_rules
+    related_issues
+    repository_mirrors
+    service_desk
+    variable_environment_scope
   ].freeze
 
   FEATURES_BY_PLAN = {
@@ -177,6 +89,29 @@ class License < ActiveRecord::Base
     ULTIMATE_PLAN      => EEU_FEATURES,
     EARLY_ADOPTER_PLAN => EARLY_ADOPTER_FEATURES
   }.freeze
+
+  # Add on codes that may occur in legacy licenses that don't have a plan yet.
+  FEATURES_FOR_ADD_ONS = {
+    'GitLab_Auditor_User' => :auditor_user,
+    'GitLab_DeployBoard' => :deploy_board,
+    'GitLab_FileLocks' => :file_locks,
+    'GitLab_Geo' => :geo,
+    'GitLab_ServiceDesk' => :service_desk
+  }.freeze
+
+  # Global features that cannot be restricted to only a subset of projects or namespaces.
+  # Use `License.feature_available?(:feature)` to check if these features are available.
+  # For all other features, use `project.feature_available?` or `namespace.feature_available?` when possible.
+  GLOBAL_FEATURES = %i[
+    admin_audit_log
+    auditor_user
+    db_load_balancing
+    elastic_search
+    geo
+    ldap_extras
+    object_storage
+    repository_size_limit
+  ].freeze
 
   validate :valid_license
   validate :check_users_limit, if: :new_record?, unless: :validate_with_trueup?
@@ -192,7 +127,7 @@ class License < ActiveRecord::Base
 
   class << self
     def features_for_plan(plan)
-      FEATURES_BY_PLAN.fetch(plan, []).reduce({}, :merge)
+      FEATURES_BY_PLAN.fetch(plan, [])
     end
 
     def current
@@ -209,11 +144,12 @@ class License < ActiveRecord::Base
       RequestStore.delete(:current_license)
     end
 
-    def plan_includes_feature?(plan, code)
-      features = features_for_plan(plan)
-      feature = FEATURE_CODES.fetch(code)
+    def plan_includes_feature?(plan, feature)
+      if GLOBAL_FEATURES.include?(feature)
+        raise ArgumentError, "Use `License.feature_available?` for features that cannot be restricted to only a subset of projects or namespaces"
+      end
 
-      features[feature].to_i > 0
+      features_for_plan(plan).include?(feature)
     end
 
     def load_license
@@ -278,20 +214,23 @@ class License < ActiveRecord::Base
   end
 
   # New licenses persists only the `plan` (premium, starter, ..). But, old licenses
-  # keep `add_ons`, therefore this method needs to be backward-compatible in that sense.
-  # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2019
+  # keep `add_ons`.
   def add_ons
-    explicit_add_ons = restricted_attr(:add_ons, {})
-    plan_features = self.class.features_for_plan(plan)
-
-    explicit_add_ons.merge(plan_features)
+    restricted_attr(:add_ons, {})
   end
 
-  def feature_available?(code)
+  def features_from_add_ons
+    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count > 0 }.compact
+  end
+
+  def features
+    @features ||= (self.class.features_for_plan(plan) + features_from_add_ons).to_set
+  end
+
+  def feature_available?(feature)
     return false if trial? && expired?
 
-    feature = FEATURE_CODES.fetch(code)
-    add_ons[feature].to_i > 0
+    features.include?(feature)
   end
 
   def restricted_user_count

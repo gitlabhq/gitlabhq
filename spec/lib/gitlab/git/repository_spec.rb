@@ -481,7 +481,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'raises an error if it failed' do
-      expect(Gitlab::Popen).to receive(:popen).and_return(['Error', 1])
+      expect(@repo).to receive(:popen).and_return(['Error', 1])
 
       expect do
         @repo.delete_refs('refs/heads/fix')

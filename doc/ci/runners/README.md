@@ -35,7 +35,7 @@ are:
 
 A Runner that is specific only runs for the specified project(s). A shared Runner
 can run jobs for every project that has enabled the option **Allow shared Runners**
-under **Settings ➔ Pipelines**.
+under **Settings ➔ CI/CD**.
 
 Projects with high demand of CI activity can also benefit from using specific
 Runners. By having dedicated Runners you are guaranteed that the Runner is not
@@ -61,7 +61,7 @@ You can only register a shared Runner if you are an admin of the GitLab instance
 
 Shared Runners are enabled by default as of GitLab 8.2, but can be disabled
 with the **Disable shared Runners** button which is present under each project's
-**Settings ➔ Pipelines** page. Previous versions of GitLab defaulted shared
+**Settings ➔ CI/CD** page. Previous versions of GitLab defaulted shared
 Runners to disabled.
 
 ## Registering a specific Runner
@@ -76,7 +76,7 @@ Registering a specific can be done in two ways:
 To create a specific Runner without having admin rights to the GitLab instance,
 visit the project you want to make the Runner work for in GitLab:
 
-1. Go to **Settings ➔ Pipelines** to obtain the token
+1. Go to **Settings ➔ CI/CD** to obtain the token
 1. [Register the Runner][register]
 
 ### Making an existing shared Runner specific
@@ -101,7 +101,7 @@ can be changed afterwards under each Runner's settings.
 
 To lock/unlock a Runner:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish to lock/unlock and make sure it's enabled
 1. Click the pencil button
 1. Check the **Lock to current projects** option
@@ -115,7 +115,7 @@ you can enable the Runner also on any other project where you have Master permis
 
 To enable/disable a Runner in your project:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish to enable/disable
 1. Click **Enable for this project** or **Disable for this project**
 
@@ -136,7 +136,7 @@ Whenever a Runner is protected, the Runner picks only jobs created on
 
 To protect/unprotect Runners:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find a Runner you want to protect/unprotect and make sure it's enabled
 1. Click the pencil button besides the Runner name
 1. Check the **Protected** option
@@ -220,7 +220,7 @@ each Runner's settings.
 
 To make a Runner pick tagged/untagged jobs:
 
-1. Visit your project's **Settings ➔ Pipelines**
+1. Visit your project's **Settings ➔ CI/CD**
 1. Find the Runner you wish and make sure it's enabled
 1. Click the pencil button
 1. Check the **Run untagged jobs** option
@@ -228,7 +228,8 @@ To make a Runner pick tagged/untagged jobs:
 
 ### Be careful with sensitive information
 
-If you can run a job on a Runner, you can get access to any code it runs
+With some [Runner Executors](https://docs.gitlab.com/runner/executors/README.html),
+if you can run a job on the Runner, you can get access to any code it runs
 and get the token of the Runner. With shared Runners, this means that anyone
 that runs jobs on the Runner, can access anyone else's code that runs on the
 Runner.
@@ -237,7 +238,8 @@ In addition, because you can get access to the Runner token, it is possible
 to create a clone of a Runner and submit false jobs, for example.
 
 The above is easily avoided by restricting the usage of shared Runners
-on large public GitLab instances and controlling access to your GitLab instance.
+on large public GitLab instances, controlling access to your GitLab instance,
+and using more secure [Runner Executors](https://docs.gitlab.com/runner/executors/README.html).
 
 ### Forks
 

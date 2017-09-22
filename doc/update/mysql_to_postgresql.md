@@ -1,3 +1,5 @@
+*** NOTE: These instructions should be considered deprecated. In GitLab 10.0 we will be releasing new migration instructions using [pgloader](http://pgloader.io/).
+
 # Migrating GitLab from MySQL to Postgres
 *Make sure you view this [guide from the `master` branch](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/mysql_to_postgresql.md#migrating-gitlab-from-mysql-to-postgres) for the most up to date instructions.*
 

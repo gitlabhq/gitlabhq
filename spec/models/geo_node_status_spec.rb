@@ -104,6 +104,13 @@ describe GeoNodeStatus do
 
       expect(subject.db_replication_lag).to eq(1000)
     end
+
+    it "doesn't attempt to set replication lag if primary" do
+      expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag)
+      expect(Gitlab::Geo).to receive(:secondary?).and_return(false)
+
+      expect(subject.db_replication_lag).to eq(nil)
+    end
   end
 
   describe '#lfs_objects_synced_in_percentage' do
@@ -195,6 +202,14 @@ describe GeoNodeStatus do
       event = create(:geo_event_log_state)
 
       expect(subject.cursor_last_event_id).to eq(event.event_id)
+    end
+
+    it "doesn't attempt to retrieve cursor if primary" do
+      create(:geo_event_log_state)
+      expect(Gitlab::Geo).to receive(:secondary?).exactly(2).times.and_return(false)
+
+      expect(subject.cursor_last_event_date).to eq(nil)
+      expect(subject.cursor_last_event_id).to eq(nil)
     end
   end
 

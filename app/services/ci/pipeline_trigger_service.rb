@@ -16,7 +16,7 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          trigger.trigger_requests.create!(pipeline: pipeline)
+          pipeline.trigger_requests.create!(trigger: trigger)
           create_pipeline_variables!(pipeline)
         end
 

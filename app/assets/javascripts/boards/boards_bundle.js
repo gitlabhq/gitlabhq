@@ -24,6 +24,7 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
@@ -176,10 +177,10 @@ $(() => {
         modal: ModalStore.store,
         store: Store.state,
         isFullscreen: false,
-        focusModeAvailable: gl.utils.convertPermissionToBoolean(
+        focusModeAvailable: convertPermissionToBoolean(
           $boardApp.dataset.focusModeAvailable,
         ),
-        canAdminList: this.$options.el && gl.utils.convertPermissionToBoolean(
+        canAdminList: this.$options.el && convertPermissionToBoolean(
           this.$options.el.dataset.canAdminList,
         ),
       };
@@ -249,7 +250,7 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
       isFullscreen: false,
-      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
+      focusModeAvailable: convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
     },
     methods: {
       toggleFocusMode() {

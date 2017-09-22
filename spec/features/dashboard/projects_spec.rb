@@ -83,11 +83,13 @@ feature 'Dashboard Projects' do
     end
   end
 
-  context 'last push widget' do
+  context 'last push widget', :use_clean_rails_memory_store_caching do
     before do
       event = create(:push_event, project: project, author: user)
 
       create(:push_event_payload, event: event, ref: 'feature', action: :created)
+
+      Users::LastPushEventService.new(user).cache_last_push_event(event)
 
       visit dashboard_projects_path
     end

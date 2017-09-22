@@ -30,6 +30,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+  it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
   describe '#source' do
     context 'when creating new pipeline' do
@@ -1441,6 +1442,26 @@ describe Ci::Pipeline, :mailer do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe '#latest_builds_with_artifacts' do
+    let!(:pipeline) { create(:ci_pipeline, :success) }
+
+    let!(:build) do
+      create(:ci_build, :success, :artifacts, pipeline: pipeline)
+    end
+
+    it 'returns the latest builds' do
+      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    end
+
+    it 'memoizes the returned relation' do
+      query_count = ActiveRecord::QueryRecorder
+        .new { 2.times { pipeline.latest_builds_with_artifacts.to_a } }
+        .count
+
+      expect(query_count).to eq(1)
     end
   end
 

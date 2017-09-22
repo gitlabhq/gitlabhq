@@ -1,5 +1,0 @@
----
-title: 'Geo: Gracefully catch incorrect db key on primary'
-merge_request: 2819
-author:
-type: fixed

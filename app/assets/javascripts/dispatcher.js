@@ -83,6 +83,7 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -112,7 +113,7 @@ import initGroupAnalytics from './init_group_analytics';
 
       $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
           emojis: true,
           members: enableGFM,
@@ -385,7 +386,7 @@ import initGroupAnalytics from './init_group_analytics';
           if ($('.project-show-activity').length) new gl.Activities();
 
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
 
           initGeoInfoModal();
@@ -475,7 +476,7 @@ import initGroupAnalytics from './init_group_analytics';
 
           new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
           break;
         case 'projects:find_file:show':

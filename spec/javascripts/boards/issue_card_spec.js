@@ -322,7 +322,7 @@ describe('Issue card component', () => {
         .catch(done.fail);
     });
 
-    it('does not show project labels on group boards', (done) => {
+    it('shows project labels on group boards', (done) => {
       component.issue.addLabel(new ListLabel({
         id: 123,
         title: 'Project label',
@@ -334,10 +334,10 @@ describe('Issue card component', () => {
         .then(() => {
           expect(
             component.$el.querySelectorAll('.label').length,
-          ).toBe(2);
+          ).toBe(3);
           expect(
             component.$el.textContent,
-          ).not.toContain('Project label');
+          ).toContain('Project label');
 
           done();
         })

@@ -273,7 +273,7 @@ only.
 
 [^1]: On public and internal projects,  all users are able to perform this action.
 [^2]: Guest users can only view the confidential issues they created themselves
-[^3]: If **Public pipelines** is enabled in **Project Settings > Pipelines**
+[^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^5]: Only if user is not external one.
 [^6]: Only if user is a member of the project.
