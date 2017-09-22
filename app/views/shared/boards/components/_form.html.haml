@@ -10,7 +10,7 @@
         %input.form-control{ type: "text",
           id: "board-new-name",
           "v-model" => "board.name" }
-      - if current_board_parent.issue_board_milestone_available?(current_user)
+      - if current_board_parent.scoped_issue_board_available?(current_user)
         .dropdown.board-inner-milestone-dropdown{ ":class" => "{ open: milestoneDropdownOpen }",
           "v-if" => "currentPage === 'new'" }
           %label.label-light{ for: "board-milestone" }
