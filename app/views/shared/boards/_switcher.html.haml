@@ -35,8 +35,6 @@
                   %span.text-danger
                     Delete board
 
-    - if can?(current_user, :admin_board, parent)
-      %board-selector-form{ "inline-template" => true,
-        ":milestone-path" => "milestonePath",
-        "v-if" => "currentPage" }
-        = render "shared/boards/components/form"
+    %board-selector-form{ ":milestone-path" => "milestonePath",
+      ":can-admin-board" => can?(current_user, :admin_board, parent),
+      "v-if" => "currentPage" }

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import './board_new_form';
+import BoardSelectorForm from './board_new_form.vue';
 
 (() => {
   window.gl = window.gl || {};
@@ -11,7 +11,7 @@ import './board_new_form';
 
   gl.issueBoards.BoardsSelector = Vue.extend({
     components: {
-      'board-selector-form': gl.issueBoards.BoardSelectorForm,
+      'board-selector-form': BoardSelectorForm,
     },
     props: {
       currentBoard: {
