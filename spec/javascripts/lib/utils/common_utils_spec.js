@@ -411,5 +411,15 @@ describe('common_utils', () => {
       commonUtils.ajaxPost(requestURL, data);
       expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
     });
+
+    describe('gl.utils.spriteIcon', () => {
+      beforeEach(() => {
+        window.gon.sprite_icons = 'icons.svg';
+      });
+
+      it('should return the svg for a linked icon', () => {
+        expect(gl.utils.spriteIcon('test')).toEqual('<svg><use xlink:href="icons.svg#test" /></svg>');
+      });
+    });
   });
 });

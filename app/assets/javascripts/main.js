@@ -8,6 +8,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
+import svg4everybody from 'svg4everybody';
 
 // libraries with import side-effects
 import 'mousetrap';
@@ -159,6 +160,8 @@ import './dispatcher';
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 Dropzone.autoDiscover = false;
+
+svg4everybody();
 
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events

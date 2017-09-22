@@ -11,7 +11,7 @@
       = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
         = link_to project_path(@project), class: 'shortcuts-project' do
           .nav-icon-container
-            = custom_icon('project')
+            = sprite_icon('project')
           %span.nav-item-name
             Overview
 
@@ -38,7 +38,7 @@
         = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare projects/repositories tags branches releases graphs network path_locks)) do
           = link_to project_tree_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('doc_text')
+              = sprite_icon('doc_text')
             %span.nav-item-name
               Repository
 
@@ -89,7 +89,7 @@
         = nav_link(controller: %w[projects/registry/repositories]) do
           = link_to project_container_registry_index_path(@project), class: 'shortcuts-container-registry' do
             .nav-icon-container
-              = custom_icon('container_registry')
+              = sprite_icon('disk')
             %span.nav-item-name
               Registry
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -102,7 +102,7 @@
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
           = link_to project_issues_path(@project), class: 'shortcuts-issues' do
             .nav-icon-container
-              = custom_icon('issues')
+              = sprite_icon('issues')
             %span.nav-item-name
               Issues
             - if @project.issues_enabled?
@@ -127,7 +127,6 @@
               = link_to project_boards_path(@project), title: boards_link_text do
                 %span
                   = boards_link_text
-
             = nav_link(controller: :labels) do
               = link_to project_labels_path(@project), title: 'Labels' do
                 %span
@@ -147,7 +146,7 @@
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
           = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests' do
             .nav-icon-container
-              = custom_icon('mr_bold')
+              = sprite_icon('git-merge')
             %span.nav-item-name
               Merge Requests
             %span.badge.count.merge_counter.js-merge-counter
@@ -164,7 +163,7 @@
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
             .nav-icon-container
-              = custom_icon('pipeline')
+              = sprite_icon('pipeline')
             %span.nav-item-name
               CI / CD
 
@@ -208,7 +207,7 @@
         = nav_link(controller: :wikis) do
           = link_to get_project_wiki_path(@project), class: 'shortcuts-wiki' do
             .nav-icon-container
-              = custom_icon('wiki')
+              = sprite_icon('book')
             %span.nav-item-name
               Wiki
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -221,7 +220,7 @@
         = nav_link(controller: :snippets) do
           = link_to project_snippets_path(@project), class: 'shortcuts-snippets' do
             .nav-icon-container
-              = custom_icon('snippets')
+              = sprite_icon('snippet')
             %span.nav-item-name
               Snippets
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -234,7 +233,7 @@
         = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index]) do
           = link_to edit_project_path(@project), class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('settings')
+              = sprite_icon('settings')
             %span.nav-item-name
               Settings
 
@@ -280,7 +279,7 @@
         = nav_link(path: %w[members#show]) do
           = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
             .nav-icon-container
-              = custom_icon('members')
+              = sprite_icon('users')
             %span.nav-item-name
               Members
 
