@@ -1,65 +1,35 @@
-#edit-board-modal.modal.fade{ tabindex: -1 }
-  .modal-dialog.modal-md
-    .modal-content
-      .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
-        %h4
-          {{ title }}
-      %div{ "v-if" => "currentPage === 'delete'" }
-        .modal-body
-          %p
-            Are you sure you want to delete this board?
-        .modal-footer
-          = link_to current_board_path(board),
-            class: "btn btn-danger pull-left",
-            method: :delete do
-            Delete
-          %button.btn.btn-default.pull-right{ type: "button",
-            "@click" => "cancel",
-            data: { dismiss: "modal" } }
-            Cancel
-      %form{ "v-else" => true,
-        "@submit.prevent" => "submit" }
-        .modal-body
-          %input{ type: "hidden",
-            id: "board-milestone",
-            "v-model.number" => "board.milestone_id" }
-          %div
-            %label.label-light{ for: "board-new-name" }
-              Board name
-            %input.form-control{ type: "text",
-              id: "board-new-name",
-              "v-model" => "board.name" }
-          - if current_board_parent.issue_board_milestone_available?(current_user)
-            .dropdown.board-inner-milestone-dropdown{ ":class" => "{ open: milestoneDropdownOpen }" }
-              %label.label-light{ for: "board-milestone" }
-                Board milestone
-              %button.dropdown-menu-toggle.wide{ type: "button",
-                "@click.stop.prevent" => "loadMilestones($event)" }
-                {{ milestoneToggleText }}
-                = icon("chevron-down")
-              .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen",
-                ref: "milestoneDropdown" }
-                .dropdown-content
-                  %ul
-                    %li{ "v-for" => "milestone in extraMilestones" }
-                      %a{ href: "#",
-                        ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                        "@click.stop.prevent" => "selectMilestone(milestone)" }
-                        {{ milestone.title }}
-                    %li.divider
-                    %li{ "v-for" => "milestone in milestones" }
-                      %a{ href: "#",
-                        ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                        "@click.stop.prevent" => "selectMilestone(milestone)" }
-                        {{ milestone.title }}
-                = dropdown_loading
-        .modal-footer
-          %button.btn.btn-primary.pull-left{ type: "submit",
-            ":disabled" => "submitDisabled",
-            "ref" => "'submit-btn'" }
-            {{ buttonText }}
-          %button.btn.btn-default.pull-right{ type: "button",
-            "@click.prevent" => "cancel",
-            data: { dismiss: "modal" } }
-            Cancel
+%popup-dialog{ ":title": "title" }
+  %template{ slot: "body" }
+    %p{ "v-if" => "currentPage === 'delete'" }
+      Are you sure you want to delete this board?
+    %form{ "v-else" => true,
+      "@submit.prevent" => "submit" }
+      %input{ type: "hidden",
+        id: "board-milestone",
+        "v-model.number" => "board.milestone_id" }
+      %div
+        %label.label-light{ for: "board-new-name" }
+          Board name
+        %input.form-control{ type: "text",
+          id: "board-new-name",
+          "v-model" => "board.name" }
+      - if current_board_parent.issue_board_milestone_available?(current_user)
+        %board-milestone-select{ ":board": "board",
+          ":milestone-path": "milestonePath",
+          ":select-milestone": "selectMilestone" }
+  %template{ slot: "footer" }
+    = link_to current_board_path(board),
+      class: "btn btn-danger pull-left",
+      "v-if": "currentPage === 'delete'",
+      method: :delete do
+      Delete
+    %button.btn.btn-primary.pull-left{ type: "button",
+      "v-else": true,
+      "@click" => "submit",
+      ":disabled" => "submitDisabled",
+      "ref" => "'submit-btn'" }
+      {{ buttonText }}
+    %button.btn.btn-default.pull-right{ type: "button",
+      "@click" => "cancel",
+      data: { dismiss: "modal" } }
+      Cancel

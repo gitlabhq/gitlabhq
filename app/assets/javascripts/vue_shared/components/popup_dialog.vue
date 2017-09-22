@@ -54,16 +54,18 @@ export default {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button"
-          class="close"
-          @click="close"
-          aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{this.title}}</h4>
+        <slot name="header">
+          <button type="button"
+            class="close"
+            @click="close"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">{{this.title}}</h4>
+        </slot>
       </div>
       <div class="modal-body">
-        <slot name="body">
+        <slot>
           <p>{{this.body}}</p>
         </slot>
       </div>

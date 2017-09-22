@@ -145,6 +145,29 @@ $(() => {
     },
   });
 
+  gl.boardConfigToggle = new Vue({
+    el: document.querySelector('.js-board-config'),
+    methods: {
+      showPage: page => gl.issueBoards.BoardsStore.showPage(page),
+    },
+    computed: {
+      buttonText() {
+        return Math.random > 0.5 ? 'Edit board' : 'View scope';
+      },
+    },
+    template: `
+      <div class="prepend-left-10">
+        <button
+          class="btn btn-inverted"
+          type="button"
+          @click.prevent="showPage('edit')"
+        >
+          {{ buttonText }}
+        </button>
+      </div>
+    `,
+  });
+
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),

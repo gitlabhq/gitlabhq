@@ -12,7 +12,11 @@ gl.issueBoards.BoardsStore = {
   filter: {
     path: '',
   },
-  state: {},
+  state: {
+    currentBoard: {},
+    currentPage: '',
+    reload: false,
+  },
   detail: {
     issue: {}
   },
@@ -29,6 +33,10 @@ gl.issueBoards.BoardsStore = {
     this.state.currentBoard = {};
     this.state.currentPage = '';
     this.state.reload = false;
+  },
+  showPage(page) {
+    this.state.reload = false;
+    this.state.currentPage = page;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

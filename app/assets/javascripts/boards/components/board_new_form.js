@@ -3,7 +3,6 @@
 import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import boardMilestoneSelect from './milestone_select';
-import extraMilestones from '../mixins/extra_milestones';
 
 (() => {
   window.gl = window.gl || {};
@@ -23,15 +22,12 @@ import extraMilestones from '../mixins/extra_milestones';
         board: {
           id: false,
           name: '',
-          milestone: extraMilestones[0],
-          milestone_id: extraMilestones[0].id,
         },
         issue: {},
         currentBoard: Store.state.currentBoard,
         currentPage: Store.state.currentPage,
         milestones: [],
         milestoneDropdownOpen: false,
-        extraMilestones,
       };
     },
     components: {
