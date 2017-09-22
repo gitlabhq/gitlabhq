@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 feature 'Diff note avatars', js: true do
+  include CookieHelper
   include NoteInteractionHelpers
 
   let(:user)          { create(:user) }
@@ -22,7 +23,7 @@ feature 'Diff note avatars', js: true do
     project.team << [user, :master]
     sign_in user
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
   end
 
   context 'discussion tab' do

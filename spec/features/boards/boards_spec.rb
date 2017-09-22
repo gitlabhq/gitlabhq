@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Issue Boards', js: true do
+  include CookieHelper
   include DragTo
 
   let(:group) { create(:group, :nested) }
@@ -13,7 +14,7 @@ describe 'Issue Boards', js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
 
     sign_in(user)
   end

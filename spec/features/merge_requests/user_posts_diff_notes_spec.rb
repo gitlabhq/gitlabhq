@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 feature 'Merge requests > User posts diff notes', :js do
+  include CookieHelper
+
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
 
   before do
-    visit '/'
-    page.driver.browser.manage.add_cookie(name: 'sidebar_collapsed', value: 'true')
+    set_cookie('sidebar_collapsed', 'true')
 
     project.add_developer(user)
     sign_in(user)
