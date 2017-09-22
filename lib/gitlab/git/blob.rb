@@ -32,6 +32,8 @@ module Gitlab
             else
               blob = repository.lookup(sha)
 
+              next unless blob.is_a?(Rugged::Blob)
+
               new(
                 id: blob.oid,
                 size: blob.size,
