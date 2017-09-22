@@ -1550,6 +1550,7 @@ ActiveRecord::Schema.define(version: 20171006091000) do
     t.datetime "updated_at", null: false
     t.integer "issue_id"
     t.integer "merge_request_id"
+    t.datetime_with_timezone "spent_at"
   end
 
   add_index "timelogs", ["issue_id"], name: "index_timelogs_on_issue_id", using: :btree
