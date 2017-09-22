@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20170921203824) do
     t.integer "label_id", null: false
   end
 
+  add_index "board_filter_labels", ["board_filter_id", "label_id"], name: "index_board_filter_labels_on_board_filter_id_and_label_id", unique: true, using: :btree
   add_index "board_filter_labels", ["board_filter_id"], name: "index_board_filter_labels_on_board_filter_id", using: :btree
   add_index "board_filter_labels", ["label_id"], name: "index_board_filter_labels_on_label_id", using: :btree
 
