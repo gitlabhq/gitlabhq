@@ -24,9 +24,9 @@ module Gitlab
           super.merge(old_line: old_line, new_line: new_line)
         end
 
-        def position_type
-          :text
-        end
+        # def position_type
+        #   :text
+        # end
       end
     end
   end

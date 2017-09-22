@@ -28,9 +28,9 @@ module Gitlab
           super.merge(width: width, height: height, x_axis: x_axis, y_axis: y_axis)
         end
 
-        def position_type
-          :image
-        end
+        # def position_type
+        #   :image
+        # end
       end
     end
   end

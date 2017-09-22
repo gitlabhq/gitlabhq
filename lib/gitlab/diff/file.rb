@@ -66,6 +66,7 @@ module Gitlab
 
       def line_code_for_position(pos)
         line = line_for_position(pos)
+
         line_code(line) if line
       end
 

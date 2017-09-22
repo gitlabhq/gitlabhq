@@ -7,6 +7,7 @@ module Gitlab
         attr_reader :base_sha
         attr_reader :start_sha
         attr_reader :head_sha
+        attr_reader :position_type
 
         def initialize(attrs)
           if diff_file = attrs[:diff_file]
@@ -26,6 +27,9 @@ module Gitlab
           @base_sha = attrs[:base_sha]
           @start_sha = attrs[:start_sha]
           @head_sha  = attrs[:head_sha]
+
+          # Make sure older positions have text as type
+          @position_type = attrs[:position_type] || "text"
         end
 
         def key
@@ -36,17 +40,14 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def position_type
-          raise NotImplementedError
-        end
-
         def to_h
           {
             base_sha: base_sha,
             start_sha: start_sha,
             head_sha: head_sha,
             old_path: old_path,
-            new_path: new_path
+            new_path: new_path,
+            position_type: position_type
           }
         end
       end

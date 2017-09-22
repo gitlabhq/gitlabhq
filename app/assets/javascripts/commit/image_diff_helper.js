@@ -52,7 +52,7 @@ export function setPositionDataAttribute(el, options) {
   positionObject.y_axis = y;
   positionObject.width = width;
   positionObject.height = height;
-  positionObject.component_type = 'image';
+  positionObject.position_type = 'image';
 
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }

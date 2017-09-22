@@ -14,10 +14,10 @@ module Gitlab
                :base_sha,
                :start_sha,
                :head_sha,
-               :component_type, :to => :formatter
+               :position_type, :to => :formatter
 
       def initialize(attrs = {})
-        @formatter = get_formatter_class(attrs[:file_type]).new(attrs)
+        @formatter = get_formatter_class(attrs[:position_type]).new(attrs)
       end
 
       # `Gitlab::Diff::Position` objects are stored as serialized attributes in
