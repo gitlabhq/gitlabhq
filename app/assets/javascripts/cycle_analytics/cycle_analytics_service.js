@@ -5,8 +5,8 @@ Vue.use(VueResource);
 
 export default class CycleAnalyticsService {
   constructor(options) {
-    this.requestPath = options.requestPath;
-    this.cycleAnalytics = Vue.resource(options.requestPath);
+    this.requestPath = options.endpoint;
+    this.cycleAnalytics = Vue.resource(options.endpoint);
   }
 
   fetchCycleAnalyticsData(options = { startDate: 30 }) {

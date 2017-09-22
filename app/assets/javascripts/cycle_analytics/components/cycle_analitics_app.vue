@@ -4,8 +4,9 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import pipelineHealth from './pipeline_health.vue';
   import panelHeader from './panel_header.vue';
-  import iconLock from '~/icons/icon_lock.svg';
-  import iconNoData from '~/icons/icon_no_data.svg';
+  import banner from './banner.vue'
+  import iconLock from 'icons/_icon_lock.svg';
+  import iconNoData from 'icons/_icon_no_data.svg';
   import Store from '../cycle_analytics_store';
   import Service from '../cycle_analytics_service';
 
@@ -26,16 +27,24 @@
         type: Boolean,
         required: true,
       },
+      cssClass: {
+        type: String,
+        required: false,
+      },
     },
     components: {
       loadingIcon,
+      banner,
       panelHeader,
       pipelineHealth,
       stageComponent,
+      'stage-issue-component': stageComponent,
+      'stage-code-component': stageComponent,
+      'stage-test-component': stageComponent,
     },
     data() {
       const store = new Store();
-      const service = new Service(this.endpoint);
+      const service = new Service({ endpoint: this.endpoint });
 
       return {
         store,
@@ -51,11 +60,15 @@
     },
     computed: {
       currentStage() {
-        return this.store.currentActiveStage();
+        console.log(this.store.currentActiveStage())
+        return this.store.currentActiveStage() || {};
       },
       iconLock() {
         return iconLock;
       },
+    },
+    created() {
+      this.fetchCycleAnalyticsData();
     },
     methods: {
       handleError() {
@@ -66,19 +79,6 @@
         this.startDate = value;
         this.fetchCycleAnalyticsData({ startDate: this.startDate });
       },
-      // initDropdown() {
-      //   const $dropdown = $('.js-ca-dropdown');
-      //   const $label = $dropdown.find('.dropdown-label');
-
-      //   $dropdown.find('li a').off('click').on('click', (e) => {
-      //     e.preventDefault();
-      //     const $target = $(e.currentTarget);
-      //     this.startDate = $target.data('value');
-
-      //     $label.text($target.text().trim());
-      //     this.fetchCycleAnalyticsData({ startDate: this.startDate });
-      //   });
-      // },
       fetchCycleAnalyticsData(options) {
         const fetchOptions = options || { startDate: this.startDate };
 
@@ -90,7 +90,6 @@
           .then((response) => {
             this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
-            this.initDropdown();
             this.isLoading = false;
           })
           .catch(() => {
@@ -139,7 +138,7 @@
   };
 </script>
 <template>
-  <div>
+  <div :class="cssClass" id="cycle-analytics">
     <banner
       v-if="noData && !isOverviewDialogDismissed"
       @dimissBanner="dismissOverviewDialog"
@@ -148,20 +147,21 @@
     <template v-if="!isLoading && !hasError">
       <pipeline-health
         :analytics-data="state"
+        :start-date="startDate"
         @onClickDropdown="onClickDropdown"
         />
 
       <div class="panel panel-default stage-panel">
-        <panel-heading :current-state="currentStage" />
+        <panel-header :current-state="currentStage" />
 
         <div class="stage-panel-body">
           <div class="nav stage-nav">
             <ul>
               <li
                 class="stage-nav-item"
+                v-for="(stage, i) in state.stages"
                 :class="{ active: stage.active }"
-                @click="selectStage(stage)"
-                v-for="(stage, i) in stage.stages">
+                @click="selectStage(stage)">
                 <div class="stage-nav-item-cell stage-name">
                   {{ stage.title }}
                 </div>
@@ -173,22 +173,22 @@
                     <span
                       v-else
                       class="stage-empty">
-                      {{ __('Not enough data') }}
+                      {{__('Not enough data')}}
                       </span>
                   </template>
                   <template v-else>
                     <span class="not-available">
-                      {{ __('Not available') }}
+                      {{__('Not available')}}
                     </span>
                   </template>
                 </div>
-                </li>
+              </li>
             </ul>
           </div>
           <div class="section stage-events">
             <loading-icon v-if="isLoadingStage" />
             <div
-              v-if="currentStage && !currentStage.isUserAlllowed"
+              v-else-if="!isLoadingStage && currentStage && !currentStage.isUserAlllowed"
               class="no-access-stage">
               <div class="icon-lock" v-html="iconLock">
               </div>
@@ -217,7 +217,7 @@
                   :stage="currentStage"
                   :items="state.events"
                   />
-              </div>
+              </template>
             </template>
           </div>
         </div>

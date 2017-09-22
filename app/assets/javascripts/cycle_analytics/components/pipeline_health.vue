@@ -5,6 +5,10 @@
         type: Object,
         required: true,
       },
+      startDate: {
+        type: Number,
+        required: true,
+      },
     },
     methods: {
       onClickDropdown(value) {
@@ -32,13 +36,13 @@
           </p>
         </div>
         <div class="col-sm-3 col-xs-12 column">
-          <div class="dropdown">
+          <div class="dropdown prepend-top-10">
             <button
               type="button"
               data-toggle="dropdown"
               class="dropdown-menu-toggle">
               <span class="dropdown-label">
-                {{ n__('Last %d day', 'Last %d days', 30) }}
+                {{ n__('Last %d day', 'Last %d days', startDate) }}
               </span>
               <i
                 class="fa fa-chevron-down"
@@ -46,18 +50,25 @@
               </i>
             </button>
             <ul class="dropdown-menu dropdowm-menu-align-right">
-              <li @click="onClickDropdown(7)">
-                {{ n__('Last %d day', 'Last %d days', 7) }}
+              <li>
+                <a @click="onClickDropdown(7)">
+                  {{ n__('Last %d day', 'Last %d days', 7) }}
+                </a>
               </li>
-              <li @click="onClickDropdown(30)">
-                {{ n__('Last %d day', 'Last %d days', 30) }}
+              <li>
+                <a @click="onClickDropdown(30)">
+                  {{ n__('Last %d day', 'Last %d days', 30) }}
+                </a>
               </li>
-              <li @click="onClickDropdown(90)">
-                {{ n__('Last %d day', 'Last %d days', 90) }}
+              <li>
+                <a @click="onClickDropdown(90)">
+                  {{ n__('Last %d day', 'Last %d days', 90) }}
+                </a>
               </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>

@@ -2,7 +2,7 @@
 <script>
   import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
   import limitWarning from './limit_warning_component.vue';
-  import totalTime from './total_time_component';
+  import totalTime from './total_time_component.vue';
 
   export default {
     props: {

@@ -1,5 +1,5 @@
 <script>
-  import iconCycleAnalyticsSplash from 'icons/icon_cycle_analytics_splash.svg';
+  import iconCycleAnalyticsSplash from 'icons/_icon_cycle_analytics_splash.svg';
 
   export default {
     name: 'cycleAnalyticsBanner',

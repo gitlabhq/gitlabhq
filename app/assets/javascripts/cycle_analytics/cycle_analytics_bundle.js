@@ -1,31 +1,21 @@
 /* global Flash */
 
 import Vue from 'vue';
-// import Cookies from 'js-cookie';
 import Translate from '../vue_shared/translate';
 import cycleAnalytics from './components/cycle_analitics_app.vue';
-// import limitWarningComponent from './components/limit_warning_component.vue';
-// import stateCodeComponent from './components/stage_code_component.vue';
-// import stageIssueComponent from './components/stage_issue_component.vue';
-// import './components/stage_plan_component';
-// import './components/stage_production_component';
-// import './components/stage_review_component';
-// import './components/stage_staging_component';
-// import './components/stage_test_component';
-// import './components/total_time_component';
-// import './cycle_analytics_service';
 
 Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
-  el: '#cycle-analytics',
+  el: '#js-vue-cycle-analytics',
   data() {
-    const dataset = document.querySelector(this.$options.$el).dataset;
+    const dataset = document.querySelector(this.$options.el).dataset;
 
     return {
       endpoint: dataset.requestPath,
       noData: dataset.cycleAnalyticsNoData,
       helpPath: dataset.helpPath,
+      cssClass: dataset.class,
     };
   },
   components: {
@@ -37,127 +27,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
         endpoint: this.endpoint,
         noData: this.noData,
         helpPath: this.helpPath,
+        cssClass: this.cssClass,
       },
     });
   },
 }));
-
-// $(() => {
-//   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
-//   const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
-  // const cycleAnalyticsStore = gl.cycleAnalytics.CycleAnalyticsStore;
-  // const cycleAnalyticsService = new gl.cycleAnalytics.CycleAnalyticsService({
-  //   requestPath: cycleAnalyticsEl.dataset.requestPath,
-  // });
-
-  // gl.cycleAnalyticsApp = new Vue({
-  //   el: '#cycle-analytics',
-  //   name: 'CycleAnalytics',
-  //   data: {
-  //     state: cycleAnalyticsStore.state,
-  //     isLoading: false,
-  //     isLoadingStage: false,
-  //     isEmptyStage: false,
-  //     hasError: false,
-  //     startDate: 30,
-  //     isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
-  //   },
-  //   computed: {
-  //     currentStage() {
-  //       return cycleAnalyticsStore.currentActiveStage();
-  //     },
-  //   },
-  //   components: {
-  //     stageComponent,
-  //     stageIssueComponent,
-  //     'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
-  //     stateCodeComponent,
-  //     'stage-test-component': gl.cycleAnalytics.StageTestComponent,
-  //     'stage-review-component': gl.cycleAnalytics.StageReviewComponent,
-  //     'stage-staging-component': gl.cycleAnalytics.StageStagingComponent,
-  //     'stage-production-component': gl.cycleAnalytics.StageProductionComponent,
-  //   },
-  //   created() {
-  //     this.fetchCycleAnalyticsData();
-  //   },
-  //   methods: {
-  //     handleError() {
-  //       cycleAnalyticsStore.setErrorState(true);
-  //       return new Flash('There was an error while fetching cycle analytics data.');
-  //     },
-  //     initDropdown() {
-  //       const $dropdown = $('.js-ca-dropdown');
-  //       const $label = $dropdown.find('.dropdown-label');
-
-  //       $dropdown.find('li a').off('click').on('click', (e) => {
-  //         e.preventDefault();
-  //         const $target = $(e.currentTarget);
-  //         this.startDate = $target.data('value');
-
-  //         $label.text($target.text().trim());
-  //         this.fetchCycleAnalyticsData({ startDate: this.startDate });
-  //       });
-  //     },
-  //     fetchCycleAnalyticsData(options) {
-  //       const fetchOptions = options || { startDate: this.startDate };
-
-  //       this.isLoading = true;
-
-  //       cycleAnalyticsService
-  //         .fetchCycleAnalyticsData(fetchOptions)
-  //         .done((response) => {
-  //           cycleAnalyticsStore.setCycleAnalyticsData(response);
-  //           this.selectDefaultStage();
-  //           this.initDropdown();
-  //         })
-  //         .error(() => {
-  //           this.handleError();
-  //         })
-  //         .always(() => {
-  //           this.isLoading = false;
-  //         });
-  //     },
-  //     selectDefaultStage() {
-  //       const stage = this.state.stages[0];
-  //       this.selectStage(stage);
-  //     },
-  //     selectStage(stage) {
-  //       if (this.isLoadingStage) return;
-  //       if (this.currentStage === stage) return;
-
-  //       if (!stage.isUserAllowed) {
-  //         cycleAnalyticsStore.setActiveStage(stage);
-  //         return;
-  //       }
-
-  //       this.isLoadingStage = true;
-  //       cycleAnalyticsStore.setStageEvents([], stage);
-  //       cycleAnalyticsStore.setActiveStage(stage);
-
-  //       cycleAnalyticsService
-  //         .fetchStageData({
-  //           stage,
-  //           startDate: this.startDate,
-  //         })
-  //         .done((response) => {
-  //           this.isEmptyStage = !response.events.length;
-  //           cycleAnalyticsStore.setStageEvents(response.events, stage);
-  //         })
-  //         .error(() => {
-  //           this.isEmptyStage = true;
-  //         })
-  //         .always(() => {
-  //           this.isLoadingStage = false;
-  //         });
-  //     },
-  //     dismissOverviewDialog() {
-  //       this.isOverviewDialogDismissed = true;
-  //       Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
-  //     },
-  //   },
-  // });
-
-  // // Register global components
-  // Vue.component('limit-warning', limitWarningComponent);
-  // Vue.component('total-time', gl.cycleAnalytics.TotalTimeComponent);
-// });

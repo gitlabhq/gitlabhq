@@ -1,10 +1,15 @@
 <script>
+  import tooltip from '../../vue_shared/directives/tooltip';
+
   export default {
     props: {
       currentStage: {
         type: Object,
-        required: true,
+        required: false,
       },
+    },
+    directives: {
+      tooltip
     },
   };
 </script>
@@ -14,24 +19,24 @@
       <ul>
         <li class="stage-header">
           <span class="stage-name">
-            {{s__('ProjectLifecycle|Stage')}}
+            {{__('ProjectLifecycle|Stage')}}
           </span>
           <i
             class="fa fa-question-circle"
             v-tooltip
-            :title="_("The phase of the development lifecycle.")"
+            :title="__('The phase of the development lifecycle.')"
             data-placement="top"
             aria-hidden="true">
           </i>
         </li>
         <li class="median-header">
           <span class="stage-name">
-            {{ __('Median') }}
+            {{ __('Median')}}
           </span>
           <i
             class="fa fa-question-circle"
             v-tooltip
-            :title="_("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.")"
+            :title="__('The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6.')"
             data-placement="top"
             aria-hidden="true">
           </i>
@@ -43,7 +48,7 @@
           <i
             class="fa fa-question-circle"
             v-tooltip
-            :title="_("The collection of events added to the data gathered for that stage.")"
+            :title="__('The collection of events added to the data gathered for that stage.')"
             data-placement="top"
             aria-hidden="true">
           </i>
@@ -55,7 +60,7 @@
           <i
             class="fa fa-question-circle"
             v-tooltip
-            :title="_("The time taken by each data entry gathered by that stage.")"
+            :title="__('The time taken by each data entry gathered by that stage.')"
             data-placement="top"
             aria-hidden="true">
           </i>
