@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Jira service', :js do
+describe 'User activates Jira', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:service) { project.create_jira_service }
