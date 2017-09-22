@@ -9,10 +9,11 @@
 %div{ 'class' => container_class }
   - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'
-
   #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
     "help-page-path" => help_page_path('ci/quick_start/README'),
     "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),
+    "empty-state-svg-path" => image_path('illustrations/pipelines_empty.svg'),
+    "error-state-svg-path" => image_path('illustrations/pipelines_failed.svg'),
     "new-pipeline-path" => new_project_pipeline_path(@project),
     "can-create-pipeline" => can?(current_user, :create_pipeline, @project).to_s,
     "all-path" =>  project_pipelines_path(@project),
@@ -21,7 +22,7 @@
     "finished-path" => project_pipelines_path(@project, scope: :finished),
     "branches-path" => project_pipelines_path(@project, scope: :branches),
     "tags-path" => project_pipelines_path(@project, scope: :tags),
-    "has-ci" => @project.has_ci?,
+    "has-ci" => @repository.gitlab_ci_yml,
     "ci-lint-path" => ci_lint_path } }
 
   = page_specific_javascript_bundle_tag('common_vue')

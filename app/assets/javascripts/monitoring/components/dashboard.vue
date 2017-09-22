@@ -23,6 +23,9 @@
         settingsPath: metricsData.settingsPath,
         metricsEndpoint: metricsData.additionalMetrics,
         deploymentEndpoint: metricsData.deploymentEndpoint,
+        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
+        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
+        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
         showEmptyState: true,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
@@ -109,5 +112,8 @@
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
+    :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+    :empty-loading-svg-path="emptyLoadingSvgPath"
+    :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
   />
 </template>

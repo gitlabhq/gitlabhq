@@ -1834,7 +1834,7 @@ doctrine@^2.0.0:
     esutils "^2.0.2"
     isarray "^1.0.0"
 
-document-register-element@^1.3.0:
+document-register-element@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.3.0.tgz#fb3babb523c74662be47be19c6bc33e71990d940"
 
@@ -2711,6 +2711,10 @@ getpass@^0.1.1:
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
   dependencies:
     assert-plus "^1.0.0"
+
+"gitlab-svgs@https://gitlab.com/gitlab-org/gitlab-svgs.git":
+  version "1.0.2"
+  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#7f36f3951dd08904761780da48efcd639f34c3af"
 
 glob-base@^0.3.0:
   version "0.3.0"
@@ -5936,6 +5940,10 @@ supports-color@^4.2.1:
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.1.tgz#65a4bb2631e90e02420dba5554c375a4754bb836"
   dependencies:
     has-flag "^2.0.0"
+
+svg4everybody@2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/svg4everybody/-/svg4everybody-2.1.9.tgz#5bd9f6defc133859a044646d4743fabc28db7e2d"
 
 svgo@^0.7.0:
   version "0.7.2"

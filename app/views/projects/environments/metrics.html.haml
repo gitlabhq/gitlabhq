@@ -16,6 +16,9 @@
 
   #prometheus-graphs{ data: { "settings-path": edit_project_service_path(@project, 'prometheus'),
     "documentation-path": help_page_path('administration/monitoring/prometheus/index.md'),
+    "empty-getting-started-svg-path": image_path('illustrations/monitoring/getting_started'),
+    "empty-loading-svg-path": image_path('illustrations/monitoring/loading'),
+    "empty-unable-to-connect-svg-path": image_path('illustrations/monitoring/unable_to_connect'),
     "additional-metrics": additional_metrics_project_environment_path(@project, @environment, format: :json),
     "has-metrics": "#{@environment.has_metrics?}", deployment_endpoint: project_environment_deployments_path(@project, @environment, format: :json) } }
 
