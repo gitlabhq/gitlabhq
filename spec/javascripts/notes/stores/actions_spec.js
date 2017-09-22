@@ -1,4 +1,3 @@
-
 import * as actions from '~/notes/stores/actions';
 import testAction from '../../helpers/vuex_action_helper';
 import { discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';

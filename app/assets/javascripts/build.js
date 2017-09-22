@@ -3,6 +3,7 @@ consistent-return, prefer-rest-params */
 import _ from 'underscore';
 import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
+import { setCiStatusFavicon } from './lib/utils/common_utils';
 
 window.Build = (function () {
   Build.timeout = null;
@@ -169,7 +170,7 @@ window.Build = (function () {
       data: this.state,
     })
       .done((log) => {
-        gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
+        setCiStatusFavicon(`${this.pageUrl}/status.json`);
 
         if (log.state) {
           this.state = log.state;

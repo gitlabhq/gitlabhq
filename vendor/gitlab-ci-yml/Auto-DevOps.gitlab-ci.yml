@@ -271,10 +271,6 @@ production:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
-
-    if [[ "$track" == "stable" ]]; then
-      kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/${CI_ENVIRONMENT_SLUG}-auto-deploy"
-    fi
   }
 
   function install_dependencies() {

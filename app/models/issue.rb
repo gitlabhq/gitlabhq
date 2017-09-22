@@ -275,8 +275,6 @@ class Issue < ActiveRecord::Base
   end
 
   def update_project_counter_caches
-    return unless update_project_counter_caches?
-
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 

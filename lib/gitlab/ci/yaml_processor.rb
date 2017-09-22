@@ -5,12 +5,11 @@ module Gitlab
 
       include Gitlab::Ci::Config::Entry::LegacyValidationHelpers
 
-      attr_reader :path, :cache, :stages, :jobs
+      attr_reader :cache, :stages, :jobs
 
-      def initialize(config, path = nil)
+      def initialize(config)
         @ci_config = Gitlab::Ci::Config.new(config)
         @config = @ci_config.to_hash
-        @path = path
 
         unless @ci_config.valid?
           raise ValidationError, @ci_config.errors.first
@@ -21,26 +20,10 @@ module Gitlab
         raise ValidationError, e.message
       end
 
-      def builds_for_stage_and_ref(stage, ref, tag = false, source = nil)
-        jobs_for_stage_and_ref(stage, ref, tag, source).map do |name, _|
-          build_attributes(name)
-        end
-      end
-
       def builds
         @jobs.map do |name, _|
           build_attributes(name)
         end
-      end
-
-      def stage_seeds(pipeline)
-        seeds = @stages.uniq.map do |stage|
-          builds = pipeline_stage_builds(stage, pipeline)
-
-          Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
-        end
-
-        seeds.compact
       end
 
       def build_attributes(name)
@@ -70,6 +53,32 @@ module Gitlab
           }.compact }
       end
 
+      def pipeline_stage_builds(stage, pipeline)
+        selected_jobs = @jobs.select do |_, job|
+          next unless job[:stage] == stage
+
+          only_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:only, {}))
+          except_specs = Gitlab::Ci::Build::Policy
+            .fabricate(job.fetch(:except, {}))
+
+          only_specs.all? { |spec| spec.satisfied_by?(pipeline) } &&
+            except_specs.none? { |spec| spec.satisfied_by?(pipeline) }
+        end
+
+        selected_jobs.map { |_, job| build_attributes(job[:name]) }
+      end
+
+      def stage_seeds(pipeline)
+        seeds = @stages.uniq.map do |stage|
+          builds = pipeline_stage_builds(stage, pipeline)
+
+          Gitlab::Ci::Stage::Seed.new(pipeline, stage, builds) if builds.any?
+        end
+
+        seeds.compact
+      end
+
       def self.validation_message(content)
         return 'Please provide content of .gitlab-ci.yml' if content.blank?
 
@@ -82,34 +91,6 @@ module Gitlab
       end
 
       private
-
-      def pipeline_stage_builds(stage, pipeline)
-        builds = builds_for_stage_and_ref(
-          stage, pipeline.ref, pipeline.tag?, pipeline.source)
-
-        builds.select do |build|
-          job = @jobs[build.fetch(:name).to_sym]
-          has_kubernetes = pipeline.has_kubernetes_active?
-          only_kubernetes = job.dig(:only, :kubernetes)
-          except_kubernetes = job.dig(:except, :kubernetes)
-
-          [!only_kubernetes && !except_kubernetes,
-           only_kubernetes && has_kubernetes,
-           except_kubernetes && !has_kubernetes].any?
-        end
-      end
-
-      def jobs_for_ref(ref, tag = false, source = nil)
-        @jobs.select do |_, job|
-          process?(job.dig(:only, :refs), job.dig(:except, :refs), ref, tag, source)
-        end
-      end
-
-      def jobs_for_stage_and_ref(stage, ref, tag = false, source = nil)
-        jobs_for_ref(ref, tag, source).select do |_, job|
-          job[:stage] == stage
-        end
-      end
 
       def initial_parsing
         ##
@@ -201,51 +182,6 @@ module Gitlab
 
         unless on_stop_job[:environment][:action] == 'stop'
           raise ValidationError, "#{name} job: on_stop job #{on_stop} needs to have action stop defined"
-        end
-      end
-
-      def process?(only_params, except_params, ref, tag, source)
-        if only_params.present?
-          return false unless matching?(only_params, ref, tag, source)
-        end
-
-        if except_params.present?
-          return false if matching?(except_params, ref, tag, source)
-        end
-
-        true
-      end
-
-      def matching?(patterns, ref, tag, source)
-        patterns.any? do |pattern|
-          pattern, path = pattern.split('@', 2)
-          matches_path?(path) && matches_pattern?(pattern, ref, tag, source)
-        end
-      end
-
-      def matches_path?(path)
-        return true unless path
-
-        path == self.path
-      end
-
-      def matches_pattern?(pattern, ref, tag, source)
-        return true if tag && pattern == 'tags'
-        return true if !tag && pattern == 'branches'
-        return true if source_to_pattern(source) == pattern
-
-        if pattern.first == "/" && pattern.last == "/"
-          Regexp.new(pattern[1...-1]) =~ ref
-        else
-          pattern == ref
-        end
-      end
-
-      def source_to_pattern(source)
-        if %w[api external web].include?(source)
-          source
-        else
-          source&.pluralize
         end
       end
     end

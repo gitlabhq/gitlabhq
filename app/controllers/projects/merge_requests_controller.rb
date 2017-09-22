@@ -56,6 +56,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     close_merge_request_without_source_project
     check_if_can_be_merged
 
+    # Return if the response has already been rendered
+    return if response_body
+
     respond_to do |format|
       format.html do
         # Build a note object for comment form
@@ -70,6 +73,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         labels
 
         set_pipeline_variables
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
 
       format.json do
