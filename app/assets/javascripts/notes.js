@@ -1445,6 +1445,8 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
+        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+
         // Reset cached commands list when command is applied
         if (hasQuickActions) {
           $form.find('textarea.js-note-text').trigger('clear-commands-cache.atwho');

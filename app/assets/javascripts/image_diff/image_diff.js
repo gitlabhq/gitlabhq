@@ -16,9 +16,8 @@ export function showCommentIndicator(event) {
   }
 }
 
-export function hideCommentIndicator(event) {
-  const container = event.target.closest('.diff-viewer');
-  const commentIndicator = container.querySelector('.comment-indicator');
+export function hideCommentIndicator(diffViewerEl) {
+  const commentIndicator = diffViewerEl.querySelector('.comment-indicator');
 
   if (commentIndicator) {
     commentIndicator.remove();
