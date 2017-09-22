@@ -3,14 +3,6 @@ module GroupDescendant
     expand_hierarchy_for_child(self, self, hierarchy_base)
   end
 
-  def parent
-    if self.is_a?(Project)
-      namespace
-    else
-      super
-    end
-  end
-
   def expand_hierarchy_for_child(child, hierarchy, hierarchy_base)
     if child.parent.nil? && hierarchy_base.present?
       raise ArgumentError.new('specified base is not part of the tree')

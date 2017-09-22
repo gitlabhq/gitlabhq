@@ -1521,6 +1521,10 @@ class Project < ActiveRecord::Base
     map.public_path_for_source_path(path)
   end
 
+  def parent
+    namespace
+  end
+
   def parent_changed?
     namespace_id_changed?
   end
