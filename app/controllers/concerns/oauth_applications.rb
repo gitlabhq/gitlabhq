@@ -1,5 +1,6 @@
 module OauthApplications
   extend ActiveSupport::Concern
+  prepend ::EE::OauthApplications
 
   included do
     before_action :prepare_scopes, only: [:create, :update]
@@ -15,14 +16,5 @@ module OauthApplications
 
   def load_scopes
     @scopes = Doorkeeper.configuration.scopes
-  end
-
-  def log_audit_event
-    AuditEventService.new(current_user,
-                          current_user,
-                          action: :custom,
-                          custom_message: 'OAuth access granted',
-                          ip_address: request.remote_ip)
-        .for_user(@application.name).security_event
   end
 end
