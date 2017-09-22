@@ -1,5 +1,0 @@
----
-title: Add branch existence check to the APIv4 branches via HEAD request
-merge_request: 13979
-author: Vitaliy @blackst0ne Klachkov
-type: added
