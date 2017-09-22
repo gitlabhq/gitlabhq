@@ -1,5 +1,0 @@
----
-title: Changed all font-weight values to 400 and 600 and introduced 2 variables to
-  manage them
-merge_request: !12896
-author:

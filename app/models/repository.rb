@@ -8,6 +8,7 @@ class Repository
   RESERVED_REFS_NAMES = %W[
     heads
     tags
+    replace
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
     #{REF_ENVIRONMENTS}

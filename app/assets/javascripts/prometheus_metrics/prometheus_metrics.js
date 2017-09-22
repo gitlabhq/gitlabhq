@@ -1,4 +1,5 @@
 import PANEL_STATE from './constants';
+import { backOff } from '../lib/utils/common_utils';
 
 export default class PrometheusMetrics {
   constructor(wrapperSelector) {
@@ -79,7 +80,7 @@ export default class PrometheusMetrics {
 
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
-    gl.utils.backOff((next, stop) => {
+    backOff((next, stop) => {
       $.getJSON(this.activeMetricsEndpoint)
         .done((res) => {
           if (res && res.success) {

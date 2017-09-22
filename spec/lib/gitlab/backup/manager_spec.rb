@@ -28,6 +28,7 @@ describe Backup::Manager do
         '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
         '1451520000_2015_12_31_4.5.6-pre_gitlab_backup.tar',
         '1451520000_2015_12_31_4.5.6-rc1_gitlab_backup.tar',
+        '1451520000_2015_12_31_4.5.6-pre-ee_gitlab_backup.tar',
         '1451510000_2015_12_30_gitlab_backup.tar',
         '1450742400_2015_12_22_gitlab_backup.tar',
         '1449878400_gitlab_backup.tar',
@@ -114,14 +115,18 @@ describe Backup::Manager do
         expect(FileUtils).to have_received(:rm).with(files[3])
       end
 
-      it 'removes matching files with a human-readable non-versioned timestamp' do
+      it 'removes matching files with a human-readable versioned timestamp with tagged EE' do
         expect(FileUtils).to have_received(:rm).with(files[4])
+      end
+
+      it 'removes matching files with a human-readable non-versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[5])
+        expect(FileUtils).to have_received(:rm).with(files[6])
       end
 
       it 'removes matching files without a human-readable timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[6])
         expect(FileUtils).to have_received(:rm).with(files[7])
+        expect(FileUtils).to have_received(:rm).with(files[8])
       end
 
       it 'does not remove files that are not old enough' do
@@ -129,11 +134,11 @@ describe Backup::Manager do
       end
 
       it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[8])
+        expect(FileUtils).not_to have_received(:rm).with(files[9])
       end
 
       it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (7 removed)')
+        expect(progress).to have_received(:puts).with('done. (8 removed)')
       end
     end
 
@@ -153,10 +158,11 @@ describe Backup::Manager do
         expect(FileUtils).to have_received(:rm).with(files[5])
         expect(FileUtils).to have_received(:rm).with(files[6])
         expect(FileUtils).to have_received(:rm).with(files[7])
+        expect(FileUtils).to have_received(:rm).with(files[8])
       end
 
       it 'sets the correct removed count' do
-        expect(progress).to have_received(:puts).with('done. (6 removed)')
+        expect(progress).to have_received(:puts).with('done. (7 removed)')
       end
 
       it 'prints the error from file that could not be removed' do

@@ -28,6 +28,7 @@ describe Gitlab::Git::Hook do
         f.write(<<-HOOK)
           echo 'regular message from the hook'
           echo 'error message from the hook' 1>&2
+          echo 'error message from the hook line 2' 1>&2
           exit 1
         HOOK
       end
@@ -73,7 +74,7 @@ describe Gitlab::Git::Hook do
 
             status, errors = hook.trigger(gl_id, blank, blank, ref)
             expect(status).to be false
-            expect(errors).to eq("error message from the hook\n")
+            expect(errors).to eq("error message from the hook<br>error message from the hook line 2<br>")
           end
         end
       end
