@@ -9,20 +9,13 @@ module Github
       end
 
       def source_branch_name
-        @source_branch_name ||=
-          if opened? && project.repository.branch_exists?(source_branch.ref)
-            source_branch.ref
-          elsif cross_project? && opened?
-            source_branch_name_prefixed
-          else
-            source_branch_ref
-          end
+        @source_branch_name ||= source_branch_exists? ? source_branch_ref : tmp_source_branch
       end
 
       def source_branch_exists?
         return @source_branch_exists if defined?(@source_branch_exists)
 
-        @source_branch_exists = project.repository.branch_exists?(source_branch_name)
+        @source_branch_exists = !cross_project? && source_branch.exists?
       end
 
       def target_project
@@ -30,7 +23,7 @@ module Github
       end
 
       def target_branch_name
-        @target_branch_name ||= target_branch_exists? ? target_branch_ref : target_branch_name_prefixed
+        @target_branch_name ||= target_branch_exists? ? target_branch_ref : tmp_target_branch
       end
 
       def target_branch_exists?
@@ -57,6 +50,13 @@ module Github
         restore_target_branch!
       end
 
+      def remove_tmp_branches!
+        return if opened?
+
+        remove_tmp_source_branch!
+        remove_tmp_target_branch!
+      end
+
       private
 
       def project
@@ -67,20 +67,8 @@ module Github
         @source_branch ||= Representation::Branch.new(raw['head'], repository: project.repository)
       end
 
-      def source_branch_ref
-        "refs/merge-requests/#{iid}/head"
-      end
-
-      def source_branch_name_prefixed
-        "gh-#{target_branch_short_sha}/#{iid}/#{source_branch_user}/#{source_branch.ref}"
-      end
-
       def target_branch
         @target_branch ||= Representation::Branch.new(raw['base'], repository: project.repository)
-      end
-
-      def target_branch_name_prefixed
-        "gl-#{target_branch_short_sha}/#{iid}/#{target_branch_user}/#{target_branch_ref}"
       end
 
       def cross_project?
@@ -99,6 +87,20 @@ module Github
         return if target_branch_exists?
 
         target_branch.restore!(target_branch_name)
+      end
+
+      def remove_tmp_source_branch!
+        # We should remove the source/target branches only if they were
+        # restored. Otherwise, we'll remove branches like 'master' that
+        # target_branch_exists? returns true. In other words, we need
+        # to clean up only the restored branches that (source|target)_branch_exists?
+        # returns false for the first time it has been called, because of
+        # this that is important to memoize these values.
+        source_branch.remove!(source_branch_name) unless source_branch_exists?
+      end
+
+      def remove_tmp_target_branch!
+        target_branch.remove!(target_branch_name) unless target_branch_exists?
       end
     end
   end
