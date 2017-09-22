@@ -415,6 +415,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
+    fetch_ref
+
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       merge_request_diffs.create
@@ -462,6 +464,7 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+
     create_merge_request_diff
     MergeRequests::MergeRequestDiffCacheService.new.execute(self)
     new_diff_refs = self.diff_refs
