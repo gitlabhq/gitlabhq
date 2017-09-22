@@ -11,14 +11,22 @@
     function ImageFile(file) {
       this.file = file;
       this.requestImageInfo($('.two-up.view .frame.deleted img', this.file), (function(_this) {
-        // Determine if old and new file has same dimensions, if not show 'two-up' view
         return function(deletedWidth, deletedHeight) {
           return _this.requestImageInfo($('.two-up.view .frame.added img', _this.file), function(width, height) {
-            if (width === deletedWidth && height === deletedHeight) {
-              return _this.initViewModes();
-            } else {
-              return _this.initView('two-up');
-            }
+            _this.initViewModes();
+
+            // Load two-up view after images are loaded
+            // so that we can display the correct width and height information
+            const images = $('.two-up.view img', _this.file);
+            let loadedCount = 0;
+
+            images.on('load', () => {
+              loadedCount += 1;
+
+              if (loadedCount === images.length) {
+                _this.initView('two-up');
+              }
+            });
           });
         };
       })(this));

@@ -187,6 +187,14 @@ export const poll = ({ commit, state, getters }) => {
   });
 };
 
+export const stopPolling = () => {
+  eTagPoll.stop();
+};
+
+export const restartPolling = () => {
+  eTagPoll.restart();
+};
+
 export const fetchData = ({ commit, state, getters }) => {
   const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
 
