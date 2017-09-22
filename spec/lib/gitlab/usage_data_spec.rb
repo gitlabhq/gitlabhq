@@ -35,6 +35,18 @@ describe Gitlab::UsageData do
         version
         uuid
         hostname
+        signup
+        ldap
+        gravatar
+        omniauth
+        reply_by_email
+        container_registry
+        gitlab_pages
+        gitlab_shared_runners
+        elasticsearch
+        geo
+        git
+        database
       ))
     end
 
@@ -98,6 +110,41 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_jira_active]).to eq(2)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
+    end
+  end
+
+  describe '#features_usage_data_ce' do
+    subject { described_class.features_usage_data_ce }
+
+    it 'gathers feature usage data' do
+      expect(subject[:signup]).to eq(current_application_settings.signup_enabled?)
+      expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
+      expect(subject[:gravatar]).to eq(current_application_settings.gravatar_enabled?)
+      expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)
+      expect(subject[:reply_by_email]).to eq(Gitlab::IncomingEmail.enabled?)
+      expect(subject[:container_registry]).to eq(Gitlab.config.registry.enabled)
+      expect(subject[:gitlab_shared_runners]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
+    end
+  end
+
+  describe '#features_usage_data_ee' do
+    subject { described_class.features_usage_data_ee }
+
+    it 'gathers feature usage data of EE' do
+      expect(subject[:elasticsearch]).to eq(current_application_settings.elasticsearch_search?)
+      expect(subject[:geo]).to eq(Gitlab::Geo.enabled?)
+    end
+  end
+
+  describe '#components_usage_data' do
+    subject { described_class.components_usage_data }
+
+    it 'gathers components usage data' do
+      expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
+      expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
+      expect(subject[:git][:version]).to eq(Gitlab::Git.version)
+      expect(subject[:database][:adapter]).to eq(Gitlab::Database.adapter_name)
+      expect(subject[:database][:version]).to eq(Gitlab::Database.version)
     end
   end
 
