@@ -1027,13 +1027,12 @@ export default class Notes {
   }
 
   cancelDiscussionForm(e) {
-    var form;
     e.preventDefault();
-    form = $(e.target).closest('.js-discussion-note-form');
+    const $form = $(e.target).closest('.js-discussion-note-form');
 
-    imageDiff.hideCommentIndicator(e);
+    imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
 
-    return this.removeDiscussionNoteForm(form);
+    return this.removeDiscussionNoteForm($form);
   }
 
   /**
