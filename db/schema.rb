@@ -2068,12 +2068,12 @@ ActiveRecord::Schema.define(version: 20170921203824) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
-  add_foreign_key "board_filter_labels", "board_filters", on_delete: :cascade
-  add_foreign_key "board_filter_labels", "labels", on_delete: :cascade
-  add_foreign_key "board_filters", "boards", on_delete: :cascade
-  add_foreign_key "board_filters", "milestones", on_delete: :nullify
-  add_foreign_key "board_filters", "users", column: "assignee_id", on_delete: :nullify
-  add_foreign_key "board_filters", "users", column: "author_id", on_delete: :nullify
+  add_foreign_key "board_filter_labels", "board_filters", name: "fk_ebc90d2f1a", on_delete: :cascade
+  add_foreign_key "board_filter_labels", "labels", name: "fk_91e18fdcee", on_delete: :cascade
+  add_foreign_key "board_filters", "boards", name: "fk_87e919b0eb", on_delete: :cascade
+  add_foreign_key "board_filters", "milestones", name: "fk_37d28eeebc", on_delete: :nullify
+  add_foreign_key "board_filters", "users", column: "assignee_id", name: "fk_e7893dfa6e", on_delete: :nullify
+  add_foreign_key "board_filters", "users", column: "author_id", name: "fk_b341da4d2b", on_delete: :nullify
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
