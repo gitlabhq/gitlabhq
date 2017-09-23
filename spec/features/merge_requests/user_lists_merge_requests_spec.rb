@@ -52,18 +52,10 @@ describe 'Projects > Merge requests > User lists merge requests' do
   end
 
   it 'sorts by newest' do
-    visit_merge_requests(project, sort: sort_value_recently_created)
+    visit_merge_requests(project, sort: sort_value_created_date)
 
     expect(first_merge_request).to include('fix')
     expect(last_merge_request).to include('merge-test')
-    expect(count_merge_requests).to eq(3)
-  end
-
-  it 'sorts by oldest' do
-    visit_merge_requests(project, sort: sort_value_oldest_created)
-
-    expect(first_merge_request).to include('merge-test')
-    expect(last_merge_request).to include('fix')
     expect(count_merge_requests).to eq(3)
   end
 
@@ -74,33 +66,19 @@ describe 'Projects > Merge requests > User lists merge requests' do
     expect(count_merge_requests).to eq(3)
   end
 
-  it 'sorts by oldest updated' do
-    visit_merge_requests(project, sort: sort_value_oldest_updated)
-
-    expect(first_merge_request).to include('markdown')
-    expect(count_merge_requests).to eq(3)
-  end
-
-  it 'sorts by milestone due soon' do
-    visit_merge_requests(project, sort: sort_value_milestone_soon)
+  it 'sorts by milestone' do
+    visit_merge_requests(project, sort: sort_value_milestone)
 
     expect(first_merge_request).to include('fix')
     expect(count_merge_requests).to eq(3)
   end
 
-  it 'sorts by milestone due later' do
-    visit_merge_requests(project, sort: sort_value_milestone_later)
-
-    expect(first_merge_request).to include('markdown')
-    expect(count_merge_requests).to eq(3)
-  end
-
-  it 'filters on one label and sorts by due soon' do
+  it 'filters on one label and sorts by due date' do
     label = create(:label, project: project)
     create(:label_link, label: label, target: @fix)
 
     visit_merge_requests(project, label_name: [label.name],
-                                  sort: sort_value_due_date_soon)
+                                  sort: sort_value_due_date)
 
     expect(first_merge_request).to include('fix')
     expect(count_merge_requests).to eq(1)
@@ -115,9 +93,9 @@ describe 'Projects > Merge requests > User lists merge requests' do
       create(:label_link, label: label2, target: @fix)
     end
 
-    it 'sorts by due soon' do
+    it 'sorts by due date' do
       visit_merge_requests(project, label_name: [label.name, label2.name],
-                                    sort: sort_value_due_date_soon)
+                                    sort: sort_value_due_date)
 
       expect(first_merge_request).to include('fix')
       expect(count_merge_requests).to eq(1)
@@ -127,7 +105,7 @@ describe 'Projects > Merge requests > User lists merge requests' do
       it 'sorts by due soon' do
         visit_merge_requests(project, label_name: [label.name, label2.name],
                                       assignee_id: user.id,
-                                      sort: sort_value_due_date_soon)
+                                      sort: sort_value_due_date)
 
         expect(first_merge_request).to include('fix')
         expect(count_merge_requests).to eq(1)
@@ -137,7 +115,7 @@ describe 'Projects > Merge requests > User lists merge requests' do
         visit project_merge_requests_path(project,
           label_name: [label.name, label2.name],
           assignee_id: user.id,
-          sort: sort_value_milestone_soon)
+          sort: sort_value_milestone)
 
         expect(first_merge_request).to include('fix')
       end
