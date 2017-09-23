@@ -715,20 +715,20 @@ ul.notes {
     svg path {
       fill: $gray-darkest;
     }
-  }
 
-  .btn.discussion-create-issue-btn {
-    margin-left: -4px;
-    border-radius: 0;
-    border-right: 0;
+    &.discussion-create-issue-btn {
+      margin-left: -4px;
+      border-radius: 0;
+      border-right: 0;
 
-    a {
-      padding: 0;
-      line-height: 0;
+      a {
+        padding: 0;
+        line-height: 0;
 
-      &:hover {
-        text-decoration: none;
-        border: 0;
+        &:hover {
+          text-decoration: none;
+          border: 0;
+        }
       }
     }
   }
