@@ -1,33 +1,35 @@
 export function getTargetSelection(event) {
-  const target = event.target;
-  const container = target.parentElement;
+  const container = event.currentTarget;
+  const image = container.querySelector('img');
   const x = event.offsetX ? (event.offsetX) : event.pageX - container.offsetLeft;
   const y = event.offsetY ? (event.offsetY) : event.pageY - container.offsetTop;
 
-  const width = target.width;
-  const height = target.height;
+  const width = image.width;
+  const height = image.height;
 
-  const actualWidth = target.naturalWidth;
-  const actualHeight = target.naturalHeight;
+  const actualWidth = image.naturalWidth;
+  const actualHeight = image.naturalHeight;
 
   const widthRatio = actualWidth / width;
   const heightRatio = actualHeight / height;
 
-  // TODO: x, y contains the top left selection of the cursor
-  // and does not equate to the pointy part of the comment image
-  // Need to determine if we need to do offset calculations
+  // Browser will include the frame as a clickable target,
+  // which would result in potential 1px out of bounds value
+  // This bound the coordinates to inside the frame
+  const normalizedX = Math.max(0, x) && Math.min(x, width);
+  const normalizedY = Math.max(0, y) && Math.min(y, height);
 
   return {
     browser: {
-      x,
-      y,
+      x: normalizedX,
+      y: normalizedY,
       width,
       height,
     },
     actual: {
       // Round x, y so that we don't need to deal with decimals
-      x: Math.round(x * widthRatio),
-      y: Math.round(y * heightRatio),
+      x: Math.round(normalizedX * widthRatio),
+      y: Math.round(normalizedY * heightRatio),
       width: actualWidth,
       height: actualHeight,
     },

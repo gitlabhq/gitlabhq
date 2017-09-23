@@ -1,7 +1,7 @@
 import * as imageDiffHelper from './image_diff_helper';
 
 export function showCommentIndicator(event) {
-  const container = event.target.parentElement;
+  const container = event.currentTarget;
   const commentIndicator = container.querySelector('.comment-indicator');
   const selection = imageDiffHelper.getTargetSelection(event);
 
