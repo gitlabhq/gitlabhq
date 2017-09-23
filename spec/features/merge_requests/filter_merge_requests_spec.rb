@@ -277,9 +277,9 @@ describe 'Filter merge requests' do
 
       expect_mr_list_count(2)
 
-      click_button 'Last created'
+      click_button 'Created date'
       page.within '.dropdown-menu-sort' do
-        click_link 'Oldest created'
+        click_link 'Priority'
       end
       wait_for_requests
 

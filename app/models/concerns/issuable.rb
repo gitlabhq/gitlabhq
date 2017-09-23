@@ -142,16 +142,18 @@ module Issuable
     end
 
     def sort(method, excluded_labels: [])
-      sorted = case method.to_s
-               when 'milestone_due_asc' then order_milestone_due_asc
-               when 'milestone_due_desc' then order_milestone_due_desc
-               when 'downvotes_desc' then order_downvotes_desc
-               when 'upvotes_desc' then order_upvotes_desc
-               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
-               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-               else
-                 order_by(method)
-               end
+      sorted =
+        case method.to_s
+        when 'downvotes_desc'     then order_downvotes_desc
+        when 'label_priority'     then order_labels_priority(excluded_labels: excluded_labels)
+        when 'milestone'          then order_milestone_due_asc
+        when 'milestone_due_asc'  then order_milestone_due_asc
+        when 'milestone_due_desc' then order_milestone_due_desc
+        when 'popularity'         then order_upvotes_desc
+        when 'priority'           then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'upvotes_desc'       then order_upvotes_desc
+        else order_by(method)
+        end
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
@@ -224,7 +226,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if %w(milestone_due_desc milestone_due_asc).include?(sort)
+      if %w(milestone_due_desc milestone_due_asc milestone).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
