@@ -1,0 +1,5 @@
+---
+title: Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration
+merge_request:
+author:
+type: fixed
