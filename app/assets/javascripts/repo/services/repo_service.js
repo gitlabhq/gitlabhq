@@ -43,6 +43,10 @@ const RepoService = {
     });
   },
 
+  getRecentCommits(url) {
+    return axios.get(url);
+  },
+
   getBase64Content(url = this.url) {
     const request = axios.get(url, {
       responseType: 'arraybuffer',
