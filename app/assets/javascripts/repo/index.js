@@ -35,6 +35,7 @@ function setInitialStore(data) {
   Store.projectUrl = data.projectUrl;
   Store.canCommit = data.canCommit;
   Store.onTopOfBranch = data.onTopOfBranch;
+  console.log('data',data)
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
 }

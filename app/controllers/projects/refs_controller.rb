@@ -58,7 +58,8 @@ class Projects::RefsController < Projects::ApplicationController
         last_commit = @repo.last_commit_for_path(@commit.id, file)
         {
           file_name: content.name,
-          commit: last_commit
+          commit: last_commit,
+          path: content.path
         }
       end
     end
@@ -67,6 +68,8 @@ class Projects::RefsController < Projects::ApplicationController
     if contents.size > offset
       @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
     end
+
+    puts @logs.inspect
 
     render json: @logs
   end

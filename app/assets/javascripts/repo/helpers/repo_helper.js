@@ -1,4 +1,5 @@
 /* global Flash */
+import Vue from 'vue';
 import Service from '../services/repo_service';
 import Store from '../stores/repo_store';
 import '../../flash';
@@ -130,8 +131,30 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getCommitData() {
-    console.log('get commit data');
+  getRecentCommits(url) {
+    // don't grab recent commits if we can't show them.
+    if(Store.openedFiles.length) return;
+    Service.getRecentCommits(url)
+    .then(data => {
+      const lastCommitFilesData = data.data;
+      Store.files.map((currentFile, i) => {
+        const [lastCommitFile] = lastCommitFilesData
+          .filter((lastCommitFile) => {
+            return lastCommitFile.path === currentFile.path;
+        });
+        currentFile.lastCommitUrl = 'http://gitlab.com/hahaha'
+        currentFile.lastCommitUpdate = '2016-06-09T11:25:47.000-06:00';
+        if (lastCommitFile && lastCommitFile.commit) {
+          console.log('lastCommitFile',lastCommitFile)
+          currentFile.lastCommitMessage = lastCommitFile.commit.message;
+          return currentFile;  
+        } else {
+          currentFile.lastCommitMessage = '';
+          return currentFile;
+        }
+      });
+      console.log('Store.files',Store.files);
+    });
   },
 
   getContent(treeOrFile) {
@@ -171,6 +194,7 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
+        RepoHelper.getRecentCommits(data.last_commit_path);
         if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
         file = RepoHelper.setDirectoryOpen(file);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
@@ -196,7 +220,6 @@ const RepoHelper = {
   serializeBlob(blob) {
     const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
     simpleBlob.loading = false;
-
     return simpleBlob;
   },
 
@@ -209,11 +232,12 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity) {
-    const { url, name, icon, last_commit } = entity;
+    const { url, name, icon, last_commit, path } = entity;
     const returnObj = {
       type,
       name,
       url,
+      path,
       icon: `fa-${icon}`,
       level: 0,
       loading: false,

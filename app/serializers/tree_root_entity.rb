@@ -4,6 +4,14 @@ class TreeRootEntity < Grape::Entity
 
   expose :path
 
+  expose :last_commit_path do |tree|
+    logs_tree_namespace_project_ref_path(
+      namespace_id: request.project.namespace.to_param, 
+      project_id: request.project.to_param,
+      id: request.ref,
+      path: tree.path)
+  end
+
   expose :trees, using: TreeEntity
   expose :blobs, using: BlobEntity
   expose :submodules, using: SubmoduleEntity
