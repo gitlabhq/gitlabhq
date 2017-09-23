@@ -4,8 +4,6 @@ module API
   class Commits < Grape::API
     include PaginationParams
 
-    COMMIT_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: API::NO_SLASH_URL_PART_REGEX)
-
     before { authorize! :download_code, user_project }
 
     params do
@@ -85,7 +83,7 @@ module API
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -99,7 +97,7 @@ module API
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/diff', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/diff', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -115,7 +113,7 @@ module API
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -132,7 +130,7 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      post ':id/repository/commits/:sha/cherry_pick', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         commit = user_project.commit(params[:sha])
@@ -169,7 +167,7 @@ module API
           requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
-      post ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
+      post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
