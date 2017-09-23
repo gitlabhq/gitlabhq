@@ -369,27 +369,6 @@
     }
   }
 
-  &.search-active form {
-    box-shadow: none;
-
-    .search-input {
-      color: $gl-text-color;
-      transition: color ease-in-out 0.15s;
-    }
-
-    .search-input::placeholder {
-      color: $gl-text-color-tertiary;
-    }
-
-    .search-input-wrap {
-      .search-icon,
-      .clear-icon {
-        color: $gl-text-color-tertiary;
-        transition: color ease-in-out 0.15s;
-      }
-    }
-  }
-
   .search-input {
     color: $white-light;
     background: none;
@@ -414,6 +393,23 @@
     form {
       background-color: rgba($indigo-200, .3);
       box-shadow: none;
+
+      .search-input {
+        color: $gl-text-color;
+        transition: color ease-in-out 0.15s;
+      }
+
+      .search-input::placeholder {
+        color: $gl-text-color-tertiary;
+      }
+
+      .search-input-wrap {
+        .search-icon,
+        .clear-icon {
+          color: $gl-text-color-tertiary;
+          transition: color ease-in-out 0.15s;
+        }
+      }
     }
 
     .location-badge {
