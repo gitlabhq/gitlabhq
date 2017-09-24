@@ -4,8 +4,6 @@ entry.
 
 ## 10.0.1 (2017-09-23)
 
-- No changes.
-- No changes.
 - [FIXED] Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration.
 
 ## 10.0.0 (2017-09-22)
