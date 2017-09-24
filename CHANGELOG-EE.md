@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 10.0.1 (2017-09-23)
 
 - No changes.
+- No changes.
 
 ## 10.0.0 (2017-09-22)
 
