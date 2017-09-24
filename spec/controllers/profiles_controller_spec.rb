@@ -17,7 +17,7 @@ describe ProfilesController do
 
     it "allows an email update without confirmation if existing verified email" do
       user = create(:user)
-      email = create(:email, :confirmed, user: user, email: 'john@gmail.com')
+      create(:email, :confirmed, user: user, email: 'john@gmail.com')
       sign_in(user)
 
       put :update,

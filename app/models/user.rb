@@ -223,7 +223,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  # see if the new email is already a verified secondary email 
+  # see if the new email is already a verified secondary email
   def check_for_verified_email
     skip_reconfirmation! if emails.find_by(email: self.email).try(:confirmed?)
   end

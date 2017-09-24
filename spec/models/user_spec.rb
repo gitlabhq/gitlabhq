@@ -359,11 +359,11 @@ describe User do
         expect(external_user.projects_limit).to be 0
       end
     end
-    
+
     describe '#check_for_verified_email' do
       let(:user)      { create(:user) }
-      let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user, ) }
-      
+      let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
+
       it 'allows a verfied secondary email to be used as the primary without needing reconfirmation' do
         user.update_attributes!(email: secondary.email)
         user.reload

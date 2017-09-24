@@ -26,7 +26,7 @@ describe Email do
       email.confirm
     end
   end
-  
+
   describe 'scopes' do
     let(:user) { create(:user) }
 
