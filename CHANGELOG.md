@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.1 (2017-09-23)
+
+- [FIXED] Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration.
+
 ## 10.0.0 (2017-09-22)
 
 - [SECURITY] Upgrade brace-expansion NPM package due to security issue. !13665 (Markus Koller)
