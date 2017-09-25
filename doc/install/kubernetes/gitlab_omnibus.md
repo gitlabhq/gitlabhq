@@ -155,6 +155,22 @@ should we done using `helm upgrade`:
 helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
 ```
 
+## Upgrading from CE to EE using the Helm Chart
+
+If you have installed the Community Edition using this chart, upgrading to Enterprise Edition is easy.
+
+If you are using a `values.yaml` file to specify the configuration options, edit the file and set `gitlab=ee`. If you would like to run a specific version of GitLab EE, set `gitlabEEImage` to be the desired GitLab [docker image](https://hub.docker.com/r/gitlab/gitlab-ee/tags/). Then you can use `helm upgrade` to update your GitLab instance to EE:
+
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+You can also upgrade and specify these options via the command line:
+
+```bash
+helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gitlab/gitlab-omnibus
+```
+
 ## Uninstalling GitLab using the Helm Chart
 
 To uninstall the GitLab Chart, run the following:
