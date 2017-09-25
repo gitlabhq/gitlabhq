@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 11:10+0100\n"
-"PO-Revision-Date: 2017-09-27 11:10+0100\n"
+"POT-Creation-Date: 2017-09-27 15:43+0100\n"
+"PO-Revision-Date: 2017-09-27 15:43+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -158,9 +158,6 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
-msgid "Board"
-msgstr ""
-
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -272,6 +269,9 @@ msgid "CI / CD"
 msgstr ""
 
 msgid "CI configuration"
+msgstr ""
+
+msgid "CICD|Jobs"
 msgstr ""
 
 msgid "Cancel"
@@ -691,10 +691,10 @@ msgstr ""
 msgid "Issue events"
 msgstr ""
 
-msgid "Issues"
+msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "Jobs"
+msgid "Issues"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
