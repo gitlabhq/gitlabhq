@@ -690,7 +690,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    if identities.loaded?
+      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+    else
+      identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    end
   end
 
   def ldap_identity

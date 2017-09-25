@@ -22,8 +22,8 @@ module Gitlab
         Gitlab::LDAP::Config.new(provider)
       end
 
-      def users(field, value, limit = nil)
-        options = user_options(field, value, limit)
+      def users(fields, value, limit = nil)
+        options = user_options(Array(fields), value, limit)
 
         entries = ldap_search(options).select do |entry|
           entry.respond_to? config.uid
@@ -72,8 +72,7 @@ module Gitlab
 
       private
 
-      def user_options(field, value, limit)
-        filter = nil
+      def user_options(fields, value, limit)
         options = {
           attributes: Gitlab::LDAP::Person.ldap_attributes(config).compact.uniq,
           base: config.base
@@ -81,16 +80,13 @@ module Gitlab
 
         options[:size] = limit if limit
 
-        case field.to_sym
-        when :dn
+        if fields.include?('dn')
+          raise ArgumentError, 'It is not currently possible to search the DN and other fields at the same time.' if fields.size > 1
+
           options[:base] = value
           options[:scope] = Net::LDAP::SearchScope_BaseObject
-        when :email
-          filter = config.attributes['email'].map do |field|
-            Net::LDAP::Filter.eq(field, value)
-          end.inject(:|)
         else
-          filter = Net::LDAP::Filter.eq(field, value)
+          filter = fields.map { |field| Net::LDAP::Filter.eq(field, value) }.inject(:|)
         end
 
         options.merge(filter: user_filter(filter))
