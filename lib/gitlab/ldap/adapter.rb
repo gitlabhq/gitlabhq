@@ -73,19 +73,27 @@ module Gitlab
       private
 
       def user_options(field, value, limit)
-        options = { attributes: Gitlab::LDAP::Person.ldap_attributes(config).compact.uniq }
+        filter = nil
+        options = {
+          attributes: Gitlab::LDAP::Person.ldap_attributes(config).compact.uniq,
+          base: config.base
+        }
+
         options[:size] = limit if limit
 
-        if field.to_sym == :dn
+        case field.to_sym
+        when :dn
           options[:base] = value
           options[:scope] = Net::LDAP::SearchScope_BaseObject
-          options[:filter] = user_filter
+        when :email
+          filter = config.attributes['email'].map do |field|
+            Net::LDAP::Filter.eq(field, value)
+          end.inject(:|)
         else
-          options[:base] = config.base
-          options[:filter] = user_filter(Net::LDAP::Filter.eq(field, value))
+          filter = Net::LDAP::Filter.eq(field, value)
         end
 
-        options
+        options.merge(filter: user_filter(filter))
       end
 
       def user_filter(filter = nil)

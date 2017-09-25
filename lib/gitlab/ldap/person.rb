@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def self.find_by_email(email, adapter)
-        Array(adapter.config.attributes['email']).find { |attr| adapter.user(attr, email) }
+        adapter.user('email', email)
       end
 
       def self.disabled_via_active_directory?(dn, adapter)
