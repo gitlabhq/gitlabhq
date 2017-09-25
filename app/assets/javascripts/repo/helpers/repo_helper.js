@@ -15,6 +15,8 @@ const RepoHelper = {
       html: '',
       mime_type: '',
       name: '',
+      lastCommitMessage: '',
+      lastCommitUrl: '',
       plain: '',
       size: 0,
       url: '',
@@ -142,14 +144,16 @@ const RepoHelper = {
           .filter((lastCommitFile) => {
             return lastCommitFile.path === currentFile.path;
         });
-        currentFile.lastCommitUrl = 'http://gitlab.com/hahaha'
-        currentFile.lastCommitUpdate = '2016-06-09T11:25:47.000-06:00';
+
         if (lastCommitFile && lastCommitFile.commit) {
-          console.log('lastCommitFile',lastCommitFile)
+          currentFile.lastCommitUrl = '';
           currentFile.lastCommitMessage = lastCommitFile.commit.message;
+          currentFile.lastCommitUpdate = lastCommitFile.commit.committed_date;
           return currentFile;  
         } else {
           currentFile.lastCommitMessage = '';
+          currentFile.lastCommitUpdate = '';
+          currentFile.lastCommitUrl = '';
           return currentFile;
         }
       });
