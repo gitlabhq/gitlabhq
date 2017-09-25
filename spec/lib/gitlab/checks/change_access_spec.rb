@@ -360,6 +360,65 @@ describe Gitlab::Checks::ChangeAccess do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
         end
       end
+
+      context 'GPG sign rules' do
+        let(:push_rule) { create(:push_rule, reject_unsigned_commits: true) }
+
+        it_behaves_like 'check ignored when push rule unlicensed'
+
+        context 'when it is only enabled in Global settings' do
+          before do
+            project.push_rule.update_column(:reject_unsigned_commits, nil)
+            create(:push_rule_sample, reject_unsigned_commits: true)
+          end
+
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'returns an error' do
+              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+            end
+          end
+        end
+
+        context 'when enabled in Project' do
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'returns an error' do
+              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+            end
+          end
+
+          context 'and commit is signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(true)
+            end
+
+            it 'does not return an error' do
+              expect { subject }.not_to raise_error
+            end
+          end
+        end
+
+        context 'when disabled in Project' do
+          let(:push_rule) { create(:push_rule, reject_unsigned_commits: false) }
+
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'does not return an error' do
+              expect { subject }.not_to raise_error
+            end
+          end
+        end
+      end
     end
 
     context 'file lock rules' do

@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe PushRule do
+  let(:global_push_rule) { create(:push_rule_sample) }
+  let(:push_rule) { create(:push_rule) }
+  let(:user) { create(:user) }
+  let(:project) { Projects::CreateService.new(user, { name: 'test', namespace: user.namespace }).execute }
+
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
   end
@@ -8,5 +13,115 @@ describe PushRule do
   describe "Validation" do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_numericality_of(:max_file_size).is_greater_than_or_equal_to(0).only_integer }
+  end
+
+  describe '#commit_validation?' do
+    let(:settings_with_global_default) { %i(reject_unsigned_commits) }
+
+    settings = {
+      commit_message_regex: 'regex',
+      branch_name_regex: 'regex',
+      author_email_regex: 'regex',
+      file_name_regex: 'regex',
+      reject_unsigned_commits: true,
+      member_check: true,
+      prevent_secrets: true,
+      max_file_size: 1
+    }
+
+    settings.each do |setting, value|
+      context "when #{setting} is enabled at global level" do
+        before do
+          global_push_rule.update_column(setting, value)
+        end
+
+        it "returns true at project level" do
+          rule = project.push_rule
+
+          if settings_with_global_default.include?(setting)
+            rule.update_column(setting, nil)
+          end
+
+          expect(rule.commit_validation?).to eq(true)
+        end
+      end
+    end
+  end
+
+  describe '#commit_signature_allowed?' do
+    let(:signed_commit) { double(has_signature?: true) }
+    let(:unsigned_commit) { double(has_signature?: false) }
+
+    context 'when enabled at a global level' do
+      before do
+        global_push_rule.update_attribute(:reject_unsigned_commits, true)
+      end
+
+      it 'returns false if commit is not signed' do
+        expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(false)
+      end
+
+      context 'and disabled at a Project level' do
+        it 'returns true if commit is not signed' do
+          push_rule.update_attribute(:reject_unsigned_commits, false)
+
+          expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(true)
+        end
+      end
+
+      context 'and unset at a Project level' do
+        it 'returns false if commit is not signed' do
+          push_rule.update_attribute(:reject_unsigned_commits, nil)
+
+          expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(false)
+        end
+      end
+    end
+
+    context 'when disabled at a global level' do
+      before do
+        global_push_rule.update_attribute(:reject_unsigned_commits, false)
+      end
+
+      it 'returns true if commit is not signed' do
+        expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(true)
+      end
+
+      context 'but enabled at a Project level' do
+        before do
+          push_rule.update_attribute(:reject_unsigned_commits, true)
+        end
+
+        it 'returns false if commit is not signed' do
+          expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(false)
+        end
+
+        it 'returns true if commit is signed' do
+          expect(push_rule.commit_signature_allowed?(signed_commit)).to eq(true)
+        end
+      end
+
+      context 'when user has enabled and disabled it at a project level' do
+        before do
+          # Let's test with the same boolean values that are sent through the form
+          push_rule.update_attribute(:reject_unsigned_commits, '1')
+          push_rule.update_attribute(:reject_unsigned_commits, '0')
+        end
+
+        context 'and it is enabled globally' do
+          before do
+            global_push_rule.update_attribute(:reject_unsigned_commits, true)
+          end
+
+          it 'returns false if commit is not signed' do
+            expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(false)
+          end
+
+          it 'returns true if commit is signed' do
+            expect(push_rule.commit_signature_allowed?(signed_commit)).to eq(true)
+          end
+        end
+      end
+    end
   end
 end

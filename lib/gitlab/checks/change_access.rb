@@ -196,6 +196,10 @@ module Gitlab
       # This method should return nil if no error found or a string if error.
       # In case of errors - all other checks will be canceled and push will be rejected.
       def check_commit(commit, push_rule)
+        unless push_rule.commit_signature_allowed?(commit)
+          return "Commit must be signed with a GPG key"
+        end
+
         unless push_rule.commit_message_allowed?(commit.safe_message)
           return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
         end
