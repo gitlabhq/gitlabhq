@@ -57,6 +57,23 @@ describe Geo::NodeStatusService do
       expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
     end
 
+    it 'alerts on bad SSL certficate' do
+      message = 'bad certificate'
+      allow(described_class).to receive(:get).and_raise(OpenSSL::SSL::SSLError.new(message))
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq(message)
+    end
+
+    it 'handles connection refused' do
+      allow(described_class).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq('Connection refused - bad connection')
+    end
+
     it 'returns meaningful error message when primary uses incorrect db key' do
       secondary # create it before mocking GeoNode#secret_access_key
 

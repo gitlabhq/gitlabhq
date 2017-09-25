@@ -41,7 +41,7 @@ module Geo
           end
         rescue OpenSSL::Cipher::CipherError
           ['Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.']
-        rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
+        rescue HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
           [e.message]
         end
 
