@@ -262,7 +262,7 @@ get the cluster up and running.
 Verify the nodes are all communicating:
 
 ```sh
-sudo consul members
+sudo /opt/gitlab/embedded/bin/consul members
 ```
 
 The output should be similar to:
