@@ -4,13 +4,17 @@ describe('sticky', () => {
   let el;
 
   beforeEach(() => {
-    document.body.innerHTML = `
+    document.body.innerHTML += `
       <div class="parent">
-        <div id="js-sticky" style="position: relative;"></div>
+        <div id="js-sticky"></div>
       </div>
     `;
 
     el = document.getElementById('js-sticky');
+  });
+
+  afterEach(() => {
+    el.parentNode.remove();
   });
 
   describe('when stuck', () => {
