@@ -8,13 +8,6 @@ class UploadsController < ApplicationController
 
   private
 
-  # We need to set html format for all upload urls, this is needed to be compatible
-  # with rails 4 behaviour.
-  def append_info_to_payload(payload)
-    request.format = 'html' if params[:action] == 'show'
-    super
-  end
-
   def find_model
     return nil unless params[:id]
 

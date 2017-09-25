@@ -1,4 +1,12 @@
 module UploadsActions
+  # We need to set html format for all upload urls, this is needed to be compatible
+  # with Rails 4 behaviour.
+  # Due to some reason `defaults: {format: 'html'}` in routes does not work.
+  def append_info_to_payload(payload)
+    request.format = 'html' if params[:action] == 'show'
+    super
+  end
+
   def create
     link_to_file = UploadService.new(model, params[:file], uploader_class).execute
 
