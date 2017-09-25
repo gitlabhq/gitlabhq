@@ -2,8 +2,11 @@ class LdapGroupLink < ActiveRecord::Base
   include Gitlab::Access
   belongs_to :group
 
-  validates :cn, :group_access, :group_id, presence: true
-  validates :cn, uniqueness: { scope: [:group_id, :provider] }
+  validates :cn, :group_access, :group_id, presence: true, unless: :filter
+  validates :cn, uniqueness: { scope: [:group_id, :provider] }, unless: :filter
+  validates :filter, :group_access, :group_id, presence: true, unless: :cn
+  validates :filter, uniqueness: { scope: [:group_id, :provider] }, unless: :cn
+  validates :filter, ldap_filter: true
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }
   validates :provider, presence: true
 
