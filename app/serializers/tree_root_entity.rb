@@ -8,7 +8,8 @@ class TreeRootEntity < Grape::Entity
     logs_tree_namespace_project_ref_path(
       namespace_id: request.project.namespace.to_param, 
       project_id: request.project.to_param,
-      id: request.ref)
+      id: request.ref,
+      path: tree.path)
   end
 
   expose :trees, using: TreeEntity
