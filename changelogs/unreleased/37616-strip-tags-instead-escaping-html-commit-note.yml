@@ -1,0 +1,5 @@
+---
+title: Strip tags instead escaping on Commit#title note
+merge_request:
+author:
+type: fixed
