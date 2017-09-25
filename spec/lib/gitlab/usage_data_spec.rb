@@ -43,11 +43,8 @@ describe Gitlab::UsageData do
         container_registry
         gitlab_pages
         gitlab_shared_runners
-<<<<<<< HEAD
         elasticsearch
         geo
-=======
->>>>>>> ce-com/master
         git
         database
       ))
@@ -130,7 +127,6 @@ describe Gitlab::UsageData do
     end
   end
 
-<<<<<<< HEAD
   describe '#features_usage_data_ee' do
     subject { described_class.features_usage_data_ee }
 
@@ -140,8 +136,6 @@ describe Gitlab::UsageData do
     end
   end
 
-=======
->>>>>>> ce-com/master
   describe '#components_usage_data' do
     subject { described_class.components_usage_data }
 
