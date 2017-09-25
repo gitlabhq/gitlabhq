@@ -139,6 +139,10 @@ module Ci
       !shared?
     end
 
+    def group?
+      runner_groups.any?
+    end
+
     def can_pick?(build)
       return false if self.ref_protected? && !build.protected?
 

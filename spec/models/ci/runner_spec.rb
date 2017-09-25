@@ -642,4 +642,28 @@ describe Ci::Runner do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
     end
   end
+
+  describe 'group?' do
+    it 'returns false when the runner is a project runner' do
+      project = create :project
+      runner = create(:ci_runner, description: 'Project runner').tap do |r|
+        create :ci_runner_project, runner: r, project: project
+      end
+
+      expect(runner.group?).to be false
+    end
+
+    it 'returns false when the runner is a shared runner' do
+      runner = create :ci_runner, :shared, description: 'Shared runner'
+
+      expect(runner.group?).to be false
+    end
+
+    it 'returns true when the runner is assigned to a group' do
+      group = create :group
+      runner = create :ci_runner, description: 'Group runner', groups: [group]
+
+      expect(runner.group?).to be true
+    end
+  end
 end
