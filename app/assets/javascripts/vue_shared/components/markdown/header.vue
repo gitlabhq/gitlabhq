@@ -3,10 +3,20 @@
   import toolbarButton from './toolbar_button.vue';
 
   export default {
+    data() {
+      return {
+        floatingModeEnabled: false,
+      };
+    },
     props: {
       previewMarkdown: {
         type: Boolean,
         required: true,
+      },
+      enabledFloatingMode: {
+        type: Boolean,
+        required: false,
+        default: false,
       },
     },
     directives: {
@@ -26,7 +36,9 @@
         this.$emit('toggle-markdown');
       },
       toggleFloatingMode() {
+        this.floatingModeEnabled = !this.floatingModeEnabled;
         this.$refs.floatingModeBtn.blur();
+
         this.$emit('toggleFloatingMode');
       },
     },
@@ -98,11 +110,13 @@
         </div>
         <div class="toolbar-group">
           <button
+            v-if="enabledFloatingMode"
             v-tooltip
             data-container="body"
             aria-label="Toggle floating mode"
             title="Toggle floating mode"
-            class="toolbar-btn"
+            class="toolbar-btn hidden-xs"
+            :class="{ active: floatingModeEnabled }"
             type="button"
             ref="floatingModeBtn"
             @click="toggleFloatingMode"

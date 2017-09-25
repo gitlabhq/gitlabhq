@@ -829,10 +829,12 @@ ul.notes {
 }
 
 .is-floating {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 0;
-  margin-top: -1px;
-  background-color: $white-light;
-  border-top: 1px solid $white-normal;
+  @media (min-width: $screen-sm-min) {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    margin-top: -1px;
+    background-color: $white-light;
+    border-top: 1px solid $white-normal;
+  }
 }

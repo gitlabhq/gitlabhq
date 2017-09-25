@@ -23,6 +23,11 @@
         type: String,
         required: false,
       },
+      enabledFloatingMode: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       toggleFloatingMode: {
         type: Function,
         required: false,
@@ -108,6 +113,7 @@
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
+      :enabled-floating-mode="enabledFloatingMode"
       @toggle-markdown="toggleMarkdownPreview"
       @toggleFloatingMode="toggleFloatingMode"
     />

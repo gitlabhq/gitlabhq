@@ -145,7 +145,8 @@
   outline: 0;
 
   &:hover,
-  &:focus {
+  &:focus,
+  &.active {
     color: $gl-link-color;
   }
 }

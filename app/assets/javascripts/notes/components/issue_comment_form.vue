@@ -267,6 +267,7 @@
                 :add-spacing-classes="false"
                 :is-confidential-issue="isConfidentialIssue"
                 :toggle-floating-mode="toggleFloatingMode"
+                :enabled-floating-mode="true"
                 ref="markdownField">
                 <textarea
                   id="note-body"
