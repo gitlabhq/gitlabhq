@@ -57,8 +57,8 @@ module Gitlab
 
         length = [sha1.length, sha2.length].min
 
-        # If either of the shas is below 7 characters in length, we cannot be sure
-        # if they actually refer to the same commit because of hash collision.
+        # If either of the shas is below the minimum length, we cannot be sure
+        # that they actually refer to the same commit because of hash collision.
         return false if length < Commit::MIN_SHA_LENGTH
 
         sha1[0, length] == sha2[0, length]

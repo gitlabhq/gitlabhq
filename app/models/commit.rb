@@ -25,7 +25,6 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
-  # The SHA can be between 7 and 40 hex characters.
   MIN_SHA_LENGTH = 7
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
@@ -217,7 +216,6 @@ class Commit
     @raw.respond_to?(method, include_private) || super
   end
 
-  # Truncate sha to 7 characters
   def short_id
     @raw.short_id(MIN_SHA_LENGTH)
   end
