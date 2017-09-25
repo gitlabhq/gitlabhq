@@ -162,7 +162,6 @@ module SortingHelper
 
   def sort_title_upvotes
     s_('SortOptions|Most popular')
-<<<<<<< HEAD
   end
 
   def sort_title_more_weight
@@ -171,8 +170,6 @@ module SortingHelper
 
   def sort_title_less_weight
     'Less weight'
-=======
->>>>>>> ce-com/master
   end
 
   def sort_title_last_joined
