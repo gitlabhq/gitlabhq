@@ -51,11 +51,11 @@
       },
 
       toggleRepo() {
-        if (this.isOpen === false) {
+        this.isOpen = !this.isOpen;
+        if (this.isOpen) {
           this.fetchList({ repo: this.repo })
           .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
         }
-        this.isOpen = !this.isOpen;
       },
 
       handleDeleteRepository() {
