@@ -1568,12 +1568,14 @@ ActiveRecord::Schema.define(version: 20180418053107) do
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
     t.boolean "pages_https_only", default: true
+    t.boolean "group_runners_enabled", default: true, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
   add_index "projects", ["created_at"], name: "index_projects_on_created_at", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "projects", ["group_runners_enabled"], name: "index_projects_on_group_runners_enabled", using: :btree
   add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
