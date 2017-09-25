@@ -57,6 +57,7 @@ describe Project do
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:active_runners) }

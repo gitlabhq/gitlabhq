@@ -18,6 +18,7 @@ describe Ci::Build do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:deployments) }
+  it { is_expected.to have_many(:trace_sections)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -316,6 +317,28 @@ describe Ci::Build do
       it "saves the correct extracted coverage value" do
         expect(build.update_coverage).to be(true)
         expect(build.coverage).to eq(98.29)
+      end
+    end
+  end
+
+  describe '#parse_trace_sections!' do
+    context "when the build trace has sections markers," do
+      before do
+        build.trace.set(File.read(expand_fixture_path('trace/trace_with_sections')))
+      end
+
+      it "saves the correct extracted sections" do
+        expect(build.trace_sections).to be_empty
+        expect(build.parse_trace_sections!).to be(true)
+        expect(build.trace_sections).not_to be_empty
+      end
+
+      it "fails if trace_sections isn't empty" do
+        expect(build.parse_trace_sections!).to be(true)
+        expect(build.trace_sections).not_to be_empty
+
+        expect(build.parse_trace_sections!).to be(false)
+        expect(build.trace_sections).not_to be_empty
       end
     end
   end

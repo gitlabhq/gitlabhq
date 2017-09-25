@@ -11,6 +11,7 @@ module Ci
 
     has_many :deployments, as: :deployable
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -263,6 +264,27 @@ module Ci
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
       update_attributes(coverage: coverage) if coverage.present?
+    end
+
+    def parse_trace_sections!
+      return false unless trace_sections.empty?
+
+      sections = trace.extract_sections.map do |attr|
+        name = attr.delete(:name)
+        name_record = begin
+                        project.build_trace_section_names.find_or_create_by!(name: name)
+                      rescue ActiveRecord::RecordInvalid
+                        project.build_trace_section_names.find_by!(name: name)
+                      end
+
+        attr.merge(
+          build_id: self.id,
+          project_id: self.project_id,
+          section_name_id: name_record.id)
+      end
+
+      Gitlab::Database.bulk_insert(Ci::BuildTraceSection.table_name, sections)
+      true
     end
 
     def trace

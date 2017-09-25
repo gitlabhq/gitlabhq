@@ -266,6 +266,7 @@ project:
 - container_repositories
 - uploads
 - members_and_requesters
+- build_trace_section_names
 award_emoji:
 - awardable
 - user
