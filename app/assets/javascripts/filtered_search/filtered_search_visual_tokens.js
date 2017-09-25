@@ -123,8 +123,8 @@ class FilteredSearchVisualTokens {
         /* eslint-disable no-param-reassign */
         tokenValueContainer.dataset.originalValue = tokenValue;
         tokenValueElement.innerHTML = `
-          <img class="avatar s20" src="${user.avatar_url}" alt="${user.name}'s avatar">
-          ${user.name}
+          <img class="avatar s20" src="${user.avatar_url}" alt="">
+          ${_.escape(user.name)}
         `;
         /* eslint-enable no-param-reassign */
       })
