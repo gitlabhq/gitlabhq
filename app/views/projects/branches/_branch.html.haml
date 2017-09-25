@@ -19,15 +19,12 @@
     - if protected_branch?(@project, branch)
       %span.label.label-success
         = s_('Branches|protected')
-<<<<<<< HEAD
 
     - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
       %span.label.label-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
         = icon('exclamation-triangle')
         = s_('Branches|diverged from upstream')
 
-=======
->>>>>>> ce-com/master
     .controls.hidden-xs<
       - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
