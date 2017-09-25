@@ -14,7 +14,6 @@ export default {
   data() {
     return {
       removeSourceBranch: this.mr.shouldRemoveSourceBranch,
-      canRemoveSourceBranch: this.mr.canRemoveSourceBranch,
       mergeWhenBuildSucceeds: false,
       useCommitMessageWithDescription: false,
       setToMergeWhenPipelineSucceeds: false,
@@ -271,7 +270,7 @@ export default {
           </span>
           <div class="media-body-wrap space-children">
             <template v-if="shouldShowMergeControls()">
-              <label v-if="canRemoveSourceBranch">
+              <label v-if="mr.canRemoveSourceBranch">
                 <input
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
