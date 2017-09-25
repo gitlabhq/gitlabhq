@@ -1,0 +1,17 @@
+Create a new cluster
+
+%br
+
+- if @authorize_url
+  I have not authenticated yet. I can authenticate from
+  = link_to("authenticate from here", @authorize_url)
+- else
+  I have already authenticated.
+  %br
+  Avaiable GCP project lists
+  %br
+  Avaiable zones
+  %br
+  = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, param1: 'value1', param2: 'value2'), method: :post
+  = link_to "Use existing kubernets cluster", namespace_project_clusters_path(@project.namespace, @project, param1: 'value1', param2: 'value2'), method: :post
+

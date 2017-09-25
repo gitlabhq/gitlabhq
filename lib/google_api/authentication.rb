@@ -1,0 +1,51 @@
+module GoogleApi
+  class Authentication
+    attr_reader :access_token, :redirect_uri, :state
+
+    def initialize(access_token, redirect_uri, state: nil)
+      @access_token = access_token
+      @redirect_uri = redirect_uri
+      @state = state
+    end
+
+    def client
+      return @client if defined?(@client)
+
+      unless config
+        raise 'OAuth configuration for google_oauth2 missing.'
+      end
+
+      @client = ::OAuth2::Client.new(
+        config.app_id,
+        config.app_secret,
+        site: 'https://accounts.google.com',
+        token_url: '/o/oauth2/token', 
+        authorize_url: '/o/oauth2/auth'
+      )
+    end
+
+    def authorize_url
+      client.auth_code.authorize_url(
+        redirect_uri: redirect_uri,
+        scope: scope,
+        state: state # This is used for arbitary redirection
+      )
+    end
+
+    def get_token(code)
+      client.auth_code.get_token(code, redirect_uri: redirect_uri).token
+    end
+
+    protected
+
+    def scope
+      raise NotImplementedError
+    end
+
+    private
+
+    def config
+      Gitlab.config.omniauth.providers.find { |provider| provider.name == "google_oauth2" }
+    end
+  end
+end

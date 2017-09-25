@@ -171,6 +171,7 @@ class Project < ActiveRecord::Base
 
   has_many :commit_statuses
   has_many :pipelines, class_name: 'Ci::Pipeline'
+  has_many :clusters, class_name: 'Ci::Cluster'
 
   # Ci::Build objects store data on the file system such as artifact files and
   # build traces. Currently there's no efficient way of removing this data in

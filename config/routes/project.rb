@@ -183,6 +183,13 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :clusters, except: [:show, :destroy] do
+        collection do
+          get :gcp_projects # TODO: This doesn't belong here. Grape or under user. Hint. Serilizer
+          get :gke_zones
+        end
+      end
+
       resources :environments, except: [:destroy] do
         member do
           post :stop
