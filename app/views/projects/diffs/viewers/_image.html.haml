@@ -4,10 +4,9 @@
 - blob_raw_path = diff_file_blob_raw_path(diff_file)
 - old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
 
-/ For test test purposes
-- image_point = Gitlab::Diff::ImagePoint.new(300, 300, 0, 0) # Point on top left corner
+- image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil) # Point on top left corner
 - position_code = diff_file.line_code(image_point)
-- notes = @grouped_diff_discussions[diff_file.file_identifier]
+- discussions = @grouped_diff_discussions[diff_file.file_identifier]
 
 - if diff_file.new_file? || diff_file.deleted_file?
   .image{ data: diff_view_data }

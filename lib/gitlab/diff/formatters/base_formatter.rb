@@ -28,7 +28,7 @@ module Gitlab
           @start_sha = attrs[:start_sha]
           @head_sha  = attrs[:head_sha]
 
-          # Make sure older positions have text as type
+          # Make sure older serialized positions have text as type
           @position_type = attrs[:position_type] || "text"
         end
 

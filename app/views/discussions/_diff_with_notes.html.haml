@@ -10,7 +10,6 @@
     %table
       - if diff_file.text?
         - discussions = { discussion.original_line_code => [discussion] }
-
         = render partial: "projects/diffs/line",
           collection: discussion.truncated_diff_lines,
           as: :line,

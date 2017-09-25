@@ -27,7 +27,7 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(line, file_type=:text)
+      def position(line, file_type = :text)
         return unless diff_refs
 
         Position.new(
