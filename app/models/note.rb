@@ -134,14 +134,18 @@ class Note < ActiveRecord::Base
       Discussion.build(notes)
     end
 
+    # Group diff discussions by line code or Diff::File#file_identifier.
+    # It is not needed to group by line code when comment is
+    # on an image.
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
-        line_code = discussion.line_code_in_diffs(diff_refs)
+        group_key = discussion.line_code_in_diffs(diff_refs)
+        group_key ||= discussion.file_identifier
 
-        if line_code
-          discussions = groups[line_code] ||= []
+        if group_key
+          discussions = groups[group_key] ||= []
           discussions << discussion
         end
       end

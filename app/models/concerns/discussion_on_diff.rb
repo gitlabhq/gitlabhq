@@ -16,6 +16,7 @@ module DiscussionOnDiff
               to: :first_note
 
     delegate  :file_path,
+              :file_identifier,
               :blob,
               :highlighted_diff_lines,
               :diff_lines,
