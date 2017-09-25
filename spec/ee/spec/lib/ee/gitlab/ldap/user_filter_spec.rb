@@ -11,8 +11,8 @@ describe EE::Gitlab::LDAP::UserFilter do
 
   before do
     stub_ldap_config(
-        base: 'dc=example,dc=com',
-        active_directory: false
+      base: 'dc=example,dc=com',
+      active_directory: false
     )
   end
 
@@ -28,7 +28,7 @@ describe EE::Gitlab::LDAP::UserFilter do
     it 'errors out with an invalid filter' do
       filter = ')('
 
-      expect{ described_class.filter(fake_proxy, filter) }.to raise_error(Net::LDAP::FilterSyntaxInvalidError, 'Invalid filter syntax.')
+      expect { described_class.filter(fake_proxy, filter) }.to raise_error(Net::LDAP::FilterSyntaxInvalidError, 'Invalid filter syntax.')
     end
   end
 end
