@@ -44,7 +44,7 @@ export default {
       Store.submitCommitsLoading = true;
       Service.commitFiles(payload)
         .then(this.resetCommitState)
-        .catch(() => Flash('An error occured while committing your changes'));
+        .catch(() => Flash('An error occurred while committing your changes'));
     },
 
     resetCommitState() {
