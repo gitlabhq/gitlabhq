@@ -74,7 +74,7 @@ module EE
             access_levels = AccessLevels.new
             # Only iterate over group links for the current provider
             group.ldap_group_links.with_provider(provider).each do |group_link|
-              if member_dns = dns_for_group_cn(group_link.cn)
+              if member_dns = get_member_dns(group_link)
                 access_levels.set(member_dns, to: group_link.group_access)
                 logger.debug do
                   "Resolved '#{group.name}' group member access: #{access_levels.to_hash}"
@@ -87,6 +87,10 @@ module EE
           end
 
           private
+
+          def get_member_dns(group_link)
+            group_link.cn ? dns_for_group_cn(group_link.cn) : UserFilter.filter(@proxy, group_link.filter)
+          end
 
           def dns_for_group_cn(group_cn)
             proxy.dns_for_group_cn(group_cn)

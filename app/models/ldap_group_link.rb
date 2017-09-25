@@ -2,7 +2,7 @@ class LdapGroupLink < ActiveRecord::Base
   include Gitlab::Access
   belongs_to :group
 
-  NIL_ATTRIBUTES = %w[cn filter].freeze
+  BLANK_ATTRIBUTES = %w[cn filter].freeze
 
   validates :cn, :group_access, :group_id, presence: true, unless: :filter
   validates :cn, uniqueness: { scope: [:group_id, :provider] }, unless: :filter
@@ -14,7 +14,7 @@ class LdapGroupLink < ActiveRecord::Base
 
   scope :with_provider, ->(provider) { where(provider: provider) }
 
-  before_save :update_blank_attributes
+  before_save :nullify_blank_attributes
 
   def access_field
     group_access
@@ -37,7 +37,7 @@ class LdapGroupLink < ActiveRecord::Base
 
   private
 
-  def update_blank_attributes
-    NIL_ATTRIBUTES.each { |attr| self[attr] = nil if self[attr].blank? }
+  def nullify_blank_attributes
+    BLANK_ATTRIBUTES.each { |attr| self[attr] = nil if self[attr].blank? }
   end
 end
