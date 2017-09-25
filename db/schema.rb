@@ -270,16 +270,20 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   create_table "ci_clusters", force: :cascade do |t|
     t.integer "project_id"
     t.integer "owner_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "service_id"
     t.boolean "enabled", default: true
+    t.integer "creation_type"
+    t.string "project_namespace"
     t.string "end_point"
     t.text "ca_cert"
     t.string "token"
     t.string "username"
     t.string "password"
-    t.string "project_namespace"
-    t.integer "creation_type"
+    t.string "gcp_project_id"
+    t.string "cluster_zone"
+    t.string "cluster_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ci_group_variables", force: :cascade do |t|
@@ -1701,6 +1705,7 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_clusters", "projects"
+  add_foreign_key "ci_clusters", "services"
   add_foreign_key "ci_clusters", "users", column: "owner_id"
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade

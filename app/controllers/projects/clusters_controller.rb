@@ -22,7 +22,7 @@ class Projects::ClustersController < Projects::ApplicationController
   # - user.authenticate_for_gcp!
   # - Create this module which can be used from view
   def new
-    unless session[access_token_key]
+    unless session[GoogleApi::CloudPlatform::Client.token_in_session]
       @authorize_url = api_client.authorize_url
     end
   end
@@ -33,6 +33,48 @@ class Projects::ClustersController < Projects::ApplicationController
   # - If create manually, save in db (Prob, Project > Setting)
   # - Dry up with Service
   def create
+    if params['creation_type'] == 'on_gke'
+      results = api_client.projects_zones_clusters_create(
+        params['gcp_project_id'],
+        params['cluster_zone'],
+        params['cluster_name'],
+        params['cluster_size']
+      )
+
+      # TODO: How to create
+      project.kubernetes_service.save(
+        end_point: results['end_point'],
+        ca_cert: results['ca_cert'],
+        token: nil,
+        username: results['username'],
+        password: results['password'],
+        project_namespace: params['project_namespace']
+      )
+
+      project.clusters.create(
+        creation_type: params['creation_type'],
+        gcp_project_id: params['gcp_project_id'],
+        cluster_zone: params['cluster_zone'],
+        cluster_name: params['cluster_name'],
+        kubernetes_service: project.kubernetes_service
+      )
+    elsif params['creation_type'] == 'manual'
+      # TODO: Transaction
+      project.kubernetes_service.save(
+        end_point: params['end_point'],
+        ca_cert: params['ca_cert'],
+        token: params['token'],
+        username: params['username'],
+        password: params['password'],
+        project_namespace: params['project_namespace']
+      )
+
+      project.clusters.create(
+        creation_type: params['creation_type'],
+        kubernetes_service: project.kubernetes_service
+      )
+    end
+
     redirect_to action: 'index'
   end
 
@@ -42,7 +84,7 @@ class Projects::ClustersController < Projects::ApplicationController
   # GKE params are   on-off swtich
   # Manul params are on-off swtich, Endpoint, CACert, k8s Token, Proj namespace.
   def edit
-    unless session[access_token_key]
+    unless session[GoogleApi::CloudPlatform::Client.token_in_session]
       @authorize_url = api_client.authorize_url
     end
   end
@@ -82,21 +124,16 @@ class Projects::ClustersController < Projects::ApplicationController
     @cluster ||= project.clusters.first
   end
 
-  def cluster_params
-    params.require(:cluster).permit(:aaa)
-  end
+  # def cluster_params
+  #   params.require(:cluster).permit(:aaa)
+  # end
 
   def api_client
     @api_client ||=
       GoogleApi::CloudPlatform::Client.new(
-        session[access_token_key],
+        session[GoogleApi::CloudPlatform::Client.token_in_session],
         callback_google_api_authorizations_url,
         state: namespace_project_clusters_url.to_s
       )
-  end
-
-  def access_token_key
-    # :"#{api_client.scope}_access_token"
-    :"hoge_access_token" # TODO: 
   end
 end

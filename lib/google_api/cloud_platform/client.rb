@@ -2,6 +2,13 @@ module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Authentication
       # Google::Apis::ContainerV1::ContainerService.new
+
+      class << self
+        def token_in_session
+          :cloud_platform_access_token
+        end
+      end
+
       def scope
         'https://www.googleapis.com/auth/cloud-platform'
       end
@@ -16,8 +23,16 @@ module GoogleApi
         response
       end
 
-      def projects_zones_clusters_create
-        # TODO
+      def projects_zones_clusters_create(gcp_project_id, cluster_zone, cluster_name, cluster_size)
+        # TODO: Google::Apis::ContainerV1::ContainerService.new
+
+        # TODO: Debug
+        {
+          'end_point' => '111.111.111.111',
+          'ca_cert' => 'XXXXXXXXXXXXXXXXXX',
+          'username' => 'AAA',
+          'password' => 'BBB'
+        }
       end
     end
   end

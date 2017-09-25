@@ -12,6 +12,6 @@ Create a new cluster
   %br
   Avaiable zones
   %br
-  = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, param1: 'value1', param2: 'value2'), method: :post
-  = link_to "Use existing kubernets cluster", namespace_project_clusters_path(@project.namespace, @project, param1: 'value1', param2: 'value2'), method: :post
-
+  = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, creation_type: 'on_gke', cluster_name: 'new-cluster-shinya', gcp_project_id: 'gitlab-internal', cluster_zone: 'gitlab-internal', cluster_size: 'gitlab-internal', project_namespace: 'aaa'), method: :post
+  %br
+  = link_to "Use existing kubernets cluster", namespace_project_clusters_path(@project.namespace, @project, creation_type: 'manual', end_point: 'xxx.xxx.xxx.xxx', ca_cert: 'xxx...xxx', token: 'xxx', project_namespace: 'aaa'), method: :post
