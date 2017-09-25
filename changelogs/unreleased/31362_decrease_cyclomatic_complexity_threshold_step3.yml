@@ -1,5 +1,0 @@
----
-title: Decrease Cyclomatic Complexity threshold to 14
-merge_request: 13972
-author: Maxim Rydkin
-type: other

@@ -28,7 +28,7 @@ class PersonalAccessToken < ActiveRecord::Base
   protected
 
   def validate_scopes
-    unless revoked || scopes.all? { |scope| Gitlab::Auth::AVAILABLE_SCOPES.include?(scope.to_sym) }
+    unless revoked || scopes.all? { |scope| Gitlab::Auth.available_scopes.include?(scope.to_sym) }
       errors.add :scopes, "can only contain available scopes"
     end
   end

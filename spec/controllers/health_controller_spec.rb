@@ -10,6 +10,7 @@ describe HealthController do
 
   before do
     allow(Settings.monitoring).to receive(:ip_whitelist).and_return([whitelisted_ip])
+    stub_storage_settings({}) # Hide the broken storage
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 

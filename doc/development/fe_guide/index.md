@@ -98,6 +98,11 @@ Vue specific design patterns and practices.
 
 ---
 
+## [Icons](icons.md)
+How we use SVG for our Icons.
+
+---
+
 ## Style Guides
 
 ### [JavaScript Style Guide](style_guide_js.md)

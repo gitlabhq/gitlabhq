@@ -9,3 +9,27 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.svg-content {
+  text-align: center;
+  padding: $gl-padding;
+
+  svg,
+  img {
+    max-width: 425px;
+    width: 100%;
+  }
+}
+
+@mixin svg-size($size) {
+  width: $size;
+  height: $size;
+}
+
+svg {
+  &.s16 { @include svg-size(16px); }
+  &.s24 { @include svg-size(24px); }
+  &.s32 { @include svg-size(32px); }
+  &.s48 { @include svg-size(48px); }
+  &.s72 { @include svg-size(72px); }
+}

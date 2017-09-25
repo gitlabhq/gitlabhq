@@ -19,6 +19,7 @@ module Gitlab
       InvalidRef = Class.new(StandardError)
       GitError = Class.new(StandardError)
       DeleteBranchError = Class.new(StandardError)
+      CreateTreeError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -474,7 +475,15 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
+        iterator = gitaly_migrate(:diff_between) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
+          else
+            diff_patches(from, to, options, *paths)
+          end
+        end
+
+        Gitlab::Git::DiffCollection.new(iterator, options)
       end
 
       # Returns a RefName for a given SHA
@@ -489,7 +498,7 @@ module Gitlab
 
             # Not found -> ["", 0]
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            Gitlab::Popen.popen(args, @path).first.split.last
+            popen(args, @path).first.split.last
           end
         end
       end
@@ -684,6 +693,88 @@ module Gitlab
         nil
       end
 
+      def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          revert_tree_id = check_revert_content(commit, start_commit.sha)
+          raise CreateTreeError unless revert_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: committer,
+                        committer: committer,
+                        tree: revert_tree_id,
+                        parents: [start_commit.sha])
+        end
+      end
+
+      def check_revert_content(target_commit, source_sha)
+        args = [target_commit.sha, source_sha]
+        args << { mainline: 1 } if target_commit.merge_commit?
+
+        revert_index = rugged.revert_commit(*args)
+        return false if revert_index.conflicts?
+
+        tree_id = revert_index.write_tree(rugged)
+        return false unless diff_exists?(source_sha, tree_id)
+
+        tree_id
+      end
+
+      def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
+          raise CreateTreeError unless cherry_pick_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: {
+                            email: commit.author_email,
+                            name: commit.author_name,
+                            time: commit.authored_date
+                        },
+                        committer: committer,
+                        tree: cherry_pick_tree_id,
+                        parents: [start_commit.sha])
+        end
+      end
+
+      def check_cherry_pick_content(target_commit, source_sha)
+        args = [target_commit.sha, source_sha]
+        args << 1 if target_commit.merge_commit?
+
+        cherry_pick_index = rugged.cherrypick_commit(*args)
+        return false if cherry_pick_index.conflicts?
+
+        tree_id = cherry_pick_index.write_tree(rugged)
+        return false unless diff_exists?(source_sha, tree_id)
+
+        tree_id
+      end
+
+      def diff_exists?(sha1, sha2)
+        rugged.diff(sha1, sha2).size > 0
+      end
+
+      def user_to_committer(user)
+        Gitlab::Git.committer_hash(email: user.email, name: user.name)
+      end
+
       def create_commit(params = {})
         params[:message].delete!("\r")
 
@@ -709,9 +800,7 @@ module Gitlab
         end
 
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        message, status = Gitlab::Popen.popen(
-          command,
-          path) do |stdin|
+        message, status = popen(command, path) do |stdin|
           stdin.write(instructions.join)
         end
 
@@ -835,7 +924,7 @@ module Gitlab
       end
 
       def with_repo_branch_commit(start_repository, start_branch_name)
-        raise "expected Gitlab::Git::Repository, got #{start_repository}" unless start_repository.is_a?(Gitlab::Git::Repository)
+        Gitlab::Git.check_namespace!(start_repository)
 
         return yield nil if start_repository.empty_repo?
 
@@ -950,8 +1039,8 @@ module Gitlab
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
       end
 
-      def gitaly_migrate(method, &block)
-        Gitlab::GitalyClient.migrate(method, &block)
+      def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
+        Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
       rescue GRPC::BadStatus => e
@@ -962,14 +1051,17 @@ module Gitlab
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
       def branches_filter(filter: nil, sort_by: nil)
-        branches = rugged.branches.each(filter).map do |rugged_ref|
-          begin
-            target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-            Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-          rescue Rugged::ReferenceError
-            # Omit invalid branch
-          end
-        end.compact
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37464
+        branches = Gitlab::GitalyClient.allow_n_plus_1_calls do
+          rugged.branches.each(filter).map do |rugged_ref|
+            begin
+              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
+              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
+            rescue Rugged::ReferenceError
+              # Omit invalid branch
+            end
+          end.compact
+        end
 
         sort_branches(branches, sort_by)
       end

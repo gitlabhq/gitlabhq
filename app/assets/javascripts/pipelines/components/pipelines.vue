@@ -4,6 +4,7 @@
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import navigationTabs from './navigation_tabs.vue';
   import navigationControls from './nav_controls.vue';
+  import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
 
   export default {
     props: {
@@ -26,6 +27,8 @@
       return {
         endpoint: pipelinesData.endpoint,
         helpPagePath: pipelinesData.helpPagePath,
+        emptyStateSvgPath: pipelinesData.emptyStateSvgPath,
+        errorStateSvgPath: pipelinesData.errorStateSvgPath,
         autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
         canCreatePipeline: pipelinesData.canCreatePipeline,
@@ -44,10 +47,10 @@
     },
     computed: {
       canCreatePipelineParsed() {
-        return gl.utils.convertPermissionToBoolean(this.canCreatePipeline);
+        return convertPermissionToBoolean(this.canCreatePipeline);
       },
       scope() {
-        const scope = gl.utils.getParameterByName('scope');
+        const scope = getParameterByName('scope');
         return scope === null ? 'all' : scope;
       },
 
@@ -105,10 +108,10 @@
         };
       },
       pageParameter() {
-        return gl.utils.getParameterByName('page') || this.pagenum;
+        return getParameterByName('page') || this.pagenum;
       },
       scopeParameter() {
-        return gl.utils.getParameterByName('scope') || this.apiScope;
+        return getParameterByName('scope') || this.apiScope;
       },
     },
     created() {
@@ -122,7 +125,7 @@
        * @param  {Number} pageNumber desired page to go to.
        */
       change(pageNumber) {
-        const param = gl.utils.setParamInURL('page', pageNumber);
+        const param = setParamInURL('page', pageNumber);
 
         gl.utils.visitUrl(param);
         return param;
@@ -181,9 +184,13 @@
       <empty-state
         v-if="shouldRenderEmptyState"
         :help-page-path="helpPagePath"
+        :empty-state-svg-path="emptyStateSvgPath"
         />
 
-      <error-state v-if="shouldRenderErrorState" />
+      <error-state 
+        v-if="shouldRenderErrorState"
+        :error-state-svg-path="errorStateSvgPath"
+        />
 
       <div
         class="blank-state blank-state-no-icon"

@@ -1,5 +1,0 @@
----
-title: Fix problems sanitizing URLs with empty passwords
-merge_request: 14083
-author:
-type: fixed

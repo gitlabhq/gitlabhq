@@ -11,6 +11,7 @@ module Gitlab
       end
 
       CircuitOpen = Class.new(Inaccessible)
+      Misconfiguration = Class.new(Inaccessible)
 
       REDIS_KEY_PREFIX = 'storage_accessible:'.freeze
 

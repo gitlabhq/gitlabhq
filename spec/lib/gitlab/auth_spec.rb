@@ -16,20 +16,20 @@ describe Gitlab::Auth do
       expect(subject::DEFAULT_SCOPES).to eq [:api]
     end
 
-    it 'OPTIONAL_SCOPES contains all non-default scopes' do
+    it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject::OPTIONAL_SCOPES).to eq %i[read_user read_registry openid]
+      expect(subject.optional_scopes).to eq %i[read_user read_registry openid]
     end
 
-    context 'REGISTRY_SCOPES' do
+    context 'registry_scopes' do
       context 'when registry is disabled' do
         before do
           stub_container_registry_config(enabled: false)
         end
 
         it 'is empty' do
-          expect(subject::REGISTRY_SCOPES).to eq []
+          expect(subject.registry_scopes).to eq []
         end
       end
 
@@ -39,7 +39,7 @@ describe Gitlab::Auth do
         end
 
         it 'contains all registry related scopes' do
-          expect(subject::REGISTRY_SCOPES).to eq %i[read_registry]
+          expect(subject.registry_scopes).to eq %i[read_registry]
         end
       end
     end

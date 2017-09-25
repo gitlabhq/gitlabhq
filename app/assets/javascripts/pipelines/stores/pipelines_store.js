@@ -1,3 +1,5 @@
+import { parseIntPagination, normalizeHeaders } from '../../lib/utils/common_utils';
+
 export default class PipelinesStore {
   constructor() {
     this.state = {};
@@ -19,8 +21,8 @@ export default class PipelinesStore {
     let paginationInfo;
 
     if (Object.keys(pagination).length) {
-      const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
-      paginationInfo = gl.utils.parseIntPagination(normalizedHeaders);
+      const normalizedHeaders = normalizeHeaders(pagination);
+      paginationInfo = parseIntPagination(normalizedHeaders);
     } else {
       paginationInfo = pagination;
     }
