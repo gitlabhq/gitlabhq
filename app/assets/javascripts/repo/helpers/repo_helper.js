@@ -139,25 +139,25 @@ const RepoHelper = {
     Service.getRecentCommits(url)
     .then(data => {
       const lastCommitFilesData = data.data;
-      Store.files.map((currentFile, i) => {
-        const [lastCommitFile] = lastCommitFilesData
-          .filter((lastCommitFile) => {
-            return lastCommitFile.path === currentFile.path;
-        });
+      const lastCommitByFilePath = {};
 
-        if (lastCommitFile && lastCommitFile.commit) {
-          currentFile.lastCommitUrl = '';
-          currentFile.lastCommitMessage = lastCommitFile.commit.message;
-          currentFile.lastCommitUpdate = lastCommitFile.commit.committed_date;
-          return currentFile;  
+      lastCommitFilesData.map((lastCommitFile) => {
+        lastCommitByFilePath[lastCommitFile.path] = lastCommitFile;
+      });
+
+      Store.files.map((currentFile, i) => {
+        const lastCommitData = lastCommitByFilePath[currentFile.path];
+
+        if (lastCommitData && lastCommitData.commit) {
+          const { commit } = lastCommitData;
+          currentFile.lastCommitMessage = commit.message;
+          currentFile.lastCommitUpdate = commit.committed_date;
         } else {
           currentFile.lastCommitMessage = '';
           currentFile.lastCommitUpdate = '';
           currentFile.lastCommitUrl = '';
-          return currentFile;
         }
       });
-      console.log('Store.files',Store.files);
     });
   },
 
@@ -245,6 +245,9 @@ const RepoHelper = {
       icon: `fa-${icon}`,
       level: 0,
       loading: false,
+      lastCommitMessage: '...',
+      lastCommitUrl: '',
+      lastCommitUpdate: '',
     };
 
     if (entity.last_commit) {
