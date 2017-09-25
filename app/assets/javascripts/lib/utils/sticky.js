@@ -22,7 +22,7 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
   } else if (top > stickyTop && el.classList.contains('is-stuck')) {
     el.classList.remove('is-stuck');
 
-    if (insertPlaceholder && el.nextElementSibling.classList.contains('sticky-placeholder')) {
+    if (insertPlaceholder && el.nextElementSibling && el.nextElementSibling.classList.contains('sticky-placeholder')) {
       el.nextElementSibling.remove();
     }
   }
