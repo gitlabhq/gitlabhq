@@ -16,11 +16,6 @@ export default {
       required: false,
       default: 'primary',
     },
-    closeButtonLabel: {
-      type: String,
-      required: false,
-      default: 'Cancel',
-    },
     primaryButtonLabel: {
       type: String,
       required: false,
@@ -50,15 +45,20 @@ export default {
 <div
   class="modal popup-dialog"
   role="dialog"
-  tabindex="-1">
-  <div class="modal-dialog" role="document">
+  tabindex="-1"
+>
+  <div
+    class="modal-dialog"
+    role="document"
+  >
     <div class="modal-content">
       <div class="modal-header">
         <slot name="header">
           <button type="button"
             class="close"
             @click="close"
-            aria-label="Close">
+            aria-label="Close"
+          >
             <span aria-hidden="true">&times;</span>
           </button>
           <h4 class="modal-title">{{this.title}}</h4>
@@ -75,7 +75,7 @@ export default {
             type="button"
             class="btn btn-default"
             @click="emitSubmit(false)">
-              {{closeButtonLabel}}
+              Cancel
           </button>
           <button type="button"
             class="btn"

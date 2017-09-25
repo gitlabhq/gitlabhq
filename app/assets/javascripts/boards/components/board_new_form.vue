@@ -1,5 +1,5 @@
 <template>
-  <popup-dialog :title="title" >
+  <popup-dialog :title="title">
     <p v-if="currentPage === 'delete'">
       Are you sure you want to delete this board?
     </p>
@@ -7,7 +7,7 @@
       v-else
       @submit="submit"
     >
-      <div>
+      <div class="append-bottom-20">
         <label class="label-light" for="board-new-name">
           Board name
         </label>
@@ -18,35 +18,35 @@
           v-model="board.name"
         >
       </div>
-      <div>
+      <div class="media append-bottom-10">
+        <label class="label-light media-body align-self-sm-center">
+          Board scope
+        </label>
         <button
           type="button"
-          class="btn pull-right"
-          @click="expand = !expand">
+          class="btn"
+          @click="expand = !expand"
+        >
           Expand
         </button>
-        <h3>
-          Board scope
-        </h3>
       </div>
-      <transition name="fade">
-        <div v-show="expand">
-          <p>
-            Board scope affects which issues are displayed for anyone who visits this board
-          </p>
+      <div v-if="expand">
+        <p>
+          Board scope affects which issues are displayed for anyone who visits this board
+        </p>
 
-          <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
-            <input
-              type="hidden"
-              id="board-milestone"
-              v-model.number="board.milestone_id">
-            <board-milestone-select
-              :board="board"
-              :milestone-path="milestonePath"
-              :select-milestone="selectMilestone">
-            </board-milestone-select>
-        </div>
-      </transition>
+        <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
+          <input
+            type="hidden"
+            id="board-milestone"
+            v-model.number="board.milestone_id"
+          >
+          <board-milestone-select
+            :board="board"
+            :milestone-path="milestonePath"
+            :select-milestone="selectMilestone">
+          </board-milestone-select>
+      </div>
     </form>
     <template slot="footer">
       <!-- TODO: handle Delete button with btn-danger class and method delete to link_to current_board_path(board) -->
@@ -72,7 +72,7 @@
 
 import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
-import boardMilestoneSelect from './milestone_select';
+import BoardMilestoneSelect from './milestone_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -101,7 +101,7 @@ export default Vue.extend({
     };
   },
   components: {
-    boardMilestoneSelect,
+    BoardMilestoneSelect,
     PopupDialog,
   },
   mounted() {
