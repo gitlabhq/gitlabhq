@@ -1,6 +1,9 @@
 - @no_container = true
 - page_title _('Branches')
+<<<<<<< HEAD
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
+=======
+>>>>>>> ce-com/master
 = render "projects/commits/head"
 
 %div{ class: container_class }
@@ -36,7 +39,11 @@
           = s_('Branches|Delete merged branches')
         = link_to new_project_branch_path(@project), class: 'btn btn-create' do
           = s_('Branches|New branch')
+<<<<<<< HEAD
   = render 'projects/commits/mirror_status'
+=======
+
+>>>>>>> ce-com/master
   - if @branches.any?
     %ul.content-list.all-branches
       - @branches.each do |branch|

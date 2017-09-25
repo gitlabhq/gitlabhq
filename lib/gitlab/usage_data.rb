@@ -25,6 +25,7 @@ module Gitlab
           active_user_count: User.active.count,
           recorded_at: Time.now,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
+<<<<<<< HEAD
           edition: 'EE'
         }
 
@@ -42,6 +43,11 @@ module Gitlab
           usage_data[:license_add_ons] = license.add_ons
         end
 
+=======
+          edition: 'CE'
+        }
+
+>>>>>>> ce-com/master
         usage_data
       end
 
@@ -90,6 +96,7 @@ module Gitlab
         }
       end
 
+<<<<<<< HEAD
       def service_desk_counts
         return {} unless ::License.feature_available?(:service_desk)
 
@@ -126,12 +133,31 @@ module Gitlab
         }
       end
 
+=======
+      def features_usage_data
+        features_usage_data_ce
+      end
+
+      def features_usage_data_ce
+        {
+          signup: current_application_settings.signup_enabled?,
+          ldap: Gitlab.config.ldap.enabled,
+          gravatar: current_application_settings.gravatar_enabled?,
+          omniauth: Gitlab.config.omniauth.enabled,
+          reply_by_email: Gitlab::IncomingEmail.enabled?,
+          container_registry: Gitlab.config.registry.enabled,
+          gitlab_shared_runners: Gitlab.config.gitlab_ci.shared_runners_enabled
+        }
+      end
+
+>>>>>>> ce-com/master
       def components_usage_data
         {
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
           git: { version: Gitlab::Git.version },
           database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
         }
+<<<<<<< HEAD
       end
 
       def license_edition(plan)
@@ -143,6 +169,8 @@ module Gitlab
         else # Older licenses
           'EE'
         end
+=======
+>>>>>>> ce-com/master
       end
 
       def services_usage
