@@ -9,7 +9,7 @@ export const errorMessagesTypes = {
 
 export const errorMessages = {
   [errorMessagesTypes.FETCH_REGISTRY]: __('Something went wrong while fetching the registry list.'),
-  [errorMessagesTypes.FETCH_REPOS]: __('Something went wrong while fetching the repositories.'),
-  [errorMessagesTypes.DELETE_REPO]: __('Something went wrong while deleting the repository.'),
-  [errorMessagesTypes.DELETE_REGISTRY]: __('Something went wrong while deleting registry.'),
+  [errorMessagesTypes.FETCH_REPOS]: __('Something went wrong while fetching the projects.'),
+  [errorMessagesTypes.DELETE_REPO]: __('Something went wrong on our end.'),
+  [errorMessagesTypes.DELETE_REGISTRY]: __('Something went wrong on our end.'),
 };
