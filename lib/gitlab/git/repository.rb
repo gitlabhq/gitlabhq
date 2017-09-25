@@ -20,6 +20,7 @@ module Gitlab
       GitError = Class.new(StandardError)
       DeleteBranchError = Class.new(StandardError)
       CreateTreeError = Class.new(StandardError)
+      TagExistsError = Class.new(StandardError)
 
       class << self
         # Unlike `new`, `create` takes the storage path, not the storage name
@@ -646,24 +647,13 @@ module Gitlab
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
-
-        options = nil # Use nil, not the empty hash. Rugged cares about this.
-        if message
-          options = {
-            message: message,
-            tagger: Gitlab::Git.committer_hash(email: user.email, name: user.name)
-          }
+        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+          if is_enabled
+            gitaly_add_tag(tag_name, user: user, target: target, message: message)
+          else
+            rugged_add_tag(tag_name, user: user, target: target, message: message)
+          end
         end
-
-        OperationService.new(user, self).add_tag(tag_name, target_object.oid, options)
-
-        find_tag(tag_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
       end
 
       def rm_branch(branch_name, user:)
@@ -1390,6 +1380,33 @@ module Gitlab
       # exist when it has an invalid name).
       rescue Rugged::ReferenceError
         false
+      end
+
+      def gitaly_add_tag(tag_name, user:, target:, message: nil)
+        gitaly_operations_client.add_tag(tag_name, user, target, message)
+      end
+
+      def rugged_add_tag(tag_name, user:, target:, message: nil)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
+
+        options = nil # Use nil, not the empty hash. Rugged cares about this.
+        if message
+          options = {
+            message: message,
+            tagger: Gitlab::Git.committer_hash(email: user.email, name: user.name)
+          }
+        end
+
+        Gitlab::Git::OperationService.new(user, self).add_tag(tag_name, target_object.oid, options)
+
+        find_tag(tag_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      rescue Rugged::TagError
+        raise TagExistsError
       end
 
       def rugged_create_branch(ref, start_point)
