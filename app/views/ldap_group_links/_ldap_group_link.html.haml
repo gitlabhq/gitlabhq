@@ -1,7 +1,7 @@
 %li
   .pull-right
     = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-sm' do
-      = fa_icon('unlink', text: 'unlink')
+      = fa_icon('unlink', text: 'Remove')
   %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 70)}"
 
   - if ldap_group_link.config
