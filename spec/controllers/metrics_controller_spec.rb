@@ -78,7 +78,8 @@ describe MetricsController do
         it 'returns proper response' do
           get :index
 
-          expect(response.status).to eq(404)
+          expect(response.status).to eq(200)
+          expect(response.body).to eq("# Metrics are disabled, see: http://test.host/help/administration/monitoring/prometheus/gitlab_metrics#gitlab-prometheus-metrics\n")
         end
       end
     end
