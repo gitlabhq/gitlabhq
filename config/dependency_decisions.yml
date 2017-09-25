@@ -452,3 +452,15 @@
     :why: https://github.com/jaredhanson/utils-merge/blob/v1.0.0/LICENSE
     :versions: []
     :when: 2017-09-16 05:18:26.193764000 Z
+- - :approve
+  - svg4everybody
+  - :who: Tim Zallmann
+    :why: CC0 1.0 - https://github.com/jonathantneal/svg4everybody/blob/master/LICENSE.md
+    :versions: []
+    :when: 2017-09-13 17:31:16.425819400 Z
+- - :approve
+  - gitlab-svgs
+  - :who: Tim Zallmann
+    :why: Our own library - https://gitlab.com/gitlab-org/gitlab-svgs
+    :versions: []
+    :when: 2017-09-19 14:36:32.795496000 Z

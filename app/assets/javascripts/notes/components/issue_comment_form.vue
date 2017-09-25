@@ -2,6 +2,7 @@
   /* global Flash, Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
+  import autosize from 'vendor/autosize';
   import '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
@@ -97,6 +98,8 @@
     methods: {
       ...mapActions([
         'saveNote',
+        'stopPolling',
+        'restartPolling',
         'removePlaceholderNotes',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
@@ -125,10 +128,14 @@
           }
           this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
+          this.resizeTextarea();
+          this.stopPolling();
 
           this.saveNote(noteData)
             .then((res) => {
               this.isSubmitting = false;
+              this.restartPolling();
+
               if (res.errors) {
                 if (res.errors.commands_only) {
                   this.discard();
@@ -175,6 +182,8 @@
 
         if (shouldClear) {
           this.note = '';
+          this.resizeTextarea();
+          this.$refs.markdownField.previewMarkdown = false;
         }
 
         // reset autostave
@@ -204,6 +213,11 @@
           dataType: 'note',
           fieldName: 'note',
           selector: '.notes',
+        });
+      },
+      resizeTextarea() {
+        this.$nextTick(() => {
+          autosize.update(this.$refs.textarea);
         });
       },
     },
@@ -258,7 +272,8 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isIssueConfidential(getIssueData)">
+                :is-confidential-issue="isConfidentialIssue"
+                ref="markdownField">
                 <textarea
                   id="note-body"
                   name="note[note]"

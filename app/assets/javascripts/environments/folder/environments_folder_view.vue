@@ -9,7 +9,7 @@ import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import environmentsMixin from '../mixins/environments_mixin';
-import '../../lib/utils/common_utils';
+import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
 
 export default {
   components: {
@@ -47,15 +47,15 @@ export default {
 
   computed: {
     scope() {
-      return gl.utils.getParameterByName('scope');
+      return getParameterByName('scope');
     },
 
     canReadEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canReadEnvironment);
+      return convertPermissionToBoolean(this.canReadEnvironment);
     },
 
     canCreateDeploymentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
+      return convertPermissionToBoolean(this.canCreateDeployment);
     },
 
     /**
@@ -82,8 +82,8 @@ export default {
    * Toggles loading property.
    */
   created() {
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const page = gl.utils.getParameterByName('page') || this.pageNumber;
+    const scope = getParameterByName('scope') || this.visibility;
+    const page = getParameterByName('page') || this.pageNumber;
 
     this.service = new EnvironmentsService(this.endpoint);
 
@@ -125,15 +125,15 @@ export default {
      * @param  {Number} pageNumber desired page to go to.
      */
     changePage(pageNumber) {
-      const param = gl.utils.setParamInURL('page', pageNumber);
+      const param = setParamInURL('page', pageNumber);
 
       gl.utils.visitUrl(param);
       return param;
     },
 
     fetchEnvironments() {
-      const scope = gl.utils.getParameterByName('scope') || this.visibility;
-      const page = gl.utils.getParameterByName('page') || this.pageNumber;
+      const scope = getParameterByName('scope') || this.visibility;
+      const page = getParameterByName('page') || this.pageNumber;
 
       this.isLoading = true;
 

@@ -78,7 +78,7 @@ module Gitlab
 
         def failing_circuit_breakers
           @failing_circuit_breakers ||= failing_on_hosts.map do |hostname|
-            CircuitBreaker.new(storage_name, hostname)
+            CircuitBreaker.build(storage_name, hostname)
           end
         end
 

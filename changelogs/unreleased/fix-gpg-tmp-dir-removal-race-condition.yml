@@ -1,5 +1,0 @@
----
-title: Fixes the 500 errors caused by a race condition in GPG's tmp directory handling
-merge_request: 14194
-author: Alexis Reigel
-type: fixed
