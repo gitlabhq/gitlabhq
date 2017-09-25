@@ -236,7 +236,7 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return if !representation.has_labels? && !representation.has_comments?
+          return unless representation.has_labels? || representation.has_comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
 
