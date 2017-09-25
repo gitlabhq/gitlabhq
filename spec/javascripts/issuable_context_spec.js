@@ -1,27 +1,24 @@
+/* global IssuableContext */
 import '~/issuable_context';
 
-fdescribe('IssuableContext', () => {
+describe('IssuableContext', () => {
   describe('toggleHiddenParticipants', () => {
-    beforeEach(() => {
+    const event = jasmine.createSpyObj('event', ['preventDefault']);
 
-    });
-
-    fit('calls loadCheck if lazyLoader is set', () => {
+    it('calls loadCheck if lazyLoader is set', () => {
       gl.lazyLoader = jasmine.createSpyObj('lazyLoader', ['loadCheck']);
-      const event = {};
 
       IssuableContext.prototype.toggleHiddenParticipants(event);
 
       expect(gl.lazyLoader.loadCheck).toHaveBeenCalled();
     });
 
-    it('does not call loadCheck if lazyLoader is not set', () => {
+    it('does not throw if lazyLoader is not set', () => {
       gl.lazyLoader = undefined;
-      const event = {};
 
-      IssuableContext.prototype.toggleHiddenParticipants(event);
+      const toggle = IssuableContext.prototype.toggleHiddenParticipants.bind(null, event);
 
-      expect(gl.lazyLoader.loadCheck).not.toHaveBeenCalled();
+      expect(toggle).not.toThrow();
     });
 
     afterEach(() => {
