@@ -50,6 +50,10 @@ module Gitlab
       Rails.configuration.respond_to?(:geo_database)
     end
 
+    def self.primary_node_configured?
+      Gitlab::Geo.primary_node.present?
+    end
+
     def self.license_allows?
       ::License.feature_available?(:geo)
     end
