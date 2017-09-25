@@ -1,6 +1,5 @@
 module Geo
   class RepositorySyncWorker < Geo::BaseSchedulerWorker
-    BACKOFF_DELAY = 5.minutes
     MAX_CAPACITY = 25
 
     private
@@ -10,7 +9,7 @@ module Geo
     end
 
     def schedule_job(project_id)
-      job_id = Geo::ProjectSyncWorker.perform_in(BACKOFF_DELAY, project_id, Time.now)
+      job_id = Geo::ProjectSyncWorker.perform_async(project_id, Time.now)
 
       { id: project_id, job_id: job_id } if job_id
     end
