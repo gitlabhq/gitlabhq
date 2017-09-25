@@ -54,6 +54,7 @@ class GitPushService < BaseService
     end
 
     execute_related_hooks
+    process_lfs_pointers
     perform_housekeeping
 
     update_caches
@@ -116,6 +117,16 @@ class GitPushService < BaseService
           .perform_async(project.id, current_user.id, commit.to_hash, default)
       end
     end
+  end
+
+  def process_lfs_pointers
+    return unless @project.lfs_enabled?
+    return unless @project.lfs_objects.exists?
+
+    reference_change = ReferenceChange.create!(project: @project,
+                                               newrev: params[:newrev])
+
+    UpdateLfsPointersWorker.perform_async(reference_change.id)
   end
 
   protected

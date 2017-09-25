@@ -842,6 +842,15 @@ ActiveRecord::Schema.define(version: 20171026082505) do
 
   add_index "lfs_objects_projects", ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
 
+  create_table "lfs_pointers", force: :cascade do |t|
+    t.string "blob_oid"
+    t.string "lfs_oid"
+    t.integer "project_id"
+    t.string "timestamps"
+  end
+
+  add_index "lfs_pointers", ["project_id"], name: "index_lfs_pointers_on_project_id", using: :btree
+
   create_table "lists", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "label_id"
@@ -1404,6 +1413,15 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
+  create_table "reference_changes", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "newrev"
+    t.boolean "processed", default: false, null: false
+    t.string "timestamps"
+  end
+
+  add_index "reference_changes", ["project_id"], name: "index_reference_changes_on_project_id", using: :btree
+
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
@@ -1838,6 +1856,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
+  add_foreign_key "lfs_pointers", "projects"
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
@@ -1871,6 +1890,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
+  add_foreign_key "reference_changes", "projects"
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
