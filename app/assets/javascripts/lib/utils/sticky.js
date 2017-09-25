@@ -9,7 +9,7 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
   const top = Math.floor(el.offsetTop - scrollY);
 
   if (top <= stickyTop && !el.classList.contains('is-stuck')) {
-    const placeholder = insertPlaceholder ? createPlaceholder(el) : null;
+    const placeholder = insertPlaceholder ? createPlaceholder() : null;
     const heightBefore = el.offsetHeight;
 
     el.classList.add('is-stuck');
