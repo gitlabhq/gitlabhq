@@ -35,13 +35,16 @@ module Ci
         %{
           INNER JOIN ci_runner_groups ON ci_runner_groups.runner_id = ci_runners.id
           INNER JOIN namespaces ON namespaces.id = ci_runner_groups.group_id
-          INNER JOIN projects group_projects ON group_projects.namespace_id = namespaces.id
+          INNER JOIN projects ON projects.namespace_id = namespaces.id
         }
       ).where(
         %{
-          group_projects.id = :project_id
+          projects.id = :project_id
+            AND
+          projects.group_runners_enabled = :true
         },
-        project_id: project_id
+        project_id: project_id,
+        true: true
       )
 
       shared_runners = where(is_shared: true)
