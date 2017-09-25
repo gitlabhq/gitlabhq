@@ -30,44 +30,14 @@
       ...mapActions([
         'setMainEndpoint',
         'fetchRepos',
-        'fetchList',
-        'deleteRepo',
-        'deleteRegistry',
-        'toggleLoading',
       ]),
-
-      fetchRegistryList(repo) {
-        this.fetchList({ repo })
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
-      },
-
-      deleteRegistry(repo, registry) {
-        this.deleteRegistry(registry)
-          .then(() => this.fetchRegistry(repo))
-          .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
-      },
-
-      deleteRepository(repo) {
-        this.deleteRepo(repo)
-          .then(() => this.fetchRepos())
-          .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
-      },
-
-      showError(message) {
-        Flash(this.__(errorMessages[message]));
-      },
-
-      onPageChange(repo, page) {
-        this.fetchList({ repo, page })
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
-      },
     },
     created() {
       this.setMainEndpoint(this.endpoint);
     },
     mounted() {
       this.fetchRepos()
-        .catch(() => this.showError(errorMessagesTypes.FETCH_REPOS));
+        .catch(() => Flash(errorMessagesTypes.FETCH_REPOS));
     },
   };
 </script>
@@ -83,10 +53,6 @@
       v-for="(item, index) in repos"
       :key="index"
       :repo="item"
-      @fetchRegistryList="fetchRegistryList"
-      @deleteRepository="deleteRepository"
-      @deleteRegistry="deleteRegistry"
-      @pageChange="onPageChange"
       />
 
     <p v-else-if="!isLoading && !repos.length">

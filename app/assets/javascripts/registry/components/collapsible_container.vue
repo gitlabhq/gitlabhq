@@ -1,9 +1,12 @@
 <script>
+  import { mapActions } from 'vuex';
+  import { n__, s__ } from '../../locale';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
   import timeagoMixin from '../../vue_shared/mixins/timeago';
+  import { errorMessages, errorMessagesTypes } from '../constants';
 
   export default {
     name: 'collapsibeContainerRegisty',
@@ -35,28 +38,49 @@
       },
     },
     methods: {
+      ...mapActions([
+        'fetchList',
+        'deleteRepo',
+        'deleteRegistry',
+        'toggleLoading',
+      ]),
+
       layers(item) {
-        const pluralize = gl.text.pluralize('layer', item.layers);
+        const pluralize = n__('layer', 'layers', item.layers);
         return `${item.layers} ${pluralize}`;
       },
 
       toggleRepo() {
         if (this.isOpen === false) {
-          this.$emit('fetchRegistryList', this.repo);
+          this.fetchList({ repo: this.repo })
+          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
         }
         this.isOpen = !this.isOpen;
       },
 
       handleDeleteRepository() {
-        this.$emit('deleteRepository', this.repo);
+        this.deleteRepo(this.repo)
+          .then(() => this.fetchRepos())
+          .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
       },
 
       handleDeleteRegistry(registry) {
-        this.$emit('deleteRegistry', this.repo, registry);
+        this.deleteRegistry(registry)
+          .then(() => this.fetchRegistry(this.repo))
+          .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
       },
 
       onPageChange(pageNumber) {
-        this.$emit('pageChange', this.repo, pageNumber);
+        this.fetchList({ repo: this.repo, page })
+          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
+      },
+
+      clipboardText(text) {
+        return `docker pull ${text}`;
+      },
+
+      showError(message) {
+        Flash((errorMessages[message]));
       },
     },
   };
@@ -66,10 +90,10 @@
   <div class="container-image">
     <div
       class="container-image-head">
-      <a
-        role="button"
+      <button
+        type="button"
         @click="toggleRepo"
-        class="js-toggle-repo">
+        class="js-toggle-repo btn-link">
         <i
           class="fa"
           :class="{
@@ -79,11 +103,11 @@
           aria-hidden="true">
         </i>
         {{repo.name}}
-      </a>
+      </button>
 
       <clipboard-button
         v-if="repo.location"
-        :text="__(`docker pull ${repo.location}`)"
+        :text="clipboardText(repo.location)"
         :title="repo.location"
         />
 
@@ -91,8 +115,9 @@
         <button
           v-if="repo.canDelete"
           type="button"
-          class="js-remove-repo btn btn-remove"
-          :title="__('Remove repository')"
+          class="js-remove-repo btn btn-danger"
+          :title="s__('ContainerRegistry|Remove repository')"
+          :aria-label="s__('ContainerRegistry|Remove repository')"
           v-tooltip
           @click="handleDeleteRepository">
           <i
@@ -116,10 +141,10 @@
         <table class="table tags">
           <thead>
             <tr>
-              <th>{{__("Tag")}}</th>
-              <th>{{__("Tag ID")}}</th>
-              <th>{{__("Size")}}</th>
-              <th>{{__("Created")}}</th>
+              <th>{{s__('ContainerRegistry|Tag')}}</th>
+              <th>{{s__('ContainerRegistry|Tag ID')}}</th>
+              <th>{{s__("ContainerRegistry|Size")}}</th>
+              <th>{{s__("ContainerRegistry|Created")}}</th>
               <th></th>
             </tr>
           </thead>
@@ -134,7 +159,7 @@
                 <clipboard-button
                   v-if="item.location"
                   :title="item.location"
-                  :text="__(`docker pull ${item.location}`)"
+                  :text="clipboardText(item.location)"
                   />
               </td>
               <td>
@@ -173,8 +198,9 @@
                 <button
                   v-if="item.canDelete"
                   type="button"
-                  class="js-delete-registry btn btn-remove hidden-xs pull-right"
-                  :title="__('Remove tag')"
+                  class="js-delete-registry btn btn-danger hidden-xs pull-right"
+                  :title="s__('ContainerRegistry|Remove tag')"
+                  :aria-label="s__('ContainerRegistry|Remove tag')"
                   data-container="body"
                   v-tooltip
                   @click="handleDeleteRegistry(item)">
@@ -197,7 +223,7 @@
       <div
         v-else
         class="nothing-here-block">
-        {{__("No tags in Container Registry for this container image.")}}
+        {{s__("ContainerRegistry|No tags in Container Registry for this container image.")}}
       </div>
     </div>
   </div>
