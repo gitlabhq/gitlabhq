@@ -63,7 +63,7 @@ module Gitlab
 
         output, status = Gitlab::Popen.popen(command, nil, vars)
 
-        raise Error, output unless status.zero?
+        raise Error, output unless status&.zero?
       end
 
       def update_index_status(to_sha)
