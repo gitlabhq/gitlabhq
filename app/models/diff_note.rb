@@ -13,7 +13,7 @@ class DiffNote < Note
   validates :original_position, presence: true
   validates :position, presence: true
   validates :diff_line, presence: true, if: :on_text?
-  validates :line_code, presence: true, line_code: true
+  validates :line_code, presence: true, line_code: true, if: :on_text?
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
