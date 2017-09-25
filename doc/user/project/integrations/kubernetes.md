@@ -53,20 +53,21 @@ The Kubernetes service takes the following parameters:
 
 ## Deployment variables
 
-The Kubernetes service exposes following
+The Kubernetes service exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
-GitLab CI build environment:
+GitLab CI/CD build environment:
 
-- `KUBE_URL` - equal to the API URL
-- `KUBE_TOKEN`
+- `KUBE_URL` - Equal to the API URL.
+- `KUBE_TOKEN` - The Kubernetes token.
 - `KUBE_NAMESPACE` - The Kubernetes namespace is auto-generated if not specified.
   The default value is `<project_name>-<project_id>`. You can overwrite it to
   use different one if needed, otherwise the `KUBE_NAMESPACE` variable will
   receive the default value.
-- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
+- `KUBE_CA_PEM_FILE` - Only present if a custom CA bundle was specified. Path
   to a file containing PEM data.
-- `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
-- `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
+- `KUBE_CA_PEM` (deprecated) - Only if a custom CA bundle was specified. Raw PEM data.
+- `KUBECONFIG` - Path to a file containing `kubeconfig` for this deployment.
+  CA bundle would be embedded if specified.
 
 ## What you can get with the Kubernetes integration
 
@@ -97,20 +98,19 @@ the need to leave GitLab.
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
-NGINX ingress is also supported.
+[NGINX ingress](./prometheus_library/nginx.md) is also supported.
 
 [> Read more about Kubernetes monitoring](./prometheus_library/kubernetes.md)
 
 ### Auto DevOps
 
-Auto DevOps brings best practices to your project in an easy and default way.
-A typical web project starts with Continuous Integration (CI), then adds
-automated deployment to production, and maybe some time in the future adds some
-kind of monitoring. With Auto DevOps, every project has a complete workflow,
-with no configuration, including: **Auto Build**, **Auto Test**, **Auto Code Quality**,
-**Auto Review Apps**, **Auto Deploy**, and **Auto Monitoring**.
+Auto DevOps automatically detects, builds, tests, deploys, and monitors your
+applications.
 
-[> Read more about Auto DevOps](../../../topics/autodevops/index.md).
+To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
+you will need the Kubernetes project integration enabled.
+
+[> Read more about Auto DevOps](../../../topics/autodevops/index.md)
 
 ### Web terminals
 
