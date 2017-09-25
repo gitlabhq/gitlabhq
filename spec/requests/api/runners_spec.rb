@@ -658,6 +658,12 @@ describe API::Runners do
         expect(response).to have_gitlab_http_status(403)
       end
 
+      it 'does not enable group runner' do
+        post api("/projects/#{project.id}/runners", user), runner_id: group_runner.id
+
+        expect(response).to have_http_status(403)
+      end
+
       context 'user is admin' do
         it 'enables any specific runner' do
           expect do
