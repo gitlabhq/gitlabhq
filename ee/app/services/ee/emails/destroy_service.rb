@@ -4,11 +4,9 @@ module EE
       include ::EE::Emails::BaseService
 
       def execute
-        result = super
-
-        log_audit_event(action: :destroy)
-
-        result
+        super.tap do
+          log_audit_event(action: :destroy)
+        end
       end
     end
   end

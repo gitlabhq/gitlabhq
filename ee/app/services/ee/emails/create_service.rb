@@ -4,11 +4,9 @@ module EE
       include ::EE::Emails::BaseService
 
       def execute
-        email = super
-
-        log_audit_event(action: :create) if email.persisted?
-
-        email
+        super.tap do |email|
+          log_audit_event(action: :create) if email.persisted?
+        end
       end
     end
   end
