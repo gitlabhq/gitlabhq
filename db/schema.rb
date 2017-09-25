@@ -32,8 +32,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.text "description", null: false
     t.string "header_logo"
     t.string "logo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
   end
@@ -101,6 +101,10 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.text "help_page_text_html"
     t.text "shared_runners_text_html"
     t.text "after_sign_up_text_html"
+    t.integer "rsa_key_restriction", default: 0, null: false
+    t.integer "dsa_key_restriction", default: 0, null: false
+    t.integer "ecdsa_key_restriction", default: 0, null: false
+    t.integer "ed25519_key_restriction", default: 0, null: false
     t.boolean "housekeeping_enabled", default: true, null: false
     t.boolean "housekeeping_bitmaps_enabled", default: true, null: false
     t.integer "housekeeping_incremental_repack_period", default: 10, null: false
@@ -128,10 +132,6 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.boolean "password_authentication_enabled"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
-    t.integer "rsa_key_restriction", default: 0, null: false
-    t.integer "dsa_key_restriction", default: 0, null: false
-    t.integer "ecdsa_key_restriction", default: 0, null: false
-    t.integer "ed25519_key_restriction", default: 0, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
   end
@@ -256,6 +256,7 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
+  add_index "ci_builds", ["id"], name: "index_for_ci_builds_retried_migration", where: "(retried IS NULL)", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
@@ -289,8 +290,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.string "encrypted_value_iv"
     t.integer "group_id", null: false
     t.boolean "protected", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "ci_group_variables", ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
@@ -302,8 +303,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.string "encrypted_value_salt"
     t.string "encrypted_value_iv"
     t.integer "pipeline_schedule_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime_with_timezone "created_at"
+    t.datetime_with_timezone "updated_at"
   end
 
   add_index "ci_pipeline_schedule_variables", ["pipeline_schedule_id", "key"], name: "index_ci_pipeline_schedule_variables_on_schedule_id_and_key", unique: true, using: :btree
@@ -355,14 +356,12 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.boolean "protected"
-    t.integer "iid"
     t.integer "config_source"
+    t.boolean "protected"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
   add_index "ci_pipelines", ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
-  add_index "ci_pipelines", ["project_id", "iid"], name: "index_ci_pipelines_on_project_id_and_iid", unique: true, using: :btree
   add_index "ci_pipelines", ["project_id", "ref", "status"], name: "index_ci_pipelines_on_project_id_and_ref_and_status", using: :btree
   add_index "ci_pipelines", ["project_id", "sha"], name: "index_ci_pipelines_on_project_id_and_sha", using: :btree
   add_index "ci_pipelines", ["project_id"], name: "index_ci_pipelines_on_project_id", using: :btree
@@ -554,8 +553,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.integer "project_id"
     t.integer "author_id", null: false
     t.integer "target_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "action", limit: 2, null: false
     t.string "target_type"
   end
@@ -593,8 +592,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "gpg_keys", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id"
     t.binary "primary_keyid"
     t.binary "fingerprint"
@@ -606,8 +605,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
 
   create_table "gpg_signatures", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id"
     t.integer "gpg_key_id"
     t.binary "commit_sha"
@@ -805,8 +804,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
 
   create_table "merge_request_diff_commits", id: false, force: :cascade do |t|
-    t.datetime "authored_date"
-    t.datetime "committed_date"
+    t.datetime_with_timezone "authored_date"
+    t.datetime_with_timezone "committed_date"
     t.integer "merge_request_diff_id", null: false
     t.integer "relative_order", null: false
     t.binary "sha", null: false
@@ -1129,8 +1128,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
 
   create_table "project_auto_devops", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled"
     t.string "domain"
   end
@@ -1220,6 +1219,7 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.string "repository_storage", default: "default", null: false
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
+    t.string "ci_config_path"
     t.boolean "lfs_enabled"
     t.text "description_html"
     t.boolean "only_allow_merge_if_all_discussions_are_resolved"
@@ -1227,9 +1227,8 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.integer "auto_cancel_pending_pipelines", default: 1, null: false
     t.string "import_jid"
     t.integer "cached_markdown_version"
-    t.datetime "last_repository_updated_at"
-    t.string "ci_config_path"
     t.text "delete_error"
+    t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
   end
