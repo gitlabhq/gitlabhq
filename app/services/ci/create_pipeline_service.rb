@@ -107,8 +107,7 @@ module Ci
     def tag?
       return @is_tag if defined?(@is_tag)
 
-      @is_tag =
-        project.repository.ref_exists?(Gitlab::Git::TAG_REF_PREFIX + ref)
+      @is_tag = project.repository.tag_exists?(ref)
     end
 
     def ref
@@ -120,7 +119,8 @@ module Ci
     end
 
     def pipeline_created_counter
-      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_total, "Counter of pipelines created")
+      @pipeline_created_counter ||= Gitlab::Metrics
+        .counter(:pipelines_created_total, "Counter of pipelines created")
     end
   end
 end

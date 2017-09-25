@@ -79,22 +79,16 @@ module Gitlab
             end
           end
 
-          ## TODO, move to Pipeline as `branch_exists?`
-          #
           def branch?
             return @is_branch if defined?(@is_branch)
 
-            @is_branch = project.repository
-              .ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.ref)
+            @is_branch = project.repository.branch_exists?(pipeline.ref)
           end
 
-          ## TODO, move to pipeline as `tag_exists?`
-          #
           def tag?
             return @is_tag if defined?(@is_tag)
 
-            @is_tag = project.repository
-              .ref_exists?(Gitlab::Git::TAG_REF_PREFIX + pipeline.ref)
+            @is_tag = project.repository.tag_exists?(pipeline.ref)
           end
 
           def error(message)
