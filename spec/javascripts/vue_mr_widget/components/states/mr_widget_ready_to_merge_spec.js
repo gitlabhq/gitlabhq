@@ -183,7 +183,7 @@ describe('MRWidgetReadyToMerge', () => {
       });
     });
 
-    describe('Remove source branch checkbox', () => {
+    fdescribe('Remove source branch checkbox', () => {
       describe('when user can merge but cannot delete branch', () => {
         it('checkbox should not be in the rendered output', () => {
           const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
@@ -201,6 +201,41 @@ describe('MRWidgetReadyToMerge', () => {
         it('checkbox should be in rendered output', () => {
           const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
           expect(checkboxElement.getAttribute('disabled')).toBeNull();
+        });
+      });
+    });
+
+    fdescribe('Remove source branch message', () => {
+      describe('when user cannot remove source branch and it will be removed', () => {
+        beforeEach(() => {
+          this.customVm = createComponent({
+            mr: {
+              canRemoveSourceBranch: false,
+              removeSourceBranch: true,
+            },
+          });
+        });
+      });
+
+      describe('when user can remove source branch and it will be removed', () => {
+        beforeEach(() => {
+          this.customVm = createComponent({
+            mr: {
+              canRemoveSourceBranch: true,
+              removeSourceBranch: true,
+            },
+          });
+        });
+      });
+
+      describe('when user cannot remove source branch and it will not be removed', () => {
+        beforeEach(() => {
+          this.customVm = createComponent({
+            mr: {
+              canRemoveSourceBranch: false,
+              removeSourceBranch: false,
+            },
+          });
         });
       });
     });

@@ -6,6 +6,7 @@ import {
   WidgetPipeline,
   WidgetDeployment,
   WidgetRelatedLinks,
+  WidgetSourceBranchRemovalStatus,
   MergedState,
   ClosedState,
   MergingState,
@@ -32,7 +33,6 @@ import {
   notify,
 } from './dependencies';
 import { setFavicon } from '../lib/utils/common_utils';
-import tooltip from '../vue_shared/directives/tooltip';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -212,6 +212,7 @@ export default {
     'mr-widget-pipeline': WidgetPipeline,
     'mr-widget-deployment': WidgetDeployment,
     'mr-widget-related-links': WidgetRelatedLinks,
+    'mr-widget-source-branch-removal-status': WidgetSourceBranchRemovalStatus,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-merging': MergingState,
@@ -251,19 +252,8 @@ export default {
           v-if="shouldRenderRelatedLinks"
           :state="mr.state"
           :related-links="mr.relatedLinks" />
-        <p
-          class="mr-info-list mr-links"
-          v-if="!mr.canRemoveSourceBranch && mr.shouldRemoveSourceBranch"
-        >
-          <strong>Removes</strong> source branch
-          <i
-            v-tooltip
-            class="fa fa-question-circle"
-            title="A user with write access to the source branch selected this option"
-            aria-label="Source Branch Removal Info"
-          >
-          </i>
-        </p>
+        <mr-widget-source-branch-removal-status
+          v-if="!mr.canRemoveSourceBranch && mr.shouldRemoveSourceBranch" />
       </div>
       <div
         class="mr-widget-footer"
