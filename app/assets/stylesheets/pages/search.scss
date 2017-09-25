@@ -39,7 +39,7 @@ input[type="checkbox"]:hover {
     height: 32px;
     border: 0;
     border-radius: $border-radius-default;
-    transition: border-color ease-in-out 0.15s, background-color ease-in-out 0.15s;
+    transition: border-color ease-in-out $default-transition-duration, background-color ease-in-out $default-transition-duration;
 
     &:hover {
       box-shadow: none;
@@ -51,9 +51,8 @@ input[type="checkbox"]:hover {
     margin: -4px 4px -4px -4px;
     line-height: 25px;
     padding: 4px 8px;
-    border-radius: 2px 0 0 2px;
-    height: 32px;
-    transition: border-color ease-in-out 0.15s;
+    border-radius: $border-radius-default 0 0 $border-radius-default;
+    transition: border-color ease-in-out $default-transition-duration;
   }
 
   .search-input {
@@ -65,11 +64,11 @@ input[type="checkbox"]:hover {
     width: 98%;
     color: $white-light;
     background: none;
-    transition: color ease-in-out 0.15s;
+    transition: color ease-in-out $default-transition-duration;
   }
 
   .search-input::placeholder {
-    transition: color ease-in-out 0.15s;
+    transition: color ease-in-out $default-transition-duration;
   }
 
   .search-input-container {
@@ -93,7 +92,7 @@ input[type="checkbox"]:hover {
 
     .search-icon {
       @extend .fa-search;
-      transition: color 0.15s;
+      transition: color $default-transition-duration;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -146,13 +145,13 @@ input[type="checkbox"]:hover {
         .search-icon,
         .clear-icon {
           color: $gl-text-color-tertiary;
-          transition: color ease-in-out 0.15s;
+          transition: color ease-in-out $default-transition-duration;
         }
       }
 
       .search-input {
         color: $gl-text-color;
-        transition: color ease-in-out 0.15s;
+        transition: color ease-in-out $default-transition-duration;
       }
 
       .search-input::placeholder {
@@ -161,7 +160,7 @@ input[type="checkbox"]:hover {
     }
 
     .location-badge {
-      transition: all 0.15s;
+      transition: all $default-transition-duration;
       background-color: $nav-badge-bg;
       border-color: $border-color;
     }
