@@ -23,6 +23,7 @@
         issueState: this.$store.getters.getIssueData.state,
         isSubmitting: false,
         isSubmitButtonDisabled: true,
+        floatingModeEnabled: false,
       };
     },
     components: {
@@ -219,6 +220,9 @@
           autosize.update(this.$refs.textarea);
         });
       },
+      toggleFloatingMode() {
+        this.floatingModeEnabled = !this.floatingModeEnabled;
+      },
     },
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
@@ -233,7 +237,7 @@
 </script>
 
 <template>
-  <div>
+  <div :class="{ 'is-floating': floatingModeEnabled }">
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
     <ul
       v-else
@@ -262,6 +266,7 @@
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
                 :is-confidential-issue="isConfidentialIssue"
+                :toggle-floating-mode="toggleFloatingMode"
                 ref="markdownField">
                 <textarea
                   id="note-body"

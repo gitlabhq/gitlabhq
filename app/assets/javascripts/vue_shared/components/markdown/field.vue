@@ -23,6 +23,11 @@
         type: String,
         required: false,
       },
+      toggleFloatingMode: {
+        type: Function,
+        required: false,
+        default: () => {},
+      },
     },
     data() {
       return {
@@ -103,7 +108,9 @@
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
-      @toggle-markdown="toggleMarkdownPreview" />
+      @toggle-markdown="toggleMarkdownPreview"
+      @toggleFloatingMode="toggleFloatingMode"
+    />
     <div
       class="md-write-holder"
       v-show="!previewMarkdown">

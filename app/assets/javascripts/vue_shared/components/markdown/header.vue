@@ -25,6 +25,10 @@
 
         this.$emit('toggle-markdown');
       },
+      toggleFloatingMode() {
+        this.$refs.floatingModeBtn.blur();
+        this.$emit('toggleFloatingMode');
+      },
     },
     mounted() {
       $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
@@ -93,6 +97,21 @@
             icon="check-square-o" />
         </div>
         <div class="toolbar-group">
+          <button
+            v-tooltip
+            data-container="body"
+            aria-label="Toggle floating mode"
+            title="Toggle floating mode"
+            class="toolbar-btn"
+            type="button"
+            ref="floatingModeBtn"
+            @click="toggleFloatingMode"
+          >
+            <i
+              class="fa fa-window-restore"
+              aria-hidden="true">
+            </i>
+          </button>
           <button
             v-tooltip
             aria-label="Go full screen"

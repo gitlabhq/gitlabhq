@@ -827,3 +827,12 @@ ul.notes {
     position: relative;
   }
 }
+
+.is-floating {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  margin-top: -1px;
+  background-color: $white-light;
+  border-top: 1px solid $white-normal;
+}
