@@ -1079,6 +1079,8 @@ class User < ActiveRecord::Base
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def rss_token
+    return read_attribute(:rss_token) if Gitlab::Database.readonly?
+
     ensure_rss_token!
   end
 
