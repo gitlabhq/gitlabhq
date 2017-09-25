@@ -75,9 +75,6 @@ export default {
         || this.isMakingRequest
         || this.mr.preventMerge);
     },
-    isRemoveSourceBranchButtonDisabled() {
-      return this.isMergeButtonDisabled || !this.mr.canRemoveSourceBranch;
-    },
     shouldShowSquashBeforeMerge() {
       const { commitsCount, enableSquashBeforeMerge } = this.mr;
       return enableSquashBeforeMerge && commitsCount > 1;
@@ -274,7 +271,6 @@ export default {
                 <input
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
-                  :disabled="isRemoveSourceBranchButtonDisabled"
                   type="checkbox"/> Remove source branch
               </label>
 
