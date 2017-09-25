@@ -83,6 +83,14 @@ describe Ci::Runner do
       expect(described_class.owned_or_shared(specific_project.id)).to eq [specific_runner]
     end
 
+    it 'does not return the group runner if the project has group runners disabled' do
+      specific_group = create :group
+      specific_project = create :project, group: specific_group, group_runners_enabled: false
+      create :ci_runner, :specific, groups: [specific_group]
+
+      expect(described_class.owned_or_shared(specific_project.id)).to be_empty
+    end
+
     it 'returns the shared group runner' do
       group = create :group
       runner = create :ci_runner, :shared, groups: [group]
