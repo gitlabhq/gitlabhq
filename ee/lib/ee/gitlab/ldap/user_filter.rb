@@ -12,7 +12,11 @@ module EE
         end
 
         def filter
-          @proxy.adapter.ldap_search(options).map(&:dn)
+          logger.debug "Running filter #{@filter} against #{@proxy.provider}"
+
+          @proxy.adapter.ldap_search(options).map(&:dn).tap do |dns|
+            logger.debug "Found #{dns.count} mathing users for filter #{@filter}"
+          end
         end
 
         private
@@ -27,6 +31,10 @@ module EE
 
         def config
           @proxy.adapter.config
+        end
+
+        def logger
+          Rails.logger
         end
       end
     end
