@@ -1,11 +1,17 @@
 <template>
-  <popup-dialog :title="title">
+        <!-- TODO: handle Delete button with btn-danger class and method delete to link_to current_board_path(board) -->
+  <popup-dialog
+    v-show="currentPage"
+    :title="title"
+    :primaryButtonLabel="buttonText"
+    @toggle="cancel"
+    @submit="submit"
+  >
     <p v-if="currentPage === 'delete'">
       Are you sure you want to delete this board?
     </p>
     <form
       v-else
-      @submit="submit"
     >
       <div class="append-bottom-20">
         <label class="label-light" for="board-new-name">
@@ -31,11 +37,12 @@
         </button>
       </div>
       <div v-if="expand">
-        <p>
+        <p class="light append-bottom-10">
           Board scope affects which issues are displayed for anyone who visits this board
         </p>
 
         <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
+        <div class="board-inner-container">
           <input
             type="hidden"
             id="board-milestone"
@@ -46,24 +53,10 @@
             :milestone-path="milestonePath"
             :select-milestone="selectMilestone">
           </board-milestone-select>
+        </div>
+
       </div>
     </form>
-    <template slot="footer">
-      <!-- TODO: handle Delete button with btn-danger class and method delete to link_to current_board_path(board) -->
-      <button
-        class="btn btn-primary pull-left"
-        @click="submit"
-        type="button"
-      >
-        {{ buttonText }}
-      </button>
-      <button
-        class="btn btn-default pull-right"
-        type="button"
-      >
-        Cancel
-      </button>
-    </template>
   </popup-dialog>
 </template>
 

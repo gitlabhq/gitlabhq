@@ -48,20 +48,21 @@ export default {
   tabindex="-1"
 >
   <div
-    class="modal-dialog"
+    class="modal-dialog modal-sm"
     role="document"
   >
     <div class="modal-content">
       <div class="modal-header">
         <slot name="header">
-          <button type="button"
-            class="close"
+          <h4 class="modal-title pull-left">{{this.title}}</h4>
+          <button
+            type="button"
+            class="close pull-right"
             @click="close"
             aria-label="Close"
           >
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title">{{this.title}}</h4>
         </slot>
       </div>
       <div class="modal-body">
@@ -69,22 +70,22 @@ export default {
           <p>{{this.body}}</p>
         </slot>
       </div>
-      <div class="modal-footer">
-        <slot name="footer">
-          <button
-            type="button"
-            class="btn btn-default"
-            @click="emitSubmit(false)">
-              Cancel
-          </button>
+      <slot name="footer">
+        <div class="modal-footer">
           <button type="button"
-            class="btn"
+            class="btn pull-left"
             :class="btnKindClass"
             @click="emitSubmit(true)">
               {{primaryButtonLabel}}
           </button>
-        </slot>
-      </div>
+          <button
+            type="button"
+            class="btn btn-default pull-right"
+            @click="close">
+              Cancel
+          </button>
+        </div>
+      </slot>
     </div>
   </div>
 </div>

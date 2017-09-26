@@ -1,17 +1,7 @@
 <template>
-  <div class="droplab-dropdown">
-    <div class="media">
-      <label class="media-body">Milestone</label>
-      <a href="#" data-dropdown-trigger="#milestone-dropdown" ref="trigger">
-        Edit
-      </a>
-    </div>
-    <div>
-      {{ board.milestone ? board.milestone.title : 'Milestone' }}
-      <ul
-        ref="list"
-        class="dropdown-menu"
-      >
+  <div>
+    <gl-dropdown>
+      <template slot="items">
         <li
           v-for="milestone in extraMilestones"
           :key="milestone.id"
@@ -21,7 +11,7 @@
             @click.prevent.stop="selectMilestone(milestone)">
             <i
               class="fa fa-check"
-              v-if="board.milestone_id === milestone.id"></i>
+              v-if="false"></i>
             {{ milestone.title }}
           </a>
         </li>
@@ -35,12 +25,12 @@
             @click.prevent.stop="selectMilestone(milestone)">
             <i
               class="fa fa-check"
-              v-if="board.milestone_id === milestone.id"></i>
+              v-if="false"></i>
             {{ milestone.title }}
           </a>
         </li>
-      </ul>
-    </div>
+      </template>
+    </gl-dropdown>
   </div>
 </template>
 
@@ -48,6 +38,7 @@
 /* global BoardService */
 
 import DropLab from '~/droplab/drop_lab';
+import GlDropdown from './dropdown.vue';
 import extraMilestones from '../mixins/extra_milestones';
 
 export default {
@@ -72,11 +63,11 @@ export default {
       extraMilestones,
     };
   },
+  components: {
+    GlDropdown,
+  },
   mounted() {
     BoardService.loadMilestones.call(this);
-
-    this.droplab = new DropLab();
-    this.droplab.init(this.$refs.trigger, this.$refs.list);
   },
 };
 </script>
