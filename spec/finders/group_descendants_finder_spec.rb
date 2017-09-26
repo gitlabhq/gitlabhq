@@ -58,6 +58,19 @@ describe GroupDescendantsFinder do
         expect(found_group.preloaded_member_count).to eq(1)
       end
 
+      it 'does not include subgroups the user does not have access to' do
+        subgroup.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+        public_subgroup = create(:group, :public, parent: group, path: 'public-group')
+        other_subgroup = create(:group, :private, parent: group, path: 'visible-private-group')
+        other_user = create(:user)
+        other_subgroup.add_developer(other_user)
+
+        finder = described_class.new(current_user: other_user, parent_group: group)
+
+        expect(finder.execute).to contain_exactly(public_subgroup, other_subgroup)
+      end
+
       context 'with a filter' do
         let(:params) { { filter: 'test' } }
 
@@ -66,6 +79,21 @@ describe GroupDescendantsFinder do
           matching_subgroup = create(:group, name: 'testgroup', parent: group)
 
           expect(finder.execute).to contain_exactly(matching_subgroup, matching_project)
+        end
+
+        it 'does not include subgroups the user does not have access to' do
+          _invisible_subgroup = create(:group, :private, parent: group, name: 'test1')
+          other_subgroup = create(:group, :private, parent: group, name: 'test2')
+          public_subgroup = create(:group, :public, parent: group, name: 'test3')
+          other_subsubgroup = create(:group, :private, parent: other_subgroup, name: 'test4')
+          other_user = create(:user)
+          other_subgroup.add_developer(other_user)
+
+          finder = described_class.new(current_user: other_user,
+                                       parent_group: group,
+                                       params: params)
+
+          expect(finder.execute).to contain_exactly(other_subgroup, public_subgroup, other_subsubgroup)
         end
 
         context 'with matching children' do

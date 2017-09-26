@@ -73,13 +73,23 @@ class GroupDescendantsFinder
                      all_available: true).execute
   end
 
-  def all_descendant_groups
+  def all_visible_descendant_groups
+    groups_table = Group.arel_table
+    visible_for_user = if current_user
+                         groups_table[:id].in(
+                           Arel::Nodes::SqlLiteral.new(GroupsFinder.new(current_user, all_available: true).execute.select(:id).to_sql)
+                         )
+                       else
+                         groups_table[:visibility_level].eq(Gitlab::VisibilityLevel::PUBLIC)
+                       end
+
     Gitlab::GroupHierarchy.new(Group.where(id: parent_group))
       .base_and_descendants
+      .where(visible_for_user)
   end
 
   def subgroups_matching_filter
-    all_descendant_groups
+    all_visible_descendant_groups
       .where.not(id: parent_group)
       .search(params[:filter])
   end
