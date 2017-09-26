@@ -114,6 +114,7 @@ namespace :admin do
       get :preview_sign_in
       delete :logo
       delete :header_logos
+      delete :favicon
     end
   end
 
