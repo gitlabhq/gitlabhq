@@ -148,8 +148,15 @@ helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,g
 
 ## Updating GitLab using the Helm Chart
 
+>**Note**: If you are upgrading from a previous version to 0.1.35 or above, you will need to change the access mode values for GitLab's storage. To do this, set the following in `values.yaml` or on the CLI:
+```
+gitlabDataAccessMode=ReadWriteMany
+gitlabRegistryAccessMode=ReadWriteMany
+gitlabConfigAccessMode=ReadWriteMany
+```
+
 Once your GitLab Chart is installed, configuration changes and chart updates
-should we done using `helm upgrade`:
+should be done using `helm upgrade`:
 
 ```bash
 helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
@@ -178,6 +185,14 @@ To uninstall the GitLab Chart, run the following:
 ```bash
 helm delete gitlab
 ```
+
+## Troubleshooting
+
+### Storage errors when updating `gitlab-omnibus` versions prior to 0.1.35
+
+Users upgrading `gitlab-omnibus` from a version prior to 0.1.35, may see an error like: `Error: UPGRADE FAILED: PersistentVolumeClaim "gitlab-gitlab-config-storage" is invalid: spec: Forbidden: field is immutable after creation`.
+
+This is due to a change in the access mode for GitLab storage in version 0.1.35. To successfully upgrade, the access mode flags must be set to `ReadWriteMany` as detailed in the [update section](#updating-gitlab-using-the-helm-chart).
 
 [kube-srv]: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
 [storageclass]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storageclasses
