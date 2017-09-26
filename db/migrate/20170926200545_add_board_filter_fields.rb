@@ -15,6 +15,12 @@ class AddBoardFilterFields < ActiveRecord::Migration
   end
 
   def down
-    remove_columns :boards, :weight, :author_id, :assignee_id
+    remove_column :boards, :weight
+
+    remove_foreign_key :boards, column: :author_id
+    remove_reference :boards, :author
+
+    remove_foreign_key :boards, column: :assignee_id
+    remove_reference :boards, :assignee
   end
 end
