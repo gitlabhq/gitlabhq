@@ -63,7 +63,7 @@ const RepoEditor = {
       const lineNumber = e.target.position.lineNumber;
       if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
-        Store.activeLine = lineNumber;
+        Store.setActiveLine(lineNumber);
 
         Helper.monacoInstance.setPosition({
           lineNumber: this.activeLine,

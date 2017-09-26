@@ -25,11 +25,28 @@ export default {
 
   methods: {
     addPopEventListener() {
-      window.addEventListener('popstate', () => {
-        if (location.href.indexOf('#') > -1) return;
-        this.linkClicked({
-          url: location.href,
-        });
+      window.addEventListener('popstate', (event) => {
+        const selectedFile = this.files.find(file => location.href.indexOf(file.url) > -1);
+        if (selectedFile) {
+          if (selectedFile.url !== this.activeFile.url) {
+            this.fileClicked(selectedFile);
+          }
+
+          if (location.hash.indexOf('#L') > -1) {
+            const lineNumber = Number(location.hash.substr(2));
+            if (!isNaN(lineNumber)) {
+              Store.setActiveLine(lineNumber);
+              if (Store.isPreviewView()) {
+                document.getElementById('L' + lineNumber).scrollIntoView();
+              } else {
+                Helper.monacoInstance.setPosition({
+                  lineNumber: this.activeLine,
+                  column: 1,
+                });
+              }
+            }
+          }
+        }
       });
     },
 

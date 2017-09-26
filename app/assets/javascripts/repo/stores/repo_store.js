@@ -101,6 +101,10 @@ const RepoStore = {
     RepoStore.activeFileIndex = i;
   },
 
+  setActiveLine(activeLine) {
+    RepoStore.activeLine = activeLine;
+  },
+
   setActiveToRaw() {
     RepoStore.activeFile.raw = false;
     // can't get vue to listen to raw for some reason so RepoStore for now.
