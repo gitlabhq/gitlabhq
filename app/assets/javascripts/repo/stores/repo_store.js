@@ -19,6 +19,7 @@ const RepoStore = {
   currentBlobView: 'repo-preview',
   openedFiles: [],
   submitCommitsLoading: false,
+  currentLastCommitPath: '',
   dialog: {
     open: false,
     title: '',
@@ -143,6 +144,7 @@ const RepoStore = {
     // now activate the right tab based on what you closed.
     if (RepoStore.openedFiles.length === 0) {
       RepoStore.activeFile = {};
+      Helper.getRecentCommits();
       return;
     }
 

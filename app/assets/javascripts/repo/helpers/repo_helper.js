@@ -133,7 +133,8 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getRecentCommits(url) {
+  getRecentCommits() {
+    const url = Store.currentLastCommitPath;
     // don't grab recent commits if we can't show them.
     if(Store.openedFiles.length) return;
     Service.getRecentCommits(url)
@@ -145,17 +146,13 @@ const RepoHelper = {
         lastCommitByFilePath[lastCommitFile.path] = lastCommitFile;
       });
 
-      Store.files.map((currentFile, i) => {
+      Store.files.forEach((currentFile, i) => {
         const lastCommitData = lastCommitByFilePath[currentFile.path];
 
         if (lastCommitData && lastCommitData.commit) {
           const { commit } = lastCommitData;
           currentFile.lastCommitMessage = commit.message;
           currentFile.lastCommitUpdate = commit.committed_date;
-        } else {
-          currentFile.lastCommitMessage = '';
-          currentFile.lastCommitUpdate = '';
-          currentFile.lastCommitUrl = '';
         }
       });
     });
@@ -198,7 +195,8 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
-        RepoHelper.getRecentCommits(data.last_commit_path);
+        Store.currentLastCommitPath = data.last_commit_path;
+        RepoHelper.getRecentCommits();
         if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
         file = RepoHelper.setDirectoryOpen(file);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
