@@ -791,6 +791,29 @@ describe('Filtered Search Visual Tokens', () => {
         expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
         const avatar = tokenValueElement.querySelector('img.avatar');
         expect(avatar.src).toBe(dummyUser.avatar_url);
+        expect(avatar.alt).toBe('');
+      })
+      .then(done)
+      .catch(done.fail);
+    });
+
+    it('escapes user name when creating token', (done) => {
+      const dummyUser = {
+        name: '<script>',
+        avatar_url: `${gl.TEST_HOST}/mypics/avatar.png`,
+      };
+      const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
+      const tokenValue = tokenValueElement.innerText;
+      usersCacheSpy = (username) => {
+        expect(`@${username}`).toBe(tokenValue);
+        return Promise.resolve(dummyUser);
+      };
+
+      subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
+      .then(() => {
+        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+        tokenValueElement.querySelector('.avatar').remove();
+        expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
       })
       .then(done)
       .catch(done.fail);
