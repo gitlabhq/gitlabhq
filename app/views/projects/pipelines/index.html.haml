@@ -4,8 +4,6 @@
 = content_for :flash_message do
   = render 'shared/shared_runners_minutes_limit', project: @project
 
-= render "projects/pipelines/head"
-
 %div{ 'class' => container_class }
   - if show_auto_devops_callout?(@project)
     = render 'shared/auto_devops_callout'
