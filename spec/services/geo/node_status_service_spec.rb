@@ -83,5 +83,13 @@ describe Geo::NodeStatusService do
 
       expect(status.health).to eq('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.')
     end
+
+    it 'gracefully handles case when primary is deleted' do
+      primary.destroy
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq('This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.')
+    end
   end
 end

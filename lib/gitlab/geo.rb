@@ -1,6 +1,7 @@
 module Gitlab
   module Geo
     OauthApplicationUndefinedError = Class.new(StandardError)
+    GeoNodeNotFoundError = Class.new(StandardError)
 
     CACHE_KEYS = %i(
       geo_primary_node
@@ -47,6 +48,10 @@ module Gitlab
 
     def self.geo_database_configured?
       Rails.configuration.respond_to?(:geo_database)
+    end
+
+    def self.primary_node_configured?
+      Gitlab::Geo.primary_node.present?
     end
 
     def self.license_allows?
