@@ -3,9 +3,10 @@ module Ci
     attr_reader :pipeline
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Validate,
-                Gitlab::Ci::Pipeline::Chain::Skip].freeze
+                Gitlab::Ci::Pipeline::Chain::Skip,
+                Gitlab::Ci::Pipeline::Chain::Create].freeze
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -19,43 +20,31 @@ module Ci
         protected: project.protected_for?(ref)
       )
 
-      command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
-                               save_incompleted: save_on_errors,
-                               trigger_request: trigger_request,
-                               schedule: schedule,
-                               project: project,
-                               current_user: current_user)
+      @pipeline.tap do |pipeline|
+        command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
+                                 save_incompleted: save_on_errors,
+                                 trigger_request: trigger_request,
+                                 schedule: schedule,
+                                 seeds_block: block,
+                                 project: project,
+                                 current_user: current_user)
 
-      sequence = SEQUENCE.map { |chain| chain.new(pipeline, command) }
+        sequence = SEQUENCE.map { |chain| chain.new(pipeline, command) }
 
-      done = sequence.any? do |chain|
-        chain.perform!
-        chain.break?
-      end
-
-      update_merge_requests_head_pipeline if pipeline.persisted?
-
-      return pipeline if done
-
-      begin
-        Ci::Pipeline.transaction do
-          pipeline.save!
-
-          yield(pipeline) if block_given?
-
-          Ci::CreatePipelineStagesService
-            .new(project, current_user)
-            .execute(pipeline)
+        sequence_complete = sequence.none? do |chain|
+          chain.perform!
+          chain.break?
         end
-      rescue ActiveRecord::RecordInvalid => e
-        return error("Failed to persist the pipeline: #{e}")
+
+        update_merge_requests_head_pipeline if pipeline.persisted?
+
+        if sequence_complete
+          cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+          pipeline_created_counter.increment(source: source)
+
+          pipeline.process!
+        end
       end
-
-      update_merge_requests_head_pipeline if pipeline.persisted?
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-      pipeline_created_counter.increment(source: source)
-
-      pipeline.tap(&:process!)
     end
 
     private
