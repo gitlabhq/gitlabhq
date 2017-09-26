@@ -14,6 +14,8 @@ describe EE::Gitlab::LDAP::UserFilter do
       base: 'dc=example,dc=com',
       active_directory: false
     )
+
+    allow(fake_proxy).to receive(:provider)
   end
 
   describe '#filter' do
