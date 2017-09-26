@@ -2,16 +2,16 @@ class FaviconUploader < AttachmentUploader
   include CarrierWave::MiniMagick
 
   STATUS_ICON_NAMES = [
-    :status_not_found,
     :status_canceled,
-    :status_success,
-    :status_skipped,
     :status_created,
     :status_failed,
-    :status_warning,
-    :status_pending,
     :status_manual,
-    :status_running
+    :status_not_found,
+    :status_pending,
+    :status_running,
+    :status_skipped,
+    :status_success,
+    :status_warning
   ].freeze
 
   version :default do
