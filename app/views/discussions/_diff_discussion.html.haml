@@ -1,5 +1,4 @@
 - if local_assigns[:on_image]
-  %h1 Should work now
   = render partial: "discussions/notes", collection: discussions, as: :discussion
 - else
   - expanded = local_assigns.fetch(:expanded, true)
