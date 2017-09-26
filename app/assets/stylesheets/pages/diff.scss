@@ -651,9 +651,23 @@
 .note-container {
   background-color: $gray-light;
   border-top: 1px solid $white-normal;
+
+  .notes .note {
+    background-color: $white-light;
+  }
+
+  .discussion-notes + .discussion-notes::before {
+    // TODO: Convert to Jagged border
+    background-color: black;
+    content: " ";
+    display: block;
+    width: 100%;
+    height: $gl-padding;
+  }
 }
 
-.diff-file .note-container .new-note {
+.diff-file .note-container .new-note,
+.note-container .discussion-notes {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }

@@ -416,6 +416,11 @@ export default class Notes {
     this.note_ids.push(noteEntity.id);
     form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
     row = form.closest('tr');
+
+    if (row.length === 0) {
+      row = form;
+    }
+
     lineType = this.isParallelView() ? form.find('#line_type').val() : 'old';
     diffAvatarContainer = row.prevAll('.line_holder').first().find('.js-avatar-container.' + lineType + '_line');
     // is this the first note of discussion?
@@ -779,6 +784,7 @@ export default class Notes {
 
         // check if this is the last note for this line
         if ($notes.find('.note').length === 0) {
+          // TODO: Replace TR check with an actual class name check
           var notesTr = $notes.closest('tr');
 
           // "Discussions" tab
@@ -787,9 +793,10 @@ export default class Notes {
           $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
 
           // The notes tr can contain multiple lists of notes, like on the parallel diff
-          if (notesTr.find('.discussion-notes').length > 1) {
+          // notesTr does not exist for image diffs
+          if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
             $notes.remove();
-          } else {
+          } else if (notesTr.length > 0) {
             notesTr.remove();
           }
         }

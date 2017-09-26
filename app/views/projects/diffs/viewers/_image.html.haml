@@ -16,6 +16,7 @@
         = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
       %p.image-info= number_to_human_size(blob.size)
   .note-container
+    = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion
 - else
   .image
     .two-up.view

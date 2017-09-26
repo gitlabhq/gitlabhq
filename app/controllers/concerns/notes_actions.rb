@@ -121,6 +121,7 @@ module NotesActions
 
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
+    # TODO: Return different view for image diff
 
     if params[:view] == 'parallel'
       template = "discussions/_parallel_diff_discussion"
