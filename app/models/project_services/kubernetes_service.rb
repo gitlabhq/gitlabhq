@@ -15,16 +15,17 @@ class KubernetesService < DeploymentService
   # Bearer authentication
   # TODO:  user/password auth, client certificates
   prop_accessor :token
+  prop_accessor :username
+  prop_accessor :password
 
   # Provide a custom CA bundle for self-signed deployments
   prop_accessor :ca_pem
 
+  before_validation :enforce_namespace_to_lower_case
+
   with_options presence: true, if: :activated? do
     validates :api_url, url: true
-    validates :token
   end
-
-  before_validation :enforce_namespace_to_lower_case
 
   validates :namespace,
     allow_blank: true,
@@ -35,7 +36,15 @@ class KubernetesService < DeploymentService
       message: Gitlab::Regex.kubernetes_namespace_regex_message
     }
 
+  validate :token_or_username, if: :activated?
+
   after_save :clear_reactive_cache!
+
+  def token_or_username
+    unless token.present? || (username.present? && password.present?)
+      errors.add(:base, "You need to spicify token or username/password")
+    end
+  end
 
   def initialize_properties
     self.properties = {} if properties.nil?
@@ -75,7 +84,15 @@ class KubernetesService < DeploymentService
         { type: 'text',
           name: 'token',
           title: 'Token',
-          placeholder: 'Service token' }
+          placeholder: 'Service token',
+          help: 'Or you can use username/password instead of token' },
+        { type: 'text',
+          name: 'username',
+          title: 'Username',
+          placeholder: 'username' },
+        { type: 'password',
+          name: 'password',
+          title: 'Password' }
     ]
   end
 
@@ -103,6 +120,8 @@ class KubernetesService < DeploymentService
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
+      { key: 'KUBE_USER_NAME', value: username, public: false },
+      { key: 'KUBE_PASSWORD', value: password, public: false },
       { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
       { key: 'KUBECONFIG', value: config, public: false, file: true }
     ]
@@ -145,6 +164,8 @@ class KubernetesService < DeploymentService
       url: api_url,
       namespace: actual_namespace,
       token: token,
+      username: username,
+      password: password,
       ca_pem: ca_pem)
   end
 
@@ -157,7 +178,7 @@ class KubernetesService < DeploymentService
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
-    raise "Incomplete settings" unless api_url && actual_namespace && token
+    raise "Incomplete settings" unless api_url && actual_namespace && (token || (username && password))
 
     ::Kubeclient::Client.new(
       join_api_url(api_path),
@@ -190,7 +211,11 @@ class KubernetesService < DeploymentService
   end
 
   def kubeclient_auth_options
-    { bearer_token: token }
+    if token.present?
+      { bearer_token: token }
+    else
+      { username: username, password: password }
+    end
   end
 
   def join_api_url(api_path)
@@ -205,6 +230,8 @@ class KubernetesService < DeploymentService
   def terminal_auth
     {
       token: token,
+      username: username,
+      password: password,
       ca_pem: ca_pem,
       max_session_time: current_application_settings.terminal_max_session_time
     }

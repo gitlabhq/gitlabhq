@@ -43,8 +43,12 @@ module Gitlab
       end
     end
 
-    def add_terminal_auth(terminal, token:, max_session_time:, ca_pem: nil)
-      terminal[:headers]['Authorization'] << "Bearer #{token}"
+    def add_terminal_auth(terminal, token:, username:, password:, max_session_time:, ca_pem: nil)
+      if token.present?
+        terminal[:headers]['Authorization'] << "Bearer #{token}"
+      else
+        terminal[:headers]['Authorization'] << "TODO: I have no idea how to use username: and password. Please help meeeeeeeeeeeeeeeeeeeeeee"
+      end
       terminal[:max_session_time] = max_session_time
       terminal[:ca_pem] = ca_pem if ca_pem.present?
     end
@@ -77,7 +81,9 @@ module Gitlab
       url.to_s
     end
 
-    def to_kubeconfig(url:, namespace:, token:, ca_pem: nil)
+    def to_kubeconfig(url:, namespace:, token:, username:, password:, ca_pem: nil)
+      auth = if token.present? ? { token: token } : { username: username, password: password }
+
       config = {
         apiVersion: 'v1',
         clusters: [
@@ -99,7 +105,7 @@ module Gitlab
         users: [
           {
             name: 'gitlab-deploy',
-            user: { token: token }
+            user: auth
           }
         ]
       }
