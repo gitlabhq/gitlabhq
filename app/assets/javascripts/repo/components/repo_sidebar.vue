@@ -26,7 +26,11 @@ export default {
   methods: {
     addPopEventListener() {
       window.addEventListener('popstate', (event) => {
-        const selectedFile = this.files.find(file => location.href.indexOf(file.url) > -1);
+        let selectedFile = this.files.find(file => {return location.pathname.indexOf(file.url) > -1});
+        if (!selectedFile) {
+          // Maybe it is not in the current tree but in the opened tabs
+          selectedFile = Store.openedFiles.find(file => {return location.pathname.indexOf(file.url) > -1});
+        }
         if (selectedFile) {
           if (selectedFile.url !== this.activeFile.url) {
             this.fileClicked(selectedFile);
@@ -46,6 +50,11 @@ export default {
               }
             }
           }
+        } else {
+          // Not opened at all lets open new tab
+          this.fileClicked({
+            url: location.href,
+          });
         }
       });
     },
