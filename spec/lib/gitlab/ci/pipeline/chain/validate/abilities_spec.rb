@@ -32,6 +32,19 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
   end
 
   context 'when user has ability to create a pipeline' do
+    before do
+      project.add_developer(user)
+
+      step.perform!
+    end
+
+    it 'does not invalidate the pipeline' do
+      expect(pipeline).to be_valid
+    end
+
+    it 'does not break the chain' do
+      expect(step.break?).to eq false
+    end
   end
 
   describe '#allowed_to_create?' do
