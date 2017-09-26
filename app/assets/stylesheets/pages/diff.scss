@@ -695,26 +695,24 @@
       top: (-1px * $image-comment-cursor-top-offset + 2px);
     }
   }
+}
 
-  .badge {
-    position: absolute;
-    background-color: $blue-400;
-    color: $white-light;
-    border-color: $white-light;
-    border-width: 1px;
-    border-style: solid;
-  }
+.frame.click-to-comment .badge,
+.image-diff-avatar-link .badge {
+  position: absolute;
+  background-color: $blue-400;
+  color: $white-light;
+  border-color: $white-light;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .image-diff-avatar-link {
   position: relative;
 
   .badge {
-    position: absolute;
     top: 25px;
     right: 8px;
-    background-color: $blue-400;
-    color: $white-light;
   }
 }
 
