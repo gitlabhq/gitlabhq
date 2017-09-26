@@ -68,6 +68,8 @@ export default class ImageDiff {
     [].forEach.call(discussions, (discussion) => {
       const position = JSON.parse(discussion.dataset.position);
 
+      const firstNote = discussion.querySelector('.note');
+
       this.badges.push({
         actual: {
           x: position.x_axis,
@@ -75,6 +77,7 @@ export default class ImageDiff {
           width: position.width,
           height: position.height,
         },
+        noteId: firstNote.id,
       });
     });
 
@@ -87,18 +90,48 @@ export default class ImageDiff {
     });
 
     this.badges.forEach((badge, index) =>
-      imageDiffHelper.addCommentBadge(this.imageFrame, badge.browser, index + 1));
+      imageDiffHelper.addCommentBadge(this.imageFrame, {
+        coordinate: badge.browser,
+        badgeText: index + 1,
+        noteId: badge.noteId,
+      }));
+  }
+
+  renderDiscussionBadges() {
+    const discussions = this.el.querySelectorAll('.note-container .discussion-notes .notes');
+
+    // TODO: Get feedback on this n^2 operation
+    [].forEach.call(discussions, (discussion, index) => {
+      const notes = discussion.querySelectorAll('.note');
+      [].forEach.call(notes, (note) => {
+        const badge = note.querySelector('.image-diff-avatar-link .badge');
+        badge.innerText = index + 1;
+        badge.classList.remove('hidden');
+      });
+    });
   }
 
   addBadge(event) {
-    const actual = event.detail;
+    const { x, y, width, height, noteId } = event.detail;
+    const actual = {
+      x,
+      y,
+      width,
+      height,
+    };
+
     const browserImage = this.imageFrame.querySelector('img');
     const badge = {
       actual,
       browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
+      noteId,
     };
 
-    imageDiffHelper.addCommentBadge(this.imageFrame, badge.browser, this.badges.length + 1);
+    imageDiffHelper.addCommentBadge(this.imageFrame, {
+      coordinate: badge.browser,
+      badgeText: this.badges.length + 1,
+      noteId,
+    });
 
     this.badges.push(badge);
   }

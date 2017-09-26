@@ -445,6 +445,23 @@ export default class Notes {
 
           row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
         }
+
+        // Add badge for image diffs
+        const $diffFile = form.closest('.diff-file');
+        if ($diffFile.length > 0) {
+          const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
+          const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
+            detail: {
+              x: x_axis,
+              y: y_axis,
+              width,
+              height,
+              noteId: $discussion[0].querySelector('.notes .note').id,
+            },
+          });
+
+          $diffFile[0].dispatchEvent(addBadgeEvent);
+        }
       }
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
@@ -1469,18 +1486,7 @@ export default class Notes {
             detail: e,
           });
 
-          const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
-          const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
-            detail: {
-              x: x_axis,
-              y: y_axis,
-              width,
-              height,
-            },
-          });
-
           diffFile.dispatchEvent(blurEvent);
-          diffFile.dispatchEvent(addBadgeEvent);
         }
 
         // Reset cached commands list when command is applied

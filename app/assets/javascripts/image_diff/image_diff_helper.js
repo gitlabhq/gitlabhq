@@ -89,7 +89,7 @@ export function commentIndicatorOnClick(e) {
   textarea.focus();
 }
 
-export function addCommentBadge(containerEl, coordinate, badgeText) {
+export function addCommentBadge(containerEl, { coordinate, badgeText, noteId }) {
   const { x, y } = coordinate;
   const button = document.createElement('button');
   button.classList.add('btn-transparent', 'badge');
@@ -104,8 +104,10 @@ export function addCommentBadge(containerEl, coordinate, badgeText) {
   button.style.left = `${x - (width * 0.5)}px`;
   button.style.top = `${y - (height * 0.5)}px`;
 
-  // TODO: Highlight first note in the discussion when button is clicked
-  button.addEventListener('click', e => e.stopPropagation());
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.hash = noteId;
+  });
 
   return button;
 }
