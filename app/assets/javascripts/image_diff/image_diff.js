@@ -64,37 +64,34 @@ export default class ImageDiff {
 
   renderBadges() {
     // Process existing badges from html
+    const browserImage = this.imageFrame.querySelector('img');
     const discussions = this.el.querySelectorAll('.note-container .discussion-notes .notes');
-    [].forEach.call(discussions, (discussion) => {
-      const position = JSON.parse(discussion.dataset.position);
 
+    [].forEach.call(discussions, (discussion, index) => {
+      const position = JSON.parse(discussion.dataset.position);
       const firstNote = discussion.querySelector('.note');
 
-      this.badges.push({
-        actual: {
-          x: position.x_axis,
-          y: position.y_axis,
-          width: position.width,
-          height: position.height,
-        },
+      const actual = {
+        x: position.x_axis,
+        y: position.y_axis,
+        width: position.width,
+        height: position.height,
+      };
+
+      const badge = {
+        actual,
+        browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
         noteId: firstNote.id,
-      });
-    });
+      };
 
-    const browserImage = this.imageFrame.querySelector('img');
-
-    this.badges.map((badge) => {
-      const newBadge = badge;
-      newBadge.browser = imageDiffHelper.createBadgeBrowserFromActual(browserImage, badge.actual);
-      return newBadge;
-    });
-
-    this.badges.forEach((badge, index) =>
       imageDiffHelper.addCommentBadge(this.imageFrame, {
         coordinate: badge.browser,
         badgeText: index + 1,
         noteId: badge.noteId,
-      }));
+      });
+
+      this.badges.push(badge);
+    });
   }
 
   addBadge(event) {
