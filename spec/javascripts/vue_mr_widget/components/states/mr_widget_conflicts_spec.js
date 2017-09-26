@@ -28,25 +28,29 @@ describe('MRWidgetConflicts', () => {
         });
       });
 
+      afterEach(() => {
+        vm.$destroy();
+      });
+
       it('should tell you about conflicts without bothering other people', () => {
         expect(vm.$el.textContent).toContain('There are merge conflicts');
         expect(vm.$el.textContent).not.toContain('ask someone with write access');
       });
 
       it('should allow you to resolve the conflicts', () => {
-        const resolveButton = vm.$refs.resolveConflictsButton;
+        const resolveButton = vm.$el.querySelector('.js-resolve-conflicts-button');
 
         expect(resolveButton.textContent).toContain('Resolve conflicts');
         expect(resolveButton.getAttribute('href')).toEqual(path);
       });
 
       it('should have merge buttons', () => {
-        const mergeButton = vm.$refs.statusIcon.$refs.mergeButton;
-        const mergeLocallyButton = vm.$refs.mergeLocallyButton;
+        const mergeButton = vm.$el.querySelector('.js-disabled-merge-button');
+        const mergeLocallyButton = vm.$el.querySelector('.js-merge-locally-button');
 
         expect(mergeButton.textContent).toContain('Merge');
         expect(mergeButton.disabled).toBeTruthy();
-        expect(mergeButton.classList.contains('btn-success')).toBeTruthy();
+        expect(mergeButton.classList.contains('btn-success')).toEqual(true);
         expect(mergeLocallyButton.textContent).toContain('Merge locally');
       });
     });
@@ -62,14 +66,18 @@ describe('MRWidgetConflicts', () => {
         });
       });
 
+      afterEach(() => {
+        vm.$destroy();
+      });
+
       it('should show proper message', () => {
         expect(vm.$el.textContent).toContain('ask someone with write access');
       });
 
       it('should not have action buttons', () => {
-        expect(vm.$refs.statusIcon.$refs.mergeButton).toBeDefined();
-        expect(vm.$refs.resolveConflictsButton).toBeUndefined();
-        expect(vm.$refs.mergeLocallyButton).toBeUndefined();
+        expect(vm.$el.querySelector('.js-disabled-merge-button')).toBeDefined();
+        expect(vm.$el.querySelector('.js-resolve-conflicts-button')).toBeNull();
+        expect(vm.$el.querySelector('.js-merge-locally-button')).toBeNull();
       });
     });
 
@@ -82,6 +90,10 @@ describe('MRWidgetConflicts', () => {
             ffOnlyEnabled: true,
           },
         });
+      });
+
+      afterEach(() => {
+        vm.$destroy();
       });
 
       it('should tell you to rebase locally', () => {

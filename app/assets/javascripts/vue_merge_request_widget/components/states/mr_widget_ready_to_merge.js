@@ -290,15 +290,14 @@ export default {
 
               <span
                 v-if="mr.ffOnlyEnabled"
-                ref="fastForwardMessage">
+                class="js-fast-forward-message">
                 Fast-forward merge without a merge commit
               </span>
               <button
                 v-else
-                ref="modifyCommitMessageButton"s
                 @click="toggleCommitMessageEditor"
                 :disabled="isMergeButtonDisabled"
-                class="btn btn-default btn-xs"
+                class="js-modify-commit-message-button btn btn-default btn-xs"
                 type="button">
                 Modify commit message
               </button>

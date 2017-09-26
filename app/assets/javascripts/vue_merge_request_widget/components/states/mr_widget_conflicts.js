@@ -11,16 +11,15 @@ export default {
   template: `
     <div class="mr-widget-body media">
       <status-icon
-        ref="statusIcon"
         status="failed"
         showDisabledButton />
       <div class="media-body space-children">
-        <template v-if="mr.ffOnlyEnabled">
-          <span class="bold">
-            Fast-forward merge is not possible.
-            To merge this request, first rebase locally
-          </span>
-        </template>
+        <span
+          v-if="mr.ffOnlyEnabled"
+          class="bold">
+          Fast-forward merge is not possible.
+          To merge this request, first rebase locally
+        </span>
         <template v-else>
           <span class="bold">
             There are merge conflicts<span v-if="!mr.canMerge">.</span>
@@ -30,15 +29,13 @@ export default {
           </span>
           <a
             v-if="mr.canMerge && mr.conflictResolutionPath"
-            ref="resolveConflictsButton"
             :href="mr.conflictResolutionPath"
-            class="btn btn-default btn-xs">
+            class="js-resolve-conflicts-button btn btn-default btn-xs">
             Resolve conflicts
           </a>
           <a
             v-if="mr.canMerge"
-            ref="mergeLocallyButton"
-            class="btn btn-default btn-xs"
+            class="js-merge-locally-button btn btn-default btn-xs"
             data-toggle="modal"
             href="#modal_merge_info">
             Merge locally
