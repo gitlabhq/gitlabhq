@@ -24,7 +24,7 @@ module Gitlab
           def commit_message_skips_ci?
             return false unless @pipeline.git_commit_message
 
-            @skipped ||= @pipeline.git_commit_message =~ SKIP_PATTERN
+            @skipped ||= !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
           end
         end
       end
