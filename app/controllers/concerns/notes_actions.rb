@@ -131,9 +131,9 @@ module NotesActions
     else
       template = "discussions/_diff_discussion"
       on_image = discussion.on_image? if discussion.diff_discussion?
+      @fresh_discussion = true
 
-      # TODO get discussion bagde count for new discussions
-      locals = { discussions: [discussion], badge_count: 99, on_image: on_image  }
+      locals = { discussions: [discussion], on_image: on_image }
     end
 
     render_to_string(
