@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def break?
-           @pipeline.errors.any? || @pipeline.persisted?
+            @pipeline.errors.any? || @pipeline.persisted?
           end
 
           def allowed_to_trigger_pipeline?

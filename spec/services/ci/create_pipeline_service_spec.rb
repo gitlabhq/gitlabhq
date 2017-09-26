@@ -481,5 +481,4 @@ describe Ci::CreatePipelineService do
       end
     end
   end
-
 end

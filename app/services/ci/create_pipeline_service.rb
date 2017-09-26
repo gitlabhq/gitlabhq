@@ -3,7 +3,7 @@ module Ci
     attr_reader :pipeline
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Validate,
-                Gitlab::Ci::Pipeline::Chain::Skip]
+                Gitlab::Ci::Pipeline::Chain::Skip].freeze
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
       @pipeline = Ci::Pipeline.new(
@@ -90,7 +90,6 @@ module Ci
         .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
         .created_or_pending
     end
-
 
     def before_sha
       params[:checkout_sha] || params[:before] || Gitlab::Git::BLANK_SHA
