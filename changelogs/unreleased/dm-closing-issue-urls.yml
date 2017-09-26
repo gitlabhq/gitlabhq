@@ -1,0 +1,5 @@
+---
+title: Correctly detect multiple issue URLs after 'Closes...' in MR descriptions
+merge_request:
+author:
+type: fixed

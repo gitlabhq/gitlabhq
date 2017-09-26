@@ -178,8 +178,8 @@ const RepoHelper = {
 
   setFile(data, file) {
     const newFile = data;
+    newFile.url = file.url || Service.url; // Grab the URL from service, happens on page refresh.
 
-    newFile.url = file.url;
     if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }

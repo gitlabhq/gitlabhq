@@ -239,8 +239,8 @@ module ProjectsHelper
     end
   end
 
-  def has_projects_or_name?(projects, params)
-    !!(params[:name] || any_projects?(projects))
+  def show_projects?(projects, params)
+    !!(params[:personal] || params[:name] || any_projects?(projects))
   end
 
   private

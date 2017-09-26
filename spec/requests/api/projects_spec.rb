@@ -193,6 +193,7 @@ describe API::Projects do
             path path_with_namespace
             star_count forks_count
             created_at last_activity_at
+            avatar_url
           )
 
           get api('/projects?simple=true', user)
@@ -1178,6 +1179,59 @@ describe API::Projects do
           delete api("/projects/#{project_fork_target.id}/fork", admin)
           expect(response).to have_http_status(304)
           expect(project_fork_target.reload.forked_from_project).to be_nil
+        end
+      end
+    end
+
+    describe 'GET /projects/:id/forks' do
+      let(:private_fork) { create(:project, :private, :empty_repo) }
+      let(:member) { create(:user) }
+      let(:non_member) { create(:user) }
+
+      before do
+        private_fork.add_developer(member)
+      end
+
+      context 'for a forked project' do
+        before do
+          post api("/projects/#{private_fork.id}/fork/#{project_fork_source.id}", admin)
+          private_fork.reload
+          expect(private_fork.forked_from_project).not_to be_nil
+          expect(private_fork.forked?).to be_truthy
+          project_fork_source.reload
+          expect(project_fork_source.forks.length).to eq(1)
+          expect(project_fork_source.forks).to include(private_fork)
+        end
+
+        context 'for a user that can access the forks' do
+          it 'returns the forks' do
+            get api("/projects/#{project_fork_source.id}/forks", member)
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(1)
+            expect(json_response[0]['name']).to eq(private_fork.name)
+          end
+        end
+
+        context 'for a user that cannot access the forks' do
+          it 'returns an empty array' do
+            get api("/projects/#{project_fork_source.id}/forks", non_member)
+
+            expect(response).to have_http_status(200)
+            expect(response).to include_pagination_headers
+            expect(json_response.length).to eq(0)
+          end
+        end
+      end
+
+      context 'for a non-forked project' do
+        it 'returns an empty array' do
+          get api("/projects/#{project_fork_source.id}/forks")
+
+          expect(response).to have_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response.length).to eq(0)
         end
       end
     end

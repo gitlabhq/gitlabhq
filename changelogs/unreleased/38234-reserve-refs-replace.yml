@@ -1,0 +1,5 @@
+---
+title: Also reserve refs/replace after importing a project
+merge_request: 14436
+author:
+type: fixed

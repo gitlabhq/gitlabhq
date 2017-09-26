@@ -8,6 +8,7 @@ class Repository
   RESERVED_REFS_NAMES = %W[
     heads
     tags
+    replace
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
     #{REF_ENVIRONMENTS}
@@ -533,8 +534,11 @@ class Repository
   cache_method :tag_count, fallback: 0
 
   def avatar
-    if tree = file_on_head(:avatar)
-      tree.path
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
+      end
     end
   end
   cache_method :avatar

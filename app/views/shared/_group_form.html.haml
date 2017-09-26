@@ -22,11 +22,9 @@
 
     - if @group.persisted?
       .alert.alert-warning.prepend-top-10
-        %ul
-          %li Changing group path can have unintended side effects.
-          %li Renaming group path will rename directory for all related projects
-          %li It will change web url for access group and group projects.
-          %li It will change the git path to repositories under this group.
+        Changing group path can have unintended side effects.
+        = succeed '.' do
+          = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
 .form-group.group-name-holder
   = f.label :name, class: 'control-label' do

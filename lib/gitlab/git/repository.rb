@@ -386,7 +386,13 @@ module Gitlab
         options[:limit] ||= 0
         options[:offset] ||= 0
 
-        raw_log(options).map { |c| Commit.decorate(self, c) }
+        gitaly_migrate(:find_commits) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.find_commits(options)
+          else
+            raw_log(options).map { |c| Commit.decorate(self, c) }
+          end
+        end
       end
 
       # Used in gitaly-ruby
@@ -475,7 +481,15 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        Gitlab::Git::DiffCollection.new(diff_patches(from, to, options, *paths), options)
+        iterator = gitaly_migrate(:diff_between) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
+          else
+            diff_patches(from, to, options, *paths)
+          end
+        end
+
+        Gitlab::Git::DiffCollection.new(iterator, options)
       end
 
       # Returns a RefName for a given SHA
@@ -490,7 +504,7 @@ module Gitlab
 
             # Not found -> ["", 0]
             # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
-            Gitlab::Popen.popen(args, @path).first.split.last
+            popen(args, @path).first.split.last
           end
         end
       end
@@ -792,9 +806,7 @@ module Gitlab
         end
 
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        message, status = Gitlab::Popen.popen(
-          command,
-          path) do |stdin|
+        message, status = popen(command, path) do |stdin|
           stdin.write(instructions.join)
         end
 
