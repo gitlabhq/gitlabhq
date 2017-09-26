@@ -1,22 +1,41 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
+  set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
+
+  let(:pipeline) do
+    build_stubbed(:ci_pipeline, ref: ref, project: project)
+  end
+
+  let(:command) do
+    double('command', project: project, current_user: user)
+  end
+
+  let(:step) { described_class.new(pipeline, command) }
+
+  let(:ref) { 'master' }
+
+  context 'when users has no ability to run a pipeline' do
+    before do
+      step.perform!
+    end
+
+    it 'adds an error about insufficient permissions' do
+      expect(pipeline.errors.to_a)
+        .to include /Insufficient permissions/
+    end
+
+    it 'breaks the pipeline builder chain' do
+      expect(step.break?).to eq true
+    end
+  end
+
+  context 'when user has ability to create a pipeline' do
+  end
+
   describe '#allowed_to_create?' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-    let(:ref) { 'master' }
-
-    let(:pipeline) do
-      build_stubbed(:ci_pipeline, ref: ref, project: project)
-    end
-
-    let(:command) do
-      double('command', project: project, current_user: user)
-    end
-
-    subject do
-      described_class.new(pipeline, command).allowed_to_create?
-    end
+    subject { step.allowed_to_create? }
 
     context 'when user is a developer' do
       before do

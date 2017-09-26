@@ -46,9 +46,6 @@ module Ci
 
     private
 
-    def process_pipeline_sequence
-    end
-
     def commit
       @commit ||= project.commit(origin_sha || origin_ref)
     end
