@@ -69,8 +69,6 @@ class Projects::RefsController < Projects::ApplicationController
       @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
     end
 
-    puts @logs.inspect
-
     render json: @logs
   end
 
