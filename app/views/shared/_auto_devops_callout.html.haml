@@ -6,10 +6,10 @@
     .svg-container
       = custom_icon('icon_autodevops')
     .user-callout-copy
-      %h4= _('Auto DevOps (Beta)')
-      %p= _('Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
+      %h4= s_('AutoDevOps|Auto DevOps (Beta)')
+      %p= s_('AutoDevOps|Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration.')
       %p
-        #{s_('AutoDevOps|Learn more in the')}
-        = link_to _('Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer'
+        - link = link_to(s_('AutoDevOps|Auto DevOps documentation'), help_page_path('topics/autodevops/index.md'), target: '_blank', rel: 'noopener noreferrer')
+        = s_('AutoDevOps|Learn more in the %{link}').html_safe % { link: link }
 
-      = link_to _('Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn btn-primary js-close-callout'
+      = link_to s_('AutoDevOps|Enable in settings'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'), class: 'btn btn-primary js-close-callout'
