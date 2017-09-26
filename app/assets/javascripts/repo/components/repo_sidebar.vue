@@ -72,10 +72,6 @@ export default {
       </tr>
     </thead>
     <tbody>
-      <repo-file-options
-        :is-mini="isMini"
-        :project-name="projectName"
-      />
       <repo-previous-directory
         v-if="isRoot"
         :prev-url="prevURL"

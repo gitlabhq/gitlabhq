@@ -281,6 +281,9 @@
       width: 20%;
       border-right: 1px solid $white-normal;
       overflow: auto;
+      tr:first-child td {
+        border-top: none;
+      }
     }
 
     table {
