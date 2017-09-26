@@ -149,31 +149,35 @@ helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,g
 ## Updating GitLab using the Helm Chart
 
 Once your GitLab Chart is installed, configuration changes and chart updates
-should we done using `helm upgrade`
+should we done using `helm upgrade`:
 
 ```bash
-helm upgrade -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
 ```
 
-where:
+## Upgrading from CE to EE using the Helm Chart
 
-- `<CONFIG_VALUES_FILE>` is the path to values file containing your custom
-  [configuration] (#configuring-and-installing-gitlab).
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing-gitlab-using-the-helm-chart) we called it `gitlab`.
+If you have installed the Community Edition using this chart, upgrading to Enterprise Edition is easy.
+
+If you are using a `values.yaml` file to specify the configuration options, edit the file and set `gitlab=ee`. If you would like to run a specific version of GitLab EE, set `gitlabEEImage` to be the desired GitLab [docker image](https://hub.docker.com/r/gitlab/gitlab-ee/tags/). Then you can use `helm upgrade` to update your GitLab instance to EE:
+
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+You can also upgrade and specify these options via the command line:
+
+```bash
+helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gitlab/gitlab-omnibus
+```
 
 ## Uninstalling GitLab using the Helm Chart
 
 To uninstall the GitLab Chart, run the following:
 
 ```bash
-helm delete <RELEASE-NAME>
+helm delete gitlab
 ```
-
-where:
-
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing) we called it `gitlab`.
 
 [kube-srv]: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
 [storageclass]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storageclasses

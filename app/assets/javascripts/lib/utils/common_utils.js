@@ -408,6 +408,10 @@ export const setCiStatusFavicon = (pageUrl) => {
   });
 };
 
+export const spriteIcon = icon => `<svg><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+
+export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),
@@ -434,4 +438,6 @@ window.gl.utils = {
   getSelectedFragment,
   insertText,
   nodeMatchesSelector,
+  spriteIcon,
+  imagePath,
 };

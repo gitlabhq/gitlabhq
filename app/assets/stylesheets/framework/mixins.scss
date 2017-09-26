@@ -142,5 +142,5 @@
 }
 
 @mixin green-status-color {
-  @include status-color($green-50, $green-500, $green-700);
+  @include status-color($green-100, $green-500, $green-700);
 }

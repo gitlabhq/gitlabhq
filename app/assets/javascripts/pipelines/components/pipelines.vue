@@ -27,6 +27,8 @@
       return {
         endpoint: pipelinesData.endpoint,
         helpPagePath: pipelinesData.helpPagePath,
+        emptyStateSvgPath: pipelinesData.emptyStateSvgPath,
+        errorStateSvgPath: pipelinesData.errorStateSvgPath,
         autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
         canCreatePipeline: pipelinesData.canCreatePipeline,
@@ -182,9 +184,13 @@
       <empty-state
         v-if="shouldRenderEmptyState"
         :help-page-path="helpPagePath"
+        :empty-state-svg-path="emptyStateSvgPath"
         />
 
-      <error-state v-if="shouldRenderErrorState" />
+      <error-state 
+        v-if="shouldRenderErrorState"
+        :error-state-svg-path="errorStateSvgPath"
+        />
 
       <div
         class="blank-state blank-state-no-icon"

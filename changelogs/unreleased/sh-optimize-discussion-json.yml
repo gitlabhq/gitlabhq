@@ -1,5 +1,0 @@
----
-title: Eliminate N+1 queries in loading discussions.json endpoint
-merge_request:
-author:
-type: fixed

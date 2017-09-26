@@ -12,34 +12,38 @@ import './components/stage_review_component';
 import './components/stage_staging_component';
 import './components/stage_test_component';
 import './components/total_time_component';
-import './cycle_analytics_service';
-import './cycle_analytics_store';
+import CycleAnalyticsService from './cycle_analytics_service';
+import CycleAnalyticsStore from './cycle_analytics_store';
 
 Vue.use(Translate);
 
 $(() => {
   const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
-  const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
-  const cycleAnalyticsStore = gl.cycleAnalytics.CycleAnalyticsStore;
-  const cycleAnalyticsService = new gl.cycleAnalytics.CycleAnalyticsService({
-    requestPath: cycleAnalyticsEl.dataset.requestPath,
-  });
 
   gl.cycleAnalyticsApp = new Vue({
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
-    data: {
-      state: cycleAnalyticsStore.state,
-      isLoading: false,
-      isLoadingStage: false,
-      isEmptyStage: false,
-      hasError: false,
-      startDate: 30,
-      isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+    data() {
+      const cycleAnalyticsEl = document.querySelector('#cycle-analytics');
+      const cycleAnalyticsService = new CycleAnalyticsService({
+        requestPath: cycleAnalyticsEl.dataset.requestPath,
+      });
+
+      return {
+        store: CycleAnalyticsStore,
+        state: CycleAnalyticsStore.state,
+        isLoading: false,
+        isLoadingStage: false,
+        isEmptyStage: false,
+        hasError: false,
+        startDate: 30,
+        isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
+        service: cycleAnalyticsService,
+      };
     },
     computed: {
       currentStage() {
-        return cycleAnalyticsStore.currentActiveStage();
+        return this.store.currentActiveStage();
       },
     },
     components: {
@@ -56,7 +60,7 @@ $(() => {
     },
     methods: {
       handleError() {
-        cycleAnalyticsStore.setErrorState(true);
+        this.store.setErrorState(true);
         return new Flash('There was an error while fetching cycle analytics data.');
       },
       initDropdown() {
@@ -77,17 +81,17 @@ $(() => {
 
         this.isLoading = true;
 
-        cycleAnalyticsService
+        this.service
           .fetchCycleAnalyticsData(fetchOptions)
-          .done((response) => {
-            cycleAnalyticsStore.setCycleAnalyticsData(response);
+          .then(resp => resp.json())
+          .then((response) => {
+            this.store.setCycleAnalyticsData(response);
             this.selectDefaultStage();
             this.initDropdown();
+            this.isLoading = false;
           })
-          .error(() => {
+          .catch(() => {
             this.handleError();
-          })
-          .always(() => {
             this.isLoading = false;
           });
       },
@@ -100,27 +104,27 @@ $(() => {
         if (this.currentStage === stage) return;
 
         if (!stage.isUserAllowed) {
-          cycleAnalyticsStore.setActiveStage(stage);
+          this.store.setActiveStage(stage);
           return;
         }
 
         this.isLoadingStage = true;
-        cycleAnalyticsStore.setStageEvents([], stage);
-        cycleAnalyticsStore.setActiveStage(stage);
+        this.store.setStageEvents([], stage);
+        this.store.setActiveStage(stage);
 
-        cycleAnalyticsService
+        this.service
           .fetchStageData({
             stage,
             startDate: this.startDate,
           })
-          .done((response) => {
+          .then(resp => resp.json())
+          .then((response) => {
             this.isEmptyStage = !response.events.length;
-            cycleAnalyticsStore.setStageEvents(response.events, stage);
+            this.store.setStageEvents(response.events, stage);
+            this.isLoadingStage = false;
           })
-          .error(() => {
+          .catch(() => {
             this.isEmptyStage = true;
-          })
-          .always(() => {
             this.isLoadingStage = false;
           });
       },
