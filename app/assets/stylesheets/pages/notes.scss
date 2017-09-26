@@ -836,5 +836,9 @@ ul.notes {
     margin-top: -1px;
     background-color: $white-light;
     border-top: 1px solid $white-normal;
+
+    .note-textarea {
+      height: 140px !important; // Need !important to override inline styles from autosize.js
+    }
   }
 }

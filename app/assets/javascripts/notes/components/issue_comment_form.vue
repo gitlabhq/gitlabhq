@@ -237,7 +237,9 @@
 </script>
 
 <template>
-  <div :class="{ 'is-floating': floatingModeEnabled }">
+  <div
+    :class="{ 'is-floating': floatingModeEnabled }"
+  >
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
     <ul
       v-else

@@ -41,6 +41,11 @@
 
         this.$emit('toggleFloatingMode');
       },
+      toggleFullScreen() {
+        if (this.floatingModeEnabled) {
+          this.toggleFloatingMode();
+        }
+      },
     },
     mounted() {
       $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
@@ -122,7 +127,11 @@
             @click="toggleFloatingMode"
           >
             <i
-              class="fa fa-window-restore"
+              class="fa"
+              :class="{
+                'fa-window-restore': !floatingModeEnabled,
+                'fa-window-maximize': floatingModeEnabled,
+              }"
               aria-hidden="true">
             </i>
           </button>
@@ -133,7 +142,9 @@
             data-container="body"
             tabindex="-1"
             title="Go full screen"
-            type="button">
+            type="button"
+            @click="toggleFullScreen"
+          >
             <i
               aria-hidden="true"
               class="fa fa-arrows-alt fa-fw">
