@@ -1040,14 +1040,14 @@ export default class Notes {
   cancelDiscussionForm(e) {
     e.preventDefault();
     const $form = $(e.target).closest('.js-discussion-note-form');
-    const diffViewer = $form.closest('.diff-viewer')[0];
+    const diffFile = $form.closest('.diff-file')[0];
 
-    if (diffViewer) {
+    if (diffFile) {
       const blurEvent = new CustomEvent('blur.imageDiff', {
         detail: e,
       });
 
-      $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
+      diffFile.dispatchEvent(blurEvent);
     }
 
     return this.removeDiscussionNoteForm($form);
@@ -1462,14 +1462,14 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        const diffViewer = $form.closest('.diff-viewer')[0];
+        const diffFile = $form.closest('.diff-file')[0];
 
-        if (diffViewer) {
+        if (diffFile) {
           const blurEvent = new CustomEvent('blur.imageDiff', {
             detail: e,
           });
 
-          $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
+          diffFile.dispatchEvent(blurEvent);
         }
 
         // Reset cached commands list when command is applied

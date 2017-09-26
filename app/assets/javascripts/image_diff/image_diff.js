@@ -3,37 +3,39 @@ import * as imageDiffHelper from './image_diff_helper';
 export default class ImageDiff {
   constructor(el) {
     this.el = el;
-    this.imageFrame = el.querySelector('.diff-viewer .image');
+    this.imageFrame = el.querySelector('.diff-viewer .image .frame');
   }
 
   bindEvents() {
-    this.el.addEventListener('click.imageDiff', ImageDiff.click);
-    this.el.addEventListener('blur.imageDiff', ImageDiff.blur);
+    this.clickWrapper = this.click.bind(this);
+    this.blurWrapper = this.blur.bind(this);
+
+    this.el.addEventListener('click.imageDiff', this.clickWrapper);
+    this.el.addEventListener('blur.imageDiff', this.blurWrapper);
     this.el.addEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
     this.el.addEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
   }
 
   unbindEvents() {
-    this.el.removeEventListener('click.imageDiff', ImageDiff.click);
-    this.el.removeEventListener('blur.imageDiff', ImageDiff.blur);
+    this.el.removeEventListener('click.imageDiff', this.clickWrapper);
+    this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
     this.el.removeEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
     this.el.removeEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
   }
 
-  static click(event) {
+  click(event) {
     const customEvent = event.detail;
     const selection = imageDiffHelper.getTargetSelection(customEvent);
 
     // showCommentIndicator
-    const container = customEvent.currentTarget;
-    const commentIndicator = container.querySelector('.comment-indicator');
+    const commentIndicator = this.imageFrame.querySelector('.comment-indicator');
 
     if (commentIndicator) {
       commentIndicator.style.left = `${selection.browser.x}px`;
       commentIndicator.style.top = `${selection.browser.y}px`;
     } else {
       const button = imageDiffHelper
-        .addCommentIndicator(container, selection.browser);
+        .addCommentIndicator(this.imageFrame, selection.browser);
 
       button.addEventListener('click', imageDiffHelper.commentIndicatorOnClick);
     }
@@ -45,10 +47,8 @@ export default class ImageDiff {
   }
 
   // TODO: Rename to something better?
-  static blur(event) {
-    const customEvent = event.detail;
-    const diffViewerEl = customEvent.target.closest('.diff-viewer');
-    const commentIndicator = diffViewerEl.querySelector('.comment-indicator');
+  blur() {
+    const commentIndicator = this.imageFrame.querySelector('.comment-indicator');
 
     if (commentIndicator) {
       commentIndicator.remove();
