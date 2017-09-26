@@ -116,5 +116,32 @@ describe Geo::RepositorySyncWorker, :postgresql do
         end
       end
     end
+
+    context 'unhealthy shards' do
+      it 'skips backfill for repositories on unhealthy shards' do
+        unhealthy = create(:project, group: synced_group, repository_storage: 'broken')
+
+        # Make the shard unhealthy
+        FileUtils.rm_rf(unhealthy.repository_storage_path)
+
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy.id, anything)
+
+        Sidekiq::Testing.inline! { subject.perform }
+      end
+
+      it 'skips backfill for projects on missing shards' do
+        missing = create(:project, group: synced_group)
+        missing.update_column(:repository_storage, 'unknown')
+
+        # hide the 'broken' storage for this spec
+        stub_storage_settings({})
+
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing.id, anything)
+
+        Sidekiq::Testing.inline! { subject.perform }
+      end
+    end
   end
 end
