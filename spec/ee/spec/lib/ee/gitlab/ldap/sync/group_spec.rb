@@ -371,4 +371,51 @@ describe EE::Gitlab::LDAP::Sync::Group do
       end
     end
   end
+
+  context 'filter' do
+    describe '#update_permissions' do
+      before do
+        # Safe-check because some permissions are removed when `Group#ldap_synced?`
+        # is true (e.g. in `GroupPolicy`).
+        expect(group).to be_ldap_synced
+        allow(EE::Gitlab::LDAP::UserFilter).to receive(:filter).and_return([user_dn(user.username)])
+
+        group.start_ldap_sync
+      end
+
+      after do
+        group.finish_ldap_sync
+      end
+
+      let(:group) do
+        create(:group_with_ldap_group_filter_link,
+               :access_requestable,
+               group_access: ::Gitlab::Access::DEVELOPER)
+      end
+
+      let(:sync_group) { described_class.new(group, proxy(adapter)) }
+
+      context 'with all functionality against one LDAP group type' do
+        context 'with basic add/update actions' do
+          let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
+
+          it 'does not update permissions unless ldap sync status is started' do
+            group.finish_ldap_sync
+
+            expect(Rails.logger)
+                .to receive(:warn).with(/status must be 'started' before updating permissions/)
+
+            sync_group.update_permissions
+          end
+
+          it 'adds new members and sets ldap attribute to true' do
+            sync_group.update_permissions
+
+            expect(group.members.pluck(:user_id)).to include(user.id)
+            expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
+          end
+        end
+      end
+    end
+  end
 end
