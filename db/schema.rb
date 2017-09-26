@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170921203824) do
+ActiveRecord::Schema.define(version: 20170926203418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,27 +215,13 @@ ActiveRecord::Schema.define(version: 20170921203824) do
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
   create_table "board_filter_labels", force: :cascade do |t|
-    t.integer "board_filter_id", null: false
+    t.integer "board_id", null: false
     t.integer "label_id", null: false
   end
 
-  add_index "board_filter_labels", ["board_filter_id", "label_id"], name: "index_board_filter_labels_on_board_filter_id_and_label_id", unique: true, using: :btree
-  add_index "board_filter_labels", ["board_filter_id"], name: "index_board_filter_labels_on_board_filter_id", using: :btree
+  add_index "board_filter_labels", ["board_id", "label_id"], name: "index_board_filter_labels_on_board_id_and_label_id", unique: true, using: :btree
+  add_index "board_filter_labels", ["board_id"], name: "index_board_filter_labels_on_board_id", using: :btree
   add_index "board_filter_labels", ["label_id"], name: "index_board_filter_labels_on_label_id", using: :btree
-
-  create_table "board_filters", force: :cascade do |t|
-    t.integer "board_id", null: false
-    t.integer "milestone_id"
-    t.integer "weight"
-    t.integer "author_id"
-    t.integer "assignee_id"
-  end
-
-  add_index "board_filters", ["assignee_id"], name: "index_board_filters_on_assignee_id", using: :btree
-  add_index "board_filters", ["author_id"], name: "index_board_filters_on_author_id", using: :btree
-  add_index "board_filters", ["board_id"], name: "index_board_filters_on_board_id", using: :btree
-  add_index "board_filters", ["milestone_id"], name: "index_board_filters_on_milestone_id", using: :btree
-  add_index "board_filters", ["weight"], name: "index_board_filters_on_weight", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
@@ -244,8 +230,13 @@ ActiveRecord::Schema.define(version: 20170921203824) do
     t.string "name", default: "Development", null: false
     t.integer "milestone_id"
     t.integer "group_id"
+    t.integer "weight"
+    t.integer "author_id"
+    t.integer "assignee_id"
   end
 
+  add_index "boards", ["assignee_id"], name: "index_boards_on_assignee_id", using: :btree
+  add_index "boards", ["author_id"], name: "index_boards_on_author_id", using: :btree
   add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
   add_index "boards", ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
@@ -2069,14 +2060,13 @@ ActiveRecord::Schema.define(version: 20170921203824) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
-  add_foreign_key "board_filter_labels", "board_filters", name: "fk_ebc90d2f1a", on_delete: :cascade
+  add_foreign_key "board_filter_labels", "boards", name: "fk_53e44f3a07", on_delete: :cascade
   add_foreign_key "board_filter_labels", "labels", name: "fk_91e18fdcee", on_delete: :cascade
-  add_foreign_key "board_filters", "boards", name: "fk_87e919b0eb", on_delete: :cascade
-  add_foreign_key "board_filters", "milestones", name: "fk_37d28eeebc", on_delete: :nullify
-  add_foreign_key "board_filters", "users", column: "assignee_id", name: "fk_e7893dfa6e", on_delete: :nullify
-  add_foreign_key "board_filters", "users", column: "author_id", name: "fk_b341da4d2b", on_delete: :nullify
+  add_foreign_key "boards", "milestones", name: "fk_b93160e8ee", on_delete: :nullify
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
+  add_foreign_key "boards", "users", column: "assignee_id", name: "fk_2a3450e77c", on_delete: :nullify
+  add_foreign_key "boards", "users", column: "author_id", name: "fk_58e8fc64f3", on_delete: :nullify
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade

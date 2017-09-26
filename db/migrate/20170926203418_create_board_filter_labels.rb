@@ -7,13 +7,13 @@ class CreateBoardFilterLabels < ActiveRecord::Migration
 
   def up
     create_table :board_filter_labels do |t|
-      t.integer :board_filter_id, null: false, index: true
+      t.integer :board_id, null: false, index: true
       t.integer :label_id, null: false, index: true
     end
 
-    add_index :board_filter_labels, [:board_filter_id, :label_id], unique: true
+    add_index :board_filter_labels, [:board_id, :label_id], unique: true
 
-    add_concurrent_foreign_key :board_filter_labels, :board_filters, column: :board_filter_id, on_delete: :cascade
+    add_concurrent_foreign_key :board_filter_labels, :boards, column: :board_id, on_delete: :cascade
     add_concurrent_foreign_key :board_filter_labels, :labels, column: :label_id, on_delete: :cascade
   end
 
