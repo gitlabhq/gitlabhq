@@ -1,5 +1,79 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - breadcrumb_title "Integrations Settings"
 - page_title 'Integrations'
-= render 'projects/hooks/index'
-= render 'projects/services/index'
+-# = render "projects/settings/head"
+-# = render 'projects/hooks/index'
+-# = render 'projects/services/index'
+
+:ruby
+  active_services = []
+  inactive_services = []
+  custom_logos = {
+    'custom_issue_tracker' => 'issues',
+    'emails_on_push' => 'notifications',
+    'external_wiki' => 'wiki',
+    'pipelines_email' => 'notifications',
+    'mock_deployment' => 'spam_logs',
+    'mock_monitoring' => 'monitoring',
+    'mock_ci' => 'pipeline',
+    'slack_slash_commands' => 'integrations/service_logo_slack',
+    'mattermost_slash_commands' => 'integrations/service_logo_mattermost'
+  }
+
+  @services.sort_by(&:title).each do |service|
+    if service.activated?
+      current_service = { name: service.to_param, title: service.title, description: service.description, edit_path: edit_project_service_path(@project, service.to_param), updated_at: service.updated_at }
+      if custom_logos.has_key?(service.to_param)
+        current_service[:logo_path] = custom_logos[service.to_param]
+      else
+        current_service[:logo_path] = "integrations/service_logo_#{service.to_param}"
+      end
+      active_services << current_service
+    else
+      current_service = { name: service.to_param, title: service.title, description: service.description, edit_path: edit_project_service_path(@project, service.to_param) }
+      if custom_logos.has_key?(service.to_param)
+        current_service[:logo_path] = custom_logos[service.to_param]
+      else
+        current_service[:logo_path] = "integrations/service_logo_#{service.to_param}"
+      end
+      inactive_services << current_service
+    end
+  end
+
+.integrations-page
+  .page-header.prepend-top-default
+    %h3.prepend-top-0
+      = page_title
+    %p
+      Make your project even better by integrating it with the tools you use.
+      If your favorite integration is missing, help getting it supported by
+      %a{ href: "https://gitlab.com/gitlab-org/gitlab-ce/issues/new" }
+        = icon('external-link')
+        creating an issue on the GitLab project
+
+  .active-integrations
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title.normal-title
+          %span
+            Active integrations
+          %span.badge.integrations-count= active_services.length
+      .panel-body
+        %ul.append-bottom-0.list-unstyled.integrations-list
+          = render partial: 'integrations_list', locals: { services: active_services, show_status: true }
+          - if @hooks.any?
+            %li.integration-item
+              = boolean_to_icon true
+              %span.integration-logo.prepend-left-20
+                = custom_icon('integrations/service_logo_webhooks')
+              %span.prepend-left-20.integration-metadata
+                %a{ href: '#' } Webhooks
+                .prepend-left-10.badge= n_("%d configuration", "%d configurations", @hooks.count) % @hooks.count
+                %span.prepend-left-20.integration-description
+                  Send data when something happens in the project
+  
+  .available-integrations
+    %h3.append-bottom-0.normal-title
+      Add an integration
+    %ul.append-bottom-0.list-unstyled.integrations-list
+      = render partial: 'integrations_list', locals: { services: inactive_services, show_footer: true }
