@@ -37,10 +37,11 @@ class Projects::ClustersController < Projects::ApplicationController
     if params['creation_type'] == 'on_gke'
       # Create a cluster on GKE
       results = api_client.projects_zones_clusters_create(
-        params['gcp_project_id'],
-        params['cluster_zone'],
-        params['cluster_name'],
-        params['cluster_size']
+        project_id: params['gcp_project_id'],
+        zone: params['cluster_zone'],
+        cluster_name: params['cluster_name'],
+        cluster_size: params['cluster_size'],
+        machine_type: params['machine_type']
       )
 
       # Update service
@@ -90,7 +91,15 @@ class Projects::ClustersController < Projects::ApplicationController
   def edit
     unless session[GoogleApi::CloudPlatform::Client.token_in_session]
       @authorize_url = api_client.authorize_url
+      render :edit
     end
+
+    # Get cluster information
+    api_client.projects_zones_clusters_get(
+      project_id: cluster.gcp_project_id,
+      zone: cluster.cluster_zone,
+      cluster_id: cluster.cluster_name
+    )
   end
 
   def update

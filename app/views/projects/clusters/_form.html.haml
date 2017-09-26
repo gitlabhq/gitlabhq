@@ -1,0 +1,9 @@
+Create a new cluster
+%br
+Avaiable GCP project lists
+%br
+Avaiable zones
+%br
+= link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, creation_type: 'on_gke', cluster_name: 'gke-test-creation', gcp_project_id: 'gitlab-internal-153318', cluster_zone: 'us-central1-a', cluster_size: '1', project_namespace: 'aaa', machine_type: '???'), method: :post
+%br
+= link_to "Use existing kubernets cluster", namespace_project_clusters_path(@project.namespace, @project, creation_type: 'manual', end_point: 'xxx.xxx.xxx.xxx', ca_cert: 'xxx...xxx', token: 'xxx', project_namespace: 'aaa'), method: :post

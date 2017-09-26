@@ -1,2 +1,6 @@
 edit/show cluster
-= @cluster.inspect
+
+- if @authorize_url
+  = render "login"
+- else
+  = @cluster.inspect
