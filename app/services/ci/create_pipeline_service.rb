@@ -20,25 +20,20 @@ module Ci
         protected: project.protected_for?(ref)
       )
 
-      @pipeline.tap do |pipeline|
-        command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
-                                 save_incompleted: save_on_errors,
-                                 trigger_request: trigger_request,
-                                 schedule: schedule,
-                                 seeds_block: block,
-                                 project: project,
-                                 current_user: current_user)
+      command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
+                               save_incompleted: save_on_errors,
+                               seeds_block: block,
+                               project: project,
+                               current_user: current_user)
 
-        sequence = SEQUENCE.map { |chain| chain.new(pipeline, command) }
 
-        sequence_complete = sequence.none? do |chain|
-          chain.perform!
-          chain.break?
-        end
+      sequence = Gitlab::Ci::Pipeline::Chain::Sequence
+        .new(pipeline, command, SEQUENCE)
 
+      sequence.build! do |pipeline, sequence|
         update_merge_requests_head_pipeline if pipeline.persisted?
 
-        if sequence_complete
+        if sequence.complete?
           cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
           pipeline_created_counter.increment(source: source)
 
@@ -48,6 +43,9 @@ module Ci
     end
 
     private
+
+    def process_pipeline_sequence
+    end
 
     def commit
       @commit ||= project.commit(origin_sha || origin_ref)
