@@ -717,3 +717,12 @@
     color: $white-light;
   }
 }
+
+.note-container .notes {
+  position: relative;
+}
+
+.note-container .diff-notes-collapse {
+  position: absolute;
+  left: -10px;
+}
