@@ -1525,6 +1525,10 @@ class Project < ActiveRecord::Base
     namespace
   end
 
+  def parent_id
+    namespace_id
+  end
+
   def parent_changed?
     namespace_id_changed?
   end

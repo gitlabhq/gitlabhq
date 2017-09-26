@@ -13,12 +13,6 @@ class GroupDescendantsFinder
     Kaminari.paginate_array(children)
   end
 
-  # This allows us to fetch only the count without loading the objects. Unless
-  # the objects were already loaded.
-  def total_count
-    @total_count ||= subgroup_count + project_count
-  end
-
   def subgroup_count
     @subgroup_count ||= if defined?(@children)
                           children.count { |child| child.is_a?(Group) }
@@ -38,7 +32,39 @@ class GroupDescendantsFinder
   private
 
   def children
-    @children ||= subgroups.with_route.includes(parent: [:route, :parent]) + projects.with_route.includes(namespace: [:route, :parent])
+    return @children if @children
+
+    projects_count = <<~PROJECTCOUNT
+                   (SELECT COUNT(projects.id) AS preloaded_project_count
+                    FROM projects WHERE projects.namespace_id = namespaces.id)
+                   PROJECTCOUNT
+    subgroup_count = <<~SUBGROUPCOUNT
+                     (SELECT COUNT(children.id) AS preloaded_subgroup_count
+                      FROM namespaces children
+                      WHERE children.parent_id = namespaces.id)
+                     SUBGROUPCOUNT
+    member_count = <<~MEMBERCOUNT
+                   (SELECT COUNT(members.user_id) AS preloaded_member_count
+                    FROM members
+                    WHERE members.source_type = 'Namespace'
+                    AND members.source_id = namespaces.id
+                    AND members.requested_at IS NULL)
+                   MEMBERCOUNT
+    group_selects = [
+      'namespaces.*',
+      projects_count,
+      subgroup_count,
+      member_count
+    ]
+
+    subgroups_with_counts = subgroups.with_route.select(group_selects)
+
+    if params[:filter]
+      ancestors_for_project_search = ancestors_for_groups(Group.where(id: projects_matching_filter.select(:namespace_id)))
+      subgroups_with_counts = ancestors_for_project_search.with_route.select(group_selects) | subgroups_with_counts
+    end
+
+    @children = subgroups_with_counts + projects.preload(:route)
   end
 
   def direct_child_groups
@@ -48,11 +74,19 @@ class GroupDescendantsFinder
   end
 
   def all_descendant_groups
-    Gitlab::GroupHierarchy.new(Group.where(id: parent_group)).base_and_descendants
+    Gitlab::GroupHierarchy.new(Group.where(id: parent_group))
+      .base_and_descendants
   end
 
   def subgroups_matching_filter
-    all_descendant_groups.where.not(id: parent_group).search(params[:filter])
+    all_descendant_groups
+      .where.not(id: parent_group)
+      .search(params[:filter])
+  end
+
+  def ancestors_for_groups(base_for_ancestors)
+    Gitlab::GroupHierarchy.new(base_for_ancestors)
+      .base_and_ancestors.where.not(id: parent_group)
   end
 
   def subgroups
@@ -62,20 +96,23 @@ class GroupDescendantsFinder
     # When filtering subgroups, we want to find all matches withing the tree of
     # descendants to show to the user
     groups = if params[:filter]
-               subgroups_matching_filter
+               ancestors_for_groups(subgroups_matching_filter)
              else
                direct_child_groups
              end
     groups.sort(params[:sort])
   end
 
+  def projects_for_user
+    Project.public_or_visible_to_user(current_user).non_archived
+  end
+
   def direct_child_projects
-    GroupProjectsFinder.new(group: parent_group, params: params, current_user: current_user).execute
+    projects_for_user.where(namespace: parent_group)
   end
 
   def projects_matching_filter
-    ProjectsFinder.new(current_user: current_user, params: params).execute
-      .search(params[:filter])
+    projects_for_user.search(params[:filter])
       .where(namespace: all_descendant_groups)
   end
 

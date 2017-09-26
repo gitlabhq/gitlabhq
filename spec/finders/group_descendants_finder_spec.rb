@@ -46,6 +46,18 @@ describe GroupDescendantsFinder do
         expect(finder.execute).to contain_exactly(subgroup, project)
       end
 
+      it 'includes the preloaded counts for groups' do
+        create(:group, parent: subgroup)
+        create(:project, namespace: subgroup)
+        subgroup.add_developer(create(:user))
+
+        found_group = finder.execute.detect { |child| child.is_a?(Group) }
+
+        expect(found_group.preloaded_project_count).to eq(1)
+        expect(found_group.preloaded_subgroup_count).to eq(1)
+        expect(found_group.preloaded_member_count).to eq(1)
+      end
+
       context 'with a filter' do
         let(:params) { { filter: 'test' } }
 
@@ -57,16 +69,16 @@ describe GroupDescendantsFinder do
         end
 
         context 'with matching children' do
-          it 'includes a group that has a subgroup matching the query' do
+          it 'includes a group that has a subgroup matching the query and its parent' do
             matching_subgroup = create(:group, name: 'testgroup', parent: subgroup)
 
-            expect(finder.execute).to contain_exactly(matching_subgroup)
+            expect(finder.execute).to contain_exactly(subgroup, matching_subgroup)
           end
 
-          it 'includes a group that has a project matching the query' do
+          it 'includes the parent of a matching project' do
             matching_project = create(:project, namespace: subgroup, name: 'Testproject')
 
-            expect(finder.execute).to contain_exactly(matching_project)
+            expect(finder.execute).to contain_exactly(subgroup, matching_project)
           end
 
           it 'does not include the parent itself' do
@@ -75,24 +87,6 @@ describe GroupDescendantsFinder do
             expect(finder.execute).not_to include(group)
           end
         end
-      end
-    end
-
-    describe '#total_count' do
-      it 'counts the array children were already loaded' do
-        finder.instance_variable_set(:@children, [build(:project)])
-
-        expect(finder).not_to receive(:subgroups)
-        expect(finder).not_to receive(:projects)
-
-        expect(finder.total_count).to eq(1)
-      end
-
-      it 'performs a count without loading children when they are not loaded yet' do
-        expect(finder).to receive(:subgroups).and_call_original
-        expect(finder).to receive(:projects).and_call_original
-
-        expect(finder.total_count).to eq(2)
       end
     end
   end

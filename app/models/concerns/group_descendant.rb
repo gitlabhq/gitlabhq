@@ -1,16 +1,19 @@
 module GroupDescendant
-  def hierarchy(hierarchy_top = nil)
-    expand_hierarchy_for_child(self, self, hierarchy_top)
+  def hierarchy(hierarchy_top = nil, preloaded = [])
+    expand_hierarchy_for_child(self, self, hierarchy_top, preloaded)
   end
 
-  def expand_hierarchy_for_child(child, hierarchy, hierarchy_top)
-    if child.parent.nil? && hierarchy_top.present?
+  def expand_hierarchy_for_child(child, hierarchy, hierarchy_top, preloaded = [])
+    parent = preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
+    parent ||= child.parent
+
+    if parent.nil? && hierarchy_top.present?
       raise ArgumentError.new('specified base is not part of the tree')
     end
 
-    if child.parent && child.parent != hierarchy_top
-      expand_hierarchy_for_child(child.parent,
-                                 { child.parent => hierarchy },
+    if parent && parent != hierarchy_top
+      expand_hierarchy_for_child(parent,
+                                 { parent => hierarchy },
                                  hierarchy_top)
     else
       hierarchy
@@ -30,10 +33,10 @@ module GroupDescendant
     end
 
     first_descendant, *other_descendants = descendants
-    merged = first_descendant.hierarchy(hierarchy_top)
+    merged = first_descendant.hierarchy(hierarchy_top, descendants)
 
     other_descendants.each do |descendant|
-      next_descendant = descendant.hierarchy(hierarchy_top)
+      next_descendant = descendant.hierarchy(hierarchy_top, descendants)
       merged = merge_hash_tree(merged, next_descendant)
     end
 
