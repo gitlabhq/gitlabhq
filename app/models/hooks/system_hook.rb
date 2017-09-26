@@ -8,4 +8,7 @@ class SystemHook < WebHook
   TRIGGERS.each do |trigger, event|
     scope trigger, -> { where(event => true) }
   end
+
+  default_value_for :push_events, false
+  default_value_for :repository_update_events, true
 end
