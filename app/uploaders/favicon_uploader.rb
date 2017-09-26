@@ -14,23 +14,26 @@ class FaviconUploader < AttachmentUploader
     :status_running
   ].freeze
 
-  version :default_without_format_conversion do
+  version :default do
     process resize_to_fill: [32, 32]
-  end
-
-  # this intermediate version generates an image in the ico format but with the
-  # original file suffix.
-  version :_default, from_version: :default_without_format_conversion do
     process convert: 'ico'
-  end
 
-  version :default, from_version: :_default
+    def full_filename(filename)
+      filename_for_different_format(super(filename), 'ico')
+    end
+  end
 
   STATUS_ICON_NAMES.each do |status_name|
     version status_name, from_version: :default do
       process status_favicon: status_name
+
+      def full_filename(filename)
+        filename_for_different_format(super(filename), 'ico')
+      end
     end
   end
+
+  private
 
   def status_favicon(status_name)
     manipulate! do |img|
@@ -40,5 +43,9 @@ class FaviconUploader < AttachmentUploader
         c.compose 'over'
       end
     end
+  end
+
+  def filename_for_different_format(filename, format)
+    filename.chomp(File.extname(filename)) + ".#{format}"
   end
 end
