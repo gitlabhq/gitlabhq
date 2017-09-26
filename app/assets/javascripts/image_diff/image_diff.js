@@ -107,6 +107,7 @@ export default class ImageDiff {
     };
 
     const browserImage = this.imageFrame.querySelector('img');
+    const badgeText = this.badges.length + 1;
     const badge = {
       actual,
       browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
@@ -115,9 +116,14 @@ export default class ImageDiff {
 
     imageDiffHelper.addCommentBadge(this.imageFrame, {
       coordinate: badge.browser,
-      badgeText: this.badges.length + 1,
+      badgeText,
       noteId,
     });
+
+    // Add badge to new comment
+    const avatarBadge = this.el.querySelector(`#${noteId} .badge`);
+    avatarBadge.innerText = badgeText;
+    avatarBadge.classList.remove('hidden');
 
     this.badges.push(badge);
   }
