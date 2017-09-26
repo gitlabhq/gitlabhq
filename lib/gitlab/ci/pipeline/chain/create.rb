@@ -3,6 +3,8 @@ module Gitlab
     module Pipeline
       module Chain
         class Create < Chain::Base
+          include Chain::Helpers
+
           def perform!
             ::Ci::Pipeline.transaction do
               pipeline.save!
@@ -16,7 +18,7 @@ module Gitlab
                 .execute(pipeline)
             end
           rescue ActiveRecord::RecordInvalid => e
-            pipeline.erros.add(:base, "Failed to persist the pipeline: #{e}")
+            error("Failed to persist the pipeline: #{e}")
           end
 
           def break?

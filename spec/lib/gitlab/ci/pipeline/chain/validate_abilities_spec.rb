@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Pipeline::Chain::Validate do
+describe Gitlab::Ci::Pipeline::Chain::ValidateAbilities do
   describe '#allowed_to_create?' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }

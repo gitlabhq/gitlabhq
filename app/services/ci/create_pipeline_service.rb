@@ -2,7 +2,9 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Validate,
+    SEQUENCE = [Gitlab::Ci::Pipeline::Chain::ValidateAbilities,
+                Gitlab::Ci::Pipeline::Chain::ValidateRepository,
+                Gitlab::Ci::Pipeline::Chain::ValidateConfig,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 Gitlab::Ci::Pipeline::Chain::Create].freeze
 
