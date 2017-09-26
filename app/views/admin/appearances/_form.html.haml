@@ -62,7 +62,13 @@
     = f.label :favicon, 'Favicon', class: 'control-label'
     .col-sm-10
       - if @appearance.favicon?
-        = image_tag @appearance.favicon.default_without_format_conversion.url, class: 'appearance-light-logo-preview'
+        = image_tag @appearance.favicon.default.url, class: 'appearance-light-logo-preview'
+    - if @appearance.favicon?
+      = f.label :favicon, 'Generated status icons', class: 'control-label'
+    .col-sm-10
+      - if @appearance.favicon?
+        - FaviconUploader::STATUS_ICON_NAMES.each do |status_name|
+          = image_tag @appearance.favicon.public_send(status_name).url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
