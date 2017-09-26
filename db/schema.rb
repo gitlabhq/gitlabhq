@@ -2062,7 +2062,6 @@ ActiveRecord::Schema.define(version: 20170926203418) do
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "board_filter_labels", "boards", name: "fk_53e44f3a07", on_delete: :cascade
   add_foreign_key "board_filter_labels", "labels", name: "fk_91e18fdcee", on_delete: :cascade
-  add_foreign_key "boards", "milestones", name: "fk_b93160e8ee", on_delete: :nullify
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "boards", "users", column: "assignee_id", name: "fk_2a3450e77c", on_delete: :nullify
