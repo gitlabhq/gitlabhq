@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def build!
-           @sequence.each do |step|
+            @sequence.each do |step|
               step.perform!
 
               break if step.break?

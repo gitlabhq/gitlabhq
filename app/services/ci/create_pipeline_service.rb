@@ -28,7 +28,6 @@ module Ci
                                project: project,
                                current_user: current_user)
 
-
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
 

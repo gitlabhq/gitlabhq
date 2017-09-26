@@ -9,9 +9,7 @@ module Gitlab
             ::Ci::Pipeline.transaction do
               pipeline.save!
 
-              if @command.seeds_block
-                @command.seeds_block.call(pipeline)
-              end
+              @command.seeds_block&.call(pipeline)
 
               ::Ci::CreatePipelineStagesService
                 .new(project, current_user)
