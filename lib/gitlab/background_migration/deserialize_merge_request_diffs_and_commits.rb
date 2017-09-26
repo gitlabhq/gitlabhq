@@ -3,6 +3,12 @@ module Gitlab
     class DeserializeMergeRequestDiffsAndCommits
       attr_reader :diff_ids, :commit_rows, :file_rows
 
+      class Error < StandardError
+        def backtrace
+          cause.backtrace
+        end
+      end
+
       class MergeRequestDiff < ActiveRecord::Base
         self.table_name = 'merge_request_diffs'
       end
@@ -34,6 +40,10 @@ module Gitlab
         end
 
         flush_buffers!
+      rescue => e
+        Rails.logger.info("#{self.class.name}: failed for IDs #{merge_request_diffs.map(&:id)} with #{e.class.name}")
+
+        raise Error.new(e.inspect)
       end
 
       private
@@ -46,20 +56,26 @@ module Gitlab
 
       def flush_buffers!
         if diff_ids.any?
-          MergeRequestDiff.transaction do
-            commit_rows.each_slice(BUFFER_ROWS).each do |commit_rows_slice|
-              Gitlab::Database.bulk_insert('merge_request_diff_commits', commit_rows_slice)
-            end
-
-            file_rows.each_slice(DIFF_FILE_BUFFER_ROWS).each do |file_rows_slice|
-              Gitlab::Database.bulk_insert('merge_request_diff_files', file_rows_slice)
-            end
-
-            MergeRequestDiff.where(id: diff_ids).update_all(st_commits: nil, st_diffs: nil)
+          commit_rows.each_slice(BUFFER_ROWS).each do |commit_rows_slice|
+            bulk_insert('merge_request_diff_commits', commit_rows_slice)
           end
+
+          file_rows.each_slice(DIFF_FILE_BUFFER_ROWS).each do |file_rows_slice|
+            bulk_insert('merge_request_diff_files', file_rows_slice)
+          end
+
+          MergeRequestDiff.where(id: diff_ids).update_all(st_commits: nil, st_diffs: nil)
         end
 
         reset_buffers!
+      end
+
+      def bulk_insert(table, rows)
+        Gitlab::Database.bulk_insert(table, rows)
+      rescue ActiveRecord::RecordNotUnique
+        ids = rows.map { |row| row[:merge_request_diff_id] }.uniq.sort
+
+        Rails.logger.info("#{self.class.name}: rows inserted twice for IDs #{ids}")
       end
 
       def single_diff_rows(merge_request_diff)
