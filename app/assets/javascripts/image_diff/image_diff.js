@@ -97,20 +97,6 @@ export default class ImageDiff {
       }));
   }
 
-  renderDiscussionBadges() {
-    const discussions = this.el.querySelectorAll('.note-container .discussion-notes .notes');
-
-    // TODO: Get feedback on this n^2 operation
-    [].forEach.call(discussions, (discussion, index) => {
-      const notes = discussion.querySelectorAll('.note');
-      [].forEach.call(notes, (note) => {
-        const badge = note.querySelector('.image-diff-avatar-link .badge');
-        badge.innerText = index + 1;
-        badge.classList.remove('hidden');
-      });
-    });
-  }
-
   addBadge(event) {
     const { x, y, width, height, noteId } = event.detail;
     const actual = {
