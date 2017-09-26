@@ -3,7 +3,8 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      belongs_to :milestone
+      has_one :board_filter
+
       belongs_to :group
 
       validates :name, presence: true
@@ -12,16 +13,6 @@ module EE
 
     def project_needed?
       !group
-    end
-
-    def milestone
-      return nil unless parent.feature_available?(:issue_board_milestone)
-
-      if milestone_id == ::Milestone::Upcoming.id
-        ::Milestone::Upcoming
-      else
-        super
-      end
     end
 
     def parent
