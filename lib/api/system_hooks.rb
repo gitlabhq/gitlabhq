@@ -24,7 +24,8 @@ module API
       params do
         requires :url, type: String, desc: "The URL to send the request to"
         optional :token, type: String, desc: 'The token used to validate payloads'
-        optional :push_events, type: Boolean, desc: "Trigger hook on push events"
+        optional :push_events, type: Boolean, default: false, desc: "Trigger hook on push events"
+        optional :repository_update_events, type: Boolean, default: true, desc: "Repository update events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
       end

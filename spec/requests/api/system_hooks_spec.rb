@@ -72,6 +72,8 @@ describe API::SystemHooks do
       expect(response).to have_http_status(201)
       expect(json_response['enable_ssl_verification']).to be true
       expect(json_response['tag_push_events']).to be false
+      expect(json_response['push_events']).to be false
+      expect(json_response['repository_update_events']).to be true
     end
   end
 
