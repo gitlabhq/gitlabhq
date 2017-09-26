@@ -32,8 +32,10 @@ class Projects::ClustersController < Projects::ApplicationController
   # - If create on GKE, Use Google::Apis::ContainerV1::ContainerService
   # - If create manually, save in db (Prob, Project > Setting)
   # - Dry up with Service
+  # - Transaction
   def create
     if params['creation_type'] == 'on_gke'
+      # Create a cluster on GKE
       results = api_client.projects_zones_clusters_create(
         params['gcp_project_id'],
         params['cluster_zone'],
@@ -41,22 +43,24 @@ class Projects::ClustersController < Projects::ApplicationController
         params['cluster_size']
       )
 
-      # TODO: How to create
-      project.kubernetes_service.save(
-        end_point: results['end_point'],
-        ca_cert: results['ca_cert'],
-        token: nil,
-        username: results['username'],
-        password: results['password'],
-        project_namespace: params['project_namespace']
-      )
+      # Update service
+      kubernetes_service.attributes = service_params(
+          active: true,
+          api_url: results['end_point'],
+          ca_pem: results['ca_cert'], # TODO: Decode Base64
+          namespace: params['project_namespace'],
+          token: 'aaa' # TODO: username/password
+        )
 
+      kubernetes_service.save!
+
+      # Save info
       project.clusters.create(
         creation_type: params['creation_type'],
         gcp_project_id: params['gcp_project_id'],
         cluster_zone: params['cluster_zone'],
         cluster_name: params['cluster_name'],
-        kubernetes_service: project.kubernetes_service
+        service: kubernetes_service
       )
     elsif params['creation_type'] == 'manual'
       # TODO: Transaction
@@ -121,7 +125,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def cluster
     # Each project has only one cluster, for now. In the future iteraiton, we'll support multiple clusters
-    @cluster ||= project.clusters.first
+    @cluster ||= project.clusters.last
   end
 
   # def cluster_params
@@ -135,5 +139,19 @@ class Projects::ClustersController < Projects::ApplicationController
         callback_google_api_authorizations_url,
         state: namespace_project_clusters_url.to_s
       )
+  end
+
+  def kubernetes_service
+    @kubernetes_service ||= project.find_or_initialize_service('kubernetes')
+  end
+
+  def service_params(active:, api_url:, ca_pem:, namespace:, token:)
+    {
+      active: active,
+      api_url: api_url,
+      ca_pem: ca_pem,
+      namespace: namespace,
+      token: token
+    }
   end
 end

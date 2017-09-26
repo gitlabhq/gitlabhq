@@ -4,6 +4,7 @@ module Ci
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
+    belongs_to :service
 
     enum creation_type: {
       unknown: nil,

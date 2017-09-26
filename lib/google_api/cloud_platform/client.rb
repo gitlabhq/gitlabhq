@@ -28,7 +28,7 @@ module GoogleApi
 
         # TODO: Debug
         {
-          'end_point' => '111.111.111.111',
+          'end_point' => 'https://111.111.111.111',
           'ca_cert' => 'XXXXXXXXXXXXXXXXXX',
           'username' => 'AAA',
           'password' => 'BBB'
