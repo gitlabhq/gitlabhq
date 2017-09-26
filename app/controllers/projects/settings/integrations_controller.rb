@@ -13,6 +13,9 @@ module Projects
         # Services
         @services = @project.find_or_initialize_services
       end
+
+      def webhooks
+      end
     end
   end
 end
