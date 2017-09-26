@@ -35,6 +35,6 @@
                   %span.text-danger
                     Delete board
 
-    %board-selector-form{ ":milestone-path" => "milestonePath",
+    %board-form{ ":milestone-path" => "milestonePath",
       ":can-admin-board" => can?(current_user, :admin_board, parent),
       "v-if" => "currentPage" }

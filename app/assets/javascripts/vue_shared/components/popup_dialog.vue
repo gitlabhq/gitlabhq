@@ -48,7 +48,7 @@ export default {
   tabindex="-1"
 >
   <div
-    class="modal-dialog modal-sm"
+    class="modal-dialog modal-lg"
     role="document"
   >
     <div class="modal-content">

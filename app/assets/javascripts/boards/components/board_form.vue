@@ -25,7 +25,7 @@
         >
       </div>
       <div class="media append-bottom-10">
-        <label class="label-light media-body align-self-sm-center">
+        <label class="label-light media-body">
           Board scope
         </label>
         <button
@@ -42,7 +42,10 @@
         </p>
 
         <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
-        <div class="board-inner-container">
+        <form-block
+          title="Milestone"
+          defaultText="Any milestone"
+        >
           <input
             type="hidden"
             id="board-milestone"
@@ -53,8 +56,34 @@
             :milestone-path="milestonePath"
             :select-milestone="selectMilestone">
           </board-milestone-select>
-        </div>
+        </form-block>
 
+        <form-block
+          title="Labels"
+          defaultText="Any label"
+        >
+        </form-block>
+
+        <form-block
+          title="Assignee"
+          defaultText="Any assignee"
+          :fieldName="'filter[assignee]'"
+        >
+        </form-block>
+
+        <form-block
+          title="Author"
+          defaultText="Any author"
+          :fieldName="'filter[author]'"
+        >
+        </form-block>
+
+        <form-block
+          title="Weight"
+          defaultText="Any weight"
+          :fieldName="'filter[weight]'"
+        >
+        </form-block>
       </div>
     </form>
   </popup-dialog>
@@ -65,6 +94,7 @@
 
 import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 
 window.gl = window.gl || {};
@@ -96,6 +126,7 @@ export default Vue.extend({
   components: {
     BoardMilestoneSelect,
     PopupDialog,
+    FormBlock,
   },
   mounted() {
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {

@@ -1,23 +1,10 @@
 <template>
-  <div class="">
-    <div class="media">
-      <label class="media-body">Milestone</label>
-      <a href="#" data-dropdown-trigger="#milestone-dropdown" ref="trigger">
-        Edit
-      </a>
-    </div>
-    <div class="droplab-dropdown">
-      <div>
-        Current value
-      </div>
-      <ul
-        ref="list"
-        class="dropdown-menu"
-      >
-        <slot name="items"></slot>
-      </ul>
-    </div>
-  </div>
+  <ul
+    ref="list"
+    class="dropdown-menu"
+  >
+    <slot name="items"></slot>
+  </ul>
 </template>
 
 <script>
