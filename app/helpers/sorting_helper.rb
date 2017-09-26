@@ -12,11 +12,8 @@ module SortingHelper
       sort_value_milestone        => sort_title_milestone,
       sort_value_milestone_later  => sort_title_milestone_later,
       sort_value_milestone_soon   => sort_title_milestone_soon,
-<<<<<<< HEAD
       sort_value_less_weight      => sort_title_less_weight,
       sort_value_more_weight      => sort_title_more_weight,
-=======
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
       sort_value_name             => sort_title_name,
       sort_value_name_desc        => sort_title_name_desc,
       sort_value_oldest_created   => sort_title_oldest_created,
@@ -27,12 +24,8 @@ module SortingHelper
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_popularity       => sort_title_popularity,
       sort_value_priority         => sort_title_priority,
-<<<<<<< HEAD
       sort_value_upvotes          => sort_title_upvotes,
       sort_value_weight           => sort_title_weight
-=======
-      sort_value_upvotes          => sort_title_upvotes
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
     }
   end
 
@@ -94,7 +87,6 @@ module SortingHelper
 
   def sortable_item(item, path, sorted_by)
     link_to item, path, class: sorted_by == item ? 'is-active' : ''
-<<<<<<< HEAD
   end
 
   # Titles.
@@ -118,58 +110,10 @@ module SortingHelper
     s_('SortOptions|Due date')
   end
 
-  def sort_title_due_date_later
-    s_('SortOptions|Due later')
-  end
-
-  def sort_title_due_date_soon
-    s_('SortOptions|Due soon')
-=======
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
-  end
-
-  # Titles.
-  def sort_title_access_level_asc
-    s_('SortOptions|Access level, ascending')
-  end
-
-<<<<<<< HEAD
-  def sort_title_largest_group
-    s_('SortOptions|Largest group')
-  end
-
-  def sort_title_largest_repo
-    s_('SortOptions|Largest repository')
-  end
-
-  def sort_title_last_joined
-    s_('SortOptions|Last joined')
-=======
-  def sort_title_access_level_desc
-    s_('SortOptions|Access level, descending')
-  end
-
-  def sort_title_created_date
-    s_('SortOptions|Created date')
-  end
-
-  def sort_title_downvotes
-    s_('SortOptions|Least popular')
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
-  end
-
-  def sort_title_due_date
-    s_('SortOptions|Due date')
-  end
-
-<<<<<<< HEAD
   def sort_title_less_weight
     s_('SortOptions|Less weight')
   end
 
-  def sort_title_milestone
-    s_('SortOptions|Milestone')
-=======
   def sort_title_due_date_later
     s_('SortOptions|Due later')
   end
@@ -180,29 +124,16 @@ module SortingHelper
 
   def sort_title_label_priority
     s_('SortOptions|Label priority')
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   end
 
   def sort_title_largest_group
     s_('SortOptions|Largest group')
   end
 
-<<<<<<< HEAD
-  def sort_title_milestone_soon
-    s_('SortOptions|Milestone due soon')
-  end
-
   def sort_title_more_weight
     s_('SortOptions|More weight')
   end
 
-  def sort_title_name
-    s_('SortOptions|Name')
-  end
-
-  def sort_title_name_asc
-    s_('SortOptions|Name, ascending')
-=======
   def sort_title_largest_repo
     s_('SortOptions|Largest repository')
   end
@@ -225,25 +156,12 @@ module SortingHelper
 
   def sort_title_milestone_soon
     s_('SortOptions|Milestone due soon')
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   end
 
   def sort_title_name_desc
     s_('SortOptions|Name, descending')
   end
 
-<<<<<<< HEAD
-  def sort_title_oldest_activity
-    s_('SortOptions|Oldest updated')
-  end
-
-  def sort_title_oldest_created
-    s_('SortOptions|Oldest created')
-  end
-
-  def sort_title_oldest_joined
-    s_('SortOptions|Oldest joined')
-=======
   def sort_title_name_asc
     s_('SortOptions|Name, ascending')
   end
@@ -254,55 +172,16 @@ module SortingHelper
 
   def sort_title_oldest_activity
     s_('SortOptions|Oldest updated')
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   end
 
   def sort_title_oldest_created
     s_('SortOptions|Oldest created')
   end
 
-<<<<<<< HEAD
-  def sort_title_oldest_updated
-    s_('SortOptions|Oldest updated')
-  end
-
-  def sort_title_popularity
-    s_('SortOptions|Popularity')
-  end
-
-  def sort_title_priority
-    s_('SortOptions|Priority')
-  end
-
-  def sort_title_recently_created
-    s_('SortOptions|Last created')
-  end
-
-  def sort_title_recently_signin
-    s_('SortOptions|Recent sign in')
-  end
-
-  def sort_title_recently_updated
-    s_('SortOptions|Last updated')
-  end
-
-  def sort_title_start_date_later
-    s_('SortOptions|Start later')
-  end
-
-  def sort_title_start_date_soon
-    s_('SortOptions|Start soon')
-  end
-
-  def sort_title_upvotes
-    s_('SortOptions|Most popular')
-  end
-
   def sort_title_weight
     s_('SortOptions|Weight')
   end
 
-=======
   def sort_title_oldest_joined
     s_('SortOptions|Oldest joined')
   end
@@ -347,7 +226,6 @@ module SortingHelper
     s_('SortOptions|Most popular')
   end
 
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -397,7 +275,6 @@ module SortingHelper
     'latest_activity_desc'
   end
 
-<<<<<<< HEAD
   def sort_value_less_weight
     'weight_asc'
   end
@@ -406,12 +283,6 @@ module SortingHelper
     'milestone'
   end
 
-=======
-  def sort_value_milestone
-    'milestone'
-  end
-
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   def sort_value_milestone_later
     'milestone_due_desc'
   end
@@ -420,7 +291,6 @@ module SortingHelper
     'milestone_due_asc'
   end
 
-<<<<<<< HEAD
   def sort_value_more_weight
     'weight_desc'
   end
@@ -453,36 +323,6 @@ module SortingHelper
     'updated_asc'
   end
 
-=======
-  def sort_value_name
-    'name_asc'
-  end
-
-  def sort_value_name_desc
-    'name_desc'
-  end
-
-  def sort_value_oldest_activity
-    'latest_activity_asc'
-  end
-
-  def sort_value_oldest_created
-    'created_asc'
-  end
-
-  def sort_value_oldest_signin
-    'oldest_sign_in'
-  end
-
-  def sort_value_oldest_joined
-    'oldest_joined'
-  end
-
-  def sort_value_oldest_updated
-    'updated_asc'
-  end
-
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
   def sort_value_popularity
     'popularity'
   end

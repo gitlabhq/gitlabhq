@@ -10,13 +10,10 @@
       = sortable_item(sort_title_priority,         page_filter_path(sort: sort_value_priority,         label: true), sorted_by)
       = sortable_item(sort_title_created_date,     page_filter_path(sort: sort_value_created_date,     label: true), sorted_by)
       = sortable_item(sort_title_recently_updated, page_filter_path(sort: sort_value_recently_updated, label: true), sorted_by)
-<<<<<<< HEAD
 
       - if viewing_issues && (@project || @group)&.feature_available?(:issue_weights)
         = sortable_item(sort_title_weight, page_filter_path(sort: sort_value_weight, label: true), sorted_by)
 
-=======
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
       = sortable_item(sort_title_milestone,        page_filter_path(sort: sort_value_milestone,        label: true), sorted_by)
       = sortable_item(sort_title_due_date,         page_filter_path(sort: sort_value_due_date,         label: true), sorted_by) if viewing_issues
       = sortable_item(sort_title_popularity,       page_filter_path(sort: sort_value_popularity,       label: true), sorted_by)

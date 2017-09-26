@@ -1,11 +1,8 @@
 - @no_container = true
 - page_title "Pipelines"
-<<<<<<< HEAD
 
 = content_for :flash_message do
   = render 'shared/shared_runners_minutes_limit', project: @project
-=======
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
 
 %div{ 'class' => container_class }
   - if show_auto_devops_callout?(@project)

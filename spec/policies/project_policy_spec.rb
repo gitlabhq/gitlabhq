@@ -156,17 +156,10 @@ describe ProjectPolicy do
         end
       end
     end
-<<<<<<< HEAD
 
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
 
-=======
-
-    context 'abilities for non-public projects' do
-      let(:project) { create(:project, namespace: owner.namespace) }
-
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
       subject { described_class.new(nil, project) }
 
       it { is_expected.to be_banned }
@@ -239,19 +232,10 @@ describe ProjectPolicy do
       end
     end
   end
-<<<<<<< HEAD
 
   shared_examples 'project policies as developer' do
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
-
-=======
-
-  shared_examples 'project policies as developer' do
-    context 'abilities for non-public projects' do
-      let(:project) { create(:project, namespace: owner.namespace) }
-
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
       subject { described_class.new(developer, project) }
 
       it do
@@ -281,19 +265,11 @@ describe ProjectPolicy do
       end
     end
   end
-<<<<<<< HEAD
 
   shared_examples 'project policies as owner' do
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
 
-=======
-
-  shared_examples 'project policies as owner' do
-    context 'abilities for non-public projects' do
-      let(:project) { create(:project, namespace: owner.namespace) }
-
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
       subject { described_class.new(owner, project) }
 
       it do
@@ -331,7 +307,6 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as master'
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
-<<<<<<< HEAD
 
   context 'EE' do
     let(:additional_guest_permissions)  { [:read_issue_link] }
@@ -385,6 +360,4 @@ describe ProjectPolicy do
       end
     end
   end
-=======
->>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
 end
