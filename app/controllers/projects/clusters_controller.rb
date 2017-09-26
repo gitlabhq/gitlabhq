@@ -33,22 +33,32 @@ class Projects::ClustersController < Projects::ApplicationController
   # - If create manually, save in db (Prob, Project > Setting)
   # - Dry up with Service
   # - Transaction
+  # - Sidekiq
   def create
     if params['creation_type'] == 'on_gke'
       # Create a cluster on GKE
-      results = api_client.projects_zones_clusters_create(
-        project_id: params['gcp_project_id'],
-        zone: params['cluster_zone'],
-        cluster_name: params['cluster_name'],
-        cluster_size: params['cluster_size'],
-        machine_type: params['machine_type']
+      operation = api_client.projects_zones_clusters_create(
+        params['gcp_project_id'], params['cluster_zone'], params['cluster_name'],
+        cluster_size: params['cluster_size'], machine_type: params['machine_type']
+      )
+
+      # wait_operation_done
+      if operation&.operation_type == 'CREATE_CLUSTER'
+        api_client.wait_operation_done(operation.self_link)
+      else
+        raise "TODO: ERROR"
+      end
+
+      # Get cluster details (end point, etc)
+      gke_cluster = api_client.projects_zones_clusters_get(
+        params['gcp_project_id'], params['cluster_zone'], params['cluster_name']
       )
 
       # Update service
       kubernetes_service.attributes = service_params(
           active: true,
-          api_url: results['end_point'],
-          ca_pem: results['ca_cert'], # TODO: Decode Base64
+          api_url: gke_cluster.endpoint,
+          ca_pem: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           namespace: params['project_namespace'],
           token: 'aaa' # TODO: username/password
         )
@@ -93,13 +103,6 @@ class Projects::ClustersController < Projects::ApplicationController
       @authorize_url = api_client.authorize_url
       render :edit
     end
-
-    # Get cluster information
-    api_client.projects_zones_clusters_get(
-      project_id: cluster.gcp_project_id,
-      zone: cluster.cluster_zone,
-      cluster_id: cluster.cluster_name
-    )
   end
 
   def update
