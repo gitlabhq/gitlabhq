@@ -133,6 +133,26 @@ describe Ci::CreatePipelineService do
             expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
+
+        context 'when pipeline has been skipped' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:git_commit_message)
+              .and_return('some commit [ci skip]')
+          end
+
+          it 'updates merge request head pipeline' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_skipped
+            expect(head_pipeline).to be_persisted
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
+          end
+        end
       end
 
       context 'auto-cancel enabled' do
