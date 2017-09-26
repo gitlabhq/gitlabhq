@@ -223,7 +223,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     end
   end
 
-  step 'The list should be sorted by "Most popular"' do
+  step 'The list should be sorted by "Popularity"' do
     page.within '.issues-list' do
       page.within 'li.issue:nth-child(1)' do
         expect(page).to have_content 'Release 0.4'

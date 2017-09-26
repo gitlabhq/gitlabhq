@@ -1,4 +1,3 @@
-
 import * as actions from '~/notes/stores/actions';
 import testAction from './helpers';
 import { discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
