@@ -129,7 +129,7 @@ describe ExtractsPath do
         end
 
         it 'does not change the request format' do
-          expect(request).not_to receive(:format=)
+          expect(request).not_to receive(:format=).with(:atom)
 
           assign_ref_vars
         end
