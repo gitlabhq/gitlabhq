@@ -1,6 +1,12 @@
-- expanded = local_assigns.fetch(:expanded, true)
-%tr.notes_holder{ class: ('hide' unless expanded) }
-  %td.notes_line{ colspan: 2 }
-  %td.notes_content
-    .content{ class: ('hide' unless expanded) }
-      = render partial: "discussions/notes", collection: discussions, as: :discussion
+- if local_assigns[:on_image]
+  %h1 Should work now
+  = render partial: "discussions/notes", collection: discussions, as: :discussion
+- else
+  - expanded = local_assigns.fetch(:expanded, true)
+  %tr.notes_holder{ class: ('hide' unless expanded) }
+    %td.notes_line{ colspan: 2 }
+    %td.notes_content
+      .content{ class: ('hide' unless expanded) }
+        = render partial: "discussions/notes", collection: discussions, as: :discussion
+
+

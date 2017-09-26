@@ -14,7 +14,8 @@
       - else
         %a.image-diff-avatar-link{ href: user_path(note.author) }
           = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
-          %span.badge 1
+          %span.badge
+            = badge_counter if local_assigns[:badge_counter]
     .timeline-content
       .note-header
         .note-header-info

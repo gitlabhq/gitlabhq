@@ -120,9 +120,6 @@ module NotesActions
   end
 
   def diff_discussion_html(discussion)
-    return unless discussion.diff_discussion?
-    # TODO: Return different view for image diff
-
     if params[:view] == 'parallel'
       template = "discussions/_parallel_diff_discussion"
       locals =
@@ -133,7 +130,10 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      locals = { discussions: [discussion] }
+      on_image = discussion.on_image? if discussion.diff_discussion?
+
+      # TODO get discussion bagde count for new discussions
+      locals = { discussions: [discussion], badge_count: 99, on_image: on_image  }
     end
 
     render_to_string(

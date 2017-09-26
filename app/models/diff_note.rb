@@ -44,7 +44,11 @@ class DiffNote < Note
   end
 
   def on_text?
-    position_type == :text
+    position_type == "text"
+  end
+
+  def on_image?
+    position_type == "image"
   end
 
   def diff_file
