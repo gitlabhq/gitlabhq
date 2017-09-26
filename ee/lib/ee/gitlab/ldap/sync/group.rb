@@ -74,12 +74,7 @@ module EE
             access_levels = AccessLevels.new
             # Only iterate over group links for the current provider
             group.ldap_group_links.with_provider(provider).each do |group_link|
-              if member_dns = get_member_dns(group_link)
-                access_levels.set(member_dns, to: group_link.group_access)
-                logger.debug do
-                  "Resolved '#{group.name}' group member access: #{access_levels.to_hash}"
-                end
-              end
+              update_access_levels(access_levels, group_link)
             end
 
             update_existing_group_membership(group, access_levels)
@@ -87,6 +82,18 @@ module EE
           end
 
           private
+
+          def update_access_levels(access_levels, group_link)
+            if config.group_base.blank? && group_link.cn
+              logger.debug { "No `group_base` configured for '#{provider}' provider and group link CN #{group_link.cn}. Skipping" }
+            elsif member_dns = get_member_dns(group_link)
+              access_levels.set(member_dns, to: group_link.group_access)
+
+              logger.debug do
+                "Resolved '#{group.name}' group member access: #{access_levels.to_hash}"
+              end
+            end
+          end
 
           def get_member_dns(group_link)
             group_link.cn ? dns_for_group_cn(group_link.cn) : UserFilter.filter(@proxy, group_link.filter)
@@ -212,6 +219,10 @@ module EE
 
           def logger
             Rails.logger
+          end
+
+          def config
+            @proxy.adapter.config
           end
         end
       end

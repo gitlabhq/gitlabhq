@@ -299,6 +299,14 @@ describe EE::Gitlab::LDAP::Sync::Group do
           expect(group.members.pluck(:access_level))
             .to match_array([::Gitlab::Access::MASTER, ::Gitlab::Access::OWNER])
         end
+
+        it 'does not update permissions when group base is missing' do
+          stub_ldap_config(group_base: nil)
+
+          sync_group.update_permissions
+
+          expect(group.members.pluck(:user_id)).not_to include(user.id)
+        end
       end
     end
 
@@ -413,6 +421,14 @@ describe EE::Gitlab::LDAP::Sync::Group do
 
             expect(group.members.pluck(:user_id)).to include(user.id)
             expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
+          end
+
+          it 'updates permissions when group base is missing' do
+            stub_ldap_config(group_base: nil)
+
+            sync_group.update_permissions
+
+            expect(group.members.pluck(:user_id)).to include(user.id)
           end
         end
       end
