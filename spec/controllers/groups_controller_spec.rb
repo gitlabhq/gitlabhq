@@ -174,18 +174,18 @@ describe GroupsController do
       end
 
       context 'with subgroups and projects', :nested_groups do
+        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
         let!(:other_subgroup) { create(:group, :public, parent: group) }
         let!(:project) { create(:project, :public, namespace: group) }
-        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
 
         it 'contains all subgroups' do
-          get :children, id: group.to_param, sort: 'id_desc', format: :json
+          get :children, id: group.to_param, sort: 'id_asc', format: :json
 
           expect(assigns(:children)).to contain_exactly(*first_page_subgroups)
         end
 
         it 'contains the project and group on the second page' do
-          get :children, id: group.to_param, sort: 'id_desc', page: 2, format: :json
+          get :children, id: group.to_param, sort: 'id_asc', page: 2, format: :json
 
           expect(assigns(:children)).to contain_exactly(other_subgroup, project)
         end

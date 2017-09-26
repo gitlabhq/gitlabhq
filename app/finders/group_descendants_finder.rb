@@ -10,23 +10,20 @@ class GroupDescendantsFinder
   end
 
   def execute
-    Kaminari.paginate_array(children)
+    # The children array might be extended with the ancestors of projects when
+    # filtering. In that case, take the maximum so the aray does not get limited
+    # Otherwise, allow paginating through the search results
+    #
+    total_count = [children.size, subgroup_count + project_count].max
+    Kaminari.paginate_array(children, total_count: total_count)
   end
 
   def subgroup_count
-    @subgroup_count ||= if defined?(@children)
-                          children.count { |child| child.is_a?(Group) }
-                        else
-                          subgroups.count
-                        end
+    @subgroup_count ||= subgroups.count
   end
 
   def project_count
-    @project_count ||= if defined?(@children)
-                         children.count { |child| child.is_a?(Project) }
-                       else
-                         projects.count
-                       end
+    @project_count ||= projects.count
   end
 
   private
@@ -57,14 +54,19 @@ class GroupDescendantsFinder
       member_count
     ]
 
-    subgroups_with_counts = subgroups.with_route.select(group_selects)
+    subgroups_with_counts = subgroups.with_route.page(params[:page]).per(per_page).select(group_selects)
+    group_page_count = subgroups_with_counts.total_pages
+    subgroup_page = subgroups_with_counts.current_page
+
+    paginated_projects = projects.with_route.page(subgroup_page - group_page_count)
+                           .per(per_page - subgroups_with_counts.size)
 
     if params[:filter]
-      ancestors_for_project_search = ancestors_for_groups(Group.where(id: projects_matching_filter.select(:namespace_id)))
+      ancestors_for_project_search = ancestors_for_groups(Group.where(id: paginated_projects.select(:namespace_id)))
       subgroups_with_counts = ancestors_for_project_search.with_route.select(group_selects) | subgroups_with_counts
     end
 
-    @children = subgroups_with_counts + projects.with_route
+    @children = subgroups_with_counts + paginated_projects
   end
 
   def direct_child_groups
@@ -110,7 +112,7 @@ class GroupDescendantsFinder
              else
                direct_child_groups
              end
-    groups.sort(params[:sort])
+    groups.order_by(sort)
   end
 
   def projects_for_user
@@ -123,7 +125,7 @@ class GroupDescendantsFinder
 
   def projects_matching_filter
     projects_for_user.search(params[:filter])
-      .where(namespace: all_descendant_groups)
+      .where(namespace: all_visible_descendant_groups)
   end
 
   def projects
@@ -134,6 +136,14 @@ class GroupDescendantsFinder
                else
                  direct_child_projects
                end
-    projects.sort(params[:sort])
+    projects.order_by(sort)
+  end
+
+  def sort
+    params.fetch(:sort, 'id_asc')
+  end
+
+  def per_page
+    params.fetch(:per_page, Kaminari.config.default_per_page)
   end
 end
