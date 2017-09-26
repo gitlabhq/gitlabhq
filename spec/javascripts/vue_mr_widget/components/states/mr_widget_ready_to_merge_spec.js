@@ -474,8 +474,8 @@ describe('MRWidgetReadyToMerge', () => {
         mr: { ffOnlyEnabled: false },
       });
 
-      expect(customVm.$refs.fastForwardMessage).toBeUndefined();
-      expect(customVm.$refs.modifyCommitMessageButton).toBeDefined();
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeNull();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
     });
 
     it('when fast-forward merge is enabled, only show fast-forward message', () => {
@@ -483,8 +483,8 @@ describe('MRWidgetReadyToMerge', () => {
         mr: { ffOnlyEnabled: true },
       });
 
-      expect(customVm.$refs.fastForwardMessage).toBeDefined();
-      expect(customVm.$refs.modifyCommitMessageButton).toBeUndefined();
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeDefined();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
 });
