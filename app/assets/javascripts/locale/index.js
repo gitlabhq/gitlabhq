@@ -1,5 +1,7 @@
 import Jed from 'jed';
 
+import sprintf from './sprintf';
+
 /**
   This is required to require all the translation folders in the current directory
   this saves us having to do this manually & keep up to date with new languages
@@ -67,4 +69,5 @@ export { lang };
 export { gettext as __ };
 export { ngettext as n__ };
 export { pgettext as s__ };
+export { sprintf };
 export default locale;
