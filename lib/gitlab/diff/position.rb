@@ -49,12 +49,13 @@ module Gitlab
         coder['attributes'] = self.to_h
       end
 
-      def key
-        @key ||= [base_sha, start_sha, head_sha, Digest::SHA1.hexdigest(old_path || ""), Digest::SHA1.hexdigest(new_path || ""), old_line, new_line]
-      end
-
       def ==(other)
-        other.is_a?(self.class) && key == other.key
+        other.is_a?(self.class) &&
+          other.diff_refs == diff_refs &&
+          other.old_path == old_path &&
+          other.new_path == new_path &&
+          other.old_line == old_line &&
+          other.new_line == new_line
       end
 
       def to_h
