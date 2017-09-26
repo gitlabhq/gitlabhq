@@ -7,17 +7,17 @@ export default class ImageDiff {
   }
 
   bindEvents() {
-    this.el.addEventListener('click.imageDiff', this.click);
-    this.el.addEventListener('blur.imageDiff', this.blur);
-    this.el.addEventListener('renderBadges.imageDiff', this.renderBadges);
-    this.el.addEventListener('updateBadges.imageDiff', this.updateBadges);
+    this.el.addEventListener('click.imageDiff', ImageDiff.click);
+    this.el.addEventListener('blur.imageDiff', ImageDiff.blur);
+    this.el.addEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
+    this.el.addEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
   }
 
   unbindEvents() {
-    this.el.removeEventListener('click.imageDiff', this.click);
-    this.el.removeEventListener('blur.imageDiff', this.blur);
-    this.el.removeEventListener('renderBadges.imageDiff', this.renderBadges);
-    this.el.removeEventListener('updateBadges.imageDiff', this.updateBadges);
+    this.el.removeEventListener('click.imageDiff', ImageDiff.click);
+    this.el.removeEventListener('blur.imageDiff', ImageDiff.blur);
+    this.el.removeEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
+    this.el.removeEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
   }
 
   static click(event) {
