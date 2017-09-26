@@ -65,7 +65,9 @@
 
 ## i18n
 
-- [Internationalization for GitLab](i18n_guide.md)
+- [Introduction](i18n/introduction.md)
+- [Externalization](i18n/externalization.md)
+- [Translation](i18n/translation.md)
 
 ## Compliance
 
