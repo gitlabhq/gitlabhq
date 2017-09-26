@@ -32,6 +32,24 @@ describe 'Edit Project Settings' do
     end
   end
 
+  describe 'Merge request settings section' do
+    it 'shows "Merge commit" strategy' do
+      visit edit_project_path(project)
+
+      page.within '.merge-requests-feature' do
+        expect(page).to have_content 'Merge commit'
+      end
+    end
+
+    it 'shows "Fast-forward merge" strategy' do
+      visit edit_project_path(project)
+
+      page.within '.merge-requests-feature' do
+        expect(page).to have_content 'Fast-forward merge'
+      end
+    end
+  end
+
   describe 'Rename repository section' do
     context 'with invalid characters' do
       it 'shows errors for invalid project path/name' do
