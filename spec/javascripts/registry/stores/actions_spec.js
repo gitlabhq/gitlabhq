@@ -9,7 +9,7 @@ import {
   reposServerResponse,
   registryServerResponse,
   parsedReposServerResponse,
-} from './mock_data';
+} from '../mock_data';
 
 Vue.use(VueResource);
 

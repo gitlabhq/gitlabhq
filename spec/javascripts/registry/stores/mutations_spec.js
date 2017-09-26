@@ -6,7 +6,7 @@ import {
   registryServerResponse,
   parsedReposServerResponse,
   parsedRegistryServerResponse,
-} from './mock_data';
+} from '../mock_data';
 
 describe('Mutations Registry Store', () => {
   let mockState;

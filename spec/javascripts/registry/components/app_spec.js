@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import registry from '~/registry/components/app.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
-import { reposServerResponse } from '../stores/mock_data';
+import { reposServerResponse } from '../mock_data';
 
 describe('Registry List', () => {
   let vm;
@@ -59,7 +59,7 @@ describe('Registry List', () => {
       it('should open the container', (done) => {
         setTimeout(() => {
           Vue.nextTick(() => {
-            vm.$el.querySelector('.container-image a').click();
+            vm.$el.querySelector('.js-toggle-repo').click();
             Vue.nextTick(() => {
               expect(vm.$el.querySelector('.js-toggle-repo i').className).toEqual('fa fa-chevron-up');
               done();

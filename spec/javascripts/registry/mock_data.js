@@ -89,3 +89,34 @@ export const parsedRegistryServerResponse = [
     canDelete: false,
   },
 ];
+
+export const repoPropsData = {
+  canDelete: true,
+  destroyPath: 'path',
+  id: '123',
+  isLoading: false,
+  list: [
+    {
+      tag: 'centos6',
+      revision: 'b118ab5b0e90b7cb5127db31d5321ac14961d097516a8e0e72084b6cdc783b43',
+      shortRevision: 'b118ab5b0',
+      size: 19,
+      layers: 10,
+      location: 'location',
+      createdAt: 1505828744434,
+      destroyPath: 'path',
+      canDelete: true,
+    },
+  ],
+  location: 'location',
+  name: 'foo',
+  tagsPath: 'path',
+  pagination: {
+    perPage: 5,
+    page: 1,
+    total: 13,
+    totalPages: 1,
+    nextPage: null,
+    previousPage: null,
+  },
+};

@@ -1,6 +1,7 @@
 <script>
+  /* globals Flash */
   import { mapActions } from 'vuex';
-  import { n__, s__ } from '../../locale';
+  import '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -37,6 +38,7 @@
 
       toggleRepo() {
         this.isOpen = !this.isOpen;
+
         if (this.isOpen) {
           this.fetchList({ repo: this.repo })
           .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));

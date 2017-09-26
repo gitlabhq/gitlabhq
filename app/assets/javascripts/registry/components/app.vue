@@ -37,7 +37,7 @@
     },
     mounted() {
       this.fetchRepos()
-        .catch(() => Flash(errorMessagesTypes.FETCH_REPOS));
+        .catch(() => Flash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
     },
   };
 </script>

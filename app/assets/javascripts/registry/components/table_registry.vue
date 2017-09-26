@@ -1,6 +1,8 @@
 <script>
+  /* globals Flash */
   import { mapActions } from 'vuex';
-  import { n__, s__ } from '../../locale';
+  import { n__ } from '../../locale';
+  import '../../flash';
   import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
@@ -39,14 +41,15 @@
         const pluralize = n__('layer', 'layers', item.layers);
         return `${item.layers} ${pluralize}`;
       },
-       handleDeleteRegistry(registry) {
+
+      handleDeleteRegistry(registry) {
         this.deleteRegistry(registry)
           .then(() => this.fetchList({ repo: this.repo }))
           .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
       },
 
       onPageChange(pageNumber) {
-        this.fetchList({ repo: this.repo, page })
+        this.fetchList({ repo: this.repo, page: pageNumber })
           .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
       },
 
