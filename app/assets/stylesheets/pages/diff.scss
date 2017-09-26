@@ -666,7 +666,7 @@
   }
 }
 
-.diff-file .note-container .new-note,
+.diff-file .note-container > .new-note,
 .note-container .discussion-notes {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
