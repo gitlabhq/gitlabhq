@@ -76,8 +76,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
       { rspec: {
           script: 'ls',
           only: ['something']
-        }
-      }
+      } }
     end
 
     let(:pipeline) do
@@ -95,7 +94,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
   end
 
   context 'when pipeline contains configuration validation errors' do
-    let(:config) { { rspec: { } } }
+    let(:config) { { rspec: {} } }
 
     let(:pipeline) do
       build(:ci_pipeline, project: project, config: config)
