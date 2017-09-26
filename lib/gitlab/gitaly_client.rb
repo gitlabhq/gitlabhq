@@ -228,8 +228,16 @@ module Gitlab
       path.read.chomp
     end
 
+    def self.timestamp(t)
+      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    end
+
     def self.encode(s)
       s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
+
+    def self.encode_repeated(a)
+      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
 
     # Count a stack. Used for n+1 detection

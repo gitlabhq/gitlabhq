@@ -174,7 +174,7 @@ module Ci
     end
 
     def assignable_for?(project)
-      !locked? || projects.exists?(id: project.id)
+      is_shared? || projects.exists?(id: project.id)
     end
 
     def accepting_tags?(build)

@@ -15,3 +15,9 @@
   -ms-animation: none !important;
   animation: none !important;
 }
+
+// Disable sticky changes bar for tests
+.diff-files-changed {
+  position: relative !important;
+  top: 0 !important;
+}

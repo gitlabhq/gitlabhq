@@ -1,5 +1,0 @@
----
-title: Implement `failure_reason` on `ci_builds`
-merge_request: 13937
-author:
-type: added
