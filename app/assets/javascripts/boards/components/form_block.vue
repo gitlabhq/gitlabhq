@@ -2,7 +2,11 @@
   <div class="board-inner-container">
     <div class="media">
       <label class="media-body">{{ title }}</label>
-      <a href="#" @click.prevent="toggleEditing">
+      <a
+        v-if="canEdit"
+        href="#"
+        @click.prevent="toggleEditing"
+      >
         Edit
       </a>
     </div>
@@ -36,6 +40,11 @@
         type: String,
         required: false,
       },
+      canEdit: {
+        type: Boolean,
+        required: false,
+        default: false,
+      }
     },
     data() {
       return {

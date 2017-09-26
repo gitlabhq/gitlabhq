@@ -4,6 +4,7 @@
     v-show="currentPage"
     :title="title"
     :primaryButtonLabel="buttonText"
+    :kind="buttonKind"
     @toggle="cancel"
     @submit="submit"
   >
@@ -13,7 +14,10 @@
     <form
       v-else
     >
-      <div class="append-bottom-20">
+      <div
+        v-if="!readonly"
+        class="append-bottom-20"
+      >
         <label class="label-light" for="board-new-name">
           Board name
         </label>
@@ -24,19 +28,23 @@
           v-model="board.name"
         >
       </div>
-      <div class="media append-bottom-10">
+      <div
+        v-if="canAdminBoard"
+        class="media append-bottom-10"
+      >
         <label class="label-light media-body">
           Board scope
         </label>
         <button
           type="button"
           class="btn"
-          @click="expand = !expand"
+          @click="expanded = !expanded"
+          v-if="collapseScope"
         >
-          Expand
+          {{ expandButtonText }}
         </button>
       </div>
-      <div v-if="expand">
+      <div v-if="!collapseScope || expanded">
         <p class="light append-bottom-10">
           Board scope affects which issues are displayed for anyone who visits this board
         </p>
@@ -45,6 +53,7 @@
         <form-block
           title="Milestone"
           defaultText="Any milestone"
+          :canEdit="canAdminBoard"
         >
           <input
             type="hidden"
@@ -61,31 +70,39 @@
         <form-block
           title="Labels"
           defaultText="Any label"
+          :canEdit="canAdminBoard"
         >
         </form-block>
 
         <form-block
           title="Assignee"
           defaultText="Any assignee"
-          :fieldName="'filter[assignee]'"
+          :fieldName="'board_filter[assignee]'"
+          :canEdit="canAdminBoard"
         >
         </form-block>
 
         <form-block
           title="Author"
           defaultText="Any author"
-          :fieldName="'filter[author]'"
+          :fieldName="'board_filter[author]'"
+          :canEdit="canAdminBoard"
         >
         </form-block>
 
         <form-block
           title="Weight"
           defaultText="Any weight"
-          :fieldName="'filter[weight]'"
+          :fieldName="'board_filter[weight]'"
+          :canEdit="canAdminBoard"
         >
         </form-block>
       </div>
     </form>
+    <div
+      slot="footer"
+      v-if="readonly"
+    ></div>
   </popup-dialog>
 </template>
 
@@ -108,6 +125,10 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    canAdminBoard: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -115,7 +136,7 @@ export default Vue.extend({
         id: false,
         name: '',
       },
-      expand: false,
+      expanded: false,
       issue: {},
       currentBoard: Store.state.currentBoard,
       currentPage: Store.state.currentPage,
@@ -139,14 +160,31 @@ export default Vue.extend({
         return 'Create';
       }
 
+      if (this.currentPage === 'delete') {
+        return 'Delete';
+      }
+
       return 'Save';
+    },
+    buttonKind() {
+      if (this.currentPage === 'delete') {
+        return 'danger';
+      }
+      return 'info';
     },
     title() {
       if (this.currentPage === 'new') {
         return 'Create new board';
       }
 
-      // TODO check for readonly
+      if (this.currentPage === 'delete') {
+        return 'Delete board';
+      }
+
+      if (this.readonly) {
+        return 'Board scope';
+      }
+
       return 'Edit board';
     },
     milestoneToggleText() {
@@ -154,6 +192,15 @@ export default Vue.extend({
     },
     submitDisabled() {
       return false;
+    },
+    expandButtonText() {
+      return this.expanded ? 'Collapse' : 'Expand'
+    },
+    collapseScope() {
+      return this.currentPage === 'new';
+    },
+    readonly() {
+      return !this.canAdminBoard;
     },
   },
   methods: {

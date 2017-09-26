@@ -148,12 +148,19 @@ $(() => {
 
   gl.boardConfigToggle = new Vue({
     el: document.querySelector('.js-board-config'),
+    data() {
+      return {
+        canAdminList: convertPermissionToBoolean(
+          this.$options.el.dataset.canAdminList,
+        ),
+      };
+    },
     methods: {
       showPage: page => gl.issueBoards.BoardsStore.showPage(page),
     },
     computed: {
       buttonText() {
-        return Math.random > 0.5 ? 'Edit board' : 'View scope';
+        return this.canAdminList ? 'Edit board' : 'View scope';
       },
     },
     template: `
