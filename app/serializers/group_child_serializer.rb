@@ -41,7 +41,7 @@ class GroupChildSerializer < BaseSerializer
           .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
       end
     elsif hierarchy.is_a?(Array)
-      hierarchy.map { |child| serializer.represent_hierarchy(child, opts) }
+      hierarchy.map { |child| serializer.represent_hierarchy(child, opts) }.flatten
     else
       serializer.represent(hierarchy, opts)
     end

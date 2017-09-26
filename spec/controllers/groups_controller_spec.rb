@@ -293,6 +293,32 @@ describe GroupsController do
           expect(matched_group_json['id']).to eq(matched_group.id)
         end
 
+        it 'merges the trees correctly' do
+          shared_subgroup = create(:group, :public, parent: group, path: 'hardware')
+          matched_project_1 = create(:project, :public, namespace: shared_subgroup, name: 'mobile-soc')
+
+          l2_subgroup = create(:group, :public, parent: shared_subgroup, path: 'broadcom')
+          l3_subgroup = create(:group, :public,  parent: l2_subgroup, path: 'wifi-group')
+          matched_project_2 = create(:project, :public, namespace: l3_subgroup, name: 'mobile')
+
+          get :children, id: group.to_param, filter: 'mobile', format: :json
+
+          shared_group_json = json_response.first
+          expect(shared_group_json['id']).to eq(shared_subgroup.id)
+
+          matched_project_1_json = shared_group_json['children'].detect { |child| child['type'] == 'project' }
+          expect(matched_project_1_json['id']).to eq(matched_project_1.id)
+
+          l2_subgroup_json = shared_group_json['children'].detect { |child| child['type'] == 'group' }
+          expect(l2_subgroup_json['id']).to eq(l2_subgroup.id)
+
+          l3_subgroup_json = l2_subgroup_json['children'].first
+          expect(l3_subgroup_json['id']).to eq(l3_subgroup.id)
+
+          matched_project_2_json = l3_subgroup_json['children'].first
+          expect(matched_project_2_json['id']).to eq(matched_project_2.id)
+        end
+
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 

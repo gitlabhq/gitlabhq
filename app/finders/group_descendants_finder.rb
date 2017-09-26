@@ -64,7 +64,7 @@ class GroupDescendantsFinder
       subgroups_with_counts = ancestors_for_project_search.with_route.select(group_selects) | subgroups_with_counts
     end
 
-    @children = subgroups_with_counts + projects.preload(:route)
+    @children = subgroups_with_counts + projects.with_route
   end
 
   def direct_child_groups
