@@ -13,7 +13,7 @@
     %span.wrap
       -# TODO: Determine if we should conslidate js-add-image-diff-note-button and click-to-comment
       .frame.js-add-image-diff-note-button.click-to-comment{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: diff_view_position_data(position_code, diff_file.position(image_point, :image), nil) }
-        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
+        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
       %p.image-info= number_to_human_size(blob.size)
   .note-container
     = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion

@@ -4,23 +4,30 @@ export default class ImageDiff {
   constructor(el) {
     this.el = el;
     this.imageFrame = el.querySelector('.diff-viewer .image .frame');
+    this.image = this.imageFrame.querySelector('img');
+    this.badges = [];
   }
 
   bindEvents() {
     this.clickWrapper = this.click.bind(this);
     this.blurWrapper = this.blur.bind(this);
+    this.renderBadgesWrapper = this.renderBadges.bind(this);
+    this.addBadgeWrapper = this.addBadge.bind(this);
 
     this.el.addEventListener('click.imageDiff', this.clickWrapper);
     this.el.addEventListener('blur.imageDiff', this.blurWrapper);
-    this.el.addEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
-    this.el.addEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
+    this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+
+    // Render badges after the image diff is loaded
+    this.image.addEventListener('load', this.renderBadgesWrapper);
   }
 
   unbindEvents() {
     this.el.removeEventListener('click.imageDiff', this.clickWrapper);
     this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
-    this.el.removeEventListener('renderBadges.imageDiff', ImageDiff.renderBadges);
-    this.el.removeEventListener('updateBadges.imageDiff', ImageDiff.updateBadges);
+    this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+
+    this.image.removeEventListener('load', this.renderBadgesWrapper);
   }
 
   click(event) {
@@ -55,11 +62,44 @@ export default class ImageDiff {
     }
   }
 
-  static renderBadges() {
+  renderBadges() {
+    // Process existing badges from html
+    const discussions = this.el.querySelectorAll('.note-container .discussion-notes .notes');
+    [].forEach.call(discussions, (discussion) => {
+      const position = JSON.parse(discussion.dataset.position);
 
+      this.badges.push({
+        actual: {
+          x: position.x_axis,
+          y: position.y_axis,
+          width: position.width,
+          height: position.height,
+        },
+      });
+    });
+
+    const browserImage = this.imageFrame.querySelector('img');
+
+    this.badges.map((badge) => {
+      const newBadge = badge;
+      newBadge.browser = imageDiffHelper.createBadgeBrowserFromActual(browserImage, badge.actual);
+      return newBadge;
+    });
+
+    this.badges.forEach((badge, index) =>
+      imageDiffHelper.addCommentBadge(this.imageFrame, badge.browser, index + 1));
   }
 
-  static updateBadges() {
+  addBadge(event) {
+    const actual = event.detail;
+    const browserImage = this.imageFrame.querySelector('img');
+    const badge = {
+      actual,
+      browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
+    };
 
+    imageDiffHelper.addCommentBadge(this.imageFrame, badge.browser, this.badges.length + 1);
+
+    this.badges.push(badge);
   }
 }

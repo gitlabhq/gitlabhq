@@ -1,5 +1,5 @@
 .discussion-notes
-  %ul.notes{ data: { discussion_id: discussion.id } }
+  %ul.notes{ data: { discussion_id: discussion.id, position: discussion.notes[0].position.to_json } }
     - badge_counter = discussion_counter + 1 if local_assigns[:discussion_counter]
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter }
 

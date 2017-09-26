@@ -88,3 +88,37 @@ export function commentIndicatorOnClick(e) {
   const textarea = diffViewer.querySelector('.note-container form .note-textarea');
   textarea.focus();
 }
+
+export function addCommentBadge(containerEl, coordinate, badgeText) {
+  const { x, y } = coordinate;
+  const button = document.createElement('button');
+  button.classList.add('btn-transparent', 'badge');
+  button.setAttribute('type', 'button');
+  button.innerText = badgeText;
+
+  containerEl.appendChild(button);
+
+  // TODO: We should use math to calculate the width so that we don't
+  // have to do a reflow here but we can leave this here for now
+  const { width, height } = button.getBoundingClientRect();
+  button.style.left = `${x - (width * 0.5)}px`;
+  button.style.top = `${y - (height * 0.5)}px`;
+}
+
+// TODO: Refactor into separate discussionBadge object
+export function createBadgeBrowserFromActual(imageEl, actualProps) {
+  const { x, y, width, height } = actualProps;
+
+  const browserImageWidth = imageEl.width;
+  const browserImageHeight = imageEl.height;
+
+  const widthRatio = browserImageWidth / width;
+  const heightRatio = browserImageHeight / height;
+
+  return {
+    x: Math.round(x * widthRatio),
+    y: Math.round(y * heightRatio),
+    width: browserImageWidth,
+    height: browserImageHeight,
+  };
+}

@@ -1469,7 +1469,18 @@ export default class Notes {
             detail: e,
           });
 
+          const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
+          const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
+            detail: {
+              x: x_axis,
+              y: y_axis,
+              width,
+              height,
+            },
+          });
+
           diffFile.dispatchEvent(blurEvent);
+          diffFile.dispatchEvent(addBadgeEvent);
         }
 
         // Reset cached commands list when command is applied
