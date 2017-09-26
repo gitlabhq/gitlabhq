@@ -103,6 +103,11 @@ export function addCommentBadge(containerEl, coordinate, badgeText) {
   const { width, height } = button.getBoundingClientRect();
   button.style.left = `${x - (width * 0.5)}px`;
   button.style.top = `${y - (height * 0.5)}px`;
+
+  // TODO: Highlight first note in the discussion when button is clicked
+  button.addEventListener('click', e => e.stopPropagation());
+
+  return button;
 }
 
 // TODO: Refactor into separate discussionBadge object
