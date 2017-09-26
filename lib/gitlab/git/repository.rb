@@ -386,7 +386,13 @@ module Gitlab
         options[:limit] ||= 0
         options[:offset] ||= 0
 
-        raw_log(options).map { |c| Commit.decorate(self, c) }
+        gitaly_migrate(:find_commits) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.find_commits(options)
+          else
+            raw_log(options).map { |c| Commit.decorate(self, c) }
+          end
+        end
       end
 
       # Used in gitaly-ruby

@@ -142,8 +142,11 @@ module IssuableCollections
     when 'milestone_due_desc' then sort_value_milestone
     when 'downvotes_asc'      then sort_value_popularity
     when 'downvotes_desc'     then sort_value_popularity
+<<<<<<< HEAD
     when 'weight_asc'         then sort_value_weight
     when 'weight_desc'        then sort_value_weight
+=======
+>>>>>>> b187a3f2bb00a0a0a6e5f8369edf2d6430a7af6e
     else value
     end
   end
