@@ -1,5 +1,0 @@
----
-title: 'Ensure #route_setting is available before calling it'
-merge_request: 2908
-author:
-type: fixed

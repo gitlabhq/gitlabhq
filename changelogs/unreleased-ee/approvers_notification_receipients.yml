@@ -1,5 +1,0 @@
----
-title: 'Fix: When MR approvals are disabled, but approvers were previously assigned,
-  all approvers receive a notification on every MR'
-merge_request:
-author:

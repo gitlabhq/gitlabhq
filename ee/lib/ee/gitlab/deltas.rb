@@ -10,9 +10,14 @@ module EE
           diff = tree_a.diff(tree_b)
 
           diff.each_delta do |d|
-            new_file_size = d.deleted? ? 0 : ::Gitlab::Git::Blob.raw(repo, d.new_file[:oid]).size
+            next if d.deleted?
 
-            size_of_deltas += new_file_size
+            blob = ::Gitlab::Git::Blob.raw(repo, d.new_file[:oid])
+
+            # It's possible the OID points to a commit or empty object
+            next unless blob
+
+            size_of_deltas += blob.size
           end
 
           size_of_deltas

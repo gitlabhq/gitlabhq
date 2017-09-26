@@ -30,6 +30,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+  it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
   describe '#source' do
     context 'when creating new pipeline' do

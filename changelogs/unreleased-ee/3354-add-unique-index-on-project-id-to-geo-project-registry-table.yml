@@ -1,5 +1,0 @@
----
-title: Geo - Add a unique index on project_id to the Geo project_registry table
-merge_request: 2850
-author:
-type: fixed

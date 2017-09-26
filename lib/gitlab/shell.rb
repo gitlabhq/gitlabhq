@@ -388,10 +388,14 @@ module Gitlab
     # Ex.
     #   push_remote_branches('upstream', 'feature')
     #
-    def push_remote_branches(storage, project_name, remote_name, branch_names)
-      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, '600', *branch_names]
+    def push_remote_branches(storage, project_name, remote_name, branch_names, forced: true)
+      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, '600']
+      args << '--force' if forced
+      args += [*branch_names]
+
       output, status = Popen.popen(args)
       raise Error, output unless status.zero?
+
       true
     end
 

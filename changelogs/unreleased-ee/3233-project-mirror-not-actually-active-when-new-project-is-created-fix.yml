@@ -1,5 +1,0 @@
----
-title: Fixes activation of project mirror when new project is created.
-merge_request: 2756
-author:
-type: fixed

@@ -40,21 +40,29 @@ describe API::V3::Github do
 
   describe 'GET /users/:namespace/repos' do
     context 'authenticated' do
-      it 'returns an array of projects with github format' do
-        stub_licensed_features(jira_dev_panel_integration: true)
+      let(:group) { create(:group) }
+      let!(:group_project) { create(:project, group: group) }
 
-        group = create(:group)
-        create(:project, group: group)
+      before do
+        stub_licensed_features(jira_dev_panel_integration: true)
         group.add_master(user)
 
         get v3_api('/users/foo/repos', user)
+      end
 
+      it 'returns an array of projects with github format' do
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
 
         expect(response).to match_response_schema('entities/github/repositories')
+      end
+
+      it 'returns valid project path as name' do
+        project_names = json_response.map { |r| r['name'] }
+
+        expect(project_names).to include(project.path, group_project.path)
       end
     end
 

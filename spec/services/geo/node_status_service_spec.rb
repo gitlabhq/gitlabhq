@@ -57,6 +57,23 @@ describe Geo::NodeStatusService do
       expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
     end
 
+    it 'alerts on bad SSL certficate' do
+      message = 'bad certificate'
+      allow(described_class).to receive(:get).and_raise(OpenSSL::SSL::SSLError.new(message))
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq(message)
+    end
+
+    it 'handles connection refused' do
+      allow(described_class).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq('Connection refused - bad connection')
+    end
+
     it 'returns meaningful error message when primary uses incorrect db key' do
       secondary # create it before mocking GeoNode#secret_access_key
 
@@ -65,6 +82,14 @@ describe Geo::NodeStatusService do
       status = subject.call(secondary)
 
       expect(status.health).to eq('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.')
+    end
+
+    it 'gracefully handles case when primary is deleted' do
+      primary.destroy
+
+      status = subject.call(secondary)
+
+      expect(status.health).to eq('This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.')
     end
   end
 end

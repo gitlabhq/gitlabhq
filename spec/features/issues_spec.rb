@@ -201,17 +201,10 @@ describe 'Issues' do
     let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
 
     it 'sorts by newest' do
-      visit project_issues_path(project, sort: sort_value_recently_created)
+      visit project_issues_path(project, sort: sort_value_created_date)
 
       expect(first_issue).to include('foo')
       expect(last_issue).to include('baz')
-    end
-
-    it 'sorts by oldest' do
-      visit project_issues_path(project, sort: sort_value_oldest_created)
-
-      expect(first_issue).to include('baz')
-      expect(last_issue).to include('foo')
     end
 
     it 'sorts by most recently updated' do
@@ -222,36 +215,22 @@ describe 'Issues' do
       expect(first_issue).to include('baz')
     end
 
-    it 'sorts by least recently updated' do
-      baz.updated_at = Time.now - 100
-      baz.save
-      visit project_issues_path(project, sort: sort_value_oldest_updated)
-
-      expect(first_issue).to include('baz')
-    end
-
     describe 'sorting by due date' do
       before do
         foo.update(due_date: 1.day.from_now)
         bar.update(due_date: 6.days.from_now)
       end
 
-      it 'sorts by recently due date' do
-        visit project_issues_path(project, sort: sort_value_due_date_soon)
+      it 'sorts by due date' do
+        visit project_issues_path(project, sort: sort_value_due_date)
 
         expect(first_issue).to include('foo')
       end
 
-      it 'sorts by least recently due date' do
-        visit project_issues_path(project, sort: sort_value_due_date_later)
-
-        expect(first_issue).to include('bar')
-      end
-
-      it 'sorts by least recently due date by excluding nil due dates' do
+      it 'sorts by due date by excluding nil due dates' do
         bar.update(due_date: nil)
 
-        visit project_issues_path(project, sort: sort_value_due_date_later)
+        visit project_issues_path(project, sort: sort_value_due_date)
 
         expect(first_issue).to include('foo')
       end
@@ -350,17 +329,10 @@ describe 'Issues' do
         bar.save
       end
 
-      it 'sorts by recently due milestone' do
-        visit project_issues_path(project, sort: sort_value_milestone_soon)
+      it 'sorts by milestone' do
+        visit project_issues_path(project, sort: sort_value_milestone)
 
         expect(first_issue).to include('foo')
-        expect(last_issue).to include('baz')
-      end
-
-      it 'sorts by least recently due milestone' do
-        visit project_issues_path(project, sort: sort_value_milestone_later)
-
-        expect(first_issue).to include('bar')
         expect(last_issue).to include('baz')
       end
     end
@@ -376,13 +348,11 @@ describe 'Issues' do
       end
 
       it 'sorts with a filter applied' do
-        visit project_issues_path(project,
-                                            sort: sort_value_oldest_created,
-                                            assignee_id: user2.id)
+        visit project_issues_path(project, sort: sort_value_created_date, assignee_id: user2.id)
 
-        expect(first_issue).to include('bar')
-        expect(last_issue).to include('foo')
-        expect(page).not_to have_content 'baz'
+        expect(first_issue).to include('foo')
+        expect(last_issue).to include('bar')
+        expect(page).not_to have_content('baz')
       end
     end
   end

@@ -20,8 +20,7 @@ describe 'User edits files' do
     it 'inserts a content of a file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
-
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
@@ -38,8 +37,7 @@ describe 'User edits files' do
     it 'commits an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
-
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -56,7 +54,7 @@ describe 'User edits files' do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -67,15 +65,13 @@ describe 'User edits files' do
 
       click_link('Changes')
 
-      wait_for_requests
       expect(page).to have_content('*.rbca')
     end
 
     it 'shows the diff of an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
-
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
       click_link('Preview changes')
@@ -104,7 +100,7 @@ describe 'User edits files' do
         "A fork of this project has been created that you can make changes in, so you can submit a merge request."
       )
 
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
@@ -120,7 +116,7 @@ describe 'User edits files' do
 
       click_link('Fork')
 
-      wait_for_requests
+      find('.file-editor', match: :first)
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)

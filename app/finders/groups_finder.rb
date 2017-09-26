@@ -57,7 +57,7 @@ class GroupsFinder < UnionFinder
   end
 
   def owned_groups
-    current_user&.groups || Group.none
+    current_user&.owned_groups || Group.none
   end
 
   def include_public_groups?

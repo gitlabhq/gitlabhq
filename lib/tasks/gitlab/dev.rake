@@ -13,7 +13,10 @@ namespace :gitlab do
           args
         end
 
-      if Gitlab::EeCompatCheck.new(opts || {}).check
+      if File.basename(Rails.root) == 'gitlab-ee'
+        puts "Skipping EE projects"
+        exit 0
+      elsif Gitlab::EeCompatCheck.new(opts || {}).check
         exit 0
       else
         exit 1

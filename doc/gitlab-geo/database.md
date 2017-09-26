@@ -145,7 +145,10 @@ The following guide assumes that:
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab][] for the DB listen changes to take effect.
+   This will fail and is expected.
+1. You will need to manually restart postgres `gitlab-ctl restart postgresql` until [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797) gets fixed.
+1. You should now reconfigure again, and it should complete cleanly.
 1. New for 9.4: Restart your primary PostgreSQL server to ensure the replication slot changes
    take effect (`sudo gitlab-ctl restart postgresql` for Omnibus-provided PostgreSQL).
 1. Now that the PostgreSQL server is set up to accept remote connections, run

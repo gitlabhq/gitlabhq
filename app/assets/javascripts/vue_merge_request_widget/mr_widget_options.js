@@ -31,6 +31,7 @@ import {
   SquashBeforeMerge,
   notify,
 } from './dependencies';
+import { setFavicon } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -88,7 +89,7 @@ export default {
         .then((res) => {
           this.handleNotification(res);
           this.mr.setData(res);
-          this.setFavicon();
+          this.setFaviconHelper();
 
           if (cb) {
             cb.call(null, res);
@@ -115,9 +116,9 @@ export default {
         immediateExecution: true,
       });
     },
-    setFavicon() {
+    setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
-        gl.utils.setFavicon(this.mr.ciStatusFaviconPath);
+        setFavicon(this.mr.ciStatusFaviconPath);
       }
     },
     fetchDeployments() {
@@ -191,7 +192,7 @@ export default {
       });
     },
     handleMounted() {
-      this.setFavicon();
+      this.setFaviconHelper();
       this.initDeploymentsPolling();
     },
   },

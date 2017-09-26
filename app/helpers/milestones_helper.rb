@@ -94,6 +94,12 @@ module MilestonesHelper
     end
   end
 
+  def milestone_tooltip_title(milestone)
+    if milestone.due_date
+      [milestone.due_date.to_s(:medium), "(#{milestone_remaining_days(milestone)})"].join(' ')
+    end
+  end
+
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')

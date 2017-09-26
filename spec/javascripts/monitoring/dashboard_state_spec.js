@@ -21,6 +21,9 @@ describe('EmptyState', () => {
         selectedState: 'gettingStarted',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
+        emptyGettingStartedSvgPath: 'foo',
+        emptyLoadingSvgPath: 'foo',
+        emptyUnableToConnectSvgPath: 'foo',
       });
 
       expect(component.currentState).toBe(component.states.gettingStarted);
@@ -31,6 +34,9 @@ describe('EmptyState', () => {
         selectedState: 'gettingStarted',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
+        emptyGettingStartedSvgPath: 'foo',
+        emptyLoadingSvgPath: 'foo',
+        emptyUnableToConnectSvgPath: 'foo',
       });
 
       expect(component.buttonPath).toEqual(statePaths.settingsPath);
@@ -42,6 +48,9 @@ describe('EmptyState', () => {
         selectedState: 'loading',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
+        emptyGettingStartedSvgPath: 'foo',
+        emptyLoadingSvgPath: 'foo',
+        emptyUnableToConnectSvgPath: 'foo',
       });
 
       expect(component.buttonPath).toEqual(statePaths.documentationPath);
@@ -53,6 +62,9 @@ describe('EmptyState', () => {
         selectedState: 'unableToConnect',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
+        emptyGettingStartedSvgPath: 'foo',
+        emptyLoadingSvgPath: 'foo',
+        emptyUnableToConnectSvgPath: 'foo',
       });
 
       expect(component.showButtonDescription).toEqual(true);
@@ -63,6 +75,9 @@ describe('EmptyState', () => {
         selectedState: 'loading',
         settingsPath: statePaths.settingsPath,
         documentationPath: statePaths.documentationPath,
+        emptyGettingStartedSvgPath: 'foo',
+        emptyLoadingSvgPath: 'foo',
+        emptyUnableToConnectSvgPath: 'foo',
       });
 
       expect(component.showButtonDescription).toEqual(false);
@@ -74,6 +89,9 @@ describe('EmptyState', () => {
       selectedState: 'gettingStarted',
       settingsPath: statePaths.settingsPath,
       documentationPath: statePaths.documentationPath,
+      emptyGettingStartedSvgPath: 'foo',
+      emptyLoadingSvgPath: 'foo',
+      emptyUnableToConnectSvgPath: 'foo',
     });
 
     expect(component.$el.querySelector('svg')).toBeDefined();
@@ -87,6 +105,9 @@ describe('EmptyState', () => {
       selectedState: 'loading',
       settingsPath: statePaths.settingsPath,
       documentationPath: statePaths.documentationPath,
+      emptyGettingStartedSvgPath: 'foo',
+      emptyLoadingSvgPath: 'foo',
+      emptyUnableToConnectSvgPath: 'foo',
     });
 
     expect(component.$el.querySelector('svg')).toBeDefined();
@@ -100,6 +121,9 @@ describe('EmptyState', () => {
       selectedState: 'unableToConnect',
       settingsPath: statePaths.settingsPath,
       documentationPath: statePaths.documentationPath,
+      emptyGettingStartedSvgPath: 'foo',
+      emptyLoadingSvgPath: 'foo',
+      emptyUnableToConnectSvgPath: 'foo',
     });
 
     expect(component.$el.querySelector('svg')).toBeDefined();

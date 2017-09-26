@@ -28,7 +28,7 @@ export default {
         v-if="showDisabledButton"
         ref="mergeButton"
         type="button"
-        class="btn btn-success btn-small"
+        class="btn btn-success btn-sm"
         disabled="true">
         Merge
       </button>

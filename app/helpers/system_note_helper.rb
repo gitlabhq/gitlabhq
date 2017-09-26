@@ -1,29 +1,29 @@
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
-    'commit' => 'icon_commit',
-    'description' => 'icon_edit',
-    'merge' => 'icon_merge',
-    'merged' => 'icon_merged',
-    'opened' => 'icon_status_open',
-    'closed' => 'icon_status_closed',
-    'time_tracking' => 'icon_stopwatch',
-    'assignee' => 'icon_user',
-    'title' => 'icon_edit',
-    'task' => 'icon_check_square_o',
-    'label' => 'icon_tags',
-    'cross_reference' => 'icon_random',
-    'branch' => 'icon_code_fork',
-    'confidential' => 'icon_eye_slash',
-    'visible' => 'icon_eye',
-    'milestone' => 'icon_clock_o',
-    'discussion' => 'icon_comment_o',
-    'moved' => 'icon_arrow_circle_o_right',
-    'outdated' => 'icon_edit',
-    'duplicate' => 'icon_clone',
-    'approved' => 'icon_check',
-    'unapproved' => 'icon_fa_close',
-    'relate' => 'icon_anchor',
-    'unrelate' => 'icon_anchor_broken'
+    'commit' => 'commit',
+    'description' => 'pencil',
+    'merge' => 'git-merge',
+    'merged' => 'git-merge',
+    'opened' => 'issue-open',
+    'closed' => 'issue-close',
+    'time_tracking' => 'timer',
+    'assignee' => 'user',
+    'title' => 'pencil',
+    'task' => 'task-done',
+    'label' => 'label',
+    'cross_reference' => 'comment-dots',
+    'branch' => 'fork',
+    'confidential' => 'eye-slash',
+    'visible' => 'eye',
+    'milestone' => 'clock',
+    'discussion' => 'comment',
+    'moved' => 'arrow-right',
+    'outdated' => 'pencil',
+    'duplicate' => 'issue-duplicate',
+    'approved' => 'approval',
+    'unapproved' => 'unapproval',
+    'relate' => 'link',
+    'unrelate' => 'unlink'
   }.freeze
 
   def system_note_icon_name(note)
@@ -32,7 +32,7 @@ module SystemNoteHelper
 
   def icon_for_system_note(note)
     icon_name = system_note_icon_name(note)
-    custom_icon(icon_name) if icon_name
+    sprite_icon(icon_name) if icon_name
   end
 
   extend self

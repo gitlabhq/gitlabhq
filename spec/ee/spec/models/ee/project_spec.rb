@@ -107,57 +107,58 @@ describe Project do
         allow(namespace).to receive(:plan) { plan_license }
       end
 
-      License::FEATURE_CODES.each do |feature_sym, feature_code|
+      License::EEU_FEATURES.each do |feature_sym|
+        let(:feature) { feature_sym }
+
         context feature_sym.to_s do
-          let(:feature) { feature_sym }
-          let(:feature_code) { feature_code }
+          unless License::GLOBAL_FEATURES.include?(feature_sym)
+            context "checking #{feature_sym} availability both on Global and Namespace license" do
+              let(:check_namespace_plan) { true }
 
-          context "checking #{feature_sym} availability both on Global and Namespace license" do
-            let(:check_namespace_plan) { true }
+              context 'allowed by Plan License AND Global License' do
+                let(:allowed_on_global_license) { true }
+                let(:plan_license) { Plan.find_by(name: 'gold') }
 
-            context 'allowed by Plan License AND Global License' do
-              let(:allowed_on_global_license) { true }
-              let(:plan_license) { Plan.find_by(name: 'gold') }
-
-              it 'returns true' do
-                is_expected.to eq(true)
+                it 'returns true' do
+                  is_expected.to eq(true)
+                end
               end
-            end
 
-            context 'not allowed by Plan License but project and namespace are public' do
-              let(:allowed_on_global_license) { true }
-              let(:plan_license) { Plan.find_by(name: 'bronze') }
-
-              it 'returns true' do
-                allow(namespace).to receive(:public?) { true }
-                allow(project).to receive(:public?) { true }
-
-                is_expected.to eq(true)
-              end
-            end
-
-            unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
-              context 'not allowed by Plan License' do
+              context 'not allowed by Plan License but project and namespace are public' do
                 let(:allowed_on_global_license) { true }
                 let(:plan_license) { Plan.find_by(name: 'bronze') }
+
+                it 'returns true' do
+                  allow(namespace).to receive(:public?) { true }
+                  allow(project).to receive(:public?) { true }
+
+                  is_expected.to eq(true)
+                end
+              end
+
+              unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
+                context 'not allowed by Plan License' do
+                  let(:allowed_on_global_license) { true }
+                  let(:plan_license) { Plan.find_by(name: 'bronze') }
+
+                  it 'returns false' do
+                    is_expected.to eq(false)
+                  end
+                end
+              end
+
+              context 'not allowed by Global License' do
+                let(:allowed_on_global_license) { false }
+                let(:plan_license) { Plan.find_by(name: 'gold') }
 
                 it 'returns false' do
                   is_expected.to eq(false)
                 end
               end
             end
-
-            context 'not allowed by Global License' do
-              let(:allowed_on_global_license) { false }
-              let(:plan_license) { Plan.find_by(name: 'gold') }
-
-              it 'returns false' do
-                is_expected.to eq(false)
-              end
-            end
           end
 
-          context "when checking #{feature_code} only for Global license" do
+          context "when checking #{feature_sym} only for Global license" do
             let(:check_namespace_plan) { false }
 
             context 'allowed by Global License' do

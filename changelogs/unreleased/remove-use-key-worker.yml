@@ -1,0 +1,5 @@
+---
+title: Stop using Sidekiq for updating Key#last_used_at
+merge_request:
+author:
+type: changed

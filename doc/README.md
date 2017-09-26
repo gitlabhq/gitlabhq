@@ -97,7 +97,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project issue Board](user/project/issue_board.md)
-- **(EEP)** [Group issue boards](user/group/issue_boards.md)
+- **(EEP)** [Group Issue Boards](user/project/issue_board.md#group-level-issue-boards)
 - **(EES/EEP)** [Related Issues](user/project/issues/related_issues.md): create a relationship between issues
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.

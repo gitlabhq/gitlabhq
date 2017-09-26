@@ -1,11 +1,12 @@
 - short_form = local_assigns.fetch :short_form, false
 - if current_application_settings.should_check_namespace_plan?
-  - if can?(current_user, :admin_namespace, @project.namespace)
+  - namespace = @project&.namespace || @group
+  - if can?(current_user, :admin_namespace, namespace)
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'
-  - elsif @project.group
-    %p Contact an owner of group #{ @project.group.name } to upgrade the plan.
+  - elsif namespace.is_a?(Group)
+    %p Contact an owner of group #{ namespace.name } to upgrade the plan.
   - else
-    - owner = @project.namespace.owner
+    - owner = namespace.owner
     %p Contact owner #{ link_to(owner.name, user_path(owner)) } to upgrade the plan.
 - elsif current_user&.admin?
   - if License.current&.expired?

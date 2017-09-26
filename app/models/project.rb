@@ -196,7 +196,7 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
-  accepts_nested_attributes_for :auto_devops
+  accepts_nested_attributes_for :auto_devops, update_only: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true

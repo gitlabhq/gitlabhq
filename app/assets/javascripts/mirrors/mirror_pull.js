@@ -1,6 +1,7 @@
 /* global Flash */
 
 import AUTH_METHOD from './constants';
+import { backOff } from '../lib/utils/common_utils';
 
 export default class MirrorPull {
   constructor(formSelector) {
@@ -65,7 +66,7 @@ export default class MirrorPull {
     $btnLoadSpinner.removeClass('hidden');
 
     // Make backOff polling to get data
-    gl.utils.backOff((next, stop) => {
+    backOff((next, stop) => {
       $.getJSON(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
         .done((res, statusText, header) => {
           if (header.status === 204) {

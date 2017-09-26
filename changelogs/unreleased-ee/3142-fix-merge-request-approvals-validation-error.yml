@@ -1,0 +1,5 @@
+---
+title: Fix a merge request validation error on forked projects.
+merge_request: 2932
+author:
+type: fixed

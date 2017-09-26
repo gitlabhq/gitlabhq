@@ -119,10 +119,13 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
   shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
+    let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
+
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
     it { expect(raw_blob.size).to eq(669) }
     it { expect(raw_blob.truncated?).to be_falsey }
+    it { expect(bad_blob).to be_nil }
 
     context 'large file' do
       it 'limits the size of a large file' do
