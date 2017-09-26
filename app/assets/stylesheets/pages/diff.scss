@@ -701,3 +701,15 @@
     }
   }
 }
+
+.image-diff-avatar-link {
+  position: relative;
+
+  .badge {
+    position: absolute;
+    top: 25px;
+    right: 8px;
+    background-color: $blue-400;
+    color: $white-light;
+  }
+}
