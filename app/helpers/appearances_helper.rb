@@ -35,4 +35,8 @@ module AppearancesHelper
       render 'shared/logo_type.svg'
     end
   end
+
+  def brand_favicon
+    brand_item&.favicon
+  end
 end

@@ -60,6 +60,11 @@ describe PageLayoutHelper do
       stub_env('CANARY', 'true')
       expect(helper.favicon).to eq 'favicon-yellow.ico'
     end
+
+    it 'uses the custom favicon if an favicon appearance is present' do
+      create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+      expect(helper.favicon).to match %r{/uploads/-/system/appearance/favicon/\d+/default_dk.ico}
+    end
   end
 
   describe 'page_image' do

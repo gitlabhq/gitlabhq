@@ -39,6 +39,7 @@ module PageLayoutHelper
   end
 
   def favicon
+    return brand_favicon.default.url if brand_favicon
     return 'favicon-yellow.ico' if Gitlab::Utils.to_boolean(ENV['CANARY'])
     return 'favicon-green.ico' if Rails.env.development?
 
