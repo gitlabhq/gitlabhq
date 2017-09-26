@@ -24,7 +24,6 @@ import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
-import * as imageDiff from './image_diff/image_diff';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -918,9 +917,13 @@ export default class Notes {
 
   onAddImageDiffNote(e) {
     const $link = $(e.currentTarget || e.target);
+    const $diffFile = $link.closest('.diff-file');
 
-    imageDiff.showCommentIndicator(e);
-    imageDiff.setupCoordinatesData(e);
+    const clickEvent = new CustomEvent('click.imageDiff', {
+      detail: e,
+    });
+
+    $diffFile[0].dispatchEvent(clickEvent);
 
     // Setup comment form
     let newForm;
@@ -1031,7 +1034,11 @@ export default class Notes {
     e.preventDefault();
     const $form = $(e.target).closest('.js-discussion-note-form');
 
-    imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+    const blurEvent = new CustomEvent('blur.imageDiff', {
+      detail: e,
+    });
+
+    $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
 
     return this.removeDiscussionNoteForm($form);
   }
@@ -1445,7 +1452,11 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+        const blurEvent = new CustomEvent('blur.imageDiff', {
+          detail: e,
+        });
+
+        $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
 
         // Reset cached commands list when command is applied
         if (hasQuickActions) {
@@ -1490,7 +1501,11 @@ export default class Notes {
         // Submission failed, remove placeholder note and show Flash error message
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        imageDiff.hideCommentIndicator($form.closest('.diff-viewer')[0]);
+        const blurEvent = new CustomEvent('blur.imageDiff', {
+          detail: e,
+        });
+
+        $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
 
         if (hasQuickActions) {
           $notesContainer.find(`#${systemNoteUniqueId}`).remove();

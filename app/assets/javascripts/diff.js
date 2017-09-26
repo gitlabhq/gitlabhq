@@ -3,6 +3,7 @@
 import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
+import ImageDiff from './image_diff/image_diff';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -20,6 +21,12 @@ class Diff {
     FilesCommentButton.init($diffFile);
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
+    $diffFile.each((index, file) => {
+      if (file.querySelector('.diff-viewer .image')) {
+        const imageDiff = new ImageDiff(file);
+        imageDiff.bindEvents();
+      }
+    });
 
     if (!isBound) {
       $(document)
