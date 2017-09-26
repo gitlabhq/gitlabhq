@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import autosize from 'vendor/autosize';
 import store from '~/notes/stores';
 import issueCommentForm from '~/notes/components/issue_comment_form.vue';
 import { loggedOutIssueData, notesDataMock, userDataMock, issueDataMock } from '../mock_data';
@@ -53,6 +54,19 @@ describe('issue_comment_form component', () => {
       it('should link to quick actions docs', () => {
         const { quickActionsDocsPath } = notesDataMock;
         expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual('quick actions');
+      });
+
+      it('should resize textarea after note discarded', (done) => {
+        spyOn(autosize, 'update');
+        spyOn(vm, 'discard').and.callThrough();
+
+        vm.note = 'foo';
+        vm.discard();
+
+        Vue.nextTick(() => {
+          expect(autosize.update).toHaveBeenCalled();
+          done();
+        });
       });
 
       describe('edit mode', () => {

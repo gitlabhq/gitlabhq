@@ -1,0 +1,5 @@
+---
+title: Notes will not show an empty bubble when the author isn't a member.
+merge_request: 14450
+author:
+type: fixed
