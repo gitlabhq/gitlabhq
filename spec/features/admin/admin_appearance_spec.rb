@@ -76,6 +76,40 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
+  scenario 'Favicon' do
+    sign_in(create(:admin))
+    visit admin_appearances_path
+
+    attach_file(:appearance_favicon, logo_fixture)
+    click_button 'Save'
+
+    expect(page).to have_css('//img[data-src$="/default_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_canceled_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_created_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_failed_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_manual_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_not_found_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_pending_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_running_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_skipped_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_success_dk.ico"]')
+    expect(page).to have_css('//img[data-src$="/status_warning_dk.ico"]')
+
+    click_link 'Remove favicon'
+
+    expect(page).not_to have_css('//img[data-src$="/default_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_canceled_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_created_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_failed_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_manual_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_not_found_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_pending_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_running_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_skipped_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_success_dk.ico"]')
+    expect(page).not_to have_css('//img[data-src$="/status_warning_dk.ico"]')
+  end
+
   def expect_custom_sign_in_appearance(appearance)
     expect(page).to have_content appearance.title
     expect(page).to have_content appearance.description
