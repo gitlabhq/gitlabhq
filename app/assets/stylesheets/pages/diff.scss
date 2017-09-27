@@ -651,13 +651,18 @@
     background-color: $white-light;
   }
 
+  // double jagged line divider
   .discussion-notes + .discussion-notes::before {
-    // TODO: Convert to Jagged border
-    background-color: black;
-    content: " ";
+    content: '';
+    position: relative;
     display: block;
     width: 100%;
-    height: $gl-padding;
+    height: 10px;
+    background-color: $white-light;
+    background-image: linear-gradient(45deg,transparent,transparent 73%,#dadada 75%,#fff 80%),linear-gradient(225deg,transparent,transparent 73%,#dadada 75%,#fff 80%),linear-gradient(135deg,transparent,transparent 73%,#dadada 75%,#fff 80%),linear-gradient(-45deg,transparent,transparent 73%,#dadada 75%,#fff 80%);
+    background-position: 5px 5px,0 5px,0 5px,5px 5px;
+    background-size: 10px 10px;
+    background-repeat: repeat;
   }
 }
 
