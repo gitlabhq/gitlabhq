@@ -942,6 +942,12 @@ class User < ActiveRecord::Base
     lease.try_obtain
   end
 
+  def ldap_access?
+    return true unless requires_ldap_check? && try_obtain_ldap_lease
+
+    Gitlab::Auth::LDAP::Access.allowed?(self)
+  end
+
   def solo_owned_groups
     @solo_owned_groups ||= owned_groups.select do |group|
       group.owners == [self]
