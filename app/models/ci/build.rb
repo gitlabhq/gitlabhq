@@ -229,6 +229,10 @@ module Ci
       variables
     end
 
+    def features
+      { trace_sections: true }
+    end
+
     def merge_request
       return @merge_request if defined?(@merge_request)
 
