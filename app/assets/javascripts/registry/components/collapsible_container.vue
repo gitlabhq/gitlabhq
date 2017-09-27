@@ -29,6 +29,11 @@
         isOpen: false,
       };
     },
+    computed: {
+      clipboardText() {
+        return `docker pull ${this.repo.location}`;
+      },
+    },
     methods: {
       ...mapActions([
         'fetchRepos',
@@ -49,10 +54,6 @@
         this.deleteRepo(this.repo)
           .then(() => this.fetchRepos())
           .catch(() => this.showError(errorMessagesTypes.DELETE_REPO));
-      },
-
-      clipboardText(text) {
-        return `docker pull ${text}`;
       },
 
       showError(message) {
@@ -83,7 +84,7 @@
 
       <clipboard-button
         v-if="repo.location"
-        :text="clipboardText(repo.location)"
+        :text="clipboardText"
         :title="repo.location"
         />
 

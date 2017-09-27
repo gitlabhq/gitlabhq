@@ -38,8 +38,7 @@
       ]),
 
       layers(item) {
-        const pluralize = n__('layer', 'layers', item.layers);
-        return `${item.layers} ${pluralize}`;
+        return n__('%d layer', '%d layers', item.layers);
       },
 
       handleDeleteRegistry(registry) {
