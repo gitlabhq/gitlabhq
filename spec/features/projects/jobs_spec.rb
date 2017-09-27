@@ -380,7 +380,6 @@ feature 'Jobs' do
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page.status_code).to eq(200)
         expect(page).to have_content 'Retry'
       end
     end
@@ -396,7 +395,6 @@ feature 'Jobs' do
       end
 
       it 'shows the right status and buttons', :js do
-        expect(page).to have_http_status(200)
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
@@ -450,7 +448,6 @@ feature 'Jobs' do
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
           expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
           expect(page.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
         end
@@ -490,7 +487,6 @@ feature 'Jobs' do
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
           expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
           expect(page.response_headers['X-Sendfile']).to eq(existing_file)
         end
