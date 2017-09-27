@@ -27,9 +27,11 @@
 - elsif discussion_locked
   .disabled-comment.text-center.prepend-top-default
     %span.issuable-note-warning
-      This
-      = issuable.class.to_s.titleize.downcase
-      is locked. Only
-      %b project members
-      can comment.
+      %span.icon= sprite_icon('lock', size: 14)
+      %span
+        This
+        = issuable.class.to_s.titleize.downcase
+        is locked. Only
+        %b project members
+        can comment.
 %script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe

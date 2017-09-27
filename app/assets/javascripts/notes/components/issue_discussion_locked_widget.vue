@@ -1,6 +1,10 @@
 <script>
   export default {
-    name: 'discussionLockedWidget',
+    computed: {
+      icon() {
+        return gl.utils.spriteIcon('lock');
+      },
+    },
   };
 
 </script>
@@ -8,7 +12,8 @@
 <template>
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning">
-      This issue is locked. Only <b>project members</b> can comment.
+      <span class="icon" v-html="icon"></span>
+      <span>This issue is locked. Only <b>project members</b> can comment.</span>
      </span>
   </div>
 </template>
