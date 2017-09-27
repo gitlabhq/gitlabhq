@@ -51,7 +51,6 @@ describe 'Dropdown assignee', :js do
     it 'should hide loading indicator when loaded' do
       filtered_search.set('assignee:')
 
-      expect(find(js_dropdown_assignee)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
