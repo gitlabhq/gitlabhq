@@ -3,30 +3,27 @@
 %section.ldap-group-links
   = form_for [group, LdapGroupLink.new], html: { class: 'form-horizontal' } do |f|
     .form-holder
-      .form-group.clearfix
-        = f.label :cn, class: 'control-label' do
+      .form-group.row
+        = f.label :cn, class: 'control-label col-sm-2' do
           LDAP Server
         .col-sm-10
           = f.select :provider, ldap_server_select_options, {}, class: 'form-control'
 
-      .form-group.clearfix
-        = f.label :cn, class: 'control-label' do
+      .form-group.row
+        = f.label :cn, class: 'control-label col-sm-2' do
           Sync method
-        .col-sm-2
         .col-sm-10
           .radio
-            = label_tag :ldap_group do
+            = label_tag :sync_method_group do
               = radio_button_tag :sync_method, :group, true
-              .option-title
-                LDAP Group cn
+              LDAP Group cn
           .radio
-            = label_tag :ldap_filter do
+            = label_tag :sync_method_filter do
               = radio_button_tag :sync_method, :filter
-              .option-title
-            LDAP user filter
+              LDAP user filter
 
-      .form-group.clearfix.cn-link
-        = f.label :cn, class: 'control-label' do
+      .form-group.row.cn-link
+        = f.label :cn, class: 'control-label col-sm-2' do
           LDAP Group cn
         .col-sm-10
           = f.hidden_field :cn, placeholder: 'Ex. QA group', class: 'xxlarge ajax-ldap-groups-select input-mn-300'
@@ -35,8 +32,8 @@
             %br
             If you select an LDAP group you do not belong to you will lose ownership of #{group.name}.
 
-      .form-group.clearfix.filter-link
-        = f.label :filter, class: 'control-label' do
+      .form-group.row.filter-link
+        = f.label :filter, class: 'control-label col-sm-2' do
           LDAP User filter
         .col-sm-10
           = f.text_field :filter, placeholder: 'Ex. (&(objectCategory=person)(objectClass=developer))', class: 'form-control xxlarge input-mn-300'
@@ -46,8 +43,8 @@
             %br
             If you do not belong to this LDAP user filter you will lose ownership of #{group.name}.
 
-      .form-group.clearfix
-        = f.label :group_access, class: 'control-label' do
+      .form-group.row
+        = f.label :group_access, class: 'control-label col-sm-2' do
           LDAP Access
         .col-sm-10
           = f.select :group_access, options_for_select(GroupMember.access_level_roles), {}, class: 'form-control'
