@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+
+invalid_changelogs = Dir['changelogs/**/*.yml'].reject do |changelog|
+  begin
+    YAML.load_file(changelog)
+  rescue
+  end
+end
+
+if invalid_changelogs.any?
+  puts "Changelogs with invalid YAML found!\n"
+  puts invalid_changelogs.sort
+  exit 1
+else
+  puts "All changelogs are valid YAML.\n"
+  exit 0
+end
