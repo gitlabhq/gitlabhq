@@ -12,7 +12,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def index
     if cluster
-      redirect_to action: 'edit'
+      redirect_to edit_namespace_project_cluster_path(project.namespace, project, cluster.id)
     else
       redirect_to action: 'new'
     end
@@ -86,8 +86,14 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    cluster.update(schedule_params)
+    cluster.update(enabled: params['enabled'])
+    cluster.service.update(active: params['enabled'])
     render :edit
+  end
+
+  def destroy
+    cluster.destroy
+    redirect_to action: 'index'
   end
 
   private

@@ -183,10 +183,9 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit, :show, :destroy] do
+      resources :clusters, except: [:show] do
         collection do
           get :login
-          get :edit
         end
       end
 

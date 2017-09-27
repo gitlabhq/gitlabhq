@@ -29,7 +29,7 @@ class CreateCiClusters < ActiveRecord::Migration
       t.datetime_with_timezone :updated_at, null: false
     end
 
-    # TODO: fk, index, encypt
+    # TODO: fk, index, attr_encrypted
 
     add_foreign_key :ci_clusters, :projects
     add_foreign_key :ci_clusters, :users, column: :owner_id

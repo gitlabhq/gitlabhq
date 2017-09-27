@@ -2,3 +2,6 @@ edit/show cluster
 %br
 = @cluster.inspect
 = @cluster.service.inspect
+= link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'true'), method: :put
+= link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'false'), method: :put
+= link_to "Soft-delete the cluster", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete
