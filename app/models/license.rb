@@ -18,7 +18,7 @@ class License < ActiveRecord::Base
   ISSUABLE_DEFAULT_TEMPLATES_FEATURE = 'GitLab_IssuableDefaultTemplates'.freeze
   ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
   SCOPED_ISSUE_BOARD_FEATURE = 'GitLab_ScopedIssueBoard'.freeze
-  GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
+  GROUP_ISSUE_BOARDS_FEATURE = 'GitLab_GroupIssueBoards'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
   JIRA_DEV_PANEL_INTEGRATION_FEATURE = 'GitLab_JiraDevelopmentPanelIntegration'.freeze
