@@ -67,24 +67,6 @@ describe 'Multiple Issue Boards', :js do
         expect(page).to have_button('This is a new board')
       end
 
-      it 'edits board name' do
-        click_button board.name
-
-        page.within('.dropdown-menu') do
-          click_link 'Edit board name'
-
-          fill_in 'board-new-name', with: 'Testing'
-
-          click_button 'Save'
-        end
-
-        wait_for_requests
-
-        page.within('.dropdown-menu') do
-          expect(page).to have_content('Testing')
-        end
-      end
-
       it 'deletes board' do
         click_button board.name
 
@@ -156,7 +138,6 @@ describe 'Multiple Issue Boards', :js do
 
         page.within('.dropdown-menu') do
           expect(page).not_to have_content('Create new board')
-          expect(page).not_to have_content('Edit board name')
           expect(page).not_to have_content('Delete board')
         end
       end
@@ -178,7 +159,7 @@ describe 'Multiple Issue Boards', :js do
       click_button board.name
 
       page.within('.dropdown-menu') do
-        expect(page).to have_content('Edit board name')
+        expect(page).to have_content('Edit board')
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Delete board')
       end
