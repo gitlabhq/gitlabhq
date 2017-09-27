@@ -1,9 +1,13 @@
-.discussion-notes
+- collapsed_class = 'collapsed' if discussion.resolved?
+- badge_counter = discussion_counter + 1 if local_assigns[:discussion_counter]
+
+.discussion-notes{ class: collapsed_class }
   %ul.notes{ data: { discussion_id: discussion.id, position: discussion.notes[0].position.to_json } }
     - if discussion.try(:on_image?)
       %button.diff-notes-collapse{ type: 'button' }
         = custom_icon('collapse_icon')
-    - badge_counter = discussion_counter + 1 if local_assigns[:discussion_counter]
+      %button.btn-transparent.badge
+        = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter }
 
   .flash-container

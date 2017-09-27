@@ -698,7 +698,8 @@
 }
 
 .frame.click-to-comment .badge,
-.image-diff-avatar-link .badge {
+.image-diff-avatar-link .badge,
+.notes > .badge {
   position: absolute;
   background-color: $blue-400;
   color: $white-light;
@@ -723,4 +724,25 @@
 .note-container .diff-notes-collapse {
   position: absolute;
   left: -10px;
+}
+
+.notes > .badge {
+  display: none;
+  left: -11px;
+}
+
+.discussion-notes.collapsed {
+  .diff-notes-collapse,
+  .note,
+  .discussion-reply-holder, {
+    display: none;
+  }
+
+  .notes > .badge {
+    display: block;
+  }
+}
+
+.discussion-notes {
+  min-height: 20px;
 }
