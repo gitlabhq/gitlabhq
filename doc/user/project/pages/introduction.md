@@ -28,7 +28,8 @@ In general there are two types of pages one might create:
 - Pages per project (`username.example.io/projectname` or `groupname.example.io/projectname`)
 
 In GitLab, usernames and groupnames are unique and we often refer to them
-as namespaces. There can be only one namespace in a GitLab instance. Below you
+as [namespaces](../../group/index.md#namespaces). There can be only one namespace
+in a GitLab instance. Below you
 can see the connection between the type of GitLab Pages, what the project name
 that is created on GitLab looks like and the website URL it will be ultimately
 be served on.
@@ -98,6 +99,9 @@ The steps to create a project page for a user or a group are identical:
 A user's project will be served under `http(s)://username.example.io/projectname`
 whereas a group's project under `http(s)://groupname.example.io/projectname`.
 
+For practical examples for group and project Pages, read through the guide
+[GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.md#practical-examples).
+
 ## Quick Start
 
 Read through [GitLab Pages Quick Start Guide][pages-quick] or watch the video tutorial on
@@ -110,6 +114,9 @@ See also [All you Need to Know About GitLab Pages][pages-index-guide] for a list
 The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
 gives you absolute control over the build process. You can actually watch your
 website being built live by following the CI job traces.
+
+For a simplified user guide on setting up GitLab CI/CD for Pages, read through
+the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md#creating-and-tweaking-gitlab-ci-yml-for-gitlab-pages)
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
@@ -311,6 +318,9 @@ Visit the GitLab Pages group for a full list of example projects:
 
 ### Add a custom domain to your Pages website
 
+For a complete guide on Pages domains, read through the article
+[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
+
 If this setting is enabled by your GitLab administrator, you should be able to
 see the **New Domain** button when visiting your project's settings through the
 gear icon in the top right and then navigating to **Pages**.
@@ -349,6 +359,9 @@ private key when adding a new domain.
 
 ![Pages upload cert](img/pages_upload_cert.png)
 
+For a complete guide on Pages domains, read through the article
+[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
+
 ### Custom error codes pages
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
@@ -386,6 +399,8 @@ If you are using GitLab.com to host your website, then:
   build your website. If you want you can still bring your own Runner.
 
 The rest of the guide still applies.
+
+See also: [GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.html#gitlab-pages-domain).
 
 ## Limitations
 
