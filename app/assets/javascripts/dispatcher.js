@@ -602,21 +602,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
-        case 'admin:groups:edit':
-        case 'groups:ldap_group_links:index':
-          const $cnLink = $('.cn-link');
-          const $filterLink = $('.filter-link');
 
-          const showGroupLink = () => {
-            const $checkedSync = $('input[name="sync_method"]:checked').val() === 'group';
-
-            $cnLink.toggle($checkedSync);
-            $filterLink.toggle(!$checkedSync);
-          };
-
-          $('input[name="sync_method"]').on('change', showGroupLink);
-          showGroupLink();
-          break;
       }
       switch (path[0]) {
         case 'sessions':
