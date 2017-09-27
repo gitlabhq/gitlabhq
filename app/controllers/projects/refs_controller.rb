@@ -50,7 +50,6 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.trees)
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
-
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
     @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
       contents[@offset, @limit].to_a.map do |content|
@@ -65,9 +64,6 @@ class Projects::RefsController < Projects::ApplicationController
     end
 
     offset = (@offset + @limit)
-    if contents.size > offset
-      @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
-    end
 
     render json: @logs
   end
