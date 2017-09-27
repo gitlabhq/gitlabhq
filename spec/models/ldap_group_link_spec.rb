@@ -20,6 +20,12 @@ describe LdapGroupLink do
         group_link.provider = 'ldapalt'
         expect(group_link).to be_valid
       end
+
+      it 'is invalid when a filter is also present' do
+        link = build(:ldap_group_link, filter: '(a=b)', group_id: 1, provider: 'ldapmain', cn: 'group1')
+
+        expect(link).not_to be_valid
+      end
     end
 
     describe 'filter' do

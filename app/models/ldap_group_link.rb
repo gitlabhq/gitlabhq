@@ -4,17 +4,25 @@ class LdapGroupLink < ActiveRecord::Base
 
   BLANK_ATTRIBUTES = %w[cn filter].freeze
 
-  validates :cn, :group_access, :group_id, presence: true, unless: :filter
-  validates :cn, uniqueness: { scope: [:group_id, :provider] }, unless: :filter
-  validates :filter, :group_access, :group_id, presence: true, unless: :cn
-  validates :filter, uniqueness: { scope: [:group_id, :provider] }, unless: :cn
-  validates :filter, ldap_filter: true, unless: :cn
+  with_options if: :cn do |link|
+    link.validates :cn, :group_access, :group_id, presence: true, unless: :filter
+    link.validates :cn, uniqueness: { scope: [:group_id, :provider] }, if: :cn
+    link.validates :filter, absence: true
+  end
+
+  with_options if: :filter do |link|
+    link.validates :filter, :group_access, :group_id, presence: true
+    link.validates :filter, uniqueness: { scope: [:group_id, :provider] }
+    link.validates :filter, ldap_filter: true
+    link.validates :cn, absence: true
+  end
+
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }
   validates :provider, presence: true
 
   scope :with_provider, ->(provider) { where(provider: provider) }
 
-  before_save :nullify_blank_attributes
+  before_validation :nullify_blank_attributes
 
   def access_field
     group_access
