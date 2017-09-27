@@ -20,7 +20,7 @@ module Gitlab
           # permissions to keep things clean
           if access.allowed?
             access.update_user
-            Users::UpdateService.new(user, user, last_credential_check_at: Time.now).execute
+            Users::UpdateService.new(user, user: user, last_credential_check_at: Time.now).execute
 
             true
           else
@@ -172,7 +172,7 @@ module Gitlab
 
         return false if user.email == ldap_email
 
-        Users::UpdateService.new(user, user, email: ldap_email).execute do |user|
+        Users::UpdateService.new(user, user: user, email: ldap_email).execute do |user|
           user.skip_reconfirmation!
         end
       end

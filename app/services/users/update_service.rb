@@ -3,9 +3,9 @@ module Users
     include NewUserNotifier
     prepend EE::Users::UpdateService
 
-    def initialize(current_user, user, params = {})
+    def initialize(current_user, params = {})
       @current_user = current_user
-      @user = user
+      @user = params[:user]
       @params = params.dup
     end
 
