@@ -16,6 +16,19 @@ As described in the previous part of this series, setting up GitLab Pages with c
 
 These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
+### Custom domains for GitLab Pages
+
+To use one or more custom domain with your Pages site, there are two things
+you should consider first, which we'll cover in this guide:
+
+1. Either if you're adding a **root domain** or a **subdomain**, for which
+you'll need to set up [DNS records](#dns-records)
+1. Whether you want to add an [SSL/TLS certificate](#ssl-tls-certificates) or not
+
+Let's start from the beginning. If you already know how these things work
+and want to skip the tutorial, you may be interested in the [TL;DR](#tl-dr) section
+below.
+
 ### DNS Records
 
 A Domain Name System (DNS) web service routes visitors to websites
