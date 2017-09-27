@@ -52,9 +52,6 @@
 
         <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
         <form-block
-          title="Milestone"
-          defaultText="Any milestone"
-          :canEdit="canAdminBoard"
         >
           <div
             v-if="board.milestone"
@@ -65,8 +62,11 @@
           <board-milestone-select
             :board="board"
             :milestone-path="milestonePath"
-            v-model="board.milestone_id">
-          </board-milestone-select>
+            v-model="board.milestone_id"
+            title="Milestone"
+            defaultText="Any milestone"
+            :canEdit="canAdminBoard"
+          />
         </form-block>
 
         <form-block
@@ -98,6 +98,13 @@
           :fieldName="'board_filter[weight]'"
           :canEdit="canAdminBoard"
         >
+          <board-weight-select
+            :board="board"
+            v-model="board.weight"
+            title="Weight"
+            defaultText="Any weight"
+            :canEdit="canAdminBoard"
+          />
         </form-block>
       </div>
     </form>
@@ -115,6 +122,7 @@ import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
+import BoardWeightSelect from './weight_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -148,6 +156,7 @@ export default Vue.extend({
   },
   components: {
     BoardMilestoneSelect,
+    BoardWeightSelect,
     PopupDialog,
     FormBlock,
   },
