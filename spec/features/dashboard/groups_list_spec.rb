@@ -74,14 +74,14 @@ feature 'Dashboard Groups page', :js do
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
 
       # Collapse
-      find("#group-#{group.id}").click
+      find("#group-#{group.id} .folder-caret").click
 
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down")
       expect(page).to have_selector("#group-#{group.id} .fa-caret-right", count: 1)
       expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
 
       # Expand
-      find("#group-#{group.id}").click
+      find("#group-#{group.id} .folder-caret").click
 
       expect(page).to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
