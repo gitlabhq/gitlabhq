@@ -429,6 +429,44 @@ describe Gitlab::Diff::Position do
     end
   end
 
+  describe '#==' do
+    let(:commit) { project.commit("570e7b2abdd848b95f2f578043fc23bd6f6fd24d") }
+
+    subject do
+      described_class.new(
+        old_path: "files/ruby/popen.rb",
+        new_path: "files/ruby/popen.rb",
+        old_line: nil,
+        new_line: 14,
+        diff_refs: commit.diff_refs
+      )
+    end
+
+    context 'when positions are equal' do
+      let(:other) { described_class.new(subject.to_h) }
+
+      it 'returns true' do
+        expect(subject).to eq(other)
+      end
+    end
+
+    context 'when positions are equal, except for truncated shas' do
+      let(:other) { described_class.new(subject.to_h.merge(start_sha: subject.start_sha[0, 10])) }
+
+      it 'returns true' do
+        expect(subject).to eq(other)
+      end
+    end
+
+    context 'when positions are unequal' do
+      let(:other) { described_class.new(subject.to_h.merge(start_sha: subject.start_sha.reverse)) }
+
+      it 'returns false' do
+        expect(subject).not_to eq(other)
+      end
+    end
+  end
+
   describe "#to_json" do
     let(:hash) do
       {

@@ -45,11 +45,15 @@ class IssuableFinder
   ].freeze
   ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
 
+<<<<<<< HEAD
   EE_SCALAR_PARAMS = %i[
     weight
   ].freeze
 
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS] + EE_SCALAR_PARAMS).freeze
+=======
+  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
+>>>>>>> upstream/master
 
   attr_accessor :current_user, :params
 

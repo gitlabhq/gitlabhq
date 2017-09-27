@@ -95,9 +95,12 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
+<<<<<<< HEAD
       this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
       this.filterManager.setup();
 
+=======
+>>>>>>> upstream/master
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
     },
@@ -105,6 +108,9 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then(response => response.json())
