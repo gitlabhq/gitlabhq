@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'favicon_status_canceled'
+          Gitlab::Favicon.status('canceled')
         end
       end
     end

@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'favicon_status_running'
+          Gitlab::Favicon.status('running')
         end
       end
     end

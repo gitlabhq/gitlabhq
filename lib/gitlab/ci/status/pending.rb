@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          'favicon_status_pending'
+          Gitlab::Favicon.status('pending')
         end
       end
     end
