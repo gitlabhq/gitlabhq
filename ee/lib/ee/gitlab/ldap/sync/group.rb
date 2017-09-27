@@ -99,7 +99,7 @@ module EE
 
           def dns_for_group_cn(group_cn)
             if config.group_base.blank?
-              logger.debug { "No `group_base` configured for '#{provider}' provider and group link CN #{group_link.cn}. Skipping" }
+              logger.debug { "No `group_base` configured for '#{provider}' provider and group link CN #{group_cn}. Skipping" }
 
               return nil
             end

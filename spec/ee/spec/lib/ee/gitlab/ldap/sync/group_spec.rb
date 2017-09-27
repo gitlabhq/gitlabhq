@@ -419,7 +419,7 @@ describe EE::Gitlab::LDAP::Sync::Group do
           it 'adds new members and sets ldap attribute to true' do
             sync_group.update_permissions
 
-            expect(group.members.pluck(:user_id)).to include(user.id)
+            expect(group.users).to include(user)
             expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
           end
 
@@ -428,7 +428,7 @@ describe EE::Gitlab::LDAP::Sync::Group do
 
             sync_group.update_permissions
 
-            expect(group.members.pluck(:user_id)).to include(user.id)
+            expect(group.users).to include(user)
           end
         end
       end
