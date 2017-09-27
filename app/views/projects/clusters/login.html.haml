@@ -1,0 +1,6 @@
+Login
+%br
+- if @authorize_url
+  = link_to("authenticate from here", @authorize_url)
+- else
+  You have not configrued GitLab properly. So we can not proceed authentication. Please check if you have set up omniauth->providers->google_oauth2 in gitlab.yml

@@ -272,7 +272,6 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.integer "owner_id"
     t.integer "service_id"
     t.boolean "enabled", default: true
-    t.integer "creation_type"
     t.string "project_namespace"
     t.string "end_point"
     t.text "ca_cert"

@@ -2,26 +2,12 @@ module GoogleApi
   class Authentication
     attr_reader :access_token, :redirect_uri, :state
 
+    ConfigMissingError = Class.new(StandardError)
+
     def initialize(access_token, redirect_uri, state: nil)
       @access_token = access_token
       @redirect_uri = redirect_uri
       @state = state
-    end
-
-    def client
-      return @client if defined?(@client)
-
-      unless config
-        raise 'OAuth configuration for google_oauth2 missing.'
-      end
-
-      @client = ::OAuth2::Client.new(
-        config.app_id,
-        config.app_secret,
-        site: 'https://accounts.google.com',
-        token_url: '/o/oauth2/token', 
-        authorize_url: '/o/oauth2/auth'
-      )
     end
 
     def authorize_url
@@ -46,6 +32,22 @@ module GoogleApi
 
     def config
       Gitlab.config.omniauth.providers.find { |provider| provider.name == "google_oauth2" }
+    end
+
+    def client
+      return @client if defined?(@client)
+
+      unless config
+        raise ConfigMissingError
+      end
+
+      @client = ::OAuth2::Client.new(
+        config.app_id,
+        config.app_secret,
+        site: 'https://accounts.google.com',
+        token_url: '/o/oauth2/token', 
+        authorize_url: '/o/oauth2/auth'
+      )
     end
   end
 end

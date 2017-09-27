@@ -9,7 +9,6 @@ class CreateCiClusters < ActiveRecord::Migration
 
       # General
       t.boolean :enabled, default: true
-      t.integer :creation_type # manual or on_gke
 
       # k8s integration specific
       t.string :project_namespace
@@ -29,14 +28,6 @@ class CreateCiClusters < ActiveRecord::Migration
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
     end
-
-    # create_table :ci_gke_clusters do |t|
-    #   t.integer :ci_cluster_id
-    #   t.string :gcp_project_id
-    #   t.string :cluster_zone
-    #   t.string :cluster_name
-    # end
-    # add_foreign_key :ci_gke_clusters, :ci_clusters
 
     # TODO: fk, index, encypt
 
