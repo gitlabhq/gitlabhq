@@ -518,5 +518,6 @@ Read more on high-availability configuration:
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
+1. [Manage the bundled Consul cluster](consul.md)
 
 [reconfigure GitLab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
