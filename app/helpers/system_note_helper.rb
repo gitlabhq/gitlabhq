@@ -20,8 +20,8 @@ module SystemNoteHelper
     'moved' => 'arrow-right',
     'outdated' => 'pencil',
     'duplicate' => 'issue-duplicate',
-    'locked' => 'locked',
-    'unlocked' => 'unlocked'
+    'locked' => 'lock',
+    'unlocked' => 'lock-open'
   }.freeze
 
   def system_note_icon_name(note)
