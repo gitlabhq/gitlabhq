@@ -27,28 +27,29 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(line, file_type = :text)
+      def position(position_marker, position_type = "text")
         return unless diff_refs
 
-        Position.new(
-          file_type: file_type,
+        data = {
+          diff_refs: diff_refs,
+          position_type: position_type,
           old_path: old_path,
-          new_path: new_path,
-          # Move these into separate objects
-          old_line: line.try(:old_line),
-          new_line: line.try(:new_line),
-          x_axis: line.try(:x_axis),
-          y_axis: line.try(:y_axis),
-          width: line.try(:width),
-          height: line.try(:height),
-          diff_refs: diff_refs
-        )
+          new_path: new_path
+        }
+
+        if position_type == "text"
+          data.merge!(text_position_properties(position_marker))
+        else
+          data.merge!(image_position_properties(position_marker))
+        end
+
+        Position.new(data)
       end
 
-      def line_code(marker)
-        return if marker.meta?
+      def line_code(line)
+        return if line.meta?
 
-        Gitlab::Diff::LineCode.generate(file_path, marker.key_attributes)
+        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
       end
 
       def line_for_line_code(code)
@@ -66,7 +67,6 @@ module Gitlab
 
       def line_code_for_position(pos)
         line = line_for_position(pos)
-
         line_code(line) if line
       end
 
@@ -234,6 +234,14 @@ module Gitlab
       end
 
       private
+
+      def text_position_properties(line)
+        { old_line: line.old_line, new_line: line.new_line }
+      end
+
+      def image_position_properties(image_point)
+        image_point.to_h
+      end
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id

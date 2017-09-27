@@ -10,22 +10,13 @@ module Gitlab
         @y_axis = y_axis
       end
 
-      # Create superclass method with NotImplemented
-      def key_attributes
-        [x_axis, y_axis]
-      end
-
-      def as_json(opts = nil)
+      def to_h
         {
           width: width,
           height: height,
           x_axis: x_axis,
           y_axis: y_axis
         }
-      end
-      # Move to parent class
-      def meta?
-        false
       end
     end
   end

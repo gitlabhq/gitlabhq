@@ -36,17 +36,6 @@ export function getTargetSelection(event) {
   };
 }
 
-export function setLineCodeCoordinates(el, coordinate) {
-  const { x, y } = coordinate;
-  const lineCode = el.dataset.lineCode;
-
-  // TODO: Temporarily remove the trailing numbers that define the x and y coordinates
-  // Until backend strips this out for us
-  const lineCodeWithoutCoordinates = lineCode.match(/^(.*?)_/)[0];
-
-  el.setAttribute('data-line-code', `${lineCodeWithoutCoordinates}${x}_${y}`);
-}
-
 export function setPositionDataAttribute(el, options) {
   const { x, y, width, height } = options;
   const position = el.dataset.position;
@@ -55,7 +44,6 @@ export function setPositionDataAttribute(el, options) {
   positionObject.y_axis = y;
   positionObject.width = width;
   positionObject.height = height;
-  positionObject.position_type = 'image';
 
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }

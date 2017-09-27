@@ -64,7 +64,7 @@ class DiffNote < Note
   end
 
   def original_line_code
-    return if self.position_type != :text
+    return if self.position_type != "text"
 
     self.diff_file.line_code(self.diff_line)
   end

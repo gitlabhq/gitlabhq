@@ -1,8 +1,8 @@
 module Gitlab
   module Diff
     class LineCode
-      def self.generate(file_path, key_attributes)
-        "#{Digest::SHA1.hexdigest(file_path)}_#{key_attributes[0]}_#{key_attributes[1]}"
+      def self.generate(file_path, new_line_position, old_line_position)
+        "#{Digest::SHA1.hexdigest(file_path)}_#{old_line_position}_#{new_line_position}"
       end
     end
   end

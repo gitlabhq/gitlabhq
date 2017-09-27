@@ -15,11 +15,6 @@ module Gitlab
         new(hash[:text], hash[:type], hash[:index], hash[:old_pos], hash[:new_pos])
       end
 
-      # Used to build position code and group discussions
-      def key_attributes
-        [old_pos, new_pos]
-      end
-
       def serialize_keys
         @serialize_keys ||= %i(text type index old_pos new_pos)
       end

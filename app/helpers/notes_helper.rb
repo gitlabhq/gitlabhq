@@ -29,12 +29,12 @@ module NotesHelper
     @new_diff_note_attrs.slice(:noteable_id, :noteable_type, :commit_id)
   end
 
-  def diff_view_position_data(position_code, position, type)
+  def diff_view_line_data(line_code, position, line_type)
     return if @diff_notes_disabled
 
     data = {
-      line_code: position_code,
-      line_type: type
+      line_code: line_code,
+      line_type: line_type
     }
 
     if @use_legacy_diff_notes
@@ -47,13 +47,13 @@ module NotesHelper
     data
   end
 
-  def add_diff_note_button(position_code, position, type=nil)
+  def add_diff_note_button(line_code, position, line_type)
     return if @diff_notes_disabled
 
     button_tag '',
       class: 'add-diff-note js-add-diff-note-button',
       type: 'submit', name: 'button',
-      data: diff_view_position_data(position_code, position, type),
+      data: diff_view_line_data(line_code, position, line_type),
       title: 'Add a comment to this line' do
       icon('comment-o')
     end

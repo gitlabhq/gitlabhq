@@ -49,7 +49,6 @@ export default class ImageDiff {
 
     // setupCoordinatesData
     const el = customEvent.currentTarget;
-    imageDiffHelper.setLineCodeCoordinates(el, selection.actual);
     imageDiffHelper.setPositionDataAttribute(el, selection.actual);
   }
 
