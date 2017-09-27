@@ -22,4 +22,17 @@ RSpec.describe Gitlab::Favicon do
       expect(described_class.default).to match %r{/uploads/-/system/appearance/favicon/\d+/default_dk.ico}
     end
   end
+
+  describe '.status' do
+    subject { described_class.status('created') }
+
+    it 'defaults to the stock icon' do
+      expect(subject).to eq 'ci_favicons/favicon_status_created.ico'
+    end
+
+    it 'uses the custom favicon if a favicon appearance is present' do
+      create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+      expect(subject).to match(%r{/uploads/-/system/appearance/favicon/\d+/status_created_dk.ico})
+    end
+  end
 end
