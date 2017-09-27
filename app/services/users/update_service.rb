@@ -5,7 +5,7 @@ module Users
 
     def initialize(current_user, params = {})
       @current_user = current_user
-      @user = params[:user]
+      @user = params.delete(:user)
       @params = params.dup
     end
 
