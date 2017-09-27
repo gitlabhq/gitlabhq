@@ -110,6 +110,10 @@ module SortingHelper
     s_('SortOptions|Due date')
   end
 
+  def sort_title_less_weight
+    s_('SortOptions|Less weight')
+  end
+
   def sort_title_due_date_later
     s_('SortOptions|Due later')
   end
@@ -126,6 +130,10 @@ module SortingHelper
     s_('SortOptions|Largest group')
   end
 
+  def sort_title_more_weight
+    s_('SortOptions|More weight')
+  end
+
   def sort_title_largest_repo
     s_('SortOptions|Largest repository')
   end
@@ -138,10 +146,6 @@ module SortingHelper
     s_('SortOptions|Last updated')
   end
 
-  def sort_title_less_weight
-    s_('SortOptions|Less weight')
-  end
-
   def sort_title_milestone
     s_('SortOptions|Milestone')
   end
@@ -152,10 +156,6 @@ module SortingHelper
 
   def sort_title_milestone_soon
     s_('SortOptions|Milestone due soon')
-  end
-
-  def sort_title_more_weight
-    s_('SortOptions|More weight')
   end
 
   def sort_title_name
@@ -176,6 +176,10 @@ module SortingHelper
 
   def sort_title_oldest_created
     s_('SortOptions|Oldest created')
+  end
+
+  def sort_title_weight
+    s_('SortOptions|Weight')
   end
 
   def sort_title_oldest_joined
@@ -220,10 +224,6 @@ module SortingHelper
 
   def sort_title_upvotes
     s_('SortOptions|Most popular')
-  end
-
-  def sort_title_weight
-    s_('SortOptions|Weight')
   end
 
   # Values.
