@@ -14,7 +14,7 @@ feature 'User creates snippet', :js do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     fill_in 'personal_snippet_description', with: 'My Snippet **Description**'
     page.within('.file-editor') do
-      find('.ace_text-input').native.send_keys 'Hello World!'
+      find('.ace_text-input', visible: false).send_keys 'Hello World!'
     end
   end
 
@@ -94,7 +94,7 @@ feature 'User creates snippet', :js do
     fill_in 'personal_snippet_title', with: 'My Snippet Title'
     page.within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_file_name']").set 'snippet+file+name'
-      find('.ace_text-input').native.send_keys 'Hello World!'
+      find('.ace_text-input', visible: false).send_keys 'Hello World!'
     end
 
     click_button 'Create snippet'
