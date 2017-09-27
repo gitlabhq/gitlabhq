@@ -14,14 +14,9 @@
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
   %script#js-board-promotion{ type: "text/x-template" }= render "shared/promotions/promote_issue_board"
 
-<<<<<<< HEAD
-.hidden-xs.hidden-sm
-  = render 'shared/issuable/search_bar', type: :boards, board: board
-=======
 #board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   .hidden-xs.hidden-sm
-    = render 'shared/issuable/search_bar', type: :boards
->>>>>>> upstream/master
+    = render 'shared/issuable/search_bar', type: :boards, board: board
 
   .boards-list
     .boards-app-loading.text-center{ "v-if" => "loading" }
