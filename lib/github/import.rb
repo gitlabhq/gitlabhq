@@ -42,7 +42,7 @@ module Github
       puts 'Expiring repository cache...'.color(:aqua) if verbose
       expire_repository_cache
 
-      true
+      errors.empty?
     rescue Github::RepositoryFetchError
       expire_repository_cache
       false
