@@ -108,6 +108,12 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css('//img[data-src$="/status_skipped_dk.ico"]')
     expect(page).not_to have_css('//img[data-src$="/status_success_dk.ico"]')
     expect(page).not_to have_css('//img[data-src$="/status_warning_dk.ico"]')
+
+    # allowed file types
+    attach_file(:appearance_favicon, Rails.root.join('spec', 'fixtures', 'sanitized.svg'))
+    click_button 'Save'
+
+    expect(page).to have_content 'Favicon You are not allowed to upload "svg" files, allowed types: png, jpg, jpeg, gif, bmp, tiff, ico'
   end
 
   def expect_custom_sign_in_appearance(appearance)
