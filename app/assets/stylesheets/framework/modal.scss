@@ -36,6 +36,10 @@ body.modal-open {
   }
 }
 
+.modal-md {
+  max-width: 440px;
+}
+
 .modal-dialog {
   // TODO: this needs top and bottom padding (inside content area)
   max-height: calc(100vh - #{$new-navbar-height});
@@ -53,12 +57,9 @@ body.modal-open {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $black-transparent;
-  z-index: 2100;
 
   @media (min-width: $screen-md-min) {
     .modal-dialog {
-      width: 600px;
       margin-top: $new-navbar-height;
     }
   }

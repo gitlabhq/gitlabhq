@@ -124,7 +124,7 @@
             = icon('times')
         .filter-dropdown-container
           - if type == :boards
-            .js-board-config
+            .js-board-config{ data: { can_admin_list: can?(current_user, :admin_list, board.parent).to_s } }
             - if can?(current_user, :admin_list, board.parent)
               .dropdown.prepend-left-10#js-add-list
                 %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
