@@ -158,8 +158,8 @@ module SortingHelper
     s_('SortOptions|Milestone due soon')
   end
 
-  def sort_title_name_desc
-    s_('SortOptions|Name, descending')
+  def sort_title_name
+    s_('SortOptions|Name')
   end
 
   def sort_title_name_asc
