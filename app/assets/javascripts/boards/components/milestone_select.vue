@@ -1,47 +1,52 @@
 <template>
-  <div class="dropdown-menu dropdown-menu-wide">
-    <div class="dropdown-input">
-      <input
-        class="dropdown-input-field"
-        type="search"
-        placeholder="Search milestones">
-      <i aria-hidden="true" data-hidden="true" class="fa fa-search dropdown-input-search"></i>
-    </div>
-    <ul
-      ref="list"
+  <div class="dropdown" :class="{ open: isOpen }">
+    <div
+      class="dropdown-menu dropdown-menu-wide"
     >
-      <li
-        v-for="milestone in extraMilestones"
-        :key="milestone.id"
+      <div class="dropdown-input">
+        <input
+          ref="search"
+          class="dropdown-input-field"
+          type="search"
+          placeholder="Search milestones">
+        <i aria-hidden="true" data-hidden="true" class="fa fa-search dropdown-input-search"></i>
+      </div>
+      <ul
+        ref="list"
       >
-        <a
-          href="#"
-          @click.prevent.stop="selectMilestone(milestone)">
-          <i
-            class="fa fa-check"
-            v-if="false"></i>
-          {{ milestone.title }}
-        </a>
-      </li>
-      <li class="divider"></li>
-      <li v-if="loading">
-        <loading-icon />
-      </li>
-      <li
-        v-else
-        v-for="milestone in milestones"
-        :key="milestone.id"
-      >
-        <a
-          href="#"
-          @click.prevent.stop="selectMilestone(milestone)">
-          <i
-            class="fa fa-check"
-            v-if="false"></i>
-          {{ milestone.title }}
-        </a>
-      </li>
-    </ul>
+        <li
+          v-for="milestone in extraMilestones"
+          :key="milestone.id"
+        >
+          <a
+            href="#"
+            @click.prevent.stop="selectMilestone(milestone)">
+            <i
+              class="fa fa-check"
+              v-if="milestone.id === value"></i>
+            {{ milestone.title }}
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li v-if="loading">
+          <loading-icon />
+        </li>
+        <li
+          v-else
+          v-for="milestone in milestones"
+          :key="milestone.id"
+        >
+          <a
+            href="#"
+            @click.prevent.stop="selectMilestone(milestone)">
+            <i
+              class="fa fa-check"
+              v-if="milestone.id === value"></i>
+            {{ milestone.title }}
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -50,6 +55,7 @@
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import extraMilestones from '../mixins/extra_milestones';
+import eventHub from '../eventhub';
 
 export default {
   props: {
@@ -62,7 +68,7 @@ export default {
       required: true,
     },
     value: {
-      type: String,
+      type: Number,
       required: false,
     },
   },
@@ -71,6 +77,7 @@ export default {
   },
   data() {
     return {
+      isOpen: false,
       loading: true,
       milestones: [],
       extraMilestones,
@@ -78,11 +85,32 @@ export default {
   },
   mounted() {
     BoardService.loadMilestones.call(this).then(() => this.loading = false);
+    eventHub.$on('open', this.open);
+    eventHub.$on('close', this.close);
+    eventHub.$on('toggle', this.toggle);
+    this.$nextTick(() => {
+      this.$refs.search.focus();
+    });
+  },
+  beforeDestroy() {
+    eventHub.$off('open', this.open);
+    eventHub.$off('close', this.close);
+    eventHub.$off('toggle', this.toggle);
   },
   methods: {
     selectMilestone(milestone) {
-      this.board.milestone_id = milestone.id;
-      this.$emit('input', milestone);
+      this.board.milestone = milestone;
+      this.$emit('input', milestone.id);
+      this.close();
+    },
+    open() {
+      this.isOpen = true;
+    },
+    close() {
+      this.isOpen = false;
+    },
+    toggle() {
+      this.isOpen = !this.isOpen;
     },
   },
 };

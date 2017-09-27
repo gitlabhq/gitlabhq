@@ -22,6 +22,7 @@
           Board name
         </label>
         <input
+          ref="name"
           class="form-control"
           type="text"
           id="board-new-name"
@@ -64,7 +65,7 @@
           <board-milestone-select
             :board="board"
             :milestone-path="milestonePath"
-            v-model="board.milestone">
+            v-model="board.milestone_id">
           </board-milestone-select>
         </form-block>
 
@@ -153,6 +154,9 @@ export default Vue.extend({
   mounted() {
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
       this.board = Vue.util.extend({}, this.currentBoard);
+    }
+    if (this.$refs.name) {
+      this.$refs.name.focus();
     }
   },
   computed: {
