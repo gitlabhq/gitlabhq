@@ -66,7 +66,7 @@ describe Admin::ApplicationSettingsController do
     end
 
     it 'falls back to defaults when settings are omitted' do
-      put :update, application_setting: {}
+      put :update, params: { application_setting: {} }
 
       expect(response).to redirect_to(admin_application_settings_path)
       expect(ApplicationSetting.current.default_project_visibility).to eq(Gitlab::VisibilityLevel::PRIVATE)
