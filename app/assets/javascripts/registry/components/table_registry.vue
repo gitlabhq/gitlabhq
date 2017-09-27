@@ -97,27 +97,13 @@
             </span>
         </td>
         <td>
-          <template v-if="item.size">
-            {{item.size}}
-            &middot;
-            {{layers(item)}}
-          </template>
-          <div
-            v-else
-            class="light">
-            \-
-          </div>
+          {{item.size}}
+          &middot;
+          {{layers(item)}}
         </td>
 
         <td>
-          <template v-if="item.createdAt">
-            {{timeFormated(item.createdAt)}}
-          </template>
-          <div
-            v-else
-            class="light">
-            \-
-          </div>
+          {{timeFormated(item.createdAt)}}
         </td>
 
         <td class="content">
