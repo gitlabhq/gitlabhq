@@ -1611,6 +1611,8 @@ export default class Notes {
     const $noteBody = $editingNote.find('.js-task-list-container');
     const $noteBodyText = $noteBody.find('.note-text');
     const { formData, formContent, formAction } = this.getFormData($form);
+    const $diffFile = $form.closest('.diff-file');
+    const $notesContainer = $form.closest('.notes');
 
     // Cache original comment content
     const cachedNoteBodyText = $noteBodyText.html();
@@ -1622,10 +1624,23 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
+
     ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
         this.updateNote(note, $editingNote);
+
+        if ($diffFile.length > 0) {
+          const badgeNumber = parseInt($notesContainer.find('.badge').text().trim(), 10);
+          const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
+            detail: {
+              noteId: `note_${note.id}`,
+              badgeNumber,
+            },
+          });
+
+          $diffFile[0].dispatchEvent(addAvatarBadgeEvent);
+        }
       })
       .fail(() => {
         // Submission failed, revert back to original note
