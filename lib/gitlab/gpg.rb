@@ -43,12 +43,7 @@ module Gitlab
         raw_keys.each_with_object(grouped_subkeys).each do |raw_key, subkeys|
           primary_subkey_id = raw_key.primary_subkey.keyid
 
-          raw_key.subkeys.each do |subkey|
-            # Skip if current subkey is a master key
-            next if primary_subkey_id == subkey.keyid
-            # Skip if it isn't a sign key
-            next if subkey.capability.exclude?(:sign)
-
+          raw_key.subkeys[1..-1].each do |subkey|
             subkeys[primary_subkey_id] << { keyid: subkey.keyid, fingerprint: subkey.fingerprint }
           end
         end
