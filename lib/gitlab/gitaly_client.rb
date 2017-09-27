@@ -165,13 +165,7 @@ module Gitlab
 
       return if permitted_call_count <= MAXIMUM_GITALY_CALLS
 
-      # We've exceeded the limit, but we may still be in the presence of a non
-      # n+1 but still complex request with many distinct calls. If the maximum
-      # call count is 1 or less that's probably the case.
-      max_count = max_call_count
-      return if max_count <= 1
-
-      raise TooManyInvocationsError.new(call_site, actual_call_count, max_count, max_stacks)
+      raise TooManyInvocationsError.new(call_site, actual_call_count, max_call_count, max_stacks)
     end
 
     def self.allow_n_plus_1_calls
