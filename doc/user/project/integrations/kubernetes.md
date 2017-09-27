@@ -10,10 +10,6 @@ Kubernetes API (such as OpenShift).
 Each project can be configured to connect to a different Kubernetes cluster, see
 the [configuration](#configuration) section.
 
-If you have a single cluster that you want to use for all your projects,
-you can pre-fill the settings page with a default template. To configure the
-template, see the [Services Templates](services_templates.md) document.
-
 ## Configuration
 
 Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
@@ -51,6 +47,11 @@ The Kubernetes service takes the following parameters:
   [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
   (under **Config > Secrets**).
 
+TIP: **Tip:**
+If you have a single cluster that you want to use for all your projects,
+you can pre-fill the settings page with a default template. To configure the
+template, see [Services Templates](services_templates.md).
+
 ## Deployment variables
 
 The Kubernetes service exposes the following
@@ -73,7 +74,7 @@ GitLab CI/CD build environment:
 
 Here's what you can do with GitLab if you enable the Kubernetes integration.
 
-### Deploy Boards
+### Deploy Boards (EEP)
 
 > Available in [GitLab Enterprise Edition Premium][ee].
 
@@ -85,7 +86,7 @@ workflow they already use without any need to access Kubernetes.
 
 [> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
 
-### Canary Deployments
+### Canary Deployments (EEP)
 
 > Available in [GitLab Enterprise Edition Premium][ee].
 
@@ -100,7 +101,7 @@ the need to leave GitLab.
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
 [NGINX ingress](./prometheus_library/nginx.md) is also supported.
 
-[> Read more about Kubernetes monitoring](./prometheus_library/kubernetes.md)
+[> Read more about Kubernetes monitoring](prometheus_library/kubernetes.md)
 
 ### Auto DevOps
 
