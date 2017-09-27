@@ -33,6 +33,10 @@ class FaviconUploader < AttachmentUploader
     end
   end
 
+  def extension_whitelist
+    UploaderHelper::IMAGE_EXT
+  end
+
   private
 
   def status_favicon(status_name)
