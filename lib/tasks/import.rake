@@ -39,13 +39,19 @@ class GithubImport
   def import!
     @project.force_import_start
 
+    import_success = false
+
     timings = Benchmark.measure do
-      Github::Import.new(@project, @options).execute
+      import_success = Github::Import.new(@project, @options).execute
     end
 
-    puts "Import finished. Timings: #{timings}".color(:green)
-
-    @project.import_finish
+    if import_success
+      @project.import_finish
+      puts "Import finished. Timings: #{timings}".color(:green)
+    else
+      puts "Import was not successful. Errors were as follows:"
+      puts @project.import_error
+    end
   end
 
   def new_project
