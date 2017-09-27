@@ -1,5 +1,0 @@
----
-title: Make locked setting of Runner to not affect jobs scheduling
-merge_request: 14483
-author:
-type: fixed
