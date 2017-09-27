@@ -8,6 +8,7 @@ class GpgKey < ActiveRecord::Base
   sha_attribute :fingerprint
 
   belongs_to :user
+  belongs_to :parent, class_name: 'GpgKey'
   has_many :gpg_signatures
   has_many :subkeys, class_name: 'GpgKey', foreign_key: :parent_id, dependent: :destroy
 
@@ -46,6 +47,10 @@ class GpgKey < ActiveRecord::Base
 
   def fingerprint
     super&.upcase
+  end
+
+  def key
+    parent_id? ? parent.key : super
   end
 
   def key=(value)
