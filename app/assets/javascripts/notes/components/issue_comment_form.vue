@@ -275,7 +275,7 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isConfidentialIssue"
+                :is-confidential-issue="isIssueConfidential(getIssueData)"
                 ref="markdownField">
                 <textarea
                   id="note-body"
