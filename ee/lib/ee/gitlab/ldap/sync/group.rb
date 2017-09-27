@@ -84,9 +84,7 @@ module EE
           private
 
           def update_access_levels(access_levels, group_link)
-            if config.group_base.blank? && group_link.cn
-              logger.debug { "No `group_base` configured for '#{provider}' provider and group link CN #{group_link.cn}. Skipping" }
-            elsif member_dns = get_member_dns(group_link)
+            if member_dns = get_member_dns(group_link)
               access_levels.set(member_dns, to: group_link.group_access)
 
               logger.debug do
@@ -100,6 +98,12 @@ module EE
           end
 
           def dns_for_group_cn(group_cn)
+            if config.group_base.blank?
+              logger.debug { "No `group_base` configured for '#{provider}' provider and group link CN #{group_link.cn}. Skipping" }
+
+              return nil
+            end
+
             proxy.dns_for_group_cn(group_cn)
           end
 
