@@ -58,7 +58,6 @@ describe 'Dropdown milestone', :js do
     it 'should hide loading indicator when loaded' do
       filtered_search.set('milestone:')
 
-      expect(find(js_dropdown_milestone)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_milestone)).not_to have_css('.filter-dropdown-loading')
     end
 
