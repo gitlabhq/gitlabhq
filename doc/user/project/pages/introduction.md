@@ -400,7 +400,7 @@ If you are using GitLab.com to host your website, then:
 
 The rest of the guide still applies.
 
-See also: [GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.html#gitlab-pages-domain).
+See also: [GitLab Pages from A to Z: Part 1 - Static sites and GitLab Pages domains](getting_started_part_one.md#gitlab-pages-domain).
 
 ## Limitations
 

@@ -1,6 +1,6 @@
 # GitLab Pages from A to Z: Part 3
 
-> **Article [Type](../../../development/writing_documentation.html#types-of-technical-articles)**: user guide || 
+> **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles)**: user guide || 
 > **Level**: beginner || 
 > **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
 > **Publication date:** 2017/02/22

@@ -73,7 +73,7 @@ Pages wildcard domain. This guide is valid for any GitLab instance,
 you just need to replace Pages wildcard domain on GitLab.com
 (`*.gitlab.io`) with your own.
 
-Learn more about [namespaces](../../group/index.html#namespaces).
+Learn more about [namespaces](../../group/index.md#namespaces).
 
 ### Practical examples
 
