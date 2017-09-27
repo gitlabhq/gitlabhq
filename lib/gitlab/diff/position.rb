@@ -8,13 +8,11 @@ module Gitlab
       attr_accessor :formatter
 
       delegate :old_path,
-               :old_line,
-               :new_line,
                :new_path,
                :base_sha,
                :start_sha,
                :head_sha,
-               :position_type, :to => :formatter
+               :position_type, to: :formatter
 
       def initialize(attrs = {})
         @formatter = get_formatter_class(attrs[:position_type]).new(attrs)
@@ -56,13 +54,7 @@ module Gitlab
       end
 
       def type
-        if old_line && new_line
-          nil
-        elsif new_line
-          'new'
-        else
-          'old'
-        end
+        formatter.line_age
       end
 
       def unchanged?
