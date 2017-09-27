@@ -11,17 +11,8 @@
         Edit
       </a>
     </div>
-    <div
-      v-if="editing"
-      class="dropdown open"
-    >
-      <input
-        v-if="fieldName"
-        :name="fieldName"
-      >
-      <slot></slot>
-    </div>
-    <div :class="{ invisible: editing }">
+    <slot></slot>
+    <div>
       <slot name="currentValue">
         {{ defaultText }}
       </slot>
@@ -30,35 +21,37 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      defaultText: {
-        type: String,
-        required: true,
-      },
-      title: {
-        type: String,
-        required: true,
-      },
-      fieldName: {
-        type: String,
-        required: false,
-      },
-      canEdit: {
-        type: Boolean,
-        required: false,
-        default: false,
-      }
+import eventHub from '../eventhub';
+
+export default {
+  props: {
+    defaultText: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        editing: false,
-      };
+    title: {
+      type: String,
+      required: true,
     },
-    methods: {
-      toggleEditing() {
-        this.editing = !this.editing;
-      },
+    fieldName: {
+      type: String,
+      required: false,
     },
-  };
+    canEdit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
+  },
+  data() {
+    return {
+      editing: false,
+    };
+  },
+  methods: {
+    toggleEditing() {
+      eventHub.$emit('toggle');
+    },
+  },
+};
 </script>
