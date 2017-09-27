@@ -18,7 +18,7 @@ module Gitlab
 
               break if step.break?
 
-              @completed << true
+              @completed << step
             end
 
             @pipeline.tap do
@@ -27,8 +27,7 @@ module Gitlab
           end
 
           def complete?
-            @completed.size == @sequence.size &&
-              @completed.all?
+            @completed.size == @sequence.size
           end
         end
       end

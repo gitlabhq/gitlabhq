@@ -15,7 +15,7 @@ module Ci
         ref: ref,
         sha: sha,
         before_sha: before_sha,
-        tag: tag?,
+        tag: tag_exists?,
         trigger_requests: Array(trigger_request),
         user: current_user,
         pipeline_schedule: schedule,
@@ -88,18 +88,12 @@ module Ci
       params[:ref]
     end
 
-    def tag?
-      return @is_tag if defined?(@is_tag)
-
-      @is_tag = project.repository.tag_exists?(ref)
+    def tag_exists?
+      project.repository.tag_exists?(ref)
     end
 
     def ref
       @ref ||= Gitlab::Git.ref_name(origin_ref)
-    end
-
-    def valid_sha?
-      origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
     end
 
     def pipeline_created_counter

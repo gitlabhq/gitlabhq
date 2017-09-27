@@ -14,8 +14,6 @@ module Gitlab
               ## TODO, we check commit in the service, that is why
               # there is no repository access here.
               #
-              # Should we validate repository before building a pipeline?
-              #
               unless pipeline.sha
                 return error('Commit not found')
               end
