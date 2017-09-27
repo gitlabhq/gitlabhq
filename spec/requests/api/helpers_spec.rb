@@ -222,13 +222,6 @@ describe API::Helpers do
         expect { current_user }.to raise_error /401/
       end
 
-      it "returns a 401 response for a token without the appropriate scope" do
-        personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-
-        expect { current_user }.to raise_error /401/
-      end
-
       it "leaves user as is when sudo not specified" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
@@ -238,18 +231,25 @@ describe API::Helpers do
         expect(current_user).to eq(user)
       end
 
+      it "does not allow tokens without the appropriate scope" do
+        personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+
+        expect { current_user }.to raise_error API::APIGuard::InsufficientScopeError
+      end
+
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error API::APIGuard::RevokedError
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error API::APIGuard::ExpiredError
       end
     end
 
