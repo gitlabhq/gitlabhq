@@ -3,6 +3,7 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
@@ -389,5 +390,14 @@ class ProjectsController < Projects::ApplicationController
     params[:id] = project.to_param
 
     url_for(params)
+  end
+
+  def redirect_git_extension
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
   end
 end
