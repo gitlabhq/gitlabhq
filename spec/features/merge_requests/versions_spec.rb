@@ -67,7 +67,7 @@ feature 'Merge Request versions', js: true do
       line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_2_2'
 
       page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
         find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
@@ -137,7 +137,7 @@ feature 'Merge Request versions', js: true do
       line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_4'
 
       page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
         find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
