@@ -25,7 +25,6 @@ export default class ImageDiff {
       this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
       this.el.addEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.addEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
-
     } else {
       this.disableCursor();
     }
@@ -152,13 +151,13 @@ export default class ImageDiff {
   }
 
   removeBadge(event) {
-    const { discussionId, badgeNumber } = event.detail;
+    const { badgeNumber } = event.detail;
 
     const imageBadges = this.imageFrame.querySelectorAll('.badge');
 
     if (this.badges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)
-      this.badges.forEach(function(badge, index) {
+      this.badges.forEach((badge, index) => {
         if (index > badgeNumber - 1) {
           const updatedBadgeNumber = index;
           imageBadges[index].innerText = updatedBadgeNumber;
@@ -170,15 +169,16 @@ export default class ImageDiff {
 
           const avatarBadges = discussionEl.querySelectorAll('.image-diff-avatar-link .badge');
 
-          [].map.call(avatarBadges, (avatarBadge) => {
-            avatarBadge.innerText = updatedBadgeNumber;
-            return avatarBadge;
-          });
+          [].map.call(avatarBadges, avatarBadge =>
+            Object.assign(avatarBadge, {
+              innerText: updatedBadgeNumber,
+            }),
+          );
         }
-      }.bind(this));
+      });
     }
 
-    const removedBadge = this.badges.splice(badgeNumber - 1, 1);
+    this.badges.splice(badgeNumber - 1, 1);
     const selectedImageBadge = imageBadges[badgeNumber - 1];
     selectedImageBadge.remove();
   }

@@ -814,12 +814,10 @@ export default class Notes {
           // The notes tr can contain multiple lists of notes, like on the parallel diff
           // notesTr does not exist for image diffs
           if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
-
             const $diffFile = $notes.closest('.diff-file');
             if ($diffFile.length > 0) {
               const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
                 detail: {
-                  discussionId,
                   badgeNumber,
                 },
               });
@@ -1525,7 +1523,7 @@ export default class Notes {
           }
 
           // Show final note element on UI
-          const isNewDiffComment = $notesContainer.length === 0
+          const isNewDiffComment = $notesContainer.length === 0;
           this.addDiscussionNote($form, note, isNewDiffComment);
 
           if (!isNewDiffComment) {
