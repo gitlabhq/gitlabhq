@@ -579,6 +579,14 @@ ActiveRecord::Schema.define(version: 20171004121444) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "gpg_key_subkeys", force: :cascade do |t|
+    t.binary "keyid"
+    t.binary "fingerprint"
+    t.integer "gpg_key_id", null: false
+  end
+
+  add_index "gpg_key_subkeys", ["gpg_key_id"], name: "index_gpg_key_subkeys_on_gpg_key_id", using: :btree
+
   create_table "gpg_keys", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -586,7 +594,6 @@ ActiveRecord::Schema.define(version: 20171004121444) do
     t.binary "primary_keyid"
     t.binary "fingerprint"
     t.text "key"
-    t.integer "parent_id"
   end
 
   add_index "gpg_keys", ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
@@ -1727,6 +1734,7 @@ ActiveRecord::Schema.define(version: 20171004121444) do
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade

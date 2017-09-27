@@ -10,7 +10,7 @@ class GpgKey < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, class_name: 'GpgKey'
   has_many :gpg_signatures
-  has_many :subkeys, class_name: 'GpgKey', foreign_key: :parent_id, dependent: :destroy
+  has_many :subkeys, class_name: 'GpgKeySubkey'
 
   validates :user, presence: true
 
