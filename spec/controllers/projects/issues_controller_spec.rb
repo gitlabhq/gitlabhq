@@ -850,16 +850,17 @@ describe Projects::IssuesController do
 
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
+    context 'when authenticated' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
 
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
+      it 'returns discussion json' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-    it 'returns discussion json' do
-      get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-      expect(JSON.parse(response.body).first.keys).to match_array(%w[id reply_id expanded notes individual_note])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
+      end
     end
 
     context 'with cross-reference system note', :request_store do
