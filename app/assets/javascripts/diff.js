@@ -21,10 +21,18 @@ class Diff {
     FilesCommentButton.init($diffFile);
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
+
+    let canCreateNote = null;
+
     $diffFile.each((index, file) => {
+      // check permissions only on first file
+      if (canCreateNote === null) {
+        canCreateNote = $(file).closest('.files').data('can-create-note') === '';
+      }
+
       if (file.querySelector('.diff-viewer .image')) {
         const imageDiff = new ImageDiff(file);
-        imageDiff.bindEvents();
+        imageDiff.bindEvents(canCreateNote);
       }
     });
 
