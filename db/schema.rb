@@ -586,6 +586,7 @@ ActiveRecord::Schema.define(version: 20171004121444) do
     t.binary "primary_keyid"
     t.binary "fingerprint"
     t.text "key"
+    t.integer "parent_id"
   end
 
   add_index "gpg_keys", ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
