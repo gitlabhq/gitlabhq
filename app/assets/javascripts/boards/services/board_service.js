@@ -99,17 +99,6 @@ class BoardService {
 
     return this.issues.bulkUpdate(data);
   }
-
-  static loadMilestones(path) {
-    this.loading = true;
-
-    return this.$http.get(this.milestonePath)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.milestones = data;
-        this.loading = false;
-      });
-  }
 }
 
 window.BoardService = BoardService;

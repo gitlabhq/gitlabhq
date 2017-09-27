@@ -4,7 +4,7 @@
 /* global mockBoardService */
 
 import Vue from 'vue';
-import milestoneSelect from '~/boards/components/milestone_select';
+import MilestoneSelect from '~/boards/components/milestone_select.vue';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import './mock_data';
@@ -14,8 +14,6 @@ describe('Milestone select component', () => {
   let vm;
 
   beforeEach(() => {
-    const MilestoneComp = Vue.extend(milestoneSelect);
-
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
@@ -24,7 +22,7 @@ describe('Milestone select component', () => {
       vm.board.milestone_id = milestone.id;
     });
 
-    vm = new MilestoneComp({
+    vm = new MilestoneSelect({
       propsData: {
         board: boardObj,
         milestonePath: '/test/issue-boards/milestones.json',

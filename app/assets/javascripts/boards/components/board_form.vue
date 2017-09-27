@@ -199,7 +199,7 @@ export default Vue.extend({
       return false;
     },
     expandButtonText() {
-      return this.expanded ? 'Collapse' : 'Expand'
+      return this.expanded ? 'Collapse' : 'Expand';
     },
     collapseScope() {
       return this.currentPage === 'new';
@@ -211,19 +211,6 @@ export default Vue.extend({
   methods: {
     refreshPage() {
       location.href = location.pathname;
-    },
-    loadMilestones(e) {
-      this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
-      BoardService.loadMilestones.call(this);
-
-      if (this.milestoneDropdownOpen) {
-        this.$nextTick(() => {
-          const milestoneDropdown = this.$refs.milestoneDropdown;
-          const rect = e.target.getBoundingClientRect();
-
-          milestoneDropdown.style.width = `${rect.width}px`;
-        });
-      }
     },
     submit() {
       gl.boardService.createBoard(this.board)
@@ -251,13 +238,6 @@ export default Vue.extend({
     },
     cancel() {
       Store.state.currentPage = '';
-    },
-    selectMilestone(milestone) {
-      this.milestoneDropdownOpen = false;
-      this.board.milestone_id = milestone.id;
-      this.board.milestone = {
-        title: milestone.title,
-      };
     },
   },
 });

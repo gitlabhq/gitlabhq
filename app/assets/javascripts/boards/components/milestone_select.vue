@@ -84,7 +84,15 @@ export default {
     };
   },
   mounted() {
-    BoardService.loadMilestones.call(this).then(() => this.loading = false);
+    this.$http.get(this.milestonePath)
+      .then(resp => resp.json())
+      .then((data) => {
+        this.milestones = data;
+        this.loading = false;
+      })
+      .catch(() => {
+        this.loading = false;
+      });
     eventHub.$on('open', this.open);
     eventHub.$on('close', this.close);
     eventHub.$on('toggle', this.toggle);
@@ -99,7 +107,7 @@ export default {
   },
   methods: {
     selectMilestone(milestone) {
-      this.board.milestone = milestone;
+      this.$set(this.board, 'milestone', milestone);
       this.$emit('input', milestone.id);
       this.close();
     },
