@@ -8,18 +8,23 @@ export default class ImageDiff {
     this.badges = [];
   }
 
-  bindEvents() {
+  bindEvents(canCreateNote) {
     this.clickWrapper = this.click.bind(this);
     this.blurWrapper = this.blur.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
 
-    this.el.addEventListener('click.imageDiff', this.clickWrapper);
-    this.el.addEventListener('blur.imageDiff', this.blurWrapper);
-    this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
-
     // Render badges after the image diff is loaded
     this.image.addEventListener('load', this.renderBadgesWrapper);
+
+    if (canCreateNote) {
+      this.el.addEventListener('click.imageDiff', this.clickWrapper);
+      this.el.addEventListener('blur.imageDiff', this.blurWrapper);
+      this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+
+    } else {
+      this.disableCursor();
+    }
   }
 
   unbindEvents() {
@@ -28,6 +33,10 @@ export default class ImageDiff {
     this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
 
     this.image.removeEventListener('load', this.renderBadgesWrapper);
+  }
+
+  disableCursor() {
+    this.imageFrame.style.cursor = 'auto';
   }
 
   click(event) {
