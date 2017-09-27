@@ -36,16 +36,34 @@ describe Projects::BoardsController do
       end
 
       context 'with valid params' do
+        let(:user) { create(:user) }
+        let(:milestone) { create(:milestone) }
+
+        let(:valid_params) do
+          { name: 'Backend',
+            weight: 1,
+            milestone_id: milestone.id,
+            author_id: user.id,
+            assignee_id: user.id }
+        end
+
         it 'returns a successful 200 response' do
-          create_board name: 'Backend'
+          create_board valid_params
 
           expect(response).to have_http_status(200)
         end
 
         it 'returns the created board' do
-          create_board name: 'Backend'
+          create_board valid_params
 
           expect(response).to match_response_schema('board')
+        end
+
+        it 'valid board is created' do
+          create_board valid_params
+
+          expect(Board.count).to eq(1)
+          expect(Board.first).to have_attributes(valid_params)
         end
       end
 
@@ -80,10 +98,10 @@ describe Projects::BoardsController do
       expect(response).to have_http_status(404)
     end
 
-    def create_board(name:)
+    def create_board(board_params)
       post :create, namespace_id: project.namespace.to_param,
                     project_id: project.to_param,
-                    board: { name: name },
+                    board: board_params,
                     format: :json
     end
   end
