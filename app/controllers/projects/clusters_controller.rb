@@ -40,20 +40,37 @@ class Projects::ClustersController < Projects::ApplicationController
       params['gcp_project_id'], params['cluster_zone'], params['cluster_name']
     )
 
+    # Get k8s token
+    token = ''
+    KubernetesService.new.tap do |ks|
+      ks.api_url = 'https://' + gke_cluster.endpoint
+      ks.ca_pem = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
+      ks.username = gke_cluster.master_auth.username
+      ks.password = gke_cluster.master_auth.password
+      secrets = ks.read_secrets
+      secrets.each do |secret|
+        name = secret.dig('metadata', 'name')
+        if /default-token/ =~ name
+          token_base64 = secret.dig('data', 'token')
+          token = Base64.decode64(token_base64)
+          break
+        end
+      end
+    end
+
     # Update service
     kubernetes_service.attributes = service_params(
         active: true,
-        api_url: gke_cluster.endpoint,
+        api_url: 'https://' + gke_cluster.endpoint,
         ca_pem: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
         namespace: params['project_namespace'],
-        token: 'aaa' # TODO: username/password
+        token: token
       )
 
     kubernetes_service.save!
 
     # Save info
     project.clusters.create(
-      creation_type: params['creation_type'],
       gcp_project_id: params['gcp_project_id'],
       cluster_zone: params['cluster_zone'],
       cluster_name: params['cluster_name'],
