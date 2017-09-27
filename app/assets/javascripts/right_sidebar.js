@@ -44,7 +44,7 @@ import Cookies from 'js-cookie';
           $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
 
-          gl.lazyLoader.loadCheck();
+          if (gl.lazyLoader) gl.lazyLoader.loadCheck();
         }
         if (!triggered) {
           return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
