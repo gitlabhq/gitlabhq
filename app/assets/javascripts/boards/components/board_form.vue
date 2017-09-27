@@ -18,7 +18,7 @@
         v-if="!readonly"
         class="append-bottom-20"
       >
-        <label class="label-light" for="board-new-name">
+        <label class="form-section-title label-light" for="board-new-name">
           Board name
         </label>
         <input
@@ -32,7 +32,7 @@
         v-if="canAdminBoard"
         class="media append-bottom-10"
       >
-        <label class="label-light media-body">
+        <label class="form-section-title label-light media-body">
           Board scope
         </label>
         <button
@@ -55,15 +55,16 @@
           defaultText="Any milestone"
           :canEdit="canAdminBoard"
         >
-          <input
-            type="hidden"
-            id="board-milestone"
-            v-model.number="board.milestone_id"
+          <div
+            v-if="board.milestone"
+            slot="currentValue"
           >
+            {{ board.milestone.title }}
+          </div>
           <board-milestone-select
             :board="board"
             :milestone-path="milestonePath"
-            :select-milestone="selectMilestone">
+            v-model="board.milestone">
           </board-milestone-select>
         </form-block>
 

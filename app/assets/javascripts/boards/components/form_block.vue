@@ -1,26 +1,30 @@
 <template>
-  <div class="board-inner-container">
+  <div class="list-item">
     <div class="media">
-      <label class="media-body">{{ title }}</label>
+      <label class="label-light media-body">{{ title }}</label>
       <a
         v-if="canEdit"
+        class="edit-link"
         href="#"
         @click.prevent="toggleEditing"
       >
         Edit
       </a>
     </div>
-    <div class="droplab-dropdown">
-      <div v-if="editing">
-        <input
-          v-if="fieldName"
-          :name="fieldName"
-        >
-        <slot></slot>
-      </div>
-      <div v-else>
+    <div
+      v-if="editing"
+      class="dropdown open"
+    >
+      <input
+        v-if="fieldName"
+        :name="fieldName"
+      >
+      <slot></slot>
+    </div>
+    <div :class="{ invisible: editing }">
+      <slot name="currentValue">
         {{ defaultText }}
-      </div>
+      </slot>
     </div>
   </div>
 </template>
