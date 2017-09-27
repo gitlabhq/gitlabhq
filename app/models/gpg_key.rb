@@ -40,6 +40,17 @@ class GpgKey < ActiveRecord::Base
   after_commit :update_invalid_gpg_signatures, on: :create
   after_create :generate_subkeys
 
+  def self.find_with_subkeys(fingerprint)
+    keys_table = arel_table
+    subkeys_table = GpgKeySubkey.arel_table
+
+    condition = keys_table[:primary_keyid].eq(fingerprint).or(
+      subkeys_table[:keyid].eq(fingerprint)
+    )
+
+    joins(:subkeys).where(condition).first
+  end
+
   def primary_keyid
     super&.upcase
   end

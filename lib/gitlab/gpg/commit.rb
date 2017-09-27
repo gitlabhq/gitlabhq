@@ -43,7 +43,7 @@ module Gitlab
           # key belonging to the keyid.
           # This way we can add the key to the temporary keychain and extract
           # the proper signature.
-          gpg_key = GpgKey.find_by(primary_keyid: verified_signature.fingerprint)
+          gpg_key = GpgKey.find_with_subkeys(verified_signature.fingerprint)
 
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
