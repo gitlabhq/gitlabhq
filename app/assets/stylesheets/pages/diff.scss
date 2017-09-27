@@ -666,6 +666,10 @@
   }
 }
 
+.files[data-can-create-note] .frame {
+  cursor: auto;
+}
+
 .diff-file .note-container > .new-note,
 .note-container .discussion-notes {
   margin-left: 100px;
@@ -737,6 +741,7 @@
 }
 
 .discussion-notes.collapsed {
+  &+ .discussion-notes::before,
   .diff-notes-collapse,
   .note,
   .discussion-reply-holder, {

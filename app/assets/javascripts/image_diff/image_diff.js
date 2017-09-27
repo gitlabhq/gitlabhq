@@ -5,6 +5,7 @@ export default class ImageDiff {
     this.el = el;
     this.imageFrame = el.querySelector('.diff-viewer .image .frame');
     this.image = this.imageFrame.querySelector('img');
+    this.noteContainer = this.el.querySelector('.note-container');
     this.badges = [];
   }
 
@@ -13,17 +14,37 @@ export default class ImageDiff {
     this.blurWrapper = this.blur.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
+    this.toggleCollapsedWrapper = this.toggleCollapsed.bind(this);
 
     // Render badges after the image diff is loaded
     this.image.addEventListener('load', this.renderBadgesWrapper);
+    this.noteContainer.addEventListener('click', this.toggleCollapsedWrapper);
 
     if (canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
       this.el.addEventListener('blur.imageDiff', this.blurWrapper);
       this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+    }
+  }
 
-    } else {
-      this.disableCursor();
+  toggleCollapsed(e) {
+    const clickTarget = e.target;
+    const targetIsButton = clickTarget.classList.contains('diff-notes-collapse');
+    const targetIsSvg = clickTarget.parentNode.classList.contains('diff-notes-collapse');
+    const targetIsBadge = clickTarget.classList.contains('badge');
+    const shouldToggle = targetIsButton || targetIsSvg || targetIsBadge;
+
+    if (shouldToggle) {
+      if (targetIsButton || targetIsSvg) {
+        const $button = targetIsButton ? clickTarget : clickTarget.parentNode;
+        const notesContainer = $button.parentNode.parentNode;
+
+        notesContainer.classList.add('collapsed');
+      } else if (targetIsBadge) {
+        const notesContainer = clickTarget.parentNode.parentNode;
+
+        notesContainer.classList.remove('collapsed');
+      }
     }
   }
 
@@ -33,10 +54,6 @@ export default class ImageDiff {
     this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
 
     this.image.removeEventListener('load', this.renderBadgesWrapper);
-  }
-
-  disableCursor() {
-    this.imageFrame.style.cursor = 'auto';
   }
 
   click(event) {
