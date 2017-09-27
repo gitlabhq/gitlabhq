@@ -191,7 +191,6 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
           # Try authenticating user with the old U2F device
           gitlab_sign_in(current_user)
           @u2f_device.respond_to_u2f_authentication
-          expect(page).to have_content('We heard back from your U2F device')
           expect(page).to have_content('Authentication via U2F device failed')
         end
       end
@@ -209,7 +208,6 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
           # Try authenticating user with the same U2F device
           gitlab_sign_in(current_user)
           @u2f_device.respond_to_u2f_authentication
-          expect(page).to have_content('We heard back from your U2F device')
 
           expect(page).to have_css('.sign-out-link', visible: false)
         end
@@ -221,7 +219,6 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         unregistered_device = FakeU2fDevice.new(page, 'My device')
         gitlab_sign_in(user)
         unregistered_device.respond_to_u2f_authentication
-        expect(page).to have_content('We heard back from your U2F device')
 
         expect(page).to have_content('Authentication via U2F device failed')
       end
@@ -246,7 +243,6 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         [first_device, second_device].each do |device|
           gitlab_sign_in(user)
           device.respond_to_u2f_authentication
-          expect(page).to have_content('We heard back from your U2F device')
 
           expect(page).to have_css('.sign-out-link', visible: false)
 
@@ -269,7 +265,9 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
       it "deletes u2f registrations" do
         visit profile_account_path
-        expect { click_on "Disable" }.to change { U2fRegistration.count }.by(-1)
+        expect do
+          accept_confirm { click_on "Disable" }
+        end.to change{ U2fRegistration.count }.by(-1)
       end
     end
   end
