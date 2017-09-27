@@ -530,20 +530,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.cross_reference?' do
-    it 'is truthy when text begins with expected text' do
-      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
-    end
-
-    it 'is truthy when text begins with legacy capitalized expected text' do
-      expect(described_class.cross_reference?('mentioned in something')).to be_truthy
-    end
-
-    it 'is falsey when text does not begin with expected text' do
-      expect(described_class.cross_reference?('this is a note')).to be_falsey
-    end
-  end
-
   describe '.cross_reference_disallowed?' do
     context 'when mentioner is not a MergeRequest' do
       it 'is falsey' do

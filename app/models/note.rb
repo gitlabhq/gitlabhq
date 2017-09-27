@@ -144,7 +144,7 @@ class Note < ActiveRecord::Base
   end
 
   def cross_reference?
-    system? && SystemNoteService.cross_reference?(note)
+    system? && matches_cross_reference_regex?
   end
 
   def diff_note?
