@@ -5,8 +5,8 @@ class LdapGroupLink < ActiveRecord::Base
   BLANK_ATTRIBUTES = %w[cn filter].freeze
 
   with_options if: :cn do |link|
-    link.validates :cn, :group_access, :group_id, presence: true, unless: :filter
-    link.validates :cn, uniqueness: { scope: [:group_id, :provider] }, if: :cn
+    link.validates :cn, :group_access, :group_id, presence: true
+    link.validates :cn, uniqueness: { scope: [:group_id, :provider] }
     link.validates :filter, absence: true
   end
 
