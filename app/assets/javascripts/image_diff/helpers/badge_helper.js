@@ -23,8 +23,6 @@ export function imageBadgeOnClick(event) {
   window.location.hash = badge.dataset.noteId;
 }
 
-// IMAGE BADGE END
-
 export function addAvatarBadge(el, event) {
   const { noteId, badgeNumber } = event.detail;
 
