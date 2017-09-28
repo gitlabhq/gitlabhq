@@ -46,18 +46,15 @@ gl.issueBoards.BoardsStore = {
     this.state.reload = false;
     this.state.currentPage = page;
   },
-  updateBoardConfig({
-    name,
-    id,
-    milestone,
-    milestone_id,
-    labels = [],
-  }) {
-    this.boardConfig.name = name;
-    this.boardConfig.milestone = milestone;
-    this.boardConfig.milestone_id = milestone_id;
-    this.boardConfig.id = id;
-    this.boardConfig.labels = labels;
+  updateBoardConfig(board) {
+    this.boardConfig.name = board.name;
+    this.boardConfig.milestone = board.milestone;
+    this.boardConfig.milestone_id = board.milestone_id;
+    this.boardConfig.id = board.id;
+    this.boardConfig.weight = board.weight;
+    this.boardConfig.labels = board.labels || [];
+    this.boardConfig.author_id = board.author_id;
+    this.boardConfig.assignee_id = board.assignee_id;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

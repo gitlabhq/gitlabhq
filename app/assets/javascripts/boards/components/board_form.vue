@@ -80,6 +80,16 @@
           />
         </form-block>
 
+        <form-block>
+          <div>Author</div>
+          <input v-model="board.author_id" />
+        </form-block>
+
+        <form-block>
+          <div>Assignee</div>
+          <input v-model="board.assignee_id" />
+        </form-block>
+
         <form-block
           title="Weight"
           defaultText="Any weight"

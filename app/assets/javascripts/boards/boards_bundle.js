@@ -70,7 +70,10 @@ $(() => {
       detailIssue: Store.detail,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
       weight: $boardApp.dataset.boardWeight,
+      authorUsername: $boardApp.dataset.boardAuthorUsername,
+      assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
       defaultAvatar: $boardApp.dataset.defaultAvatar,
+      cantEdit: [],
     },
     computed: {
       detailIssueVisible () {
@@ -78,26 +81,19 @@ $(() => {
       },
     },
     created () {
-      const cantEdit = [];
-      if (this.milestoneTitle) {
-        const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
-
-        Store.filter.path = [milestoneTitleParam].concat(
-          Store.filter.path.split('&').filter(param => param.match(/^milestone_title=(.*)$/g) === null)
+      const updateFilterPath = (key, value, tokenName) => {
+        if (!value) return;
+        const querystring = `${key}=${value}`;
+        Store.filter.path = [querystring].concat(
+          Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
         ).join('&');
+        this.cantEdit.push(tokenName);
+      };
 
-        cantEdit.push('milestone');
-      }
-
-      if (this.weight) {
-        const weightParam = `weight=${this.weight}`;
-
-        Store.filter.path = [weightParam].concat(
-          Store.filter.path.split('&').filter(param => param.match(/^weight=(.*)$/g) === null)
-        ).join('&');
-
-        cantEdit.push('weight');
-      }
+      updateFilterPath('milestone_title', this.milestoneTitle, 'milestone');
+      updateFilterPath('weight', this.weight, 'weight');
+      updateFilterPath('author_username', this.authorUsername, 'author');
+      updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
 
       Store.updateFiltersUrl(true);
 
@@ -109,7 +105,7 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, cantEdit);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, this.cantEdit);
       this.filterManager.setup();
 
       // Listen for updateTokens event
