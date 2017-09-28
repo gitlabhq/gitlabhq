@@ -69,6 +69,7 @@ $(() => {
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
+      weight: $boardApp.dataset.boardWeight,
       defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
@@ -77,6 +78,7 @@ $(() => {
       },
     },
     created () {
+      const cantEdit = [];
       if (this.milestoneTitle) {
         const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
 
@@ -84,8 +86,20 @@ $(() => {
           Store.filter.path.split('&').filter(param => param.match(/^milestone_title=(.*)$/g) === null)
         ).join('&');
 
-        Store.updateFiltersUrl(true);
+        cantEdit.push('milestone');
       }
+
+      if (this.weight) {
+        const weightParam = `weight=${this.weight}`;
+
+        Store.filter.path = [weightParam].concat(
+          Store.filter.path.split('&').filter(param => param.match(/^weight=(.*)$/g) === null)
+        ).join('&');
+
+        cantEdit.push('weight');
+      }
+
+      Store.updateFiltersUrl(true);
 
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
@@ -95,7 +109,7 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, cantEdit);
       this.filterManager.setup();
 
       // Listen for updateTokens event

@@ -7,6 +7,7 @@ module EE
     def board_data
       data = {
         board_milestone_title: board&.milestone&.title,
+        board_weight: board&.weight,
         focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s,
         show_promotion: (@project && show_promotions? && (!@project.feature_available?(:multiple_issue_boards) || !@project.feature_available?(:scoped_issue_board) || !@project.feature_available?(:issue_board_focus_mode))).to_s
 
