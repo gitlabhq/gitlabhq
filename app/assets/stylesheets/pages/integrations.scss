@@ -1,3 +1,13 @@
+@function border-style($color: $border-color) {
+  @return 1px solid $color;
+}
+
+.hook-test-button {
+  .dropdown-menu {
+    margin-top: 2px;
+  }
+}
+
 .integrations-page {
   .page-header {
     border-bottom: 0;
@@ -25,8 +35,6 @@
     }
 
     .integration-item {
-      display: flex;
-      align-items: center;
       border-bottom: 1px solid $white-normal;
 
       .integration-logo {
@@ -68,11 +76,6 @@
 
   .panel-heading {
     padding: 12px $gl-padding;
-
-    .panel-title {
-      display: flex;
-      align-items: center;
-    }
   }
 
   .panel-body {
@@ -87,12 +90,176 @@
 .available-integrations {
   .normal-title {
     padding: $gl-padding 0;
-    border-bottom: 1px solid $white-normal;
+    border-bottom: border-style($white-normal);
   }
 
   .integrations-list {
     .list-footer {
       color: $gl-text-color-secondary;
+    }
+  }
+}
+
+.integrations-webhooks-page {
+  .page-header {
+    border-bottom: 0;
+
+    .badge {
+      background-color: $theme-gray-900;
+      color: $gray-light;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .btn {
+      margin-left: auto;
+    }
+  }
+
+  .page-subheader {
+    color: $gl-text-color-secondary;
+  }
+}
+
+.create-webhook-form,
+.edit-webhook-form {
+  .panel-footer {
+    padding: $gl-padding;
+    border-bottom: border-style($border-color);
+
+    .btn-cancel {
+      margin-left: auto;
+    }
+  }
+}
+
+.edit-webhook-form {
+  .panel-footer {
+    .hook-test-button,
+    .btn-remove {
+      margin-left: 10px;
+    }
+  }
+}
+
+.active-webhooks {
+  border-bottom: border-style($border-color);
+
+  .table-header,
+  .table-row {
+    padding: $gl-padding;
+    border-bottom: border-style($border-color);
+  }
+
+  .table-header {
+    padding: $gl-padding;
+    border-top: border-style($border-color);
+  }
+
+  .table-row {
+    .table-content-cell {
+      line-height: 34px;
+      color: $gl-text-color-secondary;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      &.content-type-url {
+        color: $blue-600;
+        font-weight: bold;
+      }
+
+      .table-row-header {
+        min-width: 25%;
+        color: $gl-text-color-secondary;
+        font-weight: bold;
+      }
+    }
+
+    .table-action-cell .btn-default {
+      color: $gl-text-color-secondary;
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .btn-hook-remove {
+    background-color: $white-light;
+    color: $red-500;
+
+    &:hover {
+      background-color: $red-500;
+      color: $white-light;
+    }
+  }
+}
+
+@media (max-width: $screen-sm-max) {
+  .active-webhooks {
+    margin-top: 10px;
+    border-bottom: 0;
+
+    .table-row {
+      padding: 0;
+      margin-bottom: 15px;
+
+      &,
+      &:last-child {
+        border: border-style($border-color);
+      }
+
+      .table-content-cell,
+      .table-action-cell {
+        padding: 12px 10px;
+        border-bottom: border-style($border-color);
+      }
+
+      .table-content-cell {
+        display: flex;
+        align-items: center;
+      }
+
+      .table-action-cell {
+        border-bottom: 0;
+        background-color: $gray-light;
+
+        .hook-test-button,
+        .btn-hook-edit,
+        .btn-hook-remove {
+          flex: 1;
+        }
+
+        .hook-test-button {
+          .btn-default {
+            width: 100%;
+          }
+
+          .dropdown-menu {
+            left: 0;
+          }
+        }
+      }
+
+      .table-row-content {
+        margin-left: auto;
+        text-align: right;
+        white-space: initial;
+        line-height: 16px;
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .active-webhooks .table-row .hook-test-button {
+    position: static;
+
+    .dropdown-menu {
+      margin-top: -10px;
+      width: 100%;
+      min-width: 100%;
     }
   }
 }

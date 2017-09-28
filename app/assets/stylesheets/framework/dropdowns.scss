@@ -884,6 +884,13 @@
       min-width: 100%;
     }
   }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
+      min-width: 100%;
+    }
+  }
 }
 
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');

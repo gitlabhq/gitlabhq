@@ -1,0 +1,13 @@
+- show_status = local_assigns.fetch(:show_status, false)
+
+%li.integration-item.container-flex-center
+  - if show_status
+    = boolean_to_icon true
+  %span.integration-logo{ class: ("#{'prepend-left-20' if show_status}") }
+    = custom_icon('integrations/service_logo_webhooks')
+  %span.prepend-left-20.integration-metadata
+    %a{ href: @hooks.any?? project_settings_webhooks_path(@project) : project_settings_webhooks_path(@project, create: true) } Webhooks
+    - if show_status
+      .prepend-left-10.badge= n_("%d configuration", "%d configurations", @hooks.count) % @hooks.count
+    %span.prepend-left-20.integration-description
+      Send data when something happens in the project

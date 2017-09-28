@@ -1,8 +1,7 @@
 - show_status = local_assigns.fetch(:show_status, false)
-- show_footer = local_assigns.fetch(:show_footer, false)
 
 - services.each do |service|
-  %li.integration-item
+  %li.integration-item.container-flex-center
     - if show_status
       = boolean_to_icon true
     %span.integration-logo{ class: ("#{'prepend-left-20' if show_status}") }
@@ -15,10 +14,3 @@
         Edited
         = time_ago_in_words service[:updated_at]
         ago
-- if show_footer
-  %li.list-footer
-    %p.append-bottom-0
-      Is your favorite integration missing? Help it getting on this list by
-      %a{ href: "https://gitlab.com/gitlab-org/gitlab-ce/issues/new" }
-        = icon('external-link')
-        creating an issue on the GitLab project

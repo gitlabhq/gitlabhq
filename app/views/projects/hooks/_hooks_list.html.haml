@@ -1,0 +1,25 @@
+- create_hook_url = project_settings_webhooks_path(@project, create: true)
+
+.container-fluid
+  .page-header.prepend-top-default.append-bottom-0.container-flex-center
+    %h3.inline.prepend-top-0.append-bottom-0
+      Webhooks
+    .badge.prepend-left-10= @hooks.count
+    %a.btn.btn-create.hidden-xs.hidden-sm{ href: create_hook_url } New webhook
+  %p.page-subheader
+    Webhooks can be used for binding events when something is happening within the project.
+    %a{ href: 'https://docs.gitlab.com/ee/user/project/integrations/webhooks.html' }
+      More information
+  %a.btn.btn-create.append-bottom-10.visible-xs.visible-sm{ href: create_hook_url } New webhook
+  %hr.visible-xs.visible-sm.append-bottom-0.prepend-top-0
+
+  .container-fluid.active-webhooks.prepend-top-20
+    .row.table-header.hidden-xs.hidden-sm
+      .col-md-3
+        URL
+      .col-md-4
+        Trigger
+      .col-md-2.col-offset-3
+        SSL verification
+    - @hooks.each do |hook|
+      = render 'projects/hooks/hook_item', hook: hook

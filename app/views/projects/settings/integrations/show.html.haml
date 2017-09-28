@@ -1,9 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - breadcrumb_title "Integrations Settings"
 - page_title 'Integrations'
--# = render "projects/settings/head"
--# = render 'projects/hooks/index'
--# = render 'projects/services/index'
 
 :ruby
   active_services = []
@@ -54,26 +51,26 @@
   .active-integrations
     .panel.panel-default
       .panel-heading
-        %h3.panel-title.normal-title
+        %h3.panel-title.normal-title.container-flex-center
           %span
             Active integrations
-          %span.badge.integrations-count= active_services.length
+          %span.badge.integrations-count= active_services.length + ( 1 unless @hooks.nil?)
       .panel-body
         %ul.append-bottom-0.list-unstyled.integrations-list
           = render partial: 'integrations_list', locals: { services: active_services, show_status: true }
           - if @hooks.any?
-            %li.integration-item
-              = boolean_to_icon true
-              %span.integration-logo.prepend-left-20
-                = custom_icon('integrations/service_logo_webhooks')
-              %span.prepend-left-20.integration-metadata
-                %a{ href: '#' } Webhooks
-                .prepend-left-10.badge= n_("%d configuration", "%d configurations", @hooks.count) % @hooks.count
-                %span.prepend-left-20.integration-description
-                  Send data when something happens in the project
+            = render partial: 'integration_webhooks', locals: { show_status: true }
   
   .available-integrations
     %h3.append-bottom-0.normal-title
       Add an integration
     %ul.append-bottom-0.list-unstyled.integrations-list
-      = render partial: 'integrations_list', locals: { services: inactive_services, show_footer: true }
+      = render partial: 'integrations_list', locals: { services: inactive_services }
+      - unless @hooks.any?
+        = render partial: 'integration_webhooks'
+      %li.list-footer
+        %p.append-bottom-0
+          Is your favorite integration missing? Help it getting on this list by
+          %a{ href: "https://gitlab.com/gitlab-org/gitlab-ce/issues/new" }
+            = icon('external-link')
+            creating an issue on the GitLab project

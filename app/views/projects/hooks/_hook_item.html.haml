@@ -1,0 +1,30 @@
+- hook_events = []
+
+.row.table-row
+  .table-content-cell.content-type-url.col-md-3
+    %span.table-row-header.visible-xs-inline-block.visible-sm-inline-block
+      URL
+    %span.table-row-content
+      = hook.url
+  .table-content-cell.col-md-4
+    %span.table-row-header.visible-xs-inline-block.visible-sm-inline-block
+      Events
+    - ProjectHook::TRIGGERS.each_value do |event|
+      - if hook.public_send(event)
+        - hook_events << event.to_s.humanize
+    - unless hook_events.empty?
+      %span.table-row-content
+        = hook_events.to_sentence 
+  .table-content-cell.col-md-2
+    %span.table-row-header.visible-xs-inline-block.visible-sm-inline-block
+      SSL verification
+    %span.table-row-content
+      #{hook.enable_ssl_verification ? 'Enabled' : 'Disabled'}
+  .col-md-3.table-action-cell.container-flex-center
+    = render 'shared/web_hooks/test_button', triggers: ProjectHook::TRIGGERS, hook: hook, button_class: 'btn btn-hook-test btn-default'
+    = link_to edit_project_hook_path(@project, hook), class: 'btn btn-default btn-hook-edit prepend-left-10' do
+      %span.sr-only Edit
+      = icon('pencil')
+    = link_to project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-danger btn-hook-remove prepend-left-10' do
+      %span.sr-only Remove
+      = icon('trash')

@@ -8,13 +8,14 @@ module Projects
 
       def show
         @hooks = @project.hooks
-        @hook = ProjectHook.new
 
         # Services
         @services = @project.find_or_initialize_services
       end
 
       def webhooks
+        @hooks = @project.hooks
+        @hook = ProjectHook.new
       end
     end
   end
