@@ -5,9 +5,9 @@ import ImageDiff from './image_diff';
 export default class ReplacedImageDiff extends ImageDiff {
   init(defaultViewType = viewTypes.TWO_UP) {
     this.imageFrameEls = {
-      [viewTypes.TWO_UP]: this.el.querySelectorAll('.two-up .frame')[1],
+      [viewTypes.TWO_UP]: this.el.querySelector('.two-up .frame.added'),
       [viewTypes.SWIPE]: this.el.querySelector('.swipe .swipe-wrap .frame'),
-      [viewTypes.ONION_SKIN]: this.el.querySelectorAll('.onion-skin .frame')[1],
+      [viewTypes.ONION_SKIN]: this.el.querySelector('.onion-skin .frame.added'),
     };
 
     this.currentView = defaultViewType;
