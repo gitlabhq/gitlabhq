@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 11:10+0100\n"
-"PO-Revision-Date: 2017-09-27 11:10+0100\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 16:26+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -158,6 +158,60 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
+msgstr ""
+
 msgid "Board"
 msgstr ""
 
@@ -229,6 +283,9 @@ msgstr ""
 msgid "Branches|Sort by"
 msgstr ""
 
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
 msgid "Branches|The default branch cannot be deleted"
 msgstr ""
 
@@ -241,7 +298,13 @@ msgstr ""
 msgid "Branches|To confirm, type %{branch_name_confirmation}:"
 msgstr ""
 
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
 msgstr ""
 
 msgid "Branches|merged"
@@ -400,6 +463,9 @@ msgid "Contribution guide"
 msgstr ""
 
 msgid "Contributors"
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -619,6 +685,9 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -738,10 +807,16 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Locked Files"
+msgstr ""
 
 msgid "Median"
 msgstr ""
@@ -913,6 +988,9 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
+msgid "Pipeline quota"
+msgstr ""
+
 msgid "PipelineCharts|Failed:"
 msgstr ""
 
@@ -1078,6 +1156,9 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "Push Rules"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -1091,6 +1172,9 @@ msgid "RefSwitcher|Branches"
 msgstr ""
 
 msgid "RefSwitcher|Tags"
+msgstr ""
+
+msgid "Registry"
 msgstr ""
 
 msgid "Related Commits"
@@ -1242,6 +1326,9 @@ msgstr ""
 msgid "SortOptions|Least popular"
 msgstr ""
 
+msgid "SortOptions|Less weight"
+msgstr ""
+
 msgid "SortOptions|Milestone"
 msgstr ""
 
@@ -1249,6 +1336,9 @@ msgid "SortOptions|Milestone due later"
 msgstr ""
 
 msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
 msgstr ""
 
 msgid "SortOptions|Most popular"
@@ -1288,6 +1378,9 @@ msgid "SortOptions|Start later"
 msgstr ""
 
 msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
@@ -1642,6 +1735,9 @@ msgid "Your name"
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "commit"
 msgstr ""
 
 msgid "day"

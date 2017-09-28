@@ -102,7 +102,7 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;

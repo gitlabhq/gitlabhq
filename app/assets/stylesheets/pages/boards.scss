@@ -80,6 +80,11 @@
     .boards-list {
       height: calc(100vh - 50px);
     }
+
+    .issue-boards-sidebar {
+      height: 100%;
+      top: 0;
+    }
   }
 }
 
