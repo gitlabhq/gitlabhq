@@ -293,6 +293,9 @@ project:
 - source_pipelines
 - sourced_pipelines
 - members_and_requesters
+- root_of_fork_network
+- fork_network_member
+- fork_network
 award_emoji:
 - awardable
 - user
