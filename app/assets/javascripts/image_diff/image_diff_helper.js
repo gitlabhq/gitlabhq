@@ -186,21 +186,20 @@ export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
   discussionBadgeEl.innerText = newBadgeNumber;
 }
 
-// TODO: This transforms the value, doesn't necessarily have to transform into browser meta
-export function generateBrowserMeta(imageEl, meta) {
+export function resizeCoordinatesToImageElement(imageEl, meta) {
   const { x, y, width, height } = meta;
 
-  const browserImageWidth = imageEl.width;
-  const browserImageHeight = imageEl.height;
+  const imageWidth = imageEl.width;
+  const imageHeight = imageEl.height;
 
-  const widthRatio = browserImageWidth / width;
-  const heightRatio = browserImageHeight / height;
+  const widthRatio = imageWidth / width;
+  const heightRatio = imageHeight / height;
 
   return {
     x: Math.round(x * widthRatio),
     y: Math.round(y * heightRatio),
-    width: browserImageWidth,
-    height: browserImageHeight,
+    width: imageWidth,
+    height: imageHeight,
   };
 }
 

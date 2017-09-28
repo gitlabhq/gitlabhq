@@ -17,11 +17,7 @@ export default class ImageBadge {
     this.discussionId = discussionId;
 
     if (options.imageEl && !options.browser) {
-      this.browser = this.generateBrowserMeta(options.imageEl);
+      this.browser = imageDiffHelper.resizeCoordinatesToImageElement(options.imageEl, this.actual);
     }
-  }
-
-  generateBrowserMeta(imageEl) {
-    return imageDiffHelper.generateBrowserMeta(imageEl, this.actual);
   }
 }

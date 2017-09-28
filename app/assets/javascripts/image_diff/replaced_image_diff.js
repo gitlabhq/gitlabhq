@@ -70,7 +70,7 @@ export default class ReplacedImageDiff extends ImageDiff {
 
       // Re-render indicator in new view
       if (indicator.removed) {
-        const normalizedIndicator = imageDiffHelper.generateBrowserMeta(this.getImageEl(), {
+        const normalizedIndicator = imageDiffHelper.resizeCoordinatesToImageElement(this.getImageEl(), {
           x: indicator.x,
           y: indicator.y,
           width: indicator.image.width,
