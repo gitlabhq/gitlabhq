@@ -20,7 +20,7 @@ export default class ImageDiff {
     this.removeBadgeWrapper = this.removeBadge.bind(this);
 
     // Render badges after the image diff is loaded
-    this.image.addEventListener('load', this.renderBadgesWrapper);
+    this.imageEl.addEventListener('load', this.renderBadgesWrapper);
     this.noteContainer.addEventListener('click', this.toggleCollapsedWrapper);
 
     if (canCreateNote) {
