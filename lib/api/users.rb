@@ -6,6 +6,8 @@ module API
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
       before do
         authenticate_non_get!
       end
