@@ -101,7 +101,8 @@ export default class ImageDiff {
       },
     });
 
-    // TODO: Set toggle discussion badge
+    const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+    imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
   }
 
   removeBadge(event) {
@@ -116,11 +117,10 @@ export default class ImageDiff {
           const { discussionId } = badge;
           const updatedBadgeNumber = index;
           const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
-          const discussionBadgeEl = discussionEl.querySelector('.badge');
 
           imageBadgeEls[index].innerText = updatedBadgeNumber;
-          discussionBadgeEl.innerText = updatedBadgeNumber;
 
+          imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
           imageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
         }
       });

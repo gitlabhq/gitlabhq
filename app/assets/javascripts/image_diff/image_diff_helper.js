@@ -163,3 +163,9 @@ export function updateAvatarBadgeNumber(discussionEl, newBadgeNumber) {
     }),
   );
 }
+
+export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
+  const discussionBadgeEl = discussionEl.querySelector('.badge');
+
+  discussionBadgeEl.innerText = newBadgeNumber;
+}
