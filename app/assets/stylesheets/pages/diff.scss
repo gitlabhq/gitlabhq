@@ -666,7 +666,7 @@
   }
 }
 
-.files[data-can-create-note] .frame {
+.files:not([data-can-create-note]) .frame {
   cursor: auto;
 }
 

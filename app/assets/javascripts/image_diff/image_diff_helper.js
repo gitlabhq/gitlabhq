@@ -83,10 +83,22 @@ export function addCommentIndicator(containerEl, coordinate) {
 
 export function removeCommentIndicator(imageFrameEl) {
   const commentIndicatorEl = imageFrameEl.querySelector('.comment-indicator');
+  const imageEl = imageFrameEl.querySelector('img');
+  const willRemove = commentIndicatorEl;
 
-  if (commentIndicatorEl) {
+  if (willRemove) {
     commentIndicatorEl.remove();
   }
+
+  return {
+    removed: willRemove,
+    x: parseInt(commentIndicatorEl.style.left.replace('px', ''), 10),
+    y: parseInt(commentIndicatorEl.style.top.replace('px', ''), 10),
+    image: {
+      width: imageEl.width,
+      height: imageEl.height,
+    },
+  };
 }
 
 export function showCommentIndicator(imageFrameEl, coordinate) {
@@ -168,4 +180,22 @@ export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
   const discussionBadgeEl = discussionEl.querySelector('.badge');
 
   discussionBadgeEl.innerText = newBadgeNumber;
+}
+
+// TODO: This transforms the value, doesn't necessarily have to transform into browser meta
+export function generateBrowserMeta(imageEl, meta) {
+  const { x, y, width, height } = meta;
+
+  const browserImageWidth = imageEl.width;
+  const browserImageHeight = imageEl.height;
+
+  const widthRatio = browserImageWidth / width;
+  const heightRatio = browserImageHeight / height;
+
+  return {
+    x: Math.round(x * widthRatio),
+    y: Math.round(y * heightRatio),
+    width: browserImageWidth,
+    height: browserImageHeight,
+  };
 }

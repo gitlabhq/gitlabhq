@@ -23,7 +23,7 @@ class Diff {
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 
-    const canCreateNote = $($diffFile[0]).closest('.files').data('can-create-note') === '';
+    const canCreateNote = $diffFile.first().closest('.files').is('[data-can-create-note]');
 
     $diffFile.each((index, file) => {
       // Single image diff
