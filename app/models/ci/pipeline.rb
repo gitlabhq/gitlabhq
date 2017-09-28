@@ -325,6 +325,10 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def seeds_size
+      @seeds_size ||= stage_seeds.sum(&:size)
+    end
+
     def has_kubernetes_active?
       project.kubernetes_service&.active?
     end
