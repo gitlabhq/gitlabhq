@@ -13,6 +13,7 @@
     </p>
     <form
       v-else
+      class="js-board-config-modal"
     >
       <div
         v-if="!readonly"
@@ -52,9 +53,6 @@
 
         <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
         <form-block
-          title="Milestone"
-          defaultText="Any milestone"
-          :canEdit="canAdminBoard"
         >
           <div
             v-if="board.milestone"
@@ -65,31 +63,21 @@
           <board-milestone-select
             :board="board"
             :milestone-path="milestonePath"
-            v-model="board.milestone_id">
-          </board-milestone-select>
+            v-model="board.milestone_id"
+            title="Milestone"
+            defaultText="Any milestone"
+            :canEdit="canAdminBoard"
+          />
         </form-block>
 
-        <form-block
-          title="Labels"
-          defaultText="Any label"
-          :canEdit="canAdminBoard"
-        >
-        </form-block>
-
-        <form-block
-          title="Assignee"
-          defaultText="Any assignee"
-          :fieldName="'board_filter[assignee]'"
-          :canEdit="canAdminBoard"
-        >
-        </form-block>
-
-        <form-block
-          title="Author"
-          defaultText="Any author"
-          :fieldName="'board_filter[author]'"
-          :canEdit="canAdminBoard"
-        >
+        <form-block>
+          <board-labels-select
+            :board="board"
+            title="Labels"
+            defaultText="Any label"
+            :canEdit="canAdminBoard"
+            :labelsPath="labelsPath"
+          />
         </form-block>
 
         <form-block
@@ -98,6 +86,13 @@
           :fieldName="'board_filter[weight]'"
           :canEdit="canAdminBoard"
         >
+          <board-weight-select
+            :board="board"
+            v-model="board.weight"
+            title="Weight"
+            defaultText="Any weight"
+            :canEdit="canAdminBoard"
+          />
         </form-block>
       </div>
     </form>
@@ -115,6 +110,8 @@ import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
+import BoardWeightSelect from './weight_select.vue';
+import BoardLabelsSelect from './labels_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -127,6 +124,11 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    labelsPath: {
+      type: String,
+      required: false,
+      default: '/root/my-rails/labels.json',
+    },
     canAdminBoard: {
       type: Boolean,
       required: true,
@@ -134,10 +136,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      board: {
-        id: false,
-        name: '',
-      },
+      board: Store.boardConfig,
       expanded: false,
       issue: {},
       currentBoard: Store.state.currentBoard,
@@ -148,13 +147,26 @@ export default Vue.extend({
   },
   components: {
     BoardMilestoneSelect,
+    BoardLabelsSelect,
+    BoardWeightSelect,
     PopupDialog,
     FormBlock,
   },
   mounted() {
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
-      this.board = Vue.util.extend({}, this.currentBoard);
+      Store.updateBoardConfig(this.currentBoard);
+    } else {
+      Store.updateBoardConfig({
+        name: '',
+        id: false,
+        label_ids: [],
+      });
     }
+
+    if (!this.board.labels) {
+      this.board.labels = [];
+    }
+
     if (this.$refs.name) {
       this.$refs.name.focus();
     }
@@ -199,7 +211,7 @@ export default Vue.extend({
       return false;
     },
     expandButtonText() {
-      return this.expanded ? 'Collapse' : 'Expand'
+      return this.expanded ? 'Collapse' : 'Expand';
     },
     collapseScope() {
       return this.currentPage === 'new';
@@ -211,19 +223,6 @@ export default Vue.extend({
   methods: {
     refreshPage() {
       location.href = location.pathname;
-    },
-    loadMilestones(e) {
-      this.milestoneDropdownOpen = !this.milestoneDropdownOpen;
-      BoardService.loadMilestones.call(this);
-
-      if (this.milestoneDropdownOpen) {
-        this.$nextTick(() => {
-          const milestoneDropdown = this.$refs.milestoneDropdown;
-          const rect = e.target.getBoundingClientRect();
-
-          milestoneDropdown.style.width = `${rect.width}px`;
-        });
-      }
     },
     submit() {
       gl.boardService.createBoard(this.board)
@@ -251,13 +250,6 @@ export default Vue.extend({
     },
     cancel() {
       Store.state.currentPage = '';
-    },
-    selectMilestone(milestone) {
-      this.milestoneDropdownOpen = false;
-      this.board.milestone_id = milestone.id;
-      this.board.milestone = {
-        title: milestone.title,
-      };
     },
   },
 });

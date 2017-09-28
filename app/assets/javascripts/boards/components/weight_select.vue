@@ -17,41 +17,34 @@
       <ul
         ref="list"
       >
-        <li
-          v-for="milestone in extraMilestones"
-          :key="milestone.id"
-        >
+        <li>
           <a
             href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
+            @click.prevent.stop="selectWeight(0)"
+          >
             <i
               class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
+              v-if="0 === value"></i>
+            No weight
           </a>
         </li>
-        <li class="divider"></li>
-        <li v-if="loading">
-          <loading-icon />
-        </li>
         <li
-          v-else
-          v-for="milestone in milestones"
-          :key="milestone.id"
+          v-for="weight in weights"
+          :key="weight.id"
         >
           <a
             href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
+            @click.prevent.stop="selectWeight(weight)">
             <i
               class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
+              v-if="weight === value"></i>
+            {{ weight }}
           </a>
         </li>
       </ul>
     </div>
     <div>
-      {{ milestoneTitle }}
+      {{ weight }}
     </div>
   </div>
 </template>
@@ -60,17 +53,12 @@
 /* global BoardService */
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import extraMilestones from '../mixins/extra_milestones';
 import eventHub from '../eventhub';
 
 export default {
   props: {
     board: {
       type: Object,
-      required: true,
-    },
-    milestonePath: {
-      type: String,
       required: true,
     },
     value: {
@@ -95,41 +83,24 @@ export default {
     loadingIcon,
   },
   computed: {
-    milestoneTitle() {
-      return this.board.milestone ? this.board.milestone.title : this.defaultText;
+    weight() {
+      if (parseInt(this.board.weight, 10) === 0) {
+        return 'No weight';
+      }
+      return this.board.weight || 'Any weight';
     },
   },
   data() {
     return {
       isOpen: false,
-      loading: true,
-      milestones: [],
-      extraMilestones,
+      // TODO: use Issue.weight_options from backend
+      weights: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     };
   },
-  mounted() {
-    this.$http.get(this.milestonePath)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.milestones = data;
-        this.loading = false;
-      })
-      .catch(() => {
-        this.loading = false;
-      });
-    eventHub.$on('open', this.open);
-    eventHub.$on('close', this.close);
-    eventHub.$on('toggle', this.toggle);
-  },
-  beforeDestroy() {
-    eventHub.$off('open', this.open);
-    eventHub.$off('close', this.close);
-    eventHub.$off('toggle', this.toggle);
-  },
   methods: {
-    selectMilestone(milestone) {
-      this.$set(this.board, 'milestone', milestone);
-      this.$emit('input', milestone.id);
+    selectWeight(weight) {
+      this.$set(this.board, 'weight', weight);
+      // this.$emit('input', weight);
       this.close();
     },
     open() {

@@ -54,9 +54,7 @@ body.modal-open {
 }
 
 .modal.popup-dialog {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
 
   @media (min-width: $screen-md-min) {
     .modal-dialog {
