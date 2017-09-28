@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Gitlab::Favicon do
+RSpec.describe Gitlab::Favicon, :request_store do
   describe '.default' do
     it 'defaults to favicon.ico' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
