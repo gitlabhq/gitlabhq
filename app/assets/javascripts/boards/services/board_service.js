@@ -30,6 +30,9 @@ class BoardService {
   }
 
   createBoard (board) {
+    if (board.labels && board.labels.length > 0) {
+      board.label_ids = board.labels.map(b => b.id).join(',');
+    }
     if (board.id) {
       return this.boards.update({ id: board.id }, board);
     }

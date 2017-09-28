@@ -100,7 +100,6 @@ export default {
   methods: {
     selectWeight(weight) {
       this.$set(this.board, 'weight', weight);
-      // this.$emit('input', weight);
       this.close();
     },
     open() {

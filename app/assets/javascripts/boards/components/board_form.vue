@@ -136,8 +136,7 @@ export default Vue.extend({
     },
     labelsPath: {
       type: String,
-      required: false,
-      default: '/root/my-rails/labels.json',
+      required: true,
     },
     canAdminBoard: {
       type: Boolean,

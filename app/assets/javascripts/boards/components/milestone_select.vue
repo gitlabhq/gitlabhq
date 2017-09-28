@@ -1,10 +1,10 @@
 <template>
   <div class="dropdown" :class="{ open: isOpen }">
-    <div class="media">
-      <label class="label-light media-body">{{ title }}</label>
+    <div class="title append-bottom-10">
+      {{ title }}
       <a
         v-if="canEdit"
-        class="edit-link"
+        class="edit-link pull-right"
         href="#"
         @click.prevent="toggle"
       >
@@ -38,6 +38,7 @@
           v-else
           v-for="milestone in milestones"
           :key="milestone.id"
+          class="dropdown-menu-item"
         >
           <a
             href="#"

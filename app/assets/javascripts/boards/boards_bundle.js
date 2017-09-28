@@ -72,6 +72,7 @@ $(() => {
       weight: $boardApp.dataset.boardWeight,
       authorUsername: $boardApp.dataset.boardAuthorUsername,
       assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
+      labelIds: $boardApp.dataset.label_ids || [],
       defaultAvatar: $boardApp.dataset.defaultAvatar,
       cantEdit: [],
     },
@@ -94,6 +95,15 @@ $(() => {
       updateFilterPath('weight', this.weight, 'weight');
       updateFilterPath('author_username', this.authorUsername, 'author');
       updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
+
+      if (this.labelIds.length > 0) {
+        this.labelsIds.forEach((labelId) => {
+          const querystring = `label_id[]=${labelId}`;
+          Store.filter.path = [querystring].concat(
+            Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${querystring}$`, 'g')) === null)
+          ).join('&');
+        });
+      }
 
       Store.updateFiltersUrl(true);
 

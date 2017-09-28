@@ -25,6 +25,11 @@ gl.issueBoards.BoardsStore = {
     id: false,
     name: '',
     labels: [],
+    milestone_id: undefined,
+    milestone: {},
+    author_id: '',
+    assignee_id: '',
+    weight: null,
   },
   moving: {
     issue: {},
