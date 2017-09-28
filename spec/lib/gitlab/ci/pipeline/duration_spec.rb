@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::PipelineDuration do
+describe Gitlab::Ci::Pipeline::Duration do
   let(:calculated_duration) { calculate(data) }
 
   shared_examples 'calculating duration' do
@@ -107,9 +107,9 @@ describe Gitlab::Ci::PipelineDuration do
 
   def calculate(data)
     periods = data.shuffle.map do |(first, last)|
-      Gitlab::Ci::PipelineDuration::Period.new(first, last)
+      described_class::Period.new(first, last)
     end
 
-    Gitlab::Ci::PipelineDuration.from_periods(periods.sort_by(&:first))
+    described_class.from_periods(periods.sort_by(&:first))
   end
 end

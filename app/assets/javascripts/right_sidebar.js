@@ -43,6 +43,8 @@ import Cookies from 'js-cookie';
           $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
           $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
           $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+
+          if (gl.lazyLoader) gl.lazyLoader.loadCheck();
         }
         if (!triggered) {
           return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));

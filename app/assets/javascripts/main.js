@@ -302,7 +302,10 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
+  $('.navbar-toggle').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+    gl.lazyLoader.loadCheck();
+  });
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

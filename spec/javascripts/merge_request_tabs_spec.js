@@ -416,5 +416,28 @@ import 'vendor/jquery.scrollTo';
         });
       });
     });
+
+    describe('expandViewContainer', function () {
+      beforeEach(() => {
+        $('body').append('<div class="content-wrapper"><div class="container-fluid container-limited"></div></div>');
+      });
+
+      afterEach(() => {
+        $('.content-wrapper').remove();
+      });
+
+      it('removes container-limited from containers', function () {
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).not.toContainElement('.container-limited');
+      });
+
+      it('does remove container-limited from breadcrumbs', function () {
+        $('.container-limited').addClass('breadcrumbs');
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).toContainElement('.container-limited');
+      });
+    });
   });
 }).call(window);

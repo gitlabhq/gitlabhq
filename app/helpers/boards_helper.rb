@@ -79,6 +79,6 @@ module BoardsHelper
   end
 
   def boards_link_text
-    _("Board")
+    s_("IssueBoards|Board")
   end
 end

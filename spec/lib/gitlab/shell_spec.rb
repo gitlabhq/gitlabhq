@@ -48,14 +48,35 @@ describe Gitlab::Shell do
     end
   end
 
-  describe '#add_key' do
-    it 'removes trailing garbage' do
-      allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-      expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-        [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-      )
+  describe 'projects commands' do
+    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
+    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
+    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
 
-      gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+    before do
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
+    end
+
+    describe '#mv_repository' do
+      it 'executes the command' do
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git']
+        )
+        gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
+      end
+    end
+
+    describe '#add_key' do
+      it 'removes trailing garbage' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
+        )
+
+        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+      end
     end
   end
 
@@ -136,7 +157,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return([nil, 0])
+            nil, popen_vars).and_return([nil, 0])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be true
       end
@@ -144,7 +165,7 @@ describe Gitlab::Shell do
       it 'returns false when the command fails' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return(["error", 1])
+            nil, popen_vars).and_return(["error", 1])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be false
       end
