@@ -14,21 +14,15 @@ export default class ReplacedImageDiff extends ImageDiff {
   constructor(el, canCreateNote) {
     super(el, canCreateNote);
 
-    // Insert two up frames separately so we can use regular array methods
-    // TODO: Determine if we need to load badges and indicators on the replaced file image
-    const twoUpFramesEls = el.querySelectorAll('.two-up .frame');
-
     this.imageFrameEls = {
-      [viewTypes.TWO_UP]: [twoUpFramesEls[0], twoUpFramesEls[1]],
+      [viewTypes.TWO_UP]: el.querySelectorAll('.two-up .frame')[1],
       [viewTypes.SWIPE]: el.querySelector('.swipe .swipe-wrap .frame'),
       [viewTypes.ONION_SKIN]: el.querySelectorAll('.onion-skin .frame')[1],
     };
 
+    // TODO: Refactor into a method to auto generate each of them
     this.imageEls = {
-      [viewTypes.TWO_UP]: [
-        this.imageFrameEls[viewTypes.TWO_UP][0].querySelector('img'),
-        this.imageFrameEls[viewTypes.TWO_UP][1].querySelector('img'),
-      ],
+      [viewTypes.TWO_UP]: this.imageFrameEls[viewTypes.TWO_UP].querySelector('img'),
       [viewTypes.SWIPE]: this.imageFrameEls[viewTypes.SWIPE].querySelector('img'),
       [viewTypes.ONION_SKIN]: this.imageFrameEls[viewTypes.ONION_SKIN].querySelector('img'),
     };
@@ -59,6 +53,8 @@ export default class ReplacedImageDiff extends ImageDiff {
   }
 
   changeView(newView) {
+    const indicator = imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
+
     // TODO: add validation for newView to match viewTypes
     this.currentView = newView;
 
@@ -75,7 +71,17 @@ export default class ReplacedImageDiff extends ImageDiff {
 
       this.renderBadgesWrapper();
 
-      // TODO: Re-render comment indicator (if any)
+      // Re-render indicator in new view
+      if (indicator.removed) {
+        // Re-normalize indicator x,y
+        const normalizedIndicator = imageDiffHelper.generateBrowserMeta(this.getImageEl(), {
+          x: indicator.x,
+          y: indicator.y,
+          width: indicator.image.width,
+          height: indicator.image.height,
+        });
+        imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), normalizedIndicator);
+      }
     }, 300);
   }
 
@@ -89,41 +95,11 @@ export default class ReplacedImageDiff extends ImageDiff {
   }
 
   getImageEl() {
-    let el;
-    switch (this.currentView) {
-      case viewTypes.TWO_UP:
-        el = this.imageEls[viewTypes.TWO_UP][1];
-        break;
-      case viewTypes.SWIPE:
-        el = this.imageEls[viewTypes.SWIPE];
-        break;
-      case viewTypes.ONION_SKIN:
-        el = this.imageEls[viewTypes.ONION_SKIN];
-        break;
-      default:
-        break;
-    }
-
-    return el;
+    return this.imageEls[this.currentView];
   }
 
   getImageFrameEl() {
-    let el;
-    switch (this.currentView) {
-      case viewTypes.TWO_UP:
-        el = this.imageFrameEls[viewTypes.TWO_UP][1];
-        break;
-      case viewTypes.SWIPE:
-        el = this.imageFrameEls[viewTypes.SWIPE];
-        break;
-      case viewTypes.ONION_SKIN:
-        el = this.imageFrameEls[viewTypes.ONION_SKIN];
-        break;
-      default:
-        break;
-    }
-
-    return el;
+    return this.imageFrameEls[this.currentView];
   }
 
   renderBadges() {
