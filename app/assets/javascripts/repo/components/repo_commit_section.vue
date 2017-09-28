@@ -37,7 +37,7 @@ export default {
         content: f.newContent,
       }));
       const payload = {
-        branch: Store.targetBranch,
+        branch: Store.currentBranch,
         commit_message: commitMessage,
         actions,
       };
@@ -105,7 +105,7 @@ export default {
         </label>
         <div class="col-md-6">
           <span class="help-block">
-            {{targetBranch}}
+            {{currentBranch}}
           </span>
         </div>
       </div>
