@@ -213,6 +213,11 @@ describe Banzai::Filter::SanitizationFilter do
         output: '<img>'
       },
 
+      'protocol-based JS injection: Unicode' => {
+        input: %Q(<a href="\u0001java\u0003script:alert('XSS')">foo</a>),
+        output: '<a>foo</a>'
+      },
+
       'protocol-based JS injection: spaces and entities' => {
         input:  '<a href=" &#14;  javascript:alert(\'XSS\');">foo</a>',
         output: '<a href="">foo</a>'
