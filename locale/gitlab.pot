@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2017-09-27 16:26+0200\n"
 "PO-Revision-Date: 2017-09-27 16:26+0200\n"
-=======
-"POT-Creation-Date: 2017-09-26 16:01+0100\n"
-"PO-Revision-Date: 2017-09-26 16:01+0100\n"
->>>>>>> EE port of fix-translation-namespaces
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -218,12 +213,6 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "Billinglans|Downgrade"
-<<<<<<< HEAD
-msgstr ""
-
-msgid "Board"
-=======
->>>>>>> EE port of fix-translation-namespaces
 msgstr ""
 
 msgid "Branch"
