@@ -5,18 +5,18 @@ class LdapGroupLink < ActiveRecord::Base
   BLANK_ATTRIBUTES = %w[cn filter].freeze
 
   with_options if: :cn do |link|
-    link.validates :cn, :group_access, :group_id, presence: true
     link.validates :cn, uniqueness: { scope: [:group_id, :provider] }
+    link.validates :cn, presence: true
     link.validates :filter, absence: true
   end
 
   with_options if: :filter do |link|
-    link.validates :filter, :group_access, :group_id, presence: true
     link.validates :filter, uniqueness: { scope: [:group_id, :provider] }
-    link.validates :filter, ldap_filter: true
+    link.validates :filter, ldap_filter: true, presence: true
     link.validates :cn, absence: true
   end
 
+  validates :group_access, :group_id, presence: true
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }
   validates :provider, presence: true
 
