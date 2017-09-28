@@ -448,3 +448,8 @@ table {
   pointer-events: none;
   opacity: .5;
 }
+
+.container-flex-center {
+  display: flex;
+  align-items: center;
+}
