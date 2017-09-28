@@ -1,23 +1,27 @@
 <script>
+/* global LineHighlighter */
+
 import Store from '../stores/repo_store';
 
 export default {
   data: () => Store,
-  mounted() {
-    this.highlightFile();
-  },
   computed: {
     html() {
       return this.activeFile.html;
     },
   },
-
   methods: {
     highlightFile() {
       $(this.$el).find('.file-content').syntaxHighlight();
     },
   },
-
+  mounted() {
+    this.highlightFile();
+    this.lineHighlighter = new LineHighlighter({
+      fileHolderSelector: '.blob-viewer-container',
+      scrollFileHolder: true,
+    });
+  },
   watch: {
     html() {
       this.$nextTick(() => {

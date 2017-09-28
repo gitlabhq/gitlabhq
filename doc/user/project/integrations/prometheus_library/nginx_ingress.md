@@ -1,7 +1,12 @@
 # Monitoring NGINX Ingress Controller
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13438) in GitLab 9.5
 
 GitLab has support for automatically detecting and monitoring the Kubernetes NGINX ingress controller. This is provided by leveraging the built in Prometheus metrics included in [version 0.9.0](https://github.com/kubernetes/ingress/blob/master/controllers/nginx/Changelog.md#09-beta1) of the ingress.
+
+## Requirements
+
+The [Prometheus service](../prometheus/index.md) must be enabled.
 
 ## Metrics supported
 
