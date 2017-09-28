@@ -1,9 +1,15 @@
 /* global IssuableContext */
 import '~/issuable_context';
+import $ from 'jquery';
 
 describe('IssuableContext', () => {
   describe('toggleHiddenParticipants', () => {
     const event = jasmine.createSpyObj('event', ['preventDefault']);
+
+    beforeEach(() => {
+      spyOn($.fn, 'data').and.returnValue('data');
+      spyOn($.fn, 'text').and.returnValue('data');
+    });
 
     afterEach(() => {
       gl.lazyLoader = undefined;
