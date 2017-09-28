@@ -90,7 +90,7 @@ module CiStatusHelper
         'status_canceled'
       end
 
-    sprite_icon(icon_name)
+    sprite_icon(icon_name, size: 16)
   end
 
   def pipeline_status_cache_key(pipeline_status)
