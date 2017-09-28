@@ -950,8 +950,6 @@ class MergeRequest < ActiveRecord::Base
       source_project.repository, source_branch) do |commit|
         if commit
           target_project.repository.write_ref(ref_path, commit.sha)
-        else
-          raise Rugged::ReferenceError, 'source repository is empty'
         end
       end
   end

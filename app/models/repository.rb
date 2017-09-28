@@ -996,7 +996,11 @@ class Repository
     if start_repository == self
       yield commit(start_branch_name)
     else
-      sha = start_repository.commit(start_branch_name).sha
+      start_commit = start_repository.commit(start_branch_name)
+
+      return yield nil unless start_commit
+
+      sha = start_commit.sha
 
       if branch_commit = commit(sha)
         yield branch_commit

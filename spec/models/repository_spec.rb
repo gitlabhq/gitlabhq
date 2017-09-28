@@ -2110,4 +2110,51 @@ describe Repository, models: true do
       end
     end
   end
+
+  describe '#with_repo_branch_commit' do
+    context 'when comparing with the same repository' do
+      let(:start_repository) { repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+
+    context 'when comparing with another repository' do
+      let(:forked_project) { create(:project, :repository) }
+      let(:start_repository) { forked_project.repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+  end
 end
