@@ -1,4 +1,6 @@
 class CreateGpgKeySubkeys < ActiveRecord::Migration
+  DOWNTIME = false
+
   def change
     create_table :gpg_key_subkeys do |t|
       t.binary :keyid
