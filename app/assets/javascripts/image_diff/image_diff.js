@@ -100,6 +100,8 @@ export default class ImageDiff {
         badgeNumber: badgeText,
       },
     });
+
+    // TODO: Set toggle discussion badge
   }
 
   removeBadge(event) {

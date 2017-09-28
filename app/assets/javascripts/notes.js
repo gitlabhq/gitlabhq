@@ -446,7 +446,7 @@ export default class Notes {
           row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
         }
 
-        // Add badge for image diffs
+        // Add image badge, avatar badge and toggle discussion badge for image diffs
         const $diffFile = form.closest('.diff-file');
         if ($diffFile.length > 0) {
           const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
@@ -1624,7 +1624,6 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-
     ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
