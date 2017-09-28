@@ -18,7 +18,7 @@ export default {
           v-if="mr.ffOnlyEnabled"
           class="bold">
           Fast-forward merge is not possible.
-          To merge this request, first rebase locally
+          To merge this request, first rebase locally.
         </span>
         <template v-else>
           <span class="bold">
