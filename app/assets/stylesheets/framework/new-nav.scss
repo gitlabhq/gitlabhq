@@ -122,15 +122,22 @@ header.navbar-gitlab-new {
       min-width: 45px;
       padding: 4px $gl-padding;
       margin-right: -7px;
-      font-size: 14px;
       text-align: center;
       color: currentColor;
+
+      svg {
+        fill: currentColor;
+      }
 
       &:hover,
       &:focus,
       &.active {
         color: currentColor;
         background-color: transparent;
+
+        svg {
+          fill: currentColor;
+        }
       }
     }
 
@@ -277,10 +284,6 @@ header.navbar-gitlab-new {
       }
     }
   }
-}
-
-.admin-icon i {
-  font-size: 18px;
 }
 
 .caret-down {
