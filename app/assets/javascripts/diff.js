@@ -4,6 +4,7 @@ import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
 import ImageDiff from './image_diff/image_diff';
+import ReplacedImageDiff from './image_diff/replaced_image_diff';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -30,9 +31,13 @@ class Diff {
         canCreateNote = $(file).closest('.files').data('can-create-note') === '';
       }
 
-      if (file.querySelector('.diff-viewer .image')) {
+      // Single image diff
+      if (file.querySelector('.diff-viewer .js-single-image')) {
         const imageDiff = new ImageDiff(file);
         imageDiff.bindEvents(canCreateNote);
+      } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
+        const replacedImageDiff = new ReplacedImageDiff(file);
+        replacedImageDiff.bindEvents(canCreateNote);
       }
     });
 
