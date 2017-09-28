@@ -1,9 +1,14 @@
+---
+last_updated: 2017-09-28
+---
+
 # GitLab Pages from A to Z: Part 3
 
 > **[Article Type](../../../development/writing_documentation.md#types-of-technical-articles)**: user guide || 
 > **Level**: beginner || 
 > **Author**: [Marcia Ramos](https://gitlab.com/marcia) ||
-> **Publication date:** 2017/02/22
+> **Publication date:** 2017-02-22 ||
+> **Last updated**: 2017-09-28
 
 - [Part 1: Static sites and GitLab Pages domains](getting_started_part_one.md)
 - [Part 2: Quick start guide - Setting up GitLab Pages](getting_started_part_two.md)
@@ -115,10 +120,11 @@ All the aliases you've set to your site will be listed on **Setting > Pages**.
 From that page, you can view, add, and remove them.
 
 Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
-although it's usually a matter of minutes to complete. Until it does, visits
-to your domain address will respond with a 404.
+although it's usually a matter of minutes to complete. Until it does, visit attempts
+to your domain will respond with a 404.
 
-Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more.
+Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
+custom domains to GitLab Pages sites.
 
 #### TL;DR
 
