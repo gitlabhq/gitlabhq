@@ -3,6 +3,7 @@ require 'rails_helper'
 describe GpgKey do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:subkeys) }
   end
 
   describe "validation" do
@@ -36,6 +37,14 @@ describe GpgKey do
         gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
         gpg_key.valid?
         expect(gpg_key.primary_keyid).to eq GpgHelpers::User1.primary_keyid
+      end
+    end
+
+    describe 'generate_subkeys' do
+      it 'extracts the subkeys from the gpg key' do
+        gpg_key = create(:gpg_key, key: GpgHelpers::User1.public_key_with_extra_signing_key)
+
+        expect(gpg_key.subkeys.count).to eq(2)
       end
     end
   end

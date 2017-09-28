@@ -92,6 +92,46 @@ module GpgHelpers
       KEY
     end
 
+    def public_key_with_extra_signing_key
+      <<~KEY.strip
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+        Version: GnuPG v1
+
+        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
+        DMVGWrg4m1NF8N6yMPMP
+        =RB1y
+        -----END PGP PUBLIC KEY BLOCK-----
+      KEY
+    end
+
     def primary_keyid
       fingerprint[-16..-1]
     end

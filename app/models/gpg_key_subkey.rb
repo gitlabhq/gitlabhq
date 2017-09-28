@@ -6,6 +6,17 @@ class GpgKeySubkey < ActiveRecord::Base
 
   belongs_to :gpg_key
 
+  validates :gpg_key_id, presence: true
+  validates :fingerprint, :keyid, presence: true, uniqueness: true
+
+  def keyid
+    super&.upcase
+  end
+
+  def fingerprint
+    super&.upcase
+  end
+
   def method_missing(m, *a, &b)
     return super unless gpg_key.respond_to?(m)
 

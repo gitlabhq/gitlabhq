@@ -18,4 +18,14 @@ describe GpgKeys::CreateService do
   it 'creates a gpg key' do
     expect { subject.execute }.to change { user.gpg_keys.where(params).count }.by(1)
   end
+
+  context 'when the public key contains subkeys' do
+    let(:params) { attributes_for(:gpg_key_with_subkeys) }
+
+    it 'generates the gpg subkeys' do
+      gpg_key = subject.execute
+
+      expect(gpg_key.subkeys.count).to eq(2)
+    end
+  end
 end

@@ -585,7 +585,9 @@ ActiveRecord::Schema.define(version: 20171004121444) do
     t.integer "gpg_key_id", null: false
   end
 
+  add_index "gpg_key_subkeys", ["fingerprint"], name: "index_gpg_key_subkeys_on_fingerprint", unique: true, using: :btree
   add_index "gpg_key_subkeys", ["gpg_key_id"], name: "index_gpg_key_subkeys_on_gpg_key_id", using: :btree
+  add_index "gpg_key_subkeys", ["keyid"], name: "index_gpg_key_subkeys_on_keyid", unique: true, using: :btree
 
   create_table "gpg_keys", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
