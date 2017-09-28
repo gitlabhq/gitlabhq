@@ -38,6 +38,8 @@ class FilteredSearchVisualTokens {
   }
 
   static createVisualTokenElementHTML(canEdit = true) {
+    if (!canEdit) return '';
+
     let removeTokenMarkup = '';
     if (canEdit) {
       removeTokenMarkup = `
@@ -48,7 +50,7 @@ class FilteredSearchVisualTokens {
     }
 
     return `
-      <div class="selectable" role="button">
+      <div class="selectable" role="button" ${canEdit ? '' : 'style="display: none;"'}>
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
