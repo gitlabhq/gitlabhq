@@ -50,6 +50,7 @@ export default class ImageDiff {
 
         notesContainer.classList.remove('collapsed');
       }
+    }
   }
 
   unbindEvents() {
