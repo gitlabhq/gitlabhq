@@ -947,7 +947,11 @@ module Gitlab
         if start_repository == self
           yield commit(start_branch_name)
         else
-          sha = start_repository.commit(start_branch_name).sha
+          start_commit = start_repository.commit(start_branch_name)
+
+          return yield nil unless start_commit
+
+          sha = start_commit.sha
 
           if branch_commit = commit(sha)
             yield branch_commit
@@ -976,8 +980,9 @@ module Gitlab
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
             write_ref(local_ref, commit.sha)
+            true
           else
-            raise Rugged::ReferenceError, 'source repository is empty'
+            false
           end
         end
       end
