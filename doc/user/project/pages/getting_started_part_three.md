@@ -16,7 +16,7 @@ As described in the previous part of this series, setting up GitLab Pages with c
 
 These steps assume you've already [set your site up](getting_started_part_two.md) and and it's served under the default Pages domain `namespace.gitlab.io`, or `namespace.gitlab.io/project-name`.
 
-### Custom domains for GitLab Pages
+### Adding your custom domain to GitLab Pages
 
 To use one or more custom domain with your Pages site, there are two things
 you should consider first, which we'll cover in this guide:
@@ -25,9 +25,11 @@ you should consider first, which we'll cover in this guide:
 you'll need to set up [DNS records](#dns-records)
 1. Whether you want to add an [SSL/TLS certificate](#ssl-tls-certificates) or not
 
-Let's start from the beginning. If you already know how these things work
-and want to skip the tutorial, you may be interested in the [TL;DR](#tl-dr) section
-below.
+To finish the association, you need to [add your domain to your project's Pages settings](#add-your-custom-domain-to-gitlab-pages-settings).
+
+Let's start from the beginning with [DNS records](#dns-records).
+If you already know how these things work and want to skip the tutorial,
+you may be interested in the [TL;DR](#tl-dr) section below.
 
 ### DNS Records
 
@@ -95,6 +97,24 @@ without any `/project-name`.
 **Practical Example:**
 
 ![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
+
+#### Add your custom domain to GitLab Pages settings
+
+Once you've set the DNS record, you'll need navigate to your project's
+**Setting > Pages** and click **+ New domain** to add your custom domain to
+GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssl-tls-certificates)
+to make your website accessible under HTTPS or leave it blank. If don't add a certificate,
+your site will be accessible only via HTTP:
+
+![Add new domain](img/add_certificate_to_pages.png)
+
+You add more than one alias (custom domains and subdomains) to the same project.
+An alias can be understood as a way to have many doors leading to the same room.
+
+All the aliases you've set to your site will be listed on **Setting > Pages**.
+From that page, you can view, add, and remove them.
+
+Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more.
 
 #### TL;DR
 
