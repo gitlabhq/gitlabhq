@@ -43,7 +43,7 @@ module Gitlab
           # key belonging to the keyid.
           # This way we can add the key to the temporary keychain and extract
           # the proper signature.
-          gpg_key = GpgKey.find_with_subkeys(verified_signature.fingerprint)
+          gpg_key = find_gpg_key(verified_signature.fingerprint)
 
           if gpg_key
             Gitlab::Gpg::CurrentKeyChain.add(gpg_key.key)
@@ -74,7 +74,7 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           gpg_key: gpg_key,
-          gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
+          gpg_key_primary_keyid: gpg_keyid(gpg_key) || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
           verification_status: verification_status
@@ -97,6 +97,16 @@ module Gitlab
 
       def user_infos(gpg_key)
         gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
+      end
+
+      def gpg_keyid(gpg_key)
+        return nil unless gpg_key
+
+        gpg_key.is_a?(GpgKey) ? gpg_key.primary_keyid : gpg_key.keyid
+      end
+
+      def find_gpg_key(keyid)
+        GpgKey.find_by(primary_keyid: keyid) || GpgKeySubkey.find_by(keyid: keyid)
       end
     end
   end
