@@ -83,10 +83,16 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 msgid "Add Changelog"
 msgstr ""
 
 msgid "Add Contribution guide"
+msgstr ""
+
+msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add License"
@@ -207,9 +213,6 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "Billinglans|Downgrade"
-msgstr ""
-
-msgid "Board"
 msgstr ""
 
 msgid "Branch"
@@ -334,10 +337,16 @@ msgstr ""
 msgid "CI configuration"
 msgstr ""
 
+msgid "CICD|Jobs"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
 msgid "Cancel edit"
+msgstr ""
+
+msgid "Change Weight"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -419,6 +428,9 @@ msgid "CiStatusText|skipped"
 msgstr ""
 
 msgid "CiStatus|running"
+msgstr ""
+
+msgid "Close"
 msgstr ""
 
 msgid "Comments"
@@ -557,6 +569,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -564,6 +579,9 @@ msgid "Directory name"
 msgstr ""
 
 msgid "Discard changes"
+msgstr ""
+
+msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Don't show again"
@@ -742,6 +760,15 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Improve Issue boards with GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
+msgstr ""
+
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
@@ -751,13 +778,22 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
+msgid "Issue board focus mode"
+msgstr ""
+
+msgid "Issue boards with milestones"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 
-msgid "Issues"
+msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "Jobs"
+msgid "IssueBoards|Boards"
+msgstr ""
+
+msgid "Issues"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -839,6 +875,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "Multiple issue boards"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -875,6 +914,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No schedules"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not available"
@@ -1418,6 +1460,12 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
+msgid "Thanks! Don't show me this again"
+msgstr ""
+
+msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -1629,7 +1677,25 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+msgid "Track activity with Contribution Analytics."
+msgstr ""
+
 msgid "Unstar"
+msgstr ""
+
+msgid "Upgrade your plan to activate Advanced Global Search."
+msgstr ""
+
+msgid "Upgrade your plan to activate Contribution Analytics."
+msgstr ""
+
+msgid "Upgrade your plan to activate Group Webhooks."
+msgstr ""
+
+msgid "Upgrade your plan to activate Issue weight."
+msgstr ""
+
+msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
 msgid "Upload New File"
@@ -1674,7 +1740,16 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
 msgid "Wiki"
+msgstr ""
+
+msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
 msgid "Withdraw Access Request"
@@ -1749,3 +1824,6 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "to help your contributors communicate effectively!"
+msgstr ""
