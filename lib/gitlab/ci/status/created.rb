@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          Gitlab::Favicon.status('created')
+          'favicon_status_created'
         end
       end
     end

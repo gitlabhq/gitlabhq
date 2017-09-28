@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          Gitlab::Favicon.status('failed')
+          'favicon_status_failed'
         end
       end
     end

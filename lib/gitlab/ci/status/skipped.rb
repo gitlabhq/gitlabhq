@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          Gitlab::Favicon.status('skipped')
+          'favicon_status_skipped'
         end
       end
     end

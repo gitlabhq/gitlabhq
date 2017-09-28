@@ -39,7 +39,7 @@ module PageLayoutHelper
   end
 
   def favicon
-    Gitlab::Favicon.default
+    Gitlab::Favicon.main
   end
 
   def page_image

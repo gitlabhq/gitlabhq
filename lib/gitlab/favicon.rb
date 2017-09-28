@@ -1,8 +1,8 @@
 module Gitlab
   class Favicon
     class << self
-      def default
-        return custom_favicon_url(appearance_favicon.default.url) if appearance_favicon.exists?
+      def main
+        return custom_favicon_url(appearance_favicon.favicon_main.url) if appearance_favicon.exists?
         return 'favicon-yellow.ico' if Gitlab::Utils.to_boolean(ENV['CANARY'])
         return 'favicon-blue.ico' if Rails.env.development?
 
@@ -11,13 +11,16 @@ module Gitlab
 
       def status(status_name)
         if appearance_favicon.exists?
-          custom_favicon_url(appearance_favicon.public_send("status_#{status_name}").url) # rubocop:disable GitlabSecurity/PublicSend
+          custom_favicon_url(appearance_favicon.public_send("#{status_name}").url) # rubocop:disable GitlabSecurity/PublicSend
         else
-          dir = 'ci_favicons'
-          dir = File.join(dir, 'dev') if Rails.env.development?
-          dir = File.join(dir, 'canary') if Gitlab::Utils.to_boolean(ENV['CANARY'])
+          path = File.join(
+            'ci_favicons',
+            Rails.env.development? ? 'dev' : '',
+            Gitlab::Utils.to_boolean(ENV['CANARY']) ? 'canary' : '',
+            "#{status_name}.ico"
+          )
 
-          File.join(dir, "favicon_status_#{status_name}.ico")
+          ActionController::Base.helpers.image_path(path)
         end
       end
 
