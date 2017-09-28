@@ -214,15 +214,12 @@ describe Gitlab::Workhorse do
       end
 
       it 'includes a Repository param' do
-        repo_param = { Repository: {
+        repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git',
-          git_object_directory: '',
-          git_alternate_object_directories: [],
-          gl_repository: ''
-        } }
+          relative_path: project.full_path + '.git'
+        }
 
-        expect(subject).to include(repo_param)
+        expect(subject[:Repository]).to include(repo_param)
       end
 
       context "when git_upload_pack action is passed" do
