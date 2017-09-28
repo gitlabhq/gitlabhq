@@ -114,6 +114,10 @@ An alias can be understood as a way to have many doors leading to the same room.
 All the aliases you've set to your site will be listed on **Setting > Pages**.
 From that page, you can view, add, and remove them.
 
+Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
+although it's usually a matter of minutes to complete. Until it does, visits
+to your domain address will respond with a 404.
+
 Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more.
 
 #### TL;DR
