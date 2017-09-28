@@ -33,8 +33,8 @@ you'll need to set up [DNS records](#dns-records)
 To finish the association, you need to [add your domain to your project's Pages settings](#add-your-custom-domain-to-gitlab-pages-settings).
 
 Let's start from the beginning with [DNS records](#dns-records).
-If you already know how these things work and want to skip the tutorial,
-you may be interested in the [TL;DR](#tl-dr) section below.
+If you already know how they work and want to skip the introduction to DNS,
+you may be interested in skipping it until the [TL;DR](#tl-dr) section below.
 
 ### DNS Records
 
@@ -103,29 +103,6 @@ without any `/project-name`.
 
 ![DNS CNAME record pointing to GitLab.com project](img/dns_cname_record_example.png)
 
-#### Add your custom domain to GitLab Pages settings
-
-Once you've set the DNS record, you'll need navigate to your project's
-**Setting > Pages** and click **+ New domain** to add your custom domain to
-GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssl-tls-certificates)
-to make your website accessible under HTTPS or leave it blank. If don't add a certificate,
-your site will be accessible only via HTTP:
-
-![Add new domain](img/add_certificate_to_pages.png)
-
-You add more than one alias (custom domains and subdomains) to the same project.
-An alias can be understood as a way to have many doors leading to the same room.
-
-All the aliases you've set to your site will be listed on **Setting > Pages**.
-From that page, you can view, add, and remove them.
-
-Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
-although it's usually a matter of minutes to complete. Until it does, visit attempts
-to your domain will respond with a 404.
-
-Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
-custom domains to GitLab Pages sites.
-
 #### TL;DR
 
 | From | DNS Record | To |
@@ -141,6 +118,29 @@ custom domains to GitLab Pages sites.
 domain. E.g., **do not** point your `subdomain.domain.com` to
 `namespace.gitlab.io.` or `namespace.gitlab.io/`.
 > - GitLab Pages IP on GitLab.com [has been changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) from `104.208.235.32` to `52.167.214.135`.
+
+### Add your custom domain to GitLab Pages settings
+
+Once you've set the DNS record, you'll need navigate to your project's
+**Setting > Pages** and click **+ New domain** to add your custom domain to
+GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssl-tls-certificates)
+to make your website accessible under HTTPS or leave it blank. If don't add a certificate,
+your site will be accessible only via HTTP:
+
+![Add new domain](img/add_certificate_to_pages.png)
+
+You can add more than one alias (custom domains and subdomains) to the same project.
+An alias can be understood as having many doors leading to the same room.
+
+All the aliases you've set to your site will be listed on **Setting > Pages**.
+From that page, you can view, add, and remove them.
+
+Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/domain-names-dns-changes),
+although it's usually a matter of minutes to complete. Until it does, visit attempts
+to your domain will respond with a 404.
+
+Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
+custom domains to GitLab Pages sites.
 
 ### SSL/TLS Certificates
 
