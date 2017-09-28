@@ -1531,7 +1531,7 @@ export default class Notes {
             // Use $notesContainer to locate .diff-file because $form does not have parent
             $diffFile = $notesContainer.closest('.diff-file');
             if ($diffFile.length > 0) {
-              const badgeNumber = parseInt($notesContainer.find('.badge').text().trim(), 10);
+              const badgeNumber = parseInt($notesContainer.find('.badge.js-diff-notes-toggle').text().trim(), 10);
               const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
                 detail: {
                   noteId: `note_${note.id}`,
