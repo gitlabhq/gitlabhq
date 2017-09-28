@@ -20,7 +20,7 @@
   - else
     - blob_raw_path = diff_file_blob_raw_path(diff_file)
     .image
-      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added') }
-        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
+      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: discussion.position.to_json } }
+        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
     .note-container
       = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false }

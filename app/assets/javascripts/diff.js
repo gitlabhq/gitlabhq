@@ -26,7 +26,6 @@ class Diff {
     const canCreateNote = $diffFile.first().closest('.files').is('[data-can-create-note]');
 
     $diffFile.each((index, file) => {
-      // Single image diff
       if (file.querySelector('.diff-viewer .js-single-image')) {
         const imageDiff = new ImageDiff(file, canCreateNote);
         imageDiff.init();

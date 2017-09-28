@@ -1,0 +1,34 @@
+import ImageDiffHelper from './helpers/index';
+// TODO: Rename all instances of imagediffhelper to start with lower case
+
+export function create(imageEl) {
+  const imageFrameEl = imageEl.closest('.frame');
+  const { x_axis, y_axis, width, height } = JSON.parse(imageFrameEl.dataset.position);
+
+  const meta = ImageDiffHelper.resizeCoordinatesToImageElement(imageEl, {
+    x: x_axis,
+    y: y_axis,
+    width,
+    height,
+  });
+
+  const diffFile = imageFrameEl.closest('.diff-file');
+  const firstNote = diffFile.querySelector('.discussion-notes .note');
+
+  ImageDiffHelper.addImageBadge(imageFrameEl, {
+    coordinate: {
+      x: meta.x,
+      y: meta.y,
+    },
+    // Discussion badges are empty badge dots
+    badgeText: ' ',
+    noteId: firstNote.id,
+  });
+}
+
+export function init() {
+  const imageEls = document.querySelectorAll('.timeline-content .diff-file .image .frame img');
+  [].forEach.call(imageEls, imageEl => imageEl.addEventListener('load', create.bind(null, imageEl)));
+
+  $('.timeline-content .diff-file').on('click', '.js-image-badge', ImageDiffHelper.imageBadgeOnClick);
+}

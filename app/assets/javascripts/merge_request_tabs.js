@@ -13,6 +13,8 @@ import {
   isMetaClick,
 } from './lib/utils/common_utils';
 
+import * as discussionBadges from './image_diff/discussion_badges';
+
 /* eslint-disable max-len */
 // MergeRequestTabs
 //
@@ -154,6 +156,8 @@ import {
         }
         this.resetViewContainer();
         this.destroyPipelinesView();
+
+        discussionBadges.init();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);
