@@ -11,8 +11,8 @@ const defaultViewType = viewTypes.TWO_UP;
 
 // TODO: Determine whether we can refactor imageDiff and this into one file
 export default class ReplacedImageDiff extends ImageDiff {
-  constructor(el) {
-    super(el);
+  constructor(el, canCreateNote) {
+    super(el, canCreateNote);
 
     // Insert two up frames separately so we can use regular array methods
     // TODO: Determine if we need to load badges and indicators on the replaced file image

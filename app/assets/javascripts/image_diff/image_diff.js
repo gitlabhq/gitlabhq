@@ -2,15 +2,16 @@ import * as imageDiffHelper from './image_diff_helper';
 import ImageBadge from './image_badge';
 
 export default class ImageDiff {
-  constructor(el) {
+  constructor(el, canCreateNote = false) {
     this.el = el;
+    this.canCreateNote = canCreateNote;
     this.imageFrameEl = el.querySelector('.diff-viewer .image .frame');
     this.imageEl = this.imageFrameEl.querySelector('img');
     this.noteContainer = this.el.querySelector('.note-container');
     this.imageBadges = [];
   }
 
-  bindEvents(canCreateNote) {
+  bindEvents() {
     this.clickWrapper = this.click.bind(this);
     this.blurWrapper = imageDiffHelper.removeCommentIndicator.bind(null, this.imageFrameEl);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
@@ -23,13 +24,26 @@ export default class ImageDiff {
     this.imageEl.addEventListener('load', this.renderBadgesWrapper);
     this.noteContainer.addEventListener('click', this.toggleCollapsedWrapper);
 
-    if (canCreateNote) {
+    if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
       this.el.addEventListener('blur.imageDiff', this.blurWrapper);
       this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
       this.el.addEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.addEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
+  }
+
+  unbindEvents() {
+    if (this.canCreateNote) {
+      this.el.removeEventListener('click.imageDiff', this.clickWrapper);
+      this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
+      this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+      this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
+      this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
+    }
+
+    this.noteContainer.removeEventListener('click', this.toggleCollapsedWrapper);
+    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
   }
 
   toggleCollapsed(e) {
@@ -51,16 +65,6 @@ export default class ImageDiff {
         notesContainer.classList.remove('collapsed');
       }
     }
-  }
-
-  unbindEvents() {
-    this.el.removeEventListener('click.imageDiff', this.clickWrapper);
-    this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
-    this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
-    this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
-    this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
-
-    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
   }
 
   click(event) {

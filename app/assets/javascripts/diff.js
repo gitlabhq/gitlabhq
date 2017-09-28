@@ -23,21 +23,16 @@ class Diff {
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 
-    let canCreateNote = null;
+    const canCreateNote = $($diffFile[0]).closest('.files').data('can-create-note') === '';
 
     $diffFile.each((index, file) => {
-      // check permissions only on first file
-      if (canCreateNote === null) {
-        canCreateNote = $(file).closest('.files').data('can-create-note') === '';
-      }
-
       // Single image diff
       if (file.querySelector('.diff-viewer .js-single-image')) {
-        const imageDiff = new ImageDiff(file);
-        imageDiff.bindEvents(canCreateNote);
+        const imageDiff = new ImageDiff(file, canCreateNote);
+        imageDiff.bindEvents();
       } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
-        const replacedImageDiff = new ReplacedImageDiff(file);
-        replacedImageDiff.bindEvents(canCreateNote);
+        const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote);
+        replacedImageDiff.bindEvents();
       }
     });
 
