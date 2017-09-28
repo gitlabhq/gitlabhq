@@ -1,15 +1,15 @@
 - diff_file = discussion.diff_file
 - blob = discussion.blob
+- discussions = { discussion.original_line_code => [discussion] }
 
-.diff-file.file-holder
+.diff-file.file-holder{ class: (diff_file.text? ? 'text-file' : '') }
   .js-file-title.file-title.file-title-flex-parent
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
 
-  .diff-content.code.js-syntax-highlight
-    %table
-      - if diff_file.text?
-        - discussions = { discussion.original_line_code => [discussion] }
+  - if diff_file.text?
+    .diff-content.code.js-syntax-highlight
+      %table
         = render partial: "projects/diffs/line",
           collection: discussion.truncated_diff_lines,
           as: :line,
@@ -17,3 +17,10 @@
             discussions: discussions,
             discussion_expanded: true,
             plain: true }
+  - else
+    - blob_raw_path = diff_file_blob_raw_path(diff_file)
+    .image
+      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added') }
+        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
+    .note-container
+      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false }

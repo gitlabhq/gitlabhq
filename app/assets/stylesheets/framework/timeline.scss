@@ -17,8 +17,11 @@
 
   .diff-file {
     border: 1px solid $border-color;
-    border-bottom: none;
     margin: 0;
+  }
+
+  &.text-file .diff-file {
+    border-bottom: none;
   }
 }
 
