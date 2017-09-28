@@ -1061,17 +1061,17 @@ class User < ActiveRecord::Base
     user_synced_attributes_metadata&.read_only?(attribute)
   end
 
+  # override, from Devise
+  def lock_access!
+    Gitlab::AppLogger.info("Account Locked: username=#{username} reason=invalid_login_attempts")
+    super
+  end
+
   protected
 
   # override, from Devise::Validatable
   def password_required?
     return false if internal?
-    super
-  end
-
-  # override, from Devise
-  def lock_access!
-    Gitlab::AppLogger.info("Account Locked: username=#{username} reason=invalid_login_attempts")
     super
   end
 
