@@ -60,6 +60,33 @@ describe Projects::ForkService do
 
           expect(@from_project.forks_count).to eq(1)
         end
+
+        it 'creates a fork network with the new project and the root project set' do
+          to_project
+          fork_network = @from_project.reload.fork_network
+
+          expect(fork_network).not_to be_nil
+          expect(fork_network.root_project).to eq(@from_project)
+          expect(fork_network.projects).to contain_exactly(@from_project, to_project)
+        end
+      end
+
+      context 'creating a fork of a fork' do
+        let(:from_forked_project) { fork_project(@from_project, @to_user) }
+        let(:other_namespace) do
+          group = create(:group)
+          group.add_owner(@to_user)
+          group
+        end
+        let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace) }
+
+        it 'sets the root of the network to the root project' do
+          expect(to_project.fork_network.root_project).to eq(@from_project)
+        end
+
+        it 'sets the forked_from_project on the membership' do
+          expect(to_project.fork_network_member.forked_from_project).to eq(from_forked_project)
+        end
       end
     end
 

@@ -118,11 +118,20 @@ class Project < ActiveRecord::Base
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
 
+  # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+  # TODO: replace these relations with the fork network versions
+
+  has_one :root_of_fork_network,
+          foreign_key: 'root_project_id',
+          inverse_of: :root_project,
+          class_name: 'ForkNetwork'
+  has_one :fork_network_member
+  has_one :fork_network, through: :fork_network_member
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -1119,8 +1128,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def forked_from?(project)
-    forked? && project == forked_from_project
+  def in_fork_network_of?(project)
+    forked? && project.fork_network == fork_network
   end
 
   def origin_merge_requests
