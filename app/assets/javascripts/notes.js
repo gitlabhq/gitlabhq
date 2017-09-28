@@ -1492,7 +1492,7 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        const $diffFile = $notesContainer.closest('.diff-file');
+        let $diffFile = $form.closest('.diff-file');
         if ($diffFile.length > 0) {
           const blurEvent = new CustomEvent('blur.imageDiff', {
             detail: e,
@@ -1528,6 +1528,8 @@ export default class Notes {
 
           if (!isNewDiffComment) {
             // Note's added to existing discussions do not preload with avatar badge counts
+            // Use $notesContainer to locate .diff-file because $form does not have parent
+            $diffFile = $notesContainer.closest('.diff-file');
             if ($diffFile.length > 0) {
               const badgeNumber = parseInt($notesContainer.find('.badge').text().trim(), 10);
               const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
