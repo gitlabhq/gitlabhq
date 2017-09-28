@@ -1,26 +1,36 @@
 <script>
 import Store from '../stores/repo_store';
+import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 import RepoMixin from '../mixins/repo_mixin';
 
 const RepoFileButtons = {
   data: () => Store,
-
   mixins: [RepoMixin],
-
   computed: {
-
     rawDownloadButtonLabel() {
       return this.binary ? 'Download' : 'Raw';
     },
-
     canPreview() {
       return Helper.isRenderable();
     },
   },
-
   methods: {
     rawPreviewToggle: Store.toggleRawPreview,
+    showSimpleViewer() {
+      Service
+        .getContent(Store.activeFile.simple_viewer.path)
+        .then((res) => {
+          Store.activeFile.html = res.data.html;
+        });
+    },
+    showRichViewer() {
+      Service
+        .getContent(Store.activeFile.rich_viewer.path)
+        .then((res) => {
+          Store.activeFile.html = res.data.html;
+        });
+    },
   },
 };
 
@@ -36,6 +46,22 @@ export default RepoFileButtons;
       rel="noopener noreferrer">
       {{rawDownloadButtonLabel}}
     </a>
+
+    <a
+      @click="showSimpleViewer"
+      target="_blank"
+      class="btn btn-default raw"
+      rel="noopener noreferrer">
+      Simple View
+    </a>
+    <a
+      @click="showRichViewer"
+      target="_blank"
+      class="btn btn-default raw"
+      rel="noopener noreferrer">
+      Rich View
+    </a>
+
 
     <div
       class="btn-group"

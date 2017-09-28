@@ -1,6 +1,5 @@
 /* global Flash */
 import Helper from '../helpers/repo_helper';
-import Service from '../services/repo_service';
 
 const RepoStore = {
   monaco: {},

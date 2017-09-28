@@ -2,7 +2,6 @@
 import axios from 'axios';
 import Store from '../stores/repo_store';
 import Api from '../../api';
-import Helper from '../helpers/repo_helper';
 
 const RepoService = {
   url: '',
@@ -11,42 +10,17 @@ const RepoService = {
       format: 'json',
     },
   },
-  richExtensionRegExp: /md/,
-
   getRaw(url) {
     return axios.get(url, {
       // Stop Axios from parsing a JSON file into a JS object
       transformResponse: [res => res],
     });
   },
-
-  buildParams(url = this.url) {
-    // shallow clone object without reference
+  getContent(url = this.url, withParams = true) {
     const params = Object.assign({}, this.options.params);
 
-    if (this.urlIsRichBlob(url)) params.viewer = 'rich';
-
-    return params;
+    return withParams ? axios.get(url, { params }) : axios.get(url);
   },
-
-  urlIsRichBlob(url = this.url) {
-    const extension = Helper.getFileExtension(url);
-
-    return this.richExtensionRegExp.test(extension);
-  },
-
-  getContent(url = this.url) {
-    const params = this.buildParams(url);
-
-    return axios.get(url, {
-      params,
-    });
-  },
-
-  fetchSimpleViewer(url) {
-    return axios.get(url);
-  },
-
   getBase64Content(url = this.url) {
     const request = axios.get(url, {
       responseType: 'arraybuffer',
@@ -54,11 +28,9 @@ const RepoService = {
 
     return request.then(response => this.bufferToBase64(response.data));
   },
-
   bufferToBase64(data) {
     return new Buffer(data, 'binary').toString('base64');
   },
-
   blobURLtoParentTree(url) {
     const urlArray = url.split('/');
     urlArray.pop();
@@ -68,12 +40,10 @@ const RepoService = {
 
     return urlArray.join('/');
   },
-
   commitFiles(payload) {
     return Api.commitMultiple(Store.projectId, payload)
       .then(this.commitFlash);
   },
-
   commitFlash(data) {
     if (data.short_id && data.stats) {
       window.Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');

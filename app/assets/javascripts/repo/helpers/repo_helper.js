@@ -21,9 +21,6 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
-      isSimpleViewerFetched: false,
-      isRichViewerFetched: false,
-      isAuxiliaryViewerFetched: false,
     };
   },
 
@@ -159,8 +156,9 @@ const RepoHelper = {
         }
 
         if (Store.isPreviewView()) {
+          const viewer = data.rich_viewer || data.simple_viewer;
           Service
-            .fetchSimpleViewer(data.simple_viewer.path)
+            .getContent(viewer.path, false)
             .then((res) => {
               data.html = res.data.html;
               RepoHelper.setFile(data, file);
