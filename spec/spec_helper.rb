@@ -64,8 +64,16 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
-  config.define_derived_metadata(file_path: %r{/spec/requests/(ci/)?api/}) do |metadata|
-    metadata[:api] = true
+  config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
+    location = metadata[:location]
+
+    metadata[:api] = true if location =~ %r{/spec/requests/api/}
+
+    # do not overwrite type if it's already set
+    next if metadata.key?(:type)
+
+    match = location.match(%r{/spec/([^/]+)/})
+    metadata[:type] = match[1].singularize.to_sym if match
   end
 
   config.raise_errors_for_deprecations!

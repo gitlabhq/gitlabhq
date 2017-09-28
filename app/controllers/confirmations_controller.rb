@@ -12,10 +12,14 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def after_confirmation_path_for(resource_name, resource)
     if signed_in?(resource_name)
-      after_sign_in_path_for(resource)
+      after_sign_in(resource)
     else
       flash[:notice] += " Please sign in."
       new_session_path(resource_name)
     end
+  end
+
+  def after_sign_in(resource)
+    after_sign_in_path_for(resource)
   end
 end

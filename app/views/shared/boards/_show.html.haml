@@ -12,13 +12,11 @@
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
-= render "projects/issues/head"
+#board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
+  .hidden-xs.hidden-sm
+    = render 'shared/issuable/search_bar', type: :boards
 
-.hidden-xs.hidden-sm
-  = render 'shared/issuable/search_bar', type: :boards
-
-#board-app.boards-app{ "v-cloak" => true, data: board_data }
-  .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
+  .boards-list
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
     %board{ "v-cloak" => true,

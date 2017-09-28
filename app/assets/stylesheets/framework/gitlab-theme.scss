@@ -242,10 +242,10 @@ body {
 
         &:hover {
           background-color: $white-light;
-          box-shadow: inset 0 0 0 1px $blue-100;
+          box-shadow: inset 0 0 0 1px $blue-200;
 
           .location-badge {
-            box-shadow: inset 0 0 0 1px $blue-100;
+            box-shadow: inset 0 0 0 1px $blue-200;
           }
         }
       }
@@ -253,6 +253,10 @@ body {
       .search-input-wrap {
         .search-icon {
           color: $theme-gray-200;
+        }
+
+        .search-input {
+          color: $gl-text-color;
         }
       }
 
