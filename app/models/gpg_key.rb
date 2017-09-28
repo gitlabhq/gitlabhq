@@ -12,6 +12,8 @@ class GpgKey < ActiveRecord::Base
   has_many :gpg_signatures
   has_many :subkeys, class_name: 'GpgKeySubkey'
 
+  scope :with_subkeys, -> { includes(:subkeys) }
+
   validates :user, presence: true
 
   validates :key,
