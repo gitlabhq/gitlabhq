@@ -1,5 +1,6 @@
 import * as imageDiffHelper from './image_diff_helper';
 import ImageDiff from './image_diff';
+import ImageBadge from './image_badge';
 
 const viewTypes = {
   TWO_UP: 'TWO_UP',
@@ -32,10 +33,14 @@ export default class ReplacedImageDiff extends ImageDiff {
 
   bindEvents() {
     this.clickWrapper = this.click.bind(this);
+    this.blurWrapper = this.blur.bind(this);
     this.changeToViewTwoUp = this.changeView.bind(this, viewTypes.TWO_UP);
     this.changeToViewSwipe = this.changeView.bind(this, viewTypes.SWIPE);
     this.changeToViewOnionSkin = this.changeView.bind(this, viewTypes.ONION_SKIN);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
+    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
+    this.addBadgeWrapper = this.addBadge.bind(this);
+    this.removeBadgeWrapper = this.removeBadge.bind(this);
 
     const viewModesEl = this.el.querySelector('.view-modes-menu');
     viewModesEl.querySelector('.two-up').addEventListener('click', this.changeToViewTwoUp);
@@ -47,7 +52,15 @@ export default class ReplacedImageDiff extends ImageDiff {
 
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
+      this.el.addEventListener('blur.imageDiff', this.blurWrapper);
+      this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
+      this.el.addEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
+      this.el.addEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
+  }
+
+  blur() {
+    return imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
   }
 
   changeView(newView) {
@@ -65,8 +78,8 @@ export default class ReplacedImageDiff extends ImageDiff {
     // their dimensions
     setTimeout(() => {
       // Re-normalize badge coordinates based on dimensions of image view
-      this.imageBadges.forEach(badge => badge.generateBrowserMeta(this.getImageEl()));
-
+      // this.imageBadges.forEach(badge => badge.generateBrowserMeta(this.getImageEl()));
+      this.imageBadges = [];
       this.renderBadgesWrapper();
 
       // Re-render indicator in new view
@@ -115,5 +128,66 @@ export default class ReplacedImageDiff extends ImageDiff {
         noteId: imageBadge.noteId,
       });
     });
+  }
+
+  addBadge(event) {
+    const { x, y, width, height, noteId, discussionId } = event.detail;
+    const badgeText = this.imageBadges.length + 1;
+    const imageBadge = new ImageBadge({
+      actual: {
+        x,
+        y,
+        width,
+        height,
+      },
+      imageEl: this.getImageFrameEl().querySelector('img'),
+      noteId,
+      discussionId,
+    });
+
+    this.imageBadges.push(imageBadge);
+
+    imageDiffHelper.addCommentBadge(this.getImageFrameEl(), {
+      coordinate: imageBadge.browser,
+      badgeText,
+      noteId,
+    });
+
+    imageDiffHelper.addAvatarBadge(this.el, {
+      detail: {
+        noteId,
+        badgeNumber: badgeText,
+      },
+    });
+
+    const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+    imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
+  }
+
+  removeBadge(event) {
+    const { badgeNumber } = event.detail;
+    const indexToRemove = badgeNumber - 1;
+    const imageBadgeEls = this.getImageFrameEl().querySelectorAll('.badge');
+
+    if (this.imageBadges.length !== badgeNumber) {
+      // Cascade badges count numbers for (avatar badges + image badges)
+      this.imageBadges.forEach((badge, index) => {
+        if (index > indexToRemove) {
+          const { discussionId } = badge;
+          const updatedBadgeNumber = index;
+          const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+
+          imageBadgeEls[index].innerText = updatedBadgeNumber;
+
+          imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
+          imageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
+        }
+      });
+    }
+
+    this.imageBadges.splice(indexToRemove, 1);
+
+    const imageBadgeEl = imageBadgeEls[indexToRemove];
+    imageBadgeEl.remove();
   }
 }

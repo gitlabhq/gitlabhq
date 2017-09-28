@@ -84,21 +84,25 @@ export function addCommentIndicator(containerEl, coordinate) {
 export function removeCommentIndicator(imageFrameEl) {
   const commentIndicatorEl = imageFrameEl.querySelector('.comment-indicator');
   const imageEl = imageFrameEl.querySelector('img');
-  const willRemove = commentIndicatorEl;
+  const willRemove = commentIndicatorEl !== null;
+  let meta = {};
 
   if (willRemove) {
+    meta = {
+      x: parseInt(commentIndicatorEl.style.left.replace('px', ''), 10),
+      y: parseInt(commentIndicatorEl.style.top.replace('px', ''), 10),
+      image: {
+        width: imageEl.width,
+        height: imageEl.height,
+      },
+    };
+
     commentIndicatorEl.remove();
   }
 
-  return {
+  return Object.assign(meta, {
     removed: willRemove,
-    x: parseInt(commentIndicatorEl.style.left.replace('px', ''), 10),
-    y: parseInt(commentIndicatorEl.style.top.replace('px', ''), 10),
-    image: {
-      width: imageEl.width,
-      height: imageEl.height,
-    },
-  };
+  });
 }
 
 export function showCommentIndicator(imageFrameEl, coordinate) {
