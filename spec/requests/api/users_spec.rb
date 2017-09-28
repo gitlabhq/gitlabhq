@@ -474,10 +474,13 @@ describe API::Users do
     end
 
     it "updates user with new password and forces reset on next login" do
+      stub_licensed_features(extended_audit_events: true)
+
       put api("/users/#{user.id}", admin), password: '12345678'
 
       expect(response).to have_http_status(200)
       expect(user.reload.password_expires_at).to be <= Time.now
+      expect(AuditEvent.count).to eq(1)
     end
 
     it "updates user with organization" do
