@@ -28,23 +28,42 @@ export default {
   },
 
   methods: {
+    checkForReject() {
+      let okToCommit = true;
+      return Service.checkForReject(
+        decodeURIComponent(this.changedFiles[0].dummy_url)
+        .replace('{{branch}}', this.targetBranch)
+      )
+      .then((data) => {
+        if(data.data.last_commit.id !== this.changedFiles[0].last_commit.id) {
+          okToCommit = false;
+        }
+      })
+      .catch(() => {
+        new Flash('Cannot check for reject at this time.')
+      });
+    },
+
     makeCommit() {
-      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => ({
-        action: 'update',
-        file_path: f.path,
-        content: f.newContent,
-      }));
-      const payload = {
-        branch: Store.targetBranch,
-        commit_message: commitMessage,
-        actions,
-      };
-      Store.submitCommitsLoading = true;
-      Service.commitFiles(payload)
-        .then(this.resetCommitState)
-        .catch(() => Flash('An error occured while committing your changes'));
+      this.checkForReject()
+      .then(() => {
+        // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
+        const commitMessage = this.commitMessage;
+        const actions = this.changedFiles.map(f => ({
+          action: 'update',
+          file_path: f.path,
+          content: f.newContent,
+        }));
+        const payload = {
+          branch: Store.targetBranch,
+          commit_message: commitMessage,
+          actions,
+        };
+        Store.submitCommitsLoading = true;
+        Service.commitFiles(payload)
+          .then(this.resetCommitState)
+          .catch(() => Flash('An error occured while committing your changes'));
+      });
     },
 
     resetCommitState() {

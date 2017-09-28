@@ -16,6 +16,7 @@ const RepoHelper = {
       name: '',
       plain: '',
       size: 0,
+      dummy_url: '',
       url: '',
       raw: false,
       newContent: '',

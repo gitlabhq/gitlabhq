@@ -201,7 +201,10 @@ class Projects::BlobController < Projects::ApplicationController
     path_segments = @path.split('/')
     path_segments.pop
     tree_path = path_segments.join('/')
-
+    last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+    puts '---------*_*__*_*_*_*_*_*_*_*_*_*_*_*_*_*'
+    puts params[:only]
+    puts '---------*_*__*_*_*_*_*_*_*_*_*_*_*_*_*_*'
     render json: json.merge(
       path: blob.path,
       name: blob.name,
@@ -209,6 +212,8 @@ class Projects::BlobController < Projects::ApplicationController
       size: blob.raw_size,
       mime_type: blob.mime_type,
       binary: blob.raw_binary?,
+      last_commit: last_commit,
+      dummy_url: project_blob_path(@project, File.join('{{branch}}', blob.path)),
       simple_viewer: blob.simple_viewer&.class&.partial_name,
       rich_viewer: blob.rich_viewer&.class&.partial_name,
       show_viewer_switcher: !!blob.show_viewer_switcher?,

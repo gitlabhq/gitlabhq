@@ -65,6 +65,13 @@ const RepoService = {
     return urlArray.join('/');
   },
 
+  checkForReject(url) {
+    const params = this.buildParams(url);
+    return axios.get(url, {
+      params
+    });
+  },
+
   commitFiles(payload) {
     return Api.commitMultiple(Store.projectId, payload)
       .then(this.commitFlash);
