@@ -12,6 +12,10 @@ module Gitlab
                 return error('Pipelines are disabled!')
               end
 
+              if @command.allow_mirror_update && !project.mirror_trigger_builds?
+                return error('Pipeline is disabled for mirror updates')
+              end
+
               unless allowed_to_trigger_pipeline?
                 if can?(current_user, :create_pipeline, project)
                   return error("Insufficient permissions for protected ref '#{pipeline.ref}'")
