@@ -11,6 +11,8 @@
     display: flex;
 
     a {
+      padding: $gl-btn-padding;
+      padding-bottom: 11px;
       font-size: 14px;
       line-height: 28px;
       color: $gl-text-color-secondary;

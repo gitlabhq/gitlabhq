@@ -210,6 +210,12 @@
 
     .nav-links {
       justify-content: center;
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
     }
   }
 
