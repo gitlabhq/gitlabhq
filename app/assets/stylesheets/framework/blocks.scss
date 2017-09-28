@@ -207,6 +207,10 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+
+    .nav-links {
+      justify-content: center;
+    }
   }
 
   .group-info {
