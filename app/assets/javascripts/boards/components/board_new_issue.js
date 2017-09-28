@@ -42,6 +42,7 @@ export default {
 
       this.error = false;
 
+      // TODO: add board labels
       const labels = this.list.label ? [this.list.label] : [];
       const issue = new ListIssue({
         title: this.title,

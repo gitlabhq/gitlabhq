@@ -390,6 +390,23 @@ import DropdownUtils from './filtered_search/dropdown_utils';
                 .then(fadeOutLoader)
                 .catch(fadeOutLoader);
             }
+            else if ($dropdown.hasClass('js-board-config-modal')) {
+              if ($el.hasClass('is-active')) {
+                gl.issueBoards.BoardsStore.boardConfig.labels.push(new ListLabel({
+                  id: label.id,
+                  title: label.title,
+                  color: label.color[0],
+                  textColor: '#fff'
+                }));
+              }
+              else {
+                let labels = gl.issueBoards.BoardsStore.boardConfig.labels;
+                labels = labels.filter(function (selectedLabel) {
+                  return selectedLabel.id !== label.id;
+                });
+                gl.issueBoards.BoardsStore.boardConfig.labels = labels;
+              }
+            }
             else {
               if ($dropdown.hasClass('js-multiselect')) {
 

@@ -13,6 +13,7 @@
     </p>
     <form
       v-else
+      class="js-board-config-modal"
     >
       <div
         v-if="!readonly"
@@ -69,27 +70,14 @@
           />
         </form-block>
 
-        <form-block
-          title="Labels"
-          defaultText="Any label"
-          :canEdit="canAdminBoard"
-        >
-        </form-block>
-
-        <form-block
-          title="Assignee"
-          defaultText="Any assignee"
-          :fieldName="'board_filter[assignee]'"
-          :canEdit="canAdminBoard"
-        >
-        </form-block>
-
-        <form-block
-          title="Author"
-          defaultText="Any author"
-          :fieldName="'board_filter[author]'"
-          :canEdit="canAdminBoard"
-        >
+        <form-block>
+          <board-labels-select
+            :board="board"
+            title="Labels"
+            defaultText="Any label"
+            :canEdit="canAdminBoard"
+            :labelsPath="labelsPath"
+          />
         </form-block>
 
         <form-block
@@ -123,6 +111,7 @@ import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
+import BoardLabelsSelect from './labels_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -135,6 +124,11 @@ export default Vue.extend({
       type: String,
       required: true,
     },
+    labelsPath: {
+      type: String,
+      required: false,
+      default: '/root/my-rails/labels.json',
+    },
     canAdminBoard: {
       type: Boolean,
       required: true,
@@ -142,10 +136,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      board: {
-        id: false,
-        name: '',
-      },
+      board: Store.boardConfig,
       expanded: false,
       issue: {},
       currentBoard: Store.state.currentBoard,
@@ -156,14 +147,26 @@ export default Vue.extend({
   },
   components: {
     BoardMilestoneSelect,
+    BoardLabelsSelect,
     BoardWeightSelect,
     PopupDialog,
     FormBlock,
   },
   mounted() {
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
-      this.board = Vue.util.extend({}, this.currentBoard);
+      Store.updateBoardConfig(this.currentBoard);
+    } else {
+      Store.updateBoardConfig({
+        name: '',
+        id: false,
+        label_ids: [],
+      });
     }
+
+    if (!this.board.labels) {
+      this.board.labels = [];
+    }
+
     if (this.$refs.name) {
       this.$refs.name.focus();
     }

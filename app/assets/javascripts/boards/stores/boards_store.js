@@ -19,7 +19,12 @@ gl.issueBoards.BoardsStore = {
     reload: false,
   },
   detail: {
-    issue: {}
+    issue: {},
+  },
+  boardConfig: {
+    id: false,
+    name: '',
+    labels: [],
   },
   moving: {
     issue: {},
@@ -28,7 +33,9 @@ gl.issueBoards.BoardsStore = {
   create () {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
-    this.detail = { issue: {} };
+    this.detail = {
+      issue: {},
+    };
   },
   createNewListDropdownData() {
     this.state.currentBoard = {};
@@ -38,6 +45,19 @@ gl.issueBoards.BoardsStore = {
   showPage(page) {
     this.state.reload = false;
     this.state.currentPage = page;
+  },
+  updateBoardConfig({
+    name,
+    id,
+    milestone,
+    milestone_id,
+    labels = [],
+  }) {
+    this.boardConfig.name = name;
+    this.boardConfig.milestone = milestone;
+    this.boardConfig.milestone_id = milestone_id;
+    this.boardConfig.id = id;
+    this.boardConfig.labels = labels;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
