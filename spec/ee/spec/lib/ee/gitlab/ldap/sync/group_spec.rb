@@ -303,9 +303,9 @@ describe EE::Gitlab::LDAP::Sync::Group do
         it 'does not update permissions when group base is missing' do
           stub_ldap_config(group_base: nil)
 
-          sync_group.update_permissions
+          expect_any_instance_of(EE::Gitlab::LDAP::Sync::Proxy).not_to receive(:dns_for_group_cn)
 
-          expect(group.members.pluck(:user_id)).not_to include(user.id)
+          sync_group.update_permissions
         end
       end
     end
