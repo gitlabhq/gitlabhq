@@ -156,6 +156,64 @@ describe Namespace do
     end
   end
 
+  describe '#max_active_pipelines' do
+    context 'when there is no plan associated' do
+      it 'returns zero' do
+        expect(namespace.max_active_pipelines).to be_zero
+      end
+    end
+
+    context 'when limit is not defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns zero' do
+        expect(namespace.max_active_pipelines).to be_zero
+      end
+    end
+
+    context 'when limit is defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan.update_column(:active_pipelines_limit, 10)
+      end
+
+      it 'returns a number of maximum active pipelines' do
+        expect(namespace.max_active_pipelines).to eq 10
+      end
+    end
+  end
+
+  describe '#max_pipeline_size' do
+    context 'when there is no plan associated' do
+      it 'returns zero' do
+        expect(namespace.max_active_pipelines).to be_zero
+      end
+    end
+
+    context 'when limit is not defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns zero' do
+        expect(namespace.max_pipeline_size).to be_zero
+      end
+    end
+
+    context 'when limit is defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan.update_column(:pipeline_size_limit, 15)
+      end
+
+      it 'returns a number of maximum pipeline size' do
+        expect(namespace.max_pipeline_size).to eq 15
+      end
+    end
+  end
+
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }
 

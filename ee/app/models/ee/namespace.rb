@@ -108,6 +108,16 @@ module EE
       end
     end
 
+    # TODO, CI/CD Quotas feature check
+    #
+    def max_active_pipelines
+      plan&.active_pipelines_limit.to_i
+    end
+
+    def max_pipeline_size
+      plan&.pipeline_size_limit.to_i
+    end
+
     private
 
     def validate_plan_name
