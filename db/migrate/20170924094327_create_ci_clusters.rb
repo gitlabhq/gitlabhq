@@ -24,6 +24,7 @@ class CreateCiClusters < ActiveRecord::Migration
       t.string :gcp_project_id
       t.string :cluster_zone
       t.string :cluster_name
+      t.string :gcp_operation_id
 
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false

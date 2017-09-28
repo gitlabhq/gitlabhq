@@ -40,7 +40,8 @@ module GoogleApi
         begin
           operation = service.create_cluster(project_id, zone, request_body)
         rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          Rails.logger.error("#{self.class.name}: Could not create cluster #{cluster_name}: #{e}")
+          puts "#{self.class.name} - #{__callee__}: Could not create cluster #{cluster_name}: #{e}"
+          # TODO: Error
         end
         puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
         operation
@@ -51,23 +52,14 @@ module GoogleApi
         service.authorization = access_token
 
         operation = service.get_zone_operation(project_id, zone, operation_id)
+        puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
         operation
       end
 
-      def wait_operation_done(self_link)
-        running = true
-
+      def parse_self_link(self_link)
         ret = self_link.match(/projects\/(.*)\/zones\/(.*)\/operations\/(.*)/)
-        project_id = ret[1]
-        zone = ret[2]
-        operation_id = ret[3]
 
-        while running
-          operation = projects_zones_operations(project_id, zone, operation_id)
-          if operation.status != 'RUNNING'
-            running = false
-          end
-        end
+        return ret[1], ret[2], ret[3] # project_id, zone, operation_id
       end
     end
   end

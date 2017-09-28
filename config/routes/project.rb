@@ -187,6 +187,10 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           get :login
         end
+
+        member do
+          get :creation_status, format: :json
+        end
       end
 
       resources :environments, except: [:destroy] do

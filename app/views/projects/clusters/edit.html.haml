@@ -5,3 +5,4 @@ edit/show cluster
 = link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'true'), method: :put
 = link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'false'), method: :put
 = link_to "Soft-delete the cluster", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete
+= link_to 'Check status', creation_status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id), :remote => true

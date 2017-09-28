@@ -1,5 +1,5 @@
 class Projects::ClustersController < Projects::ApplicationController
-  before_action :cluster
+  before_action :cluster, except: [:login, :index, :new, :create]
   before_action :authorize_google_api, except: [:login]
   # before_action :authorize_admin_clusters! # TODO: Authentication
 
@@ -11,8 +11,8 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def index
-    if cluster
-      redirect_to edit_namespace_project_cluster_path(project.namespace, project, cluster.id)
+    if project.clusters.any?
+      redirect_to edit_namespace_project_cluster_path(project.namespace, project, project.clusters.last.id)
     else
       redirect_to action: 'new'
     end
@@ -22,72 +22,36 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def create
-    # Create a cluster on GKE
-    operation = api_client.projects_zones_clusters_create(
-      params['gcp_project_id'], params['cluster_zone'], params['cluster_name'],
-      cluster_size: params['cluster_size'], machine_type: params['machine_type']
-    )
-
-    # wait_operation_done
-    if operation&.operation_type == 'CREATE_CLUSTER'
-      api_client.wait_operation_done(operation.self_link)
-    else
-      raise "TODO: ERROR"
+    begin
+      Ci::CreateClusterService.new(project, current_user, params)
+                              .create_cluster_on_gke(api_client)
+    rescue Ci::CreateClusterService::UnexpectedOperationError => e
+      puts "#{self.class.name} - #{__callee__}: e: #{e}"
+      # TODO: error
     end
-
-    # Get cluster details (end point, etc)
-    gke_cluster = api_client.projects_zones_clusters_get(
-      params['gcp_project_id'], params['cluster_zone'], params['cluster_name']
-    )
-
-    # Get k8s token
-    token = ''
-    KubernetesService.new.tap do |ks|
-      ks.api_url = 'https://' + gke_cluster.endpoint
-      ks.ca_pem = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
-      ks.username = gke_cluster.master_auth.username
-      ks.password = gke_cluster.master_auth.password
-      secrets = ks.read_secrets
-      secrets.each do |secret|
-        name = secret.dig('metadata', 'name')
-        if /default-token/ =~ name
-          token_base64 = secret.dig('data', 'token')
-          token = Base64.decode64(token_base64)
-          break
-        end
-      end
-    end
-
-    # Update service
-    kubernetes_service.attributes = service_params(
-        active: true,
-        api_url: 'https://' + gke_cluster.endpoint,
-        ca_pem: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
-        namespace: params['project_namespace'],
-        token: token
-      )
-
-    kubernetes_service.save!
-
-    # Save info
-    project.clusters.create(
-      gcp_project_id: params['gcp_project_id'],
-      cluster_zone: params['cluster_zone'],
-      cluster_name: params['cluster_name'],
-      service: kubernetes_service
-    )
 
     redirect_to action: 'index'
   end
 
+  ##
+  # Return
+  # @status: The current status of the operation.
+  # @status_message: If an error has occurred, a textual description of the error.
+  def creation_status
+    respond_to do |format|
+      format.json do
+        render json: cluster.creation_status(session[GoogleApi::CloudPlatform::Client.token_in_session])
+      end
+    end
+  end
+
   def edit
-    # TODO: If on, do we override parameter?
-    # TODO: If off, do we override parameter?
   end
 
   def update
     cluster.update(enabled: params['enabled'])
     cluster.service.update(active: params['enabled'])
+    # TODO: Do we overwrite KubernetesService parameter?
     render :edit
   end
 
@@ -99,8 +63,7 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    # Each project has only one cluster, for now. In the future iteraiton, we'll support multiple clusters
-    @cluster ||= project.clusters.last
+    @cluster ||= project.clusters.find(params[:id])
   end
 
   def api_client
@@ -110,20 +73,6 @@ class Projects::ClustersController < Projects::ApplicationController
         callback_google_api_authorizations_url,
         state: namespace_project_clusters_url.to_s
       )
-  end
-
-  def kubernetes_service
-    @kubernetes_service ||= project.find_or_initialize_service('kubernetes')
-  end
-
-  def service_params(active:, api_url:, ca_pem:, namespace:, token:)
-    {
-      active: active,
-      api_url: api_url,
-      ca_pem: ca_pem,
-      namespace: namespace,
-      token: token
-    }
   end
 
   def authorize_google_api

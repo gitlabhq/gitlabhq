@@ -281,6 +281,7 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.string "gcp_project_id"
     t.string "cluster_zone"
     t.string "cluster_name"
+    t.string "gcp_operation_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
