@@ -2,19 +2,19 @@ class FaviconUploader < AttachmentUploader
   include CarrierWave::MiniMagick
 
   STATUS_ICON_NAMES = [
-    :status_canceled,
-    :status_created,
-    :status_failed,
-    :status_manual,
-    :status_not_found,
-    :status_pending,
-    :status_running,
-    :status_skipped,
-    :status_success,
-    :status_warning
+    :favicon_status_canceled,
+    :favicon_status_created,
+    :favicon_status_failed,
+    :favicon_status_manual,
+    :favicon_status_not_found,
+    :favicon_status_pending,
+    :favicon_status_running,
+    :favicon_status_skipped,
+    :favicon_status_success,
+    :favicon_status_warning
   ].freeze
 
-  version :default do
+  version :favicon_main do
     process resize_to_fill: [32, 32]
     process convert: 'ico'
 
@@ -24,7 +24,7 @@ class FaviconUploader < AttachmentUploader
   end
 
   STATUS_ICON_NAMES.each do |status_name|
-    version status_name, from_version: :default do
+    version status_name, from_version: :favicon_main do
       process status_favicon: status_name
 
       def full_filename(filename)
@@ -41,7 +41,7 @@ class FaviconUploader < AttachmentUploader
 
   def status_favicon(status_name)
     manipulate! do |img|
-      overlay_path = Rails.root.join("app/assets/images/ci_favicons/overlays/favicon_#{status_name}.png")
+      overlay_path = Rails.root.join("app/assets/images/ci_favicons/overlays/#{status_name}.png")
       overlay = MiniMagick::Image.open(overlay_path)
       img.composite(overlay) do |c|
         c.compose 'over'

@@ -64,7 +64,7 @@
     = f.label :favicon, 'Favicon', class: 'control-label'
     .col-sm-10
       - if @appearance.favicon?
-        = image_tag @appearance.favicon.default.url, class: 'appearance-light-logo-preview'
+        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
     - if @appearance.favicon?
       = f.label :favicon, 'Generated status icons', class: 'control-label'
     .col-sm-10

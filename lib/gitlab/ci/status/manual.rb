@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def favicon
-          Gitlab::Favicon.status('manual')
+          'favicon_status_manual'
         end
       end
     end

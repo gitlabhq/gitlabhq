@@ -19,11 +19,11 @@ RSpec.describe FaviconUploader do
     end
 
     it 'has the correct format' do
-      expect(uploader.default).to be_format('ico')
+      expect(uploader.favicon_main).to be_format('ico')
     end
 
     it 'has the correct dimensions' do
-      expect(uploader.default).to have_dimensions(32, 32)
+      expect(uploader.favicon_main).to have_dimensions(32, 32)
     end
 
     it 'generates all the status icons' do
@@ -31,7 +31,7 @@ RSpec.describe FaviconUploader do
       expect(FaviconUploader::STATUS_ICON_NAMES.count).to eq 10
 
       FaviconUploader::STATUS_ICON_NAMES.each do |status_name|
-        expect(File.exist?(uploader.status_not_found.file.file)).to be true
+        expect(File.exist?(uploader.favicon_status_not_found.file.file)).to be true
       end
     end
   end
