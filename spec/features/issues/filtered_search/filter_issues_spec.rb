@@ -422,20 +422,18 @@ describe 'Filter issues', js: true do
     end
 
     context 'sorting' do
-      it 'sorts by oldest updated' do
-        create(:issue,
+      it 'sorts by created date' do
+        new_issue = create(:issue,
           title: '3 days ago',
           project: project,
           author: user,
-          created_at: 3.days.ago,
-          updated_at: 3.days.ago)
+          created_at: 3.days.ago)
 
-        old_issue = create(:issue,
+        create(:issue,
           title: '5 days ago',
           project: project,
           author: user,
-          created_at: 5.days.ago,
-          updated_at: 5.days.ago)
+          created_at: 5.days.ago)
 
         input_filtered_search('days ago')
 
@@ -444,10 +442,10 @@ describe 'Filter issues', js: true do
         sort_toggle = find('.filtered-search-wrapper .dropdown-toggle')
         sort_toggle.click
 
-        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Oldest updated').click
+        find('.filtered-search-wrapper .dropdown-menu li a', text: 'Created date').click
         wait_for_requests
 
-        expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(old_issue.title)
+        expect(find('.issues-list .issue:first-of-type .issue-title-text a')).to have_content(new_issue.title)
       end
     end
   end

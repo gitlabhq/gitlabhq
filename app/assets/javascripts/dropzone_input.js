@@ -2,6 +2,7 @@
 /* global Dropzone */
 import _ from 'underscore';
 import './preview_markdown';
+import csrf from './lib/utils/csrf';
 
 window.DropzoneInput = (function() {
   function DropzoneInput(form) {
@@ -50,9 +51,7 @@ window.DropzoneInput = (function() {
       paramName: 'file',
       maxFilesize: maxFileSize,
       uploadMultiple: false,
-      headers: {
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-      },
+      headers: csrf.headers,
       previewContainer: false,
       processing: function() {
         return $('.div-dropzone-alert').alert('close');
@@ -260,9 +259,7 @@ window.DropzoneInput = (function() {
         dataType: 'json',
         processData: false,
         contentType: false,
-        headers: {
-          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-        },
+        headers: csrf.headers,
         beforeSend: function() {
           showSpinner();
           return closeAlertMessage();

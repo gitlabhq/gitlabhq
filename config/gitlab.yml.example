@@ -681,12 +681,6 @@ production: &base
   # Use the default values unless you really know what you are doing
   git:
     bin_path: /usr/bin/git
-    # The next value is the maximum memory size grit can use
-    # Given in number of bytes per git object (e.g. a commit)
-    # This value can be increased if you have very large commits
-    max_size: 20971520 # 20.megabytes
-    # Git timeout to read a commit, in seconds
-    timeout: 10
 
   ## Webpack settings
   # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running

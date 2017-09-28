@@ -38,6 +38,8 @@ You will be asked to confirm the number of issues and email address for the expo
 
 ## Format
 
+> **Time Estimate** and **Time Spent** columns were [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2627) in GitLab Enterprise Edition Starter 10.0.
+
 Data will be encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row will be the headers, which are listed in the following table along with a description of the values:
 
 

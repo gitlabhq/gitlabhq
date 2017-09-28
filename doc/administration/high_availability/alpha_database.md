@@ -262,7 +262,7 @@ get the cluster up and running.
 Verify the nodes are all communicating:
 
 ```sh
-sudo consul members
+sudo /opt/gitlab/embedded/bin/consul members
 ```
 
 The output should be similar to:
@@ -518,5 +518,6 @@ Read more on high-availability configuration:
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
+1. [Manage the bundled Consul cluster](consul.md)
 
 [reconfigure GitLab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure

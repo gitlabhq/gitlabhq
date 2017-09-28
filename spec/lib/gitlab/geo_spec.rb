@@ -43,6 +43,20 @@ describe Gitlab::Geo do
     end
   end
 
+  describe 'primary_node_configured?' do
+    context 'when current node is a primary node' do
+      it 'returns true' do
+        primary_node
+
+        expect(described_class.primary_node_configured?).to be_truthy
+      end
+
+      it 'returns false when primary does not exist' do
+        expect(described_class.primary_node_configured?).to be_falsey
+      end
+    end
+  end
+
   describe 'secondary?' do
     context 'when current node is a secondary node' do
       before do

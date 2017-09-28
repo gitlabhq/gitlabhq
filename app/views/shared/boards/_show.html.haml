@@ -14,11 +14,6 @@
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
   %script#js-board-promotion{ type: "text/x-template" }= render "shared/promotions/promote_issue_board"
 
-- if @group
-  = render "groups/head_issues"
-- else
-  = render "projects/issues/head"
-
 .hidden-xs.hidden-sm
   = render 'shared/issuable/search_bar', type: :boards, board: board
 
@@ -43,4 +38,4 @@
       "empty-state-svg" => image_path('illustrations/issues.svg'),
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
-      ":project-id" => @project.try(:id) }
+      ":project-id" => @project.id }

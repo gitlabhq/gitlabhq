@@ -302,7 +302,7 @@ OU=GitLab, Inc,DC=gitlab,DC=com
 
 This character needs to be escaped as documented in [RFC 4515](https://tools.ietf.org/search/rfc4515).
 
-Due to the way the string is parsed, the special character needs to be convered
+Due to the way the string is parsed, the special character needs to be converted
 to hex and `\\5C\\` (`5C` = `\` in hex) added before it.
 As an example the above DN would look like
 

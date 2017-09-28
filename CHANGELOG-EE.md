@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.2 (2017-09-27)
+
+- [FIXED] Send valid project path as name for Jira dev panel.
+- [FIXED] Fix delta size check to handle commit or nil objects.
+
+## 10.0.1 (2017-09-23)
+
+- No changes.
+
 ## 10.0.0 (2017-09-22)
 
 - [SECURITY] Check if LDAP users are in external groups on login. !2720

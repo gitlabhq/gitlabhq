@@ -82,30 +82,30 @@ class License < ActiveRecord::Base
   ULTIMATE_PLAN = 'ultimate'.freeze
   EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
-  EES_FEATURES = [
-    { AUDIT_EVENTS_FEATURE => 1 },
-    { BURNDOWN_CHARTS_FEATURE => 1 },
-    { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
-    { ELASTIC_SEARCH_FEATURE => 1 },
-    { EXPORT_ISSUES_FEATURE => 1 },
-    { FAST_FORWARD_MERGE_FEATURE => 1 },
-    { GROUP_WEBHOOKS_FEATURE => 1 },
-    { ISSUABLE_DEFAULT_TEMPLATES_FEATURE => 1 },
-    { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
-    { SCOPED_ISSUE_BOARD_FEATURE => 1 },
-    { ISSUE_WEIGHTS_FEATURE => 1 },
-    { JENKINS_INTEGRATION_FEATURE => 1 },
-    { LDAP_EXTRAS_FEATURE => 1 },
-    { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
-    { MERGE_REQUEST_REBASE_FEATURE => 1 },
-    { MERGE_REQUEST_SQUASH_FEATURE => 1 },
-    { MULTIPLE_ISSUE_ASSIGNEES_FEATURE => 1 },
-    { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
-    { PUSH_RULES_FEATURE => 1 },
-    { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 },
-    { REPOSITORY_MIRRORS_FEATURE => 1 },
-    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 }
+  EES_FEATURES = %i[
+    audit_events
+    burndown_charts
+    contribution_analytics
+    elastic_search
+    export_issues
+    fast_forward_merge
+    group_webhooks
+    issuable_default_templates
+    issue_board_focus_mode
+    scoped_issue_board
+    issue_weights
+    jenkins_integration
+    ldap_extras
+    merge_request_approvers
+    merge_request_rebase
+    merge_request_squash
+    multiple_issue_assignees
+    multiple_issue_boards
+    push_rules
+    protected_refs_for_users
+    related_issues
+    repository_mirrors
+    repository_size_limit
   ].freeze
 
   EEP_FEATURES = EES_FEATURES + %i[
@@ -304,7 +304,7 @@ class License < ActiveRecord::Base
   end
 
   def features_from_add_ons
-    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count > 0 }.compact
+    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count.to_i > 0 }.compact
   end
 
   def features
