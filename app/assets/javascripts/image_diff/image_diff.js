@@ -1,4 +1,4 @@
-import * as imageDiffHelper from './image_diff_helper';
+import ImageDiffHelper from './helpers/index';
 import ImageBadge from './image_badge';
 
 export default class ImageDiff {
@@ -28,7 +28,7 @@ export default class ImageDiff {
     this.clickWrapper = this.click.bind(this);
     this.blurWrapper = this.blur.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
-    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
+    this.addAvatarBadgeWrapper = ImageDiffHelper.addAvatarBadge.bind(null, this.el);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
 
@@ -36,7 +36,9 @@ export default class ImageDiff {
     this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
 
     // jquery makes the event delegation here much simpler
-    $noteContainer.on('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
+    this.$noteContainer.on('click', '.js-diff-notes-toggle', ImageDiffHelper.toggleCollapsed);
+    $(this.el).on('click', '.comment-indicator', ImageDiffHelper.commentIndicatorOnClick);
+    $(this.el).on('click', '.js-image-badge', ImageDiffHelper.imageBadgeOnClick);
 
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
@@ -57,32 +59,32 @@ export default class ImageDiff {
     }
 
     this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
-    $noteContainer.off('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
+    this.$noteContainer.off('click', '.js-diff-notes-toggle', ImageDiffHelper.toggleCollapsed);
   }
 
   click(event) {
     const customEvent = event.detail;
-    const selection = imageDiffHelper.getTargetSelection(customEvent);
+    const selection = ImageDiffHelper.getTargetSelection(customEvent);
     const el = customEvent.currentTarget;
 
-    imageDiffHelper.setPositionDataAttribute(el, selection.actual);
-    imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), selection.browser);
+    ImageDiffHelper.setPositionDataAttribute(el, selection.actual);
+    ImageDiffHelper.showCommentIndicator(this.getImageFrameEl(), selection.browser);
   }
 
   blur() {
-    return imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
+    return ImageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
   }
 
   renderBadges() {
     const discussionsEls = this.el.querySelectorAll('.note-container .discussion-notes .notes');
 
     [].forEach.call(discussionsEls, (discussionEl, index) => {
-      const imageBadge = imageDiffHelper
+      const imageBadge = ImageDiffHelper
         .generateBadgeFromDiscussionDOM(this.getImageFrameEl(), discussionEl);
 
       this.imageBadges.push(imageBadge);
 
-      imageDiffHelper.addCommentBadge(this.getImageFrameEl(), {
+      ImageDiffHelper.addImageBadge(this.getImageFrameEl(), {
         coordinate: imageBadge.browser,
         badgeText: index + 1,
         noteId: imageBadge.noteId,
@@ -107,13 +109,13 @@ export default class ImageDiff {
 
     this.imageBadges.push(imageBadge);
 
-    imageDiffHelper.addCommentBadge(this.getImageFrameEl(), {
+    ImageDiffHelper.addImageBadge(this.getImageFrameEl(), {
       coordinate: imageBadge.browser,
       badgeText,
       noteId,
     });
 
-    imageDiffHelper.addAvatarBadge(this.el, {
+    ImageDiffHelper.addAvatarBadge(this.el, {
       detail: {
         noteId,
         badgeNumber: badgeText,
@@ -121,7 +123,7 @@ export default class ImageDiff {
     });
 
     const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
-    imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
+    ImageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
   }
 
   removeBadge(event) {
@@ -139,8 +141,8 @@ export default class ImageDiff {
 
           imageBadgeEls[index].innerText = updatedBadgeNumber;
 
-          imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
-          imageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
+          ImageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
+          ImageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
         }
       });
     }

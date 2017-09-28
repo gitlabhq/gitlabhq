@@ -1,4 +1,4 @@
-import * as imageDiffHelper from './image_diff_helper';
+import ImageDiffHelper from './helpers/index';
 
 const defaultMeta = {
   x: 0,
@@ -17,7 +17,7 @@ export default class ImageBadge {
     this.discussionId = discussionId;
 
     if (options.imageEl && !options.browser) {
-      this.browser = imageDiffHelper.resizeCoordinatesToImageElement(options.imageEl, this.actual);
+      this.browser = ImageDiffHelper.resizeCoordinatesToImageElement(options.imageEl, this.actual);
     }
   }
 }
