@@ -671,7 +671,13 @@ module Gitlab
       end
 
       def rm_tag(tag_name, user:)
-        OperationService.new(user, self).rm_tag(find_tag(tag_name))
+        gitaly_migrate(:operation_user_delete_tag) do |is_enabled|
+          if is_enabled
+            gitaly_operations_client.rm_tag(tag_name, user)
+          else
+            Gitlab::Git::OperationService.new(user, self).rm_tag(find_tag(tag_name))
+          end
+        end
       end
 
       def find_tag(name)
@@ -1046,6 +1052,10 @@ module Gitlab
 
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
+      end
+
+      def gitaly_operations_client
+        @gitaly_operations_client ||= Gitlab::GitalyClient::OperationService.new(self)
       end
 
       def gitaly_ref_client

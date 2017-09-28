@@ -10,6 +10,16 @@ module Gitlab
             git_alternate_object_directories: Array.wrap(Gitlab::Git::Env['GIT_ALTERNATE_OBJECT_DIRECTORIES'])
           )
         end
+
+        def gitaly_user(gitlab_user)
+          return unless gitlab_user
+
+          Gitaly::User.new(
+            gl_id: Gitlab::GlId.gl_id(gitlab_user),
+            name: GitalyClient.encode(gitlab_user.name),
+            email: GitalyClient.encode(gitlab_user.email)
+          )
+        end
       end
     end
   end
