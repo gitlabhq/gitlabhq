@@ -24,7 +24,7 @@ module Gitlab
       private
 
       def appearance
-        Appearance.current || Appearance.new
+        RequestStore.store[:appearance] ||= (Appearance.current || Appearance.new)
       end
 
       def appearance_favicon
