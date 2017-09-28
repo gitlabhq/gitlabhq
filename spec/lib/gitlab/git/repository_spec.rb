@@ -1332,6 +1332,84 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#with_repo_branch_commit' do
+    context 'when comparing with the same repository' do
+      let(:start_repository) { repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+
+    context 'when comparing with another repository' do
+      let(:start_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+  end
+
+  describe '#fetch_source_branch' do
+    let(:local_ref) { 'refs/merge-requests/1/head' }
+
+    context 'when the branch exists' do
+      let(:source_branch) { 'master' }
+
+      it 'writes the ref' do
+        expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns true' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+      end
+    end
+
+    context 'when the branch does not exist' do
+      let(:source_branch) { 'definitely-not-master' }
+
+      it 'does not write the ref' do
+        expect(repository).not_to receive(:write_ref)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns false' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
+      end
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged
