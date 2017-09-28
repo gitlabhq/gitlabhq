@@ -1,5 +1,0 @@
----
-title: Some checks in `rake gitlab:check` were failling with 'undefined method `run_command`'
-merge_request: 14469
-author:
-type: fixed

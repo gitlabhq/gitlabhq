@@ -106,7 +106,7 @@ module IssuableCollections
       # @filter_params[:authorized_only] = true
     end
 
-    @filter_params
+    @filter_params.permit(IssuableFinder::VALID_PARAMS)
   end
 
   def set_default_state

@@ -1,52 +1,79 @@
 import { isSticky } from '~/lib/utils/sticky';
 
 describe('sticky', () => {
-  const el = {
-    offsetTop: 0,
-    classList: {},
-  };
+  let el;
 
   beforeEach(() => {
-    el.offsetTop = 0;
-    el.classList.add = jasmine.createSpy('spy');
-    el.classList.remove = jasmine.createSpy('spy');
+    document.body.innerHTML += `
+      <div class="parent">
+        <div id="js-sticky"></div>
+      </div>
+    `;
+
+    el = document.getElementById('js-sticky');
   });
 
-  describe('classList.remove', () => {
-    it('does not call classList.remove when stuck', () => {
-      isSticky(el, 0, 0);
+  afterEach(() => {
+    el.parentNode.remove();
+  });
+
+  describe('when stuck', () => {
+    it('does not remove is-stuck class', () => {
+      isSticky(el, 0, el.offsetTop);
+      isSticky(el, 0, el.offsetTop);
 
       expect(
-        el.classList.remove,
-      ).not.toHaveBeenCalled();
+        el.classList.contains('is-stuck'),
+      ).toBeTruthy();
     });
 
-    it('calls classList.remove when not stuck', () => {
-      el.offsetTop = 10;
+    it('adds is-stuck class', () => {
+      isSticky(el, 0, el.offsetTop);
+
+      expect(
+        el.classList.contains('is-stuck'),
+      ).toBeTruthy();
+    });
+
+    it('inserts placeholder element', () => {
+      isSticky(el, 0, el.offsetTop, true);
+
+      expect(
+        document.querySelector('.sticky-placeholder'),
+      ).not.toBeNull();
+    });
+  });
+
+  describe('when not stuck', () => {
+    it('removes is-stuck class', () => {
+      spyOn(el.classList, 'remove').and.callThrough();
+
+      isSticky(el, 0, el.offsetTop);
       isSticky(el, 0, 0);
 
       expect(
         el.classList.remove,
       ).toHaveBeenCalledWith('is-stuck');
+      expect(
+        el.classList.contains('is-stuck'),
+      ).toBeFalsy();
     });
-  });
 
-  describe('classList.add', () => {
-    it('calls classList.add when stuck', () => {
+    it('does not add is-stuck class', () => {
       isSticky(el, 0, 0);
 
       expect(
-        el.classList.add,
-      ).toHaveBeenCalledWith('is-stuck');
+        el.classList.contains('is-stuck'),
+      ).toBeFalsy();
     });
 
-    it('does not call classList.add when not stuck', () => {
-      el.offsetTop = 10;
-      isSticky(el, 0, 0);
+    it('removes placeholder', () => {
+      isSticky(el, 0, el.offsetTop, true);
+      isSticky(el, 0, 0, true);
 
       expect(
-        el.classList.add,
-      ).not.toHaveBeenCalled();
+        document.querySelector('.sticky-placeholder'),
+      ).toBeNull();
     });
   });
 });
