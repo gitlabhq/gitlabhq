@@ -3,27 +3,41 @@ module EE
     module Ci
       module Pipeline
         module Chain
-          class Activity < ::Gitlab::Ci::Pipeline::Chain::Base
-            include ::Gitlab::Ci::Pipeline::Chain::Helpers
+          module Limit
+            class Activity < ::Gitlab::Ci::Pipeline::Chain::Base
+              include ::Gitlab::Ci::Pipeline::Chain::Helpers
+              include ::Gitlab::OptimisticLocking
 
-            def initialize(*)
-              super
+              def initialize(*)
+                super
 
-              @limit = Pipeline::Quota::Activity
-                .new(project.namespace, pipeline.project)
-            end
+                @limit = Pipeline::Quota::Activity
+                  .new(project.namespace, pipeline.project)
+              end
 
-            def perform!
-              return unless @limit.exceeded?
-              return unless @command.save_incompleted
+              def perform!
+                return unless @limit.exceeded?
 
-              # TODO, add failure reason
-              # TODO, add validation error
-              @pipeline.drop
-            end
+                # TODO, add failure reason
+                # TODO, transaction?
 
-            def break?
-              @limit.exceeded?
+                @pipeline.cancel_running
+
+                retry_optimistic_lock(@pipeline)
+                  @pipeline.drop!
+                end
+
+                # TODO, should we invalidate the pipeline
+                # while it is already persisted?
+                #
+                # Should we show info in the UI or alert/warning?
+                #
+                error(@limit.message)
+              end
+
+              def break?
+                @limit.exceeded?
+              end
             end
           end
         end
