@@ -22,7 +22,9 @@ export default class ImageDiff {
 
     // Render badges after the image diff is loaded
     this.imageEl.addEventListener('load', this.renderBadgesWrapper);
-    this.noteContainer.addEventListener('click', this.toggleCollapsedWrapper);
+
+    // jquery makes the event delegation here much simpler
+    $(this.noteContainer).on('click', '.js-diff-notes-toggle', this.toggleCollapsedWrapper);
 
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
@@ -47,24 +49,9 @@ export default class ImageDiff {
   }
 
   toggleCollapsed(e) {
-    const clickTarget = e.target;
-    const targetIsButton = clickTarget.classList.contains('diff-notes-collapse');
-    const targetIsSvg = clickTarget.parentNode.classList.contains('diff-notes-collapse');
-    const targetIsBadge = clickTarget.classList.contains('badge');
-    const shouldToggle = targetIsButton || targetIsSvg || targetIsBadge;
+    const $toggleBtn = $(e.currentTarget);
 
-    if (shouldToggle) {
-      if (targetIsButton || targetIsSvg) {
-        const $button = targetIsButton ? clickTarget : clickTarget.parentNode;
-        const notesContainer = $button.parentNode.parentNode;
-
-        notesContainer.classList.add('collapsed');
-      } else if (targetIsBadge) {
-        const notesContainer = clickTarget.parentNode.parentNode;
-
-        notesContainer.classList.remove('collapsed');
-      }
-    }
+    $toggleBtn.closest('.discussion-notes').toggleClass('collapsed');
   }
 
   click(event) {
