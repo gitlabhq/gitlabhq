@@ -8,7 +8,7 @@
 - discussions = @grouped_diff_discussions[diff_file.file_identifier]
 
 - if diff_file.new_file? || diff_file.deleted_file?
-  .image{ data: diff_view_data }
+  .image.js-single-image{ data: diff_view_data }
     %span.wrap
       -# TODO: Determine if we should conslidate js-add-image-diff-note-button and click-to-comment
       .frame.js-add-image-diff-note-button.click-to-comment{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
@@ -17,7 +17,7 @@
   .note-container
     = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion
 - else
-  .image
+  .image.js-replaced-image{ data: diff_view_data }
     .two-up.view
       %span.wrap
         .frame.deleted
@@ -31,8 +31,8 @@
           %b H:
           %span.meta-height
       %span.wrap
-        .frame.added
-          = image_tag(blob_raw_path, alt: diff_file.new_path)
+        .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
+          = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(blob.size)
           |
@@ -47,8 +47,8 @@
         .frame.deleted
           = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
         .swipe-wrap
-          .frame.added
-            = image_tag(blob_raw_path, alt: diff_file.new_path, lazy: false)
+          .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
+            = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
         %span.swipe-bar
           %span.top-handle
           %span.bottom-handle
@@ -57,8 +57,8 @@
       .onion-skin-frame
         .frame.deleted
           = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
-        .frame.added
-          = image_tag(blob_raw_path, alt: diff_file.new_path, lazy: false)
+        .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
+          = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
         .controls
           .transparent
           .drag-track
@@ -71,3 +71,5 @@
       %li.two-up{ data: { mode: 'two-up' } } 2-up
       %li.swipe{ data: { mode: 'swipe' } } Swipe
       %li.onion-skin{ data: { mode: 'onion-skin' } } Onion skin
+  .note-container
+    = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion

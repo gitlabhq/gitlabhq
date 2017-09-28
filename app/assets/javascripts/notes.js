@@ -446,7 +446,7 @@ export default class Notes {
           row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
         }
 
-        // Add badge for image diffs
+        // Add image badge, avatar badge and toggle discussion badge for image diffs
         const $diffFile = form.closest('.diff-file');
         if ($diffFile.length > 0) {
           const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
@@ -814,12 +814,10 @@ export default class Notes {
           // The notes tr can contain multiple lists of notes, like on the parallel diff
           // notesTr does not exist for image diffs
           if (notesTr.find('.discussion-notes').length > 1 || notesTr.length === 0) {
-
             const $diffFile = $notes.closest('.diff-file');
             if ($diffFile.length > 0) {
               const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
                 detail: {
-                  discussionId,
                   badgeNumber,
                 },
               });
@@ -1072,14 +1070,14 @@ export default class Notes {
   cancelDiscussionForm(e) {
     e.preventDefault();
     const $form = $(e.target).closest('.js-discussion-note-form');
-    const diffFile = $form.closest('.diff-file')[0];
+    const $diffFile = $form.closest('.diff-file');
 
-    if (diffFile) {
+    if ($diffFile.length > 0) {
       const blurEvent = new CustomEvent('blur.imageDiff', {
         detail: e,
       });
 
-      diffFile.dispatchEvent(blurEvent);
+      $diffFile[0].dispatchEvent(blurEvent);
     }
 
     return this.removeDiscussionNoteForm($form);
@@ -1494,7 +1492,7 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        const $diffFile = $notesContainer.closest('.diff-file');
+        let $diffFile = $form.closest('.diff-file');
         if ($diffFile.length > 0) {
           const blurEvent = new CustomEvent('blur.imageDiff', {
             detail: e,
@@ -1525,11 +1523,13 @@ export default class Notes {
           }
 
           // Show final note element on UI
-          const isNewDiffComment = $notesContainer.length === 0
+          const isNewDiffComment = $notesContainer.length === 0;
           this.addDiscussionNote($form, note, isNewDiffComment);
 
           if (!isNewDiffComment) {
             // Note's added to existing discussions do not preload with avatar badge counts
+            // Use $notesContainer to locate .diff-file because $form does not have parent
+            $diffFile = $notesContainer.closest('.diff-file');
             if ($diffFile.length > 0) {
               const badgeNumber = parseInt($notesContainer.find('.badge').text().trim(), 10);
               const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
@@ -1624,7 +1624,6 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-
     ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element

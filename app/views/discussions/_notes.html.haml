@@ -6,7 +6,7 @@
     - if discussion.try(:on_image?)
       %button.diff-notes-collapse{ type: 'button' }
         = custom_icon('collapse_icon')
-      %button.btn-transparent.badge
+      %button.btn-transparent.badge{ type: 'button' }
         = badge_counter
     = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter }
 

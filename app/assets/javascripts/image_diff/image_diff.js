@@ -1,19 +1,20 @@
 import * as imageDiffHelper from './image_diff_helper';
+import ImageBadge from './image_badge';
 
 export default class ImageDiff {
   constructor(el) {
     this.el = el;
-    this.imageFrame = el.querySelector('.diff-viewer .image .frame');
-    this.image = this.imageFrame.querySelector('img');
+    this.imageFrameEl = el.querySelector('.diff-viewer .image .frame');
+    this.imageEl = this.imageFrameEl.querySelector('img');
     this.noteContainer = this.el.querySelector('.note-container');
-    this.badges = [];
+    this.imageBadges = [];
   }
 
   bindEvents(canCreateNote) {
     this.clickWrapper = this.click.bind(this);
-    this.blurWrapper = this.blur.bind(this);
+    this.blurWrapper = imageDiffHelper.removeCommentIndicator.bind(null, this.imageFrameEl);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
-    this.addAvatarBadgeWrapper = this.addAvatarBadge.bind(this);
+    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
     this.addBadgeWrapper = this.addBadge.bind(this);
     this.toggleCollapsedWrapper = this.toggleCollapsed.bind(this);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
@@ -49,7 +50,6 @@ export default class ImageDiff {
 
         notesContainer.classList.remove('collapsed');
       }
-    }
   }
 
   unbindEvents() {
@@ -59,144 +59,93 @@ export default class ImageDiff {
     this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
     this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
 
-    this.image.removeEventListener('load', this.renderBadgesWrapper);
+    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
   }
 
   click(event) {
     const customEvent = event.detail;
     const selection = imageDiffHelper.getTargetSelection(customEvent);
-
-    // showCommentIndicator
-    const commentIndicator = this.imageFrame.querySelector('.comment-indicator');
-
-    if (commentIndicator) {
-      commentIndicator.style.left = `${selection.browser.x}px`;
-      commentIndicator.style.top = `${selection.browser.y}px`;
-    } else {
-      const button = imageDiffHelper
-        .addCommentIndicator(this.imageFrame, selection.browser);
-
-      button.addEventListener('click', imageDiffHelper.commentIndicatorOnClick);
-    }
-
-    // setupCoordinatesData
     const el = customEvent.currentTarget;
+
     imageDiffHelper.setPositionDataAttribute(el, selection.actual);
-  }
-
-  // TODO: Rename to something better?
-  blur() {
-    const commentIndicator = this.imageFrame.querySelector('.comment-indicator');
-
-    if (commentIndicator) {
-      commentIndicator.remove();
-    }
+    imageDiffHelper.showCommentIndicator(this.imageFrameEl, selection.browser);
   }
 
   renderBadges() {
-    // Process existing badges from html
-    const browserImage = this.imageFrame.querySelector('img');
-    const discussions = this.el.querySelectorAll('.note-container .discussion-notes .notes');
+    const discussionsEls = this.el.querySelectorAll('.note-container .discussion-notes .notes');
 
-    [].forEach.call(discussions, (discussion, index) => {
-      const position = JSON.parse(discussion.dataset.position);
-      const firstNote = discussion.querySelector('.note');
+    [].forEach.call(discussionsEls, (discussionEl, index) => {
+      const imageBadge = imageDiffHelper
+        .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
 
-      const actual = {
-        x: position.x_axis,
-        y: position.y_axis,
-        width: position.width,
-        height: position.height,
-      };
+      this.imageBadges.push(imageBadge);
 
-      const badge = {
-        actual,
-        browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
-        noteId: firstNote.id,
-        discussionId: discussion.dataset.discussionId,
-      };
-
-      imageDiffHelper.addCommentBadge(this.imageFrame, {
-        coordinate: badge.browser,
+      imageDiffHelper.addCommentBadge(this.imageFrameEl, {
+        coordinate: imageBadge.browser,
         badgeText: index + 1,
-        noteId: badge.noteId,
+        noteId: imageBadge.noteId,
       });
-
-      this.badges.push(badge);
     });
   }
 
   addBadge(event) {
-    const { x, y, width, height, noteId } = event.detail;
-    const actual = {
-      x,
-      y,
-      width,
-      height,
-    };
-
-    const browserImage = this.imageFrame.querySelector('img');
-    const badgeText = this.badges.length + 1;
-    const badge = {
-      actual,
-      browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
+    const { x, y, width, height, noteId, discussionId } = event.detail;
+    const badgeText = this.imageBadges.length + 1;
+    const imageBadge = new ImageBadge({
+      actual: {
+        x,
+        y,
+        width,
+        height,
+      },
+      imageEl: this.imageFrameEl.querySelector('img'),
       noteId,
-    };
+      discussionId,
+    });
 
-    imageDiffHelper.addCommentBadge(this.imageFrame, {
-      coordinate: badge.browser,
+    this.imageBadges.push(imageBadge);
+
+    imageDiffHelper.addCommentBadge(this.imageFrameEl, {
+      coordinate: imageBadge.browser,
       badgeText,
       noteId,
     });
 
-    this.addAvatarBadge({
+    imageDiffHelper.addAvatarBadge(this.el, {
       detail: {
         noteId,
         badgeNumber: badgeText,
       },
     });
 
-    this.badges.push(badge);
-  }
-
-  addAvatarBadge(event) {
-    const { noteId, badgeNumber } = event.detail;
-
-    // Add badge to new comment
-    const avatarBadge = this.el.querySelector(`#${noteId} .badge`);
-    avatarBadge.innerText = badgeNumber;
-    avatarBadge.classList.remove('hidden');
+    const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+    imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
   }
 
   removeBadge(event) {
-    const { discussionId, badgeNumber } = event.detail;
+    const { badgeNumber } = event.detail;
+    const indexToRemove = badgeNumber - 1;
+    const imageBadgeEls = this.imageFrameEl.querySelectorAll('.badge');
 
-    const imageBadges = this.imageFrame.querySelectorAll('.badge');
-
-    if (this.badges.length !== badgeNumber) {
+    if (this.imageBadges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)
-      this.badges.forEach(function(badge, index) {
-        if (index > badgeNumber - 1) {
-          const updatedBadgeNumber = index;
-          imageBadges[index].innerText = updatedBadgeNumber;
-
+      this.imageBadges.forEach((badge, index) => {
+        if (index > indexToRemove) {
           const { discussionId } = badge;
+          const updatedBadgeNumber = index;
           const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
-          const discussionBadgeEl = discussionEl.querySelector('.badge');
-          discussionBadgeEl.innerText = updatedBadgeNumber;
 
-          const avatarBadges = discussionEl.querySelectorAll('.image-diff-avatar-link .badge');
+          imageBadgeEls[index].innerText = updatedBadgeNumber;
 
-          [].map.call(avatarBadges, (avatarBadge) => {
-            avatarBadge.innerText = updatedBadgeNumber;
-            return avatarBadge;
-          });
+          imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
+          imageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
         }
-      }.bind(this));
+      });
     }
 
-    const removedBadge = this.badges.splice(badgeNumber - 1, 1);
-    const selectedImageBadge = imageBadges[badgeNumber - 1];
-    selectedImageBadge.remove();
+    this.imageBadges.splice(indexToRemove, 1);
+
+    const imageBadgeEl = imageBadgeEls[indexToRemove];
+    imageBadgeEl.remove();
   }
 }
