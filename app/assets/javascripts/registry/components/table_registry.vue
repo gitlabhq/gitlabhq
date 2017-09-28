@@ -38,7 +38,7 @@
       ]),
 
       layers(item) {
-        return n__('%d layer', '%d layers', item.layers);
+        return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
       },
 
       handleDeleteRegistry(registry) {
@@ -98,7 +98,9 @@
         </td>
         <td>
           {{item.size}}
-          &middot;
+          <template v-if="item.size && item.layers">
+            &middot;
+          </template>
           {{layers(item)}}
         </td>
 
