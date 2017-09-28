@@ -30,7 +30,7 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.currentView = defaultViewType;
   }
 
-  bindEvents(canCreateNote) {
+  bindEvents() {
     this.clickWrapper = this.click.bind(this);
     this.changeToViewTwoUp = this.changeView.bind(this, viewTypes.TWO_UP);
     this.changeToViewSwipe = this.changeView.bind(this, viewTypes.SWIPE);
@@ -45,10 +45,8 @@ export default class ReplacedImageDiff extends ImageDiff {
     // Render image badges after the image diff is loaded
     this.getImageEl(this.currentView).addEventListener('load', this.renderBadgesWrapper);
 
-    if (canCreateNote) {
+    if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
-    } else {
-      this.disableCursor();
     }
   }
 
