@@ -397,3 +397,95 @@ header.navbar-gitlab-new {
     background-color: $white-light;
   }
 }
+
+.navbar-nav {
+  li {
+    .badge {
+      position: inherit;
+      font-weight: $gl-font-weight-normal;
+      margin-left: -6px;
+      font-size: 11px;
+      color: $white-light;
+      padding: 0 5px;
+      line-height: 12px;
+      border-radius: 7px;
+      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+
+      &.issues-count {
+        background-color: $green-500;
+      }
+
+      &.merge-requests-count {
+        background-color: $orange-600;
+      }
+
+      &.todos-count {
+        background-color: $blue-500;
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  header .container-fluid {
+    font-size: 18px;
+
+    .navbar-nav {
+      display: table;
+      table-layout: fixed;
+      width: 100%;
+      margin: 0;
+      text-align: right;
+    }
+
+    .navbar-collapse {
+      padding-left: 5px;
+
+      .nav > li:not(.hidden-xs) {
+        display: table-cell !important;
+        width: 25%;
+
+        a {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .header-user-dropdown-toggle {
+    text-align: center;
+  }
+
+  .header-user-avatar {
+    float: none;
+  }
+}
+
+.header-user {
+  .dropdown-menu-nav {
+    width: auto;
+    min-width: 140px;
+    margin-top: -5px;
+    color: $gl-text-color;
+    left: auto;
+
+    .current-user {
+      padding: 5px 18px;
+
+      .user-name {
+        display: block;
+      }
+    }
+  }
+}
+
+.header-user-avatar {
+  float: left;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: 1px solid $avatar-border;
+}
+
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
+}

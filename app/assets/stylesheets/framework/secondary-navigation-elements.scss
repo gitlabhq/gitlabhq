@@ -337,3 +337,40 @@
     }
   }
 }
+
+.project-item-select-holder.btn-group {
+  display: flex;
+  max-width: 350px;
+  overflow: hidden;
+  float: right;
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.empty-state .project-item-select-holder.btn-group {
+  float: none;
+  display: inline-block;
+
+  .btn {
+    // overrides styles applied to plain `.empty-state .btn`
+    margin: 10px 0;
+    max-width: 300px;
+    width: auto;
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 250px;
+    }
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
+}
