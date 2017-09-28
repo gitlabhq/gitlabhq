@@ -72,8 +72,6 @@ module Gitlab
       delegate  :empty?,
                 to: :rugged
 
-      delegate :exists?, to: :gitaly_repository_client
-
       def ==(other)
         path == other.path
       end
@@ -99,6 +97,18 @@ module Gitlab
 
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
+      end
+
+      def exists?
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+          if enabled
+            gitaly_repository_client.exists?
+          else
+            circuit_breaker.perform do
+              File.exist?(File.join(@path, 'refs'))
+            end
+          end
+        end
       end
 
       # Returns an Array of branch names
