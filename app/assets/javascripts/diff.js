@@ -29,10 +29,10 @@ class Diff {
       // Single image diff
       if (file.querySelector('.diff-viewer .js-single-image')) {
         const imageDiff = new ImageDiff(file, canCreateNote);
-        imageDiff.bindEvents();
+        imageDiff.init();
       } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
         const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote);
-        replacedImageDiff.bindEvents();
+        replacedImageDiff.init();
       }
     });
 

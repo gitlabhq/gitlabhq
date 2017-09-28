@@ -5,26 +5,38 @@ export default class ImageDiff {
   constructor(el, canCreateNote = false) {
     this.el = el;
     this.canCreateNote = canCreateNote;
-    this.imageFrameEl = el.querySelector('.diff-viewer .image .frame');
-    this.imageEl = this.imageFrameEl.querySelector('img');
-    this.noteContainer = this.el.querySelector('.note-container');
+    this.$noteContainer = $(this.el.querySelector('.note-container'));
     this.imageBadges = [];
+  }
+
+  init() {
+    this.imageFrameEl = this.el.querySelector('.diff-viewer .image .frame');
+    this.imageEl = this.imageFrameEl.querySelector('img');
+
+    this.bindEvents();
+  }
+
+  getImageEl() {
+    return this.imageEl;
+  }
+
+  getImageFrameEl() {
+    return this.imageFrameEl;
   }
 
   bindEvents() {
     this.clickWrapper = this.click.bind(this);
-    this.blurWrapper = imageDiffHelper.removeCommentIndicator.bind(null, this.imageFrameEl);
-    this.renderBadgesWrapper = this.renderBadges.bind(this);
-    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
+    this.blurWrapper = this.blur.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
-    this.toggleCollapsedWrapper = this.toggleCollapsed.bind(this);
+    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
+    this.renderBadgesWrapper = this.renderBadges.bind(this);
 
     // Render badges after the image diff is loaded
-    this.imageEl.addEventListener('load', this.renderBadgesWrapper);
+    this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
 
     // jquery makes the event delegation here much simpler
-    $(this.noteContainer).on('click', '.js-diff-notes-toggle', this.toggleCollapsedWrapper);
+    $noteContainer.on('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
 
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
@@ -44,14 +56,8 @@ export default class ImageDiff {
       this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
 
-    this.noteContainer.removeEventListener('click', this.toggleCollapsedWrapper);
     this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
-  }
-
-  toggleCollapsed(e) {
-    const $toggleBtn = $(e.currentTarget);
-
-    $toggleBtn.closest('.discussion-notes').toggleClass('collapsed');
+    $noteContainer.off('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
   }
 
   click(event) {
@@ -60,7 +66,11 @@ export default class ImageDiff {
     const el = customEvent.currentTarget;
 
     imageDiffHelper.setPositionDataAttribute(el, selection.actual);
-    imageDiffHelper.showCommentIndicator(this.imageFrameEl, selection.browser);
+    imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), selection.browser);
+  }
+
+  blur() {
+    return imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
   }
 
   renderBadges() {
@@ -68,11 +78,11 @@ export default class ImageDiff {
 
     [].forEach.call(discussionsEls, (discussionEl, index) => {
       const imageBadge = imageDiffHelper
-        .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
+        .generateBadgeFromDiscussionDOM(this.getImageFrameEl(), discussionEl);
 
       this.imageBadges.push(imageBadge);
 
-      imageDiffHelper.addCommentBadge(this.imageFrameEl, {
+      imageDiffHelper.addCommentBadge(this.getImageFrameEl(), {
         coordinate: imageBadge.browser,
         badgeText: index + 1,
         noteId: imageBadge.noteId,
@@ -90,14 +100,14 @@ export default class ImageDiff {
         width,
         height,
       },
-      imageEl: this.imageFrameEl.querySelector('img'),
+      imageEl: this.getImageFrameEl().querySelector('img'),
       noteId,
       discussionId,
     });
 
     this.imageBadges.push(imageBadge);
 
-    imageDiffHelper.addCommentBadge(this.imageFrameEl, {
+    imageDiffHelper.addCommentBadge(this.getImageFrameEl(), {
       coordinate: imageBadge.browser,
       badgeText,
       noteId,
@@ -117,7 +127,7 @@ export default class ImageDiff {
   removeBadge(event) {
     const { badgeNumber } = event.detail;
     const indexToRemove = badgeNumber - 1;
-    const imageBadgeEls = this.imageFrameEl.querySelectorAll('.badge');
+    const imageBadgeEls = this.getImageFrameEl().querySelectorAll('.badge');
 
     if (this.imageBadges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)

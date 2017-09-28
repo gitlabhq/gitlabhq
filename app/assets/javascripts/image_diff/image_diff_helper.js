@@ -203,3 +203,8 @@ export function generateBrowserMeta(imageEl, meta) {
     height: browserImageHeight,
   };
 }
+
+export function toggleCollapsed(e) {
+  const toggleButtonEl = e.currentTarget;
+  toggleButtonEl.closest('.discussion-notes').classList.toggle('collapsed');
+}
