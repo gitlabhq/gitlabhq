@@ -108,6 +108,8 @@
 
     <loading-icon
       v-if="repo.isLoading"
+      class="append-bottom-20"
+      size="2"
       />
 
     <div
