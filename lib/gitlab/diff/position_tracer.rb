@@ -89,7 +89,7 @@ module Gitlab
 
       def trace_added_line(ab_position)
         b_path = ab_position.new_path
-        b_line = ab_position.new_line
+        b_line = ab_position.formatter.new_line
 
         bd_diff = bd_diffs.diff_file_with_old_path(b_path)
 
@@ -128,7 +128,7 @@ module Gitlab
 
       def trace_removed_line(ab_position)
         a_path = ab_position.old_path
-        a_line = ab_position.old_line
+        a_line = ab_position.formatter.old_line
 
         ac_diff = ac_diffs.diff_file_with_old_path(a_path)
 
@@ -159,9 +159,9 @@ module Gitlab
 
       def trace_unchanged_line(ab_position)
         a_path = ab_position.old_path
-        a_line = ab_position.old_line
+        a_line = ab_position.formatter.old_line
         b_path = ab_position.new_path
-        b_line = ab_position.new_line
+        b_line = ab_position.formatter.new_line
 
         ac_diff = ac_diffs.diff_file_with_old_path(a_path)
 
