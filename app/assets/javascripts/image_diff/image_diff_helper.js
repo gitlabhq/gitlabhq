@@ -99,21 +99,3 @@ export function addCommentBadge(containerEl, { coordinate, badgeText, noteId }) 
 
   return button;
 }
-
-// TODO: Refactor into separate discussionBadge object
-export function createBadgeBrowserFromActual(imageEl, actualProps) {
-  const { x, y, width, height } = actualProps;
-
-  const browserImageWidth = imageEl.width;
-  const browserImageHeight = imageEl.height;
-
-  const widthRatio = browserImageWidth / width;
-  const heightRatio = browserImageHeight / height;
-
-  return {
-    x: Math.round(x * widthRatio),
-    y: Math.round(y * heightRatio),
-    width: browserImageWidth,
-    height: browserImageHeight,
-  };
-}

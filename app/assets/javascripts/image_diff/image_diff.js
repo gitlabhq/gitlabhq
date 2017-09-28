@@ -1,11 +1,12 @@
 import * as imageDiffHelper from './image_diff_helper';
+import ImageBadge from './image_badge';
 
 export default class ImageDiff {
   constructor(el) {
     this.el = el;
     this.imageFrame = el.querySelector('.diff-viewer .image .frame');
     this.image = this.imageFrame.querySelector('img');
-    this.badges = [];
+    this.imageBadges = [];
   }
 
   bindEvents(canCreateNote) {
@@ -16,7 +17,7 @@ export default class ImageDiff {
     this.addBadgeWrapper = this.addBadge.bind(this);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
 
-    // Render badges after the image diff is loaded
+    // Render image badges after the image diff is loaded
     this.image.addEventListener('load', this.renderBadgesWrapper);
 
     if (canCreateNote) {
@@ -83,20 +84,17 @@ export default class ImageDiff {
     [].forEach.call(discussions, (discussion, index) => {
       const position = JSON.parse(discussion.dataset.position);
       const firstNote = discussion.querySelector('.note');
-
-      const actual = {
-        x: position.x_axis,
-        y: position.y_axis,
-        width: position.width,
-        height: position.height,
-      };
-
-      const badge = {
-        actual,
-        browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
+      const badge = new ImageBadge({
+        actual: {
+          x: position.x_axis,
+          y: position.y_axis,
+          width: position.width,
+          height: position.height,
+        },
+        imageEl: browserImage,
         noteId: firstNote.id,
         discussionId: discussion.dataset.discussionId,
-      };
+      });
 
       imageDiffHelper.addCommentBadge(this.imageFrame, {
         coordinate: badge.browser,
@@ -104,26 +102,24 @@ export default class ImageDiff {
         noteId: badge.noteId,
       });
 
-      this.badges.push(badge);
+      this.imageBadges.push(badge);
     });
   }
 
   addBadge(event) {
-    const { x, y, width, height, noteId } = event.detail;
-    const actual = {
-      x,
-      y,
-      width,
-      height,
-    };
-
-    const browserImage = this.imageFrame.querySelector('img');
-    const badgeText = this.badges.length + 1;
-    const badge = {
-      actual,
-      browser: imageDiffHelper.createBadgeBrowserFromActual(browserImage, actual),
+    const { x, y, width, height, noteId, discussionId } = event.detail;
+    const badgeText = this.imageBadges.length + 1;
+    const badge = new ImageBadge({
+      actual: {
+        x,
+        y,
+        width,
+        height,
+      },
+      imageEl: this.imageFrame.querySelector('img'),
       noteId,
-    };
+      discussionId,
+    });
 
     imageDiffHelper.addCommentBadge(this.imageFrame, {
       coordinate: badge.browser,
@@ -138,7 +134,7 @@ export default class ImageDiff {
       },
     });
 
-    this.badges.push(badge);
+    this.imageBadges.push(badge);
   }
 
   addAvatarBadge(event) {
@@ -155,9 +151,9 @@ export default class ImageDiff {
 
     const imageBadges = this.imageFrame.querySelectorAll('.badge');
 
-    if (this.badges.length !== badgeNumber) {
+    if (this.imageBadges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)
-      this.badges.forEach((badge, index) => {
+      this.imageBadges.forEach((badge, index) => {
         if (index > badgeNumber - 1) {
           const updatedBadgeNumber = index;
           imageBadges[index].innerText = updatedBadgeNumber;
@@ -178,7 +174,7 @@ export default class ImageDiff {
       });
     }
 
-    this.badges.splice(badgeNumber - 1, 1);
+    this.imageBadges.splice(badgeNumber - 1, 1);
     const selectedImageBadge = imageBadges[badgeNumber - 1];
     selectedImageBadge.remove();
   }
