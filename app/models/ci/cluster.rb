@@ -6,8 +6,14 @@ module Ci
     self.reactive_cache_key = ->(cluster) { [cluster.class.model_name.singular, cluster.project_id, cluster.id] }
 
     belongs_to :project
-    belongs_to :owner, class_name: 'User'
+    belongs_to :user
     belongs_to :service
+
+    attr_encrypted :password,
+       mode: :per_attribute_iv_and_salt,
+       insecure_mode: true,
+       key: Gitlab::Application.secrets.db_key_base,
+       algorithm: 'aes-256-cbc'
 
     # after_save :clear_reactive_cache!
 
@@ -26,11 +32,15 @@ module Ci
       api_client = GoogleApi::CloudPlatform::Client.new(access_token, nil)
       operation = api_client.projects_zones_operations(gcp_project_id, cluster_zone, gcp_operation_id)
 
-      if operation&.status == 'DONE'
+      return { status_message: 'Failed to get a status' } unless operation
+
+      if operation.status == 'DONE'
         # Get cluster details (end point, etc)
         gke_cluster = api_client.projects_zones_clusters_get(
           gcp_project_id, cluster_zone, cluster_name
         )
+
+        return { status_message: 'Failed to get a cluster info on gke' } unless gke_cluster
 
         # Get k8s token
         token = ''
@@ -50,34 +60,41 @@ module Ci
           end
         end
 
+        return { status_message: 'Failed to get a default token on kubernetes' } unless token
+
         # k8s endpoint, ca_cert
         endpoint = 'https://' + gke_cluster.endpoint
         cluster_ca_certificate = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
 
-        # Update service
-        kubernetes_service.attributes = {
-          active: true,
-          api_url: endpoint,
-          ca_pem: cluster_ca_certificate,
-          namespace: project_namespace,
-          token: token
-        }
+        begin
+          Ci::Cluster.transaction do
+            # Update service
+            kubernetes_service.attributes = {
+              active: true,
+              api_url: endpoint,
+              ca_pem: cluster_ca_certificate,
+              namespace: project_namespace,
+              token: token
+            }
 
-        kubernetes_service.save!
+            kubernetes_service.save!
 
-        # Save info in cluster record
-        update(
-          enabled: true,
-          service: kubernetes_service,
-          username: gke_cluster.master_auth.username,
-          password: gke_cluster.master_auth.password,
-          token: token,
-          ca_cert: cluster_ca_certificate,
-          end_point: endpoint,
-        )
+            # Save info in cluster record
+            update(
+              enabled: true,
+              service: kubernetes_service,
+              username: gke_cluster.master_auth.username,
+              password: gke_cluster.master_auth.password,
+              token: token,
+              ca_cert: cluster_ca_certificate,
+              endpoint: endpoint,
+            )
+          end
+        rescue ActiveRecord::RecordInvalid => exception
+          return { status_message: 'Failed to setup integration' }
+        end
       end
 
-      puts "#{self.class.name} - #{__callee__}: operation.to_json: #{operation.to_json}"
       operation.to_h
     end
 

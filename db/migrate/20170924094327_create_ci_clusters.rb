@@ -3,9 +3,9 @@ class CreateCiClusters < ActiveRecord::Migration
 
   def up
     create_table :ci_clusters do |t|
-      t.integer :project_id
-      t.integer :owner_id
-      t.integer :service_id
+      t.references :project, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
+      t.references :user, null: false, foreign_key: true
+      t.references :service, foreign_key: true
 
       # General
       t.boolean :enabled, default: true
@@ -14,11 +14,14 @@ class CreateCiClusters < ActiveRecord::Migration
       t.string :project_namespace
 
       # Cluster details
-      t.string :end_point
+      t.string :endpoint
       t.text :ca_cert
       t.string :token
       t.string :username
       t.string :password
+      t.string :encrypted_password
+      t.string :encrypted_password_salt
+      t.string :encrypted_password_iv
 
       # GKE
       t.string :gcp_project_id
@@ -29,12 +32,6 @@ class CreateCiClusters < ActiveRecord::Migration
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
     end
-
-    # TODO: fk, index, attr_encrypted
-
-    add_foreign_key :ci_clusters, :projects
-    add_foreign_key :ci_clusters, :users, column: :owner_id
-    add_foreign_key :ci_clusters, :services
   end
 
   def down

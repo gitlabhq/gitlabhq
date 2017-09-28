@@ -10,11 +10,11 @@ module Ci
       )
 
       if operation&.status != ('RUNNING' || 'PENDING')
-        raise UnexpectedOperationError
+        raise UnexpectedOperationError.new(operation&.status_message)
       end
 
       api_client.parse_self_link(operation.self_link).tap do |project_id, zone, operation_id|
-        project.clusters.create(owner: current_user,
+        project.clusters.create(user: current_user,
                                 gcp_project_id: params['gcp_project_id'],
                                 cluster_zone: params['cluster_zone'],
                                 cluster_name: params['cluster_name'],

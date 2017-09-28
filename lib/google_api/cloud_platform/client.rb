@@ -13,11 +13,22 @@ module GoogleApi
         'https://www.googleapis.com/auth/cloud-platform'
       end
 
+      ##
+      # Exception
+      # Google::Apis::ClientError:
+      # Google::Apis::AuthorizationError:
+      ##
+
       def projects_zones_clusters_get(project_id, zone, cluster_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        cluster = service.get_zone_cluster(project_id, zone, cluster_id)
+        begin
+          cluster = service.get_zone_cluster(project_id, zone, cluster_id)
+        rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+          return nil
+        end
+
         puts "#{self.class.name} - #{__callee__}: cluster: #{cluster.inspect}"
         cluster
       end
@@ -40,9 +51,9 @@ module GoogleApi
         begin
           operation = service.create_cluster(project_id, zone, request_body)
         rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          puts "#{self.class.name} - #{__callee__}: Could not create cluster #{cluster_name}: #{e}"
-          # TODO: Error
+          return nil
         end
+
         puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
         operation
       end
@@ -51,7 +62,12 @@ module GoogleApi
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        operation = service.get_zone_operation(project_id, zone, operation_id)
+        begin
+          operation = service.get_zone_operation(project_id, zone, operation_id)
+        rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+          return nil
+        end
+
         puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
         operation
       end

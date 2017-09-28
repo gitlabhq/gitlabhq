@@ -7,14 +7,15 @@ class Projects::ClustersController < Projects::ApplicationController
     begin
       @authorize_url = api_client.authorize_url
     rescue GoogleApi::Authentication::ConfigMissingError
+      # Show an alert message that gitlab.yml is not configured properly
     end
   end
 
   def index
     if project.clusters.any?
-      redirect_to edit_namespace_project_cluster_path(project.namespace, project, project.clusters.last.id)
+      redirect_to edit_project_cluster_path(project, project.clusters.last.id)
     else
-      redirect_to action: 'new'
+      redirect_to new_project_cluster_path(project)
     end
   end
 
@@ -26,11 +27,11 @@ class Projects::ClustersController < Projects::ApplicationController
       Ci::CreateClusterService.new(project, current_user, params)
                               .create_cluster_on_gke(api_client)
     rescue Ci::CreateClusterService::UnexpectedOperationError => e
-      puts "#{self.class.name} - #{__callee__}: e: #{e}"
       # TODO: error
+      puts "#{self.class.name} - #{__callee__}: e: #{e}"
     end
 
-    redirect_to action: 'index'
+    redirect_to project_clusters_path(project)
   end
 
   ##
@@ -49,15 +50,36 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    cluster.update(enabled: params['enabled'])
-    cluster.service.update(active: params['enabled'])
-    # TODO: Do we overwrite KubernetesService parameter?
+    Ci::Cluster.transaction do
+      if params['enabled'] == 'true'
+
+        cluster.service.attributes = {
+          active: true,
+          api_url: cluster.endpoint,
+          ca_pem: cluster.ca_cert,
+          namespace: cluster.project_namespace,
+          token: cluster.token
+        }
+
+        cluster.service.save!
+      else
+        cluster.service.update(active: false)
+      end
+
+      cluster.update(enabled: params['enabled'])
+    end
+
     render :edit
   end
 
   def destroy
-    cluster.destroy
-    redirect_to action: 'index'
+    if cluster.destroy
+      redirect_to project_clusters_path(project), status: 302
+    else
+      redirect_to project_clusters_path(project),
+                  status: :forbidden,
+                  alert: _("Failed to remove the cluster")
+    end
   end
 
   private
