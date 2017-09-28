@@ -21,6 +21,9 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
+      isSimpleViewerFetched: false,
+      isRichViewerFetched: false,
+      isAuxiliaryViewerFetched: false,
     };
   },
 
@@ -156,7 +159,13 @@ const RepoHelper = {
         }
 
         if (Store.isPreviewView()) {
-          RepoHelper.setFile(data, file);
+          Service
+            .fetchSimpleViewer(data.simple_viewer.path)
+            .then((res) => {
+              data.html = res.data.html;
+              RepoHelper.setFile(data, file);
+            })
+            .catch(RepoHelper.loadingError);
         }
 
         // if the file tree is empty
