@@ -26,11 +26,6 @@ module EE
           end
 
           def update_permissions
-            unless config.group_base.present?
-              logger.debug { "No `group_base` configured for '#{provider}' provider. Skipping" }
-              return nil
-            end
-
             logger.debug { "Performing LDAP group sync for '#{provider}' provider" }
             sync_groups
             logger.debug { "Finished LDAP group sync for '#{provider}' provider" }

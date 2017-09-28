@@ -63,13 +63,12 @@
         = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
     .panel.panel-default
-      .panel-heading Linked LDAP groups
+      .panel-heading Active synchronizations
       %ul.well-list
         - if @group.ldap_group_links.any?
           - @group.ldap_group_links.each do |ldap_group_link|
             %li
-              cn:
-              %strong= ldap_group_link.cn
+              %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 40)}"
               as
               %strong= ldap_group_link.human_access
 

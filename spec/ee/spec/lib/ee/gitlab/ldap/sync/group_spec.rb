@@ -299,6 +299,14 @@ describe EE::Gitlab::LDAP::Sync::Group do
           expect(group.members.pluck(:access_level))
             .to match_array([::Gitlab::Access::MASTER, ::Gitlab::Access::OWNER])
         end
+
+        it 'does not update permissions when group base is missing' do
+          stub_ldap_config(group_base: nil)
+
+          expect_any_instance_of(EE::Gitlab::LDAP::Sync::Proxy).not_to receive(:dns_for_group_cn)
+
+          sync_group.update_permissions
+        end
       end
     end
 
@@ -367,6 +375,61 @@ describe EE::Gitlab::LDAP::Sync::Group do
         it 'does nothing, without failure' do
           expect { sync_group.update_permissions }
             .not_to change { group.members.count }
+        end
+      end
+    end
+  end
+
+  context 'filter' do
+    describe '#update_permissions' do
+      before do
+        # Safe-check because some permissions are removed when `Group#ldap_synced?`
+        # is true (e.g. in `GroupPolicy`).
+        expect(group).to be_ldap_synced
+        allow(EE::Gitlab::LDAP::UserFilter).to receive(:filter).and_return([user_dn(user.username)])
+
+        group.start_ldap_sync
+      end
+
+      after do
+        group.finish_ldap_sync
+      end
+
+      let(:group) do
+        create(:group_with_ldap_group_filter_link,
+               :access_requestable,
+               group_access: ::Gitlab::Access::DEVELOPER)
+      end
+
+      let(:sync_group) { described_class.new(group, proxy(adapter)) }
+
+      context 'with all functionality against one LDAP group type' do
+        context 'with basic add/update actions' do
+          let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
+
+          it 'does not update permissions unless ldap sync status is started' do
+            group.finish_ldap_sync
+
+            expect(Rails.logger)
+                .to receive(:warn).with(/status must be 'started' before updating permissions/)
+
+            sync_group.update_permissions
+          end
+
+          it 'adds new members and sets ldap attribute to true' do
+            sync_group.update_permissions
+
+            expect(group.users).to include(user)
+            expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
+          end
+
+          it 'updates permissions when group base is missing' do
+            stub_ldap_config(group_base: nil)
+
+            sync_group.update_permissions
+
+            expect(group.users).to include(user)
+          end
         end
       end
     end

@@ -53,6 +53,7 @@ var config = {
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',
+    ldap_group_links:     './groups/ldap_group_links.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',

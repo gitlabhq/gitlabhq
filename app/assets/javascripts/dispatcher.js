@@ -602,6 +602,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
+
       }
       switch (path[0]) {
         case 'sessions':

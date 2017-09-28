@@ -230,12 +230,20 @@ class Group < Namespace
     ldap_group_links.first.try(:cn)
   end
 
+  def ldap_filter
+    ldap_group_links.first.try(:filter)
+  end
+
   def ldap_access
     ldap_group_links.first.try(:group_access)
   end
 
+  def ldap_cn_or_filter_present?
+    ldap_cn.present? || ldap_filter.present?
+  end
+
   def ldap_synced?
-    Gitlab.config.ldap.enabled && ldap_cn.present?
+    Gitlab.config.ldap.enabled && ldap_cn_or_filter_present?
   end
 
   def post_create_hook
