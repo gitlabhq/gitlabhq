@@ -1,3 +1,7 @@
+---
+last_updated: 2017-09-25
+---
+
 # GitLab Kubernetes / OpenShift integration
 
 GitLab can be configured to interact with Kubernetes, or other systems using the
@@ -5,10 +9,6 @@ Kubernetes API (such as OpenShift).
 
 Each project can be configured to connect to a different Kubernetes cluster, see
 the [configuration](#configuration) section.
-
-If you have a single cluster that you want to use for all your projects,
-you can pre-fill the settings page with a default template. To configure the
-template, see the [Services Templates](services_templates.md) document.
 
 ## Configuration
 
@@ -47,30 +47,81 @@ The Kubernetes service takes the following parameters:
   [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
   (under **Config > Secrets**).
 
+<<<<<<< HEAD
 [namespace]: https://kubernetes.io/docs/user-guide/namespaces/
+=======
+TIP: **Tip:**
+If you have a single cluster that you want to use for all your projects,
+you can pre-fill the settings page with a default template. To configure the
+template, see [Services Templates](services_templates.md).
+>>>>>>> upstream/master
 
 ## Deployment variables
 
-The Kubernetes service exposes following
+The Kubernetes service exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
-GitLab CI build environment:
+GitLab CI/CD build environment:
 
-- `KUBE_URL` - equal to the API URL
-- `KUBE_TOKEN`
+- `KUBE_URL` - Equal to the API URL.
+- `KUBE_TOKEN` - The Kubernetes token.
 - `KUBE_NAMESPACE` - The Kubernetes namespace is auto-generated if not specified.
   The default value is `<project_name>-<project_id>`. You can overwrite it to
   use different one if needed, otherwise the `KUBE_NAMESPACE` variable will
   receive the default value.
-- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
+- `KUBE_CA_PEM_FILE` - Only present if a custom CA bundle was specified. Path
   to a file containing PEM data.
-- `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
-- `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
+- `KUBE_CA_PEM` (deprecated) - Only if a custom CA bundle was specified. Raw PEM data.
+- `KUBECONFIG` - Path to a file containing `kubeconfig` for this deployment.
+  CA bundle would be embedded if specified.
 
-## Web terminals
+## What you can get with the Kubernetes integration
+
+Here's what you can do with GitLab if you enable the Kubernetes integration.
+
+### Deploy Boards (EEP)
+
+> Available in [GitLab Enterprise Edition Premium][ee].
+
+GitLab's Deploy Boards offer a consolidated view of the current health and
+status of each CI [environment](../../../ci/environments.md) running on Kubernetes,
+displaying the status of the pods in the deployment. Developers and other
+teammates can view the progress and status of a rollout, pod by pod, in the
+workflow they already use without any need to access Kubernetes.
+
+[> Read more about Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
+
+### Canary Deployments (EEP)
+
+> Available in [GitLab Enterprise Edition Premium][ee].
+
+Leverage [Kubernetes' Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
+and visualize your canary deployments right inside the Deploy Board, without
+the need to leave GitLab.
+
+[> Read more about Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+
+### Kubernetes monitoring
+
+Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
+[NGINX ingress](./prometheus_library/nginx.md) is also supported.
+
+[> Read more about Kubernetes monitoring](prometheus_library/kubernetes.md)
+
+### Auto DevOps
+
+Auto DevOps automatically detects, builds, tests, deploys, and monitors your
+applications.
+
+To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitoring)
+you will need the Kubernetes project integration enabled.
+
+[> Read more about Auto DevOps](../../../topics/autodevops/index.md)
+
+### Web terminals
 
 NOTE: **Note:**
-Added in GitLab 8.15. You must be the project owner or have `master` permissions
-to use terminals. Support is currently limited to the first container in the
+Introduced in GitLab 8.15. You must be the project owner or have `master` permissions
+to use terminals. Support is limited to the first container in the
 first pod of your environment.
 
 When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
@@ -79,3 +130,5 @@ Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with
 `app=$CI_ENVIRONMENT_SLUG`. GitLab will do the rest!
+
+[ee]: https://about.gitlab.com/gitlab-ee/

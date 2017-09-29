@@ -6,6 +6,8 @@ module API
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
       before do
         authenticate_non_get!
       end
@@ -332,7 +334,11 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
+<<<<<<< HEAD
         email = Emails::CreateService.new(current_user,  declared_params(include_missing: false).merge(user: user)).execute
+=======
+        email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
+>>>>>>> upstream/master
 
         if email.errors.blank?
           NotificationService.new.new_email(email)

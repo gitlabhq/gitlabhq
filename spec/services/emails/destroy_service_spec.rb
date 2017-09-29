@@ -5,10 +5,13 @@ describe Emails::DestroyService do
   let!(:email) { create(:email, user: user) }
 
   subject(:service) { described_class.new(user, user: user, email: email.email) }
+<<<<<<< HEAD
 
   before do
     stub_licensed_features(extended_audit_events: true)
   end
+=======
+>>>>>>> upstream/master
 
   describe '#execute' do
     it 'removes an email' do

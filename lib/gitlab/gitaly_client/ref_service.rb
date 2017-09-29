@@ -155,19 +155,7 @@ module Gitlab
 
       def consume_tags_response(response)
         response.flat_map do |message|
-          message.tags.map do |gitaly_tag|
-            if gitaly_tag.target_commit.present?
-              gitaly_commit = Gitlab::Git::Commit.decorate(@repository, gitaly_tag.target_commit)
-            end
-
-            Gitlab::Git::Tag.new(
-              @repository,
-              encode!(gitaly_tag.name.dup),
-              gitaly_tag.id,
-              gitaly_commit,
-              encode!(gitaly_tag.message.chomp)
-            )
-          end
+          message.tags.map { |gitaly_tag| Util.gitlab_tag_from_gitaly_tag(@repository, gitaly_tag) }
         end
       end
 

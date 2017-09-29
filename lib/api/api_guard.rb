@@ -77,7 +77,7 @@ module API
           raise RevokedError
 
         when AccessTokenValidationService::VALID
-          @current_user = User.find(access_token.resource_owner_id)
+          User.find(access_token.resource_owner_id)
         end
       end
 
@@ -86,9 +86,13 @@ module API
 
         return nil unless token_string.present?
 
-        find_user_by_authentication_token(token_string) || find_user_by_personal_access_token(token_string, scopes)
-      end
+        user =
+          find_user_by_authentication_token(token_string) ||
+          find_user_by_personal_access_token(token_string, scopes)
 
+        raise UnauthorizedError unless user
+
+<<<<<<< HEAD
       def find_user_by_job_token
         return @user_by_job_token if defined?(@user_by_job_token)
 
@@ -101,6 +105,9 @@ module API
 
       def current_user
         @current_user
+=======
+        user
+>>>>>>> upstream/master
       end
 
       private
@@ -125,7 +132,16 @@ module API
       end
 
       def find_access_token
-        @access_token ||= Doorkeeper.authenticate(doorkeeper_request, Doorkeeper.configuration.access_token_methods)
+        return @access_token if defined?(@access_token)
+
+        token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
+        return @access_token = nil unless token
+
+        @access_token = Doorkeeper::AccessToken.by_token(token)
+        raise UnauthorizedError unless @access_token
+
+        @access_token.revoke_previous_refresh_token!
+        @access_token
       end
 
       def doorkeeper_request
@@ -187,6 +203,7 @@ module API
     TokenNotFoundError = Class.new(StandardError)
     ExpiredError = Class.new(StandardError)
     RevokedError = Class.new(StandardError)
+    UnauthorizedError = Class.new(StandardError)
 
     class InsufficientScopeError < StandardError
       attr_reader :scopes

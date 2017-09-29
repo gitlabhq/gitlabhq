@@ -19,7 +19,11 @@ module Gitlab
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
+<<<<<<< HEAD
       cannot_push_to_secondary_geo: "You can't push code to a secondary GitLab Geo node."
+=======
+      readonly: 'The repository is temporarily read-only. Please try again later.'
+>>>>>>> upstream/master
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -172,11 +176,15 @@ module Gitlab
     # TODO: please clean this up
     def check_push_access!(changes)
       if project.repository_read_only?
+<<<<<<< HEAD
         raise UnauthorizedError, 'The repository is temporarily read-only. Please try again later.'
       end
 
       if Gitlab::Geo.secondary?
         raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_secondary_geo]
+=======
+        raise UnauthorizedError, ERROR_MESSAGES[:readonly]
+>>>>>>> upstream/master
       end
 
       if deploy_key

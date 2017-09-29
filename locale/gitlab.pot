@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2017-09-27 16:26+0200\n"
 "PO-Revision-Date: 2017-09-27 16:26+0200\n"
+=======
+"POT-Creation-Date: 2017-09-27 15:43+0100\n"
+"PO-Revision-Date: 2017-09-27 15:43+0100\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -164,6 +169,7 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -218,6 +224,8 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -796,9 +804,12 @@ msgstr ""
 msgid "IssueBoards|Board"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "IssueBoards|Boards"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Issues"
 msgstr ""
 
@@ -1523,7 +1534,7 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
-msgid "This is the author's first Merge Request to this project. Handle with care."
+msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."

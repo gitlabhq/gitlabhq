@@ -150,9 +150,21 @@ always in-sync with the codebase.
 [GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
 
+<<<<<<< HEAD
 ### EE-specific tests
 
 EE-specific tests follows the same organization, but under the `spec/ee` folder.
+=======
+## Test for what should not be there
+
+This is particularly important for permission calls and might be called a
+negative assertion: make sure only the bare minimum is returned and nothing else.
+
+See an issue about [leaking tokens] as an example of a vulnerability that is
+captured by such a test. 
+
+[leaking tokens]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37948
+>>>>>>> upstream/master
 
 ## How to test at the correct level?
 
