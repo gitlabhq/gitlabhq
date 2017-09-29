@@ -24,6 +24,7 @@ With GitLab merge requests, you can:
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
+- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
@@ -31,7 +32,6 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch (available in GitLab Enterprise Edition Starter)
 - Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
 
 ## Use cases
@@ -164,8 +164,6 @@ list of approvers that will need to approve every merge request in a project.
 [Read more about merge request approvals.](merge_request_approvals.md)
 
 ## Semi-linear history merge requests
-
-> Included in [GitLab Enterprise Edition Starter][products].
 
 A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
