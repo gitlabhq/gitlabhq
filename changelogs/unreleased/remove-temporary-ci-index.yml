@@ -1,0 +1,5 @@
+---
+title: Remove an index on ci_builds meant to be only temporary
+merge_request:
+author:
+type: other

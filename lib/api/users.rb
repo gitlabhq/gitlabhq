@@ -11,7 +11,7 @@ module API
       end
 
       helpers do
-        def find_user(params)
+        def find_user_by_id(params)
           id = params[:user_id] || params[:id]
           User.find_by(id: id) || not_found!('User')
         end
@@ -436,7 +436,7 @@ module API
         resource :impersonation_tokens do
           helpers do
             def finder(options = {})
-              user = find_user(params)
+              user = find_user_by_id(params)
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 

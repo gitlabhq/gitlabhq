@@ -140,15 +140,6 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
-msgid "Auto DevOps (Beta)"
-msgstr ""
-
-msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
-msgid "Auto DevOps documentation"
-msgstr ""
-
 msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
 msgstr ""
 
@@ -158,7 +149,19 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
 msgstr ""
 
-msgid "AutoDevOps|Learn more in the"
+msgid "AutoDevOps|Auto DevOps (Beta)"
+msgstr ""
+
+msgid "AutoDevOps|Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "AutoDevOps|Auto DevOps documentation"
+msgstr ""
+
+msgid "AutoDevOps|Enable in settings"
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
 msgid "Billing"
@@ -552,6 +555,12 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
+msgid "DashboardProjects|All"
+msgstr ""
+
+msgid "DashboardProjects|Personal"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -621,9 +630,6 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Emails"
-msgstr ""
-
-msgid "Enable in settings"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"

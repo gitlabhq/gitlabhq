@@ -20,6 +20,7 @@ describe API::Environments do
           path path_with_namespace
           star_count forks_count
           created_at last_activity_at
+          avatar_url
         )
 
         get api("/projects/#{project.id}/environments", user)

@@ -13,38 +13,39 @@ template, see the [Services Templates](services_templates.md) document.
 ## Configuration
 
 Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
-of your project and select the **Kubernetes** service to configure it.
+of your project and select the **Kubernetes** service to configure it. Fill in
+all the needed parameters, check the "Active" checkbox and hit **Save changes**
+for the changes to take effect.
 
 ![Kubernetes configuration settings](img/kubernetes_configuration.png)
 
-The Kubernetes service takes the following arguments:
+The Kubernetes service takes the following parameters:
 
-1. API URL
-1. Custom CA bundle
-1. Kubernetes namespace
-1. Service token
-
-The API URL is the URL that GitLab uses to access the Kubernetes API. Kubernetes
-exposes several APIs - we want the "base" URL that is common to all of them,
-e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-
-A [namespace] is just a logical grouping of resources. This is mostly for ease of
-management, so you can group things together. For example, if you have 50
-projects using the same cluster, providing a simple list of all pods would be
-really difficult to work with. In that case, you can provide a separate
-namespace to group things, as well as reduce name collision issues.
-
-GitLab authenticates against Kubernetes using service tokens, which are
-scoped to a particular `namespace`. If you don't have a service token yet,
-you can follow the
-[Kubernetes documentation](http://kubernetes.io/docs/user-guide/service-accounts/)
-to create one. You can also view or create service tokens in the
-[Kubernetes dashboard](http://kubernetes.io/docs/user-guide/ui/) - visit
-**Config ➔ Secrets**.
-
-Fill in the service token and namespace according to the values you just got.
-If the API is using a self-signed TLS certificate, you'll also need to include
-the `ca.crt` contents as the `Custom CA bundle`.
+- **API URL** -
+  It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
+  exposes several APIs, we want the "base" URL that is common to all of them,
+  e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
+- **CA certificate** (optional) -
+  If the API is using a self-signed TLS certificate, you'll also need to include
+  the `ca.crt` contents here.
+- **Project namespace** (optional) - The following apply:
+  - By default you don't have to fill it in; by leaving it blank, GitLab will
+    create one for you.
+  - Each project should have a unique namespace.
+  - The project namespace is not necessarily the namespace of the secret, if
+    you're using a secret with broader permissions, like the secret from `default`.
+  - You should **not** use `default` as the project namespace.
+  - If you or someone created a secret specifically for the project, usually
+    with limited permissions, the secret's namespace and project namespace may
+    be the same.
+- **Token** -
+  GitLab authenticates against Kubernetes using service tokens, which are
+  scoped to a particular `namespace`. If you don't have a service token yet,
+  you can follow the
+  [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+  to create one. You can also view or create service tokens in the
+  [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
+  (under **Config > Secrets**).
 
 [namespace]: https://kubernetes.io/docs/user-guide/namespaces/
 
@@ -67,7 +68,7 @@ GitLab CI build environment:
 
 ## Web terminals
 
->**NOTE:**
+NOTE: **Note:**
 Added in GitLab 8.15. You must be the project owner or have `master` permissions
 to use terminals. Support is currently limited to the first container in the
 first pod of your environment.
