@@ -57,6 +57,14 @@ module Gitlab
         branch_names.count
       end
 
+      # TODO implement a more efficient RPC for this https://gitlab.com/gitlab-org/gitaly/issues/616
+      def has_local_branches?
+        request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request).first
+
+        response&.names.present?
+      end
+
       def local_branches(sort_by: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
@@ -155,19 +163,7 @@ module Gitlab
 
       def consume_tags_response(response)
         response.flat_map do |message|
-          message.tags.map do |gitaly_tag|
-            if gitaly_tag.target_commit.present?
-              gitaly_commit = Gitlab::Git::Commit.decorate(@repository, gitaly_tag.target_commit)
-            end
-
-            Gitlab::Git::Tag.new(
-              @repository,
-              encode!(gitaly_tag.name.dup),
-              gitaly_tag.id,
-              gitaly_commit,
-              encode!(gitaly_tag.message.chomp)
-            )
-          end
+          message.tags.map { |gitaly_tag| Util.gitlab_tag_from_gitaly_tag(@repository, gitaly_tag) }
         end
       end
 

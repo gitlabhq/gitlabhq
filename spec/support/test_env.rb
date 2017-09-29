@@ -306,6 +306,9 @@ module TestEnv
 
     ensure_component_dir_name_is_correct!(component, install_dir)
 
+    # On CI, once installed, components never need update
+    return if File.exist?(install_dir) && ENV['CI']
+
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir)

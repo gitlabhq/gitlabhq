@@ -38,7 +38,12 @@ module Gitlab
       end
 
       def ==(other)
-        other.is_a?(self.class) && key == other.key
+        other.is_a?(self.class) &&
+          other.diff_refs == diff_refs &&
+          other.old_path == old_path &&
+          other.new_path == new_path &&
+          other.old_line == old_line &&
+          other.new_line == new_line
       end
 
       def inspect

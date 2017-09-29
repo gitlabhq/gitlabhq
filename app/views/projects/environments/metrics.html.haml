@@ -4,7 +4,6 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'common_d3'
   = webpack_bundle_tag 'monitoring'
-= render "projects/pipelines/head"
 
 .prometheus-container{ class: container_class }
   .top-area
@@ -21,4 +20,3 @@
     "empty-unable-to-connect-svg-path": image_path('illustrations/monitoring/unable_to_connect'),
     "additional-metrics": additional_metrics_project_environment_path(@project, @environment, format: :json),
     "has-metrics": "#{@environment.has_metrics?}", deployment_endpoint: project_environment_deployments_path(@project, @environment, format: :json) } }
-

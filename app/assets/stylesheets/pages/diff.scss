@@ -451,7 +451,7 @@
 }
 
 .files {
-  margin-top: -1px;
+  margin-top: 1px;
 
   .diff-file:last-child {
     margin-bottom: 0;
@@ -581,11 +581,6 @@
       top: 76px;
     }
 
-    + .files,
-    + .alert {
-      margin-top: 1px;
-    }
-
     &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
       display: none;
     }
@@ -599,11 +594,6 @@
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
         display: none;
-      }
-
-      + .files,
-      + .alert {
-        margin-top: 32px;
       }
     }
   }

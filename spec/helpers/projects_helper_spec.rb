@@ -420,22 +420,26 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#has_projects_or_name?' do
+  describe '#show_projects' do
     let(:projects) do
       create(:project)
       Project.all
     end
 
     it 'returns true when there are projects' do
-      expect(helper.has_projects_or_name?(projects, {})).to eq(true)
+      expect(helper.show_projects?(projects, {})).to eq(true)
     end
 
     it 'returns true when there are no projects but a name is given' do
-      expect(helper.has_projects_or_name?(Project.none, name: 'foo')).to eq(true)
+      expect(helper.show_projects?(Project.none, name: 'foo')).to eq(true)
+    end
+
+    it 'returns true when there are no projects but personal is present' do
+      expect(helper.show_projects?(Project.none, personal: 'true')).to eq(true)
     end
 
     it 'returns false when there are no projects and there is no name' do
-      expect(helper.has_projects_or_name?(Project.none, {})).to eq(false)
+      expect(helper.show_projects?(Project.none, {})).to eq(false)
     end
   end
 

@@ -222,7 +222,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'The list should be sorted by "Most popular"' do
+  step 'The list should be sorted by "Popularity"' do
     page.within '.mr-list' do
       page.within 'li.merge-request:nth-child(1)' do
         expect(page).to have_content 'Bug NS-04'

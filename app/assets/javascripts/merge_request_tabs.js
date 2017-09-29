@@ -356,7 +356,7 @@ import * as discussionBadges from './image_diff/discussion_badges';
     }
 
     expandViewContainer() {
-      const $wrapper = $('.content-wrapper .container-fluid');
+      const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }

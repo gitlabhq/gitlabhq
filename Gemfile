@@ -26,7 +26,7 @@ gem 'doorkeeper', '~> 4.2.0'
 gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
-gem 'omniauth-azure-oauth2', '~> 0.0.6'
+gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
@@ -398,7 +398,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.33.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.38.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

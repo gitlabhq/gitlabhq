@@ -389,6 +389,40 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#has_local_branches?' do
+    shared_examples 'check for local branches' do
+      it { expect(repository.has_local_branches?).to eq(true) }
+
+      context 'mutable' do
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns false when there are no branches' do
+          # Sanity check
+          expect(repository.has_local_branches?).to eq(true)
+
+          FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
+          heads_dir = File.join(repository.path, 'refs/heads')
+          FileUtils.rm_rf(heads_dir)
+          FileUtils.mkdir_p(heads_dir)
+
+          expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like 'check for local branches'
+    end
+
+    context 'without gitaly', skip_gitaly_mock: true do
+      it_behaves_like 'check for local branches'
+    end
+  end
+
   describe "#delete_branch" do
     shared_examples "deleting a branch" do
       let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
@@ -1329,6 +1363,84 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with rugged', skip_gitaly_mock: true do
       it_behaves_like 'languages'
+    end
+  end
+
+  describe '#with_repo_branch_commit' do
+    context 'when comparing with the same repository' do
+      let(:start_repository) { repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+
+    context 'when comparing with another repository' do
+      let(:start_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+  end
+
+  describe '#fetch_source_branch' do
+    let(:local_ref) { 'refs/merge-requests/1/head' }
+
+    context 'when the branch exists' do
+      let(:source_branch) { 'master' }
+
+      it 'writes the ref' do
+        expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns true' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+      end
+    end
+
+    context 'when the branch does not exist' do
+      let(:source_branch) { 'definitely-not-master' }
+
+      it 'does not write the ref' do
+        expect(repository).not_to receive(:write_ref)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns false' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
+      end
     end
   end
 

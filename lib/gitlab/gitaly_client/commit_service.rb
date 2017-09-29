@@ -230,6 +230,26 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request)
       end
 
+      def find_commits(options)
+        request = Gitaly::FindCommitsRequest.new(
+          repository:   @gitaly_repo,
+          limit:        options[:limit],
+          offset:       options[:offset],
+          follow:       options[:follow],
+          skip_merges:  options[:skip_merges],
+          disable_walk: options[:disable_walk]
+        )
+        request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
+        request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
+        request.revision = GitalyClient.encode(options[:ref]) if options[:ref]
+
+        request.paths = GitalyClient.encode_repeated(Array(options[:path])) if options[:path].present?
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request)
+
+        consume_commits_response(response)
+      end
+
       private
 
       def call_commit_diff(request_params, options = {})
