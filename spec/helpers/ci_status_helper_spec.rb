@@ -8,12 +8,12 @@ describe CiStatusHelper do
 
   describe '#ci_icon_for_status' do
     it 'renders to correct svg on success' do
-      expect(helper.ci_icon_for_status(success_commit.status))
+      expect(helper.ci_icon_for_status(success_commit.status).to_s)
         .to have_content('status_success')
     end
 
     it 'renders the correct svg on failure' do
-      expect(helper.ci_icon_for_status(failed_commit.status))
+      expect(helper.ci_icon_for_status(failed_commit.status).to_s)
         .to have_content('status_failed')
     end
   end
