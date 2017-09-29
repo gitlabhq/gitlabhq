@@ -1036,5 +1036,10 @@ module API
       expose :failing_on_hosts
       expose :total_failures
     end
+
+    class CustomAttribute < Grape::Entity
+      expose :key
+      expose :value
+    end
   end
 end

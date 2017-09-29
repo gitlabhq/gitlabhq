@@ -156,10 +156,11 @@ describe Projects::CreateService, '#execute' do
         }
       end
 
-      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
       before do
-        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
       end
 
       after do

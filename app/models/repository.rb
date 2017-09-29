@@ -91,12 +91,6 @@ class Repository
     )
   end
 
-  # we need to have this method here because it is not cached in ::Git and
-  # the method is called multiple times for every request
-  def has_visible_content?
-    branch_count > 0
-  end
-
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
   end
@@ -489,13 +483,7 @@ class Repository
   def exists?
     return false unless full_path
 
-    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
-      if enabled
-        raw_repository.exists?
-      else
-        refs_directory_exists?
-      end
-    end
+    raw_repository.exists?
   end
   cache_method :exists?
 
@@ -529,9 +517,10 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  delegate :branch_count, :tag_count, to: :raw_repository
+  delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
   cache_method :tag_count, fallback: 0
+  cache_method :has_visible_content?, fallback: false
 
   def avatar
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
@@ -1063,12 +1052,6 @@ class Repository
     blob.data
   end
 
-  def refs_directory_exists?
-    circuit_breaker.perform do
-      File.exist?(File.join(path_to_repo, 'refs'))
-    end
-  end
-
   def cache
     # TODO: should we use UUIDs here? We could move repositories without clearing this cache
     @cache ||= RepositoryCache.new(full_path, @project.id)
@@ -1118,10 +1101,6 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
-  end
-
-  def circuit_breaker
-    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

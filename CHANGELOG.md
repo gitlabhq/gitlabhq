@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.2 (2017-09-27)
+
+- [FIXED] Notes will not show an empty bubble when the author isn't a member. !14450
+- [FIXED] Some checks in `rake gitlab:check` were failling with 'undefined method `run_command`'. !14469
+- [FIXED] Make locked setting of Runner to not affect jobs scheduling. !14483
+- [FIXED] Re-allow `name` attribute on user-provided anchor HTML.
+
 ## 10.0.1 (2017-09-23)
 
 - [FIXED] Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration.
@@ -78,6 +85,8 @@ entry.
 - [FIXED] Fixed merge request changes bar jumping.
 - [FIXED] Improve migrations using triggers.
 - [FIXED] Fix ConvDev Index nav item and Monitoring submenu regression.
+- [FIXED] disabling notifications globally now properly turns off group/project added
+  emails !13325
 - [DEPRECATED] Deprecate custom SSH client configuration for the git user. !13930
 - [CHANGED] allow all users to delete their account. !13636 (Jacopo Beschi @jacopo-beschi)
 - [CHANGED] Use full path of project's avatar in webhooks. !13649 (Vitaliy @blackst0ne Klachkov)
