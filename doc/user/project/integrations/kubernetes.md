@@ -47,14 +47,10 @@ The Kubernetes service takes the following parameters:
   [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
   (under **Config > Secrets**).
 
-<<<<<<< HEAD
-[namespace]: https://kubernetes.io/docs/user-guide/namespaces/
-=======
 TIP: **Tip:**
 If you have a single cluster that you want to use for all your projects,
 you can pre-fill the settings page with a default template. To configure the
 template, see [Services Templates](services_templates.md).
->>>>>>> upstream/master
 
 ## Deployment variables
 

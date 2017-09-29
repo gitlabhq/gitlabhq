@@ -173,15 +173,11 @@ module Gitlab
     # TODO: please clean this up
     def check_push_access!(changes)
       if project.repository_read_only?
-<<<<<<< HEAD
-        raise UnauthorizedError, 'The repository is temporarily read-only. Please try again later.'
+        raise UnauthorizedError, ERROR_MESSAGES[:readonly]
       end
 
       if Gitlab::Geo.secondary?
         raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_secondary_geo]
-=======
-        raise UnauthorizedError, ERROR_MESSAGES[:readonly]
->>>>>>> upstream/master
       end
 
       if deploy_key
