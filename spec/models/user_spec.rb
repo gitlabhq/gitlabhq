@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
   include Gitlab::CurrentSettings
+  include ProjectForksHelper
 
   describe 'modules' do
     subject { described_class }
@@ -1376,7 +1377,7 @@ describe User do
   describe "#contributed_projects" do
     subject { create(:user) }
     let!(:project1) { create(:project) }
-    let!(:project2) { create(:project, forked_from_project: project3) }
+    let!(:project2) { fork_project(project3) }
     let!(:project3) { create(:project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
     let!(:push_event) { create(:push_event, project: project1, author: subject) }

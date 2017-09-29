@@ -1,6 +1,8 @@
 require('spec_helper')
 
 describe ProjectsController do
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
   let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
@@ -399,10 +401,10 @@ describe ProjectsController do
 
     context "when the project is forked" do
       let(:project)      { create(:project, :repository) }
-      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+      let(:forked_project) { fork_project(project, nil, repository: true) }
       let(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -410,7 +412,7 @@ describe ProjectsController do
         project.merge_requests << merge_request
         sign_in(admin)
 
-        delete :destroy, namespace_id: fork_project.namespace, id: fork_project
+        delete :destroy, namespace_id: forked_project.namespace, id: forked_project
 
         expect(merge_request.reload.state).to eq('closed')
       end
@@ -477,18 +479,14 @@ describe ProjectsController do
       end
 
       context 'with forked project' do
-        let(:project_fork) { create(:project, :repository, namespace: user.namespace) }
-
-        before do
-          create(:forked_project_link, forked_to_project: project_fork)
-        end
+        let(:forked_project) { fork_project(create(:project, :public), user) }
 
         it 'removes fork from project' do
           delete(:remove_fork,
-              namespace_id: project_fork.namespace.to_param,
-              id: project_fork.to_param, format: :js)
+              namespace_id: forked_project.namespace.to_param,
+              id: forked_project.to_param, format: :js)
 
-          expect(project_fork.forked?).to be_falsey
+          expect(forked_project.reload.forked?).to be_falsey
           expect(flash[:notice]).to eq('The fork relationship has been removed.')
           expect(response).to render_template(:remove_fork)
         end

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Git LFS API and storage' do
   include WorkhorseHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
@@ -1301,11 +1302,6 @@ describe 'Git LFS API and storage' do
 
   def authorize_user_key
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
-  end
-
-  def fork_project(project, user, object = nil)
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(project, user, {}).execute
   end
 
   def post_lfs_json(url, body = nil, headers = nil)

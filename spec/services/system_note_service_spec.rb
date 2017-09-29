@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe SystemNoteService do
+  include ProjectForksHelper
   include Gitlab::Routing
 
   set(:group)    { create(:group) }
@@ -618,14 +619,7 @@ describe SystemNoteService do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
-      let(:forked_project) do
-        fp = Projects::ForkService.new(project, author2).execute
-        # The call to project.repository.after_import in RepositoryForkWorker does
-        # not reset the @exists variable of @fork_project.repository so we have to
-        # explicitely call this method to clear the @exists variable.
-        fp.repository.after_import
-        fp
-      end
+      let(:forked_project) { fork_project(project, author2, repository: true) }
       let(:commit2) { forked_project.commit }
 
       before do

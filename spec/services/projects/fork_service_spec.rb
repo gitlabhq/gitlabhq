@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ForkService do
+  include ProjectForksHelper
   let(:gitlab_shell) { Gitlab::Shell.new }
 
   describe 'fork by user' do
@@ -33,7 +34,7 @@ describe Projects::ForkService do
       end
 
       describe "successfully creates project in the user namespace" do
-        let(:to_project) { fork_project(@from_project, @to_user) }
+        let(:to_project) { fork_project(@from_project, @to_user, namespace: @to_user.namespace) }
 
         it { expect(to_project).to be_persisted }
         it { expect(to_project.errors).to be_empty }
@@ -93,7 +94,7 @@ describe Projects::ForkService do
     context 'project already exists' do
       it "fails due to validation, not transaction failure" do
         @existing_project = create(:project, :repository, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
-        @to_project = fork_project(@from_project, @to_user)
+        @to_project = fork_project(@from_project, @to_user, namespace: @to_namespace)
         expect(@existing_project).to be_persisted
 
         expect(@to_project).not_to be_persisted
@@ -115,7 +116,7 @@ describe Projects::ForkService do
       end
 
       it 'does not allow creation' do
-        to_project = fork_project(@from_project, @to_user)
+        to_project = fork_project(@from_project, @to_user, namespace: @to_user.namespace)
 
         expect(to_project).not_to be_persisted
         expect(to_project.errors.messages).to have_key(:base)
@@ -208,10 +209,5 @@ describe Projects::ForkService do
         expect(to_project.errors[:path]).to eq(['has already been taken'])
       end
     end
-  end
-
-  def fork_project(from_project, user, params = {})
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(from_project, user, params).execute
   end
 end

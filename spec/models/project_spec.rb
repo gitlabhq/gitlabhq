@@ -2255,40 +2255,34 @@ describe Project do
   end
 
   context 'forks' do
+    include ProjectForksHelper
+
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project) }
 
-    def fork_project(project)
-      Projects::ForkService.new(project, create(:user)).execute
-    end
-
     describe '#fork_network' do
       it 'includes a fork of the project' do
-        expect(project.fork_network).to include(forked_project)
+        expect(project.fork_network.projects).to include(forked_project)
       end
 
       it 'includes a fork of a fork' do
         other_fork = fork_project(forked_project)
 
-        expect(project.fork_network).to include(other_fork)
+        expect(project.fork_network.projects).to include(other_fork)
       end
 
       it 'includes sibling forks' do
         other_fork = fork_project(project)
 
-        expect(forked_project.fork_network).to include(other_fork)
+        expect(forked_project.fork_network.projects).to include(other_fork)
       end
 
       it 'includes the base project' do
-        expect(forked_project.fork_network).to include(project)
+        expect(forked_project.fork_network.projects).to include(project.reload)
       end
     end
 
     describe '#in_fork_network_of?' do
-      it 'is false when the project is not a fork' do
-        expect(project.in_fork_network_of?(double)).to be_falsy
-      end
-
       it 'is true for a real fork' do
         expect(forked_project.in_fork_network_of?(project)).to be_truthy
       end
