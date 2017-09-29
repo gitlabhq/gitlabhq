@@ -2843,15 +2843,6 @@ describe Project do
     describe '#legacy_storage?' do
       it 'returns true when storage_version is nil' do
         project = build(:project, storage_version: nil)
-<<<<<<< HEAD
-
-        expect(project.legacy_storage?).to be_truthy
-      end
-
-      it 'returns true when the storage_version is 0' do
-        project = build(:project, storage_version: 0)
-=======
->>>>>>> upstream/master
 
         expect(project.legacy_storage?).to be_truthy
       end

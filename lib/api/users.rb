@@ -334,11 +334,7 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-<<<<<<< HEAD
-        email = Emails::CreateService.new(current_user,  declared_params(include_missing: false).merge(user: user)).execute
-=======
         email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
->>>>>>> upstream/master
 
         if email.errors.blank?
           NotificationService.new.new_email(email)

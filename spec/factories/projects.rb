@@ -157,7 +157,6 @@ FactoryGirl.define do
       end
     end
 
-<<<<<<< HEAD
     trait :remote_mirror do
       transient do
         url "http://foo.com"
@@ -169,8 +168,6 @@ FactoryGirl.define do
       end
     end
 
-=======
->>>>>>> upstream/master
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki

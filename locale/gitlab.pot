@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2017-09-27 16:26+0200\n"
 "PO-Revision-Date: 2017-09-27 16:26+0200\n"
-=======
-"POT-Creation-Date: 2017-09-27 15:43+0100\n"
-"PO-Revision-Date: 2017-09-27 15:43+0100\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -169,7 +164,6 @@ msgstr ""
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -224,8 +218,6 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -804,12 +796,9 @@ msgstr ""
 msgid "IssueBoards|Board"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "IssueBoards|Boards"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Issues"
 msgstr ""
 

@@ -34,11 +34,8 @@ class UsersFinder
     users = by_external_identity(users)
     users = by_external(users)
     users = by_created_at(users)
-<<<<<<< HEAD
-    users = by_non_ldap(users)
-=======
     users = by_custom_attributes(users)
->>>>>>> upstream/master
+    users = by_non_ldap(users)
 
     users
   end

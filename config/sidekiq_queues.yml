@@ -64,7 +64,6 @@
   - [background_migration, 1]
   - [project_migrate_hashed_storage, 1]
   - [storage_migrator, 1]
-<<<<<<< HEAD
   # EE specific queues
   - [ldap_group_sync, 2]
   - [geo, 1]
@@ -78,5 +77,3 @@
   - [elastic_commit_indexer, 1]
   - [export_csv, 1]
   - [object_storage_upload, 1]
-=======
->>>>>>> upstream/master

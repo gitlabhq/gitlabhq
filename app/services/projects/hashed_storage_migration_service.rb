@@ -2,11 +2,8 @@ module Projects
   class HashedStorageMigrationService < BaseService
     include Gitlab::ShellAdapter
 
-<<<<<<< HEAD
     prepend ::EE::Projects::HashedStorageMigrationService
 
-=======
->>>>>>> upstream/master
     attr_reader :old_disk_path, :new_disk_path
 
     def initialize(project, logger = nil)

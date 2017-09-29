@@ -14,11 +14,8 @@ module Users
 
       user_exists = @user.persisted?
 
-<<<<<<< HEAD
-=======
       assign_attributes(&block)
 
->>>>>>> upstream/master
       if @user.save(validate: validate)
         notify_success(user_exists)
       else
