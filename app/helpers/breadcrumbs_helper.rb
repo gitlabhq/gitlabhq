@@ -10,11 +10,7 @@ module BreadcrumbsHelper
   def breadcrumb_title_link
     return @breadcrumb_link if @breadcrumb_link
 
-    if controller.available_action?(:index)
-      url_for(action: "index")
-    else
-      request.path
-    end
+    request.path
   end
 
   def breadcrumb_title(title)
