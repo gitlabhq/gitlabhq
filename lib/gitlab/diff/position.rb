@@ -42,8 +42,7 @@ module Gitlab
           other.diff_refs == diff_refs &&
           other.old_path == old_path &&
           other.new_path == new_path &&
-          other.old_line == old_line &&
-          other.new_line == new_line
+          other.formatter == formatter
       end
 
       def inspect

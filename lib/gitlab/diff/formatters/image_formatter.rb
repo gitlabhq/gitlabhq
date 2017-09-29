@@ -27,6 +27,11 @@ module Gitlab
         def to_h
           super.merge(width: width, height: height, x_axis: x_axis, y_axis: y_axis)
         end
+
+        def ==(other)
+          x_axis == other.x_axis &&
+          y_axis == other.y_axis
+        end
       end
     end
   end

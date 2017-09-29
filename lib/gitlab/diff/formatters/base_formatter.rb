@@ -36,10 +36,6 @@ module Gitlab
           [base_sha, start_sha, head_sha, Digest::SHA1.hexdigest(old_path || ""), Digest::SHA1.hexdigest(new_path || "")]
         end
 
-        def complete?
-          raise NotImplementedError
-        end
-
         def to_h
           {
             base_sha: base_sha,
@@ -49,6 +45,14 @@ module Gitlab
             new_path: new_path,
             position_type: position_type
           }
+        end
+
+        def ==(other)
+          raise NotImplementedError
+        end
+
+        def complete?
+          raise NotImplementedError
         end
       end
     end
