@@ -37,10 +37,8 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
-    this.mergedBy = MergeRequestStore.getAuthorObject(data.merge_event);
-    this.closedBy = MergeRequestStore.getAuthorObject(data.closed_event);
+    this.mergedEvent = MergeRequestStore.getEventObject(data.merge_event);
+    this.closedEvent = MergeRequestStore.getEventObject(data.closed_event);
     this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
@@ -116,6 +114,16 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  static getEventObject(event) {
+    if (!event) return null;
+
+    return {
+      author: MergeRequestStore.getAuthorObject(event),
+      updatedAt: gl.utils.formatDate(event.updated_at),
+      formattedUpdatedAt: MergeRequestStore.getEventDate(event),
+    };
   }
 
   static getAuthorObject(event) {
