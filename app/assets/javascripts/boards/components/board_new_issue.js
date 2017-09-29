@@ -90,14 +90,13 @@ export default {
     eventHub.$on('setSelectedProject', this.setSelectedProject);
   },
   template: `
-<<<<<<< HEAD
     <div class="board-new-issue-form">
       <div class="card">
         <form @submit="submit($event)">
           <div class="flash-container"
             v-if="error">
             <div class="flash-alert">
-              An error occured. Please try again.
+              An error occurred. Please try again.
             </div>
           </div>
           <label class="label-light"
@@ -126,14 +125,6 @@ export default {
               @click="cancel">
               Cancel
             </button>
-=======
-    <div class="card board-new-issue-form">
-      <form @submit="submit($event)">
-        <div class="flash-container"
-          v-if="error">
-          <div class="flash-alert">
-            An error occurred. Please try again.
->>>>>>> upstream/master
           </div>
         </form>
       </div>
