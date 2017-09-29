@@ -11,7 +11,6 @@ function initDropdowns() {
 }
 
 function addEventsForNonVueEls() {
-
   window.onbeforeunload = function confirmUnload(e) {
     const hasChanged = Store.openedFiles
       .some(file => file.changed);
