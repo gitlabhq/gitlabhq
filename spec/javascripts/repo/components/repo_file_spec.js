@@ -14,7 +14,7 @@ describe('RepoFile', () => {
     level: 10,
   };
   const activeFile = {
-    url: 'url',
+    url: 'activeUrl',
     pageTitle: 'pageTitle',
   };
 
@@ -31,11 +31,11 @@ describe('RepoFile', () => {
   });
 
   it('renders link, icon, name and last commit details', () => {
+    RepoStore.setActiveFiles(activeFile);
     const vm = createComponent({
       file,
       activeFile,
     });
-    RepoStore.setActiveFiles(activeFile);
     const name = vm.$el.querySelector('.repo-file-name');
     const fileIcon = vm.$el.querySelector('.file-icon');
 
@@ -44,7 +44,7 @@ describe('RepoFile', () => {
     expect(name.title).toEqual(file.url);
     expect(name.href).toMatch(`/${file.url}`);
     expect(name.textContent.trim()).toEqual(file.name);
-    expect(document.title.trim()).toEqual(file.pageTitle);
+    expect(document.title.trim()).toEqual(activeFile.pageTitle);
     expect(vm.$el.querySelector('.commit-message').textContent.trim()).toBe(file.lastCommitMessage);
     expect(vm.$el.querySelector('.commit-update').textContent.trim()).toBe(updated);
     expect(fileIcon.classList.contains(file.icon)).toBeTruthy();

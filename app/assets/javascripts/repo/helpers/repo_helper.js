@@ -257,7 +257,7 @@ const RepoHelper = {
     history.pushState({ key: RepoHelper.key }, '', url);
 
     if (title) {
-      document.title = `${title}`;
+      document.title = title;
     }
   },
 
