@@ -511,7 +511,7 @@ sudo gitlab-rails console
 Then run:
 
 ```ruby
-Feature.get(:auto_devops_banner_disabled).disable
+Feature.get(:auto_devops_banner_disabled).enable
 ```
 
 Or through the HTTP API with an admin access token:
