@@ -769,11 +769,11 @@
 }
 
 .discussion-notes {
-  min-height: 30px;
+  min-height: 35px;
 
   &:first-child {
     // First child does not have the jagged borders
-    min-height: 20px;
+    min-height: 25px;
   }
 }
 
