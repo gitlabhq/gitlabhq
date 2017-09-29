@@ -45,7 +45,7 @@ feature 'Triggers', js: true do
       visit project_settings_ci_cd_path(@project)
 
       # See if edit page has correct descrption
-      find('a[title="Edit"]').click
+      find('a[title="Edit"]').send_keys(:return)
       expect(page.find('#trigger_description').value).to have_content 'trigger desc'
     end
 
@@ -54,7 +54,7 @@ feature 'Triggers', js: true do
       visit project_settings_ci_cd_path(@project)
 
       # See if edit page opens, then fill in new description and save
-      find('a[title="Edit"]').click
+      find('a[title="Edit"]').send_keys(:return)
       fill_in 'trigger_description', with: new_trigger_title
       click_button 'Save trigger'
 
@@ -70,7 +70,7 @@ feature 'Triggers', js: true do
       visit project_settings_ci_cd_path(@project)
 
       # See if the trigger can be edited and description is blank
-      find('a[title="Edit"]').click
+      find('a[title="Edit"]').send_keys(:return)
       expect(page.find('#trigger_description').value).to have_content ''
 
       # See if trigger can be updated with description and saved successfully
@@ -95,7 +95,7 @@ feature 'Triggers', js: true do
     scenario 'take trigger ownership' do
       # See if "Take ownership" on trigger works post trigger creation
       page.accept_confirm do
-        find('a.btn-trigger-take-ownership').click
+        first(:link, "Take ownership").send_keys(:return)
       end
 
       expect(page.find('.flash-notice')).to have_content 'Trigger was re-assigned.'
@@ -117,11 +117,12 @@ feature 'Triggers', js: true do
 
     scenario 'revoke trigger' do
       # See if "Revoke" on trigger works post trigger creation
-      find('a.btn-trigger-revoke').click
       page.accept_confirm do
-        expect(page.find('.flash-notice')).to have_content 'Trigger removed'
-        expect(page).to have_selector('p.settings-message.text-center.append-bottom-default')
+        find('a.btn-trigger-revoke').send_keys(:return)
       end
+
+      expect(page.find('.flash-notice')).to have_content 'Trigger removed'
+      expect(page).to have_selector('p.settings-message.text-center.append-bottom-default')
     end
   end
 
