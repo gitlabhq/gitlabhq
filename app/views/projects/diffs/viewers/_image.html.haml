@@ -10,7 +10,6 @@
 - if diff_file.new_file? || diff_file.deleted_file?
   .image.js-single-image{ data: diff_view_data }
     %span.wrap
-      -# TODO: Determine if we should conslidate js-add-image-diff-note-button and click-to-comment
       .frame.js-add-image-diff-note-button.click-to-comment{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
         = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
       %p.image-info= number_to_human_size(blob.size)
