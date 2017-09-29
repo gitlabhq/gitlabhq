@@ -647,8 +647,8 @@
   background-color: $gray-light;
   border-top: 1px solid $white-normal;
 
-  .notes .note {
-    background-color: $white-light;
+  .timeline-entry:not(.target) {
+    background: $white-light;
   }
 
   // double jagged line divider
