@@ -1,5 +1,7 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
+    prepend ::EE::Ci::PipelinePresenter
+
     presents :pipeline
 
     def status_title
