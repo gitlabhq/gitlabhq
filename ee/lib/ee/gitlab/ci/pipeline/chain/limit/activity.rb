@@ -23,7 +23,7 @@ module EE
 
                 @pipeline.cancel_running
 
-                retry_optimistic_lock(@pipeline)
+                retry_optimistic_lock(@pipeline) do
                   @pipeline.drop!
                 end
 
