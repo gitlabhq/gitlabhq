@@ -8,14 +8,17 @@ describe('RepoFile', () => {
     icon: 'icon',
     url: 'url',
     name: 'name',
-    pageTitle: 'pageTitle',
     lastCommitMessage: 'message',
     lastCommitUpdate: Date.now(),
     level: 10,
   };
   const activeFile = {
-    url: 'activeUrl',
     pageTitle: 'pageTitle',
+    url: 'url',
+  };
+  const otherFile = {
+    html: '<p class="file-content">html</p>',
+    pageTitle: 'otherpageTitle',
   };
 
   function createComponent(propsData) {
@@ -31,7 +34,6 @@ describe('RepoFile', () => {
   });
 
   it('renders link, icon, name and last commit details', () => {
-    RepoStore.setActiveFiles(activeFile);
     const vm = createComponent({
       file,
       activeFile,
@@ -44,7 +46,6 @@ describe('RepoFile', () => {
     expect(name.title).toEqual(file.url);
     expect(name.href).toMatch(`/${file.url}`);
     expect(name.textContent.trim()).toEqual(file.name);
-    expect(document.title.trim()).toEqual(activeFile.pageTitle);
     expect(vm.$el.querySelector('.commit-message').textContent.trim()).toBe(file.lastCommitMessage);
     expect(vm.$el.querySelector('.commit-update').textContent.trim()).toBe(updated);
     expect(fileIcon.classList.contains(file.icon)).toBeTruthy();
@@ -63,6 +64,12 @@ describe('RepoFile', () => {
 
     expect(vm.$el.innerHTML).toBeTruthy();
     expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
+  });
+
+  it('sets the document title correctly', () => {
+    RepoStore.setActiveFiles(otherFile);
+
+    expect(document.title.trim()).toEqual(otherFile.pageTitle);
   });
 
   it('renders a spinner if the file is loading', () => {
