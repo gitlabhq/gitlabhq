@@ -4,6 +4,7 @@ RSpec.describe GpgSignature do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:gpg_key) }
+    it { is_expected.to belong_to(:gpg_key_subkey) }
   end
 
   describe 'validation' do
