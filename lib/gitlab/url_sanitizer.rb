@@ -64,8 +64,6 @@ module Gitlab
       url.password = password if password.present?
       url.user = user if user.present?
       url
-    rescue Addressable::URI::InvalidURIError
-      Addressable::URI.new
     end
 
     def generate_full_url

@@ -39,7 +39,8 @@ describe Gitlab::UrlSanitizer do
       false | nil
       false | ''
       false | '123://invalid:url'
-      true  | 'valid@project:url.git'
+      false | 'valid@project:url.git'
+      true  | 'valid:pass@project:url.git'
       true  | 'ssh://example.com'
       true  | 'ssh://:@example.com'
       true  | 'ssh://foo@example.com'
@@ -117,7 +118,6 @@ describe Gitlab::UrlSanitizer do
         'http://example.com'         | { user: nil,   password: nil }
 
         # Credentials from SCP-style URLs are not supported at present
-        'foo@example.com:path'     | { user: nil, password: nil }
         'foo:bar@example.com:path' | { user: nil, password: nil }
 
         # Other invalid URLs
