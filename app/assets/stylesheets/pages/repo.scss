@@ -1,3 +1,7 @@
+@mixin editor-height($extraSpace) {
+  height: calc(100vh - #{$extraSpace + 158}px);
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity $sidebar-transition-duration;
@@ -10,6 +14,15 @@
   right: 0;
   bottom: 0;
   background: $black-transparent;
+}
+
+.tree-holder {
+  @include editor-height(32);
+}
+
+.repository-view {
+  @include editor-height(0);
+  overflow: hidden;
 }
 
 .modal.popup-dialog {
@@ -71,7 +84,7 @@
     display: flex;
     flex-direction: column;
     width: 80%;
-    height: 100%;
+    @include editor-height(0);
 
     .monaco-editor.vs {
       .current-line {
@@ -279,7 +292,7 @@
 
   #sidebar {
     flex: 1;
-    height: 100%;
+    @include editor-height(0);
 
     &.sidebar-mini {
       width: 20%;
