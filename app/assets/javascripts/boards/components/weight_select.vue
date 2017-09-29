@@ -1,10 +1,10 @@
 <template>
   <div class="dropdown" :class="{ open: isOpen }">
-    <div class="media">
-      <label class="label-light media-body">{{ title }}</label>
+    <div class="title append-bottom-10">
+      {{ title }}
       <a
         v-if="canEdit"
-        class="edit-link"
+        class="edit-link pull-right"
         href="#"
         @click.prevent="toggle"
       >
@@ -20,12 +20,12 @@
         <li>
           <a
             href="#"
-            @click.prevent.stop="selectWeight(0)"
+            @click.prevent.stop="selectWeight(null)"
           >
             <i
               class="fa fa-check"
-              v-if="0 === value"></i>
-            No weight
+              v-if="!value"></i>
+            Any weight
           </a>
         </li>
         <li

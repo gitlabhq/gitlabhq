@@ -1,5 +1,5 @@
 <template>
-    <div class="block labels">
+  <div class="block labels">
     <div class="title append-bottom-10">
       Labels
       <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true" style="display: none;"></i>

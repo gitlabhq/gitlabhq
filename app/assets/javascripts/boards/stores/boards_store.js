@@ -28,6 +28,7 @@ gl.issueBoards.BoardsStore = {
     milestone_id: undefined,
     milestone: {},
     author_id: '',
+    assignee: {},
     assignee_id: '',
     weight: null,
   },
@@ -60,6 +61,7 @@ gl.issueBoards.BoardsStore = {
     this.boardConfig.labels = board.labels || [];
     this.boardConfig.author_id = board.author_id;
     this.boardConfig.assignee_id = board.assignee_id;
+    this.boardConfig.assignee = board.assignee;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

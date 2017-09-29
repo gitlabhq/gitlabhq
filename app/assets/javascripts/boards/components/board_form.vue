@@ -81,13 +81,12 @@
           </form-block>
 
           <form-block>
-            <div>Author</div>
-            <input v-model="board.author_id" />
-          </form-block>
-
-          <form-block>
-            <div>Assignee</div>
-            <input v-model="board.assignee_id" />
+            <assignee-select
+              :board="board"
+              :canEdit="canAdminBoard"
+              :project-id="projectId"
+              :group-id="groupId"
+            />
           </form-block>
 
           <form-block
@@ -123,6 +122,7 @@ import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
+import AssigneeSelect from './assignee_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -148,6 +148,16 @@ export default Vue.extend({
       required: false,
       default: false,
     },
+    projectId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    groupId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -161,11 +171,12 @@ export default Vue.extend({
     };
   },
   components: {
-    BoardMilestoneSelect,
+    AssigneeSelect,
     BoardLabelsSelect,
+    BoardMilestoneSelect,
     BoardWeightSelect,
-    PopupDialog,
     FormBlock,
+    PopupDialog,
   },
   mounted() {
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
