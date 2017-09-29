@@ -263,13 +263,14 @@
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form"
             >
 
+              <div class="error-alert"></div>
+
               <issue-warning
                 v-if="hasIssueWarning(getIssueData)"
                 :is-locked="isIssueLocked(getIssueData)"
                 :is-confidential="isIssueConfidential(getIssueData)"
               />
 
-              <div class="error-alert"></div>
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
