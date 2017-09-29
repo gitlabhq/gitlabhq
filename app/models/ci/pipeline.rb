@@ -71,6 +71,10 @@ module Ci
       auto_devops_source: 2
     }
 
+    enum failure_reason: {
+      unknown_failure: 0
+    }.merge(EE_FAILURE_REASONS)
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
