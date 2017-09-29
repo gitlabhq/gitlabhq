@@ -1589,7 +1589,7 @@ class Project < ActiveRecord::Base
   end
 
   def ff_merge_must_be_possible?
-    self.merge_requests_ff_only_enabled
+    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
   end
 
   def migrate_to_hashed_storage!
