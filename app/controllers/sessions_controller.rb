@@ -46,7 +46,9 @@ class SessionsController < Devise::SessionsController
   private
 
   def log_failed_login
-    Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}") if failed_login?
+    return unless failed_login?
+
+    Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
   end
 
   def failed_login?
