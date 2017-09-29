@@ -1,6 +1,13 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
-    presents :pipeline
+    FAILURE_REASONS = {}
+
+    def failure_reason
+      return unless pipeline.failure_reason?
+
+      FAILURE_REASONS[pipeline.failure_reason.to_sym] ||
+        pipeline.failure_reason
+    end
 
     def status_title
       if auto_canceled?
