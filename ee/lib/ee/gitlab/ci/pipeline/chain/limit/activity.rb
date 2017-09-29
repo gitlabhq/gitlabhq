@@ -18,12 +18,10 @@ module EE
               def perform!
                 return unless @limit.exceeded?
 
-                # TODO, add failure reason
-                # TODO, transaction?
-
                 @pipeline.cancel_running
 
                 retry_optimistic_lock(@pipeline) do
+                  @pipeline.failure_reason = :activity_limit_exceeded
                   @pipeline.drop!
                 end
 

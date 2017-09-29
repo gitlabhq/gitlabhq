@@ -18,7 +18,7 @@ module EE
                 return unless @limit.exceeded?
 
                 if @command.save_incompleted
-                  # TODO, add failure reason
+                  @pipeline.failure_reason = :size_limit_exceeded
                   @pipeline.drop
                 end
 

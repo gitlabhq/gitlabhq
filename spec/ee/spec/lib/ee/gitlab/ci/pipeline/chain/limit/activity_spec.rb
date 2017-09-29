@@ -47,6 +47,10 @@ describe EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity do
       expect(step.break?).to be true
     end
 
+    it 'sets a valid failure reason' do
+      expect(pipeline.activity_limit_exceeded?).to be true
+    end
+
     it 'appends validation error' do
       expect(pipeline.errors.to_a)
         .to include 'Active pipelines limit exceeded by 2 pipelines!'

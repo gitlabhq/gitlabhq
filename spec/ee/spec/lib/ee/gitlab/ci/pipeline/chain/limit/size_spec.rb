@@ -50,6 +50,10 @@ describe EE::Gitlab::Ci::Pipeline::Chain::Limit::Size do
         expect(step.break?).to be true
       end
 
+      it 'sets a valid failure reason' do
+        expect(pipeline.size_limit_exceeded?).to be true
+      end
+
       it 'appends validation error' do
         expect(pipeline.errors.to_a)
           .to include 'Pipeline size limit exceeded by 1 job!'
