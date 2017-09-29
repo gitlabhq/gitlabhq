@@ -96,7 +96,8 @@ module NotesActions
           id: note.id,
           discussion_id: note.discussion_id(noteable),
           html: note_html(note),
-          note: note.note
+          note: note.note,
+          on_image: note.try(:on_image?)
         )
 
         discussion = note.to_discussion(noteable)
