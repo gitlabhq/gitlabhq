@@ -735,7 +735,7 @@
   }
 }
 
-.discussion-body .frame .image-comment-badge {
+.image-comment-badge {
   @include btn-comment;
   position: absolute;
 }
@@ -743,7 +743,8 @@
 .image-diff-avatar-link {
   position: relative;
 
-  .badge {
+  .badge,
+  .image-comment-badge {
     top: 25px;
     right: 8px;
   }
