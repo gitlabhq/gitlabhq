@@ -29,6 +29,7 @@ module Gitlab
         end
 
         def ==(other)
+          self.class == other.class &&
           x_axis == other.x_axis &&
           y_axis == other.y_axis
         end
