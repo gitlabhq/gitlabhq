@@ -25,11 +25,11 @@ export default {
 
   methods: {
     addPopEventListener() {
-      window.addEventListener('popstate', (event) => {
-        let selectedFile = this.files.find(file => {return location.pathname.indexOf(file.url) > -1});
+      window.addEventListener('popstate', () => {
+        let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
         if (!selectedFile) {
           // Maybe it is not in the current tree but in the opened tabs
-          selectedFile = Store.openedFiles.find(file => {return location.pathname.indexOf(file.url) > -1});
+          selectedFile = Store.openedFiles.find(file => location.pathname.indexOf(file.url) > -1);
         }
         if (selectedFile) {
           if (selectedFile.url !== this.activeFile.url) {
@@ -41,7 +41,7 @@ export default {
             if (!isNaN(lineNumber)) {
               Store.setActiveLine(lineNumber);
               if (Store.isPreviewView()) {
-                document.getElementById('L' + lineNumber).scrollIntoView();
+                document.getElementById(`L${lineNumber}`).scrollIntoView();
               } else {
                 Helper.monacoInstance.setPosition({
                   lineNumber: this.activeLine,
