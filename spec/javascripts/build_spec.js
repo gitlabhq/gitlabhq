@@ -289,4 +289,18 @@ describe('Build', () => {
       });
     });
   });
+
+  describe('getBuildTrace', () => {
+    it('should request build trace with state parameter', (done) => {
+      spyOn(jQuery, 'ajax').and.callThrough();
+      new Build();
+
+      setTimeout(() => {
+        expect(jQuery.ajax).toHaveBeenCalledWith(
+          { url: `${BUILD_URL}/trace.json`, data: { state: '' } },
+        );
+        done();
+      }, 0);
+    });
+  });
 });
