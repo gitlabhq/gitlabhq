@@ -58,6 +58,7 @@ export default class MergeRequestStore {
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
     this.ffOnlyEnabled = data.ff_only_enabled;
+    this.shouldBeRebased = !!data.should_be_rebased;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;

@@ -13,6 +13,7 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
 
+  expose :should_be_rebased?, as: :should_be_rebased
   expose :ff_only_enabled do |merge_request|
     merge_request.project.merge_requests_ff_only_enabled
   end

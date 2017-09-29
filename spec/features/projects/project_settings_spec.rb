@@ -41,6 +41,14 @@ describe 'Edit Project Settings' do
       end
     end
 
+    it 'shows "Merge commit with semi-linear history " strategy' do
+      visit edit_project_path(project)
+
+      page.within '.merge-requests-feature' do
+        expect(page).to have_content 'Merge commit with semi-linear history'
+      end
+    end
+
     it 'shows "Fast-forward merge" strategy' do
       visit edit_project_path(project)
 
