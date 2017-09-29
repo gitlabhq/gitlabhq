@@ -117,11 +117,9 @@ export default class MergeRequestStore {
   }
 
   static getEventObject(event) {
-    if (!event) return null;
-
     return {
       author: MergeRequestStore.getAuthorObject(event),
-      updatedAt: gl.utils.formatDate(event.updated_at),
+      updatedAt: gl.utils.formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
       formattedUpdatedAt: MergeRequestStore.getEventDate(event),
     };
   }
@@ -139,6 +137,14 @@ export default class MergeRequestStore {
     };
   }
 
+  static getEventUpdatedAtDate(event) {
+    if (!event) {
+      return '';
+    }
+
+    return event.updated_at;
+  }
+
   static getEventDate(event) {
     const timeagoInstance = new Timeago();
 
@@ -146,7 +152,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    return timeagoInstance.format(event.updated_at);
+    return timeagoInstance.format(MergeRequestStore.getEventUpdatedAtDate(event));
   }
 
 }
