@@ -43,11 +43,25 @@ describe Ci::CreatePipelineService, '#execute' do
         # TODO, check failure reason
         expect(pipeline).to be_persisted
         expect(pipeline).to be_failed
+        expect(pipeline.statuses).not_to be_empty
         expect(pipeline.statuses).to all(be_canceled)
       end
     end
 
     context 'when pipeline size limit is exceeded' do
+      before do
+        namespace.plan.update_column(:pipeline_size_limit, 2)
+      end
+
+      it 'drops pipeline without creating jobs' do
+        pipeline = create_pipeline!
+
+        # TODO, check failure reason
+        expect(pipeline).to be_persisted
+        expect(pipeline).to be_failed
+        expect(pipeline.seeds_size).to be > 2
+        expect(pipeline.statuses).to be_empty
+      end
     end
   end
 

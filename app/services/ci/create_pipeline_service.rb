@@ -6,6 +6,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
+                EE::Gitlab::Ci::Pipeline::Chain::Limit::Size,
                 Gitlab::Ci::Pipeline::Chain::Create,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
 
