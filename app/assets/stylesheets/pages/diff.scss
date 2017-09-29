@@ -754,6 +754,8 @@
 }
 
 .discussion-notes.collapsed {
+  background-color: $white-light;
+
   .diff-notes-collapse,
   .note,
   .discussion-reply-holder, {
