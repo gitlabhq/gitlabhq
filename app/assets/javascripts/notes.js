@@ -1566,7 +1566,11 @@ export default class Notes {
           detail: e,
         });
 
-        $form.closest('.diff-file')[0].dispatchEvent(blurEvent);
+        const closestDiffFile = $form.closest('.diff-file');
+
+        if (closestDiffFile.length) {
+          closestDiffFile[0].dispatchEvent(blurEvent);
+        }
 
         if (hasQuickActions) {
           $notesContainer.find(`#${systemNoteUniqueId}`).remove();
