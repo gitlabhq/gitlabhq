@@ -1131,21 +1131,31 @@ describe Repository do
   end
 
   describe '#has_visible_content?' do
-    subject { repository.has_visible_content? }
-
-    describe 'when there are no branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
-      end
-
-      it { is_expected.to eq(false) }
+    before do
+      # If raw_repository.has_visible_content? gets called more than once then
+      # caching is broken. We don't want that.
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .once
+        .and_return(result)
     end
 
-    describe 'when there are branches' do
-      it 'returns true' do
-        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+    context 'when true' do
+      let(:result) { true }
 
-        expect(subject).to eq(true)
+      it 'returns true and caches it' do
+        expect(repository.has_visible_content?).to eq(true)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(true)
+      end
+    end
+
+    context 'when false' do
+      let(:result) { false }
+
+      it 'returns false and caches it' do
+        expect(repository.has_visible_content?).to eq(false)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(false)
       end
     end
   end
