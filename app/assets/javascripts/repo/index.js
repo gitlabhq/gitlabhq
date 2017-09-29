@@ -32,7 +32,9 @@ function setInitialStore(data) {
   Store.canCommit = data.canCommit;
   Store.onTopOfBranch = data.onTopOfBranch;
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
+
   Store.checkIsCommitable();
+  Store.setBranchHash();
 }
 
 function initRepo(el) {

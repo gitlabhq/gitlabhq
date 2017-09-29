@@ -15,6 +15,7 @@ const Api = {
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
@@ -121,6 +122,18 @@ const Api = {
       data: JSON.stringify(data),
       dataType: 'json',
     });
+  },
+
+  branchSingle(id, branch) {
+    const url = Api.buildUrl(Api.branchSinglePath)
+      .replace(':id', id)
+      .replace(':branch', branch);
+      return this.wrapAjaxCall({
+        url,
+        type: 'GET',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+      });
   },
 
   // Return text for a specific license

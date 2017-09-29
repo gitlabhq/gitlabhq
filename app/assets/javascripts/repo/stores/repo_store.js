@@ -32,6 +32,8 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
+  initialHash: '',
+  branchChanged: false,
   commitMessage: '',
   binaryTypes: {
     png: false,
@@ -48,6 +50,20 @@ const RepoStore = {
     Object.keys(RepoStore.binaryTypes).forEach((key) => {
       RepoStore.binaryTypes[key] = false;
     });
+  },
+
+  setBranchHash() {
+    return Service.branchSingle()
+    .then((data) => {
+      if(RepoStore.initialHash !== '' && data.commit.id !== RepoStore.initialHash) {
+        RepoStore.branchChanged = true;
+      }
+      RepoStore.initialHash = data.commit.id;
+    });
+  },
+
+  hasBranchChanged() {
+
   },
 
   // mutations

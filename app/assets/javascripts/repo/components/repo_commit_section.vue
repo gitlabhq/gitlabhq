@@ -19,7 +19,7 @@ export default {
     },
 
     cantCommitYet() {
-      return !this.commitMessage || this.submitCommitsLoading;
+      return !this.commitMessage || this.submitCommitsLoading || this.branchChanged;
     },
 
     filePluralize() {
@@ -29,6 +29,12 @@ export default {
 
   methods: {
     makeCommit() {
+      Store.setBranchHash()
+      .then(() => {
+        if(Store.branchChanged){
+          console.log('branch has changed')
+        }
+      })
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => ({
