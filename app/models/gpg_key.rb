@@ -8,7 +8,6 @@ class GpgKey < ActiveRecord::Base
   sha_attribute :fingerprint
 
   belongs_to :user
-  belongs_to :parent, class_name: 'GpgKey'
   has_many :gpg_signatures
   has_many :subkeys, class_name: 'GpgKeySubkey'
 
