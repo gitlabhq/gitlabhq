@@ -15,7 +15,7 @@ export default {
         showDisabledButton />
       <div class="media-body space-children">
         <span
-          v-if="mr.ffOnlyEnabled"
+          v-if="mr.shouldBeRebased"
           class="bold">
           Fast-forward merge is not possible.
           To merge this request, first rebase locally.

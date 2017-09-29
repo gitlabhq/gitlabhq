@@ -81,13 +81,13 @@ describe('MRWidgetConflicts', () => {
       });
     });
 
-    describe('when fast-forward merge enabled', () => {
+    describe('when fast-forward or semi-linear merge enabled', () => {
       let vm;
 
       beforeEach(() => {
         vm = mountComponent(ConflictsComponent, {
           mr: {
-            ffOnlyEnabled: true,
+            shouldBeRebased: true,
           },
         });
       });

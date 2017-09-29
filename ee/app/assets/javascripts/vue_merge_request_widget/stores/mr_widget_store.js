@@ -23,7 +23,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initRebase(data) {
-    this.shouldBeRebased = !!data.should_be_rebased;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
     this.rebaseInProgress = data.rebase_in_progress;
     this.approvalsLeft = !data.approved;

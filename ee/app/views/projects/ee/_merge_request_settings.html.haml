@@ -11,8 +11,7 @@
       %span.descr
         A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
-  - if @project.feature_available?(:merge_request_rebase)
-    = render 'projects/ee/merge_request_rebase_settings', project: @project, form: form
+  = render 'projects/ee/merge_request_rebase_settings', form: form
 
   = render 'projects/ee/merge_request_fast_forward_settings', project: @project, form: form
 
