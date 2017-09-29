@@ -417,7 +417,7 @@ a.deploy-project-label {
       text-align: center;
       width: 169px;
 
-      &:hover,
+      &:hover:not(.disabled),
       &.forked {
         background-color: $row-hover;
         border-color: $row-hover-border;
@@ -443,6 +443,15 @@ a.deploy-project-label {
         height: 100%;
         padding-top: $gl-padding;
         color: $gl-text-color;
+
+        &.disabled {
+          opacity: .3;
+          cursor: not-allowed;
+
+          &:hover {
+            text-decoration: none;
+          }
+        }
 
         .caption {
           min-height: 30px;
