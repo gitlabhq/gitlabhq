@@ -161,6 +161,7 @@ const RepoHelper = {
             .getContent(viewer.path, false)
             .then((res) => {
               data.html = res.data.html;
+              data.previewMode = viewer.type;
               RepoHelper.setFile(data, file);
             })
             .catch(RepoHelper.loadingError);

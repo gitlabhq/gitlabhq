@@ -59,11 +59,6 @@ const RepoStore = {
     RepoStore.files = Helper.getNewMergedList(inDirectory, currentList, newList);
   },
 
-  toggleRawPreview() {
-    RepoStore.activeFile.raw = !RepoStore.activeFile.raw;
-    RepoStore.activeFileLabel = RepoStore.activeFile.raw ? 'Display rendered file' : 'Display source';
-  },
-
   setActiveFiles(file) {
     if (RepoStore.isActiveFile(file)) return;
     RepoStore.openedFiles = RepoStore.openedFiles

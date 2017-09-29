@@ -1,26 +1,51 @@
 <script>
+// TODO: There is no file raw content for the copy source button.
+// TODO: Ask @douwe to confirm v-if="!activeFile.binary" for the copy source button.
+// TODO: Make sure that we implement all possible cases for the button types.
+// TODO: Don't fetch simple and rich mode html if we already fetched once.
+// FIXME: Preserve preview mode when editor tabs are changed.
+
 import Store from '../stores/repo_store';
 import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 import RepoMixin from '../mixins/repo_mixin';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 const RepoFileButtons = {
   data: () => Store,
   mixins: [RepoMixin],
+  directives: {
+    tooltip,
+  },
   computed: {
     rawDownloadButtonLabel() {
-      return this.binary ? 'Download' : 'Raw';
+      return this.binary ? 'Download' : 'Open raw';
+    },
+    rawIcon() {
+      return this.binary ? 'fa-download' : 'fa-file-code-o';
     },
     canPreview() {
       return Helper.isRenderable();
     },
+    simpleViewerIconClass() {
+      return this.activeFile.simple_viewer ? `fa fa-${this.activeFile.simple_viewer.switcher_icon}` : '';
+    },
+    richViewerIconClass() {
+      return this.activeFile.rich_viewer ? `fa fa-${this.activeFile.rich_viewer.switcher_icon}` : '';
+    },
+    simpleViewerTooltip() {
+      return this.activeFile.simple_viewer ? `Display ${this.activeFile.simple_viewer.switcher_title}` : '';
+    },
+    richViewerTooltip() {
+      return this.activeFile.rich_viewer ? `Display ${this.activeFile.rich_viewer.switcher_title}` : '';
+    },
   },
   methods: {
-    rawPreviewToggle: Store.toggleRawPreview,
     showSimpleViewer() {
       Service
         .getContent(Store.activeFile.simple_viewer.path)
         .then((res) => {
+          Store.activeFile.previewMode = 'simple';
           Store.activeFile.html = res.data.html;
         });
     },
@@ -28,6 +53,7 @@ const RepoFileButtons = {
       Service
         .getContent(Store.activeFile.rich_viewer.path)
         .then((res) => {
+          Store.activeFile.previewMode = 'rich';
           Store.activeFile.html = res.data.html;
         });
     },
@@ -39,29 +65,67 @@ export default RepoFileButtons;
 
 <template>
   <div id="repo-file-buttons">
-    <a
-      :href="activeFile.raw_path"
-      target="_blank"
-      class="btn btn-default raw"
-      rel="noopener noreferrer">
-      {{rawDownloadButtonLabel}}
-    </a>
+    <div
+      v-if="activeFile.rich_viewer && !editMode"
+      class="btn-group"
+      role="group"
+      aria-label="File viewer actions">
+      <a
+        @click="showSimpleViewer"
+        :title="simpleViewerTooltip"
+        :class="{ active: activeFile.previewMode === 'simple' }"
+        v-tooltip
+        data-container="body"
+        target="_blank"
+        class="btn btn-default"
+        rel="noopener noreferrer">
+        <i
+          :class="simpleViewerIconClass"
+          aria-hidden="true"></i>
+      </a>
+      <a
+        @click="showRichViewer"
+        :title="richViewerTooltip"
+        :class="{ active: activeFile.previewMode === 'rich' }"
+        v-tooltip
+        data-container="body"
+        target="_blank"
+        class="btn btn-default"
+        rel="noopener noreferrer">
+        <i
+          :class="richViewerIconClass"
+          aria-hidden="true"></i>
+      </a>
+    </div>
 
-    <a
-      @click="showSimpleViewer"
-      target="_blank"
-      class="btn btn-default raw"
-      rel="noopener noreferrer">
-      Simple View
-    </a>
-    <a
-      @click="showRichViewer"
-      target="_blank"
-      class="btn btn-default raw"
-      rel="noopener noreferrer">
-      Rich View
-    </a>
-
+    <div
+      class="btn-group"
+      role="group"
+      aria-label="File raw actions">
+      <a
+        :href="activeFile.raw_path"
+        :title="rawDownloadButtonLabel"
+        v-tooltip
+        target="_blank"
+        class="btn btn-default raw"
+        rel="noopener noreferrer">
+        <i
+          :class="rawIcon"
+          class="fa"
+          aria-hidden="true"></i>
+      </a>
+      <button
+        v-if="!activeFile.binary"
+        v-tooltip
+        class="btn btn-default"
+        data-container="body"
+        data-title="Copy source to clipboard"
+        :data-clipboard-text="activeFile.raw_path">
+        <i
+          class="fa fa-clipboard"
+          aria-hidden="true"></i>
+      </button>
+    </div>
 
     <div
       class="btn-group"
@@ -83,13 +147,5 @@ export default RepoFileButtons;
         Permalink
       </a>
     </div>
-
-    <a
-      v-if="canPreview"
-      href="#"
-      @click.prevent="rawPreviewToggle"
-      class="btn btn-default preview">
-      {{activeFileLabel}}
-    </a>
   </div>
 </template>
