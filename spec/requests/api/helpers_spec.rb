@@ -159,18 +159,25 @@ describe API::Helpers do
     end
 
     describe "when authenticating using a user's private token" do
-      it "returns nil for an invalid token" do
+      it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a user without access" do
+      it "returns a 401 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
+      end
+
+      it 'returns a 401 response for a user who is blocked' do
+        user.block!
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
+
+        expect { current_user }.to raise_error /401/
       end
 
       it "leaves user as is when sudo not specified" do
@@ -193,24 +200,31 @@ describe API::Helpers do
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
       end
 
-      it "returns nil for an invalid token" do
+      it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a user without access" do
+      it "returns a 401 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a token without the appropriate scope" do
+      it 'returns a 401 response for a user who is blocked' do
+        user.block!
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+
+        expect { current_user }.to raise_error /401/
+      end
+
+      it "returns a 401 response for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
       it "leaves user as is when sudo not specified" do
@@ -226,14 +240,14 @@ describe API::Helpers do
         personal_access_token.revoke!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
     end
 
@@ -349,6 +363,18 @@ describe API::Helpers do
 
               expect { current_user }.to raise_error(Exception)
             end
+          end
+        end
+
+        context 'when user is blocked' do
+          before do
+            user.block!
+          end
+
+          it 'changes current_user to sudo' do
+            set_env(admin, user.id)
+
+            expect(current_user).to eq(user)
           end
         end
       end
@@ -490,11 +516,10 @@ describe API::Helpers do
     context 'current_user is nil' do
       before do
         expect_any_instance_of(self.class).to receive(:current_user).and_return(nil)
-        allow_any_instance_of(self.class).to receive(:initial_current_user).and_return(nil)
       end
 
       it 'returns a 401 response' do
-        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
+        expect { authenticate! }.to raise_error /401/
       end
     end
 
@@ -502,33 +527,10 @@ describe API::Helpers do
       let(:user) { build(:user) }
 
       before do
-        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
+        expect_any_instance_of(self.class).to receive(:current_user).and_return(user)
       end
 
       it 'does not raise an error' do
-        expect { authenticate! }.not_to raise_error
-      end
-    end
-
-    context 'current_user is blocked' do
-      let(:user) { build(:user, :blocked) }
-
-      before do
-        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
-      end
-
-      it 'raises an error' do
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
-
-        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
-      end
-
-      it "doesn't raise an error if an admin user is impersonating a blocked user (via sudo)" do
-        admin_user = build(:user, :admin)
-
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(admin_user)
-
         expect { authenticate! }.not_to raise_error
       end
     end

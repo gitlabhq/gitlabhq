@@ -72,8 +72,6 @@ module Gitlab
       delegate  :empty?,
                 to: :rugged
 
-      delegate :exists?, to: :gitaly_repository_client
-
       def ==(other)
         path == other.path
       end
@@ -99,6 +97,18 @@ module Gitlab
 
       def circuit_breaker
         @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
+      end
+
+      def exists?
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+          if enabled
+            gitaly_repository_client.exists?
+          else
+            circuit_breaker.perform do
+              File.exist?(File.join(@path, 'refs'))
+            end
+          end
+        end
       end
 
       # Returns an Array of branch names
@@ -805,7 +815,11 @@ module Gitlab
         if start_repository == self
           yield commit(start_branch_name)
         else
-          sha = start_repository.commit(start_branch_name).sha
+          start_commit = start_repository.commit(start_branch_name)
+
+          return yield nil unless start_commit
+
+          sha = start_commit.sha
 
           if branch_commit = commit(sha)
             yield branch_commit
@@ -834,8 +848,9 @@ module Gitlab
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
             write_ref(local_ref, commit.sha)
+            true
           else
-            raise Rugged::ReferenceError, 'source repository is empty'
+            false
           end
         end
       end
