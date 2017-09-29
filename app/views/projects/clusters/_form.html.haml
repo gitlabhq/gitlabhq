@@ -1,4 +1,35 @@
-Create a new cluster
-%br
-= link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, cluster_name: "gke-test-creation#{Random.rand(100)}", gcp_project_id: 'gitlab-internal-153318', cluster_zone: 'us-central1-a', cluster_size: '1', project_namespace: 'aaa', machine_type: '???'), method: :post
--# gke-test-creation#{Random.rand(100)}
+.row
+  .col-sm-8.col-sm-offset-4
+    %p
+      -link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('TODO'), target: '_blank', rel: 'noopener noreferrer')
+      = s_('ClusterIntegration|Use our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
+
+      = form_for 'cluster' do |field|
+        .form-group
+          = field.label :cluster_name
+          = field.text_field :cluster_name, class: 'form-control'
+
+        .form-group
+          = field.label :gcp_project_id
+          = field.text_field :gcp_project_id, class: 'form-control'
+
+        .form-group
+          = field.label :cluster_zone
+          = field.text_field :cluster_zone, class: 'form-control'
+
+        .form-group
+          = field.label :cluster_size
+          = field.text_field :cluster_size, class: 'form-control'
+
+        .form-group
+          = field.label :project_namespace
+          = field.text_field :project_namespace, class: 'form-control'
+
+        .form-group
+          = field.label :machine_type
+          = field.text_field :machine_type, class: 'form-control'
+
+        .form-group
+          = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-save'
+
+          = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, cluster_name: "gke-test-creation#{Random.rand(100)}", gcp_project_id: 'gitlab-internal-153318', cluster_zone: 'us-central1-a', cluster_size: '1', project_namespace: 'aaa', machine_type: '???'), method: :post

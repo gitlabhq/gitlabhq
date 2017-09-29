@@ -1,0 +1,15 @@
+.col-lg-8
+  %h4.prepend-top-0
+    = s_('ClusterIntegration|Create new cluster on Google Container Engine')
+  %p
+    = s_('ClusterIntegration|To create a new cluster on Google Container Engine, please sign in with your Google account:')
+  %ul
+    %li
+      - link_to_container_engine = link_to(s_('ClusterIntegration|access to Google Container Engine'))
+      = s_('ClusterIntegration|Your account must have %{link_to_container_engine}').html_safe % { link_to_container_engine: link_to_container_engine }
+      %li
+        - link_to_requirements = link_to(s_('ClusterIntegration|meets the requirements'))
+        = s_('ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters').html_safe % { link_to_requirements: link_to_requirements }
+      %li
+        - link_to_container_project = link_to(s_('ClusterIntegration|Google Container Engine project'))
+        = s_('ClusterIntegration|A %{link_to_container_project} must have been created under this account').html_safe % { link_to_container_project: link_to_container_project }
