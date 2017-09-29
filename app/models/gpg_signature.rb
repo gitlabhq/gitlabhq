@@ -24,7 +24,7 @@ class GpgSignature < ActiveRecord::Base
   def gpg_key=(model)
     case model
     when GpgKey       then super
-    when GpgKeySubkey then write_attribute(:gpg_key_subkey_id, model.id)
+    when GpgKeySubkey then self.gpg_key_subkey = model
     end
   end
 

@@ -36,15 +36,14 @@ module Gitlab
 
     def subkeys_from_key(key)
       using_tmp_keychain do
-        fingerprints    = CurrentKeyChain.fingerprints_from_key(key)
-        raw_keys        = GPGME::Key.find(:public, fingerprints)
-        grouped_subkeys = Hash.new { |h, k| h[k] = [] }
+        fingerprints = CurrentKeyChain.fingerprints_from_key(key)
+        raw_keys     = GPGME::Key.find(:public, fingerprints)
 
-        raw_keys.each_with_object(grouped_subkeys).each do |raw_key, subkeys|
+        raw_keys.each_with_object({}) do |raw_key, grouped_subkeys|
           primary_subkey_id = raw_key.primary_subkey.keyid
 
-          raw_key.subkeys[1..-1].each do |subkey|
-            subkeys[primary_subkey_id] << { keyid: subkey.keyid, fingerprint: subkey.fingerprint }
+          grouped_subkeys[primary_subkey_id] = raw_key.subkeys[1..-1].map do |s|
+            { keyid: s.keyid, fingerprint: s.fingerprint }
           end
         end
       end

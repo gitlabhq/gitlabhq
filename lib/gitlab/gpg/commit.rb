@@ -74,7 +74,7 @@ module Gitlab
           commit_sha: @commit.sha,
           project: @commit.project,
           gpg_key: gpg_key,
-          gpg_key_primary_keyid: gpg_keyid(gpg_key) || verified_signature.fingerprint,
+          gpg_key_primary_keyid: gpg_key&.keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
           verification_status: verification_status
@@ -97,12 +97,6 @@ module Gitlab
 
       def user_infos(gpg_key)
         gpg_key&.verified_user_infos&.first || gpg_key&.user_infos&.first || {}
-      end
-
-      def gpg_keyid(gpg_key)
-        return nil unless gpg_key
-
-        gpg_key.is_a?(GpgKey) ? gpg_key.primary_keyid : gpg_key.keyid
       end
 
       def find_gpg_key(keyid)

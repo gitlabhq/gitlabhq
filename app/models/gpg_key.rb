@@ -44,6 +44,7 @@ class GpgKey < ActiveRecord::Base
   def primary_keyid
     super&.upcase
   end
+  alias_method :keyid, :primary_keyid
 
   def fingerprint
     super&.upcase
@@ -51,6 +52,10 @@ class GpgKey < ActiveRecord::Base
 
   def key=(value)
     super(value&.strip)
+  end
+
+  def keyids
+    [keyid].concat(subkeys.map(&:keyid))
   end
 
   def user_infos
