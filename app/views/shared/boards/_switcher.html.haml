@@ -38,4 +38,5 @@
     %board-form{ ":milestone-path" => "milestonePath",
       "labels-path" => labels_filter_path,
       ":can-admin-board" => can?(current_user, :admin_board, parent),
+      ":scoped-issue-board-feature-enabled" => parent.feature_available?(:scoped_issue_board),
       "v-if" => "currentPage" }

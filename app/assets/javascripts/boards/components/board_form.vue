@@ -30,80 +30,81 @@
           v-model="board.name"
         >
       </div>
-      <div
-        v-if="canAdminBoard"
-        class="media append-bottom-10"
-      >
-        <label class="form-section-title label-light media-body">
-          Board scope
-        </label>
-        <button
-          type="button"
-          class="btn"
-          @click="expanded = !expanded"
-          v-if="collapseScope"
+      <div v-if="scopedIssueBoardFeatureEnabled">
+        <div
+          v-if="canAdminBoard"
+          class="media append-bottom-10"
         >
-          {{ expandButtonText }}
-        </button>
-      </div>
-      <div v-if="!collapseScope || expanded">
-        <p class="light append-bottom-10">
-          Board scope affects which issues are displayed for anyone who visits this board
-        </p>
-
-        <!-- TODO: if current_board_parent.issue_board_milestone_available?(current_user) -->
-        <form-block
-        >
-          <div
-            v-if="board.milestone"
-            slot="currentValue"
+          <label class="form-section-title label-light media-body">
+            Board scope
+          </label>
+          <button
+            type="button"
+            class="btn"
+            @click="expanded = !expanded"
+            v-if="collapseScope"
           >
-            {{ board.milestone.title }}
-          </div>
-          <board-milestone-select
-            :board="board"
-            :milestone-path="milestonePath"
-            v-model="board.milestone_id"
-            title="Milestone"
-            defaultText="Any milestone"
-            :canEdit="canAdminBoard"
-          />
-        </form-block>
+            {{ expandButtonText }}
+          </button>
+        </div>
+        <div v-if="!collapseScope || expanded">
+          <p class="light append-bottom-10">
+            Board scope affects which issues are displayed for anyone who visits this board
+          </p>
 
-        <form-block>
-          <board-labels-select
-            :board="board"
-            title="Labels"
-            defaultText="Any label"
-            :canEdit="canAdminBoard"
-            :labelsPath="labelsPath"
-          />
-        </form-block>
+          <form-block
+          >
+            <div
+              v-if="board.milestone"
+              slot="currentValue"
+            >
+              {{ board.milestone.title }}
+            </div>
+            <board-milestone-select
+              :board="board"
+              :milestone-path="milestonePath"
+              v-model="board.milestone_id"
+              title="Milestone"
+              defaultText="Any milestone"
+              :canEdit="canAdminBoard"
+            />
+          </form-block>
 
-        <form-block>
-          <div>Author</div>
-          <input v-model="board.author_id" />
-        </form-block>
+          <form-block>
+            <board-labels-select
+              :board="board"
+              title="Labels"
+              defaultText="Any label"
+              :canEdit="canAdminBoard"
+              :labelsPath="labelsPath"
+            />
+          </form-block>
 
-        <form-block>
-          <div>Assignee</div>
-          <input v-model="board.assignee_id" />
-        </form-block>
+          <form-block>
+            <div>Author</div>
+            <input v-model="board.author_id" />
+          </form-block>
 
-        <form-block
-          title="Weight"
-          defaultText="Any weight"
-          :fieldName="'board_filter[weight]'"
-          :canEdit="canAdminBoard"
-        >
-          <board-weight-select
-            :board="board"
-            v-model="board.weight"
+          <form-block>
+            <div>Assignee</div>
+            <input v-model="board.assignee_id" />
+          </form-block>
+
+          <form-block
             title="Weight"
             defaultText="Any weight"
+            :fieldName="'board_filter[weight]'"
             :canEdit="canAdminBoard"
-          />
-        </form-block>
+          >
+            <board-weight-select
+              :board="board"
+              v-model="board.weight"
+              title="Weight"
+              defaultText="Any weight"
+              :canEdit="canAdminBoard"
+            />
+          </form-block>
+        </div>
       </div>
     </form>
     <div
@@ -141,6 +142,11 @@ export default Vue.extend({
     canAdminBoard: {
       type: Boolean,
       required: true,
+    },
+    scopedIssueBoardFeatureEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {

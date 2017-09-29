@@ -1,7 +1,15 @@
 <template>
     <div class="block labels">
     <div class="title append-bottom-10">
-      Labels <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true" style="display: none;"></i> <a class="edit-link pull-right" href="#">Edit</a>
+      Labels
+      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true" style="display: none;"></i>
+      <a
+        v-if="canEdit"
+        class="edit-link pull-right"
+        href="#"
+      >
+        Edit
+      </a>
     </div>
     <div class="value issuable-show-labels">
       <span v-if="board.labels.length === 0" class="no-value">
