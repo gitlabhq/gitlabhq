@@ -23,4 +23,4 @@
       .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: discussion.position.to_json } }
         = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
     .note-container
-      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true }
+      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse: true }
