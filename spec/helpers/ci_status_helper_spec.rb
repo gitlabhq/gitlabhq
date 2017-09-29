@@ -13,7 +13,7 @@ describe CiStatusHelper do
     end
 
     it 'renders the correct svg on failure' do
-      expect(helper.ci_icon_for_status('failed'.status).to_s)
+      expect(helper.ci_icon_for_status('failed').to_s)
         .to include 'status_failed'
     end
   end
