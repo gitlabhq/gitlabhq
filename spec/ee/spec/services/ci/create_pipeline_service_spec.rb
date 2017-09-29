@@ -40,11 +40,11 @@ describe Ci::CreatePipelineService, '#execute' do
       it 'drops the pipeline and cancels all jobs' do
         pipeline = create_pipeline!
 
-        # TODO, check failure reason
         expect(pipeline).to be_persisted
         expect(pipeline).to be_failed
         expect(pipeline.statuses).not_to be_empty
         expect(pipeline.statuses).to all(be_canceled)
+        expect(pipeline.activity_limit_exceeded?).to be true
       end
     end
 
@@ -56,11 +56,11 @@ describe Ci::CreatePipelineService, '#execute' do
       it 'drops pipeline without creating jobs' do
         pipeline = create_pipeline!
 
-        # TODO, check failure reason
         expect(pipeline).to be_persisted
         expect(pipeline).to be_failed
         expect(pipeline.seeds_size).to be > 2
         expect(pipeline.statuses).to be_empty
+        expect(pipeline.size_limit_exceeded?).to be true
       end
     end
   end
