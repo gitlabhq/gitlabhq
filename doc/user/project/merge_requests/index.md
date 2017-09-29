@@ -24,6 +24,7 @@ With GitLab merge requests, you can:
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
+- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
@@ -89,6 +90,17 @@ Cherry-pick any commit in the UI by simply clicking the **Cherry-pick** button
 in a merged merge requests or a commit.
 
 [Learn more about cherry-picking changes.](cherry_pick_changes.md)
+
+## Semi-linear history merge requests
+
+> Included in [GitLab Enterprise Edition Starter][products].
+
+A merge commit is created for every merge, but the branch is only merged if
+a fast-forward merge is possible. This ensures that if the merge request build
+succeeded, the target branch build will also succeed after merging.
+
+Navigate to a project's settings, select the **Merge commit with semi-linear
+history** option under **Merge Requests: Merge method** and save your changes.
 
 ## Fast-forward merge requests
 
