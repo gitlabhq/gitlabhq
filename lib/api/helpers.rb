@@ -423,19 +423,6 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
-<<<<<<< HEAD
-
-      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= find_user_from_warden
-        @initial_current_user ||= find_user_by_job_token
-
-        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-          @initial_current_user = nil
-        end
-=======
->>>>>>> upstream/master
 
       begin
         @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
@@ -448,7 +435,8 @@ module API
       user =
         find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
         doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
-        find_user_from_warden
+        find_user_from_warden ||
+        find_user_by_job_token
 
       return nil unless user
 

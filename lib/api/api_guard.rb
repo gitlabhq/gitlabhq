@@ -92,7 +92,9 @@ module API
 
         raise UnauthorizedError unless user
 
-<<<<<<< HEAD
+        user
+      end
+
       def find_user_by_job_token
         return @user_by_job_token if defined?(@user_by_job_token)
 
@@ -101,13 +103,6 @@ module API
             token_string = params[JOB_TOKEN_PARAM].presence || env[JOB_TOKEN_HEADER].presence
             Ci::Build.find_by_token(token_string)&.user if token_string
           end
-      end
-
-      def current_user
-        @current_user
-=======
-        user
->>>>>>> upstream/master
       end
 
       private
