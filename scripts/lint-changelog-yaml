@@ -2,7 +2,10 @@
 
 require 'yaml'
 
-invalid_changelogs = Dir['changelogs/**/*.yml'].reject do |changelog|
+invalid_changelogs = Dir['changelogs/**/*'].reject do |changelog|
+  next true if changelog =~ /(archive\.md|unreleased(-ee)?)$/
+  next false unless changelog.end_with?('.yml')
+
   begin
     YAML.load_file(changelog)
   rescue
@@ -10,7 +13,7 @@ invalid_changelogs = Dir['changelogs/**/*.yml'].reject do |changelog|
 end
 
 if invalid_changelogs.any?
-  puts "Changelogs with invalid YAML found!\n"
+  puts "Invalid changelogs found!\n"
   puts invalid_changelogs.sort
   exit 1
 else
