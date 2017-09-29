@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 feature 'Creating a merge request from a fork', :js do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
-  let!(:source_project) { ::Projects::ForkService.new(project, user).execute }
+  let!(:source_project) do
+    fork_project(project, user,
+                 repository: true,
+                 namespace: user.namespace)
+  end
 
   before do
     source_project.add_master(user)
@@ -49,7 +55,6 @@ feature 'Creating a merge request from a fork', :js do
       target_project_member = target_project.owner
       CreateBranchService.new(target_project, target_project_member)
         .execute('a-brand-new-branch-to-test', 'master')
-
       visit project_new_merge_request_path(source_project)
 
       first('.js-target-project').click
@@ -66,13 +71,18 @@ feature 'Creating a merge request from a fork', :js do
   end
 
   context 'creating to the source of a fork' do
-    let(:target_project) { project }
+    let!(:target_project) { project }
 
     it_behaves_like('create merge request to other project')
   end
 
   context 'creating to a sibling of a fork' do
-    let!(:target_project) { ::Projects::ForkService.new(project, create(:user)).execute }
+    let!(:target_project) do
+      other_user = create(:user)
+      fork_project(project, other_user,
+                   repository: true,
+                   namespace: other_user.namespace)
+    end
 
     it_behaves_like('create merge request to other project')
   end

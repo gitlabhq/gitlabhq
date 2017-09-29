@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe MergeRequest do
   include RepoHelpers
+  include ProjectForksHelper
 
   subject { create(:merge_request) }
 
@@ -52,8 +53,8 @@ describe MergeRequest do
 
     context 'for forks' do
       let(:project) { create(:project) }
-      let(:fork1) { create(:forked_project_link, forked_from_project: project).forked_to_project }
-      let(:fork2) { create(:forked_project_link, forked_from_project: project).forked_to_project }
+      let(:fork1) { fork_project(project) }
+      let(:fork2) { fork_project(project) }
 
       it 'allows merge requests for sibling-forks' do
         subject.source_project = fork1
@@ -685,7 +686,7 @@ describe MergeRequest do
 
   describe '#diverged_commits_count' do
     let(:project)      { create(:project, :repository) }
-    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+    let(:forked_project) { fork_project(project, nil, repository: true) }
 
     context 'when the target branch does not exist anymore' do
       subject { create(:merge_request, source_project: project, target_project: project) }
@@ -713,7 +714,7 @@ describe MergeRequest do
     end
 
     context 'diverged on fork' do
-      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
+      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: forked_project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
         expect(subject.diverged_commits_count).to eq(29)
@@ -721,7 +722,7 @@ describe MergeRequest do
     end
 
     context 'rebased on fork' do
-      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: fork_project, target_project: project) }
+      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: forked_project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
         expect(subject.diverged_commits_count).to eq(0)
@@ -1270,11 +1271,7 @@ describe MergeRequest do
     end
 
     context 'with environments on source project' do
-      let(:source_project) do
-        create(:project, :repository) do |fork_project|
-          fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        end
-      end
+      let(:source_project) { fork_project(project, nil, repository: true) }
 
       let(:merge_request) do
         create(:merge_request,
@@ -1438,14 +1435,14 @@ describe MergeRequest do
 
   describe "#source_project_missing?" do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:forked_project_link, forked_from_project: project).forked_to_project }
+    let(:forked_project) { fork_project(project) }
     let(:user)         { create(:user) }
-    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the fork exists" do
       let(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1461,7 +1458,7 @@ describe MergeRequest do
     context "when the fork does not exist" do
       let!(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1484,14 +1481,14 @@ describe MergeRequest do
 
   describe "#closed_without_fork?" do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:forked_project) { fork_project(project) }
     let(:user)         { create(:user) }
-    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the merge request is closed" do
       let(:closed_merge_request) do
         create(:closed_merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1510,7 +1507,7 @@ describe MergeRequest do
     context "when the merge request is open" do
       let(:open_merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1529,24 +1526,24 @@ describe MergeRequest do
       end
 
       context 'forked project' do
-        let(:project)      { create(:project) }
+        let(:project)      { create(:project, :public) }
         let(:user)         { create(:user) }
-        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+        let(:forked_project) { fork_project(project, user) }
 
         let!(:merge_request) do
           create(:closed_merge_request,
-            source_project: fork_project,
+            source_project: forked_project,
             target_project: project)
         end
 
         it 'returns false if unforked' do
-          Projects::UnlinkForkService.new(fork_project, user).execute
+          Projects::UnlinkForkService.new(forked_project, user).execute
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end
 
         it 'returns false if the source project is deleted' do
-          Projects::DestroyService.new(fork_project, user).execute
+          Projects::DestroyService.new(forked_project, user).execute
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end

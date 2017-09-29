@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe API::MergeRequests do
+  include ProjectForksHelper
+
   let(:base_time)   { Time.now }
   let(:user)        { create(:user) }
   let(:admin)       { create(:user, :admin) }
@@ -312,17 +314,17 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:forked_project) { fork_project(project, user2) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before do
-        fork_project.add_reporter(user2)
+        forked_project.add_reporter(user2)
 
         allow_any_instance_of(MergeRequest).to receive(:write_ref)
       end
 
       it "returns merge_request" do
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
           title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
           author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
         expect(response).to have_gitlab_http_status(201)
@@ -331,10 +333,10 @@ describe API::MergeRequests do
       end
 
       it "does not return 422 when source_branch equals target_branch" do
-        expect(project.id).not_to eq(fork_project.id)
-        expect(fork_project.forked?).to be_truthy
-        expect(fork_project.forked_from_project).to eq(project)
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        expect(project.id).not_to eq(forked_project.id)
+        expect(forked_project.forked?).to be_truthy
+        expect(forked_project.forked_from_project).to eq(project)
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
         title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
@@ -343,7 +345,7 @@ describe API::MergeRequests do
       it "returns 422 when target project has disabled merge requests" do
         project.project_feature.update(merge_requests_access_level: 0)
 
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
              title: 'Test',
              target_branch: "master",
              source_branch: 'markdown',
@@ -354,26 +356,26 @@ describe API::MergeRequests do
       end
 
       it "returns 400 when source_branch is missing" do
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when target_branch is missing" do
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when title is missing" do
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
         expect(response).to have_gitlab_http_status(400)
       end
 
       context 'when target_branch is specified' do
         it 'returns 422 if targeting a different fork' do
-          post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
+          post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
                title: 'Test merge_request',
                target_branch: 'master',
                source_branch: 'markdown',
@@ -384,8 +386,8 @@ describe API::MergeRequests do
       end
 
       it "returns 201 when target_branch is specified and for the same project" do
-        post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
-        title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
+        post v3_api("/projects/#{forked_project.id}/merge_requests", user2),
+        title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: forked_project.id
         expect(response).to have_gitlab_http_status(201)
       end
     end

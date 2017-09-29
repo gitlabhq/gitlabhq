@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -68,7 +70,7 @@ feature 'Diffs URL', js: true do
   context 'when editing file' do
     let(:author_user) { create(:user) }
     let(:user) { create(:user) }
-    let(:forked_project) { Projects::ForkService.new(project, author_user).execute }
+    let(:forked_project) { fork_project(project, author_user, repository: true) }
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
     let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 

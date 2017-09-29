@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService do
+  include ProjectForksHelper
+
   set(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
   let(:ref_name) { 'refs/heads/master' }
@@ -82,12 +84,8 @@ describe Ci::CreatePipelineService do
         end
 
         context 'when merge request target project is different from source project' do
+          let!(:project) { fork_project(target_project, nil, repository: true) }
           let!(:target_project) { create(:project, :repository) }
-
-          let!(:forked_project_link) do
-            create(:forked_project_link, forked_to_project: project,
-                                         forked_from_project: target_project)
-          end
 
           it 'updates head pipeline for merge request' do
             merge_request = create(:merge_request, source_branch: 'master',

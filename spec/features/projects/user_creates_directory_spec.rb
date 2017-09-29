@@ -79,7 +79,7 @@ feature 'User creates a directory', js: true do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Create directory')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
     end

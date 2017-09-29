@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Project' do
+  include ProjectForksHelper
+
   describe 'creating from template' do
     let(:user)    { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
@@ -57,11 +59,10 @@ feature 'Project' do
 
   describe 'remove forked relationship', js: true do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { fork_project(create(:project, :public), user, namespace_id: user.namespace) }
 
     before do
       sign_in user
-      create(:forked_project_link, forked_to_project: project)
       visit edit_project_path(project)
     end
 
@@ -71,7 +72,7 @@ feature 'Project' do
       remove_with_confirm('Remove fork relationship', project.path)
 
       expect(page).to have_content 'The fork relationship has been removed.'
-      expect(project.forked?).to be_falsey
+      expect(project.reload.forked?).to be_falsey
       expect(page).not_to have_content 'Remove fork relationship'
     end
   end
