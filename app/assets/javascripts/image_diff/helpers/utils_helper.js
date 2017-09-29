@@ -1,4 +1,6 @@
 import ImageBadge from '../image_badge';
+import ImageDiff from '../image_diff';
+import ReplacedImageDiff from '../replaced_image_diff';
 
 export function resizeCoordinatesToImageElement(imageEl, meta) {
   const { x, y, width, height } = meta;
@@ -71,4 +73,14 @@ export function getTargetSelection(event) {
       height: actualHeight,
     },
   };
+}
+
+export function initImageDiff(file, canCreateNote) {
+  if (file.querySelector('.diff-viewer .js-single-image')) {
+    const imageDiff = new ImageDiff(file, canCreateNote);
+    imageDiff.init();
+  } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
+    const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote);
+    replacedImageDiff.init();
+  }
 }

@@ -3,8 +3,7 @@
 import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
-import ImageDiff from './image_diff/image_diff';
-import ReplacedImageDiff from './image_diff/replaced_image_diff';
+import imageDiffHelper from './image_diff/helpers/index';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -24,16 +23,7 @@ class Diff {
     $diffFile.each((index, file) => new gl.ImageFile(file));
 
     const canCreateNote = $diffFile.first().closest('.files').is('[data-can-create-note]');
-
-    $diffFile.each((index, file) => {
-      if (file.querySelector('.diff-viewer .js-single-image')) {
-        const imageDiff = new ImageDiff(file, canCreateNote);
-        imageDiff.init();
-      } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
-        const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote);
-        replacedImageDiff.init();
-      }
-    });
+    $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {
       $(document)
