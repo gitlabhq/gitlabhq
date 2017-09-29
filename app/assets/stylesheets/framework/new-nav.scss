@@ -1,67 +1,9 @@
 .content-wrapper.page-with-new-nav {
-  margin-top: $new-navbar-height;
+  margin-top: $header-height;
 }
 
-header.navbar-gitlab-new {
-  color: $white-light;
-  border-bottom: 0;
-  min-height: $new-navbar-height;
-
-  .logo-text {
-    line-height: initial;
-
-    svg {
-      width: 55px;
-      height: 14px;
-      margin: 0;
-      fill: $white-light;
-    }
-  }
-
+header {
   .header-content {
-    display: -webkit-flex;
-    display: flex;
-    padding-left: 0;
-    min-height: $new-navbar-height;
-
-    .title-container {
-      display: -webkit-flex;
-      display: flex;
-      -webkit-align-items: stretch;
-      align-items: stretch;
-      -webkit-flex: 1 1 auto;
-      flex: 1 1 auto;
-      padding-top: 0;
-      overflow: visible;
-    }
-
-    .title {
-      display: -webkit-flex;
-      display: flex;
-      padding-right: 0;
-      color: currentColor;
-
-      img {
-        height: 28px;
-        margin-right: 8px;
-      }
-
-      a {
-        display: -webkit-flex;
-        display: flex;
-        align-items: center;
-        padding: 2px 8px;
-        margin: 5px 2px 5px -8px;
-        border-radius: $border-radius-default;
-
-        svg {
-          @media (min-width: $screen-sm-min) {
-            margin-right: 8px;
-          }
-        }
-      }
-    }
-
     .dropdown.open {
       > a {
         border-bottom-color: $white-light;
@@ -113,28 +55,6 @@ header.navbar-gitlab-new {
   }
 
   .container-fluid {
-    .navbar-toggle {
-      min-width: 45px;
-      padding: 0 $gl-padding;
-      margin-right: -7px;
-      text-align: center;
-      color: currentColor;
-
-      svg {
-        fill: currentColor;
-      }
-
-      &:hover,
-      &:focus,
-      &.active {
-        color: currentColor;
-        background-color: transparent;
-
-        svg {
-          fill: currentColor;
-        }
-      }
-    }
 
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
@@ -242,7 +162,7 @@ header.navbar-gitlab-new {
   }
 }
 
-.navbar-gitlab-new {
+header {
   .navbar-sub-nav,
   .navbar-nav {
     > li {
