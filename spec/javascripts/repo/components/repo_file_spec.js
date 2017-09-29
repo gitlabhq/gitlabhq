@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import repoFile from '~/repo/components/repo_file.vue';
+import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoFile', () => {
   const updated = 'updated';
@@ -7,12 +8,14 @@ describe('RepoFile', () => {
     icon: 'icon',
     url: 'url',
     name: 'name',
+    pageTitle: 'pageTitle',
     lastCommitMessage: 'message',
     lastCommitUpdate: Date.now(),
     level: 10,
   };
   const activeFile = {
     url: 'url',
+    pageTitle: 'pageTitle',
   };
 
   function createComponent(propsData) {
@@ -32,6 +35,7 @@ describe('RepoFile', () => {
       file,
       activeFile,
     });
+    RepoStore.setActiveFiles(activeFile);
     const name = vm.$el.querySelector('.repo-file-name');
     const fileIcon = vm.$el.querySelector('.file-icon');
 
@@ -40,6 +44,7 @@ describe('RepoFile', () => {
     expect(name.title).toEqual(file.url);
     expect(name.href).toMatch(`/${file.url}`);
     expect(name.textContent.trim()).toEqual(file.name);
+    expect(document.title.trim()).toEqual(file.pageTitle);
     expect(vm.$el.querySelector('.commit-message').textContent.trim()).toBe(file.lastCommitMessage);
     expect(vm.$el.querySelector('.commit-update').textContent.trim()).toBe(updated);
     expect(fileIcon.classList.contains(file.icon)).toBeTruthy();
