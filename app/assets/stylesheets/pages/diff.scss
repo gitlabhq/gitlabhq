@@ -729,6 +729,10 @@
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .discussion-body .frame .image-comment-badge {
