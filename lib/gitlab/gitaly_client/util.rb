@@ -20,6 +20,20 @@ module Gitlab
             email: GitalyClient.encode(gitlab_user.email)
           )
         end
+
+        def gitlab_tag_from_gitaly_tag(repository, gitaly_tag)
+          if gitaly_tag.target_commit.present?
+            commit = Gitlab::Git::Commit.decorate(repository, gitaly_tag.target_commit)
+          end
+
+          Gitlab::Git::Tag.new(
+            repository,
+            Gitlab::EncodingHelper.encode!(gitaly_tag.name.dup),
+            gitaly_tag.id,
+            commit,
+            Gitlab::EncodingHelper.encode!(gitaly_tag.message.chomp)
+          )
+        end
       end
     end
   end
