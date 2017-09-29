@@ -92,13 +92,12 @@ describe('common_utils', () => {
           <div id="test" style="height: 2000px;"></div>
         </div>
       `;
-      const elTop = document.getElementById('test').getBoundingClientRect().top;
 
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
 
       expectGetElementIdToHaveBeenCalledWith('test');
-      expect(window.scrollY).toBe(elTop);
+      expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
 
       document.getElementById('parent').remove();
     });
@@ -110,14 +109,13 @@ describe('common_utils', () => {
           <div id="user-content-test" style="height: 2000px;"></div>
         </div>
       `;
-      const elTop = document.getElementById('user-content-test').getBoundingClientRect().top;
 
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
-      expect(window.scrollY).toBe(elTop);
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
 
       document.getElementById('parent').remove();
     });
@@ -132,14 +130,12 @@ describe('common_utils', () => {
         </div>
       `;
 
-      const elTop = document.getElementById('user-content-test').getBoundingClientRect().top;
-
       window.history.pushState({}, null, '#test');
       commonUtils.handleLocationHash();
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
-      expect(window.scrollY).toBe(elTop - 50);
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
       expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
 
       document.getElementById('parent').remove();
