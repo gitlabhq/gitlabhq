@@ -659,7 +659,10 @@
     width: 100%;
     height: 10px;
     background-color: $white-light;
-    background-image: linear-gradient(45deg,transparent,transparent 73%,$diff-jagged-border-gradient 75%,$white-light 80%),linear-gradient(225deg,transparent,transparent 73%,$diff-jagged-border-gradient 75%,$white-light 80%),linear-gradient(135deg,transparent,transparent 73%,$diff-jagged-border-gradient 75%,$white-light 80%),linear-gradient(-45deg,transparent,transparent 73%,$diff-jagged-border-gradient 75%,$white-light 80%);
+    background-image: linear-gradient(45deg, transparent, transparent 73%, $diff-jagged-border-gradient 75%, $white-light 80%),
+      linear-gradient(225deg, transparent, transparent 73%, $diff-jagged-border-gradient 75%, $white-light 80%),
+      linear-gradient(135deg, transparent, transparent 73%, $diff-jagged-border-gradient 75%, $white-light 80%),
+      linear-gradient(-45deg, transparent, transparent 73%, $diff-jagged-border-gradient 75%, $white-light 80%);
     background-position: 5px 5px,0 5px,0 5px,5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -716,8 +719,7 @@
 
 .frame.click-to-comment .badge,
 .image-diff-avatar-link .badge,
-.notes > .badge,
-.discussion-body .frame .badge {
+.notes > .badge {
   position: absolute;
   background-color: $blue-400;
   color: $white-light;
@@ -727,6 +729,11 @@
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
+}
+
+.discussion-body .frame .image-comment-badge {
+  @include btn-comment;
+  position: absolute;
 }
 
 .image-diff-avatar-link {
@@ -753,7 +760,8 @@
 }
 
 .discussion-notes.collapsed {
-  &+ .discussion-notes::before,
+  background-color: $white-light;
+
   .diff-notes-collapse,
   .note,
   .discussion-reply-holder, {
@@ -767,6 +775,11 @@
 
 .discussion-notes {
   min-height: 30px;
+
+  &:first-child {
+    // First child does not have the jagged borders
+    min-height: 20px;
+  }
 }
 
 .discussion-body .image .frame {

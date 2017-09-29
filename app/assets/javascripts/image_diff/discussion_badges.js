@@ -15,13 +15,11 @@ export function create(imageEl) {
   const diffFile = imageFrameEl.closest('.diff-file');
   const firstNote = diffFile.querySelector('.discussion-notes .note');
 
-  ImageDiffHelper.addImageBadge(imageFrameEl, {
+  ImageDiffHelper.addImageCommentBadge(imageFrameEl, {
     coordinate: {
       x: meta.x,
       y: meta.y,
     },
-    // Discussion badges are empty badge dots
-    badgeText: ' ',
     noteId: firstNote.id,
   });
 }

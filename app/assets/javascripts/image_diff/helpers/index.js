@@ -10,6 +10,7 @@ export default {
   commentIndicatorOnClick: commentIndicatorHelper.commentIndicatorOnClick,
 
   addImageBadge: badgeHelper.addImageBadge,
+  addImageCommentBadge: badgeHelper.addImageCommentBadge,
   imageBadgeOnClick: badgeHelper.imageBadgeOnClick,
   addAvatarBadge: badgeHelper.addAvatarBadge,
 
