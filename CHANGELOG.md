@@ -193,6 +193,13 @@ entry.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
 
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+
 ## 9.5.5 (2017-09-18)
 
 - [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
