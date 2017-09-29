@@ -989,7 +989,7 @@ class Repository
   end
 
   def create_ref(ref, ref_path)
-    fetch_ref(path_to_repo, ref, ref_path)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)

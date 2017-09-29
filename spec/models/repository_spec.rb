@@ -636,18 +636,18 @@ describe Repository do
   describe '#fetch_ref' do
     describe 'when storage is broken', broken_storage: true  do
       it 'should raise a storage error' do
-        path = broken_repository.path_to_repo
-
-        expect_to_raise_storage_error { broken_repository.fetch_ref(path, '1', '2') }
+        expect_to_raise_storage_error do
+          broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
+        end
       end
     end
   end
 
   describe '#create_ref' do
-    it 'redirects the call to fetch_ref' do
+    it 'redirects the call to write_ref' do
       ref, ref_path = '1', '2'
 
-      expect(repository).to receive(:fetch_ref).with(repository.path_to_repo, ref, ref_path)
+      expect(repository.raw_repository).to receive(:write_ref).with(ref_path, ref)
 
       repository.create_ref(ref, ref_path)
     end

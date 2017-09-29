@@ -53,14 +53,15 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :storage, :gl_repository, :relative_path, :gitaly_resolver
 
-      # 'path' must be the path to a _bare_ git repository, e.g.
-      # /path/to/my-repo.git
+      # This initializer method is only used on the client side (gitlab-ce).
+      # Gitaly-ruby uses a different initializer.
       def initialize(storage, relative_path, gl_repository)
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
+        @gitaly_resolver = Gitlab::GitalyClient
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -987,9 +988,9 @@ module Gitlab
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
         tmp_ref = fetch_ref(
-          start_repository.path,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          "refs/tmp/#{SecureRandom.hex}/head"
+          start_repository,
+          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          target_ref: "refs/tmp/#{SecureRandom.hex}/head"
         )
 
         yield commit(sha)
@@ -1021,13 +1022,27 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, sha)
-        rugged.references.create(ref_path, sha, force: true)
+      def write_ref(ref_path, ref)
+        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
+        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+
+        command = [Gitlab.config.git.bin_path] + %w[update-ref --stdin -z]
+        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        output, status = circuit_breaker.perform do
+          popen(command, path) { |stdin| stdin.write(input) }
+        end
+
+        raise GitError, output unless status.zero?
       end
 
-      def fetch_ref(source_path, source_ref, target_ref)
-        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-        message, status = run_git(args)
+      def fetch_ref(source_repository, source_ref:, target_ref:)
+        message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
+          if is_enabled
+            gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
+          else
+            local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
+          end
+        end
 
         # Make sure ref was created, and raise Rugged::ReferenceError when not
         raise Rugged::ReferenceError, message if status != 0
@@ -1036,9 +1051,9 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args)
+      def run_git(args, env: {})
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path)
+          popen([Gitlab.config.git.bin_path, *args], path, env)
         end
       end
 
@@ -1497,6 +1512,30 @@ module Gitlab
         find_branch(branch_name)
       rescue Rugged::ReferenceError
         raise InvalidRef, ex
+      end
+
+      def local_fetch_ref(source_path, source_ref:, target_ref:)
+        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+        run_git(args)
+      end
+
+      def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
+        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
+        gitaly_address = gitaly_resolver.address(source_repository.storage)
+        gitaly_token = gitaly_resolver.token(source_repository.storage)
+
+        request = Gitaly::SSHUploadPackRequest.new(repository: source_repository.gitaly_repository)
+        env = {
+          'GITALY_ADDRESS' => gitaly_address,
+          'GITALY_PAYLOAD' => request.to_json,
+          'GITALY_WD' => Dir.pwd,
+          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
+        }
+        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
+
+        args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
+
+        run_git(args, env: env)
       end
     end
   end
