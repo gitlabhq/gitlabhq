@@ -8,7 +8,7 @@ describe RemoveSystemHookFromGeoNodes, :migration do
     allow_any_instance_of(WebHookService).to receive(:execute)
 
     create(:system_hook)
-    geo_nodes.create! attributes_for(:geo_node, :primary, :current)
+    geo_nodes.create! attributes_for(:geo_node, :primary)
     geo_nodes.create! attributes_for(:geo_node, system_hook_id: create(:system_hook).id)
   end
 

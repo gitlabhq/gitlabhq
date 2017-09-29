@@ -1,13 +1,17 @@
 require 'spec_helper'
 
 describe Geo::RepositorySyncWorker, :postgresql do
-  let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
-  let!(:secondary) { create(:geo_node, :current) }
-  let(:synced_group) { create(:group) }
-  let!(:project_in_synced_group) { create(:project, group: synced_group) }
-  let!(:unsynced_project) { create(:project) }
+  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  set(:secondary) { create(:geo_node) }
+  set(:synced_group) { create(:group) }
+  set(:project_in_synced_group) { create(:project, group: synced_group) }
+  set(:unsynced_project) { create(:project) }
 
   subject { described_class.new }
+
+  before do
+    allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
+  end
 
   describe '#perform' do
     before do

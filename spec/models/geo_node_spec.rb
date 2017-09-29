@@ -53,14 +53,17 @@ describe GeoNode, type: :model do
   end
 
   context 'prevent locking yourself out' do
-    subject do
-      GeoNode.new(host: Gitlab.config.gitlab.host,
-                  port: Gitlab.config.gitlab.port,
-                  relative_url_root: Gitlab.config.gitlab.relative_url_root)
-    end
-
     it 'does not accept adding a non primary node with same details as current_node' do
-      expect(subject).not_to be_valid
+      node = GeoNode.new(
+        host: Gitlab.config.gitlab.host,
+        port: Gitlab.config.gitlab.port,
+        relative_url_root: Gitlab.config.gitlab.relative_url_root,
+        geo_node_key: build(:geo_node_key)
+      )
+
+      expect(node).not_to be_valid
+      expect(node.errors.full_messages.count).to eq(1)
+      expect(node.errors[:base].first).to match('locking yourself out')
     end
   end
 

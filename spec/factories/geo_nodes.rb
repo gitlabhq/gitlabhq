@@ -9,9 +9,5 @@ FactoryGirl.define do
       port { Gitlab.config.gitlab.port }
       geo_node_key nil
     end
-
-    trait :current do
-      port { Gitlab.config.gitlab.port }
-    end
   end
 end

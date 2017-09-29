@@ -23,6 +23,7 @@ class GeoNode < ActiveRecord::Base
   validates :encrypted_secret_access_key, presence: true
 
   validates :geo_node_key, presence: true, if: :secondary?
+  validate :check_not_adding_primary_as_secondary, if: :secondary?
 
   after_initialize :build_dependents
   after_save :expire_cache!
@@ -216,12 +217,12 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def validate(record)
-    # Prevent locking yourself out
-    if record.host == Gitlab.config.gitlab.host &&
-        record.port == Gitlab.config.gitlab.port &&
-        record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
-      record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
+  # Prevent locking yourself out
+  def check_not_adding_primary_as_secondary
+    if host == Gitlab.config.gitlab.host &&
+        port == Gitlab.config.gitlab.port &&
+        relative_url_root == Gitlab.config.gitlab.relative_url_root
+      errors.add(:base, 'Current node must be the primary node or you will be locking yourself out')
     end
   end
 
