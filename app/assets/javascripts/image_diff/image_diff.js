@@ -1,5 +1,6 @@
 import ImageDiffHelper from './helpers/index';
 import ImageBadge from './image_badge';
+import { isImageLoaded } from '../lib/utils/image_utility';
 
 export default class ImageDiff {
   constructor(el, canCreateNote = false) {
@@ -32,8 +33,12 @@ export default class ImageDiff {
     this.removeBadgeWrapper = this.removeBadge.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
 
-    // Render badges after the image diff is loaded
-    this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
+    // Render badges
+    if (isImageLoaded(this.getImageEl())) {
+      this.renderBadgesWrapper();
+    } else {
+      this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
+    }
 
     // jquery makes the event delegation here much simpler
     this.$noteContainer.on('click', '.js-diff-notes-toggle', ImageDiffHelper.toggleCollapsed);
