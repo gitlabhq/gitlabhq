@@ -535,14 +535,15 @@
 }
 
 .diff-notes-collapse {
-  width: 19px;
-  height: 19px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   padding: 0;
   transition: transform .1s ease-out;
   z-index: 100;
 
   svg {
-    vertical-align: text-top;
+    vertical-align: middle;
   }
 
   path {
@@ -746,12 +747,12 @@
 
 .note-container .diff-notes-collapse {
   position: absolute;
-  left: -10px;
+  left: -13px;
 }
 
 .notes > .badge {
   display: none;
-  left: -11px;
+  left: -13px;
 }
 
 .discussion-notes.collapsed {
