@@ -676,7 +676,13 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        OperationService.new(user, self).rm_branch(find_branch(branch_name))
+        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operations_client.user_delete_branch(branch_name, user)
+          else
+            OperationService.new(user, self).rm_branch(find_branch(branch_name))
+          end
+        end
       end
 
       def rm_tag(tag_name, user:)

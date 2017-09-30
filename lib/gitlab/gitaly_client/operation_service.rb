@@ -60,6 +60,20 @@ module Gitlab
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
       end
+
+      def user_delete_branch(branch_name, user)
+        request = Gitaly::UserDeleteBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: GitalyClient.encode(branch_name),
+          user: Util.gitaly_user(user)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+        end
+      end
     end
   end
 end
