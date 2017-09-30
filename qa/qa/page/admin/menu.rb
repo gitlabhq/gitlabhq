@@ -3,15 +3,10 @@ module QA
     module Admin
       class Menu < Page::Base
         def go_to_license
-          within_middle_menu { click_link 'License' }
-        end
-
-        private
-
-        def within_middle_menu
-          page.within('.nav-control') do
-            yield
-          end
+          link = find_link 'License'
+          # Click space to scroll this link into the view
+          link.send_keys(:space)
+          link.click
         end
       end
     end
