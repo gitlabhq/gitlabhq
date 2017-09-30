@@ -16,6 +16,11 @@ export default {
       required: false,
       default: 'primary',
     },
+    closeKind: {
+      type: String,
+      required: false,
+      default: 'default',
+    },
     closeButtonLabel: {
       type: String,
       required: false,
@@ -31,6 +36,11 @@ export default {
     btnKindClass() {
       return {
         [`btn-${this.kind}`]: true,
+      };
+    },
+    btnCancelKindClass() {
+      return {
+        [`btn-${this.closeKind}`]: true,
       };
     },
   },
@@ -68,7 +78,8 @@ export default {
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-default"
+          class="btn"
+          :class="btnCancelKindClass"
           @click="emitSubmit(false)">
             {{closeButtonLabel}}
         </button>

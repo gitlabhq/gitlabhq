@@ -3,11 +3,16 @@
 import Store from '../stores/repo_store';
 import RepoMixin from '../mixins/repo_mixin';
 import Service from '../services/repo_service';
+import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 
 export default {
   data: () => Store,
 
   mixins: [RepoMixin],
+
+  components: {
+    PopupDialog,
+  },
 
   computed: {
     showCommitable() {
@@ -19,7 +24,7 @@ export default {
     },
 
     cantCommitYet() {
-      return !this.commitMessage || this.submitCommitsLoading || this.branchChanged;
+      return !this.commitMessage || this.submitCommitsLoading;
     },
 
     filePluralize() {
@@ -28,29 +33,52 @@ export default {
   },
 
   methods: {
-    makeCommit() {
-      Store.setBranchHash()
-      .then(() => {
-        if(Store.branchChanged){
-          console.log('branch has changed')
+    changeBranchSubmit(status) {
+      if(status){
+        this.showBranchChangeDialog = false;
+        this.tryCommit(null, true, true);
+      } else {
+        // reset the state
+      }
+    },
+
+    tryCommit(e, skipBranchCheck=false, newBranch=false) {
+
+      const makeCommit = () => {
+        // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
+        const commitMessage = this.commitMessage;
+        const actions = this.changedFiles.map(f => ({
+          action: 'update',
+          file_path: f.path,
+          content: f.newContent,
+        }));
+        const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
+        const payload = {
+          branch,
+          commit_message: commitMessage,
+          actions,
+        };
+        if(newBranch) {
+          payload.start_branch = this.currentBranch;
         }
-      })
-      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => ({
-        action: 'update',
-        file_path: f.path,
-        content: f.newContent,
-      }));
-      const payload = {
-        branch: Store.currentBranch,
-        commit_message: commitMessage,
-        actions,
-      };
-      Store.submitCommitsLoading = true;
-      Service.commitFiles(payload)
-        .then(this.resetCommitState)
-        .catch(() => Flash('An error occurred while committing your changes'));
+        Store.submitCommitsLoading = true;
+        Service.commitFiles(payload)
+          .then(this.resetCommitState)
+          .catch(() => Flash('An error occurred while committing your changes'));
+      }
+
+      if(skipBranchCheck){
+        makeCommit();
+      } else {
+        Store.setBranchHash()
+        .then(() => {
+          if(Store.branchChanged){
+            Store.showBranchChangeDialog = true;
+            return;
+          }
+          makeCommit();
+        })
+      }
     },
 
     resetCommitState() {
@@ -68,9 +96,17 @@ export default {
 <div
   v-if="showCommitable"
   id="commit-area">
+  <popup-dialog
+    v-if="showBranchChangeDialog"
+    :primary-button-label="__('Create New Branch')"
+    kind="primary"
+    :title="__('Branch has changed')"
+    :body="__('This branch has changed since your started editing. Would you like to create a new branch or discard your changes?')"
+    @submit="changeBranchSubmit"
+  />
   <form
     class="form-horizontal"
-    @submit.prevent="makeCommit">
+    @submit.prevent="tryCommit">
     <fieldset>
       <div class="form-group">
         <label class="col-md-4 control-label staged-files">

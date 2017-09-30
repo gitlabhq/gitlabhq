@@ -24,6 +24,7 @@ const RepoStore = {
     title: '',
     status: false,
   },
+  showBranchChangeDialog: false,
   activeFile: Helper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: 0,
@@ -32,7 +33,8 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
-  initialHash: '',
+  currentHash: '',
+  currentShortHash: '',
   branchChanged: false,
   commitMessage: '',
   binaryTypes: {
@@ -55,10 +57,11 @@ const RepoStore = {
   setBranchHash() {
     return Service.branchSingle()
     .then((data) => {
-      if(RepoStore.initialHash !== '' && data.commit.id !== RepoStore.initialHash) {
+      if(RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
         RepoStore.branchChanged = true;
       }
-      RepoStore.initialHash = data.commit.id;
+      RepoStore.currentHash = data.commit.id;
+      RepoStore.currentShortHash = data.commit.short_id;
     });
   },
 
