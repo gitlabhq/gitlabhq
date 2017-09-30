@@ -2793,6 +2793,17 @@ describe Project do
     end
   end
 
+  describe '#check_repository_path_availability' do
+    let(:project) { build(:project) }
+
+    it 'skips gitlab-shell exists?' do
+      project.skip_disk_validation = true
+
+      expect(project.gitlab_shell).not_to receive(:exists?)
+      expect(project.check_repository_path_availability).to be_truthy
+    end
+  end
+
   describe '#latest_successful_pipeline_for_default_branch' do
     let(:project) { build(:project) }
 
