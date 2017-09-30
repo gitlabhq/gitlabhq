@@ -61,10 +61,15 @@ export default {
         if(newBranch) {
           payload.start_branch = this.currentBranch;
         }
-        Store.submitCommitsLoading = true;
+        this.submitCommitsLoading = true;
         Service.commitFiles(payload)
-          .then(this.resetCommitState)
-          .catch(() => Flash('An error occurred while committing your changes'));
+          .then(() => {
+            this.resetCommitState();
+            document.location.href = this.customBranchURL.replace('{{branch}}', branch);
+          })
+          .catch((e) => {
+            Flash('An error occurred while committing your changes')
+          });
       }
 
       if(skipBranchCheck){
@@ -83,6 +88,9 @@ export default {
 
     resetCommitState() {
       this.submitCommitsLoading = false;
+      this.openedFiles.forEach(f => {
+        f.changed = false;
+      });
       this.changedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
@@ -101,7 +109,7 @@ export default {
     :primary-button-label="__('Create New Branch')"
     kind="primary"
     :title="__('Branch has changed')"
-    :body="__('This branch has changed since your started editing. Would you like to create a new branch or discard your changes?')"
+    :body="__('This branch has changed since your started editing. Would you like to create a new branch?')"
     @submit="changeBranchSubmit"
   />
   <form

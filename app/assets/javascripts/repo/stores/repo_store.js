@@ -35,6 +35,7 @@ const RepoStore = {
   currentBranch: '',
   currentHash: '',
   currentShortHash: '',
+  customBranchURL: '',
   branchChanged: false,
   commitMessage: '',
   binaryTypes: {

@@ -3,5 +3,6 @@
                refs_url: refs_project_path(project, format: :json),
                project_url: project_path(project),
                project_id: project.id,
+               blob_url: namespace_project_blob_path(project.namespace, project, '{{branch}}'),
                can_commit: (!!can_push_branch?(project, @ref)).to_s,
                on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s } }

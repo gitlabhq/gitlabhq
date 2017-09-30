@@ -31,6 +31,7 @@ function setInitialStore(data) {
   Store.projectUrl = data.projectUrl;
   Store.canCommit = data.canCommit;
   Store.onTopOfBranch = data.onTopOfBranch;
+  Store.customBranchURL = decodeURIComponent(data.blobUrl);
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
 
   Store.checkIsCommitable();
