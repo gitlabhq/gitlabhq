@@ -12,8 +12,8 @@ should be deployed, upgraded, and configured.
 * **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today. It is suited for small to medium deployments, and is in beta while support for backups and other features are added.
 * **[Cloud Native Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation of charts, currently in development. Will support large deployments, with horizontal scaling of individual GitLab components.
 * Other Charts
-  * [GitLab Runner Chart](#gitlab-runner-chart): For deploying just the GitLab Runner.
-  * [Advanced GitLab Installation](#advanced-gitlab-installation): Provides additional deployment options, but provides less functionality out-of-the-box. It's beta, no longer actively developed, and will be deprecated by [gitlab-omnibus](#gitlab-omnibus-chart-recommended) once it supports these options.
+  * [GitLab Runner Chart](gitlab_runner_chart.md): For deploying just the GitLab Runner.
+  * [Advanced GitLab Installation](gitlab_chart.md): Provides additional deployment options, but provides less functionality out-of-the-box. It's beta, no longer actively developed, and will be deprecated by [gitlab-omnibus](#gitlab-omnibus-chart-recommended) once it supports these options.
   * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab charts.
 
 ## GitLab-Omnibus Chart (Recommended)
@@ -25,7 +25,7 @@ Once the [cloud native charts](#upcoming-cloud-native-helm-charts) are ready for
 
 Learn more about the [gitlab-omnibus chart.](gitlab_omnibus.md)
 
-## Cloud Native Charts
+## Cloud Native GitLab Chart
 
 GitLab is working towards building a [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). A key part of this effort is to isolate each service into its [own Docker container and Helm chart](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420), rather than utilizing the all-in-one container image of the [current charts](#official-gitlab-helm-charts-recommended).
 
