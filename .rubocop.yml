@@ -1,6 +1,7 @@
 require:
   - rubocop-rspec
   - rubocop-gitlab-security
+  - rubocop-thread_safety
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
