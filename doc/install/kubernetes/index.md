@@ -57,7 +57,7 @@ Learn more about the [gitlab chart.](gitlab_chart.md)
 
 ### Community Contributed Charts
 
-The community has also contributed GitLab [CE]((https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce)) and [EE]((https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce)) charts to the [Helm Stable Repository](https://github.com/kubernetes/charts#repository-structure). These charts should be considered [deprecated](https://github.com/kubernetes/charts/issues/1138) in favor of the [official Charts](gitlab_omnibus.md).
+The community has also contributed GitLab [CE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ce) and [EE](https://github.com/kubernetes/charts/tree/master/stable/gitlab-ee) charts to the [Helm Stable Repository](https://github.com/kubernetes/charts#repository-structure). These charts should be considered [deprecated](https://github.com/kubernetes/charts/issues/1138) in favor of the [official Charts](gitlab_omnibus.md).
 
 [chart]: https://github.com/kubernetes/charts
 [helm]: https://github.com/kubernetes/helm/blob/master/README.md
