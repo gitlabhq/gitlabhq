@@ -272,19 +272,27 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.integer "user_id", null: false
     t.integer "service_id"
     t.boolean "enabled", default: true
+    t.integer "status"
+    t.string "status_reason"
     t.string "project_namespace"
     t.string "endpoint"
     t.text "ca_cert"
-    t.string "token"
+    t.string "encrypted_kubernetes_token"
+    t.string "encrypted_kubernetes_token_salt"
+    t.string "encrypted_kubernetes_token_iv"
     t.string "username"
-    t.string "password"
     t.string "encrypted_password"
     t.string "encrypted_password_salt"
     t.string "encrypted_password_iv"
     t.string "gcp_project_id"
     t.string "cluster_zone"
     t.string "cluster_name"
+    t.string "cluster_size"
+    t.string "machine_type"
     t.string "gcp_operation_id"
+    t.string "encrypted_gcp_token"
+    t.string "encrypted_gcp_token_salt"
+    t.string "encrypted_gcp_token_iv"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

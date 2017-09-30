@@ -1,12 +1,17 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:login, :index, :new, :create]
   before_action :authorize_google_api, except: [:login]
+  # before_action :cluster_creation_lock, only: [:update, :destroy]
   # before_action :authorize_admin_clusters! # TODO: Authentication
 
   def login
     begin
-      @authorize_url = api_client.authorize_url
-    rescue GoogleApi::Authentication::ConfigMissingError
+      @authorize_url = GoogleApi::CloudPlatform::Client.new(
+          nil,
+          callback_google_api_authorizations_url,
+          state: namespace_project_clusters_url.to_s
+        ).authorize_url
+    rescue GoogleApi::Auth::ConfigMissingError
       # Show an alert message that gitlab.yml is not configured properly
     end
   end
@@ -20,28 +25,29 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
+    @cluster = project.clusters.new
   end
 
   def create
-    begin
-      Ci::CreateClusterService.new(project, current_user, params)
-                              .create_cluster_on_gke(api_client)
-    rescue Ci::CreateClusterService::UnexpectedOperationError => e
-      # TODO: error
-      puts "#{self.class.name} - #{__callee__}: e: #{e}"
-    end
+    @cluster = Ci::CreateClusterService
+      .new(project, current_user, cluster_params)
+      .execute(token_in_session)
 
-    redirect_to project_clusters_path(project)
+    if @cluster.persisted?
+      ClusterCreationWorker.perform_async(@cluster.id)
+      redirect_to project_clusters_path(project)
+    else
+      render :new
+    end
   end
 
-  ##
-  # Return
-  # @status: The current status of the operation.
-  # @status_message: If an error has occurred, a textual description of the error.
-  def creation_status
+  def status
     respond_to do |format|
       format.json do
-        render json: cluster.creation_status(session[GoogleApi::CloudPlatform::Client.token_in_session])
+        render json: {
+          status: cluster.status, # The current status of the operation.
+          status_reason: cluster.status_reason # If an error has occurred, a textual description of the error.
+        }
       end
     end
   end
@@ -50,24 +56,9 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    Ci::Cluster.transaction do
-      if params['enabled'] == 'true'
-
-        cluster.service.attributes = {
-          active: true,
-          api_url: cluster.endpoint,
-          ca_pem: cluster.ca_cert,
-          namespace: cluster.project_namespace,
-          token: cluster.token
-        }
-
-        cluster.service.save!
-      else
-        cluster.service.update(active: false)
-      end
-
-      cluster.update(enabled: params['enabled'])
-    end
+    Ci::UpdateClusterService
+      .new(project, current_user, cluster_params)
+      .execute(cluster)
 
     render :edit
   end
@@ -88,18 +79,27 @@ class Projects::ClustersController < Projects::ApplicationController
     @cluster ||= project.clusters.find(params[:id])
   end
 
-  def api_client
-    @api_client ||=
-      GoogleApi::CloudPlatform::Client.new(
-        session[GoogleApi::CloudPlatform::Client.token_in_session],
-        callback_google_api_authorizations_url,
-        state: namespace_project_clusters_url.to_s
-      )
+  def cluster_params
+    params.require(:cluster)
+      .permit(:gcp_project_id, :cluster_zone, :cluster_name, :cluster_size,
+              :machine_type, :project_namespace, :enabled)
   end
 
   def authorize_google_api
-    unless session[GoogleApi::CloudPlatform::Client.token_in_session]
+    unless token_in_session
       redirect_to action: 'login'
+    end
+  end
+
+  def token_in_session
+    @token_in_session ||= session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+  end
+
+  def cluster_creation_lock
+    if cluster.on_creation?
+      redirect_to edit_project_cluster_path(project, cluster),
+                  status: :forbidden,
+                  alert: _("You can not modify cluster during creation")
     end
   end
 end

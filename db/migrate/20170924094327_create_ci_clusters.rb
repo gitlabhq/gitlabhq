@@ -9,6 +9,8 @@ class CreateCiClusters < ActiveRecord::Migration
 
       # General
       t.boolean :enabled, default: true
+      t.integer :status
+      t.string :status_reason
 
       # k8s integration specific
       t.string :project_namespace
@@ -16,9 +18,10 @@ class CreateCiClusters < ActiveRecord::Migration
       # Cluster details
       t.string :endpoint
       t.text :ca_cert
-      t.string :token
+      t.string :encrypted_kubernetes_token
+      t.string :encrypted_kubernetes_token_salt
+      t.string :encrypted_kubernetes_token_iv
       t.string :username
-      t.string :password
       t.string :encrypted_password
       t.string :encrypted_password_salt
       t.string :encrypted_password_iv
@@ -27,7 +30,12 @@ class CreateCiClusters < ActiveRecord::Migration
       t.string :gcp_project_id
       t.string :cluster_zone
       t.string :cluster_name
+      t.string :cluster_size
+      t.string :machine_type
       t.string :gcp_operation_id
+      t.string :encrypted_gcp_token
+      t.string :encrypted_gcp_token_salt
+      t.string :encrypted_gcp_token_iv
 
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false

@@ -1,5 +1,5 @@
 module GoogleApi
-  class Authentication
+  class Auth
     attr_reader :access_token, :redirect_uri, :state
 
     ConfigMissingError = Class.new(StandardError)

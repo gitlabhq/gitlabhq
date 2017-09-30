@@ -2,9 +2,9 @@ require 'google/apis/container_v1'
 
 module GoogleApi
   module CloudPlatform
-    class Client < GoogleApi::Authentication
+    class Client < GoogleApi::Auth
       class << self
-        def token_in_session
+        def session_key_for_token
           :cloud_platform_access_token
         end
       end
@@ -13,20 +13,14 @@ module GoogleApi
         'https://www.googleapis.com/auth/cloud-platform'
       end
 
-      ##
-      # Exception
-      # Google::Apis::ClientError:
-      # Google::Apis::AuthorizationError:
-      ##
-
       def projects_zones_clusters_get(project_id, zone, cluster_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
         begin
           cluster = service.get_zone_cluster(project_id, zone, cluster_id)
-        rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return nil
+        rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+          return e
         end
 
         puts "#{self.class.name} - #{__callee__}: cluster: #{cluster.inspect}"
@@ -35,7 +29,7 @@ module GoogleApi
 
       # Responce exmaple 
       # TODO: machine_type : Defailt 3.75 GB
-      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size:, machine_type:)
+      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
@@ -50,8 +44,8 @@ module GoogleApi
 
         begin
           operation = service.create_cluster(project_id, zone, request_body)
-        rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return nil
+        rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+          return e
         end
 
         puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
@@ -65,17 +59,15 @@ module GoogleApi
         begin
           operation = service.get_zone_operation(project_id, zone, operation_id)
         rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return nil
+          return e
         end
 
         puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
         operation
       end
 
-      def parse_self_link(self_link)
-        ret = self_link.match(/projects\/(.*)\/zones\/(.*)\/operations\/(.*)/)
-
-        return ret[1], ret[2], ret[3] # project_id, zone, operation_id
+      def parse_operation_id(self_link)
+        self_link.match(/projects\/.*\/zones\/.*\/operations\/(.*)/)[1]
       end
     end
   end

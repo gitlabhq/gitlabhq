@@ -189,7 +189,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
 
         member do
-          get :creation_status, format: :json
+          get :status, format: :json
         end
       end
 

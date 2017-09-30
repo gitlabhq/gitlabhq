@@ -1,9 +1,9 @@
 module GoogleApi
   class AuthorizationsController < ApplicationController
     def callback
-      session[GoogleApi::CloudPlatform::Client.token_in_session] = 
-        GoogleApi::Authentication.new(nil, callback_google_api_authorizations_url)
-                                 .get_token(params[:code])
+      session[GoogleApi::CloudPlatform::Client.session_key_for_token] =
+        GoogleApi::CloudPlatform::Client.new(nil, callback_google_api_authorizations_url)
+                                        .get_token(params[:code])
 
       if params[:state]
         redirect_to params[:state]

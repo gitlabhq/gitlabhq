@@ -2,7 +2,15 @@ edit/show cluster
 %br
 = @cluster.inspect
 = @cluster.service.inspect
-= link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'true'), method: :put
-= link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, enabled: 'false'), method: :put
-= link_to "Soft-delete the cluster", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete
-= link_to 'Check status', creation_status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id), :remote => true
+- unless @cluster.on_creation?
+  = link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, cluster: {enabled: 'true'}), method: :put
+  = link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, cluster: {enabled: 'false'}), method: :put
+  = link_to "Soft-delete the cluster", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete
+-# status GET
+-# status: The current status of the operation.
+-# status_reason: If an error has occurred, a textual description of the error.
+= link_to 'Check status', status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id), :remote => true
+-# simply rendering error, if it happened
+- if @cluster.status_reason
+  %p= status_reason
+-# Even if we got an error during the creation process, we don't delete cluster objects automatically, because we don't have a method to delete the cluster on gke. So users move to edit page from new page **regardless of validation errors**, and they have to delete the record manually. This is for giving users headsup that a new cluster might remain in gke. /cc @ayufan
