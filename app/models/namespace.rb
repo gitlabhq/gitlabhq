@@ -25,6 +25,8 @@ class Namespace < ActiveRecord::Base
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
   has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :custom_emoji
+
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
     presence: true,
@@ -131,6 +133,12 @@ class Namespace < ActiveRecord::Base
   def send_update_instructions
     projects.each do |project|
       project.send_move_instructions("#{full_path_was}/#{project.path}")
+    end
+  end
+
+  def custom_emoji_map
+    @custom_emoji_map ||= custom_emoji.each_with_object({}) do |emoji, hsh|
+      hsh[emoji.name] = emoji.url
     end
   end
 

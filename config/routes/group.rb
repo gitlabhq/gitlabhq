@@ -36,11 +36,11 @@ constraints(GroupUrlConstrainer.new) do
 
     resources :labels, except: [:show] do
       post :toggle_subscription, on: :member
-    end
 
     scope path: '-' do
       namespace :settings do
         resource :ci_cd, only: [:show], controller: 'ci_cd'
+        resources :custom_emoji, only: [:index, :new, :create, :destroy], controller: :custom_emoji
       end
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]

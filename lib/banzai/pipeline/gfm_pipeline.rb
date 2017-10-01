@@ -19,6 +19,7 @@ module Banzai
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           Filter::EmojiFilter,
+          Filter::CustomEmojiFilter,
           Filter::TableOfContentsFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,

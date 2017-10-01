@@ -507,6 +507,16 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
+  create_table "custom_emoji", force: :cascade do |t|
+    t.integer "namespace_id"
+    t.string "name"
+    t.string "file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "custom_emoji", ["namespace_id"], name: "index_custom_emoji_on_namespace_id", using: :btree
+
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
     t.integer "project_id", null: false
@@ -1811,6 +1821,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_foreign_key "ci_triggers", "users", column: "owner_id", name: "fk_e8e10d1964", on_delete: :cascade
   add_foreign_key "ci_variables", "projects", name: "fk_ada5eb64b3", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
+  add_foreign_key "custom_emoji", "namespaces", on_delete: :cascade
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade

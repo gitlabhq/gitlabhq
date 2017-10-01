@@ -7,6 +7,7 @@ module Banzai
           Filter::SanitizationFilter,
 
           Filter::EmojiFilter,
+          Filter::CustomEmojiFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
@@ -16,7 +17,7 @@ module Banzai
           Filter::MergeRequestReferenceFilter,
           Filter::SnippetReferenceFilter,
           Filter::CommitRangeReferenceFilter,
-          Filter::CommitReferenceFilter,
+          Filter::CommitReferenceFilter
         ]
       end
     end

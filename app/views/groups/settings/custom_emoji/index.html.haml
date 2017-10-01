@@ -1,0 +1,24 @@
+- page_title "Custom Emoji"
+
+%div{ class: container_class }
+  .top-area.adjust
+    .nav-text
+      Custom Emoji can be used in issues and merge requests.
+
+    - if can?(current_user, :admin_group, @group)
+      .nav-controls
+        = link_to new_group_settings_custom_emoji_path(@group), class: "btn btn-new" do
+          New custom emoji
+
+.table-holder
+  %table.table
+    %thead 
+      %tr
+        %th Image
+        %th Name
+        %th
+    - @custom_emoji.each do |emoji|
+      %tr
+        %td= image_tag(emoji.url, alt: emoji.name, class: 'custom-emoji')
+        %td= emoji.name
+        %td= link_to 'Remove', group_settings_custom_emoji_path(emoji.namespace, emoji), method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'

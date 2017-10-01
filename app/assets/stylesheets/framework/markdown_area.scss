@@ -113,7 +113,7 @@
   }
 
   // Border around images in issue and MR comments.
-  img:not(.emoji) {
+  img:not(.emoji, .custom-emoji) {
     border: 1px solid $white-normal;
     padding: 5px;
     margin: 5px 0;

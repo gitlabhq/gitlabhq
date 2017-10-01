@@ -115,4 +115,9 @@
                 %span
                   CI / CD
 
+            = nav_link(controller: :custom_emoji) do
+              = link_to group_settings_custom_emoji_index_path(@group), title: 'Custom Emoji' do
+                %span
+                  Custom Emoji
+
     = render 'shared/sidebar_toggle_button'
