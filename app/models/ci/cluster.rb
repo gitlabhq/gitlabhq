@@ -33,13 +33,15 @@ module Ci
     }
 
     def error!(reason)
-      update!(status: statuses[:errored],
-              status_reason: reason,
-              gcp_token: nil)
+      update!(status: statuses[:errored], status_reason: reason, gcp_token: nil)
     end
 
     def on_creation?
       scheduled? || creating?
+    end
+
+    def api_url
+      'https://' + endpoint
     end
   end
 end

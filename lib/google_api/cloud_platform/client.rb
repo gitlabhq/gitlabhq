@@ -3,6 +3,8 @@ require 'google/apis/container_v1'
 module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Auth
+      DEFAULT_MACHINE_TYPE = 'n1-standard-1'
+
       class << self
         def session_key_for_token
           :cloud_platform_access_token
@@ -27,8 +29,6 @@ module GoogleApi
         cluster
       end
 
-      # Responce exmaple 
-      # TODO: machine_type : Defailt 3.75 GB
       def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
@@ -37,7 +37,10 @@ module GoogleApi
             {
               "cluster": {
                 "name": cluster_name,
-                "initial_node_count": cluster_size
+                "initial_node_count": cluster_size,
+                "node_config": {
+                  "machine_type": machine_type # Default 3.75 GB, if ommit
+                }
               }
             }
           )

@@ -15,7 +15,6 @@ class KubernetesService < DeploymentService
   # Bearer authentication
   # TODO:  user/password auth, client certificates
   prop_accessor :token
-  attr_accessor :username, :password
 
   # Provide a custom CA bundle for self-signed deployments
   prop_accessor :ca_pem
@@ -139,15 +138,6 @@ class KubernetesService < DeploymentService
 
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
-  def read_secrets
-    kubeclient = build_kubeclient!
-
-    kubeclient.get_secrets.as_json
-  rescue KubeException => err
-    raise err unless err.error_code == 404
-    []
-  end
-
   private
 
   def kubeconfig
@@ -167,7 +157,7 @@ class KubernetesService < DeploymentService
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
-    raise "Incomplete settings" unless api_url && (token || (username && password))
+    raise "Incomplete settings" unless api_url && actual_namespace && token
 
     ::Kubeclient::Client.new(
       join_api_url(api_path),
@@ -200,11 +190,7 @@ class KubernetesService < DeploymentService
   end
 
   def kubeclient_auth_options
-    if token
-      { bearer_token: token }
-    else
-      { username: username, password: password }
-    end
+    { bearer_token: token }
   end
 
   def join_api_url(api_path)
