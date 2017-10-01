@@ -8,6 +8,8 @@ class JiraService < IssueTrackerService
 
   before_update :reset_password
 
+  REFERENCE_PATTERN = %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+
   # This is confusing, but JiraService does not really support these events.
   # The values here are required to display correct options in the service
   # configuration screen.
@@ -17,7 +19,7 @@ class JiraService < IssueTrackerService
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
   def self.reference_pattern(only_long: true)
-    @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
+    REFERENCE_PATTERN
   end
 
   def initialize_properties

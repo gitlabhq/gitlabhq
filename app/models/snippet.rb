@@ -57,22 +57,24 @@ class Snippet < ActiveRecord::Base
   attr_spammable :title, spam_title: true
   attr_spammable :content, spam_description: true
 
+  REFERENCE_PATTERN = %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
+    }x
+
   def self.reference_prefix
-    '$'
+    '$'.freeze
   end
 
   # Pattern used to extract `$123` snippet references from text
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
-    }x
+    REFERENCE_PATTERN
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+    Thread.current[:snippet_link_reference_pattern] ||= super("snippets", /(?<snippet>\d+)/)
   end
 
   def to_reference(from_project = nil, full: false)

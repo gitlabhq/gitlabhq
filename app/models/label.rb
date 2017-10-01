@@ -37,6 +37,22 @@ class Label < ActiveRecord::Base
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
+  REFERENCE_PATTERN =
+    # NOTE: The id pattern only matches when all characters on the expression
+    # are digits, so it will match ~2 but not ~2fa because that's probably a
+    # label name and we want it to be matched as such.
+    @reference_pattern ||= %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
+        (?<label_name>
+          [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
+          ".+?"                  # String-based multi-word label surrounded in quotes
+        )
+      )
+    }x
+
   def self.prioritized(project)
     joins(:priorities)
       .where(label_priorities: { project_id: project })
@@ -77,20 +93,7 @@ class Label < ActiveRecord::Base
   # This pattern supports cross-project references.
   #
   def self.reference_pattern
-    # NOTE: The id pattern only matches when all characters on the expression
-    # are digits, so it will match ~2 but not ~2fa because that's probably a
-    # label name and we want it to be matched as such.
-    @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}
-      (?:
-        (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
-        (?<label_name>
-          [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
-          ".+?"                  # String-based multi-word label surrounded in quotes
-        )
-      )
-    }x
+    REFERENCE_PATTERN
   end
 
   def self.link_reference_pattern

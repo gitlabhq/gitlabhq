@@ -119,6 +119,11 @@ class MergeRequest < ActiveRecord::Base
 
   after_save :keep_around_commit
 
+  REFERENCE_PATTERN = %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+    }x
+
   def self.reference_prefix
     '!'
   end
@@ -127,14 +132,12 @@ class MergeRequest < ActiveRecord::Base
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
-    }x
+    REFERENCE_PATTERN
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
+    Thread.current[:merge_request_link_reference_pattern] ||=
+      super("merge_requests", /(?<merge_request>\d+)/)
   end
 
   def self.reference_valid?(reference)

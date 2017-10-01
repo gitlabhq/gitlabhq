@@ -74,6 +74,11 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  REFERENCE_PATTERN = %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}(?<issue>\d+)
+    }x
+
   def hook_attrs
     assignee_ids = self.assignee_ids
 
@@ -89,21 +94,18 @@ class Issue < ActiveRecord::Base
   end
 
   def self.reference_prefix
-    '#'
+    '#'.freeze
   end
 
   # Pattern used to extract `#123` issue references from text
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    @reference_pattern ||= %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<issue>\d+)
-    }x
+    REFERENCE_PATTERN
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
+    Thread.current[:issue_link_reference_pattern] ||= super("issues", /(?<issue>\d+)/)
   end
 
   def self.reference_valid?(reference)

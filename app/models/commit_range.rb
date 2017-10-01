@@ -33,6 +33,11 @@ class CommitRange
   # between 7 and 40 hex characters.
   STRICT_PATTERN = /\h{7,40}\.{2,3}\h{7,40}/
 
+  REFERENCE_PATTERN = %r{
+      (?:#{Project.reference_pattern}#{reference_prefix})?
+      (?<commit_range>#{STRICT_PATTERN})
+    }x
+
   def self.reference_prefix
     '@'
   end
@@ -41,14 +46,11 @@ class CommitRange
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    @reference_pattern ||= %r{
-      (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit_range>#{STRICT_PATTERN})
-    }x
+    REFERENCE_PATTERN
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("compare", /(?<commit_range>#{PATTERN})/)
+    Thread.current[:commit_range_link_reference_pattern] ||= super("compare", /(?<commit_range>#{PATTERN})/)
   end
 
   # Initialize a CommitRange
