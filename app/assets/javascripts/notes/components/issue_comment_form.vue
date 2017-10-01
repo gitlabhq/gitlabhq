@@ -58,7 +58,7 @@
       isIssueOpen() {
         return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
       },
-      canCreate() {
+      canCreateNote() {
         return this.getIssueData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
@@ -241,7 +241,7 @@
 <template>
   <div>
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
-    <issue-discussion-locked-widget v-else-if="!canCreate" />
+    <issue-discussion-locked-widget v-else-if="!canCreateNote" />
     <ul
       v-else
       class="notes notes-form timeline">

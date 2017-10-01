@@ -1,7 +1,7 @@
 <script>
   export default {
     computed: {
-      icon() {
+      lockIcon() {
         return gl.utils.spriteIcon('lock');
       },
     },
@@ -12,7 +12,7 @@
 <template>
   <div class="disabled-comment text-center">
     <span class="issuable-note-warning">
-      <span class="icon" v-html="icon"></span>
+      <span class="icon" v-html="lockIcon"></span>
       <span>This issue is locked. Only <b>project members</b> can comment.</span>
      </span>
   </div>

@@ -4,11 +4,13 @@
       isLocked: {
         type: Boolean,
         default: false,
+        required: false,
       },
 
       isConfidential: {
         type: Boolean,
         default: false,
+        required: false,
       },
     },
 

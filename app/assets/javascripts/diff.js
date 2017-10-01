@@ -18,7 +18,7 @@ class Diff {
     });
 
     const tab = document.getElementById('diffs');
-    if (!tab || (tab && !Object.hasOwnProperty.call(tab.dataset, 'isLocked'))) FilesCommentButton.init($diffFile);
+    if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== '')) FilesCommentButton.init($diffFile);
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 

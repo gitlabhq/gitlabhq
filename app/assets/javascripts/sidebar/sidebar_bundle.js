@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import sidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
-import sidebarAssignees from './components/assignees/sidebar_assignees';
-import confidential from './components/confidential/confidential_issue_sidebar.vue';
+import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking';
+import SidebarAssignees from './components/assignees/sidebar_assignees';
+import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
-import lockBlock from './components/lock/lock_issue_sidebar.vue';
+import LockIssueSidebar from './components/lock/lock_issue_sidebar.vue';
 import Translate from '../vue_shared/translate';
 
 import Mediator from './sidebar_mediator';
@@ -11,14 +11,14 @@ import Mediator from './sidebar_mediator';
 Vue.use(Translate);
 
 function mountConfidentialComponent(mediator) {
-  const el = document.querySelector('#js-confidential-entry-point');
+  const el = document.getElementById('js-confidential-entry-point');
 
   if (!el) return;
 
   const dataNode = document.getElementById('js-confidential-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const ConfidentialComp = Vue.extend(confidential);
+  const ConfidentialComp = Vue.extend(ConfidentialIssueSidebar);
 
   new ConfidentialComp({
     propsData: {
@@ -30,14 +30,14 @@ function mountConfidentialComponent(mediator) {
 }
 
 function mountLockComponent(mediator) {
-  const el = document.querySelector('#js-lock-entry-point');
+  const el = document.getElementById('js-lock-entry-point');
 
   if (!el) return;
 
   const dataNode = document.getElementById('js-lock-issue-data');
   const initialData = JSON.parse(dataNode.innerHTML);
 
-  const LockComp = Vue.extend(lockBlock);
+  const LockComp = Vue.extend(LockIssueSidebar);
 
   new LockComp({
     propsData: {
@@ -54,11 +54,11 @@ function domContentLoaded() {
   const mediator = new Mediator(sidebarOptions);
   mediator.fetch();
 
-  const sidebarAssigneesEl = document.querySelector('#js-vue-sidebar-assignees');
+  const sidebarAssigneesEl = document.getElementById('js-vue-sidebar-assignees');
   // Only create the sidebarAssignees vue app if it is found in the DOM
   // We currently do not use sidebarAssignees for the MR page
   if (sidebarAssigneesEl) {
-    new Vue(sidebarAssignees).$mount(sidebarAssigneesEl);
+    new Vue(SidebarAssignees).$mount(sidebarAssigneesEl);
   }
 
   mountConfidentialComponent(mediator);
@@ -70,7 +70,7 @@ function domContentLoaded() {
     $('.js-move-issue-confirmation-button'),
   ).init();
 
-  new Vue(sidebarTimeTracking).$mount('#issuable-time-tracker');
+  new Vue(SidebarTimeTracking).$mount('#issuable-time-tracker');
 }
 
 document.addEventListener('DOMContentLoaded', domContentLoaded);

@@ -1,7 +1,9 @@
 export default {
   methods: {
     issuableDisplayName(issuableType) {
-      return issuableType.replace(/_/, ' ');
+      const displayName = issuableType.replace(/_/, ' ');
+
+      return this.__ ? this.__(displayName) : displayName;
     },
   },
 };

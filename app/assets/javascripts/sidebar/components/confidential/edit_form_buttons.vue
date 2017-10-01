@@ -15,7 +15,7 @@ export default {
     },
   },
   computed: {
-    buttonText() {
+    toggleButtonText() {
       return this.isConfidential ? 'Turn Off' : 'Turn On';
     },
     updateConfidentialBool() {
@@ -39,7 +39,7 @@ export default {
       class="btn btn-close"
       @click.prevent="updateConfidentialAttribute(updateConfidentialBool)"
     >
-      {{ buttonText }}
+      {{ toggleButtonText }}
     </button>
   </div>
 </template>
