@@ -19,7 +19,7 @@ describe 'shared/issuable/_participants.html.haml' do
 
     avatars.each do |avatar|
       expect(avatar[:class]).to include('lazy')
-      expect(avatar[:src]).to eql('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==')
+      expect(avatar[:src]).to eql(LazyImageTagHelper.placeholder_image)
       expect(avatar[:"data-src"]).to match('http://www.gravatar.com/avatar/')
     end
   end
