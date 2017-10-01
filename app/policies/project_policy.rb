@@ -188,6 +188,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_build
     enable :admin_container_image
     enable :admin_pipeline
+    enable :admin_cluster
     enable :admin_environment
     enable :admin_deployment
     enable :admin_pages

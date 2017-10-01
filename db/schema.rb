@@ -284,10 +284,10 @@ ActiveRecord::Schema.define(version: 20170924094327) do
     t.string "encrypted_password"
     t.string "encrypted_password_salt"
     t.string "encrypted_password_iv"
-    t.string "gcp_project_id"
-    t.string "cluster_zone"
-    t.string "cluster_name"
-    t.string "cluster_size"
+    t.string "gcp_project_id", null: false
+    t.string "cluster_zone", null: false
+    t.string "cluster_name", null: false
+    t.integer "cluster_size", null: false
     t.string "machine_type"
     t.string "gcp_operation_id"
     t.string "encrypted_gcp_token"

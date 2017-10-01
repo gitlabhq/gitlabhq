@@ -21,27 +21,26 @@ class ClusterCreationWorker
       )
 
     if operation.is_a?(StandardError)
-      return cluster.error!("Failed to request to CloudPlatform; #{operation.message}")
+      return cluster.errored!("Failed to request to CloudPlatform; #{operation.message}")
     end
       
     unless operation.status == 'RUNNING' || operation.status == 'PENDING'
-      return cluster.error!("Operation status is unexpected; #{operation.status_message}")
+      return cluster.errored!("Operation status is unexpected; #{operation.status_message}")
     end
 
     operation_id = api_client.parse_operation_id(operation.self_link)
 
     unless operation_id
-      return cluster.error!('Can not find operation_id from self_link')
+      return cluster.errored!('Can not find operation_id from self_link')
     end
 
-    if cluster.update(status: Ci::Cluster.statuses[:creating],
-                      gcp_operation_id: operation_id)
+    if cluster.creating!(operation_id)
       WaitForClusterCreationWorker.perform_in(
         WaitForClusterCreationWorker::INITIAL_INTERVAL,
         cluster.id
       )
     else
-      return cluster.error!("Failed to update cluster record; #{cluster.errors}")
+      return cluster.errored!("Failed to update cluster record; #{cluster.errors}")
     end
   end
 end

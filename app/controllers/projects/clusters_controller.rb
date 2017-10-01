@@ -1,8 +1,7 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:login, :index, :new, :create]
+  before_action :authorize_admin_cluster!
   before_action :authorize_google_api, except: [:login]
-  # before_action :cluster_creation_lock, only: [:update, :destroy]
-  # before_action :authorize_admin_clusters! # TODO: Authentication
 
   def login
     begin
@@ -67,9 +66,7 @@ class Projects::ClustersController < Projects::ApplicationController
     if cluster.destroy
       redirect_to project_clusters_path(project), status: 302
     else
-      redirect_to project_clusters_path(project),
-                  status: :forbidden,
-                  alert: _("Failed to remove the cluster")
+      render :edit
     end
   end
 
@@ -93,13 +90,5 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def token_in_session
     @token_in_session ||= session[GoogleApi::CloudPlatform::Client.session_key_for_token]
-  end
-
-  def cluster_creation_lock
-    if cluster.on_creation?
-      redirect_to edit_project_cluster_path(project, cluster),
-                  status: :forbidden,
-                  alert: _("You can not modify cluster during creation")
-    end
   end
 end

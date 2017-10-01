@@ -32,8 +32,26 @@ module Ci
       errored: 4
     }
 
-    def error!(reason)
-      update!(status: statuses[:errored], status_reason: reason, gcp_token: nil)
+    validates :gcp_project_id, presence: true
+    validates :cluster_zone, presence: true
+    validates :cluster_name, presence: true
+    validates :cluster_size, presence: true,
+              numericality: { only_integer: true, greater_than: 0 }
+    validate :restrict_modification, on: :update
+
+    def errored!(reason)
+      self.status = :errored
+      self.status_reason = reason
+      self.gcp_token = nil
+
+      save!(validate: false)
+    end
+
+    def creating!(gcp_operation_id)
+      self.status = :creating
+      self.gcp_operation_id = gcp_operation_id
+
+      save!(validate: false)
     end
 
     def on_creation?
@@ -42,6 +60,19 @@ module Ci
 
     def api_url
       'https://' + endpoint
+    end
+
+    def restrict_modification
+      if on_creation?
+        errors.add(:base, "cannot modify during creation")
+        return false
+      end
+
+      true
+    end
+
+    def destroy
+      super if restrict_modification
     end
   end
 end

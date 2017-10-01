@@ -5,6 +5,7 @@
       = s_('ClusterIntegration|Use our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
       = form_for [@project.namespace.becomes(Namespace), @project, @cluster] do |field|
+        = form_errors(@cluster)
         .form-group
           = field.label :cluster_name
           = field.text_field :cluster_name, class: 'form-control'

@@ -22,7 +22,7 @@ class WaitForClusterCreationWorker
       cluster.gcp_operation_id)
 
     if operation.is_a?(StandardError)
-      return cluster.error!("Failed to request to CloudPlatform; #{operation.message}")
+      return cluster.errored!("Failed to request to CloudPlatform; #{operation.message}")
     end
 
     case operation.status
@@ -30,12 +30,12 @@ class WaitForClusterCreationWorker
       if Time.now < operation.start_time.to_time + TIMEOUT
         WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, cluster.id)
       else
-        return cluster.error!("Cluster creation time exceeds timeout; #{TIMEOUT}")
+        return cluster.errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
       end
     when 'DONE'
       integrate(cluster, api_client)
     else
-      return cluster.error!("Unexpected operation status; #{operation.status} #{operation.status_message}")
+      return cluster.errored!("Unexpected operation status; #{operation.status} #{operation.status_message}")
     end
   end
 
@@ -46,7 +46,7 @@ class WaitForClusterCreationWorker
       cluster.cluster_name)
 
     if gke_cluster.is_a?(StandardError)
-      return cluster.error!("Failed to request to CloudPlatform; #{gke_cluster.message}")
+      return cluster.errored!("Failed to request to CloudPlatform; #{gke_cluster.message}")
     end
 
     begin
@@ -56,14 +56,14 @@ class WaitForClusterCreationWorker
       username = gke_cluster.master_auth.username
       password = gke_cluster.master_auth.password
     rescue Exception => e
-      return cluster.error!("Can not extract the extected data; #{e}")
+      return cluster.errored!("Can not extract the extected data; #{e}")
     end
 
     kubernetes_token = Ci::FetchKubernetesTokenService.new(
       api_url, ca_cert, username, password).execute
 
     unless kubernetes_token
-      return cluster.error!('Failed to get a default token of kubernetes')
+      return cluster.errored!('Failed to get a default token of kubernetes')
     end
 
     Ci::IntegrateClusterService.new.execute(
