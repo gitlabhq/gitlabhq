@@ -12,22 +12,22 @@
     </div>
     <div class="value">
       <div
-        v-if="board.assignee.name"
+        v-if="hasValue"
         class="media"
       >
         <div class="align-center">
           <user-avatar-image
-            :img-src="board.assignee.avatar_url"
-            :size="40"
+            :img-src="selected.avatar_url"
+            :size="32"
           />
         </div>
         <div class="media-body">
           <div class="bold author">
-            {{ board.assignee.name }}
+            {{ selected.name }}
           </div>
 
           <div class="username">
-            @{{ board.assignee.username }}
+            @{{ selected.username }}
           </div>
         </div>
       </div>
@@ -43,12 +43,13 @@
       <div class="dropdown">
         <button
           class="dropdown-menu-toggle wide js-user-search js-author-search js-save-user-data js-board-config-modal"
-          data-field-name="assignee_id"
+          :data-field-name="fieldName"
           data-current-user="true"
           data-dropdown-title="Select assignee"
+          data-any-user="Any assignee"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="1"
+          :data-selected="selected.id"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"
@@ -94,6 +95,10 @@ export default {
       required: false,
       default: false,
     },
+    fieldName: {
+      type: String,
+      required: true,
+    },
     groupId: {
       type: String,
       required: false,
@@ -104,9 +109,19 @@ export default {
       required: false,
       default: '',
     },
+    selected: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    }
   },
   components: {
     UserAvatarImage,
+  },
+  computed: {
+    hasValue() {
+      return Object.keys(this.selected).length > 0 && this.selected.id;
+    },
   },
   mounted() {
     new UsersSelect();

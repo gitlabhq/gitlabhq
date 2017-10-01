@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" :class="{ open: isOpen }">
+  <div class="dropdown weight" :class="{ open: isOpen }">
     <div class="title append-bottom-10">
       {{ title }}
       <a

@@ -83,7 +83,9 @@
           <form-block>
             <assignee-select
               :board="board"
-              :canEdit="canAdminBoard"
+              field-name="assignee_id"
+              :selected="board.assignee"
+              :can-edit="canAdminBoard"
               :project-id="projectId"
               :group-id="groupId"
             />
@@ -92,15 +94,15 @@
           <form-block
             title="Weight"
             defaultText="Any weight"
-            :fieldName="'board_filter[weight]'"
-            :canEdit="canAdminBoard"
+            field-name="'board_filter[weight]'"
+            :can-edit="canAdminBoard"
           >
             <board-weight-select
               :board="board"
               v-model="board.weight"
               title="Weight"
               defaultText="Any weight"
-              :canEdit="canAdminBoard"
+              :can-edit="canAdminBoard"
             />
           </form-block>
         </div>
@@ -271,7 +273,7 @@ export default Vue.extend({
           }
         })
         .catch(() => {
-          // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
+          Flash('Unable to save your changes. Please try again.')
         });
     },
     cancel() {
