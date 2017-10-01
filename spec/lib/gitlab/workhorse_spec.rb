@@ -13,13 +13,51 @@ describe Gitlab::Workhorse do
   end
 
   describe ".send_git_archive" do
+    let(:ref) { 'master' }
+    let(:format) { 'zip' }
+    let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
+    let(:base_params) { repository.archive_metadata(ref, storage_path, format) }
+    let(:gitaly_params) do
+      base_params.merge(
+        'GitalyServer' => {
+          'address' => Gitlab::GitalyClient.address(project.repository_storage),
+          'token' => Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'GitalyRepository' => repository.gitaly_repository.to_h.deep_stringify_keys
+      )
+    end
+
+    subject do
+      described_class.send_git_archive(repository, ref: ref, format: format)
+    end
+
+    context 'when Gitaly workhorse_raw_show feature is enabled' do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-archive')
+        expect(params).to include(gitaly_params)
+      end
+    end
+
+    context 'when Gitaly workhorse_raw_show feature is disabled', skip_gitaly_mock: true do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-archive')
+        expect(params).to eq(base_params)
+      end
+    end
+
     context "when the repository doesn't have an archive file path" do
       before do
         allow(project.repository).to receive(:archive_metadata).and_return(Hash.new)
       end
 
       it "raises an error" do
-        expect { described_class.send_git_archive(project.repository, ref: "master", format: "zip") }.to raise_error(RuntimeError)
+        expect { subject }.to raise_error(RuntimeError)
       end
     end
   end

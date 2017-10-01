@@ -89,6 +89,13 @@ module Gitlab
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
         raise "Repository or ref not found" if params.empty?
 
+        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive)
+          params.merge!(
+            'GitalyServer' => gitaly_server_hash(repository),
+            'GitalyRepository' => repository.gitaly_repository.to_h
+          )
+        end
+
         [
           SEND_DATA_HEADER,
           "git-archive:#{encode(params)}"
