@@ -14,23 +14,6 @@ class Milestone < ActiveRecord::Base
   include StripAttribute
   include Milestoneish
 
-  # NOTE: The iid pattern only matches when all characters on the expression
-  # are digits, so it will match %2 but not %2.1 because that's probably a
-  # milestone name and we want it to be matched as such.
-  REFERENCE_PATTERN = %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}
-      (?:
-        (?<milestone_iid>
-          \d+(?!\S\w)\b # Integer-based milestone iid, or
-        ) |
-        (?<milestone_name>
-          [^"\s]+\b |  # String-based single-word milestone title, or
-          "[^"]+"      # String-based multi-word milestone surrounded in quotes
-        )
-          )
-    }x
-
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
 
@@ -110,12 +93,26 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.reference_pattern
-    REFERENCE_PATTERN
+    # NOTE: The iid pattern only matches when all characters on the expression
+    # are digits, so it will match %2 but not %2.1 because that's probably a
+    # milestone name and we want it to be matched as such.
+    @reference_pattern ||= %r{
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
+      (?:
+        (?<milestone_iid>
+          \d+(?!\S\w)\b # Integer-based milestone iid, or
+        ) |
+        (?<milestone_name>
+          [^"\s]+\b |  # String-based single-word milestone title, or
+          "[^"]+"      # String-based multi-word milestone surrounded in quotes
+        )
+      )
+    }x
   end
 
   def self.link_reference_pattern
-    Thread.current[:milestone_link_reference_pattern] ||=
-      super("milestones", /(?<milestone>\d+)/)
+    @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
   def self.upcoming_ids_by_projects(projects)

@@ -28,11 +28,6 @@ class Commit
   MIN_SHA_LENGTH = 7
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
-  REFERENCE_PATTERN = %r{
-      (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>#{COMMIT_SHA_PATTERN})
-    }x
-
   def banzai_render_context(field)
     context = { pipeline: :single_line, project: self.project }
     context[:author] = self.author if self.author
@@ -103,7 +98,10 @@ class Commit
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
-    REFERENCE_PATTERN
+    @reference_pattern ||= %r{
+      (?:#{Project.reference_pattern}#{reference_prefix})?
+      (?<commit>#{COMMIT_SHA_PATTERN})
+    }x
   end
 
   def self.link_reference_pattern

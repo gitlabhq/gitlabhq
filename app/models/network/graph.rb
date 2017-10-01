@@ -1,10 +1,9 @@
 module Network
   class Graph
     attr_reader :days, :commits, :map, :notes, :repo
-    MAX_COUNT = 650
 
     def self.max_count
-      MAX_COUNT
+      @max_count ||= 650
     end
 
     def initialize(project, ref, commit, filter_ref)
