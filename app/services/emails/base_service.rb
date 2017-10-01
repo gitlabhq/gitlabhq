@@ -1,8 +1,7 @@
 module Emails
   class BaseService
-    def initialize(user, opts = {})
-      @user = user
-      @email = opts[:email]
+    def initialize(user, params = {})
+      @user, @params = user, params.dup
     end
   end
 end

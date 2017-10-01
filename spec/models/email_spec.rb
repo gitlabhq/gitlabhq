@@ -22,7 +22,9 @@ describe Email do
 
     it 'synchronizes the gpg keys when the email is updated' do
       email = user.emails.create(email: 'new@email.com')
+
       expect(user).to receive(:update_invalid_gpg_signatures)
+
       email.confirm
     end
   end
@@ -33,6 +35,7 @@ describe Email do
     it 'scopes confirmed emails' do
       create(:email, :confirmed, user: user)
       create(:email, user: user)
+
       expect(user.emails.count).to eq 2
       expect(user.emails.confirmed.count).to eq 1
     end

@@ -32,12 +32,12 @@
           All email addresses will be used to identify your commits.
     %ul.well-list
       %li
-        = render partial: 'shared/email_with_badge', locals: { email: @primary, verified: current_user.confirmed? }
+        = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
         %span.pull-right
           %span.label.label-success Primary email
-          - if @primary === current_user.public_email
+          - if @primary_email === current_user.public_email
             %span.label.label-info Public email
-          - if @primary === current_user.notification_email
+          - if @primary_email === current_user.notification_email
             %span.label.label-info Notification email
       - @emails.each do |email|
         %li

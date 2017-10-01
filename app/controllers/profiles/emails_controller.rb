@@ -2,7 +2,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   before_action :find_email, only: [:destroy, :resend_confirmation_instructions]
 
   def index
-    @primary = current_user.email
+    @primary_email = current_user.email
     @emails = current_user.emails.order_id_desc
   end
 
@@ -30,6 +30,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
     else
       flash[:alert] = "There was a problem sending the confirmation email"
     end
+
     redirect_to profile_emails_url
   end
 

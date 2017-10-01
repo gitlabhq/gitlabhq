@@ -164,7 +164,7 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
-  before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record?}
+  before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
   after_destroy :post_destroy_hook
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
@@ -221,11 +221,6 @@ class User < ActiveRecord::Base
           "administrator if you think this is an error."
       end
     end
-  end
-
-  # see if the new email is already a verified secondary email
-  def check_for_verified_email
-    skip_reconfirmation! if emails.find_by(email: self.email).try(:confirmed?)
   end
 
   mount_uploader :avatar, AvatarUploader
@@ -527,6 +522,11 @@ class User < ActiveRecord::Base
     return if public_email.blank?
 
     errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
+  end
+
+  # see if the new email is already a verified secondary email
+  def check_for_verified_email
+    skip_reconfirmation! if emails.confirmed.where(email: self.email).any?
   end
 
   # Note: the use of the Emails services will cause `saves` on the user object, running
@@ -843,7 +843,7 @@ class User < ActiveRecord::Base
 
   def verified_email?(check_email)
     downcased = check_email.downcase
-    (email == downcased && primary_email_verified?) || emails.confirmed.where(email: downcased).exists?
+    email == downcased ? primary_email_verified? : emails.confirmed.where(email: downcased).exists?
   end
 
   def hook_attrs
