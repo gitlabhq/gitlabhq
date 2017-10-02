@@ -55,6 +55,10 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
       it 'fails the pipeline' do
         expect(pipeline.reload).to be_failed
       end
+
+      it 'sets a config error failure reason' do
+        expect(pipeline.reload.config_error?).to eq true
+      end
     end
 
     context 'when saving incomplete pipeline is not allowed' do

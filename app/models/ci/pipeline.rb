@@ -72,7 +72,8 @@ module Ci
     }
 
     enum failure_reason: {
-      unknown_failure: 0
+      unknown_failure: 0,
+      config_error: 1
     }.merge(EE_FAILURE_REASONS)
 
     state_machine :status, initial: :created do
