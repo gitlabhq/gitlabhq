@@ -1,6 +1,6 @@
 module Applications
-  class CreateService < ::Emails::BaseService
-    #prepend ::EE::Applications::CreateService
+  class CreateService
+    prepend ::EE::Applications::CreateService
 
     def initialize(current_user, params)
       @current_user = current_user
