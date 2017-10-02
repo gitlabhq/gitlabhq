@@ -1,7 +1,6 @@
-// TODO Rename this file to explain what it does better
 import imageDiffHelper from './helpers/index';
 
-export function init() {
+export default () => {
   // Always pass can-create-note as false because user cannot place new badge markers
   // on discussion tab
   const canCreateNote = false;
