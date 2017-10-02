@@ -7,6 +7,23 @@ describe GroupDescendant, :nested_groups do
 
   context 'for a group' do
     describe '#hierarchy' do
+      it 'only queries once for the ancestors' do
+        # make sure the subsub_group does not have anything cached
+        test_group = create(:group, parent: subsub_group).reload
+
+        query_count = ActiveRecord::QueryRecorder.new { test_group.hierarchy }.count
+
+        expect(query_count).to eq(1)
+      end
+
+      it 'only queries once for the ancestors when a top is given' do
+        test_group = create(:group, parent: subsub_group).reload
+
+        query_count = ActiveRecord::QueryRecorder.new { test_group.hierarchy(subgroup) }.count
+
+        expect(query_count).to eq(1)
+      end
+
       it 'builds a hierarchy for a group' do
         expected_hierarchy = { parent => { subgroup => subsub_group } }
 
@@ -20,7 +37,7 @@ describe GroupDescendant, :nested_groups do
       end
 
       it 'raises an error if specifying a base that is not part of the tree' do
-        expect { subsub_group.hierarchy(double) }.to raise_error('specified base is not part of the tree')
+        expect { subsub_group.hierarchy(build_stubbed(:group)) }.to raise_error('specified top is not part of the tree')
       end
     end
 
@@ -77,7 +94,7 @@ describe GroupDescendant, :nested_groups do
       end
 
       it 'raises an error if specifying a base that is not part of the tree' do
-        expect { project.hierarchy(double) }.to raise_error('specified base is not part of the tree')
+        expect { project.hierarchy(build_stubbed(:group)) }.to raise_error('specified top is not part of the tree')
       end
     end
 
