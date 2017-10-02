@@ -96,12 +96,19 @@ $(() => {
       updateFilterPath('weight', this.weight, 'weight');
       updateFilterPath('author_username', this.authorUsername, 'author');
       updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
+
+      const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
       this.labels.forEach((label) => {
-        const querystring = `label_id[]=${label.title}`;
-        Store.filter.path = [querystring].concat(
-          Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${querystring}$`, 'g')) === null)
-        ).join('&');
+        const labelTitle = encodeURIComponent(label.title);
+        const param = `label_name[]=${labelTitle}`;
+        const labelIndex = filterPath.indexOf(param);
+
+        if (labelIndex === -1) {
+          filterPath.push(param);
+        }
       });
+
+      Store.filter.path = filterPath.join('&');
 
       Store.updateFiltersUrl(true);
 

@@ -66,7 +66,7 @@
               v-model="board.milestone_id"
               title="Milestone"
               defaultText="Any milestone"
-              :canEdit="canAdminBoard"
+              :can-edit="canAdminBoard"
             />
           </form-block>
 

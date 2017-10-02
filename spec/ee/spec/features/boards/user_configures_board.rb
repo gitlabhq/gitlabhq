@@ -11,6 +11,7 @@ describe 'issue board config', :js do
   let!(:group_label) { create(:group_label, group: group, name: 'Group Label') }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:board) { create(:board, project: project, name: 'Project board') }
+  let!(:group_board) { create(:board, group: group, name: 'Group board') }
   let!(:filtered_board) { create(:board, project: project_2, name: 'Filtered board', milestone: milestone, assignee: user, weight: 2) }
   let!(:issue) { create(:issue, project: project) }
   let!(:issue_milestone) { create(:closed_issue, project: project, milestone: milestone) }
@@ -145,6 +146,53 @@ describe 'issue board config', :js do
       end
 
       context 'labels' do
+        let!(:label_1) { create(:label, project: project, name: 'Label 1') }
+        let!(:label_2) { create(:label, project: project, name: 'Label 2') }
+        let!(:issue) { create(:labeled_issue, project: project, labels: [label_1]) }
+        let!(:issue_2) { create(:labeled_issue, project: project, labels: [label_2]) }
+        let!(:issue_3) { create(:labeled_issue, project: project, labels: [label_1, label_2]) }
+
+        it 'adds label to board' do
+          label_title = issue.labels.first.title
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_title)
+
+          expect(page).to have_selector('.card', count: 2)
+        end
+
+        it 'adds multiple labels to board' do
+          label_title = issue.labels.first.title
+          label_2_title = issue_2.labels.first.title
+
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+          update_board_label(label_2_title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_title)
+          expect(find('.tokens-container')).to have_content(label_2_title)
+
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        it 'can filter by additional labels' do
+          label_title = issue.labels.first.title
+          label_2_title = issue_2.labels.first.title
+
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+
+          input_filtered_search("label:~#{label_2_title}")
+
+          expect(page).to have_selector('.card', count: 0)
+        end
+
         context 'group board' do
           it 'only shows group labels in list' do
             visit group_boards_path(group)
@@ -189,6 +237,9 @@ describe 'issue board config', :js do
         end
       end
 
+      # context 'author' do
+      # end
+
       context 'weight' do
         let!(:issue_weight_1) { create(:issue, project: project, weight: 1) }
 
@@ -205,6 +256,13 @@ describe 'issue board config', :js do
           expect(page).to have_selector('.card', count: 4)
         end
 
+        # it 'sets board to No weight' do
+          # TODO
+        #   update_board_weight('No weight')
+
+        #   expect(page).to have_selector('.card', count: 3)
+        # end
+
         it 'does not display weight in search hint' do
           update_board_weight(1)
           filtered_search.click
@@ -214,6 +272,33 @@ describe 'issue board config', :js do
             expect(page).not_to have_content('weight')
           end
         end
+      end
+    end
+
+    context 'add issue' do
+      it 'adds assignee' do
+        visit boards_path(filtered_board)
+
+
+
+      end
+    end
+
+    context 'remove issue' do
+      let!(:issue) { create(:labeled_issue, project: project, labels: [project_label], milestone: milestone, assignees: [user]) }
+      let!(:list) { create(:list, board: board, label: project_label, position: 0) }
+
+      it 'removes issues milestone when removing from the board' do
+        visit project_boards_path(project)
+        wait_for_requests
+
+        find(".card[data-issue-id='#{issue.id}']").click
+
+        click_button 'Remove from board'
+        wait_for_requests
+
+        expect(issue.reload.milestone).to be_nil
+        expect(issue.reload.assignees).to be_empty
       end
     end
   end
@@ -269,6 +354,10 @@ describe 'issue board config', :js do
 
   def update_board_milestone(milestone_title)
     update_board_scope('milestone', milestone_title)
+  end
+
+  def update_board_label(label_title)
+    update_board_scope('labels', label_title)
   end
 
   def update_board_assignee(assignee_name)
