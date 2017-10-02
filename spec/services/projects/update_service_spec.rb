@@ -154,7 +154,7 @@ describe Projects::UpdateService, '#execute' do
 
     context 'with legacy storage' do
       before do
-        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
       end
 
       after do
