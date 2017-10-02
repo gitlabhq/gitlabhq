@@ -352,4 +352,42 @@ describe Namespace do
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
+
+  describe '#actual_plan' do
+    context 'when namespace has a plan associated' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns an associated plan' do
+        expect(namespace.plan).not_to be_nil
+        expect(namespace.actual_plan.name).to eq 'gold'
+      end
+    end
+
+    context 'when namespace does not have plan associated' do
+      it 'returns a free plan object' do
+        expect(namespace.plan).to be_nil
+        expect(namespace.actual_plan.name).to eq 'free'
+      end
+    end
+  end
+
+  describe '#actual_plan_name' do
+    context 'when namespace has a plan associated' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns an associated plan name' do
+        expect(namespace.actual_plan_name).to eq 'gold'
+      end
+    end
+
+    context 'when namespace does not have plan associated' do
+      it 'returns a free plan name' do
+        expect(namespace.actual_plan_name).to eq 'free'
+      end
+    end
+  end
 end
