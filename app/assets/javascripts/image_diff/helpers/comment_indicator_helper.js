@@ -57,8 +57,6 @@ export function commentIndicatorOnClick(event) {
 
   const buttonEl = event.currentTarget;
   const diffViewerEl = buttonEl.closest('.diff-viewer');
-  // TODO: Focus on the new comment form. There is a bug where this just goes to the closest form
-  // TODO: Also looks like canceling this other comment form will dismiss the comment indicator
   const textareaEl = diffViewerEl.querySelector('.note-container form .note-textarea');
   textareaEl.focus();
 }

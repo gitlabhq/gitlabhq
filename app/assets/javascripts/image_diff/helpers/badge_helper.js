@@ -9,10 +9,6 @@ export function createImageBadge(noteId, classNames = []) {
 }
 
 export function centerButtonToCoordinate(buttonEl, coordinate) {
-  // TODO: We should use math to calculate the width so that we don't
-  // have to do a reflow after adding to the DOM
-  // but we can leave this here for now
-
   // Set button center to be the center of the clicked position
   const { x, y } = coordinate;
   const { width, height } = buttonEl.getBoundingClientRect();
