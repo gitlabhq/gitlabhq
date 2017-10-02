@@ -1,8 +1,8 @@
-class CreateCiClusters < ActiveRecord::Migration
+class CreateGcpClusters < ActiveRecord::Migration
   DOWNTIME = false
 
-  def up
-    create_table :ci_clusters do |t|
+  def change
+    create_table :gcp_clusters do |t|
       t.references :project, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
       t.references :user, null: false, foreign_key: true
       t.references :service, foreign_key: true
@@ -40,9 +40,5 @@ class CreateCiClusters < ActiveRecord::Migration
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
     end
-  end
-
-  def down
-    drop_table :ci_clusters
   end
 end

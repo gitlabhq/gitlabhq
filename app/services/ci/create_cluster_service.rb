@@ -5,9 +5,9 @@ module Ci
         params['machine_type'] = GoogleApi::CloudPlatform::Client::DEFAULT_MACHINE_TYPE
       end
 
-      project.clusters.create(
+      project.create_cluster(
         params.merge(user: current_user,
-                     status: Ci::Cluster.statuses[:scheduled],
+                     status: Gcp::Cluster.statuses[:scheduled],
                      gcp_token: access_token))
     end
   end

@@ -15,15 +15,15 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def index
-    if project.clusters.any?
-      redirect_to edit_project_cluster_path(project, project.clusters.last.id)
+    if project.cluster
+      redirect_to edit_project_cluster_path(project, project.cluster)
     else
       redirect_to new_project_cluster_path(project)
     end
   end
 
   def new
-    @cluster = project.clusters.new
+    @cluster = project.build_cluster
   end
 
   def create
@@ -42,6 +42,8 @@ class Projects::ClustersController < Projects::ApplicationController
   def status
     respond_to do |format|
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: {
           status: cluster.status, # The current status of the operation.
           status_reason: cluster.status_reason # If an error has occurred, a textual description of the error.
@@ -72,7 +74,7 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    @cluster ||= project.clusters.find(params[:id])
+    @cluster ||= project.cluster
   end
 
   def cluster_params

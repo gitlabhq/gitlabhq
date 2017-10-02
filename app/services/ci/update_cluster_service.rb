@@ -1,7 +1,7 @@
 module Ci
   class UpdateClusterService < BaseService
     def execute(cluster)
-      Ci::Cluster.transaction do
+      Gcp::Cluster.transaction do
         cluster.update!(enabled: params['enabled'])
 
         if params['enabled'] == 'true'
@@ -12,7 +12,7 @@ module Ci
             namespace: cluster.project_namespace,
             token: cluster.kubernetes_token)
         else
-          cluster.service.update(active: false)
+          cluster.service.update!(active: false)
         end
       end
     rescue ActiveRecord::RecordInvalid => e

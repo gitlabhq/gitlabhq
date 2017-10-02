@@ -86,7 +86,7 @@ module GoogleApi
       end
 
       def parse_operation_id(self_link)
-        self_link.match(/projects\/.*\/zones\/.*\/operations\/(.*)/)[1]
+        self_link.match(%r{projects/.*/zones/.*/operations/(.*)})[1]
       end
     end
   end

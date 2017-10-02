@@ -3,7 +3,7 @@ class ClusterCreationWorker
   include DedicatedSidekiqQueue
 
   def perform(cluster_id)
-    cluster = Ci::Cluster.find_by_id(cluster_id)
+    cluster = Gcp::Cluster.find_by_id(cluster_id)
 
     unless cluster
       return Rails.logger.error "Cluster object is not found; #{cluster_id}"
