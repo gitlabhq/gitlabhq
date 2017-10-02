@@ -656,10 +656,15 @@
     background-size: 10px 10px;
     background-repeat: repeat;
   }
-}
 
-.files:not([data-can-create-note]) .frame {
-  cursor: auto;
+  .notes {
+    position: relative;
+  }
+
+  .diff-notes-collapse {
+    position: absolute;
+    left: -12px;
+  }
 }
 
 .diff-file .note-container > .new-note,
@@ -676,6 +681,10 @@
     margin-left: inherit;
     border-left: inherit;
   }
+}
+
+.files:not([data-can-create-note]) .frame {
+  cursor: auto;
 }
 
 .frame.click-to-comment {
@@ -745,32 +754,9 @@
   }
 }
 
-.note-container .notes {
-  position: relative;
-}
-
-.note-container .diff-notes-collapse {
-  position: absolute;
-  left: -12px;
-}
-
 .notes > .badge {
   display: none;
   left: -13px;
-}
-
-.discussion-notes.collapsed {
-  background-color: $white-light;
-
-  .diff-notes-collapse,
-  .note,
-  .discussion-reply-holder, {
-    display: none;
-  }
-
-  .notes > .badge {
-    display: block;
-  }
 }
 
 .discussion-notes {
@@ -779,6 +765,20 @@
   &:first-child {
     // First child does not have the jagged borders
     min-height: 25px;
+  }
+
+  &.collapsed {
+    background-color: $white-light;
+
+    .diff-notes-collapse,
+    .note,
+    .discussion-reply-holder, {
+      display: none;
+    }
+
+    .notes > .badge {
+      display: block;
+    }
   }
 }
 
