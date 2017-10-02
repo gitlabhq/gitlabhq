@@ -8,8 +8,8 @@ module GroupTree
       @groups = groups.where(parent_id: params[:parent_id])
     end
     @groups = @groups.includes(:route)
-    @groups = @groups.sort(@sort = params[:sort])
-    @groups = @groups.page(params[:page])
+                .sort(@sort = params[:sort])
+                .page(params[:page])
 
     respond_to do |format|
       format.html
