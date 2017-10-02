@@ -359,7 +359,7 @@ Parameters
 | Attribute   | Type    | Required | Description               |
 |-------------|---------|----------|-------------------------- |
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
-| `ref_name`  | string  | yes      | The ref from a repository |
+| `ref_name`  | string  | yes      | The ref from a repository (can only be branch or tag name, not HEAD or SHA) |
 | `job`       | string  | yes      | The name of the job       |
 | `job_token` | string  | no       | To be used with [triggers] for multi-project pipelines. Is should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
 

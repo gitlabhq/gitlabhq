@@ -1,0 +1,5 @@
+---
+title: Fixes data parameter not being sent in ajax request for jobs log
+merge_request:
+author:
+type: fixed

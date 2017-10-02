@@ -1,0 +1,5 @@
+---
+title: Make sure API responds with 401 when invalid authentication info is provided
+merge_request:
+author:
+type: fixed
