@@ -1,4 +1,4 @@
-import ImageDiffHelper from './helpers/index';
+import imageDiffHelper from './helpers/index';
 import { viewTypes, isValidViewType } from './view_types';
 import ImageDiff from './image_diff';
 
@@ -64,7 +64,7 @@ export default class ReplacedImageDiff extends ImageDiff {
       return;
     }
 
-    const indicator = ImageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
+    const indicator = imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
 
     this.currentView = newView;
 
@@ -84,14 +84,14 @@ export default class ReplacedImageDiff extends ImageDiff {
 
       // Re-render indicator in new view
       if (indicator.removed) {
-        const normalizedIndicator = ImageDiffHelper
+        const normalizedIndicator = imageDiffHelper
           .resizeCoordinatesToImageElement(this.getImageEl(), {
             x: indicator.x,
             y: indicator.y,
             width: indicator.image.width,
             height: indicator.image.height,
           });
-        ImageDiffHelper.showCommentIndicator(this.getImageFrameEl(), normalizedIndicator);
+        imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), normalizedIndicator);
       }
     }, 250);
   }
