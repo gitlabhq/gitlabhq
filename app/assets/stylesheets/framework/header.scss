@@ -57,7 +57,7 @@ header {
 
       .navbar-toggle {
         min-width: 45px;
-        padding: 4px $gl-padding;
+        padding: 0 $gl-padding;
         margin-right: -7px;
         font-size: 14px;
         text-align: center;
@@ -73,16 +73,16 @@ header {
     }
   }
 
-  .fa-times {
+  .close-icon {
     display: none;
   }
 
   .menu-expanded {
-    .fa-ellipsis-v {
+    .more-icon {
       display: none;
     }
 
-    .fa-times {
+    .close-icon {
       display: block;
     }
   }
