@@ -1,4 +1,8 @@
+require 'uri'
+
 module GroupsHelper
+  include Gitlab::CurrentSettings
+
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end
@@ -7,12 +11,28 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
-  def group_icon(group)
+  # = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
+  # = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+  def group_icon(group, options = {})
+    img_path = group_icon_url(group, options)
+    image_tag img_path, options
+  end
+
+  def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
     end
 
-    group.try(:avatar_url, use_asset_path: false) || ActionController::Base.helpers.image_path('no_group_avatar.png')
+    if group.avatar_url
+      if group.private?
+        options[:use_original_source] = true
+        group.avatar_url(use_asset_path: false)
+      else
+        group.avatar_url
+      end
+    else # No Avatar Icon
+      ActionController::Base.helpers.image_path('no_group_avatar.png')
+    end
   end
 
   def group_title(group, name = nil, url = nil)
@@ -90,10 +110,9 @@ module GroupsHelper
       output =
         if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
           if group.private?
-            puts "GROUP IS PRIVATE : " + group_icon(group)
-            image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15, use_original_source: true)
+            group_icon(group, class: "avatar-tile", width: 15, height: 15, use_original_source: true)
           else
-            image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
+            group_icon(group, class: "avatar-tile", width: 15, height: 15)
           end
         else
           ""

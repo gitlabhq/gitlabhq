@@ -16,7 +16,7 @@ module Avatarable
 
       [host, avatar.url].join
     else
-      avatar.url
+      [host, avatar.url].join
     end
   end
 end
