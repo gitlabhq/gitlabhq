@@ -57,6 +57,8 @@ describe ApplicationHelper do
   end
 
   describe 'project_icon' do
+    let(:asset_host) { 'http://assets' }
+
     it 'returns an url for the avatar' do
       project = create(:project, avatar: File.open(uploaded_image_temp_path))
       avatar_url = "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
@@ -64,8 +66,8 @@ describe ApplicationHelper do
       expect(helper.project_icon(project.full_path).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
 
-      allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
+      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+      avatar_url = "#{asset_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
