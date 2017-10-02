@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::LDAP::DN do
   using RSpec::Parameterized::TableSyntax
 
-  describe '#initialize' do
+  describe '#to_s_normalized' do
     subject { described_class.new(given).to_s_normalized }
 
     # Regarding the telephoneNumber test:
@@ -93,7 +93,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaXaaa' }
 
         it 'raises MalformedDnError' do
-          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the first character of a hex pair, but got \"x\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the first character of a hex pair, but got \"X\"")
         end
       end
 
@@ -101,7 +101,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { '0.9.2342.19200300.100.1.25=#aaaYaa' }
 
         it 'raises MalformedDnError' do
-          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair, but got \"y\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair, but got \"Y\"")
         end
       end
 
@@ -109,7 +109,7 @@ describe Gitlab::LDAP::DN do
         let(:given) { 'uid="Sebasti\\cX\\a1n"' }
 
         it 'raises MalformedDnError' do
-          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"x\"")
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
         end
       end
 

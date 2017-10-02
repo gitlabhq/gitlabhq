@@ -40,7 +40,7 @@ module Gitlab
           buffer << "=" if index.odd?
           buffer << "," if index.even? && index != 0
 
-          arg = args[index].downcase
+          arg = args[index]
 
           buffer << if index < args.length - 1 || index.odd?
                       self.class.escape(arg)
@@ -68,7 +68,7 @@ module Gitlab
           case state
           when :key then
             case char
-            when 'a'..'z' then
+            when 'a'..'z', 'A'..'Z' then
               state = :key_normal
               key << char
             when '0'..'9' then
@@ -80,7 +80,7 @@ module Gitlab
           when :key_normal then
             case char
             when '=' then state = :value
-            when 'a'..'z', '0'..'9', '-', ' ' then key << char
+            when 'a'..'z', 'A'..'Z', '0'..'9', '-', ' ' then key << char
             else raise(MalformedDnError, "Unrecognized RDN attribute type name character \"#{char}\"")
             end
           when :key_oid then
@@ -119,7 +119,7 @@ module Gitlab
             end
           when :value_normal_escape then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_normal_escape_hex
               hex_buffer = char
             when /\s/ then
@@ -131,7 +131,7 @@ module Gitlab
             end
           when :value_normal_escape_hex then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_normal
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise(MalformedDnError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
@@ -155,7 +155,7 @@ module Gitlab
             end
           when :value_quoted_escape then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_quoted_escape_hex
               hex_buffer = char
             else
@@ -164,14 +164,14 @@ module Gitlab
             end
           when :value_quoted_escape_hex then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_quoted
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise(MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"#{char}\"")
             end
           when :value_hexstring then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_hexstring_hex
               value << char
             when ' ' then state = :value_end
@@ -184,7 +184,7 @@ module Gitlab
             end
           when :value_hexstring_hex then
             case char
-            when '0'..'9', 'a'..'f' then
+            when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_hexstring
               value << char
             else raise(MalformedDnError, "Expected the second character of a hex pair, but got \"#{char}\"")
@@ -227,7 +227,7 @@ module Gitlab
       ##
       # Return the DN as an escaped and normalized string.
       def to_s_normalized
-        self.class.new(*to_a).to_s
+        self.class.new(*to_a).to_s.downcase
       end
 
       # https://tools.ietf.org/html/rfc4514 section 2.4 lists these exceptions
