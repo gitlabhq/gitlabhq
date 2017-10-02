@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -1693,27 +1693,41 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    context 'with a valid target' do
-      let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user) }
 
-      it 'creates the tag using rugged' do
-        expect(repository.rugged.tags).to receive(:create)
-          .with('8.5', repository.commit('master').id,
-            hash_including(message: 'foo',
-                           tagger: hash_including(name: user.name, email: user.email)))
-          .and_call_original
+    shared_examples 'adding tag' do
+      context 'with a valid target' do
+        it 'creates the tag' do
+          repository.add_tag(user, '8.5', 'master', 'foo')
 
-        repository.add_tag(user, '8.5', 'master', 'foo')
+          tag = repository.find_tag('8.5')
+          expect(tag).to be_present
+          expect(tag.message).to eq('foo')
+          expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
+        end
+
+        it 'returns a Gitlab::Git::Tag object' do
+          tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+          expect(tag).to be_a(Gitlab::Git::Tag)
+        end
       end
 
-      it 'returns a Gitlab::Git::Tag object' do
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-        expect(tag).to be_a(Gitlab::Git::Tag)
+      context 'with an invalid target' do
+        it 'returns false' do
+          expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+        end
       end
+    end
 
-      it 'passes commit SHA to pre-receive and update hooks,\
-        and tag SHA to post-receive hook' do
+    context 'when Gitaly operation_user_add_tag feature is enabled' do
+      it_behaves_like 'adding tag'
+    end
+
+    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'adding tag'
+
+      it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
         pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
         update_hook = Gitlab::Git::Hook.new('update', project)
         post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
@@ -1738,12 +1752,6 @@ describe Repository, models: true do
           .with(anything, anything, tag_sha, anything)
       end
     end
-
-    context 'with an invalid target' do
-      it 'returns false' do
-        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
-      end
-    end
   end
 
   describe '#rm_branch' do
@@ -1758,12 +1766,22 @@ describe Repository, models: true do
   end
 
   describe '#rm_tag' do
-    it 'removes a tag' do
-      expect(repository).to receive(:before_remove_tag)
+    shared_examples 'removing tag' do
+      it 'removes a tag' do
+        expect(repository).to receive(:before_remove_tag)
 
-      repository.rm_tag(create(:user), 'v1.1.0')
+        repository.rm_tag(build_stubbed(:user), 'v1.1.0')
 
-      expect(repository.find_tag('v1.1.0')).to be_nil
+        expect(repository.find_tag('v1.1.0')).to be_nil
+      end
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is enabled' do
+      it_behaves_like 'removing tag'
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'removing tag'
     end
   end
 

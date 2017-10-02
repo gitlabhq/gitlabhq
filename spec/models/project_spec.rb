@@ -2860,6 +2860,12 @@ describe Project do
       end
     end
 
+    describe '#hashed_storage?' do
+      it 'returns false' do
+        expect(project.hashed_storage?).to be_falsey
+      end
+    end
+
     describe '#rename_repo' do
       before do
         # Project#gitlab_shell returns a new instance of Gitlab::Shell on every

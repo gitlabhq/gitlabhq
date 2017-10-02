@@ -535,7 +535,6 @@
 }
 
 .diff-notes-collapse {
-  position: relative;
   width: 19px;
   height: 19px;
   padding: 0;
@@ -543,11 +542,7 @@
   z-index: 100;
 
   svg {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -5.5px;
-    margin-top: -5.5px;
+    vertical-align: text-top;
   }
 
   path {

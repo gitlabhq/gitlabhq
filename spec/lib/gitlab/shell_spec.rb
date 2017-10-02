@@ -487,7 +487,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return([nil, 0])
+            nil, popen_vars).and_return([nil, 0])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be true
       end
@@ -495,7 +495,7 @@ describe Gitlab::Shell do
       it 'returns false when the command fails' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return(["error", 1])
+            nil, popen_vars).and_return(["error", 1])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be false
       end

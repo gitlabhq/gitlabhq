@@ -51,4 +51,18 @@ describe GlobalPolicy do
       end
     end
   end
+
+  describe 'custom attributes' do
+    context 'regular user' do
+      it { is_expected.not_to be_allowed(:read_custom_attribute) }
+      it { is_expected.not_to be_allowed(:update_custom_attribute) }
+    end
+
+    context 'admin' do
+      let(:current_user) { create(:user, :admin) }
+
+      it { is_expected.to be_allowed(:read_custom_attribute) }
+      it { is_expected.to be_allowed(:update_custom_attribute) }
+    end
+  end
 end
