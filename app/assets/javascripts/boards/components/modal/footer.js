@@ -30,11 +30,15 @@ gl.issueBoards.ModalFooter = Vue.extend({
       const list = this.modal.selectedList || this.state.lists[firstListIndex];
       const selectedIssues = ModalStore.getSelectedIssues();
       const issueIds = selectedIssues.map(issue => issue.id);
+      const currentBoard = this.state.currentBoard;
+      const boardLabelIds = currentBoard.labels.map(label => label.id);
 
       // Post the data to the backend
       gl.boardService.bulkUpdate(issueIds, {
-        add_label_ids: [list.label.id],
-        milestone_id: this.state.currentBoard.milestone_id,
+        add_label_ids: [list.label.id, ...boardLabelIds],
+        milestone_id: currentBoard.milestone_id,
+        assignee_ids: [currentBoard.assignee_id],
+        weight: currentBoard.weight
       }).catch(() => {
         new Flash('Failed to update issues, please try again.', 'alert');
 
