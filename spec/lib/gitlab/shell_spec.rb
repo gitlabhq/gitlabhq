@@ -68,7 +68,6 @@ describe Gitlab::Shell do
       end
     end
 
-<<<<<<< HEAD
     describe '#mv_storage' do
       it 'executes the command' do
         expect(Gitlab::Utils).to receive(:system_silent)
@@ -123,9 +122,6 @@ describe Gitlab::Shell do
         stub_application_setting(authorized_keys_enabled: nil)
       end
 
-=======
-    describe '#add_key' do
->>>>>>> upstream/master
       it 'removes trailing garbage' do
         allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
         expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
@@ -134,7 +130,6 @@ describe Gitlab::Shell do
 
         gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
       end
-<<<<<<< HEAD
     end
   end
 
@@ -400,8 +395,6 @@ describe Gitlab::Shell do
 
         expect(ids).to eq([])
       end
-=======
->>>>>>> upstream/master
     end
   end
 
