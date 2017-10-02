@@ -12,4 +12,4 @@ export default () => {
 
   // TODO: Related to image diff.js line 50
   $('.timeline-content .diff-file').on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
-}
+};
