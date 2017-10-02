@@ -1,7 +1,7 @@
 - diff_file = discussion.diff_file
 - blob = discussion.blob
 - discussions = { discussion.original_line_code => [discussion] }
-- diff_file_class = 'text-file' if diff_file.text?
+- diff_file_class = diff_file.text? ? 'text-file' : 'js-image-file'
 
 .diff-file.file-holder{ class: diff_file_class }
   .js-file-title.file-title.file-title-flex-parent
@@ -19,9 +19,68 @@
             discussion_expanded: true,
             plain: true }
   - else
+    - blob = diff_file.blob
+    - old_blob = diff_file.old_blob
     - blob_raw_path = diff_file_blob_raw_path(diff_file)
-    .image
-      .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: discussion.position.to_json } }
-        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false)
+    - old_blob_raw_path = diff_file_old_blob_raw_path(diff_file)
+    - if diff_file.new_file? || diff_file.deleted_file?
+      .image.js-single-image
+        .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: discussion.position.to_json } }
+          = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
+    - else
+      .image.js-replaced-image
+        .two-up.view
+          %span.wrap
+            .frame.deleted
+              = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
+            %p.image-info.hide
+              %span.meta-filesize= number_to_human_size(old_blob.size)
+              |
+              %b W:
+              %span.meta-width
+              |
+              %b H:
+              %span.meta-height
+          %span.wrap
+            .frame.added{ data: { position: discussion.position.to_json } }
+              = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
+            %p.image-info.hide
+              %span.meta-filesize= number_to_human_size(blob.size)
+              |
+              %b W:
+              %span.meta-width
+              |
+              %b H:
+              %span.meta-height
+
+        .swipe.view.hide
+          .swipe-frame
+            .frame.deleted
+              = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
+            .swipe-wrap
+              .frame.added{ data: { position: discussion.position.to_json } }
+                = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
+            %span.swipe-bar
+              %span.top-handle
+              %span.bottom-handle
+
+        .onion-skin.view.hide
+          .onion-skin-frame
+            .frame.deleted
+              = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
+            .frame.added{ data: { position: discussion.position.to_json } }
+              = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
+            .controls
+              .transparent
+              .drag-track
+                .dragger{ :style => "left: 0px;" }
+              .opaque
+
+      .view-modes.hide
+        %ul.view-modes-menu
+          %li.two-up{ data: { mode: 'two-up' } } 2-up
+          %li.swipe{ data: { mode: 'swipe' } } Swipe
+          %li.onion-skin{ data: { mode: 'onion-skin' } } Onion skin
+
     .note-container
       = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse: true }

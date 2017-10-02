@@ -3,15 +3,17 @@ import ImageBadge from './image_badge';
 import { isImageLoaded } from '../lib/utils/image_utility';
 
 export default class ImageDiff {
-  constructor(el, canCreateNote = false) {
+  // TODO: Refactor options into options object
+  constructor(el, canCreateNote = false, renderCommentBadge = false) {
     this.el = el;
     this.canCreateNote = canCreateNote;
+    this.renderCommentBadge = renderCommentBadge;
     this.$noteContainer = $(this.el.querySelector('.note-container'));
     this.imageBadges = [];
   }
 
   init() {
-    this.imageFrameEl = this.el.querySelector('.diff-viewer .image .frame');
+    this.imageFrameEl = this.el.querySelector('.diff-file .image .frame');
     this.imageEl = this.imageFrameEl.querySelector('img');
 
     this.bindEvents();
@@ -43,6 +45,10 @@ export default class ImageDiff {
     // jquery makes the event delegation here much simpler
     this.$noteContainer.on('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
     $(this.el).on('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
+
+    // TODO: Investigate why jQuery event delegation
+    // isn't properly adjusting the view to the location hash
+    // This works properly when it does not use jquery event delegation
     $(this.el).on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
 
     if (this.canCreateNote) {
@@ -91,11 +97,20 @@ export default class ImageDiff {
 
       this.imageBadges.push(imageBadge);
 
-      imageDiffHelper.addImageBadge(this.getImageFrameEl(), {
+      const options = {
         coordinate: imageBadge.browser,
-        badgeText: index + 1,
         noteId: imageBadge.noteId,
-      });
+      };
+
+      if (this.renderCommentBadge) {
+        imageDiffHelper.addImageCommentBadge(this.getImageFrameEl(), options);
+      } else {
+        const numberBadgeOptions = Object.assign(options, {
+          badgeText: index + 1,
+        });
+
+        imageDiffHelper.addImageBadge(this.getImageFrameEl(), numberBadgeOptions);
+      }
     });
   }
 

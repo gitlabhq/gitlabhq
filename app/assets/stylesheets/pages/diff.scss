@@ -285,6 +285,7 @@
         .drag-track {
           display: block;
           position: absolute;
+          top: 0;
           left: 12px;
           height: 10px;
           width: 276px;
@@ -710,7 +711,7 @@
   }
 }
 
-.frame.click-to-comment .badge,
+.frame .badge,
 .image-diff-avatar-link .badge,
 .notes > .badge {
   position: absolute;

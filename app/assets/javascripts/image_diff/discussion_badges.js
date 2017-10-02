@@ -1,31 +1,20 @@
+// TODO Rename this file to explain what it does better
 import imageDiffHelper from './helpers/index';
 
-export function create(imageEl) {
-  const imageFrameEl = imageEl.closest('.frame');
-  const { x_axis, y_axis, width, height } = JSON.parse(imageFrameEl.dataset.position);
-
-  const meta = imageDiffHelper.resizeCoordinatesToImageElement(imageEl, {
-    x: x_axis,
-    y: y_axis,
-    width,
-    height,
-  });
-
-  const diffFile = imageFrameEl.closest('.diff-file');
-  const firstNote = diffFile.querySelector('.discussion-notes .note');
-
-  imageDiffHelper.addImageCommentBadge(imageFrameEl, {
-    coordinate: {
-      x: meta.x,
-      y: meta.y,
-    },
-    noteId: firstNote.id,
-  });
-}
-
 export function init() {
-  const imageEls = document.querySelectorAll('.timeline-content .diff-file .image .frame img');
-  [].forEach.call(imageEls, imageEl => imageEl.addEventListener('load', create.bind(null, imageEl)));
+  const diffFileEls = document.querySelectorAll('.timeline-content .diff-file.js-image-file');
+  [].forEach.call(diffFileEls, (diffFileEl) => {
+    // ImageFile needs to be invoked before initImageDiff so that badges
+    // can mount to the correct location
+    new gl.ImageFile(diffFileEl); // eslint-disable-line no-new
 
+    // Always pass can-create-note as false because user cannot place new badge markers
+    // on discussion tab
+    const canCreateNote = false;
+    const renderCommentBadge = true;
+    imageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge);
+  });
+
+  // TODO: Related to image diff.js line 50
   $('.timeline-content .diff-file').on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
 }
