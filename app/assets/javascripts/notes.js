@@ -900,7 +900,7 @@ export default class Notes {
     form.find('#note_type').val(dataHolder.data('noteType'));
 
     // LegacyDiffNote
-    form.find('#note_line_code').val(dataHolder.attr('data-line-code'));
+    form.find('#note_line_code').val(dataHolder.data('lineCode'));
 
     // DiffNote
     form.find('#note_position').val(dataHolder.attr('data-position'));
@@ -1542,6 +1542,7 @@ export default class Notes {
               $diffFile[0].dispatchEvent(addAvatarBadgeEvent);
             }
           } else {
+            // Add image badge, avatar badge and toggle discussion badge for new image diffs
             if ($diffFile.length > 0) {
               const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
               const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
