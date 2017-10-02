@@ -3,6 +3,30 @@ class GroupDescendantsFinder
 
   attr_reader :current_user, :parent_group, :params
 
+  PROJECT_COUNT_SQL = <<~PROJECTCOUNT.freeze
+                     (SELECT COUNT(*) AS preloaded_project_count
+                      FROM projects
+                      WHERE projects.namespace_id = namespaces.id
+                      AND projects.archived IS NOT true)
+                     PROJECTCOUNT
+  SUBGROUP_COUNT_SQL = <<~SUBGROUPCOUNT.freeze
+                     (SELECT COUNT(*) AS preloaded_subgroup_count
+                      FROM namespaces children
+                      WHERE children.parent_id = namespaces.id)
+                     SUBGROUPCOUNT
+  MEMBER_COUNT_SQL = <<~MEMBERCOUNT.freeze
+                     (SELECT COUNT(*) AS preloaded_member_count
+                     FROM members
+                     WHERE members.source_type = 'Namespace'
+                     AND members.source_id = namespaces.id
+                     AND members.requested_at IS NULL)
+                     MEMBERCOUNT
+
+  GROUP_SELECTS = ['namespaces.*',
+                   PROJECT_COUNT_SQL,
+                   SUBGROUP_COUNT_SQL,
+                   MEMBER_COUNT_SQL].freeze
+
   def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
@@ -31,39 +55,16 @@ class GroupDescendantsFinder
   def children
     return @children if @children
 
-    projects_count = <<~PROJECTCOUNT
-                   (SELECT COUNT(projects.id) AS preloaded_project_count
-                    FROM projects WHERE projects.namespace_id = namespaces.id)
-                   PROJECTCOUNT
-    subgroup_count = <<~SUBGROUPCOUNT
-                     (SELECT COUNT(children.id) AS preloaded_subgroup_count
-                      FROM namespaces children
-                      WHERE children.parent_id = namespaces.id)
-                     SUBGROUPCOUNT
-    member_count = <<~MEMBERCOUNT
-                   (SELECT COUNT(members.user_id) AS preloaded_member_count
-                    FROM members
-                    WHERE members.source_type = 'Namespace'
-                    AND members.source_id = namespaces.id
-                    AND members.requested_at IS NULL)
-                   MEMBERCOUNT
-    group_selects = [
-      'namespaces.*',
-      projects_count,
-      subgroup_count,
-      member_count
-    ]
-
-    subgroups_with_counts = subgroups.with_route.page(params[:page]).per(per_page).select(group_selects)
-    group_page_count = subgroups_with_counts.total_pages
-    subgroup_page = subgroups_with_counts.current_page
+    subgroups_with_counts = subgroups.with_route
+                              .page(params[:page]).per(per_page)
+                              .select(GROUP_SELECTS)
 
     paginated_projects = projects.with_route.page(subgroup_page - group_page_count)
                            .per(per_page - subgroups_with_counts.size)
 
     if params[:filter]
       ancestors_for_project_search = ancestors_for_groups(Group.where(id: paginated_projects.select(:namespace_id)))
-      subgroups_with_counts = ancestors_for_project_search.with_route.select(group_selects) | subgroups_with_counts
+      subgroups_with_counts = ancestors_for_project_search.with_route.select(GROUP_SELECTS) | subgroups_with_counts
     end
 
     @children = subgroups_with_counts + paginated_projects
