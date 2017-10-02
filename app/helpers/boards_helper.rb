@@ -26,12 +26,7 @@ module BoardsHelper
     board = @board || @boards.first
 
     board.to_json(
-      only: [:id, :name, :milestone_id, :author_id, :assignee_id, :weight],
-      include: {
-        milestone: { only: [:title] },
-        author: { only: [:name, :username ], methods: [:avatar_url] },
-        assignee: { only: [:name, :username ], methods: [:avatar_url] }
-      }
+      only: [:id, :name, :milestone_id],
     )
   end
 

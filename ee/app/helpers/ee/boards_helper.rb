@@ -9,10 +9,11 @@ module EE
         board_milestone_title: board&.milestone&.title,
         board_author_username: board&.author&.username,
         board_assignee_username: board&.assignee&.username,
+        label_ids: board&.label_ids,
+        labels: board&.labels.to_json(only: [:id, :title, :color] ),
         board_weight: board&.weight,
         focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s,
         show_promotion: (@project && show_promotions? && (!@project.feature_available?(:multiple_issue_boards) || !@project.feature_available?(:scoped_issue_board) || !@project.feature_available?(:issue_board_focus_mode))).to_s
-
       }
 
       super.merge(data)
@@ -22,6 +23,20 @@ module EE
       return super unless @board.group_board?
 
       "/#{@board.group.path}/:project_path/issues"
+    end
+
+    def current_board_json
+      board = @board || @boards.first
+
+      board.to_json(
+        only: [:id, :name, :milestone_id, :author_id, :assignee_id, :weight, :label_ids],
+        include: {
+          milestone: { only: [:title] },
+          author: { only: [:id, :name, :username ], methods: [:avatar_url] },
+          assignee: { only: [:id, :name, :username ], methods: [:avatar_url] },
+          labels: { only: [:title, :color, :id] }
+        }
+      )
     end
 
     def board_base_url

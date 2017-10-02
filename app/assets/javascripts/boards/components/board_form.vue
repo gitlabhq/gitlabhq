@@ -73,6 +73,7 @@
           <form-block>
             <board-labels-select
               :board="board"
+              :selected="board.labels"
               title="Labels"
               default-text="Any label"
               :can-edit="canAdminBoard"

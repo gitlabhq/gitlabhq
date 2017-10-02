@@ -31,10 +31,18 @@
     </div>
     <div class="selectbox" style="display: none">
 
+      <input
+        type="hidden"
+        name="label_id[]"
+        v-for="labelId in labelIds"
+        :key="labelId"
+        :value="labelId"
+      >
+
       <div class="dropdown">
         <button
           class="dropdown-menu-toggle wide js-label-select js-multiselect js-board-config-modal"
-          data-field-name="issue[label_names][]"
+          data-field-name="label_id[]"
           v-bind:data-labels="labelsPath"
           data-toggle="dropdown"
           type="button"
@@ -98,6 +106,10 @@ export default {
       required: false,
       default: false,
     },
+    selected: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
@@ -107,6 +119,11 @@ export default {
   },
   components: {
     loadingIcon,
+  },
+  computed: {
+    labelIds() {
+      return this.selected.map(label => label.id).join(',');
+    },
   },
   methods: {
     open() {

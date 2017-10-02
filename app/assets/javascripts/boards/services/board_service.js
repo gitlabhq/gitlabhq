@@ -31,7 +31,9 @@ class BoardService {
 
   createBoard (board) {
     if (board.labels && board.labels.length > 0) {
-      board.label_ids = board.labels.map(b => b.id);
+      board.board = board.board || {};
+      board.board.label_ids = board.labels.map(b => b.id);
+      board.board.milestone_id = board.milestone_id;
     }
     if (board.assignee) {
       board.assignee_id = board.assignee.id;
