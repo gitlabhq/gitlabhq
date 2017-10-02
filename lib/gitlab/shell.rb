@@ -65,7 +65,7 @@ module Gitlab
 
     # Init new repository
     #
-    # storage - project's storage path
+    # storage - project's storage name
     # name - project path with namespace
     #
     # Ex.
@@ -73,7 +73,19 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
-      Gitlab::Git::Repository.create(storage, name, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
+      relative_path = name.dup
+      relative_path << '.git' unless relative_path.end_with?('.git')
+
+      gitaly_migrate(:create_repository) do |is_enabled|
+        if is_enabled
+          repository = Gitlab::Git::Repository.new(storage, relative_path, '')
+          repository.gitaly_repository_client.create_repository
+          true
+        else
+          repo_path = File.join(Gitlab.config.repositories.storages[storage]['path'], relative_path)
+          Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
+        end
+      end
     rescue => err
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false

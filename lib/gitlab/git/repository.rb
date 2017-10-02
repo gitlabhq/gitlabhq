@@ -22,11 +22,8 @@ module Gitlab
       CreateTreeError = Class.new(StandardError)
 
       class << self
-        # Unlike `new`, `create` takes the storage path, not the storage name
-        def create(storage_path, name, bare: true, symlink_hooks_to: nil)
-          repo_path = File.join(storage_path, name)
-          repo_path += '.git' unless repo_path.end_with?('.git')
-
+        # Unlike `new`, `create` takes the repository path
+        def create(repo_path, bare: true, symlink_hooks_to: nil)
           FileUtils.mkdir_p(repo_path, mode: 0770)
 
           # Equivalent to `git --git-path=#{repo_path} init [--bare]`
