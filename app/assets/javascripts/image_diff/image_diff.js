@@ -3,8 +3,10 @@ import ImageBadge from './image_badge';
 import { isImageLoaded } from '../lib/utils/image_utility';
 
 export default class ImageDiff {
-  // TODO: Refactor options into options object
-  constructor(el, canCreateNote = false, renderCommentBadge = false) {
+  constructor(el, {
+    canCreateNote = false,
+    renderCommentBadge = false,
+  }) {
     this.el = el;
     this.canCreateNote = canCreateNote;
     this.renderCommentBadge = renderCommentBadge;
