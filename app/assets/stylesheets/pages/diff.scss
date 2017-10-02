@@ -673,6 +673,8 @@
 .notes.active {
   .diff-file .note-container > .new-note,
   .note-container .discussion-notes {
+    // Override our margin and border (set for diff tab)
+    // when user is on the discussion tab for MR
     margin-left: inherit;
     border-left: inherit;
   }
