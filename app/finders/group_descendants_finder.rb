@@ -61,12 +61,17 @@ class GroupDescendantsFinder
 
     paginated_projects = paginate_projects_after_groups(subgroups_with_counts)
 
-    if params[:filter]
-      ancestors_for_project_search = ancestors_for_groups(Group.where(id: paginated_projects.select(:namespace_id)))
-      subgroups_with_counts = ancestors_for_project_search.with_route.select(GROUP_SELECTS) | subgroups_with_counts
-    end
+    subgroups_with_counts = add_project_ancestors_when_searching(subgroups_with_counts, paginated_projects)
 
     @children = subgroups_with_counts + paginated_projects
+  end
+
+  def add_project_ancestors_when_searching(groups, projects)
+    return groups unless params[:filter]
+
+    project_ancestors = ancestors_for_projects(projects)
+                          .with_route.select(GROUP_SELECTS)
+    groups | project_ancestors
   end
 
   def paginate_projects_after_groups(loaded_subgroups)
@@ -136,6 +141,10 @@ class GroupDescendantsFinder
                              .base_and_ancestors
     Gitlab::GroupHierarchy.new(base_for_ancestors)
       .base_and_ancestors.where.not(id: ancestors_for_parent)
+  end
+
+  def ancestors_for_projects(projects)
+    ancestors_for_groups(Group.where(id: projects.select(:namespace_id)))
   end
 
   def subgroups
