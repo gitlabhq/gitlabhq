@@ -729,6 +729,10 @@
 .image-comment-badge {
   @include btn-comment;
   position: absolute;
+
+  &.inverted {
+    border-color: $white-light;
+  }
 }
 
 .image-diff-avatar-link {
