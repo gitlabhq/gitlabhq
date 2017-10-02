@@ -24,22 +24,6 @@ describe GroupDescendant, :nested_groups do
       end
     end
 
-    describe '#parent' do
-      it 'returns the correct parent' do
-        expect(subsub_group.parent).to eq(subgroup)
-      end
-    end
-
-    describe '#merge_hierarchy' do
-      it 'combines hierarchies' do
-        other_subgroup = create(:group, parent: parent)
-
-        expected_hierarchy = { parent => [{ subgroup => subsub_group }, other_subgroup] }
-
-        expect(subsub_group.merge_hierarchy(other_subgroup)).to eq(expected_hierarchy)
-      end
-    end
-
     describe '.build_hierarchy' do
       it 'combines hierarchies until the top' do
         other_subgroup = create(:group, parent: parent)
@@ -94,22 +78,6 @@ describe GroupDescendant, :nested_groups do
 
       it 'raises an error if specifying a base that is not part of the tree' do
         expect { project.hierarchy(double) }.to raise_error('specified base is not part of the tree')
-      end
-    end
-
-    describe '#parent' do
-      it 'returns the correct parent' do
-        expect(project.parent).to eq(subsub_group)
-      end
-    end
-
-    describe '#merge_hierarchy' do
-      it 'combines hierarchies' do
-        project = create(:project, namespace: parent)
-
-        expected_hierarchy = { parent => [{ subgroup => subsub_group }, project] }
-
-        expect(subsub_group.merge_hierarchy(project)).to eq(expected_hierarchy)
       end
     end
 

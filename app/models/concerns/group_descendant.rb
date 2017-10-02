@@ -3,28 +3,6 @@ module GroupDescendant
     expand_hierarchy_for_child(self, self, hierarchy_top, preloaded)
   end
 
-  def expand_hierarchy_for_child(child, hierarchy, hierarchy_top, preloaded = [])
-    parent = preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
-    parent ||= child.parent
-
-    if parent.nil? && hierarchy_top.present?
-      raise ArgumentError.new('specified base is not part of the tree')
-    end
-
-    if parent && parent != hierarchy_top
-      expand_hierarchy_for_child(parent,
-                                 { parent => hierarchy },
-                                 hierarchy_top,
-                                 preloaded)
-    else
-      hierarchy
-    end
-  end
-
-  def merge_hierarchy(other_element, hierarchy_top = nil)
-    GroupDescendant.build_hierarchy([self, other_element], hierarchy_top)
-  end
-
   def self.build_hierarchy(descendants, hierarchy_top = nil)
     descendants = Array.wrap(descendants)
     return if descendants.empty?
@@ -44,7 +22,27 @@ module GroupDescendant
     merged
   end
 
-  def self.merge_hash_tree(first_child, second_child)
+  private
+
+  def expand_hierarchy_for_child(child, hierarchy, hierarchy_top, preloaded = [])
+    parent = preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
+    parent ||= child.parent
+
+    if parent.nil? && hierarchy_top.present?
+      raise ArgumentError.new('specified base is not part of the tree')
+    end
+
+    if parent && parent != hierarchy_top
+      expand_hierarchy_for_child(parent,
+                                 { parent => hierarchy },
+                                 hierarchy_top,
+                                 preloaded)
+    else
+      hierarchy
+    end
+  end
+
+  private_class_method def self.merge_hash_tree(first_child, second_child)
     # When the first is an array, we need to go over every element to see if
     # we can merge deeper. If no match is found, we add the element to the array
     #
@@ -79,7 +77,7 @@ module GroupDescendant
     end
   end
 
-  def self.merge_hash_into_array(array, new_hash)
+  private_class_method def self.merge_hash_into_array(array, new_hash)
     if mergeable_index = array.index { |element| element.is_a?(Hash) && (element.keys & new_hash.keys).any? }
       array[mergeable_index] = merge_hash_tree(array[mergeable_index], new_hash)
     else
