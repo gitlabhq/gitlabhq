@@ -93,8 +93,6 @@ in a merged merge requests or a commit.
 
 ## Semi-linear history merge requests
 
-> Included in [GitLab Enterprise Edition Starter][products].
-
 A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
 succeeded, the target branch build will also succeed after merging.
