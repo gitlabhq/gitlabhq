@@ -6,5 +6,6 @@
     - if @authorize_url
       %a{ href: @authorize_url }
         = image_tag('auth_buttons/signin_with_google.png')
-    -# - else
-    -#   You have not configrued GitLab properly. So we can not proceed authentication. Please check if you have set up omniauth->providers->google_oauth2 in gitlab.yml
+    - else
+      - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')
+      = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }

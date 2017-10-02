@@ -12,10 +12,12 @@
 
         .form-group
           = field.label :gcp_project_id
+          = link_to(s_('ClusterIntegration|See your projects'), 'https://console.cloud.google.com/home/dashboard', target: '_blank', rel: 'noopener noreferrer')
           = field.text_field :gcp_project_id, class: 'form-control'
 
         .form-group
           = field.label :cluster_zone
+          = link_to(s_('ClusterIntegration|See zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
           = field.text_field :cluster_zone, class: 'form-control'
 
         .form-group
@@ -28,6 +30,7 @@
 
         .form-group
           = field.label :machine_type
+          = link_to(s_('ClusterIntegration|Machine type'), 'https://cloud.google.com/compute/docs/machine-types', target: '_blank', rel: 'noopener noreferrer')
           = field.text_field :machine_type, class: 'form-control'
 
         .form-group

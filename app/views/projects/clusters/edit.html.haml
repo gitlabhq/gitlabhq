@@ -1,4 +1,4 @@
-.row.prepend-top-default.edit-cluster-form
+.row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { check_status: status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id), edit_path: namespace_project_cluster_path(@project.namespace, @project, @cluster.id)}}
   = render 'sidebar'
   .col-lg-8
     %h4.prepend-top-0
@@ -15,8 +15,10 @@
       -# else
       = s_('ClusterIntegration|Cluster integration is disabled for this project.')
 
-      %label.toggle-wrapper
+    %label.toggle-wrapper
       %button{ type: 'button', class: 'js-toggle-cluster project-feature-toggle', aria: { label: 'Toggle' }, data: { 'enabled-text': 'Enable', 'disabled-text': 'disabled' } }
+
+    .form-group
 
 
     -# render errors TODO
@@ -27,7 +29,7 @@
       %label
         = s_('ClusterIntegration|Google container engine')
       %p
-        - link_gke = link_to(s_('ClusterIntegration|Manage your cluster on GKE'), path: '', target: '_blank', rel: 'noopener noreferrer')
+        - link_gke = link_to(s_('ClusterIntegration|Manage your cluster on GKE'), '', target: '_blank', rel: 'noopener noreferrer')
         = s_('ClusterIntegration|This cluster was not set up on Google Container Engine. %{link_gke}').html_safe % { link_gke: link_gke }
 
     .form_group
@@ -49,7 +51,7 @@
 
 
 %br
-= link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, cluster: {enabled: 'true'}), method: :put
+= link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :put
 %br
 = link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, cluster: {enabled: 'false'}), method: :put
 
