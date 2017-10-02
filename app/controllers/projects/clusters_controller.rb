@@ -6,25 +6,24 @@ class Projects::ClustersController < Projects::ApplicationController
   def login
     begin
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
-          nil,
-          callback_google_api_authorizations_url,
+          nil, callback_google_api_authorizations_url,
           state: namespace_project_clusters_url.to_s
         ).authorize_url
     rescue GoogleApi::Auth::ConfigMissingError
-      # Show an alert message that gitlab.yml is not configured properly
+      # no-op
     end
   end
 
   def index
-    if project.clusters.any?
-      redirect_to edit_project_cluster_path(project, project.clusters.last.id)
+    if project.cluster
+      redirect_to edit_project_cluster_path(project, project.cluster)
     else
       redirect_to new_project_cluster_path(project)
     end
   end
 
   def new
-    @cluster = project.clusters.new
+    @cluster = project.build_cluster
   end
 
   def create
@@ -43,6 +42,8 @@ class Projects::ClustersController < Projects::ApplicationController
   def status
     respond_to do |format|
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
         render json: {
           status: cluster.status, # The current status of the operation.
           status_reason: cluster.status_reason # If an error has occurred, a textual description of the error.
@@ -73,7 +74,7 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    @cluster ||= project.clusters.find(params[:id])
+    @cluster ||= project.cluster
   end
 
   def cluster_params
@@ -83,12 +84,19 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def authorize_google_api
-    unless token_in_session
+    unless GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
+                                           .validate_token(expires_at_in_session)
       redirect_to action: 'login'
     end
   end
 
   def token_in_session
-    @token_in_session ||= session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+    @token_in_session ||=
+      session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+  end
+
+  def expires_at_in_session
+    @expires_at_in_session ||=
+      session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
   end
 end

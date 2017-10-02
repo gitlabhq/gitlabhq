@@ -1,25 +1,25 @@
-module Ci
+module Gcp
   class Cluster < ActiveRecord::Base
-    extend Gitlab::Ci::Model
+    extend Gitlab::Gcp::Model
 
-    belongs_to :project
+    belongs_to :project, inverse_of: :cluster
     belongs_to :user
     belongs_to :service
 
     attr_encrypted :password,
-      mode: :per_attribute_iv_and_salt,
+      mode: :per_attribute_iv,
       insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
     attr_encrypted :kubernetes_token,
-      mode: :per_attribute_iv_and_salt,
+      mode: :per_attribute_iv,
       insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
     attr_encrypted :gcp_token,
-      mode: :per_attribute_iv_and_salt,
+      mode: :per_attribute_iv,
       insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
@@ -52,6 +52,21 @@ module Ci
       self.gcp_operation_id = gcp_operation_id
 
       save!(validate: false)
+    end
+
+    def created!(endpoint, ca_cert, kubernetes_token, username, password)
+      self.status = :created
+      self.enabled = true
+      self.endpoint = endpoint
+      self.ca_cert = ca_cert
+      self.kubernetes_token = kubernetes_token
+      self.username = username
+      self.password = password
+      self.service = project.find_or_initialize_service('kubernetes')
+      self.gcp_token = nil
+      self.gcp_operation_id = nil
+
+      save!
     end
 
     def on_creation?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170924094327) do
+ActiveRecord::Schema.define(version: 20170928100231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -607,6 +607,38 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
+
+  create_table "gcp_clusters", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.integer "service_id"
+    t.boolean "enabled", default: true
+    t.integer "status"
+    t.string "status_reason"
+    t.string "project_namespace"
+    t.string "endpoint"
+    t.text "ca_cert"
+    t.string "encrypted_kubernetes_token"
+    t.string "encrypted_kubernetes_token_salt"
+    t.string "encrypted_kubernetes_token_iv"
+    t.string "username"
+    t.string "encrypted_password"
+    t.string "encrypted_password_salt"
+    t.string "encrypted_password_iv"
+    t.string "gcp_project_id", null: false
+    t.string "cluster_zone", null: false
+    t.string "cluster_name", null: false
+    t.integer "cluster_size", null: false
+    t.string "machine_type"
+    t.string "gcp_operation_id"
+    t.string "encrypted_gcp_token"
+    t.string "encrypted_gcp_token_salt"
+    t.string "encrypted_gcp_token_iv"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
 
   create_table "gpg_keys", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
@@ -1742,6 +1774,9 @@ ActiveRecord::Schema.define(version: 20170924094327) do
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "services"
+  add_foreign_key "gcp_clusters", "users"
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade

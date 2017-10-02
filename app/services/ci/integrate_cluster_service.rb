@@ -1,23 +1,10 @@
 module Ci
   class IntegrateClusterService
     def execute(cluster, endpoint, ca_cert, token, username, password)
-      Ci::Cluster.transaction do
-        kubernetes_service ||=
-          cluster.project.find_or_initialize_service('kubernetes')
+      Gcp::Cluster.transaction do
+        cluster.created!(endpoint, ca_cert, token, username, password)
 
-        cluster.update!(
-          enabled: true,
-          service: kubernetes_service,
-          username: username,
-          password: password,
-          kubernetes_token: token,
-          ca_cert: ca_cert,
-          endpoint: endpoint,
-          gcp_token: nil,
-          gcp_operation_id: nil,
-          status: Ci::Cluster.statuses[:created])
-
-        kubernetes_service.update!(
+        cluster.service.update!(
           active: true,
           api_url: cluster.api_url,
           ca_pem: ca_cert,

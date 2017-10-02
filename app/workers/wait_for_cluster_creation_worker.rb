@@ -7,7 +7,7 @@ class WaitForClusterCreationWorker
   TIMEOUT = 20.minutes
 
   def perform(cluster_id)
-    cluster = Ci::Cluster.find_by_id(cluster_id)
+    cluster = Gcp::Cluster.find_by_id(cluster_id)
 
     unless cluster
       return Rails.logger.error "Cluster object is not found; #{cluster_id}"
@@ -56,7 +56,7 @@ class WaitForClusterCreationWorker
       username = gke_cluster.master_auth.username
       password = gke_cluster.master_auth.password
     rescue Exception => e
-      return cluster.errored!("Can not extract the extected data; #{e}")
+      return cluster.errored!("Can not extract the expected data; #{e}")
     end
 
     kubernetes_token = Ci::FetchKubernetesTokenService.new(
