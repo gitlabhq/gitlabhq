@@ -446,24 +446,6 @@ export default class Notes {
 
           row.find(contentContainerClass + ' .content').append($notes.closest('.content').children());
         }
-
-        // Add image badge, avatar badge and toggle discussion badge for image diffs
-        const $diffFile = form.closest('.diff-file');
-        if ($diffFile.length > 0) {
-          const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
-          const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
-            detail: {
-              x: x_axis,
-              y: y_axis,
-              width,
-              height,
-              noteId: $discussion.find('.notes .note').attr('id'),
-              discussionId: $discussion.find('.notes').data('discussionId'),
-            },
-          });
-
-          $diffFile[0].dispatchEvent(addBadgeEvent);
-        }
       }
       // Init discussion on 'Discussion' page if it is merge request page
       const page = $('body').attr('data-page');
@@ -1558,6 +1540,22 @@ export default class Notes {
               });
 
               $diffFile[0].dispatchEvent(addAvatarBadgeEvent);
+            }
+          } else {
+            if ($diffFile.length > 0) {
+              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
+              const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
+                detail: {
+                  x: x_axis,
+                  y: y_axis,
+                  width,
+                  height,
+                  noteId: `note_${note.id}`,
+                  discussionId: note.discussion_id,
+                },
+              });
+
+              $diffFile[0].dispatchEvent(addBadgeEvent);
             }
           }
 
