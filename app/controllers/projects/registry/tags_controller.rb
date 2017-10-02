@@ -15,13 +15,13 @@ module Projects
       end
 
       def destroy
-        respond_to do |format|
-          format.json do
-            if tag.delete
-              format.json { head :no_content }
-            else
-              format.json { head :bad_request }
-            end
+        if tag.delete
+          respond_to do |format|
+            format.json { head :no_content }
+          end
+        else
+          respond_to do |format|
+            format.json { head :bad_request }
           end
         end
       end
