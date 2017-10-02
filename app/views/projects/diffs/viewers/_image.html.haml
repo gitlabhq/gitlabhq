@@ -20,7 +20,7 @@
     .two-up.view
       %span.wrap
         .frame.deleted
-          = image_tag(old_blob_raw_path, alt: diff_file.old_path)
+          = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(old_blob.size)
           |

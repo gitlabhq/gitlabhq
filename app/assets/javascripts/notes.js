@@ -1082,14 +1082,20 @@ export default class Notes {
   cancelDiscussionForm(e) {
     e.preventDefault();
     const $form = $(e.target).closest('.js-discussion-note-form');
-    const $diffFile = $form.closest('.diff-file');
+    const $discussionNote = $(e.target).closest('.discussion-notes');
 
-    if ($diffFile.length > 0) {
-      const blurEvent = new CustomEvent('blur.imageDiff', {
-        detail: e,
-      });
+    if ($discussionNote.length === 0) {
+      // Only send blur event when the discussion form
+      // is not part of a discussion note
+      const $diffFile = $form.closest('.diff-file');
 
-      $diffFile[0].dispatchEvent(blurEvent);
+      if ($diffFile.length > 0) {
+        const blurEvent = new CustomEvent('blur.imageDiff', {
+          detail: e,
+        });
+
+        $diffFile[0].dispatchEvent(blurEvent);
+      }
     }
 
     return this.removeDiscussionNoteForm($form);

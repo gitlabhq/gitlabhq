@@ -75,12 +75,16 @@ export function getTargetSelection(event) {
   };
 }
 
-export function initImageDiff(file, canCreateNote) {
-  if (file.querySelector('.diff-viewer .js-single-image')) {
-    const imageDiff = new ImageDiff(file, canCreateNote);
+export function initImageDiff(file, canCreateNote, renderCommentBadge) {
+  // ImageFile needs to be invoked before initImageDiff so that badges
+  // can mount to the correct location
+  new gl.ImageFile(file); // eslint-disable-line no-new
+
+  if (file.querySelector('.diff-file .js-single-image')) {
+    const imageDiff = new ImageDiff(file, canCreateNote, renderCommentBadge);
     imageDiff.init();
-  } else if (file.querySelector('.diff-viewer .js-replaced-image')) {
-    const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote);
+  } else if (file.querySelector('.diff-file .js-replaced-image')) {
+    const replacedImageDiff = new ReplacedImageDiff(file, canCreateNote, renderCommentBadge);
     replacedImageDiff.init();
   }
 }

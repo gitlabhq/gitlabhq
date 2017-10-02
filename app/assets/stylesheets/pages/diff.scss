@@ -285,6 +285,7 @@
         .drag-track {
           display: block;
           position: absolute;
+          top: 0;
           left: 12px;
           height: 10px;
           width: 276px;
@@ -643,7 +644,8 @@
   }
 
   // double jagged line divider
-  .discussion-notes + .discussion-notes::before {
+  .discussion-notes + .discussion-notes::before,
+  .discussion-notes + .discussion-form::before {
     content: '';
     position: relative;
     display: block;
@@ -710,7 +712,7 @@
   }
 }
 
-.frame.click-to-comment .badge,
+.frame .badge,
 .image-diff-avatar-link .badge,
 .notes > .badge {
   position: absolute;

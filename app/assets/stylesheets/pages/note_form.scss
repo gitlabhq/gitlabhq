@@ -137,8 +137,11 @@
 }
 
 .discussion-form {
-  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-form-container {
+  padding: $gl-padding-top $gl-padding $gl-padding;
 }
 
 .discussion-notes .disabled-comment {

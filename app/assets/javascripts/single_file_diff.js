@@ -82,8 +82,6 @@ export default class SingleFileDiff {
         imageDiffHelper.initImageDiff($file[0], canCreateNote);
 
         if (cb) cb();
-
-        return new gl.ImageFile($file);
       };
     })(this));
   }
