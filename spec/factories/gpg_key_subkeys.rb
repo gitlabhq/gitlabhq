@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :gpg_key_subkey do
     gpg_key
 
-    keyid { gpg_key.subkeys.last.keyid }
-    fingerprint { gpg_key.subkeys.last.fingerprint }
+    sequence(:keyid) { |n| "keyid-#{n}" }
+    sequence(:fingerprint) { |n| "fingerprint-#{n}" }
   end
 end

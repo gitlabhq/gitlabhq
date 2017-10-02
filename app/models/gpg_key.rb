@@ -119,7 +119,7 @@ class GpgKey < ActiveRecord::Base
   def generate_subkeys
     gpg_subkeys = Gitlab::Gpg.subkeys_from_key(key)
 
-    gpg_subkeys[primary_keyid].each do |subkey_data|
+    gpg_subkeys[primary_keyid]&.each do |subkey_data|
       subkeys.create!(keyid: subkey_data[:keyid], fingerprint: subkey_data[:fingerprint])
     end
   end
