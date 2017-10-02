@@ -103,6 +103,7 @@ header {
   }
 
   .header-content {
+    display: -webkit-flex;
     display: flex;
     position: relative;
     min-height: $header-height;
@@ -143,6 +144,7 @@ header {
     }
 
     .title-container {
+      display: -webkit-flex;
       display: flex;
       -webkit-align-items: stretch;
       align-items: stretch;

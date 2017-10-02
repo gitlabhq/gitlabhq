@@ -58,6 +58,7 @@ header {
 
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
+        display: -webkit-flex;
         display: flex;
         padding-right: 10px;
       }
@@ -178,6 +179,7 @@ header {
       }
 
       > a {
+        display: -webkit-flex;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -214,6 +216,7 @@ header {
 }
 
 .breadcrumbs {
+  display: -webkit-flex;
   display: flex;
   min-height: 48px;
   color: $gl-text-color;
@@ -293,6 +296,7 @@ header {
 }
 
 .breadcrumbs-extra {
+  display: -webkit-flex;
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;
