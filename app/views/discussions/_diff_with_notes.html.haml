@@ -28,6 +28,7 @@
         .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: discussion.position.to_json } }
           = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
     - else
+      -# TODO: Create shared partial with `app/views/projects/diffs/viewers/_image.html.haml`
       .image.js-replaced-image
         .two-up.view
           %span.wrap
