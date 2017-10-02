@@ -97,7 +97,8 @@
     "commits_count": { "type": "integer" },
     "remove_source_branch": { "type": ["boolean", "null"] },
     "merge_ongoing": { "type": "boolean" },
-    "ff_only_enabled": { "type": ["boolean", false] }
+    "ff_only_enabled": { "type": ["boolean", false] },
+    "should_be_rebased": { "type": "boolean" }
   },
   "additionalProperties": false
 }
