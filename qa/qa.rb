@@ -8,6 +8,7 @@ module QA
     autoload :Release, 'qa/runtime/release'
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
+    autoload :Config, 'qa/runtime/config'
   end
 
   ##
@@ -73,6 +74,13 @@ module QA
   #
   module Git
     autoload :Repository, 'qa/git/repository'
+  end
+
+  ##
+  # Class describing Rake tasks.
+  #
+  module Tasks
+    autoload :Backup, 'qa/tasks/backup'
   end
 
   ##
