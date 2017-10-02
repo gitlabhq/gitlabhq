@@ -36,7 +36,7 @@ class Repository
                       tag_count avatar exists? empty? root_ref has_visible_content?).freeze
 
   # Methods that use cache_method but only memoize the value
-  MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
+  MEMOIZED_CACHED_METHODS = %i(license).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
