@@ -31,14 +31,6 @@ module Users
       true
     end
 
-    protected
-
-    def notify_success(user_exists)
-      notify_new_user(@user, nil) unless user_exists
-
-      success
-    end
-
     private
 
     def notify_success(user_exists)
