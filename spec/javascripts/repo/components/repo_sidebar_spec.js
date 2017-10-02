@@ -121,5 +121,37 @@ describe('RepoSidebar', () => {
         expect(RepoService.url).toEqual(prevUrl);
       });
     });
+
+    describe('back button', () => {
+      const file1 = {
+        id: 1,
+        url: 'file1',
+      };
+      const file2 = {
+        id: 2,
+        url: 'file2',
+      };
+      RepoStore.files = [file1, file2];
+      RepoStore.openedFiles = [file1, file2];
+      RepoStore.isRoot = true;
+
+      const vm = createComponent();
+      vm.fileClicked(file1);
+
+      it('render previous file when using back button', () => {
+        spyOn(Helper, 'getContent').and.callThrough();
+        vm.fileClicked(file2);
+        expect(Helper.getContent).toHaveBeenCalledWith(file2);
+
+        history.pushState({
+          key: Math.random(),
+        }, '', file1.url);
+        const popEvent = document.createEvent('Event');
+        popEvent.initEvent('popstate', true, true);
+        window.dispatchEvent(popEvent);
+
+        expect(Helper.getContent).toHaveBeenCalledWith(file1);
+      });
+    });
   });
 });
