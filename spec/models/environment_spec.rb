@@ -385,6 +385,7 @@ describe Environment do
 
   describe '#rollout_status' do
     let(:project) { create(:kubernetes_project) }
+
     subject { environment.rollout_status }
 
     context 'when the environment has rollout status' do

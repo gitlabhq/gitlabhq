@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::EnvironmentsController do
+  include KubernetesHelpers
+
   set(:user) { create(:user) }
   set(:project) { create(:project) }
 
@@ -26,6 +28,7 @@ describe Projects::EnvironmentsController do
     context 'when requesting JSON response for folders' do
       before do
         allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
+        allow_any_instance_of(Environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
 
         create(:environment, project: project,
                              name: 'staging/review-1',
@@ -52,11 +55,11 @@ describe Projects::EnvironmentsController do
         it 'responds with a payload describing available environments' do
           expect(environments.count).to eq 2
           expect(environments.first['name']).to eq 'production'
-          expect(environments.first['latest']['rollout_status_path']).to be_present
+          expect(environments.first['latest']['rollout_status']).to be_present
           expect(environments.second['name']).to eq 'staging'
           expect(environments.second['size']).to eq 2
           expect(environments.second['latest']['name']).to eq 'staging/review-2'
-          expect(environments.second['latest']['rollout_status_path']).to be_present
+          expect(environments.second['latest']['rollout_status']).to be_present
         end
 
         it 'contains values describing environment scopes sizes' do
@@ -96,8 +99,8 @@ describe Projects::EnvironmentsController do
         end
 
         it 'does not return the rollout_status_path attribute' do
-          expect(environments.first['latest']['rollout_status_path']).to be_blank
-          expect(environments.second['latest']['rollout_status_path']).to be_blank
+          expect(environments.first['latest']['rollout_status']).not_to be_present
+          expect(environments.second['latest']['rollout_status']).not_to be_present
         end
       end
     end
@@ -285,59 +288,6 @@ describe Projects::EnvironmentsController do
         expect { get :terminal_websocket_authorize, environment_params }.to raise_error(JWT::DecodeError)
         # controller tests don't set the response status correctly. It's enough
         # to check that the action raised an exception
-      end
-    end
-  end
-
-  describe 'GET #status' do
-    context 'without deployment service' do
-      it 'returns 404' do
-        get :status, environment_params
-
-        expect(response.status).to eq(404)
-      end
-    end
-
-    context 'with deployment service' do
-      let(:project) { create(:kubernetes_project) }
-      let(:environment) { create(:environment, name: 'production', project: project) }
-
-      before do
-        stub_licensed_features(deploy_board: true)
-        allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
-      end
-
-      it 'returns 204 until the rollout status is present' do
-        expect_any_instance_of(Environment)
-          .to receive(:rollout_status)
-          .and_return(nil)
-
-        get :status, environment_params
-
-        expect(response.status).to eq(204)
-        expect(response.headers['Poll-Interval']).to eq("3000")
-      end
-
-      it 'returns the rollout status when present' do
-        expect_any_instance_of(Environment)
-          .to receive(:rollout_status)
-          .and_return(::Gitlab::Kubernetes::RolloutStatus.new([]))
-
-        get :status, environment_params
-
-        expect(response.status).to eq(200)
-      end
-    end
-
-    context 'when license does not has the GitLab_DeployBoard add-on' do
-      before do
-        stub_licensed_features(deploy_board: false)
-      end
-
-      it 'does not return any data' do
-        get :status, environment_params
-
-        expect(response).to have_http_status(:not_found)
       end
     end
   end

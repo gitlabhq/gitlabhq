@@ -9,6 +9,7 @@ describe KubernetesService, models: true, use_clean_rails_memory_store_caching: 
 
   describe '#rollout_status' do
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
+
     subject(:rollout_status) { service.rollout_status(environment) }
 
     context 'with valid deployments' do

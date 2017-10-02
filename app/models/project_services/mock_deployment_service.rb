@@ -35,6 +35,6 @@ class MockDeploymentService < DeploymentService
   end
 
   def rollout_status_deployments
-    [ OpenStruct.new(instances: rollout_status_instances) ]
+    [OpenStruct.new(instances: rollout_status_instances)]
   end
 end

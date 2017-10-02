@@ -94,15 +94,21 @@ describe Gitlab::Kubernetes::RolloutStatus do
     end
   end
 
-  describe '#valid?' do
+  describe '#found?' do
     context 'when the specs are passed' do
-      it { is_expected.to be_valid }
+      it { is_expected.to be_found }
     end
 
     context 'when no specs are passed' do
       let(:specs) { specs_none }
 
-      it { is_expected.not_to be_valid }
+      it { is_expected.not_to be_found }
     end
+  end
+
+  describe '.loading_rollout' do
+    subject { described_class.loading_rollout }
+
+    it { is_expected.to be_loading }
   end
 end
