@@ -1,21 +1,27 @@
 <script>
-import iconBuildStatus from '../svg/icon_build_status.svg';
-import iconBranch from '../svg/icon_branch.svg';
+  import iconBuildStatus from '../svg/icon_build_status.svg';
+  import iconBranch from '../svg/icon_branch.svg';
+  import limitWarning from './limit_warning_component.vue';
+  import totalTime from './total_time_component.vue';
 
-export default {
-  props: {
-    items: Array,
-    stage: Object,
-  },
-  computed: {
-    iconBuildStatus() {
-      return iconBuildStatus;
+  export default {
+    props: {
+      items: Array,
+      stage: Object,
     },
-    iconBranch() {
-      return iconBranch;
+    components: {
+      totalTime,
+      limitWarning,
     },
-  },
-};
+    computed: {
+      iconBuildStatus() {
+        return iconBuildStatus;
+      },
+      iconBranch() {
+        return iconBranch;
+      },
+    },
+  };
 </script>
 <template>
   <div>

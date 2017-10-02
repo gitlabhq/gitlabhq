@@ -11,10 +11,6 @@ function initDropdowns() {
 }
 
 function addEventsForNonVueEls() {
-  $(document).on('change', '.dropdown', () => {
-    Store.targetBranch = $('.project-refs-target-form input[name="ref"]').val();
-  });
-
   window.onbeforeunload = function confirmUnload(e) {
     const hasChanged = Store.openedFiles
       .some(file => file.changed);
