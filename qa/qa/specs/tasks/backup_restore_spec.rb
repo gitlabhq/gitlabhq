@@ -7,8 +7,9 @@ module QA
       backup = Tasks::Backup.new(config.backup_path)
       before_count = backup.list_backups.count
 
-      backup.create_backup
+      _, status = backup.create_backup
 
+      expect(status).to eq(0)
       expect(backup.list_backups.count).to eq(before_count + 1)
     end
   end
