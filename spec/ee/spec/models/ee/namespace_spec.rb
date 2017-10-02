@@ -157,13 +157,24 @@ describe Namespace do
   end
 
   describe '#max_active_pipelines' do
-    context 'when there is no plan associated' do
+    context 'when there is no limit defined' do
       it 'returns zero' do
         expect(namespace.max_active_pipelines).to be_zero
       end
     end
 
-    context 'when limit is not defined' do
+    context 'when free plan has limit defined' do
+      before do
+        Plan.find_by(name: Namespace::FREE_PLAN)
+          .update_column(:active_pipelines_limit, 40)
+      end
+
+      it 'returns a free plan limits' do
+        expect(namespace.max_active_pipelines).to be 40
+      end
+    end
+
+    context 'when associated plan has no limit defined' do
       before do
         namespace.plan = Namespace::GOLD_PLAN
       end
@@ -186,13 +197,24 @@ describe Namespace do
   end
 
   describe '#max_pipeline_size' do
-    context 'when there is no plan associated' do
+    context 'when there are no limits defined' do
       it 'returns zero' do
-        expect(namespace.max_active_pipelines).to be_zero
+        expect(namespace.max_pipeline_size).to be_zero
       end
     end
 
-    context 'when limit is not defined' do
+    context 'when free plan has limit defined' do
+      before do
+        Plan.find_by(name: Namespace::FREE_PLAN)
+          .update_column(:pipeline_size_limit, 40)
+      end
+
+      it 'returns a free plan limits' do
+        expect(namespace.max_pipeline_size).to be 40
+      end
+    end
+
+    context 'when associated plan has no limits defined' do
       before do
         namespace.plan = Namespace::GOLD_PLAN
       end
