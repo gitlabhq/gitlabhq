@@ -78,8 +78,13 @@ module EE
 
     # The main difference between the "plan" column and this method is that "plan"
     # returns nil / "" when it has no plan. Having no plan means it's a "free" plan.
+    #
     def actual_plan
-      plan&.name || FREE_PLAN
+      self.plan || Plan.find_by(name: FREE_PLAN)
+    end
+
+    def actual_plan_name
+      actual_plan&.name || FREE_PLAN
     end
 
     def actual_shared_runners_minutes_limit
