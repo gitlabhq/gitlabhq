@@ -7,11 +7,11 @@
 
 - if status.has_details?
   = link_to status.details_path, class: 'mini-pipeline-graph-dropdown-item', data: { toggle: 'tooltip', title: tooltip, container: 'body' }  do
-    %span{ class: klass }= custom_icon(status.icon)
+    %span{ class: klass }= sprite_icon(status.icon)
     %span.ci-build-text= subject.name
 - else
   .menu-item.mini-pipeline-graph-dropdown-item{ data: { toggle: 'tooltip', title: tooltip, container: 'body' } }
-    %span{ class: klass }= custom_icon(status.icon)
+    %span{ class: klass }= sprite_icon(status.icon)
     %span.ci-build-text= subject.name
 
 - if status.has_action?
