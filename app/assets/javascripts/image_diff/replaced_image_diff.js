@@ -10,6 +10,13 @@ export default class ReplacedImageDiff extends ImageDiff {
       [viewTypes.ONION_SKIN]: this.el.querySelector('.onion-skin .frame.added'),
     };
 
+    const viewModesEl = this.el.querySelector('.view-modes-menu');
+    this.viewModesEls = {
+      [viewTypes.TWO_UP]: viewModesEl.querySelector('.two-up'),
+      [viewTypes.SWIPE]: viewModesEl.querySelector('.swipe'),
+      [viewTypes.ONION_SKIN]: viewModesEl.querySelector('.onion-skin'),
+    };
+
     this.currentView = defaultViewType;
     this.generateImageEls();
     this.bindEvents();
@@ -31,10 +38,17 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.changeToViewSwipe = this.changeView.bind(this, viewTypes.SWIPE);
     this.changeToViewOnionSkin = this.changeView.bind(this, viewTypes.ONION_SKIN);
 
-    const viewModesEl = this.el.querySelector('.view-modes-menu');
-    viewModesEl.querySelector('.two-up').addEventListener('click', this.changeToViewTwoUp);
-    viewModesEl.querySelector('.swipe').addEventListener('click', this.changeToViewSwipe);
-    viewModesEl.querySelector('.onion-skin').addEventListener('click', this.changeToViewOnionSkin);
+    this.viewModesEls[viewTypes.TWO_UP].addEventListener('click', this.changeToViewTwoUp);
+    this.viewModesEls[viewTypes.SWIPE].addEventListener('click', this.changeToViewSwipe);
+    this.viewModesEls[viewTypes.ONION_SKIN].addEventListener('click', this.changeToViewOnionSkin);
+  }
+
+  unbindEvents() {
+    super.unbindEvents();
+
+    this.viewModesEls[viewTypes.TWO_UP].removeEventListener('click', this.changeToViewTwoUp);
+    this.viewModesEls[viewTypes.SWIPE].removeEventListener('click', this.changeToViewSwipe);
+    this.viewModesEls[viewTypes.ONION_SKIN].removeEventListener('click', this.changeToViewOnionSkin);
   }
 
   getImageEl() {

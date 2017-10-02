@@ -55,6 +55,11 @@ export default class ImageDiff {
   }
 
   unbindEvents() {
+    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
+    this.$noteContainer.off('click', '.js-diff-notes-toggle', ImageDiffHelper.toggleCollapsed);
+    $(this.el).off('click', '.comment-indicator', ImageDiffHelper.commentIndicatorOnClick);
+    $(this.el).off('click', '.js-image-badge', ImageDiffHelper.imageBadgeOnClick);
+
     if (this.canCreateNote) {
       this.el.removeEventListener('click.imageDiff', this.clickWrapper);
       this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
@@ -62,9 +67,6 @@ export default class ImageDiff {
       this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
-
-    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
-    this.$noteContainer.off('click', '.js-diff-notes-toggle', ImageDiffHelper.toggleCollapsed);
   }
 
   click(event) {
