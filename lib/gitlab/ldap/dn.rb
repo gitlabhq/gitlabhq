@@ -34,22 +34,31 @@ module Gitlab
       # so storing the dn as an escaped String and parsing parts as required
       # with a state machine seems sensible.
       def initialize(*args)
+        if args.length > 1
+          initialize_array(args)
+        else
+          initialize_string(args[0])
+        end
+      end
+
+      def initialize_array(args)
         buffer = StringIO.new
 
-        args.each_index do |index|
-          buffer << "=" if index.odd?
-          buffer << "," if index.even? && index != 0
-
-          arg = args[index]
-
-          buffer << if index < args.length - 1 || index.odd?
-                      self.class.escape(arg)
-                    else
-                      arg
-                    end
+        args.each_with_index do |arg, index|
+          if index.even? # key
+            buffer << "," if index > 0
+            buffer << arg
+          else # value
+            buffer << "="
+            buffer << self.class.escape(arg)
+          end
         end
 
         @dn = buffer.string
+      end
+
+      def initialize_string(arg)
+        @dn = arg.to_s
       end
 
       ##
