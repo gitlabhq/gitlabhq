@@ -480,6 +480,7 @@ export default class Notes {
 
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
 
+      // TODO: Clean this up -- feels very hacky
       if (noteEntity.on_image) {
         const noteEl = $(`.note-row-${noteEntity.id}:visible`);
 
