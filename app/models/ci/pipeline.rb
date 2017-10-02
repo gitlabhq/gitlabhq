@@ -177,6 +177,10 @@ module Ci
       sources.reject { |source| source == "external" }.values
     end
 
+    def unknown_source?
+      config_source.nil?
+    end
+
     def stages_count
       statuses.select(:stage).distinct.count
     end
