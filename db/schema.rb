@@ -1514,7 +1514,6 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.boolean "disable_overriding_approvers_per_merge_request"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
-    t.boolean "repository_read_only"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
