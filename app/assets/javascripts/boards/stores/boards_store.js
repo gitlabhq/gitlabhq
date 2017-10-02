@@ -53,14 +53,13 @@ gl.issueBoards.BoardsStore = {
     this.state.reload = false;
     this.state.currentPage = page;
   },
-  updateBoardConfig(board) {
+  updateBoardConfig(board = {}) {
     this.boardConfig.name = board.name;
     this.boardConfig.milestone = board.milestone;
     this.boardConfig.milestone_id = board.milestone_id;
     this.boardConfig.id = board.id;
     this.boardConfig.weight = board.weight;
     this.boardConfig.labels = board.labels || [];
-    Vue.set(this.boardConfig, 'label_ids', board.labels.map(b => b.id));
     this.boardConfig.author_id = board.author_id;
     this.boardConfig.assignee_id = board.assignee_id;
     Vue.set(this.boardConfig, 'assignee', board.assignee);

@@ -247,9 +247,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    refreshPage() {
-      location.href = location.pathname;
-    },
     submit() {
       if (this.currentPage === 'delete') {
         this.submitDisabled = true;
@@ -265,21 +262,7 @@ export default Vue.extend({
         gl.boardService.createBoard(this.board)
           .then(resp => resp.json())
           .then((data) => {
-            if (this.currentBoard && this.currentPage !== 'new') {
-              this.currentBoard.name = this.board.name;
-
-              // We reload the page to make sure the store & state of the app are correct
-              this.refreshPage();
-
-              // Enable the button thanks to our jQuery disabling it
-              $(this.$refs.submitBtn).enable();
-
-              // Reset the selectors current page
-              Store.state.currentPage = '';
-              Store.state.reload = true;
-            } else if (this.currentPage === 'new') {
-              gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
-            }
+            gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
           })
           .catch(() => {
             Flash('Unable to save your changes. Please try again.')
@@ -294,12 +277,7 @@ export default Vue.extend({
     if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
       Store.updateBoardConfig(this.currentBoard);
     } else {
-      Store.updateBoardConfig({
-        name: '',
-        id: false,
-        label_ids: [],
-        assignee: {},
-      });
+      Store.updateBoardConfig();
     }
 
     if (!this.board.labels) {

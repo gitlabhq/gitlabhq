@@ -72,7 +72,6 @@ $(() => {
       weight: $boardApp.dataset.boardWeight,
       authorUsername: $boardApp.dataset.boardAuthorUsername,
       assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
-      labelIds: $boardApp.dataset.label_ids || [],
       labels: JSON.parse($boardApp.dataset.labels || []),
       defaultAvatar: $boardApp.dataset.defaultAvatar,
       cantEdit: [],
@@ -94,7 +93,6 @@ $(() => {
 
       updateFilterPath('milestone_title', this.milestoneTitle, 'milestone');
       updateFilterPath('weight', this.weight, 'weight');
-      updateFilterPath('author_username', this.authorUsername, 'author');
       updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
 
       const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
