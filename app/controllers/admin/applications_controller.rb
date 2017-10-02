@@ -20,10 +20,12 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Doorkeeper::Application.new(application_params)
+    @application = Applications::CreateService.new(current_user, application_params)
 
-    if @application.save
-      redirect_to_admin_page
+    if @application.persisted?
+      flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
+      redirect_to admin_application_url(@application)
     else
       render :new
     end
@@ -42,13 +44,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
     redirect_to admin_applications_url, status: 302, notice: 'Application was successfully destroyed.'
   end
 
-  protected
-
-  def redirect_to_admin_page
-    flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-    redirect_to admin_application_url(@application)
-  end
-
   private
 
   def set_application
@@ -57,6 +52,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes)
+    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes).merge(ip_address: request.remote_ip)
   end
 end

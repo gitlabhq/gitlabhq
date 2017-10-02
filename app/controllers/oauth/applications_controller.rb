@@ -3,7 +3,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include Gitlab::GonHelper
   include PageLayoutHelper
   include OauthApplications
-  prepend ::EE::Oauth::ApplicationsController
 
   before_action :verify_user_oauth_applications_enabled
   before_action :authenticate_user!
@@ -17,23 +16,16 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def create
-    @application = Doorkeeper::Application.new(application_params)
+    @application = Applications::CreateService.new(current_user, application_params)
 
-    @application.owner = current_user
+    if @application.persited?
+      flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
 
-    if @application.save
-      redirect_to_oauth_application_page
+      redirect_to oauth_application_url(@application)
     else
       set_index_vars
       render :index
     end
-  end
-
-  protected
-
-  def redirect_to_oauth_application_page
-    flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
-    redirect_to oauth_application_url(@application)
   end
 
   private
@@ -61,5 +53,12 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render "errors/not_found", layout: "errors", status: 404
+  end
+
+  def application_params
+    super.tap do |params|
+      params[:owner] = current_user
+      params[:ip_address] = request.remote_ip
+    end
   end
 end

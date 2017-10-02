@@ -1,6 +1,5 @@
 module OauthApplications
   extend ActiveSupport::Concern
-  prepend ::EE::Concerns::OauthApplications
 
   included do
     before_action :prepare_scopes, only: [:create, :update]
