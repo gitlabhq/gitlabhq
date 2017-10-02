@@ -19,7 +19,8 @@ module GoogleApi
     end
 
     def get_token(code)
-      client.auth_code.get_token(code, redirect_uri: redirect_uri).token
+      ret = client.auth_code.get_token(code, redirect_uri: redirect_uri)
+      return ret.token, ret.expires_at
     end
 
     protected

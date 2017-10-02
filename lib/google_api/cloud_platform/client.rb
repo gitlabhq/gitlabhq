@@ -9,10 +9,26 @@ module GoogleApi
         def session_key_for_token
           :cloud_platform_access_token
         end
+
+        def session_key_for_expires_at
+          :cloud_platform_expires_at
+        end
       end
 
       def scope
         'https://www.googleapis.com/auth/cloud-platform'
+      end
+
+      def validate_token(expires_at)
+        return false unless access_token
+        return false unless expires_at
+
+        # Making sure that the token will have been still alive during the cluster creation.
+        unless DateTime.strptime(expires_at, '%s').to_time > Time.now + 10.minutes
+          return false
+        end
+
+        true
       end
 
       def projects_zones_clusters_get(project_id, zone, cluster_id)

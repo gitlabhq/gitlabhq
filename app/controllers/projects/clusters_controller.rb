@@ -6,12 +6,11 @@ class Projects::ClustersController < Projects::ApplicationController
   def login
     begin
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
-          nil,
-          callback_google_api_authorizations_url,
+          nil, callback_google_api_authorizations_url,
           state: namespace_project_clusters_url.to_s
         ).authorize_url
     rescue GoogleApi::Auth::ConfigMissingError
-      # Show an alert message that gitlab.yml is not configured properly
+      # no-op
     end
   end
 
@@ -83,12 +82,19 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def authorize_google_api
-    unless token_in_session
+    unless GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
+                                           .validate_token(expires_at_in_session)
       redirect_to action: 'login'
     end
   end
 
   def token_in_session
-    @token_in_session ||= session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+    @token_in_session ||=
+      session[GoogleApi::CloudPlatform::Client.session_key_for_token]
+  end
+
+  def expires_at_in_session
+    @expires_at_in_session ||=
+      session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
   end
 end
