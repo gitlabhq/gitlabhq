@@ -1,5 +1,5 @@
 - blob = file.blob
-- is_external_link = external_link?(blob)
+- is_external_link = external_url?(blob)
 - path_to_file = link_to_artifact(@project, @build, file)
 
 %tr.tree-item.js-artifact-tree-row{ data: { link: path_to_file, external_link: "#{is_external_link}" } }
