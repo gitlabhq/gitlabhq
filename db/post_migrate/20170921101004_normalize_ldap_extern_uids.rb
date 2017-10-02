@@ -220,7 +220,7 @@ class NormalizeLdapExternUids < ActiveRecord::Migration
 
         ##
         # Return the DN as an escaped and normalized string.
-        def to_s_normalized
+        def to_normalized_s
           self.class.new(*to_a).to_s
         end
 
@@ -270,7 +270,7 @@ class NormalizeLdapExternUids < ActiveRecord::Migration
     ldap_identities = Identity.where("provider like 'ldap%'")
     ldap_identities.find_each do |identity|
       begin
-        identity.extern_uid = Gitlab::LDAP::DN.new(identity.extern_uid).to_s_normalized
+        identity.extern_uid = Gitlab::LDAP::DN.new(identity.extern_uid).to_normalized_s
         unless identity.save
           say "Unable to normalize \"#{identity.extern_uid}\". Skipping."
         end

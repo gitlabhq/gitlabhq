@@ -235,7 +235,7 @@ module Gitlab
 
       ##
       # Return the DN as an escaped and normalized string.
-      def to_s_normalized
+      def to_normalized_s
         self.class.new(*to_a).to_s.downcase
       end
 

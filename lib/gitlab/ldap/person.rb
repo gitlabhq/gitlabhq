@@ -72,7 +72,7 @@ module Gitlab
       end
 
       def dn
-        DN.new(entry.dn).to_s_normalized
+        DN.new(entry.dn).to_normalized_s
       end
 
       private

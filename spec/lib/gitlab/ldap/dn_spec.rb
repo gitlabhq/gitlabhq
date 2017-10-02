@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Gitlab::LDAP::DN do
   using RSpec::Parameterized::TableSyntax
 
-  describe '#to_s_normalized' do
-    subject { described_class.new(given).to_s_normalized }
+  describe '#to_normalized_s' do
+    subject { described_class.new(given).to_normalized_s }
 
     # Regarding the telephoneNumber test:
     #
