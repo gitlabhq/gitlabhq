@@ -1,12 +1,6 @@
 module EE
   module Keys
     module CreateService
-      def initialize(user, params)
-        super(user, params)
-
-        @ip_address = @params.delete(:ip_address)
-      end
-
       def execute
         super.tap do |key|
           log_audit_event(key)
