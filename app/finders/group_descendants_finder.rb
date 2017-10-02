@@ -59,8 +59,7 @@ class GroupDescendantsFinder
                               .page(params[:page]).per(per_page)
                               .select(GROUP_SELECTS)
 
-    paginated_projects = projects.with_route.page(subgroup_page - group_page_count)
-                           .per(per_page - subgroups_with_counts.size)
+    paginated_projects = paginate_projects_after_groups(subgroups_with_counts)
 
     if params[:filter]
       ancestors_for_project_search = ancestors_for_groups(Group.where(id: paginated_projects.select(:namespace_id)))
@@ -68,6 +67,31 @@ class GroupDescendantsFinder
     end
 
     @children = subgroups_with_counts + paginated_projects
+  end
+
+  def paginate_projects_after_groups(loaded_subgroups)
+    # We adjust the pagination for projects for the combination with groups:
+    # - We limit the first page (page 0) where we show  projects:
+    #   Page size = 20: 17 groups, 3 projects
+    # - We ofset the page to start at 0 after the group pages:
+    #   3 pages of projects:
+    #   - currently on page 3: Show page 0 (first page) limited to the number of
+    #     projects that still fit the page (no offset)
+    #   - currently on page 4: Show page 1 show all projects, offset by the number
+    #     of projects shown on project-page 0.
+    group_page_count = loaded_subgroups.total_pages
+    subgroup_page = loaded_subgroups.current_page
+    group_last_page_count = subgroups.page(group_page_count).count
+    project_page = subgroup_page - group_page_count
+    offset = if project_page.zero? || group_page_count.zero?
+               0
+             else
+               per_page - group_last_page_count
+             end
+
+    projects.with_route.page(project_page)
+      .per(per_page - loaded_subgroups.size)
+      .padding(offset)
   end
 
   def direct_child_groups

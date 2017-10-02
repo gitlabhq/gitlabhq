@@ -152,13 +152,15 @@ describe GroupsController do
 
   describe 'GET #show' do
     context 'pagination' do
+      let(:per_page) { 3 }
+
       before do
-        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+        allow(Kaminari.config).to receive(:default_per_page).and_return(per_page)
       end
 
       context 'with only projects' do
         let!(:other_project) { create(:project, :public, namespace: group) }
-        let!(:first_page_projects) { create_list(:project, Kaminari.config.default_per_page, :public, namespace: group ) }
+        let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group ) }
 
         it 'has projects on the first page' do
           get :show, id: group.to_param, sort: 'id_desc'
@@ -174,9 +176,9 @@ describe GroupsController do
       end
 
       context 'with subgroups and projects', :nested_groups do
-        let!(:first_page_subgroups) { create_list(:group, Kaminari.config.default_per_page, parent: group) }
+        let!(:first_page_subgroups) { create_list(:group,  per_page, :public,  parent: group) }
         let!(:other_subgroup) { create(:group, :public, parent: group) }
-        let!(:project) { create(:project, :public, namespace: group) }
+        let!(:next_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
         it 'contains all subgroups' do
           get :children, id: group.to_param, sort: 'id_asc', format: :json
@@ -187,7 +189,7 @@ describe GroupsController do
         it 'contains the project and group on the second page' do
           get :children, id: group.to_param, sort: 'id_asc', page: 2, format: :json
 
-          expect(assigns(:children)).to contain_exactly(other_subgroup, project)
+          expect(assigns(:children)).to contain_exactly(other_subgroup, *next_page_projects.take(per_page - 1))
         end
       end
     end
