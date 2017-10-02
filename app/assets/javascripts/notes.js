@@ -965,12 +965,13 @@ export default class Notes {
     // Setup comment form
     let newForm;
     const $noteContainer = $link.closest('.diff-viewer').find('.note-container');
+    const $form = $noteContainer.find('> .discussion-form');
 
-    if ($noteContainer.find('form').length === 0) {
+    if ($form.length === 0) {
       newForm = this.cleanForm(this.formClone.clone());
       newForm.appendTo($noteContainer);
     } else {
-      newForm = $noteContainer.find('form');
+      newForm = $form;
     }
 
     this.setupDiscussionNoteForm($link, newForm);
