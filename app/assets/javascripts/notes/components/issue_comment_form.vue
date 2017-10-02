@@ -266,9 +266,9 @@
               <div class="error-alert"></div>
 
               <issue-warning
-                v-if="hasIssueWarning(getIssueData)"
-                :is-locked="isIssueLocked(getIssueData)"
-                :is-confidential="isIssueConfidential(getIssueData)"
+                v-if="hasWarning(getIssueData)"
+                :is-locked="isLocked(getIssueData)"
+                :is-confidential="isConfidential(getIssueData)"
               />
 
               <markdown-field
@@ -276,7 +276,6 @@
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isIssueConfidential(getIssueData)"
                 ref="markdownField">
                 <textarea
                   id="note-body"

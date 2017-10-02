@@ -1,15 +1,15 @@
 export default {
   methods: {
-    isIssueConfidential(issue) {
+    isConfidential(issue) {
       return !!issue.confidential;
     },
 
-    isIssueLocked(issue) {
+    isLocked(issue) {
       return !!issue.discussion_locked;
     },
 
-    hasIssueWarning(issue) {
-      return this.isIssueConfidential(issue) || this.isIssueLocked(issue);
+    hasWarning(issue) {
+      return this.isConfidential(issue) || this.isLocked(issue);
     },
   },
 };
