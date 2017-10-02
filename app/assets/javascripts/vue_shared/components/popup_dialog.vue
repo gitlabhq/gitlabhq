@@ -20,6 +20,11 @@ export default {
       type: String,
       required: false,
     },
+    submitDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
 
   computed: {
@@ -73,8 +78,10 @@ export default {
         </div>
         <slot name="footer">
           <div class="modal-footer">
-            <button type="button"
+            <button
+              type="button"
               class="btn pull-left"
+              :disabled="submitDisabled"
               :class="btnKindClass"
               @click="emitSubmit(true)">
                 {{primaryButtonLabel}}

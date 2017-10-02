@@ -3,8 +3,9 @@
   <popup-dialog
     v-show="currentPage"
     :title="title"
-    :primaryButtonLabel="buttonText"
+    :primary-button-label="buttonText"
     :kind="buttonKind"
+    :submit-disabled="submitDisabled"
     @toggle="cancel"
     @submit="submit"
   >
@@ -140,16 +141,20 @@ const Store = gl.issueBoards.BoardsStore;
 
 export default Vue.extend({
   props: {
+    boardPath: {
+      type: String,
+      required: true,
+    },
+    canAdminBoard: {
+      type: Boolean,
+      required: true,
+    },
     milestonePath: {
       type: String,
       required: true,
     },
     labelsPath: {
       type: String,
-      required: true,
-    },
-    canAdminBoard: {
-      type: Boolean,
       required: true,
     },
     scopedIssueBoardFeatureEnabled: {
@@ -181,6 +186,7 @@ export default Vue.extend({
       currentPage: Store.state.currentPage,
       milestones: [],
       milestoneDropdownOpen: false,
+      submitDisabled: false,
     };
   },
   components: {
@@ -227,9 +233,6 @@ export default Vue.extend({
     milestoneToggleText() {
       return this.board.milestone ? this.board.milestone.title : 'Milestone';
     },
-    submitDisabled() {
-      return false;
-    },
     expandButtonText() {
       return this.expanded ? 'Collapse' : 'Expand';
     },
@@ -248,28 +251,40 @@ export default Vue.extend({
       location.href = location.pathname;
     },
     submit() {
-      gl.boardService.createBoard(this.board)
-        .then(resp => resp.json())
-        .then((data) => {
-          if (this.currentBoard && this.currentPage !== 'new') {
-            this.currentBoard.name = this.board.name;
+      if (this.currentPage === 'delete') {
+        this.submitDisabled = true;
+        this.$http.delete(this.boardPath)
+          .then(({redirect_to}) => {
+            gl.utils.visitUrl(Store.rootPath);
+          })
+          .catch(() => {
+            Flash('Failed to delete board. Please try again.')
+            this.submitDisabled = false;
+          });
+      } else {
+        gl.boardService.createBoard(this.board)
+          .then(resp => resp.json())
+          .then((data) => {
+            if (this.currentBoard && this.currentPage !== 'new') {
+              this.currentBoard.name = this.board.name;
 
-            // We reload the page to make sure the store & state of the app are correct
-            this.refreshPage();
+              // We reload the page to make sure the store & state of the app are correct
+              this.refreshPage();
 
-            // Enable the button thanks to our jQuery disabling it
-            $(this.$refs.submitBtn).enable();
+              // Enable the button thanks to our jQuery disabling it
+              $(this.$refs.submitBtn).enable();
 
-            // Reset the selectors current page
-            Store.state.currentPage = '';
-            Store.state.reload = true;
-          } else if (this.currentPage === 'new') {
-            gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
-          }
-        })
-        .catch(() => {
-          Flash('Unable to save your changes. Please try again.')
-        });
+              // Reset the selectors current page
+              Store.state.currentPage = '';
+              Store.state.reload = true;
+            } else if (this.currentPage === 'new') {
+              gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
+            }
+          })
+          .catch(() => {
+            Flash('Unable to save your changes. Please try again.')
+          });
+      }
     },
     cancel() {
       Store.state.currentPage = '';

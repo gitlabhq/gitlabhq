@@ -44,6 +44,7 @@ module EE
         service.execute(@board)
 
         respond_to do |format|
+          format.json { head :ok }
           format.html { redirect_to boards_path, status: 302 }
         end
       end

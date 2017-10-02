@@ -36,6 +36,7 @@
                     Delete board
 
     %board-form{ ":milestone-path" => "milestonePath",
+      "board-path" => current_board_path(board),
       "labels-path" => labels_filter_path(true),
       "project-id" => @project&.id,
       "group-id" => @group&.id,
