@@ -1,8 +1,9 @@
 - diff_file = discussion.diff_file
 - blob = discussion.blob
 - discussions = { discussion.original_line_code => [discussion] }
+- diff_file_class = 'text-file' if diff_file.text?
 
-.diff-file.file-holder{ class: 'text-file' if diff_file.text? }
+.diff-file.file-holder{ class: diff_file_class }
   .js-file-title.file-title.file-title-flex-parent
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
