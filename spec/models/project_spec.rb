@@ -1650,6 +1650,17 @@ describe Project do
     end
   end
 
+  describe '#can_create_repository?' do
+    let(:project) { build(:project) }
+
+    it 'skips gitlab-shell exists?' do
+      project.skip_disk_validation = true
+
+      expect(project.gitlab_shell).not_to receive(:exists?)
+      expect(project.can_create_repository?).to be_truthy
+    end
+  end
+
   describe '#latest_successful_builds_for' do
     def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
