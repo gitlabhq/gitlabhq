@@ -126,6 +126,12 @@ module Ci
         pipeline.auto_canceled_by = nil
       end
 
+      before_transition any => :failed do |pipeline, transition|
+        transition.args.first.try do |reason|
+          pipeline.failure_reason = reason
+        end
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
