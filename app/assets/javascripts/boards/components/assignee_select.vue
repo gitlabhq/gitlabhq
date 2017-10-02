@@ -23,7 +23,7 @@
         </div>
         <div class="media-body">
           <div class="bold author">
-            {{ selected.name }}
+            {{ selectedName }}
           </div>
 
           <div class="username">
@@ -38,18 +38,17 @@
 
     <div class="selectbox" style="display: none">
 
-      <input type="hidden" name="assignee_id" v-model="board.assignee_id">
-
       <div class="dropdown">
         <button
           class="dropdown-menu-toggle wide js-user-search js-author-search js-save-user-data js-board-config-modal"
+          ref="dropdown"
           :data-field-name="fieldName"
           data-current-user="true"
           data-dropdown-title="Select assignee"
           data-any-user="Any assignee"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="selected.id"
+          :data-selected="selectedId"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"
@@ -115,16 +114,37 @@ export default {
       default: () => ({}),
     }
   },
+  data() {
+    return {
+      selectedId: this.board.assignee_id,
+    }
+  },
   components: {
     UserAvatarImage,
   },
   computed: {
     hasValue() {
-      return Object.keys(this.selected).length > 0 && this.selected.id;
+      return this.board.assignee_id;
+    },
+    selectedName() {
+      return this.board.assignee ? this.board.assignee.name : '';
     },
   },
+  watch: {
+    board: {
+      handler() {
+        this.selectedId = this.board.assignee_id;
+        this.$nextTick(() => {
+          new UsersSelect();
+        });
+      },
+      deep: true,
+    }
+  },
   mounted() {
-    new UsersSelect();
+    this.$nextTick(() => {
+      new UsersSelect();
+    });
   },
 };
 </script>

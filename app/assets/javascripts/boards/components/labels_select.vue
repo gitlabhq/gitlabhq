@@ -99,17 +99,14 @@ export default {
       default: false,
     },
   },
-  components: {
-    loadingIcon,
-  },
   data() {
     return {
       isOpen: false,
       loading: true,
     };
   },
-  mounted() {
-    new LabelsSelect();
+  components: {
+    loadingIcon,
   },
   methods: {
     open() {
@@ -121,6 +118,9 @@ export default {
     toggle() {
       this.isOpen = !this.isOpen;
     },
+  },
+  mounted() {
+    new LabelsSelect();
   },
 };
 </script>

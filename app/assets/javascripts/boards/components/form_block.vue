@@ -8,8 +8,6 @@
 import eventHub from '../eventhub';
 
 export default {
-  props: {
-  },
   data() {
     return {
       editing: false,

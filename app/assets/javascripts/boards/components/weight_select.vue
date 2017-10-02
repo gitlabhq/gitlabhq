@@ -43,7 +43,7 @@
         </li>
       </ul>
     </div>
-    <div>
+    <div class="value">
       {{ weight }}
     </div>
   </div>
@@ -78,6 +78,15 @@ export default {
       required: false,
       default: false,
     },
+    weights: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      isOpen: false,
+    };
   },
   components: {
     loadingIcon,
@@ -89,13 +98,6 @@ export default {
       }
       return this.board.weight || 'Any weight';
     },
-  },
-  data() {
-    return {
-      isOpen: false,
-      // TODO: use Issue.weight_options from backend
-      weights: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    };
   },
   methods: {
     selectWeight(weight) {

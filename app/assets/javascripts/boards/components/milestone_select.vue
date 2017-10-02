@@ -51,7 +51,7 @@
         </li>
       </ul>
     </div>
-    <div>
+    <div class="value">
       {{ milestoneTitle }}
     </div>
   </div>
@@ -62,7 +62,6 @@
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import extraMilestones from '../mixins/extra_milestones';
-import eventHub from '../eventhub';
 
 export default {
   props: {
@@ -92,14 +91,6 @@ export default {
       default: false,
     },
   },
-  components: {
-    loadingIcon,
-  },
-  computed: {
-    milestoneTitle() {
-      return this.board.milestone ? this.board.milestone.title : this.defaultText;
-    },
-  },
   data() {
     return {
       isOpen: false,
@@ -108,24 +99,13 @@ export default {
       extraMilestones,
     };
   },
-  mounted() {
-    this.$http.get(this.milestonePath)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.milestones = data;
-        this.loading = false;
-      })
-      .catch(() => {
-        this.loading = false;
-      });
-    eventHub.$on('open', this.open);
-    eventHub.$on('close', this.close);
-    eventHub.$on('toggle', this.toggle);
+  components: {
+    loadingIcon,
   },
-  beforeDestroy() {
-    eventHub.$off('open', this.open);
-    eventHub.$off('close', this.close);
-    eventHub.$off('toggle', this.toggle);
+  computed: {
+    milestoneTitle() {
+      return this.board.milestone ? this.board.milestone.title : this.defaultText;
+    },
   },
   methods: {
     selectMilestone(milestone) {
@@ -142,6 +122,17 @@ export default {
     toggle() {
       this.isOpen = !this.isOpen;
     },
+  },
+  mounted() {
+    this.$http.get(this.milestonePath)
+      .then(resp => resp.json())
+      .then((data) => {
+        this.milestones = data;
+        this.loading = false;
+      })
+      .catch(() => {
+        this.loading = false;
+      });
   },
 };
 </script>

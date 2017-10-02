@@ -74,9 +74,9 @@
             <board-labels-select
               :board="board"
               title="Labels"
-              defaultText="Any label"
-              :canEdit="canAdminBoard"
-              :labelsPath="labelsPath"
+              default-text="Any label"
+              :can-edit="canAdminBoard"
+              :labels-path="labelsPath"
             />
           </form-block>
 
@@ -84,6 +84,7 @@
             <assignee-select
               :board="board"
               field-name="assignee_id"
+              v-model="board.assignee_id"
               :selected="board.assignee"
               :can-edit="canAdminBoard"
               :project-id="projectId"
@@ -99,6 +100,7 @@
           >
             <board-weight-select
               :board="board"
+              :weights="weightsArray"
               v-model="board.weight"
               title="Weight"
               defaultText="Any weight"
@@ -160,6 +162,10 @@ export default Vue.extend({
       required: false,
       default: '',
     },
+    weights: {
+      type: String,
+      required: false,
+    },
   },
   data() {
     return {
@@ -179,25 +185,6 @@ export default Vue.extend({
     BoardWeightSelect,
     FormBlock,
     PopupDialog,
-  },
-  mounted() {
-    if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
-      Store.updateBoardConfig(this.currentBoard);
-    } else {
-      Store.updateBoardConfig({
-        name: '',
-        id: false,
-        label_ids: [],
-      });
-    }
-
-    if (!this.board.labels) {
-      this.board.labels = [];
-    }
-
-    if (this.$refs.name) {
-      this.$refs.name.focus();
-    }
   },
   computed: {
     buttonText() {
@@ -247,6 +234,9 @@ export default Vue.extend({
     readonly() {
       return !this.canAdminBoard;
     },
+    weightsArray() {
+      return JSON.parse(this.weights);
+    }
   },
   methods: {
     refreshPage() {
@@ -279,6 +269,26 @@ export default Vue.extend({
     cancel() {
       Store.state.currentPage = '';
     },
+  },
+  mounted() {
+    if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
+      Store.updateBoardConfig(this.currentBoard);
+    } else {
+      Store.updateBoardConfig({
+        name: '',
+        id: false,
+        label_ids: [],
+        assignee: {},
+      });
+    }
+
+    if (!this.board.labels) {
+      this.board.labels = [];
+    }
+
+    if (this.$refs.name) {
+      this.$refs.name.focus();
+    }
   },
 });
 </script>
