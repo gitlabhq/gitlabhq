@@ -57,7 +57,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   def application_params
     super.tap do |params|
-      params[:owner] = current_user
+      params[:doorkeeper_application][:owner] = current_user
       params[:ip_address] = request.remote_ip
     end
   end

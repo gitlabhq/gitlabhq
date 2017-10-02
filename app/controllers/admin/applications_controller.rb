@@ -1,6 +1,5 @@
 class Admin::ApplicationsController < Admin::ApplicationController
   include OauthApplications
-  prepend EE::Admin::ApplicationsController
 
   before_action :set_application, only: [:show, :edit, :update, :destroy]
   before_action :load_scopes, only: [:new, :create, :edit, :update]
