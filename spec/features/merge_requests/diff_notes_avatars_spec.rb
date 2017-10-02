@@ -86,7 +86,7 @@ feature 'Diff note avatars', js: true do
 
       it 'shows note avatar' do
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 1)
         end
@@ -94,7 +94,7 @@ feature 'Diff note avatars', js: true do
 
       it 'shows comment on note avatar' do
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(first('img.js-diff-comment-avatar')["data-original-title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
         end
@@ -102,13 +102,13 @@ feature 'Diff note avatars', js: true do
 
       it 'toggles comments when clicking avatar' do
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
         end
 
         expect(page).to have_selector('.notes_holder', visible: false)
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          first('img.js-diff-comment-avatar').click
+          first('img.js-diff-comment-avatar').send_keys(:return)
         end
 
         expect(page).to have_selector('.notes_holder')
@@ -140,7 +140,7 @@ feature 'Diff note avatars', js: true do
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').trigger('click')
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
         end
@@ -160,7 +160,7 @@ feature 'Diff note avatars', js: true do
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
           expect(find('.diff-comments-more-count')).to have_content '+1'
@@ -178,7 +178,7 @@ feature 'Diff note avatars', js: true do
 
         it 'shows extra comment count' do
           page.within find("[id='#{position.line_code(project.repository)}']") do
-            find('.diff-notes-collapse').click
+            find('.diff-notes-collapse').send_keys(:return)
 
             expect(find('.diff-comments-more-count')).to have_content '+1'
           end

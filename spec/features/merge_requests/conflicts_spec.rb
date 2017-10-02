@@ -23,11 +23,11 @@ feature 'Merge request conflict resolution', js: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         all('button', text: 'Use ours').each do |button|
-          button.click
+          button.send_keys(:return)
         end
       end
 
-      click_button 'Commit conflict resolution'
+      find_button('Commit conflict resolution').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
@@ -69,7 +69,7 @@ feature 'Merge request conflict resolution', js: true do
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
-      click_button 'Commit conflict resolution'
+      find_button('Commit conflict resolution').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
