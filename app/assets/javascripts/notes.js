@@ -462,14 +462,17 @@ export default class Notes {
 
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
 
-      // TODO: Clean this up -- feels very hacky
       if (noteEntity.on_image) {
-        const noteEl = $(`.note-row-${noteEntity.id}:visible`);
+        const $noteEl = $(`.note-row-${noteEntity.id}:visible`);
+        const $notesContainer = $noteEl.closest('.notes');
+        const badgeNumber = parseInt($notesContainer.find('.badge.js-diff-notes-toggle').text().trim(), 10);
 
-        // get badge ID from previous sibling
-        const badgeId = noteEl.prev().find('.badge:not(".hidden")').text().trim();
-
-        imageDiffHelper.addAvatarBadge(noteEl.parents('.discussion-notes').get(0), { detail: { badgeNumber: badgeId, noteId: `note_${noteEntity.id}` } });
+        imageDiffHelper.addAvatarBadge($notesContainer[0], {
+          detail: {
+            badgeNumber,
+            noteId: `note_${noteEntity.id}`
+          }
+        });
       }
     }
 
