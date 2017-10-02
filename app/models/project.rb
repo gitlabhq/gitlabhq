@@ -1584,6 +1584,8 @@ class Project < ActiveRecord::Base
 
   def gl_repository(is_wiki:)
     Gitlab::GlRepository.gl_repository(self, is_wiki)
+  end
+
   def merge_method
     if self.merge_requests_ff_only_enabled
       :ff
