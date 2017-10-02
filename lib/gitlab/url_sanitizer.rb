@@ -1,6 +1,6 @@
 module Gitlab
   class UrlSanitizer
-    ALLOWED_SCHEMES = %w[http https ssh git]
+    ALLOWED_SCHEMES = %w[http https ssh git].freeze
 
     def self.sanitize(content)
       regexp = URI::Parser.new.make_regexp(ALLOWED_SCHEMES)
