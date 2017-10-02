@@ -711,8 +711,7 @@
       // Compensate for cursor offsets
       position: absolute;
       left: (-1px * $image-comment-cursor-left-offset);
-      // TODO: Fix pixel calculation due to empty white space in cursor image
-      top: (-1px * $image-comment-cursor-top-offset + 2px);
+      top: (-1px * $image-comment-cursor-top-offset);
     }
   }
 }
