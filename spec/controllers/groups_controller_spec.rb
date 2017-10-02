@@ -319,6 +319,16 @@ describe GroupsController do
           expect(matched_project_2_json['id']).to eq(matched_project_2.id)
         end
 
+        it 'expands the tree upto a specified parent' do
+          subgroup = create(:group, :public, parent: group)
+          l2_subgroup = create(:group, :public, parent: subgroup)
+          create(:project, :public, namespace: l2_subgroup, name: 'test')
+
+          get :children, id: subgroup.to_param, filter: 'test', format: :json
+
+          expect(response).to have_http_status(200)
+        end
+
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 

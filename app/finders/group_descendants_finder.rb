@@ -96,9 +96,21 @@ class GroupDescendantsFinder
       .search(params[:filter])
   end
 
+  # When filtering we want all to preload all the ancestors upto the specified
+  # parent group.
+  #
+  # - root
+  #   - subgroup
+  #     - nested-group
+  #       - project
+  #
+  # So when searching 'project', on the 'subgroup' page we want to preload
+  # 'nested-group' but not 'subgroup' or 'root'
   def ancestors_for_groups(base_for_ancestors)
+    ancestors_for_parent = Gitlab::GroupHierarchy.new(Group.where(id: parent_group))
+                             .base_and_ancestors
     Gitlab::GroupHierarchy.new(base_for_ancestors)
-      .base_and_ancestors.where.not(id: parent_group)
+      .base_and_ancestors.where.not(id: ancestors_for_parent)
   end
 
   def subgroups
