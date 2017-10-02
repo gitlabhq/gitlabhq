@@ -4,6 +4,7 @@ module Storage
     delegate :gitlab_shell, :repository_storage_path, to: :project
 
     ROOT_PATH_PREFIX = '@hashed'.freeze
+    STORAGE_VERSION = 1
 
     def initialize(project)
       @project = project

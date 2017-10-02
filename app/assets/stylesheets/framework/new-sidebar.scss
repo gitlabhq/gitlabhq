@@ -461,6 +461,13 @@ $new-sidebar-collapsed-width: 50px;
       font-size: 18px;
     }
   }
+
+  @media (max-width: $screen-xs-max) {
+    + .breadcrumbs-links {
+      padding-left: 17px;
+      border-left: 1px solid $gl-text-color-quaternary;
+    }
+  }
 }
 
 @media (max-width: $screen-xs-max) {

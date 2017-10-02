@@ -5,8 +5,8 @@
     %ul
       - @group.ldap_group_links.each do |ldap_group_link|
         %li
-          People in cn
-          %code= ldap_group_link.cn
+          People in
+          %code= ldap_group_link.cn ? "cn: #{ldap_group_link.cn}" : "filter: #{truncate(ldap_group_link.filter, length: 70)}"
           are given
           %code= ldap_group_link.human_access
           access.

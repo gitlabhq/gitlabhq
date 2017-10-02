@@ -65,6 +65,7 @@ Libraries with the following licenses are unacceptable for use:
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
 - [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 - [Facebook BSD + PATENTS][Facebook]: is a 3-clause BSD license with a patent grant that has been deemed [Category X][x-list] by the Apache foundation.
+- [WTFPL][WTFPL]: is a public domain dedication [rejected by the OSI (3.2)][WTFPL-OSI]. Also has a strong language which is not in accordance with our diversity policy.
 
 ## Requesting Approval for Licenses
 
@@ -108,3 +109,5 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [x-list]: https://www.apache.org/legal/resolved.html#category-x
 [Acceptable-Licenses]: #acceptable-licenses
 [Unacceptable-Licenses]: #unacceptable-licenses
+[WTFPL]: https://wtfpl.net
+[WTFPL-OSI]: https://opensource.org/minutes20090304

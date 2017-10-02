@@ -120,9 +120,6 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, this.cantEdit);
-      this.filterManager.setup();
-
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
     },
@@ -130,6 +127,9 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, this.cantEdit);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then(response => response.json())

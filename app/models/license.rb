@@ -114,6 +114,7 @@ class License < ActiveRecord::Base
     cross_project_pipelines
     db_load_balancing
     deploy_board
+    extended_audit_events
     file_locks
     geo
     group_issue_boards
@@ -191,6 +192,7 @@ class License < ActiveRecord::Base
     auditor_user
     db_load_balancing
     elastic_search
+    extended_audit_events
     geo
     ldap_extras
     object_storage

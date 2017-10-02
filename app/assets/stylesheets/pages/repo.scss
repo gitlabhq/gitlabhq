@@ -41,6 +41,10 @@
   border-radius: $border-radius-default;
   color: $almost-black;
 
+  .code.white pre .hll {
+    background-color: $well-light-border !important;
+  }
+
   .tree-content-holder {
     display: flex;
     min-height: 300px;

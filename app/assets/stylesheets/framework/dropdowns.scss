@@ -783,6 +783,14 @@
         white-space: normal;
         width: 100%;
 
+        &.dropdown-menu-user-link {
+          white-space: nowrap;
+
+          .dropdown-menu-user-username {
+            display: block;
+          }
+        }
+
         // make sure the text color is not overriden
         &.text-danger {
           color: $brand-danger;

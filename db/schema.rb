@@ -331,7 +331,6 @@ ActiveRecord::Schema.define(version: 20170926203418) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-  add_index "ci_builds", ["id"], name: "index_for_ci_builds_retried_migration", where: "(retried IS NULL)", using: :btree
   add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
@@ -955,12 +954,13 @@ ActiveRecord::Schema.define(version: 20170926203418) do
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
-    t.string "cn", null: false
+    t.string "cn"
     t.integer "group_access", null: false
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "provider"
+    t.string "filter"
   end
 
   create_table "lfs_objects", force: :cascade do |t|

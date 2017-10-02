@@ -7,6 +7,10 @@ describe AuditEventService do
     let(:service) { described_class.new(author_name, nil, ip_address: ip_address) }
     let(:event) { service.for_failed_login.unauth_security_event }
 
+    before do
+      stub_licensed_features(extended_audit_events: true)
+    end
+
     it 'has the right type' do
       expect(event.entity_type).to eq('User')
     end

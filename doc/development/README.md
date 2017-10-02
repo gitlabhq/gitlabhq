@@ -45,6 +45,7 @@
 - [Building a package for testing purposes](build_test_package.md)
 - [Manage feature flags](feature_flags.md)
 - [View sent emails or preview mailers](emails.md)
+- [Working with Gitaly](gitaly.md)
 
 ## Databases
 

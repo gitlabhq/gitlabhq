@@ -75,5 +75,23 @@ describe Audit::Details do
         expect(described_class.humanize(removal_action)).to eq('Removed deploy key')
       end
     end
+
+    context 'change email' do
+      let(:action) do
+        {
+            change: 'email',
+            from: 'a@b.com',
+            to: 'c@b.com',
+            author_name: 'author',
+            target_id: '',
+            target_type: 'Email',
+            target_details: 'Email'
+        }
+      end
+
+      it 'humanizes the removal action' do
+        expect(described_class.humanize(action)).to eq('Changed email from a@b.com to c@b.com')
+      end
+    end
   end
 end

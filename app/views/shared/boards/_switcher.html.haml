@@ -7,7 +7,7 @@
   "milestone-path" => milestones_filter_path(milestone_filter_opts) }
   %span.boards-selector-wrapper
     .dropdown
-      %button.dropdown-menu-toggle{ "@click" => "loadBoards",
+      %button.dropdown-menu-toggle{ "v-on:click" => "loadBoards",
         data: { toggle: "dropdown" } }
         {{ board.name }}
         = icon("chevron-down")
@@ -28,10 +28,10 @@
             %ul.dropdown-footer-list
               - if parent.feature_available?(:multiple_issue_boards)
                 %li
-                  %a{ "href" => "#", "@click.prevent" => "showPage('new')" }
+                  %a{ "href" => "#", "v-on:click.prevent" => "showPage('new')" }
                     Create new board
               %li{ "v-if" => "showDelete" }
-                %a{ "href" => "#", "@click.prevent" => "showPage('delete')" }
+                %a{ "href" => "#", "v-on:click.prevent" => "showPage('delete')" }
                   %span.text-danger
                     Delete board
 
