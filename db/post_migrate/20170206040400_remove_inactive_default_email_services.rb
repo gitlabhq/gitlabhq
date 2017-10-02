@@ -9,6 +9,7 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
     Gitlab::Database.with_connection_pool(2) do |pool|
       threads = []
 
+      # rubocop:disable ThreadSafety/NewThread
       threads << Thread.new do
         pool.with_connection do |connection|
           connection.execute <<-SQL.strip_heredoc
@@ -20,6 +21,7 @@ class RemoveInactiveDefaultEmailServices < ActiveRecord::Migration
         end
       end
 
+      # rubocop:disable ThreadSafety/NewThread
       threads << Thread.new do
         pool.with_connection do |connection|
           connection.execute <<-SQL.strip_heredoc

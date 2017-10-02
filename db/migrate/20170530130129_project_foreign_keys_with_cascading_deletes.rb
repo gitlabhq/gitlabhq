@@ -99,6 +99,7 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
       queues = queues_for_rows(TABLES)
 
       threads = queues.map do |queue|
+        # rubocop:disable ThreadSafety/NewThread
         Thread.new do
           pool.with_connection do |connection|
             Thread.current[:foreign_key_connection] = connection

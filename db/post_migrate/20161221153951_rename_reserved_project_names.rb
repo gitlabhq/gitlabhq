@@ -44,6 +44,7 @@ class RenameReservedProjectNames < ActiveRecord::Migration
     start = false
 
     threads = Array.new(THREAD_COUNT) do |index|
+      # rubocop:disable ThreadSafety/NewThread
       Thread.new do
         queue = queues[index]
 
