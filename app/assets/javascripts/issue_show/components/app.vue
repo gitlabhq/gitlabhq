@@ -1,6 +1,6 @@
 <script>
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';

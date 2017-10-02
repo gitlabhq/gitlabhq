@@ -1,7 +1,6 @@
 <script>
-  /* global Flash */
-
   import { mapGetters, mapActions } from 'vuex';
+  import Flash from '../../flash';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issueNoteHeader from './issue_note_header.vue';
   import issueNoteActions from './issue_note_actions.vue';
@@ -101,7 +100,7 @@
             this.isEditing = true;
             this.$nextTick(() => {
               const msg = 'Something went wrong while editing your comment. Please try again.';
-              Flash(msg, 'alert', $(this.$el));
+              Flash(msg, 'alert', this.$el);
               this.recoverNoteContent(noteText);
               callback();
             });

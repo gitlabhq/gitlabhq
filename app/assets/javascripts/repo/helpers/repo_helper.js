@@ -1,7 +1,6 @@
-/* global Flash */
 import Service from '../services/repo_service';
 import Store from '../stores/repo_store';
-import '../../flash';
+import Flash from '../../flash';
 
 const RepoHelper = {
   monacoInstance: null,

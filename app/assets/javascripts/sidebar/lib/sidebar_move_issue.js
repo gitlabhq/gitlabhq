@@ -1,4 +1,4 @@
-/* global Flash */
+import Flash from '../../flash';
 
 function isValidProjectId(id) {
   return id > 0;

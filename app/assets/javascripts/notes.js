@@ -5,7 +5,6 @@ default-case, prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
 brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
 newline-per-chained-call, no-useless-escape, class-methods-use-this */
-/* global Flash */
 /* global Autosave */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
@@ -18,6 +17,7 @@ import Dropzone from 'dropzone';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import loadAwardsHandler from './awards_handler';
 import './autosave';
@@ -354,7 +354,7 @@ export default class Notes {
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
+        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline); // TODO: CHECK THIS!
         this.refresh();
       }
       return;

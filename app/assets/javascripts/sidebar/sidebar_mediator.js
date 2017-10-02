@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../flash';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
 

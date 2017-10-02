@@ -1,71 +1,68 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, no-param-reassign, quotes, quote-props, prefer-template, comma-dangle, max-len */
+import _ from 'underscore';
 
-window.Flash = (function() {
-  var hideFlash;
+const hideFlash = (flashEl) => {
+  flashEl.style.transition = 'opacity .3s'; // eslint-disable-line no-param-reassign
+  flashEl.style.opacity = '0'; // eslint-disable-line no-param-reassign
 
-  hideFlash = function() {
-    return $(this).fadeOut();
-  };
+  flashEl.addEventListener('transitionend', () => {
+    flashEl.remove();
+  }, {
+    once: true,
+  });
+};
 
-  /**
-   * Flash banner supports different types of Flash configurations
-   * along with ability to provide actionConfig which can be used to show
-   * additional action or link on banner next to message
-   *
-   * @param {String} message Flash message
-   * @param {String} type Type of Flash, it can be `notice` or `alert` (default)
-   * @param {Object} parent Reference to Parent element under which Flash needs to appear
-   * @param {Object} actionConfig Map of config to show action on banner
-   *    @param {String} href URL to which action link should point (default '#')
-   *    @param {String} title Title of action
-   *    @param {Function} clickHandler Method to call when action is clicked on
-   */
-  function Flash(message, type, parent, actionConfig) {
-    var flash, textDiv, actionLink;
-    if (type == null) {
-      type = 'alert';
+const createAction = config => `
+  <a
+    href="${config.href || '#'}"
+    class="flash-action"
+    ${config.href ? 'role="button"' : ''}
+  >
+    ${_.escape(config.title)}
+  </a>
+`;
+
+const createFlashEl = (message, type) => `
+  <div
+    class="flash-${type}"
+  >
+    <div
+      class="flash-text"
+    >
+      ${_.escape(message)}
+    </div>
+  </div>
+`;
+
+const Flash = function Flash(message, type = 'alert', parent = document, actionConfig = null) {
+  const flashContainer = parent.querySelector('.flash-container');
+  flashContainer.innerHTML = createFlashEl(message, type);
+
+  const flashEl = flashContainer.querySelector(`.flash-${type}`);
+  flashEl.addEventListener('click', () => hideFlash(flashEl));
+
+  if (actionConfig) {
+    flashEl.innerHTML += createAction(actionConfig);
+
+    if (actionConfig.clickHandler) {
+      flashEl.querySelector('.flash-action').addEventListener('click', e => actionConfig.clickHandler(e));
     }
-    if (parent == null) {
-      parent = null;
-    }
-    if (parent) {
-      this.flashContainer = parent.find('.flash-container');
-    } else {
-      this.flashContainer = $('.flash-container-page');
-    }
-    this.flashContainer.html('');
-    flash = $('<div/>', {
-      "class": "flash-" + type
-    });
-    flash.on('click', hideFlash);
-    textDiv = $('<div/>', {
-      "class": 'flash-text',
-      text: message
-    });
-    textDiv.appendTo(flash);
-
-    if (actionConfig) {
-      const actionLinkConfig = {
-        class: 'flash-action',
-        href: actionConfig.href || '#',
-        text: actionConfig.title
-      };
-
-      if (!actionConfig.href) {
-        actionLinkConfig.role = 'button';
-      }
-
-      actionLink = $('<a/>', actionLinkConfig);
-
-      actionLink.appendTo(flash);
-      this.flashContainer.on('click', '.flash-action', actionConfig.clickHandler);
-    }
-    if (this.flashContainer.parent().hasClass('content-wrapper')) {
-      textDiv.addClass('container-fluid container-limited');
-    }
-    flash.appendTo(this.flashContainer);
-    this.flashContainer.show();
   }
 
-  return Flash;
-})();
+  if (flashContainer.parentNode.classList.contains('content-wrapper')) {
+    const flashText = flashEl.querySelector('.flash-text');
+
+    flashText.classList.add('container-fluid');
+    flashText.classList.add('container-limited');
+  }
+
+  flashContainer.style.display = 'block';
+
+  return flashContainer;
+};
+
+export {
+  Flash as default,
+  createFlashEl,
+  hideFlash,
+};
+window.Flash = Flash;

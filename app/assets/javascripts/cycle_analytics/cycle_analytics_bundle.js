@@ -2,6 +2,7 @@
 
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import Flash from '../flash';
 import Translate from '../vue_shared/translate';
 import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';

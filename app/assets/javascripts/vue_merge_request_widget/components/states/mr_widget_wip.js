@@ -1,4 +1,4 @@
-/* global Flash */
+import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
