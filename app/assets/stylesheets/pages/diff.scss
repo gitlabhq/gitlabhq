@@ -639,10 +639,6 @@
   background-color: $gray-light;
   border-top: 1px solid $white-normal;
 
-  .timeline-entry:not(.target) {
-    background: $white-light;
-  }
-
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
   .discussion-notes + .discussion-form::before {
