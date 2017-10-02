@@ -296,7 +296,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
   context 'project milestones' do
     let(:milestone) { create(:milestone, project: project) }
-    let(:reference) { milestone.to_reference }
+    let(:reference) { milestone.to_reference(format: :iid) }
 
     include_examples 'reference parsing'
 

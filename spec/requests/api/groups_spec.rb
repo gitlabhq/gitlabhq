@@ -159,11 +159,14 @@ describe API::Groups do
 
     context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
+        group1.add_master(user2)
+
         get api('/groups', user2), owned: true
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group2.name)
       end
     end

@@ -8,6 +8,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
+import svg4everybody from 'svg4everybody';
 
 // libraries with import side-effects
 import 'mousetrap';
@@ -40,7 +41,7 @@ import './commit/image_file';
 
 // lib/utils
 import './lib/utils/bootstrap_linked_tabs';
-import './lib/utils/common_utils';
+import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
@@ -101,7 +102,6 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
-import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
@@ -124,7 +124,6 @@ import './preview_markdown';
 import './project';
 import './project_avatar';
 import './project_find_file';
-import './project_fork';
 import './project_import';
 import './project_label_subscription';
 import './project_new';
@@ -152,6 +151,8 @@ if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 Dropzone.autoDiscover = false;
 
+svg4everybody();
+
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
@@ -161,10 +162,10 @@ document.addEventListener('beforeunload', function () {
   $('[data-toggle="popover"]').popover('destroy');
 });
 
-window.addEventListener('hashchange', gl.utils.handleLocationHash);
+window.addEventListener('hashchange', handleLocationHash);
 window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
-  gl.utils.handleLocationHash();
+  handleLocationHash();
 }, false);
 
 gl.lazyLoader = new LazyLoader({
@@ -190,7 +191,7 @@ $(function () {
   $body.on('click', 'a[href^="#"]', function() {
     var href = this.getAttribute('href');
     if (href.substr(1) === gl.utils.getLocationHash()) {
-      setTimeout(gl.utils.handleLocationHash, 1);
+      setTimeout(handleLocationHash, 1);
     }
   });
 
@@ -300,7 +301,10 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
+  $('.navbar-toggle').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+    gl.lazyLoader.loadCheck();
+  });
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

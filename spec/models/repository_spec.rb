@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -1131,21 +1131,31 @@ describe Repository, models: true do
   end
 
   describe '#has_visible_content?' do
-    subject { repository.has_visible_content? }
-
-    describe 'when there are no branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
-      end
-
-      it { is_expected.to eq(false) }
+    before do
+      # If raw_repository.has_visible_content? gets called more than once then
+      # caching is broken. We don't want that.
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .once
+        .and_return(result)
     end
 
-    describe 'when there are branches' do
-      it 'returns true' do
-        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+    context 'when true' do
+      let(:result) { true }
 
-        expect(subject).to eq(true)
+      it 'returns true and caches it' do
+        expect(repository.has_visible_content?).to eq(true)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(true)
+      end
+    end
+
+    context 'when false' do
+      let(:result) { false }
+
+      it 'returns false and caches it' do
+        expect(repository.has_visible_content?).to eq(false)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(false)
       end
     end
   end
@@ -1311,24 +1321,25 @@ describe Repository, models: true do
   describe '#revert' do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+    let(:message) { 'revert message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already reverted' do
       it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master')
+        repository.revert(user, update_image_commit, 'master', message)
 
-        expect { repository.revert(user, update_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be reverted' do
       it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
+        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1337,7 +1348,7 @@ describe Repository, models: true do
         merge_commit
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
 
-        repository.revert(user, merge_commit, 'master')
+        repository.revert(user, merge_commit, 'master', message)
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
       end
     end
@@ -1347,24 +1358,25 @@ describe Repository, models: true do
     let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
     let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+    let(:message) { 'cherry-pick message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.cherry_pick(user, conflict_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already cherry-picked' do
       it 'raises an error' do
-        repository.cherry_pick(user, pickable_commit, 'master')
+        repository.cherry_pick(user, pickable_commit, 'master', message)
 
-        expect { repository.cherry_pick(user, pickable_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be cherry-picked' do
       it 'cherry-picks the changes' do
-        expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
+        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1372,11 +1384,11 @@ describe Repository, models: true do
       it 'cherry-picks the changes' do
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
         cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
 
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
-        expect(cherry_pick_commit_message).to include('cherry picked from')
+        expect(cherry_pick_commit_message).to eq(message)
       end
     end
   end
@@ -1615,27 +1627,41 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    context 'with a valid target' do
-      let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user) }
 
-      it 'creates the tag using rugged' do
-        expect(repository.rugged.tags).to receive(:create)
-          .with('8.5', repository.commit('master').id,
-            hash_including(message: 'foo',
-                           tagger: hash_including(name: user.name, email: user.email)))
-          .and_call_original
+    shared_examples 'adding tag' do
+      context 'with a valid target' do
+        it 'creates the tag' do
+          repository.add_tag(user, '8.5', 'master', 'foo')
 
-        repository.add_tag(user, '8.5', 'master', 'foo')
+          tag = repository.find_tag('8.5')
+          expect(tag).to be_present
+          expect(tag.message).to eq('foo')
+          expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
+        end
+
+        it 'returns a Gitlab::Git::Tag object' do
+          tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+          expect(tag).to be_a(Gitlab::Git::Tag)
+        end
       end
 
-      it 'returns a Gitlab::Git::Tag object' do
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-        expect(tag).to be_a(Gitlab::Git::Tag)
+      context 'with an invalid target' do
+        it 'returns false' do
+          expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+        end
       end
+    end
 
-      it 'passes commit SHA to pre-receive and update hooks,\
-        and tag SHA to post-receive hook' do
+    context 'when Gitaly operation_user_add_tag feature is enabled' do
+      it_behaves_like 'adding tag'
+    end
+
+    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'adding tag'
+
+      it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
         pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
         update_hook = Gitlab::Git::Hook.new('update', project)
         post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
@@ -1660,12 +1686,6 @@ describe Repository, models: true do
           .with(anything, anything, tag_sha, anything)
       end
     end
-
-    context 'with an invalid target' do
-      it 'returns false' do
-        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
-      end
-    end
   end
 
   describe '#rm_branch' do
@@ -1680,12 +1700,22 @@ describe Repository, models: true do
   end
 
   describe '#rm_tag' do
-    it 'removes a tag' do
-      expect(repository).to receive(:before_remove_tag)
+    shared_examples 'removing tag' do
+      it 'removes a tag' do
+        expect(repository).to receive(:before_remove_tag)
 
-      repository.rm_tag(create(:user), 'v1.1.0')
+        repository.rm_tag(build_stubbed(:user), 'v1.1.0')
 
-      expect(repository.find_tag('v1.1.0')).to be_nil
+        expect(repository.find_tag('v1.1.0')).to be_nil
+      end
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is enabled' do
+      it_behaves_like 'removing tag'
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'removing tag'
     end
   end
 

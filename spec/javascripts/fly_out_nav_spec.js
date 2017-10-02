@@ -73,6 +73,12 @@ describe('Fly out sidebar navigation', () => {
       ).toBe(0);
     });
 
+    it('returns 0 if mousePos is empty', () => {
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+    });
+
     it('returns 0 when mouse above sub-items', () => {
       showSubLevelItems(el);
       documentMouseMove({

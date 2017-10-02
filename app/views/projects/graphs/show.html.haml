@@ -5,8 +5,6 @@
   = webpack_bundle_tag('graphs')
   = webpack_bundle_tag('graphs_show')
 
-= render 'projects/commits/head'
-
 .js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
   .sub-header-block
     .tree-ref-holder

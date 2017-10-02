@@ -252,6 +252,8 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
+>**Note:** The `cache:key` variable cannot contain the `/` character.
+
 ---
 
 **Example configurations**
@@ -276,7 +278,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_NAME/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -284,7 +286,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_STAGE/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -293,7 +295,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%/%CI_COMMIT_REF_NAME%"
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
   untracked: true
 ```
 
@@ -302,7 +304,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -1567,6 +1569,11 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 
 Each instance of GitLab CI has an embedded debug tool called Lint.
 You can find the link under `/ci/lint` of your gitlab instance.
+
+## Using reserved keywords
+
+If you get validation error when using specific values (e.g., `true` or `false`),
+try to quote them, or change them to a different form (e.g., `/bin/true`).
 
 ## Skipping jobs
 

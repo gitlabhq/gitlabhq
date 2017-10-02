@@ -8,6 +8,7 @@ class Repository
   RESERVED_REFS_NAMES = %W[
     heads
     tags
+    replace
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
     #{REF_ENVIRONMENTS}
@@ -88,12 +89,6 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(repository_storage_path, disk_path + '.git')
     )
-  end
-
-  # we need to have this method here because it is not cached in ::Git and
-  # the method is called multiple times for every request
-  def has_visible_content?
-    branch_count > 0
   end
 
   def inspect
@@ -488,13 +483,7 @@ class Repository
   def exists?
     return false unless full_path
 
-    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
-      if enabled
-        raw_repository.exists?
-      else
-        refs_directory_exists?
-      end
-    end
+    raw_repository.exists?
   end
   cache_method :exists?
 
@@ -528,13 +517,17 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  delegate :branch_count, :tag_count, to: :raw_repository
+  delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
   cache_method :tag_count, fallback: 0
+  cache_method :has_visible_content?, fallback: false
 
   def avatar
-    if tree = file_on_head(:avatar)
-      tree.path
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
+      end
     end
   end
   cache_method :avatar
@@ -834,10 +827,6 @@ class Repository
     }
   end
 
-  def user_to_committer(user)
-    Gitlab::Git.committer_hash(email: user.email, name: user.name)
-  end
-
   def can_be_merged?(source_sha, target_branch)
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)
@@ -859,54 +848,34 @@ class Repository
   end
 
   def revert(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
 
-      revert_tree_id = check_revert_content(commit, start_commit.sha)
-      unless revert_tree_id
-        raise Repository::CreateTreeError.new('Failed to revert commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.revert_message(user),
-                    author: committer,
-                    committer: committer,
-                    tree: revert_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.revert(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
   def cherry_pick(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
 
-      cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-      unless cherry_pick_tree_id
-        raise Repository::CreateTreeError.new('Failed to cherry-pick commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.cherry_pick_message(user),
-                    author: {
-                        email: commit.author_email,
-                        name: commit.author_name,
-                        time: commit.authored_date
-                    },
-                    committer: committer,
-                    tree: cherry_pick_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.cherry_pick(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
@@ -916,36 +885,6 @@ class Repository
 
       create_commit(params.merge(author: committer, committer: committer))
     end
-  end
-
-  def check_revert_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << { mainline: 1 } if target_commit.merge_commit?
-
-    revert_index = rugged.revert_commit(*args)
-    return false if revert_index.conflicts?
-
-    tree_id = revert_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def check_cherry_pick_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << 1 if target_commit.merge_commit?
-
-    cherry_pick_index = rugged.cherrypick_commit(*args)
-    return false if cherry_pick_index.conflicts?
-
-    tree_id = cherry_pick_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def diff_exists?(sha1, sha2)
-    rugged.diff(sha1, sha2).size > 0
   end
 
   def merged_to_root_ref?(branch_name)
@@ -983,6 +922,7 @@ class Repository
   def empty_repo?
     !exists? || !has_visible_content?
   end
+  cache_method :empty_repo?, memoize_only: true
 
   def search_files_by_content(query, ref)
     return [] if empty_repo? || query.blank?
@@ -1112,12 +1052,6 @@ class Repository
     blob.data
   end
 
-  def refs_directory_exists?
-    circuit_breaker.perform do
-      File.exist?(File.join(path_to_repo, 'refs'))
-    end
-  end
-
   def cache
     # TODO: should we use UUIDs here? We could move repositories without clearing this cache
     @cache ||= RepositoryCache.new(full_path, @project.id)
@@ -1167,10 +1101,6 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
-  end
-
-  def circuit_breaker
-    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

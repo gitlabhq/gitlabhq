@@ -347,10 +347,10 @@ describe Gitlab::ClosingIssueExtractor do
       end
 
       it "fetches cross-project URL references" do
-        message = "Closes #{urls.project_issue_url(issue2.project, issue2)} and #{reference}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}, #{reference} and #{urls.project_issue_url(other_issue.project, other_issue)}"
 
         expect(subject.closed_by_message(message))
-            .to match_array([issue, issue2])
+            .to match_array([issue, issue2, other_issue])
       end
 
       it "ignores invalid cross-project URL references" do
