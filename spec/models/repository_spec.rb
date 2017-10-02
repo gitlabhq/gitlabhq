@@ -1681,11 +1681,11 @@ describe Repository do
         tag_sha = tag.target
 
         expect(pre_receive_hook).to have_received(:trigger)
-          .with(anything, anything, commit_sha, anything)
+          .with(anything, anything, anything, commit_sha, anything)
         expect(update_hook).to have_received(:trigger)
-          .with(anything, anything, commit_sha, anything)
+          .with(anything, anything, anything, commit_sha, anything)
         expect(post_receive_hook).to have_received(:trigger)
-          .with(anything, anything, tag_sha, anything)
+          .with(anything, anything, anything, tag_sha, anything)
       end
     end
   end
