@@ -656,13 +656,13 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
+        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+          if is_enabled
+            gitaly_add_branch(branch_name, user, target)
+          else
+            rugged_add_branch(branch_name, user, target)
+          end
+        end
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -1062,7 +1062,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
 
       def gitaly_operations_client
@@ -1079,6 +1079,10 @@ module Gitlab
 
       def gitaly_repository_client
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
+      end
+
+      def gitaly_operation_client
+        @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
@@ -1471,6 +1475,22 @@ module Gitlab
         File.open(info_attributes_path, "wb") do |file|
           file.write(gitattributes_content)
         end
+      end
+
+      def gitaly_add_branch(branch_name, user, target)
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
+      end
+
+      def rugged_add_branch(branch_name, user, target)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
+        find_branch(branch_name)
+      rescue Rugged::ReferenceError
+        raise InvalidRef, ex
       end
     end
   end

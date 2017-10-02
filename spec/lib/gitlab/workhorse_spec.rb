@@ -226,7 +226,8 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git'
+          relative_path: project.full_path + '.git',
+          gl_repository: "project-#{project.id}"
         }
 
         expect(subject[:Repository]).to include(repo_param)
