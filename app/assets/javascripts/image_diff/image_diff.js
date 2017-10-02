@@ -48,11 +48,6 @@ export default class ImageDiff {
     this.$noteContainer.on('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
     $(this.el).on('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
 
-    // TODO: Investigate why jQuery event delegation
-    // isn't properly adjusting the view to the location hash
-    // This works properly when it does not use jquery event delegation
-    $(this.el).on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
-
     if (this.canCreateNote) {
       this.el.addEventListener('click.imageDiff', this.clickWrapper);
       this.el.addEventListener('blur.imageDiff', this.blurWrapper);
@@ -66,7 +61,6 @@ export default class ImageDiff {
     this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
     this.$noteContainer.off('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
     $(this.el).off('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
-    $(this.el).off('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
 
     if (this.canCreateNote) {
       this.el.removeEventListener('click.imageDiff', this.clickWrapper);

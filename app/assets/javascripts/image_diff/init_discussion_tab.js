@@ -10,6 +10,5 @@ export default () => {
   [].forEach.call(diffFileEls, diffFileEl =>
     imageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge));
 
-  // TODO: Related to image diff.js line 50
   $('.timeline-content .diff-file').on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
 };

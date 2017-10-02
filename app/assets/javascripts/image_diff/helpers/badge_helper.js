@@ -19,6 +19,7 @@ export function centerButtonToCoordinate(buttonEl, coordinate) {
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
   const buttonEl = createImageBadge(noteId, ['badge']);
   buttonEl.innerText = badgeText;
+  buttonEl.setAttribute('disabled', true);
 
   containerEl.appendChild(buttonEl);
   centerButtonToCoordinate(buttonEl, coordinate);
