@@ -20,8 +20,6 @@ class Diff {
 
     FilesCommentButton.init($diffFile);
 
-    $diffFile.each((index, file) => new gl.ImageFile(file));
-
     const canCreateNote = $diffFile.first().closest('.files').is('[data-can-create-note]');
     $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
 
