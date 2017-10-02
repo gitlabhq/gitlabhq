@@ -1,0 +1,5 @@
+---
+title: Remove never-used appearances.updated_by column
+merge_request:
+author:
+type: fixed
