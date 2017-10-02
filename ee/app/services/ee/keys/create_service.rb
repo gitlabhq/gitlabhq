@@ -4,7 +4,7 @@ module EE
       def initialize(user, params)
         super(user, params)
 
-        @ip_address = params.delete(:ip_address)
+        @ip_address = @params.delete(:ip_address)
       end
 
       def execute

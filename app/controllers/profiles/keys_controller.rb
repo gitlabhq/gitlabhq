@@ -1,5 +1,4 @@
 class Profiles::KeysController < Profiles::ApplicationController
-  prepend ::EE::Profiles::KeysController
 
   skip_before_action :authenticate_user!, only: [:get_keys]
 
@@ -16,7 +15,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key = Keys::CreateService.new(current_user, key_params).execute
 
     if @key.persisted?
-      redirect_to_profile_key_path
+      redirect_to profile_key_path(@key)
     else
       @keys = current_user.keys.select(&:persisted?)
       render :index
@@ -52,15 +51,9 @@ class Profiles::KeysController < Profiles::ApplicationController
     end
   end
 
-  protected
-
-  def redirect_to_profile_key_path
-    redirect_to profile_key_path(@key)
-  end
-
   private
 
   def key_params
-    params.require(:key).permit(:title, :key)
+    params.require(:key).permit(:title, :key).merge(ip_address: request.remote_ip)
   end
 end
