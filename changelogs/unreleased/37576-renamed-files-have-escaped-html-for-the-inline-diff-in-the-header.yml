@@ -1,5 +1,0 @@
----
-title: Fix the diff file header from being html escaped for renamed files.
-merge_request: 14121
-author:
-type: fixed

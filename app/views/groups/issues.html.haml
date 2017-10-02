@@ -1,6 +1,5 @@
 - page_title "Issues"
 - group_issues_exists = group_issues(@group).exists?
-= render "head_issues"
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@group.name} issues")
 

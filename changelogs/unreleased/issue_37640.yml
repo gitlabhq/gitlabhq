@@ -1,6 +1,0 @@
----
-title: Fix project feature being deleted when updating project with invalid visibility
-  level
-merge_request:
-author:
-type: fixed

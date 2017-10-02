@@ -148,32 +148,51 @@ helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,g
 
 ## Updating GitLab using the Helm Chart
 
-Once your GitLab Chart is installed, configuration changes and chart updates
-should we done using `helm upgrade`
-
-```bash
-helm upgrade -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab
+>**Note**: If you are upgrading from a previous version to 0.1.35 or above, you will need to change the access mode values for GitLab's storage. To do this, set the following in `values.yaml` or on the CLI:
+```
+gitlabDataAccessMode=ReadWriteMany
+gitlabRegistryAccessMode=ReadWriteMany
+gitlabConfigAccessMode=ReadWriteMany
 ```
 
-where:
+Once your GitLab Chart is installed, configuration changes and chart updates
+should be done using `helm upgrade`:
 
-- `<CONFIG_VALUES_FILE>` is the path to values file containing your custom
-  [configuration] (#configuring-and-installing-gitlab).
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing-gitlab-using-the-helm-chart) we called it `gitlab`.
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+## Upgrading from CE to EE using the Helm Chart
+
+If you have installed the Community Edition using this chart, upgrading to Enterprise Edition is easy.
+
+If you are using a `values.yaml` file to specify the configuration options, edit the file and set `gitlab=ee`. If you would like to run a specific version of GitLab EE, set `gitlabEEImage` to be the desired GitLab [docker image](https://hub.docker.com/r/gitlab/gitlab-ee/tags/). Then you can use `helm upgrade` to update your GitLab instance to EE:
+
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+You can also upgrade and specify these options via the command line:
+
+```bash
+helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gitlab/gitlab-omnibus
+```
 
 ## Uninstalling GitLab using the Helm Chart
 
 To uninstall the GitLab Chart, run the following:
 
 ```bash
-helm delete <RELEASE-NAME>
+helm delete gitlab
 ```
 
-where:
+## Troubleshooting
 
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing) we called it `gitlab`.
+### Storage errors when updating `gitlab-omnibus` versions prior to 0.1.35
+
+Users upgrading `gitlab-omnibus` from a version prior to 0.1.35, may see an error like: `Error: UPGRADE FAILED: PersistentVolumeClaim "gitlab-gitlab-config-storage" is invalid: spec: Forbidden: field is immutable after creation`.
+
+This is due to a change in the access mode for GitLab storage in version 0.1.35. To successfully upgrade, the access mode flags must be set to `ReadWriteMany` as detailed in the [update section](#updating-gitlab-using-the-helm-chart).
 
 [kube-srv]: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
 [storageclass]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storageclasses

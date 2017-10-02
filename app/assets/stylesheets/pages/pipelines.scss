@@ -644,20 +644,20 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
-    @include mini-pipeline-graph-color($green-50, $green-500, $green-600);
+    @include mini-pipeline-graph-color($green-100, $green-500, $green-600);
   }
 
   &.ci-status-icon-failed {
-    @include mini-pipeline-graph-color($red-50, $red-500, $red-600);
+    @include mini-pipeline-graph-color($red-100, $red-500, $red-600);
   }
 
   &.ci-status-icon-pending,
   &.ci-status-icon-success_with_warnings {
-    @include mini-pipeline-graph-color($orange-50, $orange-500, $orange-600);
+    @include mini-pipeline-graph-color($orange-100, $orange-500, $orange-600);
   }
 
   &.ci-status-icon-running {
-    @include mini-pipeline-graph-color($blue-50, $blue-400, $blue-600);
+    @include mini-pipeline-graph-color($blue-100, $blue-400, $blue-600);
   }
 
   &.ci-status-icon-canceled,

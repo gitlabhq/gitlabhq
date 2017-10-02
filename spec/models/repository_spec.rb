@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -815,45 +815,70 @@ describe Repository, models: true do
   end
 
   describe '#add_branch' do
-    context 'when pre hooks were successful' do
-      it 'runs without errors' do
-        hook = double(trigger: [true, nil])
-        expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
+    let(:branch_name) { 'new_feature' }
+    let(:target) { 'master' }
 
-        expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
+    subject { repository.add_branch(user, branch_name, target) }
+
+    context 'with Gitaly enabled' do
+      it "calls Gitaly's OperationService" do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+          .to receive(:user_create_branch).with(branch_name, user, target)
+          .and_return(nil)
+
+        subject
       end
 
-      it 'creates the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-        branch = repository.add_branch(user, 'new_feature', 'master')
-
-        expect(branch.name).to eq('new_feature')
+      it 'creates_the_branch' do
+        expect(subject.name).to eq(branch_name)
+        expect(repository.find_branch(branch_name)).not_to be_nil
       end
 
-      it 'calls the after_create_branch hook' do
-        expect(repository).to receive(:after_create_branch)
+      context 'with a non-existing target' do
+        let(:target) { 'fake-target' }
 
-        repository.add_branch(user, 'new_feature', 'master')
+        it "returns false and doesn't create the branch" do
+          expect(subject).to be(false)
+          expect(repository.find_branch(branch_name)).to be_nil
+        end
       end
     end
 
-    context 'when pre hooks failed' do
-      it 'gets an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+    context 'with Gitaly disabled', skip_gitaly_mock: true do
+      context 'when pre hooks were successful' do
+        it 'runs without errors' do
+          hook = double(trigger: [true, nil])
+          expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
-        expect do
-          repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          expect { subject }.not_to raise_error
+        end
+
+        it 'creates the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+
+          expect(subject.name).to eq(branch_name)
+        end
+
+        it 'calls the after_create_branch hook' do
+          expect(repository).to receive(:after_create_branch)
+
+          subject
+        end
       end
 
-      it 'does not create the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+      context 'when pre hooks failed' do
+        it 'gets an error' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
-        expect do
-          repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-        expect(repository.find_branch('new_feature')).to be_nil
+          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end
+
+        it 'does not create the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+          expect { subject }.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          expect(repository.find_branch(branch_name)).to be_nil
+        end
       end
     end
   end
@@ -1131,21 +1156,31 @@ describe Repository, models: true do
   end
 
   describe '#has_visible_content?' do
-    subject { repository.has_visible_content? }
-
-    describe 'when there are no branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
-      end
-
-      it { is_expected.to eq(false) }
+    before do
+      # If raw_repository.has_visible_content? gets called more than once then
+      # caching is broken. We don't want that.
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .once
+        .and_return(result)
     end
 
-    describe 'when there are branches' do
-      it 'returns true' do
-        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+    context 'when true' do
+      let(:result) { true }
 
-        expect(subject).to eq(true)
+      it 'returns true and caches it' do
+        expect(repository.has_visible_content?).to eq(true)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(true)
+      end
+    end
+
+    context 'when false' do
+      let(:result) { false }
+
+      it 'returns false and caches it' do
+        expect(repository.has_visible_content?).to eq(false)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(false)
       end
     end
   end
@@ -1262,6 +1297,7 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(true)
 
       expect(cache).to receive(:expire).with(:empty?)
+      expect(cache).to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
     end
@@ -1270,6 +1306,7 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(false)
 
       expect(cache).not_to receive(:expire).with(:empty?)
+      expect(cache).not_to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
     end
@@ -1599,7 +1636,7 @@ describe Repository, models: true do
   describe '#expire_branches_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(branch_names branch_count))
+        .with(%i(branch_names branch_count has_visible_content?))
         .and_call_original
 
       repository.expire_branches_cache
@@ -1617,27 +1654,41 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    context 'with a valid target' do
-      let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user) }
 
-      it 'creates the tag using rugged' do
-        expect(repository.rugged.tags).to receive(:create)
-          .with('8.5', repository.commit('master').id,
-            hash_including(message: 'foo',
-                           tagger: hash_including(name: user.name, email: user.email)))
-          .and_call_original
+    shared_examples 'adding tag' do
+      context 'with a valid target' do
+        it 'creates the tag' do
+          repository.add_tag(user, '8.5', 'master', 'foo')
 
-        repository.add_tag(user, '8.5', 'master', 'foo')
+          tag = repository.find_tag('8.5')
+          expect(tag).to be_present
+          expect(tag.message).to eq('foo')
+          expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
+        end
+
+        it 'returns a Gitlab::Git::Tag object' do
+          tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+          expect(tag).to be_a(Gitlab::Git::Tag)
+        end
       end
 
-      it 'returns a Gitlab::Git::Tag object' do
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-        expect(tag).to be_a(Gitlab::Git::Tag)
+      context 'with an invalid target' do
+        it 'returns false' do
+          expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+        end
       end
+    end
 
-      it 'passes commit SHA to pre-receive and update hooks,\
-        and tag SHA to post-receive hook' do
+    context 'when Gitaly operation_user_add_tag feature is enabled' do
+      it_behaves_like 'adding tag'
+    end
+
+    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'adding tag'
+
+      it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
         pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
         update_hook = Gitlab::Git::Hook.new('update', project)
         post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
@@ -1655,17 +1706,11 @@ describe Repository, models: true do
         tag_sha = tag.target
 
         expect(pre_receive_hook).to have_received(:trigger)
-          .with(anything, anything, commit_sha, anything)
+          .with(anything, anything, anything, commit_sha, anything)
         expect(update_hook).to have_received(:trigger)
-          .with(anything, anything, commit_sha, anything)
+          .with(anything, anything, anything, commit_sha, anything)
         expect(post_receive_hook).to have_received(:trigger)
-          .with(anything, anything, tag_sha, anything)
-      end
-    end
-
-    context 'with an invalid target' do
-      it 'returns false' do
-        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+          .with(anything, anything, anything, tag_sha, anything)
       end
     end
   end
@@ -1682,12 +1727,22 @@ describe Repository, models: true do
   end
 
   describe '#rm_tag' do
-    it 'removes a tag' do
-      expect(repository).to receive(:before_remove_tag)
+    shared_examples 'removing tag' do
+      it 'removes a tag' do
+        expect(repository).to receive(:before_remove_tag)
 
-      repository.rm_tag(create(:user), 'v1.1.0')
+        repository.rm_tag(build_stubbed(:user), 'v1.1.0')
 
-      expect(repository.find_tag('v1.1.0')).to be_nil
+        expect(repository.find_tag('v1.1.0')).to be_nil
+      end
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is enabled' do
+      it_behaves_like 'removing tag'
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'removing tag'
     end
   end
 
@@ -1859,6 +1914,15 @@ describe Repository, models: true do
         .with(Repository::CACHED_METHODS)
 
       repository.expire_all_method_caches
+    end
+
+    it 'all cache_method definitions are in the lists of method caches' do
+      methods = repository.methods.map do |method|
+        match = /^_uncached_(.*)/.match(method)
+        match[1].to_sym if match
+      end.compact
+
+      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
     end
   end
 

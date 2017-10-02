@@ -58,13 +58,13 @@ const RepoHelper = {
     return langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
   },
 
-  setDirectoryOpen(tree) {
+  setDirectoryOpen(tree, title) {
     const file = tree;
     if (!file) return undefined;
 
     file.opened = true;
     file.icon = 'fa-folder-open';
-    RepoHelper.updateHistoryEntry(file.url, file.name);
+    RepoHelper.updateHistoryEntry(file.url, title);
     return file;
   },
 
@@ -135,6 +135,8 @@ const RepoHelper = {
     return Service.getContent()
     .then((response) => {
       const data = response.data;
+      if (response.headers && response.headers['page-title']) data.pageTitle = response.headers['page-title'];
+
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
@@ -168,7 +170,7 @@ const RepoHelper = {
       } else {
         // it's a tree
         if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
-        file = RepoHelper.setDirectoryOpen(file);
+        file = RepoHelper.setDirectoryOpen(file, data.pageTitle || data.name);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
@@ -178,8 +180,8 @@ const RepoHelper = {
 
   setFile(data, file) {
     const newFile = data;
+    newFile.url = file.url || Service.url; // Grab the URL from service, happens on page refresh.
 
-    newFile.url = file.url;
     if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }
@@ -255,12 +257,16 @@ const RepoHelper = {
     history.pushState({ key: RepoHelper.key }, '', url);
 
     if (title) {
-      document.title = `${title} · GitLab`;
+      document.title = title;
     }
   },
 
   findOpenedFileFromActive() {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
+  },
+
+  getFileFromPath(path) {
+    return Store.openedFiles.find(file => file.url === path);
   },
 
   loadingError() {
