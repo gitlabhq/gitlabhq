@@ -24,6 +24,7 @@ import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
+import imageDiffHelper from './image_diff/helpers/index';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -476,7 +477,17 @@ export default class Notes {
 
     if (typeof gl.diffNotesCompileComponents !== 'undefined' && noteEntity.discussion_resolvable) {
       gl.diffNotesCompileComponents();
+
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
+
+      if (noteEntity.on_image) {
+        const noteEl = $(`.note-row-${noteEntity.id}:visible`);
+
+        // get badge ID from previous sibling
+        const badgeId = noteEl.prev().find('.badge:not(".hidden")').text().trim();
+
+        imageDiffHelper.addAvatarBadge(noteEl.parents('.discussion-notes').get(0), { detail: { badgeNumber: badgeId, noteId: `note_${noteEntity.id}` } });
+      }
     }
 
     gl.utils.localTimeAgo($('.js-timeago'), false);
