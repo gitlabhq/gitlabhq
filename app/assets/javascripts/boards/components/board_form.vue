@@ -81,14 +81,18 @@
           </form-block>
 
           <form-block>
-            <assignee-select
+            <user-select
+              any-user-text="Any assignee"
               :board="board"
               field-name="assignee_id"
+              label="Assignee"
               v-model="board.assignee_id"
               :selected="board.assignee"
               :can-edit="canAdminBoard"
+              placeholder-text="Select assignee"
               :project-id="projectId"
               :group-id="groupId"
+              wrapper-class="assignee"
             />
           </form-block>
 
@@ -126,7 +130,7 @@ import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
-import AssigneeSelect from './assignee_select.vue';
+import UserSelect from './user_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -179,12 +183,12 @@ export default Vue.extend({
     };
   },
   components: {
-    AssigneeSelect,
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
     FormBlock,
     PopupDialog,
+    UserSelect,
   },
   computed: {
     buttonText() {

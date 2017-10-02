@@ -41,4 +41,5 @@
       "group-id" => @group&.id,
       ":can-admin-board" => can?(current_user, :admin_board, parent),
       ":scoped-issue-board-feature-enabled" => parent.feature_available?(:scoped_issue_board),
+      "weights" => Issue.weight_options,
       "v-if" => "currentPage" }

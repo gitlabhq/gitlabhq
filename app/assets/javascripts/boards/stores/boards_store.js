@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
 /* global List */
 import _ from 'underscore';
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import boardsStoreEE from 'ee/boards/stores/boards_store_ee';
 import { getUrlParamsArray } from '../../lib/utils/common_utils';
@@ -59,9 +60,10 @@ gl.issueBoards.BoardsStore = {
     this.boardConfig.id = board.id;
     this.boardConfig.weight = board.weight;
     this.boardConfig.labels = board.labels || [];
+    Vue.set(this.boardConfig, 'label_ids', board.labels.map(b => b.id));
     this.boardConfig.author_id = board.author_id;
     this.boardConfig.assignee_id = board.assignee_id;
-    this.boardConfig.assignee = board.assignee;
+    Vue.set(this.boardConfig, 'assignee', board.assignee);
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

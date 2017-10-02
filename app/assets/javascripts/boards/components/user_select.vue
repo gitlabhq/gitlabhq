@@ -1,7 +1,7 @@
 <template>
-  <div class="block assignee">
+  <div class="block" :class="wrapperClass">
     <div class="title append-bottom-10">
-      Assignee
+      {{ label }}
       <a
         v-if="canEdit"
         class="js-sidebar-dropdown-toggle edit-link pull-right"
@@ -23,7 +23,7 @@
         </div>
         <div class="media-body">
           <div class="bold author">
-            {{ selectedName }}
+            {{ selected.name }}
           </div>
 
           <div class="username">
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div v-else>
-        Any assignee
+        {{ anyUserText }}
       </div>
     </div>
 
@@ -44,17 +44,17 @@
           ref="dropdown"
           :data-field-name="fieldName"
           data-current-user="true"
-          data-dropdown-title="Select assignee"
-          data-any-user="Any assignee"
+          :data-dropdown-title="placeholderText"
+          :data-any-user="anyUserText"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="selectedId"
+          :data-selected="selected.id"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"
         >
           <span class="dropdown-toggle-text">
-            Select assignee
+            {{ placeholderText }}
           </span> <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"></i>
         </button>
         <div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-user dropdown-menu-selectable dropdown-menu-author">
@@ -85,6 +85,11 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 
 export default {
   props: {
+    anyUserText: {
+      type: String,
+      required: false,
+      default: 'Any user',
+    },
     board: {
       type: Object,
       required: true,
@@ -103,6 +108,15 @@ export default {
       required: false,
       default: '',
     },
+    label: {
+      type: String,
+      required: true,
+    },
+    placeholderText: {
+      type: String,
+      required: false,
+      default: 'Select user',
+    },
     projectId: {
       type: String,
       required: false,
@@ -112,28 +126,24 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
-    }
-  },
-  data() {
-    return {
-      selectedId: this.board.assignee_id,
-    }
+    },
+    wrapperClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   components: {
     UserAvatarImage,
   },
   computed: {
     hasValue() {
-      return this.board.assignee_id;
-    },
-    selectedName() {
-      return this.board.assignee ? this.board.assignee.name : '';
+      return this.selected.id;
     },
   },
   watch: {
     board: {
       handler() {
-        this.selectedId = this.board.assignee_id;
         this.$nextTick(() => {
           new UsersSelect();
         });
