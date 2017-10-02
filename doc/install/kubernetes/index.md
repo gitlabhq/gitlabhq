@@ -10,11 +10,11 @@ should be deployed, upgraded, and configured.
 ## Chart Overview
 
 * **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today. It is suited for small to medium deployments, and is in beta while support for backups and other features are added.
-* **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation of charts, currently in development. Will support large deployments, with horizontal scaling of individual GitLab components.
+* **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation GitLab chart, currently in development. Will support large deployments with horizontal scaling of individual GitLab components.
 * Other Charts
   * [GitLab Runner Chart](gitlab_runner_chart.md): For deploying just the GitLab Runner.
   * [Advanced GitLab Installation](gitlab_chart.md): Provides additional deployment options, but provides less functionality out-of-the-box. It's beta, no longer actively developed, and will be deprecated by [gitlab-omnibus](#gitlab-omnibus-chart-recommended) once it supports these options.
-  * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab charts.
+  * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab chart.
 
 ## GitLab-Omnibus Chart (Recommended)
 > **Note**: This chart is in beta while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being added.
