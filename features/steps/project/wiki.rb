@@ -147,7 +147,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
 
   step 'I edit the Wiki page with a path' do
     expect(find('.wiki-pages')).to have_content('Three')
-    click_on 'Three'
+    first(:link, text: 'Three').trigger('click')
     expect(find('.nav-text')).to have_content('Three')
     click_on 'Edit'
   end
@@ -161,7 +161,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I view the page history of a Wiki page that has a path' do
-    click_on 'Three'
+    first(:link, text: 'Three').trigger('click')
     click_on 'Page history'
   end
 
