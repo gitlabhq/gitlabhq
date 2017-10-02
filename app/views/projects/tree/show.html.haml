@@ -14,7 +14,7 @@
 = render "projects/commits/head"
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-  - if show_auto_devops_callout?(@project)
+  - if show_auto_devops_callout?(@project) && !show_new_repo?
     = render 'shared/auto_devops_callout'
   = render 'projects/last_push'
   = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
