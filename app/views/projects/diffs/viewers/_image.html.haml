@@ -7,68 +7,12 @@
 - image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil)
 - discussions = @grouped_diff_discussions[diff_file.file_identifier]
 
+- locals = { diff_file: diff_file, position: diff_file.position(image_point, "image").to_json, click_to_comment: true, diff_view_data: diff_view_data }
+
 - if diff_file.new_file? || diff_file.deleted_file?
-  .image.js-single-image{ data: diff_view_data }
-    %span.wrap
-      .frame.js-add-image-diff-note-button.click-to-comment{ class: (diff_file.deleted_file? ? 'deleted' : 'added'), data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
-        = image_tag(blob_raw_path, alt: diff_file.file_path, draggable: false, lazy: false)
-      %p.image-info= number_to_human_size(blob.size)
-  .note-container
-    = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion
+  = render partial: "projects/diffs/single_image_diff", locals: locals
 - else
-  .image.js-replaced-image{ data: diff_view_data }
-    .two-up.view
-      %span.wrap
-        .frame.deleted
-          = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
-        %p.image-info.hide
-          %span.meta-filesize= number_to_human_size(old_blob.size)
-          |
-          %b W:
-          %span.meta-width
-          |
-          %b H:
-          %span.meta-height
-      %span.wrap
-        .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
-          = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
-        %p.image-info.hide
-          %span.meta-filesize= number_to_human_size(blob.size)
-          |
-          %b W:
-          %span.meta-width
-          |
-          %b H:
-          %span.meta-height
+  = render partial: "projects/diffs/replaced_image_diff", locals: locals
 
-    .swipe.view.hide
-      .swipe-frame
-        .frame.deleted
-          = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
-        .swipe-wrap
-          .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
-            = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
-        %span.swipe-bar
-          %span.top-handle
-          %span.bottom-handle
-
-    .onion-skin.view.hide
-      .onion-skin-frame
-        .frame.deleted
-          = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
-        .frame.added.js-add-image-diff-note-button.click-to-comment{ data: { position: diff_file.position(image_point, "image").to_json, note_type: DiffNote.name } }
-          = image_tag(blob_raw_path, alt: diff_file.new_path, draggable: false, lazy: false)
-        .controls
-          .transparent
-          .drag-track
-            .dragger{ :style => "left: 0px;" }
-          .opaque
-
-
-  .view-modes.hide
-    %ul.view-modes-menu
-      %li.two-up{ data: { mode: 'two-up' } } 2-up
-      %li.swipe{ data: { mode: 'swipe' } } Swipe
-      %li.onion-skin{ data: { mode: 'onion-skin' } } Onion skin
-  .note-container
-    = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion
+.note-container
+  = render partial: "discussions/notes", collection: @grouped_diff_discussions[diff_file.file_identifier], as: :discussion
