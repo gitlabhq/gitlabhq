@@ -137,12 +137,15 @@ class Note < ActiveRecord::Base
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
-      diff_notes.fresh.discussions.each do |discussion|
-        line_code = discussion.line_code_in_diffs(diff_refs)
+      # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38688
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        diff_notes.fresh.discussions.each do |discussion|
+          line_code = discussion.line_code_in_diffs(diff_refs)
 
-        if line_code
-          discussions = groups[line_code] ||= []
-          discussions << discussion
+          if line_code
+            discussions = groups[line_code] ||= []
+            discussions << discussion
+          end
         end
       end
 
