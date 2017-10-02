@@ -815,7 +815,6 @@ export default class Notes {
 
         // check if this is the last note for this line
         if ($notes.find('.note').length === 0) {
-          // TODO: Replace TR check with an actual class name check
           var notesTr = $notes.closest('tr');
 
           // "Discussions" tab
