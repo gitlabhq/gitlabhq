@@ -10,12 +10,16 @@ module Geo
         repository_storage_name: project.repository.storage,
         repository_storage_path: project.repository_storage_path,
         old_path_with_namespace: old_path_with_namespace,
-        new_path_with_namespace: project.full_path,
+        new_path_with_namespace: project.disk_path,
         old_wiki_path_with_namespace: old_wiki_path_with_namespace,
         new_wiki_path_with_namespace: new_wiki_path_with_namespace,
-        old_path: params.fetch(:old_path),
+        old_path: old_path,
         new_path: project.path
       )
+    end
+
+    def old_path
+      params.fetch(:old_path)
     end
 
     def old_path_with_namespace
@@ -27,7 +31,7 @@ module Geo
     end
 
     def new_wiki_path_with_namespace
-      project.wiki.full_path
+      "#{project.disk_path}.wiki"
     end
   end
 end

@@ -125,6 +125,15 @@ describe API::Users do
     end
 
     context "when admin" do
+      context 'when sudo is defined' do
+        it 'does not return 500' do
+          admin_personal_access_token = create(:personal_access_token, user: admin).token
+          get api("/users?private_token=#{admin_personal_access_token}&sudo=#{user.id}", admin)
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+
       it "returns an array of users" do
         get api("/users", admin)
 
@@ -474,10 +483,13 @@ describe API::Users do
     end
 
     it "updates user with new password and forces reset on next login" do
+      stub_licensed_features(extended_audit_events: true)
+
       put api("/users/#{user.id}", admin), password: '12345678'
 
       expect(response).to have_http_status(200)
       expect(user.reload.password_expires_at).to be <= Time.now
+      expect(AuditEvent.count).to eq(1)
     end
 
     it "updates user with organization" do

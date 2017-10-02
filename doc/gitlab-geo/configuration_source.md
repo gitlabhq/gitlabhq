@@ -150,7 +150,20 @@ Regenerate the keys for `~/.ssh/authorized_keys`
 This will enable `git` operations to authorize against your existing users.
 New users and SSH keys updated after this step, will be replicated automatically.
 
-### Step 5. Enabling the secondary GitLab node
+### Step 5. Enabling hashed storage (from GitLab 10.0)
+
+1. Visit the **primary** node's **Admin Area ➔ Settings**
+   (`/admin/application_settings`) in your browser
+1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
+
+    ![](img/hashed-storage.png)
+
+Using hashed storage significantly improves Geo replication - project and group
+renames no longer require synchronization between nodes - so we recommend it is
+used for all GitLab Geo installations.
+
+
+### Step 6. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -195,7 +208,7 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](configuration.md#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 6. Replicating the repositories data
+### Step 7. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.

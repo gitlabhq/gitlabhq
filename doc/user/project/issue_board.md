@@ -291,18 +291,18 @@ milestone with the due date that is next.
 
 ![Update boards milestone](img/issue_board_multiple_milestone.png)
 
-## Group-level issue boards
+## Group Issue Boards
 
-> Introduced in [GitLab Enterprise Edition 10.0 Premium](https://about.gitlab.com/2017/9/22/gitlab-10-0-released/#group-level-issue-boards).
+> Introduced in [GitLab Enterprise Edition 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
-Group-level issue boards are analogous to project-level issue boards. They are accessible at the group
-navigation level. A group-level issue board allows you to view all issues from all projects in that group.
-(Currently, it does not see issues from projects in subgroups.) You can only associate group milestones
+Group issue boards are analogous to project-level issue boards ans they are accessible at the group
+navigation level. A group-level issue board allows you to view all issues from all projects in that group
+(currently, it does not see issues from projects in subgroups). You can only associate group milestones
 and filter by group milestones for these boards. Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
 
-![Group-level issue board](img/group_issue_board.png)
+![Group issue board](img/group_issue_board.png)
 
 ## Focus mode
 

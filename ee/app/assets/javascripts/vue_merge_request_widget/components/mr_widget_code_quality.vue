@@ -111,18 +111,15 @@ export default {
 
     this.isLoading = true;
 
-    this.service.fetchCodeclimate(head_path)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.mr.setCodeclimateHeadMetrics(data);
-        this.service.fetchCodeclimate(base_path)
-          .then(response => response.json())
-          .then(baseData => this.mr.setCodeclimateBaseMetrics(baseData))
-          .then(() => this.mr.compareCodeclimateMetrics())
-          .then(() => {
-            this.isLoading = false;
-          })
-          .catch(() => this.handleError());
+    Promise.all([
+      this.service.fetchCodeclimate(head_path)
+        .then(resp => resp.json()),
+      this.service.fetchCodeclimate(base_path)
+        .then(resp => resp.json()),
+    ])
+      .then((values) => {
+        this.mr.compareCodeclimateMetrics(values[0], values[1]);
+        this.isLoading = false;
       })
       .catch(() => this.handleError());
   },

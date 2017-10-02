@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-21 14:20+0530\n"
-"PO-Revision-Date: 2017-09-21 14:20+0530\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 16:26+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -29,6 +29,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr ""
+
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
@@ -80,10 +83,16 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 msgid "Add Changelog"
 msgstr ""
 
 msgid "Add Contribution guide"
+msgstr ""
+
+msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add License"
@@ -131,15 +140,6 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
-msgid "Auto DevOps (Beta)"
-msgstr ""
-
-msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
-msgid "Auto DevOps documentation"
-msgstr ""
-
 msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
 msgstr ""
 
@@ -149,10 +149,73 @@ msgstr ""
 msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
 msgstr ""
 
-msgid "AutoDevOps|Learn more in the"
+msgid "AutoDevOps|Auto DevOps (Beta)"
 msgstr ""
 
-msgid "Board"
+msgid "AutoDevOps|Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "AutoDevOps|Auto DevOps documentation"
+msgstr ""
+
+msgid "AutoDevOps|Enable in settings"
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
+msgstr ""
+
+msgid "Billing"
+msgstr ""
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr ""
+
+msgid "BillingPlans|Current plan"
+msgstr ""
+
+msgid "BillingPlans|Customer Support"
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
+msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr ""
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr ""
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Upgrade"
+msgstr ""
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr ""
+
+msgid "BillingPlans|monthly"
+msgstr ""
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr ""
+
+msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Billinglans|Downgrade"
 msgstr ""
 
 msgid "Branch"
@@ -172,10 +235,88 @@ msgstr ""
 msgid "Branches"
 msgstr ""
 
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
 msgid "Branches|This branch hasn’t been merged into %{default_branch}."
 msgstr ""
 
 msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
 msgstr ""
 
 msgid "Browse Directory"
@@ -199,10 +340,16 @@ msgstr ""
 msgid "CI configuration"
 msgstr ""
 
+msgid "CICD|Jobs"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
 msgid "Cancel edit"
+msgstr ""
+
+msgid "Change Weight"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -286,6 +433,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -325,6 +475,9 @@ msgid "Contribution guide"
 msgstr ""
 
 msgid "Contributors"
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -402,6 +555,12 @@ msgstr ""
 msgid "CycleAnalyticsStage|Test"
 msgstr ""
 
+msgid "DashboardProjects|All"
+msgstr ""
+
+msgid "DashboardProjects|Personal"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -419,6 +578,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -426,6 +588,9 @@ msgid "Directory name"
 msgstr ""
 
 msgid "Discard changes"
+msgstr ""
+
+msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Don't show again"
@@ -465,9 +630,6 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Emails"
-msgstr ""
-
-msgid "Enable in settings"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -541,6 +703,9 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
+msgid "Geo Nodes"
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -568,7 +733,7 @@ msgstr ""
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
 msgstr ""
 
-msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner."
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
 msgstr ""
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
@@ -595,13 +760,19 @@ msgstr ""
 msgid "HealthCheck|Unhealthy"
 msgstr ""
 
-msgid "Home"
-msgstr ""
-
 msgid "Housekeeping successfully started"
 msgstr ""
 
 msgid "Import repository"
+msgstr ""
+
+msgid "Improve Issue boards with GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Install a Runner compatible with GitLab CI"
@@ -613,13 +784,22 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
+msgid "Issue board focus mode"
+msgstr ""
+
+msgid "Issue boards with milestones"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 
-msgid "Issues"
+msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "Jobs"
+msgid "IssueBoards|Boards"
+msgstr ""
+
+msgid "Issues"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -663,10 +843,16 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+msgid "License"
+msgstr ""
+
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Locked Files"
+msgstr ""
 
 msgid "Median"
 msgstr ""
@@ -680,6 +866,9 @@ msgstr ""
 msgid "Merge events"
 msgstr ""
 
+msgid "Merge request"
+msgstr ""
+
 msgid "Messages"
 msgstr ""
 
@@ -690,6 +879,9 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
+msgstr ""
+
+msgid "Multiple issue boards"
 msgstr ""
 
 msgid "New Issue"
@@ -728,6 +920,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No schedules"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not available"
@@ -833,6 +1028,9 @@ msgid "Pipeline Schedule"
 msgstr ""
 
 msgid "Pipeline Schedules"
+msgstr ""
+
+msgid "Pipeline quota"
 msgstr ""
 
 msgid "PipelineCharts|Failed:"
@@ -955,9 +1153,6 @@ msgstr ""
 msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
-msgid "Project home"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -1003,6 +1198,9 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "Push Rules"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -1016,6 +1214,9 @@ msgid "RefSwitcher|Branches"
 msgstr ""
 
 msgid "RefSwitcher|Tags"
+msgstr ""
+
+msgid "Registry"
 msgstr ""
 
 msgid "Related Commits"
@@ -1128,6 +1329,102 @@ msgstr[1] ""
 msgid "Snippets"
 msgstr ""
 
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
+msgstr ""
+
 msgid "Source code"
 msgstr ""
 
@@ -1167,6 +1464,12 @@ msgid "Target Branch"
 msgstr ""
 
 msgid "Team"
+msgstr ""
+
+msgid "Thanks! Don't show me this again"
+msgstr ""
+
+msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
@@ -1380,7 +1683,25 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+msgid "Track activity with Contribution Analytics."
+msgstr ""
+
 msgid "Unstar"
+msgstr ""
+
+msgid "Upgrade your plan to activate Advanced Global Search."
+msgstr ""
+
+msgid "Upgrade your plan to activate Contribution Analytics."
+msgstr ""
+
+msgid "Upgrade your plan to activate Group Webhooks."
+msgstr ""
+
+msgid "Upgrade your plan to activate Issue weight."
+msgstr ""
+
+msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
 msgid "Upload New File"
@@ -1398,7 +1719,13 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
+msgstr ""
+
+msgid "View replaced file @ "
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -1419,7 +1746,16 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
 msgid "Wiki"
+msgstr ""
+
+msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
 msgid "Withdraw Access Request"
@@ -1476,6 +1812,9 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
+msgid "commit"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
@@ -1491,3 +1830,6 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "to help your contributors communicate effectively!"
+msgstr ""

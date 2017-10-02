@@ -9,7 +9,7 @@ and there is significant chance of data loss. For the latest updates, check the
 > **Notes:**
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
-  We recommend you use it with at least GitLab Enterprise Edition 8.14 for
+  We recommend you use it with at least GitLab Enterprise Edition 10.0 for
   basic Geo features, or latest version for a better experience.
 - You should make sure that all nodes run the same GitLab version.
 
