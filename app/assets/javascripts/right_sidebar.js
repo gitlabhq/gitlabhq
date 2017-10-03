@@ -29,26 +29,30 @@ import Cookies from 'js-cookie';
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
 
-      $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
-        var $allGutterToggleIcons, $this, $thisIcon;
-        e.preventDefault();
-        $this = $(this);
-        $thisIcon = $this.find('i');
-        $allGutterToggleIcons = $('.js-sidebar-toggle i');
-        if ($thisIcon.hasClass('fa-angle-double-right')) {
-          $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
-          $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-          $('.page-with-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-        } else {
-          $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
-          $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-          $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-        }
-        if (!triggered) {
-          return Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
-        }
-      });
+      $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
       return $(document).off('click', '.js-issuable-todo').on('click', '.js-issuable-todo', this.toggleTodo);
+    };
+
+    Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
+      var $allGutterToggleIcons, $this, $thisIcon;
+      e.preventDefault();
+      $this = $(this);
+      $thisIcon = $this.find('i');
+      $allGutterToggleIcons = $('.js-sidebar-toggle i');
+      if ($thisIcon.hasClass('fa-angle-double-right')) {
+        $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+        $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+        $('.page-with-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+      } else {
+        $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+        $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+        $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+
+        if (gl.lazyLoader) gl.lazyLoader.loadCheck();
+      }
+      if (!triggered) {
+        Cookies.set("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'));
+      }
     };
 
     Sidebar.prototype.toggleTodo = function(e) {

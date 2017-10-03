@@ -254,6 +254,46 @@ describe Gitlab::ClosingIssueExtractor do
         expect(subject.closed_by_message(message)).to eq([issue])
       end
 
+      it do
+        message = "Implement: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implements: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implemented: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "Implementing: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implement: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implements: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implemented: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
+      it do
+        message = "implementing: #{reference}"
+        expect(subject.closed_by_message(message)).to eq([issue])
+      end
+
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
           jira_project = create(:jira_project, name: 'JIRA_EXT1')

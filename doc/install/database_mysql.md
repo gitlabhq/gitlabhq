@@ -1,11 +1,12 @@
 # Database MySQL
 
 >**Note:**
-We do not recommend using MySQL due to various issues. For example, case
+- We do not recommend using MySQL due to various issues. For example, case
 [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html)
 and [problems](https://bugs.mysql.com/bug.php?id=65830) that
 [suggested](https://bugs.mysql.com/bug.php?id=50909)
 [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
+- We recommend using MySQL version 5.6 or later. Please see the following [issue][ce-38152].
 
 ## Initial database setup
 
@@ -13,7 +14,7 @@ and [problems](https://bugs.mysql.com/bug.php?id=65830) that
 # Install the database packages
 sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
-# Ensure you have MySQL version 5.5.14 or later
+# Ensure you have MySQL version 5.6 or later
 mysql --version
 
 # Pick a MySQL root password (can be anything), type it and press enter
@@ -293,3 +294,4 @@ Details can be found in the [PostgreSQL][postgres-text-type] and
 
 [postgres-text-type]: http://www.postgresql.org/docs/9.2/static/datatype-character.html
 [mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html
+[ce-38152]: https://gitlab.com/gitlab-org/gitlab-ce/issues/38152

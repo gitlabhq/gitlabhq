@@ -17,6 +17,7 @@ module TestEnv
     'feature_conflict'                   => 'bb5206f',
     'fix'                                => '48f0be4',
     'improve/awesome'                    => '5937ac0',
+    'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
     'master'                             => 'b83d6e3',
@@ -305,6 +306,9 @@ module TestEnv
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
+
+    # On CI, once installed, components never need update
+    return if File.exist?(install_dir) && ENV['CI']
 
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh
