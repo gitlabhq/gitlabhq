@@ -71,7 +71,7 @@ describe Projects::Registry::TagsController do
                   format: :json
     end
   end
-    
+
   describe 'POST destroy' do
     context 'when user has access to registry' do
       before do
