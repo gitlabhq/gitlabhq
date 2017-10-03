@@ -20,7 +20,7 @@ class Diff {
 
     FilesCommentButton.init($diffFile);
 
-    const canCreateNote = $diffFile.first().closest('.files').is('[data-can-create-note]');
+    const canCreateNote = $('.files').first().is('[data-can-create-note]');
     $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {
