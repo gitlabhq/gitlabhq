@@ -30,8 +30,8 @@ export default class ImageDiff {
   }
 
   bindEvents() {
-    this.clickWrapper = this.click.bind(this);
-    this.blurWrapper = this.blur.bind(this);
+    this.imageClickedWrapper = this.imageClicked.bind(this);
+    this.imageBlurredWrapper = this.imageBlurred.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
     this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
@@ -49,8 +49,8 @@ export default class ImageDiff {
     $(this.el).on('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
 
     if (this.canCreateNote) {
-      this.el.addEventListener('click.imageDiff', this.clickWrapper);
-      this.el.addEventListener('blur.imageDiff', this.blurWrapper);
+      this.el.addEventListener('click.imageDiff', this.imageClickedWrapper);
+      this.el.addEventListener('blur.imageDiff', this.imageBlurredWrapper);
       this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
       this.el.addEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.addEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
@@ -63,15 +63,15 @@ export default class ImageDiff {
     $(this.el).off('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
 
     if (this.canCreateNote) {
-      this.el.removeEventListener('click.imageDiff', this.clickWrapper);
-      this.el.removeEventListener('blur.imageDiff', this.blurWrapper);
+      this.el.removeEventListener('click.imageDiff', this.imageClickedWrapper);
+      this.el.removeEventListener('blur.imageDiff', this.imageBlurredWrapper);
       this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
       this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
   }
 
-  click(event) {
+  imageClicked(event) {
     const customEvent = event.detail;
     const selection = imageDiffHelper.getTargetSelection(customEvent);
     const el = customEvent.currentTarget;
@@ -80,7 +80,7 @@ export default class ImageDiff {
     imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), selection.browser);
   }
 
-  blur() {
+  imageBlurred() {
     return imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
   }
 
