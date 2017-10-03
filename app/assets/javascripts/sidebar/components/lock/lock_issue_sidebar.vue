@@ -74,7 +74,7 @@ export default {
     </div>
 
     <div class="title hide-collapsed">
-      {{ __(`Lock ${issuableDisplayName(issuableType)}`) }}
+      Lock {{issuableDisplayName(issuableType) }}
       <button
         v-if="isEditable"
         class="pull-right lock-edit btn btn-blank"

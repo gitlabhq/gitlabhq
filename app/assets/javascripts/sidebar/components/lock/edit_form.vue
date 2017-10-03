@@ -39,15 +39,16 @@ export default {
   <div class="dropdown open">
     <div class="dropdown-menu sidebar-item-warning-message">
       <p class="text" v-if="isLocked">
-        {{ __(`Unlock this ${issuableDisplayName(issuableType)}?`) }}
-        <strong>{{ __('Everyone') }}</strong>
-        {{ __('will be able to comment.') }}
+        Unlock this {{ issuableDisplayName(issuableType) }}?
+        <strong>Everyone</strong>
+        will be able to comment.
       </p>
 
       <p class="text" v-else>
-        {{ __(`Lock this ${issuableDisplayName(issuableType)}? Only`) }}
-        <strong>{{ __('project members') }}</strong>
-        {{ __('will be able to comment.') }}
+        Lock this {{ issuableDisplayName(issuableType) }}?
+        Only
+        <strong>project members</strong>
+        will be able to comment
       </p>
 
       <edit-form-buttons
