@@ -4,6 +4,7 @@ import axios from 'axios';
 import Poll from './lib/utils/poll';
 import { s__ } from './locale';
 import './flash';
+import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
 class ClusterService {
   constructor(options = {}) {
@@ -25,8 +26,16 @@ class ClusterService {
   }
 }
 /**
- * Handles visibily toggle
- * Polls the state
+ * Cluster page has 2 separate parts:
+ * - Update form with toggle button
+ * -- Check initial state and set the toggle button
+ * -- Listen to changes
+ * -- Check permissions in order to disable
+ * -- Update cluster based on toggle status
+ *
+ * - Polling status while creating or scheduled
+ * -- Update status area with the response result
+ *
  */
 export default class ClusterEdit {
   constructor() {
@@ -37,8 +46,9 @@ export default class ClusterEdit {
         checkStatus: dataset.checkStatus,
         editPath: dataset.editPath,
       },
-      canUpdate: dataset.canUpdate,
+      canUpdate: convertPermissionToBoolean(dataset.canUpdate),
       clusterStatus: dataset.clusterStatus,
+      toggleStatus: dataset.toggleStatus,
     };
 
     this.service = new ClusterService({ endpoints: this.state.endpoints });
@@ -46,42 +56,29 @@ export default class ClusterEdit {
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
-    this.bindEvents();
+
+    this.initEditForm();
+
+    if (this.clusterStatus === 'scheduled' || this.clusterStatus === 'creating') {
+      this.initPoling();
+    }
   }
 
-  bindEvents() {
-    if (!this.canUpdate) {
-      this.disableToggle();
-    }
-
-    if (this.clusterStatus) {
-      // update to enable or disabled!
-    }
-
+  initEditForm() {
     this.toggleButton.addEventListener('click', this.toggle.bind(this));
-
     document.querySelector('.js-edit-cluster-button').addEventListener('click', this.updateData.bind(this));
-
-    this.initPoling();
   }
 
   toggle() {
     this.toggleButton.classList.toggle('checked');
-    this.toggleStatus = this.toggleButton.classList.contains('checked').toString();
+    this.state.toggleStatus = this.toggleButton.classList.contains('checked').toString();
   }
 
   updateData() {
     this.service.updateData(this.state.toggleStatus);
   }
 
-  disableToggle(disable = true) {
-    this.toggleButton.classList.toggle('disabled', disable);
-    this.toggleButton.setAttribute('disabled', disable);
-  }
-
   initPoling() {
-    if (this.state.clusterStatus === 'created') return;
-
     this.poll = new Poll({
       resource: this.service,
       method: 'fetchData',
@@ -89,8 +86,8 @@ export default class ClusterEdit {
         const { status } = data.data;
         this.updateContainer(status);
       },
-      errorCallback: () => {
-        this.updateContainer('error');
+      errorCallback: (error) => {
+        this.updateContainer('error', error);
         Flash(s__('ClusterIntegration|Something went wrong on our end.'));
       },
     });
@@ -116,7 +113,7 @@ export default class ClusterEdit {
     this.creatingContainer.classList.add('hidden');
   }
 
-  updateContainer(status) {
+  updateContainer(status, error) {
     this.hideAll();
     switch (status) {
       case 'created':
@@ -124,6 +121,7 @@ export default class ClusterEdit {
         break;
       case 'error':
         this.errorContainer.classList.remove('hidden');
+        this.errorContainer.querySelector('.js-error-reason').textContent = error.status_reason;
         break;
       case 'creating':
         this.creatingContainer.classList.add('hidden');

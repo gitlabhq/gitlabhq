@@ -1,54 +1,50 @@
 .row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { check_status: status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json),
   edit_path: namespace_project_cluster_path(@project.namespace, @project, @cluster.id, format: :json),
-  can_update: 'true',
-  cluster_status: '' }}
+  can_update: can?(current_user, :update_cluster, @cluster),
+  toggle_status: @cluster.enabled? ? 'true': 'false',
+  cluster_status: @cluster.status }}
   = render 'sidebar'
   .col-lg-8
     %h4.prepend-top-0
       = s_('ClusterIntegration|Enable cluster integration')
     %p
-      -#TODO: if  can?(current_user, :update_cluster, @cluster)
-      -#  if :enabled
-      = s_('ClusterIntegration|Disabling cluster integration will not affect your cluster. It will only temporarily turn off GitLab\'s conection to it.')
-      -# else
-      = s_('ClusterIntegration|Missing test/state in mockups.')
-      -# else !can?(current_user, :update_cluster, @cluster)
-      -# if :enabled
-      = s_('ClusterIntegration|Cluster integration is enabled for this project.')
-      -# else
-      = s_('ClusterIntegration|Cluster integration is disabled for this project.')
+      - if @cluster.enabled?
+        - if can?(current_user, :update_cluster, @cluster)
+          = s_('ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab\'s connection to it.')
+        - else
+          = s_('ClusterIntegration|Cluster integration is enabled for this project.')
+      - else
+        = s_('ClusterIntegration|Cluster integration is disabled for this project.')
 
     %label.toggle-wrapper
-      %button{ type: 'button', class: 'js-toggle-cluster project-feature-toggle', 'aria-label': 'Toggle', data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
+      %button{ type: 'button',
+        class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
+        'aria-label': 'Toggle',
+        disabled: !can?(current_user, :update_cluster, @cluster),
+        data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
 
-    -# if can?(current_user, :update_cluster, @cluster)
-    .form-group
-      %button{ type: 'button', class: 'js-edit-cluster-button btn btn-success'}
-        = s_('ClusterIntegration|Save changes')
+    - if can?(current_user, :update_cluster, @cluster)
+      .form-group
+        %button{ type: 'button', class: 'js-edit-cluster-button btn btn-success'}
+          = s_('ClusterIntegration|Save changes')
 
 
-    -# if can?(current_user, :update_cluster, @cluster)
-    .form_group
-      %label
-        = s_('ClusterIntegration|Google container engine')
+    - if can?(current_user, :update_cluster, @cluster) && @cluster.scheduled? || @cluster.creating?
+      .form_group
+        %label
+          = s_('ClusterIntegration|Google container engine')
+          %p
+            - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), '', target: '_blank', rel: 'noopener noreferrer')
+            = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
-        - link_gke = link_to(s_('ClusterIntegration|Manage your cluster on GKE'), '', target: '_blank', rel: 'noopener noreferrer')
-      .hidden.js-cluster-error
-        %p
-          = s_('ClusterIntegration|This cluster was set up on Google Container Engine. %{link_gke}').html_safe % { link_gke: link_gke }
-        .alert.alert-info{ role: 'alert' }
-          = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
+      .hidden.js-cluster-error.alert.alert-danger{ role: 'alert' }
+        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
+        %code.js-error-reason
 
-      .hidden.js-cluster-success
-        %p
-          = s_('ClusterIntegration|This cluster was set up on Google Container Engine. %{link_gke}').html_safe % { link_gke: link_gke }
-        .alert.alert-info{ role: 'alert' }
-          = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
+      .hidden.js-cluster-success.alert.alert-info{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
 
-      .hidden.js-cluster-creating
-        %p
-          = s_('ClusterIntegration|This cluster was set up on Google Container Engine. %{link_gke}').html_safe % { link_gke: link_gke }
-        .alert.alert-info{ role: 'alert' }
+      .hidden.js-cluster-creating.alert.alert-info{ role: 'alert' }
         = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
 
     .form_group
@@ -60,17 +56,10 @@
           = clipboard_button(text: @cluster.gcp_cluster_name, title: s_('ClusterIntegration|Copy cluster name'))
 
     %br
-    -# - if can?(current_user, :admin_cluster, @cluster)
-    .well.form_group
-      %label.text-danger
-        = s_('ClusterIntegration|Remove cluster integration')
-      %p
-        = s_('ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project.')
-      = link_to(s_('ClusterIntegration|Remove integration'), namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete, class: 'btn btn-danger')
-
-
-
-%br
-= link_to "Enable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :put
-%br
-= link_to "Disable", namespace_project_cluster_path(@project.namespace, @project, @cluster.id, cluster: {enabled: 'false'}), method: :put
+    - if can?(current_user, :admin_cluster, @cluster)
+      .well.form_group
+        %label.text-danger
+          = s_('ClusterIntegration|Remove cluster integration')
+        %p
+          = s_('ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project.')
+        = link_to(s_('ClusterIntegration|Remove integration'), namespace_project_cluster_path(@project.namespace, @project, @cluster.id), method: :delete, class: 'btn btn-danger', data: { confirm: "Are you sure you want to remove cluster integration from this project? This will not delete your cluster on Google Container Engine"})
