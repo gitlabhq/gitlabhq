@@ -1218,7 +1218,6 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
-    t.boolean "merge_requests_ff_only_enabled", default: false, null: false
     t.boolean "repository_read_only"
   end
 
