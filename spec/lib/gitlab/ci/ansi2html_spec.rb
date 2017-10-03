@@ -195,6 +195,32 @@ describe Gitlab::Ci::Ansi2html do
     end
   end
 
+  context "with section markers" do
+    let(:section_name) { 'test_section' }
+    let(:section_start_time) { Time.new(2017, 9, 20).utc }
+    let(:section_duration) { 3.seconds }
+    let(:section_end_time) { section_start_time + section_duration }
+    let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K"}
+    let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K"}
+    let(:section_start_html) do
+      '<div class="hidden" data-action="start"'\
+      " data-timestamp=\"#{section_start_time.to_i}\" data-section=\"#{section_name}\">"\
+      "#{section_start[0...-5]}</div>"
+    end
+    let(:section_end_html) do
+      '<div class="hidden" data-action="end"'\
+      " data-timestamp=\"#{section_end_time.to_i}\" data-section=\"#{section_name}\">"\
+      "#{section_end[0...-5]}</div>"
+    end
+
+    it "prints light red" do
+      text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
+      html = %{#{section_start_html}<span class="term-fg-l-red">Hello</span><br>#{section_end_html}}
+
+      expect(convert_html(text)).to eq(html)
+    end
+  end
+
   describe "truncates" do
     let(:text) { "Hello World" }
     let(:stream) { StringIO.new(text) }
