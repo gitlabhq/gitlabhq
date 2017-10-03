@@ -8,9 +8,7 @@ describe StuckImportJobsWorker do
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(exclusive_lease_uuid)
   end
 
-  describe 'with started import_status' do
-    let(:project) { create(:project, :import_started, import_jid: '123') }
-
+  shared_examples 'project import job detection' do
     describe 'long running import' do
       it 'marks the project as failed' do
         allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(['123'])
@@ -31,6 +29,18 @@ describe StuckImportJobsWorker do
           expect { worker.perform }.to change { project.reload.import_status }.to('failed')
         end
       end
+    end
+  end
+
+  describe 'with scheduled import_status' do
+    it_behaves_like 'project import job detection' do
+      let(:project) { create(:project, :import_scheduled, import_jid: '123') }
+    end
+  end
+
+  describe 'with started import_status' do
+    it_behaves_like 'project import job detection' do
+      let(:project) { create(:project, :import_started, import_jid: '123') }
     end
   end
 end

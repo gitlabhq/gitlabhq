@@ -16,7 +16,7 @@ class StuckImportJobsWorker
   private
 
   def mark_projects_without_jid_as_failed!
-    started_projects_without_jid.each do |project|
+    enqueued_projects_without_jid.each do |project|
       project.mark_import_as_failed(error_message)
     end.count
   end
@@ -24,7 +24,7 @@ class StuckImportJobsWorker
   def mark_projects_with_jid_as_failed!
     completed_jids_count = 0
 
-    started_projects_with_jid.find_in_batches(batch_size: 500) do |group|
+    enqueued_projects_with_jid.find_in_batches(batch_size: 500) do |group|
       jids = group.map(&:import_jid)
 
       # Find the jobs that aren't currently running or that exceeded the threshold.
@@ -43,16 +43,16 @@ class StuckImportJobsWorker
     completed_jids_count
   end
 
-  def started_projects
-    Project.with_import_status(:started)
+  def enqueued_projects
+    Project.with_import_status(:scheduled, :started)
   end
 
-  def started_projects_with_jid
-    started_projects.where.not(import_jid: nil)
+  def enqueued_projects_with_jid
+    enqueued_projects.where.not(import_jid: nil)
   end
 
-  def started_projects_without_jid
-    started_projects.where(import_jid: nil)
+  def enqueued_projects_without_jid
+    enqueued_projects.where(import_jid: nil)
   end
 
   def error_message
