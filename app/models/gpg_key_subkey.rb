@@ -19,14 +19,4 @@ class GpgKeySubkey < ActiveRecord::Base
   def fingerprint
     super&.upcase
   end
-
-  def method_missing(m, *a, &b)
-    return super unless gpg_key.respond_to?(m)
-
-    gpg_key.public_send(m, *a, &b) # rubocop:disable GitlabSecurity/PublicSend
-  end
-
-  def respond_to_missing?(method, include_private = false)
-    gpg_key.respond_to?(method, include_private) || super
-  end
 end
