@@ -323,6 +323,7 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
+$dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
 $dropdown-empty-row-bg: rgba(#000, .04);

@@ -292,7 +292,7 @@ header.navbar-gitlab-new {
 
 .header-user .dropdown-menu-nav,
 .header-new .dropdown-menu-nav {
-  margin-top: 4px;
+  margin-top: $dropdown-vertical-offset;
 }
 
 .search {
