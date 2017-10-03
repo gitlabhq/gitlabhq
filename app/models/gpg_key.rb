@@ -73,7 +73,7 @@ class GpgKey < ActiveRecord::Base
   end
 
   def verified_and_belongs_to_email?(email)
-    emails_with_verified_status.fetch(email, false)
+    emails_with_verified_status.fetch(email.downcase, false)
   end
 
   def update_invalid_gpg_signatures

@@ -151,7 +151,7 @@ module Gitlab
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
 
       # Do no enforce limits in production
-      return if Rails.env.production?
+      return if Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"]
 
       # Check if this call is nested within a allow_n_plus_1_calls
       # block and skip check if it is
@@ -228,8 +228,16 @@ module Gitlab
       path.read.chomp
     end
 
+    def self.timestamp(t)
+      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    end
+
     def self.encode(s)
       s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
+
+    def self.encode_repeated(a)
+      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
 
     # Count a stack. Used for n+1 detection

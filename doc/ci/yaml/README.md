@@ -1570,6 +1570,11 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 Each instance of GitLab CI has an embedded debug tool called Lint.
 You can find the link under `/ci/lint` of your gitlab instance.
 
+## Using reserved keywords
+
+If you get validation error when using specific values (e.g., `true` or `false`),
+try to quote them, or change them to a different form (e.g., `/bin/true`).
+
 ## Skipping jobs
 
 If your commit message contains `[ci skip]` or `[skip ci]`, using any

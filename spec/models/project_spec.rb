@@ -1303,7 +1303,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1313,7 +1313,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1370,7 +1370,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.disk_path)
+        .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
       project.ensure_repository
@@ -2363,9 +2363,21 @@ describe Project do
 
     describe '#legacy_storage?' do
       it 'returns true when storage_version is nil' do
-        project = build(:project)
+        project = build(:project, storage_version: nil)
 
         expect(project.legacy_storage?).to be_truthy
+      end
+
+      it 'returns true when the storage_version is 0' do
+        project = build(:project, storage_version: 0)
+
+        expect(project.legacy_storage?).to be_truthy
+      end
+    end
+
+    describe '#hashed_storage?' do
+      it 'returns false' do
+        expect(project.hashed_storage?).to be_falsey
       end
     end
 
@@ -2425,6 +2437,38 @@ describe Project do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
       end
     end
+
+    describe '#migrate_to_hashed_storage!' do
+      it 'returns true' do
+        expect(project.migrate_to_hashed_storage!).to be_truthy
+      end
+
+      it 'flags as readonly' do
+        expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
+        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
+
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+
+        project.migrate_to_hashed_storage!
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the wiki repo is in use' do
+        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
+
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+
+        project.migrate_to_hashed_storage!
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker' do
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).with(project.id)
+
+        project.migrate_to_hashed_storage!
+      end
+    end
   end
 
   context 'hashed storage' do
@@ -2436,6 +2480,18 @@ describe Project do
       stub_application_setting(hashed_storage_enabled: true)
       allow(Digest::SHA2).to receive(:hexdigest) { hash }
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    describe '#legacy_storage?' do
+      it 'returns false' do
+        expect(project.legacy_storage?).to be_falsey
+      end
+    end
+
+    describe '#hashed_storage?' do
+      it 'returns true' do
+        expect(project.hashed_storage?).to be_truthy
+      end
     end
 
     describe '#base_dir' do
@@ -2507,6 +2563,26 @@ describe Project do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
       end
+    end
+
+    describe '#migrate_to_hashed_storage!' do
+      it 'returns nil' do
+        expect(project.migrate_to_hashed_storage!).to be_nil
+      end
+
+      it 'does not flag as readonly' do
+        expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
+      end
+    end
+  end
+
+  describe '#gl_repository' do
+    let(:project) { create(:project) }
+
+    it 'delegates to Gitlab::GlRepository.gl_repository' do
+      expect(Gitlab::GlRepository).to receive(:gl_repository).with(project, true)
+
+      project.gl_repository(is_wiki: true)
     end
   end
 
@@ -2714,6 +2790,17 @@ describe Project do
 
         project.latest_successful_pipeline_for('foo')
       end
+    end
+  end
+
+  describe '#check_repository_path_availability' do
+    let(:project) { build(:project) }
+
+    it 'skips gitlab-shell exists?' do
+      project.skip_disk_validation = true
+
+      expect(project.gitlab_shell).not_to receive(:exists?)
+      expect(project.check_repository_path_availability).to be_truthy
     end
   end
 

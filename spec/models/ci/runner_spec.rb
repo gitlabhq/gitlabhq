@@ -183,74 +183,41 @@ describe Ci::Runner do
       end
     end
 
-    context 'when runner is locked' do
+    context 'when runner is shared' do
       before do
-        runner.locked = true
+        runner.is_shared = true
+        build.project.runners = []
       end
 
-      shared_examples 'locked build picker' do
-        context 'when runner cannot pick untagged jobs' do
-          before do
-            runner.run_untagged = false
-          end
-
-          it 'cannot handle builds without tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-          end
-
-          it 'cannot handle it for builds without matching tags' do
-            build.tag_list = ['aa']
-
-            expect(runner.can_pick?(build)).to be_falsey
-          end
-        end
+      it 'can handle builds' do
+        expect(runner.can_pick?(build)).to be_truthy
       end
 
-      context 'when serving the same project' do
-        it 'can handle it' do
+      context 'when runner is locked' do
+        before do
+          runner.locked = true
+        end
+
+        it 'can handle builds' do
           expect(runner.can_pick?(build)).to be_truthy
         end
+      end
+    end
 
-        it_behaves_like 'locked build picker'
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-            build.tag_list = ['bb']
-          end
-
-          it 'can handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_truthy
-          end
+    context 'when runner is not shared' do
+      context 'when runner is assigned to a project' do
+        it 'can handle builds' do
+          expect(runner.can_pick?(build)).to be_truthy
         end
       end
 
-      context 'serving a different project' do
+      context 'when runner is not assigned to a project' do
         before do
-          runner.runner_projects.destroy_all
+          build.project.runners = []
         end
 
-        it 'cannot handle it' do
+        it 'cannot handle builds' do
           expect(runner.can_pick?(build)).to be_falsey
-        end
-
-        it_behaves_like 'locked build picker'
-
-        context 'when having runner tags' do
-          before do
-            runner.tag_list = %w(bb cc)
-            build.tag_list = ['bb']
-          end
-
-          it 'cannot handle it for matching tags' do
-            expect(runner.can_pick?(build)).to be_falsey
-          end
         end
       end
     end

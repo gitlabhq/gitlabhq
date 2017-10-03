@@ -156,10 +156,11 @@ describe Projects::CreateService, '#execute' do
         }
       end
 
-      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
       before do
-        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
       end
 
       after do
@@ -205,6 +206,15 @@ describe Projects::CreateService, '#execute' do
 
       expect(project.errors.full_messages_for(:base).first).to match(/Unable to save project. Error: Unable to save DroneCiService/)
       expect(project.services.count).to eq 0
+    end
+  end
+
+  context 'when skip_disk_validation is used' do
+    it 'sets the project attribute' do
+      opts[:skip_disk_validation] = true
+      project = create_project(user, opts)
+
+      expect(project.skip_disk_validation).to be_truthy
     end
   end
 

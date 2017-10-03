@@ -41,7 +41,7 @@ export default class SidebarMediator {
         this.store.setAssigneeData(data);
         this.store.setTimeTrackingData(data);
       })
-      .catch(() => new Flash('Error occured when fetching sidebar data'));
+      .catch(() => new Flash('Error occurred when fetching sidebar data'));
   }
 
   fetchAutocompleteProjects(searchTerm) {

@@ -53,6 +53,11 @@ module Gitlab
 
         GitalyClient.call(@storage, :repository_service, :fetch_remote, request)
       end
+
+      def create_repository
+        request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :create_repository, request)
+      end
     end
   end
 end

@@ -22,9 +22,9 @@ module Gitlab
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          GL_USERNAME: user&.username,
           RepoPath: repo_path
         }
-
         server = {
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
