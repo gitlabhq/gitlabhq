@@ -77,6 +77,9 @@ describe PostReceive do
           allow_any_instance_of(Ci::CreatePipelineService)
             .to receive(:commit).and_return(OpenStruct.new(id: '123456'))
 
+          allow_any_instance_of(Ci::CreatePipelineService)
+            .to receive(:cancel_pending_pipelines)
+
           allow_any_instance_of(Repository)
             .to receive(:branch_exists?).and_return(true)
         end
