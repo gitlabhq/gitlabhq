@@ -15,7 +15,7 @@ describe Projects::Registry::TagsController do
 
   describe 'GET index' do
     let(:tags) do
-      40.times.map { |i| "tag#{i}" }
+      Array.new(40) { |i| "tag#{i}" }
     end
 
     before do
@@ -66,9 +66,9 @@ describe Projects::Registry::TagsController do
 
     def get_tags
       get :index, namespace_id: project.namespace,
-                    project_id: project,
-                    repository_id: repository,
-                    format: :json
+                  project_id: project,
+                  repository_id: repository,
+                  format: :json
     end
   end
     
@@ -101,10 +101,10 @@ describe Projects::Registry::TagsController do
 
     def destroy_tag(name)
       post :destroy, namespace_id: project.namespace,
-                    project_id: project,
-                    repository_id: repository,
-                    id: name,
-                    format: :json
+                     project_id: project,
+                     repository_id: repository,
+                     id: name,
+                     format: :json
     end
   end
 end
