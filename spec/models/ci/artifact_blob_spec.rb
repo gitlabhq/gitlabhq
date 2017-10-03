@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::ArtifactBlob do
-  let(:build) { create(:ci_build, :artifacts) }
+  set(:build) { create(:ci_build, :artifacts) }
   let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }
 
   subject { described_class.new(entry) }
@@ -39,6 +39,47 @@ describe Ci::ArtifactBlob do
   describe '#external_storage' do
     it 'returns :build_artifact' do
       expect(subject.external_storage).to eq(:build_artifact)
+    end
+  end
+
+  describe '#url' do
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+    end
+
+    context '.gif extension' do
+      it 'returns nil' do
+        expect(subject.external_url(build.project, build)).to be_nil
+      end
+    end
+
+    context 'txt extensions' do
+      let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
+
+      it 'returns a URL' do
+        url = subject.external_url(build.project, build)
+
+        expect(url).not_to be_nil
+        expect(url).to start_with("http")
+        expect(url).to match Gitlab.config.pages.host
+        expect(url).to end_with(entry.path)
+      end
+    end
+  end
+
+  describe '#external_link?' do
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+    end
+
+    it { is_expected.not_to be_external_link }
+
+    context 'txt extensions' do
+      let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
+
+      it { is_expected.to be_external_link }
     end
   end
 end
