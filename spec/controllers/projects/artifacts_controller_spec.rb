@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Projects::ArtifactsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_pipeline,
@@ -15,7 +15,7 @@ describe Projects::ArtifactsController do
   let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
 
     sign_in(user)
   end
@@ -47,11 +47,16 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET file' do
+    before do
+      allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+    end
+
     context 'when the file exists' do
       it 'renders the file view' do
         get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
-        expect(response).to render_template('projects/artifacts/file')
+        expect(response).to have_http_status(302)
       end
     end
 
