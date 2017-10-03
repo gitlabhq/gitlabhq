@@ -46,7 +46,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
 
       let assigneeIds = issue.assignees
         .map(assignee => assignee.id)
-        .filter(id => id != board.assignee_id);
+        .filter(id => id !== board.assignee_id);
       if (assigneeIds.length === 0) {
         assigneeIds = ['0'];
       }
