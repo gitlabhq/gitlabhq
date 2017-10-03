@@ -58,6 +58,6 @@ export function commentIndicatorOnClick(event) {
 
   const buttonEl = event.currentTarget;
   const diffViewerEl = buttonEl.closest('.diff-viewer');
-  const textareaEl = diffViewerEl.querySelector('.note-container form .note-textarea');
+  const textareaEl = diffViewerEl.querySelector('.note-container .note-textarea');
   textareaEl.focus();
 }
