@@ -2,7 +2,6 @@
   <div class="block labels">
     <div class="title append-bottom-10">
       Labels
-      <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true" style="display: none;"></i>
       <a
         v-if="canEdit"
         class="edit-link pull-right"
@@ -12,7 +11,10 @@
       </a>
     </div>
     <div class="value issuable-show-labels">
-      <span v-if="board.labels.length === 0" class="no-value">
+      <span
+        v-if="board.labels.length === 0"
+        class="no-value"
+      >
         Any label
       </span>
       <a
@@ -22,15 +24,20 @@
       >
         <span
           class="label color-label has-tooltip"
-          :style="`background-color: ${label.color}; color: ${label.textColor};`"
+          :style="`
+            background-color: ${label.color};
+            color: ${label.textColor};
+          `"
           title=""
         >
           {{ label.title }}
         </span>
       </a>
     </div>
-    <div class="selectbox" style="display: none">
-
+    <div
+      class="selectbox"
+      style="display: none"
+    >
       <input
         type="hidden"
         name="label_id[]"
@@ -38,34 +45,46 @@
         :key="labelId"
         :value="labelId"
       >
-
       <div class="dropdown">
         <button
+          v-bind:data-labels="labelsPath"
           class="dropdown-menu-toggle wide js-label-select js-multiselect js-board-config-modal"
           data-field-name="label_id[]"
-          v-bind:data-labels="labelsPath"
           data-toggle="dropdown"
           type="button"
         >
           <span class="dropdown-toggle-text">
             Label
-          </span> <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"></i>
+          </span>
+          <i
+            aria-hidden="true"
+            class="fa fa-chevron-down"
+            data-hidden="true"
+          />
         </button>
         <div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-labels dropdown-menu-selectable">
           <div class="dropdown-input">
             <input
               autocomplete="off"
-              class="dropdown-input-field" id=""
+              class="dropdown-input-field"
               placeholder="Search"
               type="search"
-              value=""
             >
-            <i aria-hidden="true" class="fa fa-search dropdown-input-search" data-hidden="true"></i>
-            <i aria-hidden="true" class="fa fa-times dropdown-input-clear js-dropdown-input-clear" data-hidden="true" role="button"></i>
+            <i
+              aria-hidden="true"
+              class="fa fa-search dropdown-input-search"
+              data-hidden="true"
+            />
+            <i
+              aria-hidden="true"
+              class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
+              data-hidden="true"
+              role="button"
+            />
           </div>
           <div class="dropdown-content"></div>
           <div class="dropdown-loading">
-            <i aria-hidden="true" class="fa fa-spinner fa-spin" data-hidden="true"></i>
+            <loading-icon />
           </div>
         </div>
       </div>
@@ -111,29 +130,12 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      isOpen: false,
-      loading: true,
-    };
-  },
   components: {
     loadingIcon,
   },
   computed: {
     labelIds() {
       return this.selected.map(label => label.id).join(',');
-    },
-  },
-  methods: {
-    open() {
-      this.isOpen = true;
-    },
-    close() {
-      this.isOpen = false;
-    },
-    toggle() {
-      this.isOpen = !this.isOpen;
     },
   },
   mounted() {

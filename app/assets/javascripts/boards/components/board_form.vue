@@ -1,5 +1,4 @@
 <template>
-        <!-- TODO: handle Delete button with btn-danger class and method delete to link_to current_board_path(board) -->
   <popup-dialog
     v-show="currentPage"
     :title="title"
@@ -9,7 +8,7 @@
     @toggle="cancel"
     @submit="submit"
   >
-    <p v-if="currentPage === 'delete'">
+    <p v-if="isDeleteForm">
       Are you sure you want to delete this board?
     </p>
     <form
@@ -20,7 +19,10 @@
         v-if="!readonly"
         class="append-bottom-20"
       >
-        <label class="form-section-title label-light" for="board-new-name">
+        <label
+          class="form-section-title label-light"
+          for="board-new-name"
+        >
           Board name
         </label>
         <input
@@ -48,13 +50,11 @@
             {{ expandButtonText }}
           </button>
         </div>
+        <p class="light append-bottom-10">
+          Board scope affects which issues are displayed for anyone who visits this board
+        </p>
         <div v-if="!collapseScope || expanded">
-          <p class="light append-bottom-10">
-            Board scope affects which issues are displayed for anyone who visits this board
-          </p>
-
-          <form-block
-          >
+          <form-block>
             <div
               v-if="board.milestone"
               slot="currentValue"
@@ -66,7 +66,7 @@
               :milestone-path="milestonePath"
               v-model="board.milestone_id"
               title="Milestone"
-              defaultText="Any milestone"
+              default-text="Any milestone"
               :can-edit="canAdminBoard"
             />
           </form-block>
@@ -98,18 +98,13 @@
             />
           </form-block>
 
-          <form-block
-            title="Weight"
-            defaultText="Any weight"
-            field-name="'board_filter[weight]'"
-            :can-edit="canAdminBoard"
-          >
+          <form-block>
             <board-weight-select
               :board="board"
               :weights="weightsArray"
               v-model="board.weight"
               title="Weight"
-              defaultText="Any weight"
+              default-text="Any weight"
               :can-edit="canAdminBoard"
             />
           </form-block>
@@ -198,29 +193,38 @@ export default Vue.extend({
     UserSelect,
   },
   computed: {
+    isNewForm() {
+      return this.currentPage === 'new';
+    },
+    isDeleteForm() {
+      return this.currentPage === 'delete';
+    },
+    isEditForm() {
+      return this.currentPage === 'edit';
+    },
     buttonText() {
-      if (this.currentPage === 'new') {
+      if (this.isNewForm) {
         return 'Create';
       }
 
-      if (this.currentPage === 'delete') {
+      if (this.isDeleteForm) {
         return 'Delete';
       }
 
       return 'Save';
     },
     buttonKind() {
-      if (this.currentPage === 'delete') {
+      if (this.isDeleteForm) {
         return 'danger';
       }
       return 'info';
     },
     title() {
-      if (this.currentPage === 'new') {
+      if (this.isNewForm) {
         return 'Create new board';
       }
 
-      if (this.currentPage === 'delete') {
+      if (this.isDeleteForm) {
         return 'Delete board';
       }
 
@@ -237,7 +241,7 @@ export default Vue.extend({
       return this.expanded ? 'Collapse' : 'Expand';
     },
     collapseScope() {
-      return this.currentPage === 'new';
+      return this.isNewForm;
     },
     readonly() {
       return !this.canAdminBoard;
@@ -248,10 +252,10 @@ export default Vue.extend({
   },
   methods: {
     submit() {
-      if (this.currentPage === 'delete') {
+      if (this.isDeleteForm) {
         this.submitDisabled = true;
         this.$http.delete(this.boardPath)
-          .then(({redirect_to}) => {
+          .then(() => {
             gl.utils.visitUrl(Store.rootPath);
           })
           .catch(() => {
@@ -272,17 +276,21 @@ export default Vue.extend({
     cancel() {
       Store.state.currentPage = '';
     },
+    resetFormState() {
+      if (this.currentBoard && Object.keys(this.currentBoard).length && this.isEditForm) {
+        Store.updateBoardConfig(this.currentBoard);
+      } else if (this.isNewForm) {
+        // Clear the form when we open the "New board" modal
+        Store.updateBoardConfig();
+      }
+
+      if (!this.board.labels) {
+        this.board.labels = [];
+      }
+    },
   },
   mounted() {
-    if (this.currentBoard && Object.keys(this.currentBoard).length && this.currentPage !== 'new') {
-      Store.updateBoardConfig(this.currentBoard);
-    } else {
-      Store.updateBoardConfig();
-    }
-
-    if (!this.board.labels) {
-      this.board.labels = [];
-    }
+    this.resetFormState();
 
     if (this.$refs.name) {
       this.$refs.name.focus();

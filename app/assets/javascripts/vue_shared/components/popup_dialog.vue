@@ -60,7 +60,9 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <slot name="header">
-            <h4 class="modal-title pull-left">{{this.title}}</h4>
+            <h4 class="modal-title pull-left">
+              {{this.title}}
+            </h4>
             <button
               type="button"
               class="close pull-right"
@@ -83,13 +85,15 @@ export default {
               class="btn pull-left"
               :disabled="submitDisabled"
               :class="btnKindClass"
-              @click="emitSubmit(true)">
+              @click="emitSubmit(true)"
+            >
                 {{primaryButtonLabel}}
             </button>
             <button
               type="button"
               class="btn btn-default pull-right"
-              @click="close">
+              @click="close"
+            >
                 Cancel
             </button>
           </div>
@@ -101,6 +105,6 @@ export default {
   <div
     class="modal-backdrop fade in"
     @click="close"
-  ></div>
+  />
 </div>
 </template>

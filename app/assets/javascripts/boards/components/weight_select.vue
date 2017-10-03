@@ -37,7 +37,8 @@
             @click.prevent.stop="selectWeight(weight)">
             <i
               class="fa fa-check"
-              v-if="weight === value"></i>
+              v-if="weight === value"
+            />
             {{ weight }}
           </a>
         </li>
@@ -62,7 +63,7 @@ export default {
       required: true,
     },
     value: {
-      type: Number,
+      type: [Number, String],
       required: false,
     },
     defaultText: {
@@ -94,7 +95,7 @@ export default {
   computed: {
     weight() {
       if (parseInt(this.board.weight, 10) === 0) {
-        return 'No weight';
+        return 'No Weight';
       }
       return this.board.weight || 'Any weight';
     },

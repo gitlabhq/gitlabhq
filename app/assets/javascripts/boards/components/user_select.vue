@@ -1,5 +1,8 @@
 <template>
-  <div class="block" :class="wrapperClass">
+  <div
+    class="block"
+    :class="wrapperClass"
+  >
     <div class="title append-bottom-10">
       {{ label }}
       <a
@@ -25,7 +28,6 @@
           <div class="bold author">
             {{ selected.name }}
           </div>
-
           <div class="username">
             @{{ selected.username }}
           </div>
@@ -36,8 +38,10 @@
       </div>
     </div>
 
-    <div class="selectbox" style="display: none">
-
+    <div
+      class="selectbox"
+      style="display: none"
+    >
       <div class="dropdown">
         <button
           class="dropdown-menu-toggle wide js-user-search js-author-search js-save-user-data js-board-config-modal"
@@ -55,23 +59,36 @@
         >
           <span class="dropdown-toggle-text">
             {{ placeholderText }}
-          </span> <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"></i>
+          </span>
+          <i
+            aria-hidden="true"
+            class="fa fa-chevron-down"
+            data-hidden="true"
+          />
         </button>
         <div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-user dropdown-menu-selectable dropdown-menu-author">
           <div class="dropdown-input">
             <input
               autocomplete="off"
-              class="dropdown-input-field" id=""
+              class="dropdown-input-field"
               placeholder="Search"
               type="search"
-              value=""
             >
-            <i aria-hidden="true" class="fa fa-search dropdown-input-search" data-hidden="true"></i>
-            <i aria-hidden="true" class="fa fa-times dropdown-input-clear js-dropdown-input-clear" data-hidden="true" role="button"></i>
+            <i
+              aria-hidden="true"
+              class="fa fa-search dropdown-input-search"
+              data-hidden="true"
+            />
+            <i
+              aria-hidden="true"
+              class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
+              data-hidden="true"
+              role="button"
+            />
           </div>
           <div class="dropdown-content"></div>
           <div class="dropdown-loading">
-            <i aria-hidden="true" class="fa fa-spinner fa-spin" data-hidden="true"></i>
+            <loading-icon />
           </div>
         </div>
       </div>
@@ -81,6 +98,7 @@
 
 <script>
 import UsersSelect from '~/users_select';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
@@ -134,6 +152,7 @@ export default {
     },
   },
   components: {
+    loadingIcon,
     UserAvatarImage,
   },
   computed: {

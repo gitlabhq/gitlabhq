@@ -39,7 +39,7 @@ class FilteredSearchVisualTokens {
 
   static createVisualTokenElementHTML(canEdit = true) {
     return `
-      <div class="selectable" role="button" ${canEdit ? '' : 'style="display: none;"'}>
+      <div class="selectable ${canEdit ? '' : 'hidden'}" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
