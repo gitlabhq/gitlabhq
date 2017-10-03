@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CreateLfsPointer < ActiveRecord::Migration
+class CreateProcessedLfsRefs < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -26,11 +26,10 @@ class CreateLfsPointer < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    create_table :lfs_pointers do |t|
+    create_table :processed_lfs_refs do |t|
       t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }
-      t.string :blob_oid, null: false
-      t.string :lfs_oid, null: false
-      t.index :blob_oid # Used to filter on removed blobs
+      t.datetime_with_timezone :updated_at, null: false
+      t.string :ref, null: false
     end
   end
 end

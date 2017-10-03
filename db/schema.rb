@@ -843,12 +843,12 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "lfs_objects_projects", ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
 
   create_table "lfs_pointers", force: :cascade do |t|
-    t.string "blob_oid"
-    t.string "lfs_oid"
-    t.integer "project_id"
-    t.string "timestamps"
+    t.integer "project_id", null: false
+    t.string "blob_oid", null: false
+    t.string "lfs_oid", null: false
   end
 
+  add_index "lfs_pointers", ["blob_oid"], name: "index_lfs_pointers_on_blob_oid", using: :btree
   add_index "lfs_pointers", ["project_id"], name: "index_lfs_pointers_on_project_id", using: :btree
 
   create_table "lists", force: :cascade do |t|
@@ -1204,6 +1204,14 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
+  create_table "processed_lfs_refs", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "ref", null: false
+  end
+
+  add_index "processed_lfs_refs", ["project_id"], name: "index_processed_lfs_refs_on_project_id", using: :btree
+
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "project_id"
@@ -1413,15 +1421,6 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
-  create_table "reference_changes", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.string "newrev"
-    t.boolean "processed", default: false, null: false
-    t.string "timestamps"
-  end
-
-  add_index "reference_changes", ["project_id"], name: "index_reference_changes_on_project_id", using: :btree
-
   create_table "releases", force: :cascade do |t|
     t.string "tag"
     t.text "description"
@@ -1623,6 +1622,14 @@ ActiveRecord::Schema.define(version: 20171026082505) do
 
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
+  create_table "unprocessed_lfs_pushes", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "ref", null: false
+    t.string "newrev", null: false
+  end
+
+  add_index "unprocessed_lfs_pushes", ["project_id"], name: "index_unprocessed_lfs_pushes_on_project_id", using: :btree
 
   create_table "uploads", force: :cascade do |t|
     t.integer "size", limit: 8, null: false
@@ -1856,7 +1863,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
-  add_foreign_key "lfs_pointers", "projects"
+  add_foreign_key "lfs_pointers", "projects", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
@@ -1875,6 +1882,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "processed_lfs_refs", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "projects", on_delete: :cascade
   add_foreign_key "project_authorizations", "users", on_delete: :cascade
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
@@ -1890,7 +1898,6 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
-  add_foreign_key "reference_changes", "projects"
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
@@ -1901,6 +1908,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "unprocessed_lfs_pushes", "projects", on_delete: :cascade
   add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade

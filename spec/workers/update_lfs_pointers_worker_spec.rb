@@ -5,7 +5,7 @@ describe UpdateLfsPointersWorker do
 
   describe '#perform' do
     let(:project) { create(:project, :repository) }
-    let(:reference_change) { create(:reference_change, project: project) }
+    let!(:unprocessed_lfs_push) { create(:unprocessed_lfs_push, project: project) }
     let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
     before do
@@ -13,7 +13,7 @@ describe UpdateLfsPointersWorker do
     end
 
     def perform
-      subject.perform(reference_change.id)
+      subject.perform(unprocessed_lfs_push.id)
     end
 
     context 'with LFS not enabled' do
@@ -39,8 +39,12 @@ describe UpdateLfsPointersWorker do
         perform
       end
 
-      it 'marks the updated reference as processed' do
-        expect { perform }.to change { reference_change.reload.processed }.from(false).to(true)
+      it 'removes the updated reference from unprocessed_lfs_pushes' do
+        expect { perform }.to change { project.reload.unprocessed_lfs_pushes.count }.by(-1)
+      end
+
+      it 'creates a ProcessedLfsRef for the reference' do
+        expect { perform }.to change { project.processed_lfs_refs.count }.by(1)
       end
 
       it 'creates a LfsPointer record for each new blob' do
@@ -48,24 +52,22 @@ describe UpdateLfsPointersWorker do
       end
 
       it 'looks up LFS pointers for the new ref' do
-        expect(Gitlab::Git::RevList).to receive(:new).with(hash_including(newrev: reference_change.newrev)).and_call_original
+        expect(Gitlab::Git::RevList).to receive(:new).with(hash_including(newrev: unprocessed_lfs_push.newrev)).and_call_original
 
         perform
       end
 
-      it 'scans all objects in the given ref on first run' do
-        expect_any_instance_of(Gitlab::Git::LfsChanges).to receive(:new_pointers).with(not_in: []).and_call_original
+      it 'scans all objects in the project on first run' do
+        expect_any_instance_of(Gitlab::Git::LfsChanges).to receive(:all_pointers).and_call_original
 
         perform
       end
 
       context 'with processed refrences' do
-        let(:processed_reference) { 'fa15ebeefacce55ed4dec0dea5decafbeefba115' }
+        let(:processed_reference) { 'some_feature' }
 
         before do
-          create(:reference_change, project: project,
-                                    newrev: processed_reference,
-                                    processed: true)
+          create(:processed_lfs_ref, project: project, ref: processed_reference)
         end
 
         it 'ignores objects reachable from processed refs' do

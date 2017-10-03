@@ -178,7 +178,8 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :lfs_pointers
-  has_many :reference_changes
+  has_many :unprocessed_lfs_pushes
+  has_many :processed_lfs_refs
   has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains

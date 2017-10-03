@@ -51,5 +51,11 @@ describe RemoveUnreferencedLfsObjectsWorker do
       expect(referenced_lfs_object1.reload).to be_present
       expect(LfsObject.where(id: referenced_lfs_object2.id)).to be_empty
     end
+
+    it 'removes LFS files from disk storage' do
+      expect_any_instance_of(ActiveRecord::Relation).to receive(:destroy_all).and_call_original
+
+      worker.perform
+    end
   end
 end

@@ -2,17 +2,16 @@ class UpdateLfsPointersWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  attr_reader :reference_change
+  attr_reader :unprocessed_lfs_push
 
-  def perform(reference_change_id)
-    @reference_change = ReferenceChange.find(reference_change_id)
+  def perform(unprocessed_lfs_push_id)
+    @unprocessed_lfs_push = UnprocessedLfsPush.find(unprocessed_lfs_push_id)
 
     return unless project.lfs_enabled?
-    return if @reference_change.processed?
 
     create_lfs_pointer_records
 
-    reference_change.update!(processed: true)
+    unprocessed_lfs_push.processed!
   end
 
   private
@@ -24,13 +23,21 @@ class UpdateLfsPointersWorker
   end
 
   def new_lfs_pointers
-    processed_references = project.reference_changes.processed.pluck(:newrev)
+    processed_references = project.processed_lfs_refs
+                                  .order(updated_at: :desc)
+                                  .limit(100)
+                                  .pluck(:ref)
 
-    lfs_changes = Gitlab::Git::LfsChanges.new(project.repository, reference_change.newrev)
-    lfs_changes.new_pointers(not_in: processed_references)
+    lfs_changes = Gitlab::Git::LfsChanges.new(project.repository, unprocessed_lfs_push.newrev)
+
+    if processed_references.present?
+      lfs_changes.new_pointers(not_in: processed_references)
+    else
+      lfs_changes.all_pointers
+    end
   end
 
   def project
-    reference_change.project
+    unprocessed_lfs_push.project
   end
 end

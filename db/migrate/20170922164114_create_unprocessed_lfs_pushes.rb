@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CreateReferenceChange < ActiveRecord::Migration
+class CreateUnprocessedLfsPushes < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -26,11 +26,10 @@ class CreateReferenceChange < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    create_table :reference_changes do |t|
-      t.references :project, index: true, foreign_key: true, null: false
-      t.string :newrev
-      t.boolean :processed, default: false, null: false
-      t.string :timestamps
+    create_table :unprocessed_lfs_pushes do |t|
+      t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }
+      t.string :ref, null: false
+      t.string :newrev, null: false #TODO: We can probably remove this and use the ref instead. Maybe only use this for deletions and force pushes?
     end
   end
 end

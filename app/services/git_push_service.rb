@@ -123,10 +123,10 @@ class GitPushService < BaseService
     return unless @project.lfs_enabled?
     return unless @project.lfs_objects.exists?
 
-    reference_change = ReferenceChange.create!(project: @project,
-                                               newrev: params[:newrev])
+    unprocessed_lfs_push = @project.unprocessed_lfs_pushes.create!(ref: params[:ref],
+                                                                   newrev: params[:newrev])
 
-    UpdateLfsPointersWorker.perform_async(reference_change.id)
+    UpdateLfsPointersWorker.perform_async(unprocessed_lfs_push.id)
   end
 
   protected
