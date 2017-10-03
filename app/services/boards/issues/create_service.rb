@@ -10,10 +10,17 @@ module Boards
       end
 
       def execute
-        create_issue(params.merge(label_ids: [list.label_id]))
+        create_issue(creation_params)
       end
 
       private
+
+      def creation_params
+        params.merge(label_ids: [list.label_id, *board.label_ids],
+                     weight: board.weight,
+                     milestone_id: board.milestone_id,
+                     assignee_ids: [board.assignee_id])
+      end
 
       def board
         @board ||= parent.boards.find(params.delete(:board_id))
