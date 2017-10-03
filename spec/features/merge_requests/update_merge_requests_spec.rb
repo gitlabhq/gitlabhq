@@ -127,7 +127,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
   end
 
   def click_update_merge_requests_button
-    find('.update-selected-issues').click
+    find('.update-selected-issues').trigger('click')
     wait_for_requests
   end
 end

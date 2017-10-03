@@ -1,0 +1,5 @@
+---
+title: Whitelist authorized_keys.lock in the gitlab:check rake task
+merge_request: 14624
+author:
+type: fixed

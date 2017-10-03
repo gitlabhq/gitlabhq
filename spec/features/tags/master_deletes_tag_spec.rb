@@ -35,15 +35,30 @@ feature 'Master deletes tag' do
   end
 
   context 'when pre-receive hook fails', js: true do
-    before do
-      allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-        .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
+    context 'when Gitaly operation_user_delete_tag feature is enabled' do
+      before do
+        allow_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rm_tag)
+          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
+      end
+
+      scenario 'shows the error message' do
+        delete_first_tag
+
+        expect(page).to have_content('Do not delete tags')
+      end
     end
 
-    scenario 'shows the error message' do
-      delete_first_tag
+    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+      before do
+        allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
+          .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')
+      end
 
-      expect(page).to have_content('Do not delete tags')
+      scenario 'shows the error message' do
+        delete_first_tag
+
+        expect(page).to have_content('Do not delete tags')
+      end
     end
   end
 

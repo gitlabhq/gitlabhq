@@ -404,6 +404,7 @@ docs lint:
   before_script: []
   script:
     - scripts/lint-doc.sh
+    - scripts/lint-changelog-yaml
     - mv doc/ /nanoc/content/
     - cd /nanoc
     # Build HTML from Markdown

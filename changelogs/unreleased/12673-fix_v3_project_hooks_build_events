@@ -1,4 +1,0 @@
----
-title: "Fix v3 api project_hooks POST and PUT operations for build_events"
-merge_request: 12673
-author: Richard Clamp

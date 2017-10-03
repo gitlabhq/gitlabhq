@@ -3,15 +3,12 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../vue_shared/translate';
-import LimitWarningComponent from './components/limit_warning_component';
-import './components/stage_code_component';
-import './components/stage_issue_component';
-import './components/stage_plan_component';
-import './components/stage_production_component';
-import './components/stage_review_component';
-import './components/stage_staging_component';
-import './components/stage_test_component';
-import './components/total_time_component';
+import stageCodeComponent from './components/stage_code_component.vue';
+import stagePlanComponent from './components/stage_plan_component.vue';
+import stageComponent from './components/stage_component.vue';
+import stageReviewComponent from './components/stage_review_component.vue';
+import stageStagingComponent from './components/stage_staging_component.vue';
+import stageTestComponent from './components/stage_test_component.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
 
@@ -47,13 +44,13 @@ $(() => {
       },
     },
     components: {
-      'stage-issue-component': gl.cycleAnalytics.StageIssueComponent,
-      'stage-plan-component': gl.cycleAnalytics.StagePlanComponent,
-      'stage-code-component': gl.cycleAnalytics.StageCodeComponent,
-      'stage-test-component': gl.cycleAnalytics.StageTestComponent,
-      'stage-review-component': gl.cycleAnalytics.StageReviewComponent,
-      'stage-staging-component': gl.cycleAnalytics.StageStagingComponent,
-      'stage-production-component': gl.cycleAnalytics.StageProductionComponent,
+      'stage-issue-component': stageComponent,
+      'stage-plan-component': stagePlanComponent,
+      'stage-code-component': stageCodeComponent,
+      'stage-test-component': stageTestComponent,
+      'stage-review-component': stageReviewComponent,
+      'stage-staging-component': stageStagingComponent,
+      'stage-production-component': stageComponent,
     },
     created() {
       this.fetchCycleAnalyticsData();
@@ -134,8 +131,4 @@ $(() => {
       },
     },
   });
-
-  // Register global components
-  Vue.component('limit-warning', LimitWarningComponent);
-  Vue.component('total-time', gl.cycleAnalytics.TotalTimeComponent);
 });

@@ -14,7 +14,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key = Keys::CreateService.new(current_user, key_params).execute
 
     if @key.persisted?
-      redirect_to profile_key_path(@key)
+      redirect_to_profile_key_path
     else
       @keys = current_user.keys.select(&:persisted?)
       render :index
@@ -48,6 +48,12 @@ class Profiles::KeysController < Profiles::ApplicationController
     else
       return render_404
     end
+  end
+
+  protected
+
+  def redirect_to_profile_key_path
+    redirect_to profile_key_path(@key)
   end
 
   private

@@ -7,7 +7,7 @@
 
 .issuable-warning-icon {
   color: $orange-600;
-  background-color: $orange-50;
+  background-color: $orange-100;
   border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 $btn-side-margin 0 0;
@@ -221,14 +221,14 @@
   top: $new-navbar-height;
   bottom: 0;
   right: 0;
-  transition: width .3s;
+  transition: width $right-sidebar-transition-duration;
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$new-navbar-height});
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

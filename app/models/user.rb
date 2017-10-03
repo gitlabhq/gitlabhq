@@ -60,7 +60,7 @@ class User < ActiveRecord::Base
     lease = Gitlab::ExclusiveLease.new("user_update_tracked_fields:#{id}", timeout: 1.hour.to_i)
     return unless lease.try_obtain
 
-    Users::UpdateService.new(self).execute(validate: false)
+    Users::UpdateService.new(self, user: self).execute(validate: false)
   end
 
   attr_accessor :force_random_password
@@ -129,6 +129,8 @@ class User < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :custom_attributes, class_name: 'UserCustomAttribute'
 
   #
   # Validations
@@ -526,8 +528,8 @@ class User < ActiveRecord::Base
   def update_emails_with_primary_email
     primary_email_record = emails.find_by(email: email)
     if primary_email_record
-      Emails::DestroyService.new(self, email: email).execute
-      Emails::CreateService.new(self, email: email_was).execute
+      Emails::DestroyService.new(self, user: self, email: email).execute
+      Emails::CreateService.new(self, user: self, email: email_was).execute
     end
   end
 
@@ -690,7 +692,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    if identities.loaded?
+      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+    else
+      identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    end
   end
 
   def ldap_identity
@@ -1000,7 +1006,7 @@ class User < ActiveRecord::Base
     if attempts_exceeded?
       lock_access! unless access_locked?
     else
-      Users::UpdateService.new(self).execute(validate: false)
+      Users::UpdateService.new(self, user: self).execute(validate: false)
     end
   end
 
@@ -1059,6 +1065,12 @@ class User < ActiveRecord::Base
 
   def read_only_attribute?(attribute)
     user_synced_attributes_metadata&.read_only?(attribute)
+  end
+
+  # override, from Devise
+  def lock_access!
+    Gitlab::AppLogger.info("Account Locked: username=#{username}")
+    super
   end
 
   protected
@@ -1186,7 +1198,7 @@ class User < ActiveRecord::Base
       &creation_block
     )
 
-    Users::UpdateService.new(user).execute(validate: false)
+    Users::UpdateService.new(user, user: user).execute(validate: false)
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)

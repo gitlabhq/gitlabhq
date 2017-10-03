@@ -138,6 +138,14 @@ describe GpgKey do
       expect(gpg_key.verified?).to be_truthy
       expect(gpg_key.verified_and_belongs_to_email?('bette.cartwright@example.com')).to be_truthy
     end
+
+    it 'returns true if one of the email addresses in the key belongs to the user and case-insensitively matches the provided email' do
+      user = create :user, email: 'bette.cartwright@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?('Bette.Cartwright@example.com')).to be_truthy
+    end
   end
 
   describe '#revoke' do

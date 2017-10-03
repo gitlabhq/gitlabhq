@@ -1,23 +1,27 @@
 <script>
+/* global LineHighlighter */
+
 import Store from '../stores/repo_store';
 
 export default {
   data: () => Store,
-  mounted() {
-    this.highlightFile();
-  },
   computed: {
     html() {
       return this.activeFile.html;
     },
   },
-
   methods: {
     highlightFile() {
       $(this.$el).find('.file-content').syntaxHighlight();
     },
   },
-
+  mounted() {
+    this.highlightFile();
+    this.lineHighlighter = new LineHighlighter({
+      fileHolderSelector: '.blob-viewer-container',
+      scrollFileHolder: true,
+    });
+  },
   watch: {
     html() {
       this.$nextTick(() => {
@@ -45,7 +49,7 @@ export default {
     v-else
     class="vertical-center render-error">
     <p class="text-center">
-      The source could not be displayed because a rendering error occured. You can <a :href="activeFile.raw_path">download</a> it instead.
+      The source could not be displayed because a rendering error occurred. You can <a :href="activeFile.raw_path">download</a> it instead.
     </p>
   </div>
 </div>
