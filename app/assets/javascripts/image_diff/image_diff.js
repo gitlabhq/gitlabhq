@@ -21,14 +21,6 @@ export default class ImageDiff {
     this.bindEvents();
   }
 
-  getImageEl() {
-    return this.imageEl;
-  }
-
-  getImageFrameEl() {
-    return this.imageFrameEl;
-  }
-
   bindEvents() {
     this.imageClickedWrapper = this.imageClicked.bind(this);
     this.imageBlurredWrapper = this.imageBlurred.bind(this);
@@ -38,10 +30,10 @@ export default class ImageDiff {
     this.renderBadgesWrapper = this.renderBadges.bind(this);
 
     // Render badges
-    if (isImageLoaded(this.getImageEl())) {
+    if (isImageLoaded(this.imageEl)) {
       this.renderBadges();
     } else {
-      this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
+      this.imageEl.addEventListener('load', this.renderBadgesWrapper);
     }
 
     // jquery makes the event delegation here much simpler
@@ -77,11 +69,11 @@ export default class ImageDiff {
     const el = customEvent.currentTarget;
 
     imageDiffHelper.setPositionDataAttribute(el, selection.actual);
-    imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), selection.browser);
+    imageDiffHelper.showCommentIndicator(this.imageFrameEl, selection.browser);
   }
 
   imageBlurred() {
-    return imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
+    return imageDiffHelper.removeCommentIndicator(this.imageFrameEl);
   }
 
   renderBadges() {
@@ -89,7 +81,7 @@ export default class ImageDiff {
 
     [...discussionsEls].forEach((discussionEl, index) => {
       const imageBadge = imageDiffHelper
-        .generateBadgeFromDiscussionDOM(this.getImageFrameEl(), discussionEl);
+        .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
 
       this.imageBadges.push(imageBadge);
 
@@ -99,13 +91,13 @@ export default class ImageDiff {
       };
 
       if (this.renderCommentBadge) {
-        imageDiffHelper.addImageCommentBadge(this.getImageFrameEl(), options);
+        imageDiffHelper.addImageCommentBadge(this.imageFrameEl, options);
       } else {
         const numberBadgeOptions = Object.assign(options, {
           badgeText: index + 1,
         });
 
-        imageDiffHelper.addImageBadge(this.getImageFrameEl(), numberBadgeOptions);
+        imageDiffHelper.addImageBadge(this.imageFrameEl, numberBadgeOptions);
       }
     });
   }
@@ -120,14 +112,14 @@ export default class ImageDiff {
         width,
         height,
       },
-      imageEl: this.getImageFrameEl().querySelector('img'),
+      imageEl: this.imageFrameEl.querySelector('img'),
       noteId,
       discussionId,
     });
 
     this.imageBadges.push(imageBadge);
 
-    imageDiffHelper.addImageBadge(this.getImageFrameEl(), {
+    imageDiffHelper.addImageBadge(this.imageFrameEl, {
       coordinate: imageBadge.browser,
       badgeText,
       noteId,
@@ -147,7 +139,7 @@ export default class ImageDiff {
   removeBadge(event) {
     const { badgeNumber } = event.detail;
     const indexToRemove = badgeNumber - 1;
-    const imageBadgeEls = this.getImageFrameEl().querySelectorAll('.badge');
+    const imageBadgeEls = this.imageFrameEl.querySelectorAll('.badge');
 
     if (this.imageBadges.length !== badgeNumber) {
       // Cascade badges count numbers for (avatar badges + image badges)
