@@ -59,6 +59,12 @@
                     continuePolling();
                   } else {
                     this.isMakingRequest = false;
+
+                    if (res.merge_error.length) {
+                      this.rebasingError = res.merge_error;
+                      Flash('Something went wrong. Please try again.');
+                    }
+
                     eventHub.$emit('MRWidgetUpdateRequested');
                     stopPolling();
                   }
