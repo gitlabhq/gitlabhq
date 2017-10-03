@@ -1,10 +1,8 @@
-# Defines a specific location, identified by paths and line numbers,
+# Defines a specific location, identified by paths line numbers and image coordinates,
 # within a specific diff, identified by start, head and base commit ids.
 module Gitlab
   module Diff
     class Position
-      FORMATTER_CLASS_SUFFIX = "_formatter".freeze
-
       attr_accessor :formatter
 
       delegate :old_path,
@@ -14,6 +12,10 @@ module Gitlab
                :head_sha,
                :position_type, to: :formatter
 
+      # A position can belong to a text line or to an image coordinate
+      # it depends of the position_type argument.
+      # Text position will have: new_line and old_line
+      # Image position will have: width, height, x_axis, y_axis
       def initialize(attrs = {})
         @formatter = get_formatter_class(attrs[:position_type]).new(attrs)
       end
@@ -124,9 +126,13 @@ module Gitlab
 
       def get_formatter_class(type)
         type ||= "text"
-        class_name = (type.to_s + FORMATTER_CLASS_SUFFIX).classify
 
-        Gitlab::Diff::Formatters.const_get(class_name)
+        case type
+        when 'image'
+          Gitlab::Diff::Formatters::ImageFormatter
+        else
+          Gitlab::Diff::Formatters::TextFormatter
+        end
       end
     end
   end

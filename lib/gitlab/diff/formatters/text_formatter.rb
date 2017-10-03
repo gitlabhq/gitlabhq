@@ -34,8 +34,12 @@ module Gitlab
           end
         end
 
+        def position_type
+          "text"
+        end
+
         def ==(other)
-          self.class == other.class &&
+          other.is_a?(self.class) &&
             new_line == other.new_line &&
             old_line == other.old_line
         end

@@ -27,9 +27,6 @@ module Gitlab
           @base_sha = attrs[:base_sha]
           @start_sha = attrs[:start_sha]
           @head_sha  = attrs[:head_sha]
-
-          # Make sure older serialized positions have text as type
-          @position_type = attrs[:position_type] || "text"
         end
 
         def key
@@ -45,6 +42,10 @@ module Gitlab
             new_path: new_path,
             position_type: position_type
           }
+        end
+
+        def position_type
+          raise NotImplementedError
         end
 
         def ==(other)

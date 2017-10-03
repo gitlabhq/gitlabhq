@@ -123,7 +123,7 @@ module NotesActions
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
-    on_image = discussion.on_image? if discussion.diff_discussion?
+    on_image = discussion.on_image?
 
     if params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"

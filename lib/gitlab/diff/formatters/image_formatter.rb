@@ -28,8 +28,12 @@ module Gitlab
           super.merge(width: width, height: height, x_axis: x_axis, y_axis: y_axis)
         end
 
+        def position_type
+          "image"
+        end
+
         def ==(other)
-          self.class == other.class &&
+          other.is_a?(self.class) &&
             x_axis == other.x_axis &&
             y_axis == other.y_axis
         end

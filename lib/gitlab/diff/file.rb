@@ -27,17 +27,17 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(position_marker, position_type = "text")
+      def position(position_marker, position_type: :text)
         return unless diff_refs
 
         data = {
           diff_refs: diff_refs,
-          position_type: position_type,
+          position_type: position_type.to_s,
           old_path: old_path,
           new_path: new_path
         }
 
-        if position_type == "text"
+        if position_type == :text
           data.merge!(text_position_properties(position_marker))
         else
           data.merge!(image_position_properties(position_marker))
