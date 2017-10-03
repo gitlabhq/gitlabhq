@@ -123,7 +123,9 @@ module NotesActions
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
-    if params[:view] == 'parallel'
+    on_image = discussion.on_image? if discussion.diff_discussion?
+
+    if params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"
       locals =
         if params[:line_type] == 'old'
@@ -133,7 +135,6 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      on_image = discussion.on_image? if discussion.diff_discussion?
       @fresh_discussion = true
 
       locals = { discussions: [discussion], on_image: on_image }
