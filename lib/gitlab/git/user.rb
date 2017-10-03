@@ -7,6 +7,11 @@ module Gitlab
         new(gitlab_user.username, gitlab_user.name, gitlab_user.email, Gitlab::GlId.gl_id(gitlab_user))
       end
 
+      # TODO support the username field in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/628
+      def self.from_gitaly(gitaly_user)
+        new('', gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
+      end
+
       def initialize(username, name, email, gl_id)
         @username = username
         @name = name
