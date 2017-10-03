@@ -17,20 +17,20 @@
       %p.image-info.hide
         %span.meta-filesize= number_to_human_size(old_blob.size)
         |
-        %b W:
+        %strong W:
         %span.meta-width
         |
-        %b H:
+        %strong H:
         %span.meta-height
     %span.wrap
       = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_path, alt: diff_file.new_path }
       %p.image-info.hide
         %span.meta-filesize= number_to_human_size(blob.size)
         |
-        %b W:
+        %strong W:
         %span.meta-width
         |
-        %b H:
+        %strong H:
         %span.meta-height
 
   .swipe.view.hide
