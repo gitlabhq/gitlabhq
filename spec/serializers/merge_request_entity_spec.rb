@@ -11,16 +11,6 @@ describe MergeRequestEntity do
     described_class.new(resource, request: request).as_json
   end
 
-  it 'includes author' do
-    req = double('request')
-
-    author_payload = UserEntity
-      .represent(resource.author, request: req)
-      .as_json
-
-    expect(subject[:author]).to eq(author_payload)
-  end
-
   it 'includes pipeline' do
     req = double('request', current_user: user)
     pipeline = build_stubbed(:ci_pipeline)

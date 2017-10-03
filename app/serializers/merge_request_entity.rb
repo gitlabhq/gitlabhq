@@ -18,7 +18,6 @@ class MergeRequestEntity < IssuableEntity
   expose :closed_event, using: EventEntity
 
   # User entities
-  expose :author, using: UserEntity
   expose :merge_user, using: UserEntity
 
   # Diff sha's
@@ -26,7 +25,6 @@ class MergeRequestEntity < IssuableEntity
     merge_request.diff_head_sha if merge_request.diff_head_commit
   end
 
-  expose :merge_commit_sha
   expose :merge_commit_message
   expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
