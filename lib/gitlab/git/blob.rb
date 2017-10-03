@@ -66,8 +66,8 @@ module Gitlab
         end
 
         def batch_metadata(repository, blob_oids)
-          blob_references.map do |sha, path|
-            find(repository, sha, path, limit: LFS_POINTER_MAX_SIZE)
+          blob_oids.map do |sha|
+            find(repository, sha, "", limit: LFS_POINTER_MAX_SIZE)
           end
         end
 
