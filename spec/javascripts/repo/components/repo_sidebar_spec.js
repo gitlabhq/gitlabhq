@@ -23,8 +23,8 @@ describe('RepoSidebar', () => {
     expect(vm.$el.id).toEqual('sidebar');
     expect(vm.$el.classList.contains('sidebar-mini')).toBeFalsy();
     expect(thead.querySelector('.name').textContent).toEqual('Name');
-    expect(thead.querySelector('.last-commit').textContent).toEqual('Last Commit');
-    expect(thead.querySelector('.last-update').textContent).toEqual('Last Update');
+    expect(thead.querySelector('.last-commit').textContent).toEqual('Last commit');
+    expect(thead.querySelector('.last-update').textContent).toEqual('Last update');
     expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
     expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
