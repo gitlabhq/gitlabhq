@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'raven/transports/dummy'
+require_relative '../../../config/initializers/sentry'
 
 describe API::Helpers do
   include API::APIGuard::HelperMethods
@@ -476,7 +478,7 @@ describe API::Helpers do
       allow(exception).to receive(:backtrace).and_return(caller)
 
       expect_any_instance_of(self.class).to receive(:sentry_context)
-      expect(Raven).to receive(:capture_exception).with(exception)
+      expect(Raven).to receive(:capture_exception).with(exception, extra: {})
 
       handle_api_exception(exception)
     end
@@ -499,6 +501,30 @@ describe API::Helpers do
         expect(response).to have_gitlab_http_status(500)
         expect(json_response['message']).not_to include("undefined local variable or method `request'")
         expect(json_response['message']).to start_with("\nRuntimeError (Runtime Error!):")
+      end
+    end
+
+    context 'extra information' do
+      # Sentry events are an array of the form [auth_header, data, options]
+      let(:event_data) { Raven.client.transport.events.first[1] }
+
+      before do
+        stub_application_setting(
+          sentry_enabled: true,
+          sentry_dsn: "dummy://12345:67890@sentry.localdomain/sentry/42"
+        )
+        configure_sentry
+        Raven.client.configuration.encoding = 'json'
+      end
+
+      it 'sends the params, excluding confidential values' do
+        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
+        expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
+
+        get api('/projects', user), password: 'dont_send_this', other_param: 'send_this'
+
+        expect(event_data).to include('other_param=send_this')
+        expect(event_data).to include('password=********')
       end
     end
   end
