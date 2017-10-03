@@ -1,0 +1,5 @@
+---
+title: Adjust MRs being stuck on "process of being merged" for more than 2 hours
+merge_request:
+author:
+type: fixed

@@ -167,7 +167,7 @@ window.Build = (function () {
   Build.prototype.getBuildTrace = function () {
     return $.ajax({
       url: `${this.pageUrl}/trace.json`,
-      data: this.state,
+      data: { state: this.state },
     })
       .done((log) => {
         setCiStatusFavicon(`${this.pageUrl}/status.json`);

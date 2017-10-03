@@ -12,9 +12,9 @@ module Users
     def execute(validate: true, &block)
       yield(@user) if block_given?
 
-      assign_attributes(&block)
-
       user_exists = @user.persisted?
+
+      assign_attributes(&block)
 
       if @user.save(validate: validate)
         notify_success(user_exists)
@@ -31,15 +31,13 @@ module Users
       true
     end
 
-    protected
+    private
 
     def notify_success(user_exists)
       notify_new_user(@user, nil) unless user_exists
 
       success
     end
-
-    private
 
     def assign_attributes(&block)
       if @user.user_synced_attributes_metadata

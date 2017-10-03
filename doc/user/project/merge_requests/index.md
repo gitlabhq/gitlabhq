@@ -23,15 +23,15 @@ With GitLab merge requests, you can:
 - Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
 - Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
+- Enable [fast-forward merge requests](#fast-forward-merge-requests)
+- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
-- Enable [fast-forward merge requests](#fast-forward-merge-requests) (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch (available in GitLab Enterprise Edition Starter)
 - Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
 
 ## Use cases
@@ -145,6 +145,13 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
+## Fast-forward merge requests
+
+If you prefer a linear Git history and a way to accept merge requests without
+creating merge commits, you can configure this on a per-project basis.
+
+[Read more about fast-forward merge requests.](fast_forward_merge.md)
+
 ## Merge request approvals
 
 > Included in [GitLab Enterprise Edition Starter][products].
@@ -158,23 +165,12 @@ list of approvers that will need to approve every merge request in a project.
 
 ## Semi-linear history merge requests
 
-> Included in [GitLab Enterprise Edition Starter][products].
-
 A merge commit is created for every merge, but the branch is only merged if
 a fast-forward merge is possible. This ensures that if the merge request build
 succeeded, the target branch build will also succeed after merging.
 
 Navigate to a project's settings, select the **Merge commit with semi-linear
 history** option under **Merge Requests: Merge method** and save your changes.
-
-## Fast-forward merge requests
-
-> Included in [GitLab Enterprise Edition Starter][products].
-
-If you prefer a linear Git history and a way to accept merge requests without
-creating merge commits, you can configure this on a per-project basis.
-
-[Read more about fast-forward merge requests.](fast_forward_merge.md)
 
 ## Code Quality reports
 

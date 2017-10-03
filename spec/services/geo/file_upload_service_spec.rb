@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::FileUploadService do
-  let!(:node) { create(:geo_node, :current) }
+  set(:node) { create(:geo_node, :primary) }
 
   describe '#execute' do
     context 'user avatar' do

@@ -1,14 +1,10 @@
 require 'spec_helper'
 
 describe Geo::NodeStatusService do
-  let!(:primary)  { create(:geo_node, :primary) }
-  let(:secondary) { create(:geo_node) }
+  set(:primary)   { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
 
   subject { described_class.new }
-
-  before do
-    allow(described_class).to receive(:current_node) { primary }
-  end
 
   describe '#call' do
     it 'parses a 401 response' do
@@ -75,8 +71,6 @@ describe Geo::NodeStatusService do
     end
 
     it 'returns meaningful error message when primary uses incorrect db key' do
-      secondary # create it before mocking GeoNode#secret_access_key
-
       allow_any_instance_of(GeoNode).to receive(:secret_access_key).and_raise(OpenSSL::Cipher::CipherError)
 
       status = subject.call(secondary)
@@ -85,7 +79,7 @@ describe Geo::NodeStatusService do
     end
 
     it 'gracefully handles case when primary is deleted' do
-      primary.destroy
+      primary.destroy!
 
       status = subject.call(secondary)
 

@@ -1,7 +1,5 @@
 # Fast-forward merge requests
 
-> Included in [GitLab Enterprise Edition Starter][products].
-
 Retain a linear Git history and a way to accept merge requests without
 creating merge commits.
 

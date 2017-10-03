@@ -1,8 +1,14 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
+  include ::EE::GeoHelpers
+
   describe '#run!' do
-    let!(:geo_node) { create(:geo_node, :current) }
+    set(:geo_node) { create(:geo_node) }
+
+    before do
+      stub_current_geo_node(geo_node)
+    end
 
     it 'traps signals' do
       allow(subject).to receive(:exit?) { true }
@@ -125,15 +131,13 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
 
       it 'schedules a GeoRepositoryDestroyWorker when event node is the current node' do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
-
         expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(within(5.minutes).of(1.hour), geo_node.id)
 
         subject.run!
       end
 
       it 'does not schedule a GeoRepositoryDestroyWorker when event node is not the current node' do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(build(:geo_node))
+        stub_current_geo_node(build(:geo_node))
 
         expect(Geo::RepositoriesCleanUpWorker).not_to receive(:perform_in)
 
@@ -142,7 +146,6 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
     end
 
     context 'when node has namespace restrictions' do
-      let(:geo_node) { create(:geo_node, :current) }
       let(:group_1) { create(:group) }
       let(:group_2) { create(:group) }
       let(:project) { create(:project, group: group_1) }
