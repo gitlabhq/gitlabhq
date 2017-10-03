@@ -162,14 +162,17 @@ module Gitlab
           # if newrev is blank, the branch was deleted
           return if deletion? || !(commit_validation || validate_path_locks?)
 
-          commits.each do |commit|
-            if commit_validation
-              error = check_commit(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error if error
-            end
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commits.each do |commit|
+              if commit_validation
+                error = check_commit(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error if error
+              end
 
-            if error = check_commit_diff(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error
+              if error = check_commit_diff(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error
+              end
             end
           end
         end

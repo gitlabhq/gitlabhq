@@ -31,29 +31,39 @@ describe 'Service Desk Issue Tracker', js: true do
       let(:project_without_service_desk) { create(:project, :private, service_desk_enabled: false) }
 
       describe 'service desk info content' do
-        before do
-          project_without_service_desk.add_master(user)
-          visit service_desk_project_issues_path(project_without_service_desk)
+        context 'when user has permissions to edit project settings' do
+          before do
+            project_without_service_desk.add_master(user)
+            visit service_desk_project_issues_path(project_without_service_desk)
+          end
+
+          it 'displays the large info box' do
+            expect(page).to have_css('.empty-state')
+          end
+
+          it 'has a link to the documentation' do
+            expect(page).to have_link('Read more', href: help_page_path('user/project/service_desk'))
+          end
+
+          it 'does show a button configure service desk' do
+            expect(page).to have_link('Turn on Service Desk')
+          end
         end
 
-        it 'displays the large info box' do
-          expect(page).to have_css('.empty-state')
-        end
+        context 'when user does not have permission to edit project settings' do
+          before do
+            project_without_service_desk.add_guest(user)
+            visit service_desk_project_issues_path(project_without_service_desk)
+          end
 
-        it 'has a link to the documentation' do
-          expect(page).to have_link('Read more', href: help_page_path('user/project/service_desk'))
-        end
-
-        it 'does show a button configure service desk' do
-          expect(page).to have_link('Turn on Service Desk')
+          it 'does not show a button configure service desk' do
+            expect(page).not_to have_link('Turn on Service Desk')
+          end
         end
       end
     end
 
     context 'when service desk has been activated' do
-      before do
-      end
-
       context 'when there are no issues' do
         describe 'service desk info content' do
           before do

@@ -3,6 +3,8 @@ class PasswordsController < Devise::PasswordsController
   before_action :prevent_ldap_reset, only: [:create]
   before_action :throttle_reset,      only: [:create]
 
+  prepend EE::PasswordsController
+
   def edit
     super
     reset_password_token = Devise.token_generator.digest(

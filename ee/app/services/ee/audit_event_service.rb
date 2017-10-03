@@ -41,33 +41,6 @@ module EE
       self
     end
 
-    def for_deploy_key(key_title)
-      action = @details[:action]
-      author_name = @author.name
-
-      @details =
-        case action
-        when :destroy
-          {
-            remove: "deploy_key",
-            author_name: author_name,
-            target_id: key_title,
-            target_type: "DeployKey",
-            target_details: key_title
-          }
-        when :create
-          {
-            add: "deploy_key",
-            author_name: author_name,
-            target_id: key_title,
-            target_type: "DeployKey",
-            target_details: key_title
-          }
-        end
-
-      self
-    end
-
     def for_failed_login
       ip = @details[:ip_address]
       auth = @details[:with] || 'STANDARD'
@@ -82,6 +55,20 @@ module EE
       self
     end
 
+    def for_changes
+      @details =
+        {
+            change: @details[:as] || @details[:column],
+            from: @details[:from],
+            to: @details[:to],
+            author_name: @author.name,
+            target_id: @entity.id,
+            target_type: @entity.class,
+            target_details: @entity.name
+        }
+      self
+    end
+
     def security_event
       if admin_audit_log_enabled?
         add_security_event_admin_details!
@@ -89,35 +76,92 @@ module EE
         return super
       end
 
-      super if audit_events_enabled?
-    end
-
-    def add_security_event_admin_details!
-      @details.merge!(ip_address: @author.current_sign_in_ip,
-                      entity_path: @entity.full_path)
-    end
-
-    def audit_events_enabled?
-      return true unless @entity.respond_to?(:feature_available?)
-
-      @entity.feature_available?(:audit_events)
-    end
-
-    def admin_audit_log_enabled?
-      License.feature_available?(:admin_audit_log)
+      super if audit_events_enabled? || entity_audit_events_enabled?
     end
 
     def unauth_security_event
       return unless audit_events_enabled?
 
       @details.delete(:ip_address) unless admin_audit_log_enabled?
+      @details[:entity_path] = @entity&.full_path if admin_audit_log_enabled?
 
       SecurityEvent.create(
-        author_id: -1,
-        entity_id: -1,
+        author_id: @author.respond_to?(:id) ? @author.id : -1,
+        entity_id: @entity.respond_to?(:id) ? @entity.id : -1,
         entity_type: 'User',
         details: @details
       )
+    end
+
+    def entity_audit_events_enabled?
+      @entity.respond_to?(:feature_available?) && @entity.feature_available?(:audit_events)
+    end
+
+    def audit_events_enabled?
+      # Always log auth events. Log all other events if `extended_audit_events` is enabled
+      @details[:with] || License.feature_available?(:extended_audit_events)
+    end
+
+    def admin_audit_log_enabled?
+      License.feature_available?(:admin_audit_log)
+    end
+
+    def method_missing(method_sym, *arguments, &block)
+      super(method_sym, *arguments, &block) unless respond_to?(method_sym)
+
+      for_custom_model(method_sym.to_s.split('for_').last, *arguments)
+    end
+
+    def respond_to?(method, include_private = false)
+      method.to_s.start_with?('for_') || super
+    end
+
+    private
+
+    def for_custom_model(model, key_title)
+      action = @details[:action]
+      model_class = model.camelize
+      custom_message = @details[:custom_message]
+
+      @details =
+        case action
+        when :destroy
+          {
+              remove: model,
+              author_name: @author.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        when :create
+          {
+              add: model,
+              author_name: @author.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title
+          }
+        when :custom
+          {
+              custom_message: custom_message,
+              author_name: @author&.name,
+              target_id: key_title,
+              target_type: model_class,
+              target_details: key_title,
+              ip_address: @details[:ip_address]
+          }
+        end
+
+      self
+    end
+
+    def ip_address
+      @author&.current_sign_in_ip || @details[:ip_address]
+    end
+
+    def add_security_event_admin_details!
+      @details.merge!(ip_address: ip_address,
+                      entity_path: @entity.full_path)
     end
   end
 end

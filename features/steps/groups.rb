@@ -157,7 +157,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I see a new LDAP synchronization listed' do
-    expect(page).not_to have_content('No synchronizations yet')
+    expect(page).not_to have_content('No LDAP synchronizations')
     expect(page).to have_content('As Developer on ldap server')
   end
 

@@ -14,6 +14,7 @@
       "type": "object",
       "required": [
         "id",
+        "avatar_url",
         "description",
         "default_branch",
         "tag_list",
@@ -31,6 +32,7 @@
       ],
       "properties": {
         "id": { "type": "integer" },
+        "avatar_url": { "type": ["string", "null"] },
         "description": { "type": ["string", "null"] },
         "default_branch": { "type": ["string", "null"] },
         "tag_list": { "type": "array" },

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 16:26+0200\n"
-"PO-Revision-Date: 2017-09-27 16:26+0200\n"
+"POT-Creation-Date: 2017-10-02 15:48-0400\n"
+"PO-Revision-Date: 2017-10-02 15:48-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -83,10 +83,16 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+msgid "Add"
+msgstr ""
+
 msgid "Add Changelog"
 msgstr ""
 
 msgid "Add Contribution guide"
+msgstr ""
+
+msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add License"
@@ -173,6 +179,9 @@ msgstr ""
 msgid "BillingPlans|Customer Support"
 msgstr ""
 
+msgid "BillingPlans|Downgrade"
+msgstr ""
+
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
 msgstr ""
 
@@ -207,12 +216,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Billinglans|Downgrade"
-msgstr ""
-
-msgid "Board"
 msgstr ""
 
 msgid "Branch"
@@ -337,10 +340,16 @@ msgstr ""
 msgid "CI configuration"
 msgstr ""
 
+msgid "CICD|Jobs"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
 msgid "Cancel edit"
+msgstr ""
+
+msgid "Change Weight"
 msgstr ""
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -424,6 +433,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -475,9 +487,6 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Create New Directory"
-msgstr ""
-
-msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
@@ -566,6 +575,9 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -573,6 +585,9 @@ msgid "Directory name"
 msgstr ""
 
 msgid "Discard changes"
+msgstr ""
+
+msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Don't show again"
@@ -748,6 +763,15 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Improve Issue boards with GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
+msgstr ""
+
+msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
+msgstr ""
+
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
@@ -757,13 +781,22 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
+msgid "Issue board focus mode"
+msgstr ""
+
+msgid "Issue boards with milestones"
+msgstr ""
+
 msgid "Issue events"
 msgstr ""
 
-msgid "Issues"
+msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "Jobs"
+msgid "IssueBoards|Boards"
+msgstr ""
+
+msgid "Issues"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -845,6 +878,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "Multiple issue boards"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -881,6 +917,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No schedules"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not available"
@@ -1246,9 +1285,6 @@ msgstr ""
 msgid "Select a timezone"
 msgstr ""
 
-msgid "Select existing branch"
-msgstr ""
-
 msgid "Select target branch"
 msgstr ""
 
@@ -1424,6 +1460,12 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
+msgid "Thanks! Don't show me this again"
+msgstr ""
+
+msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -1475,7 +1517,7 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
-msgid "This is the author's first Merge Request to this project. Handle with care."
+msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1635,7 +1677,25 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+msgid "Track activity with Contribution Analytics."
+msgstr ""
+
 msgid "Unstar"
+msgstr ""
+
+msgid "Upgrade your plan to activate Advanced Global Search."
+msgstr ""
+
+msgid "Upgrade your plan to activate Contribution Analytics."
+msgstr ""
+
+msgid "Upgrade your plan to activate Group Webhooks."
+msgstr ""
+
+msgid "Upgrade your plan to activate Issue weight."
+msgstr ""
+
+msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
 msgid "Upload New File"
@@ -1680,7 +1740,16 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
+msgstr ""
+
+msgid "Weight"
+msgstr ""
+
 msgid "Wiki"
+msgstr ""
+
+msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
 msgid "Withdraw Access Request"
@@ -1755,3 +1824,6 @@ msgid "parent"
 msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "to help your contributors communicate effectively!"
+msgstr ""

@@ -57,9 +57,9 @@ module EE
 
     def boards_link_text
       if @project.multiple_issue_boards_available?(current_user)
-        "Boards"
+        s_("IssueBoards|Boards")
       else
-        "Board"
+        s_("IssueBoards|Board")
       end
     end
   end

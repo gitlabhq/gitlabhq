@@ -37,17 +37,24 @@ export default {
       let file = clickedFile;
       if (file.loading) return;
       file.loading = true;
+
       if (file.type === 'tree' && file.opened) {
         file = Store.removeChildFilesOfTree(file);
         file.loading = false;
       } else {
-        Service.url = file.url;
-        Helper.getContent(file)
-          .then(() => {
-            file.loading = false;
-            Helper.scrollTabsRight();
-          })
-          .catch(Helper.loadingError);
+        const openFile = Helper.getFileFromPath(file.url);
+        if (openFile) {
+          file.loading = false;
+          Store.setActiveFiles(openFile);
+        } else {
+          Service.url = file.url;
+          Helper.getContent(file)
+            .then(() => {
+              file.loading = false;
+              Helper.scrollTabsRight();
+            })
+            .catch(Helper.loadingError);
+        }
       }
     },
 

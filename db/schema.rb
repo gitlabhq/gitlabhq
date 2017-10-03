@@ -941,12 +941,13 @@ ActiveRecord::Schema.define(version: 20171002105019) do
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
-    t.string "cn", null: false
+    t.string "cn"
     t.integer "group_access", null: false
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "provider"
+    t.string "filter"
   end
 
   create_table "lfs_objects", force: :cascade do |t|
@@ -1123,6 +1124,7 @@ ActiveRecord::Schema.define(version: 20171002105019) do
   add_index "merge_requests", ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_id_and_source_branch", using: :btree
   add_index "merge_requests", ["target_branch"], name: "index_merge_requests_on_target_branch", using: :btree
   add_index "merge_requests", ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true, using: :btree
+  add_index "merge_requests", ["target_project_id", "merge_commit_sha", "id"], name: "index_merge_requests_on_tp_id_and_merge_commit_sha_and_id", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
@@ -1892,6 +1894,17 @@ ActiveRecord::Schema.define(version: 20171002105019) do
 
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
+  create_table "user_custom_attributes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.string "key", null: false
+    t.string "value", null: false
+  end
+
+  add_index "user_custom_attributes", ["key", "value"], name: "index_user_custom_attributes_on_key_and_value", using: :btree
+  add_index "user_custom_attributes", ["user_id", "key"], name: "index_user_custom_attributes_on_user_id_and_key", unique: true, using: :btree
+
   create_table "user_synced_attributes_metadata", force: :cascade do |t|
     t.boolean "name_synced", default: false
     t.boolean "email_synced", default: false
@@ -2162,6 +2175,7 @@ ActiveRecord::Schema.define(version: 20171002105019) do
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "trending_projects", "projects", on_delete: :cascade
   add_foreign_key "u2f_registrations", "users"
+  add_foreign_key "user_custom_attributes", "users", on_delete: :cascade
   add_foreign_key "user_synced_attributes_metadata", "users", on_delete: :cascade
   add_foreign_key "users_star_projects", "projects", name: "fk_22cd27ddfc", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade

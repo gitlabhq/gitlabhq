@@ -56,20 +56,20 @@ describe AuditEventService do
     end
   end
 
-  describe '#audit_events_enabled?' do
+  describe '#entity_audit_events_enabled??' do
     context 'entity is a project' do
       let(:service) { described_class.new(user, project, { action: :destroy }) }
 
       it 'returns false when project is unlicensed' do
         stub_licensed_features(audit_events: false)
 
-        expect(service.audit_events_enabled?).to be_falsy
+        expect(service.entity_audit_events_enabled?).to be_falsy
       end
 
       it 'returns true when project is licensed' do
         stub_licensed_features(audit_events: true)
 
-        expect(service.audit_events_enabled?).to be_truthy
+        expect(service.entity_audit_events_enabled?).to be_truthy
       end
     end
 
@@ -80,18 +80,34 @@ describe AuditEventService do
       it 'returns false when group is unlicensed' do
         stub_licensed_features(audit_events: false)
 
-        expect(service.audit_events_enabled?).to be_falsy
+        expect(service.entity_audit_events_enabled?).to be_falsy
       end
 
       it 'returns true when group is licensed' do
         stub_licensed_features(audit_events: true)
 
-        expect(service.audit_events_enabled?).to be_truthy
+        expect(service.entity_audit_events_enabled?).to be_truthy
       end
     end
 
     context 'entity is a user' do
       let(:service) { described_class.new(user, user, { action: :destroy }) }
+
+      it 'returns false when unlicensed' do
+        stub_licensed_features(audit_events: false, admin_audit_log: false)
+
+        expect(service.audit_events_enabled?).to be_falsey
+      end
+
+      it 'returns true when licensed with extended events' do
+        stub_licensed_features(extended_audit_events: true)
+
+        expect(service.audit_events_enabled?).to be_truthy
+      end
+    end
+
+    context 'auth event' do
+      let(:service) { described_class.new(user, user, { with: 'auth' }) }
 
       it 'returns true when unlicensed' do
         stub_licensed_features(audit_events: false, admin_audit_log: false)

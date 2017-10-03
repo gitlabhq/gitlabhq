@@ -157,7 +157,19 @@ Regenerate the keys for `~/.ssh/authorized_keys`
 This will enable `git` operations to authorize against your existing users.
 New users and SSH keys updated after this step, will be replicated automatically.
 
-### Step 5. Enabling the secondary GitLab node
+### Step 5. Enabling hashed storage (from GitLab 10.0)
+
+1. Visit the **primary** node's **Admin Area ➔ Settings**
+   (`/admin/application_settings`) in your browser
+1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
+
+    ![](img/hashed-storage.png)
+
+Using hashed storage significantly improves Geo replication - project and group
+renames no longer require synchronization between nodes - so we recommend it is
+used for all GitLab Geo installations.
+
+### Step 6. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -194,7 +206,7 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 6. Replicating the repositories data
+### Step 7. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.
@@ -284,7 +296,7 @@ namespaces to be replicated.
 ## Adding another secondary Geo node
 
 To add another Geo node in an already Geo configured infrastructure, just follow
-[the steps starting form step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
+[the steps starting from step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
 Just omit the first step that sets up the primary node.
 
 ## Additional information for the SSH key pairs
@@ -299,6 +311,18 @@ files on secondary Geo nodes. Primaries do not need these files, and you should
 not create them manually.
 
 ### Upgrading Geo
+
+#### Upgrading to GitLab 10.1
+
+[Hashed storage](../administration/repository_storage_types.md) was introduced
+in GitLab 10.0, and a [migration path](../administration/raketasks/storage.md)
+for existing repositories was added in GitLab 10.1.
+
+After upgrading to GitLab 10.1, we recommend that you
+[enable hashed storage for all new projects](#step-5-enabling-hashed-storage-from-gitlab-100),
+then [migrate existing projects to hashed storage](../administration/raketasks/storage.md).
+This will significantly reduce the amount of synchronization required between
+nodes in the event of project or group renames.
 
 #### Upgrading to GitLab 10.0
 

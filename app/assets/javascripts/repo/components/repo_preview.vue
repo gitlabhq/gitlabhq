@@ -49,7 +49,7 @@ export default {
     v-else
     class="vertical-center render-error">
     <p class="text-center">
-      The source could not be displayed because a rendering error occured. You can <a :href="activeFile.raw_path">download</a> it instead.
+      The source could not be displayed because a rendering error occurred. You can <a :href="activeFile.raw_path">download</a> it instead.
     </p>
   </div>
 </div>

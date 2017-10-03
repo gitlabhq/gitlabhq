@@ -1,6 +1,6 @@
 module Audit
   class Details
-    ACTIONS = %i[add remove failed_login change].freeze
+    ACTIONS = %i[add remove failed_login change custom_message].freeze
 
     def self.humanize(*args)
       new(*args).humanize
@@ -31,8 +31,17 @@ module Audit
         "Removed #{value}"
       when :failed_login
         "Failed to login with #{Gitlab::OAuth::Provider.label_for(value).upcase} authentication"
+      when :custom_message
+        value
       else
-        "Changed #{value} from #{@details[:from]} to #{@details[:to]}"
+        text_for_change(value)
+      end
+    end
+
+    def text_for_change(value)
+      "Changed #{value}".tap do |changed_string|
+        changed_string << " from #{@details[:from]}" if @details[:from]
+        changed_string << " to #{@details[:to]}" if @details[:to]
       end
     end
   end

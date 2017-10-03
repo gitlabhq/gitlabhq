@@ -7,6 +7,9 @@ module EE
         begin
           tree_a = repo.lookup(change[:oldrev])
           tree_b = repo.lookup(change[:newrev])
+
+          return size_of_deltas unless diffable?(tree_a) && diffable?(tree_b)
+
           diff = tree_a.diff(tree_b)
 
           diff.each_delta do |d|
@@ -24,6 +27,10 @@ module EE
         rescue Rugged::OdbError, Rugged::ReferenceError, Rugged::InvalidError
           size_of_deltas
         end
+      end
+
+      def self.diffable?(object)
+        [Rugged::Commit, Rugged::Tree].include?(object.class)
       end
     end
   end

@@ -85,6 +85,8 @@ entry.
 - [FIXED] Fixed merge request changes bar jumping.
 - [FIXED] Improve migrations using triggers.
 - [FIXED] Fix ConvDev Index nav item and Monitoring submenu regression.
+- [FIXED] disabling notifications globally now properly turns off group/project added
+  emails !13325
 - [DEPRECATED] Deprecate custom SSH client configuration for the git user. !13930
 - [CHANGED] allow all users to delete their account. !13636 (Jacopo Beschi @jacopo-beschi)
 - [CHANGED] Use full path of project's avatar in webhooks. !13649 (Vitaliy @blackst0ne Klachkov)

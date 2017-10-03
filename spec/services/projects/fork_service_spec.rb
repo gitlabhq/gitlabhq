@@ -76,10 +76,11 @@ describe Projects::ForkService do
     end
 
     context 'repository already exists' do
-      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
       before do
-        gitlab_shell.add_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+        gitlab_shell.add_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
       end
 
       after do
