@@ -470,7 +470,7 @@ describe API::Runner do
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
                 { 'id' => job.id, 'name' => job.name, 'token' => job.token,
-                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106633 } })
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106365 } })
             end
           end
 
