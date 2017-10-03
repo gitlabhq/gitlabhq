@@ -5,6 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::OptimisticLocking
 
     prepend ::EE::Ci::Pipeline
 
@@ -287,7 +288,7 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -431,7 +432,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(self) do
+      retry_optimistic_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run

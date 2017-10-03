@@ -37,13 +37,13 @@ describe Ci::CreatePipelineService, '#execute' do
         create(:ci_pipeline, project: project, status: 'running')
       end
 
-      it 'drops the pipeline and cancels all jobs' do
+      it 'drops the pipeline and does not process jobs' do
         pipeline = create_pipeline!
 
         expect(pipeline).to be_persisted
         expect(pipeline).to be_failed
         expect(pipeline.statuses).not_to be_empty
-        expect(pipeline.statuses).to all(be_canceled)
+        expect(pipeline.statuses).to all(be_created)
         expect(pipeline.activity_limit_exceeded?).to be true
       end
     end

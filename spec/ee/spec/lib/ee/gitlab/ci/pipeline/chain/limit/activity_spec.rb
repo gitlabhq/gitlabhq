@@ -6,16 +6,11 @@ describe EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity do
   set(:user) { create(:user) }
 
   let(:command) do
-    double('command', project: project,
-                      current_user: user)
+    double('command', project: project, current_user: user)
   end
 
   let(:pipeline) do
     create(:ci_pipeline, project: project)
-  end
-
-  before do
-    create(:ci_build, pipeline: pipeline)
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -36,11 +31,6 @@ describe EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity do
 
     it 'persists the pipeline' do
       expect(pipeline).to be_persisted
-    end
-
-    it 'cancels all pipeline jobs' do
-      expect(pipeline.statuses).not_to be_empty
-      expect(pipeline.statuses).to all(be_canceled)
     end
 
     it 'breaks the chain' do

@@ -18,18 +18,9 @@ module EE
               def perform!
                 return unless @limit.exceeded?
 
-                @pipeline.cancel_running
-
                 retry_optimistic_lock(@pipeline) do
                   @pipeline.drop!(:activity_limit_exceeded)
                 end
-
-                # TODO, should we invalidate the pipeline
-                # while it is already persisted?
-                #
-                # Should we show info in the UI or alert/warning?
-                #
-                error(@limit.message)
               end
 
               def break?
