@@ -82,24 +82,6 @@ describe Gitlab::UrlSanitizer do
 
   describe '#credentials' do
     context 'credentials in hash' do
-      where(:input, :output) do
-        { user: 'foo', password: 'bar' } | { user: 'foo', password: 'bar' }
-        { user: 'foo', password: ''    } | { user: 'foo', password: nil }
-        { user: 'foo', password: nil   } | { user: 'foo', password: nil }
-        { user: '',    password: 'bar' } | { user: nil,   password: 'bar' }
-        { user: '',    password: ''    } | { user: nil,   password: nil }
-        { user: '',    password: nil   } | { user: nil,   password: nil }
-        { user: nil,   password: 'bar' } | { user: nil,   password: 'bar' }
-        { user: nil,   password: ''    } | { user: nil,   password: nil }
-        { user: nil,   password: nil   } | { user: nil,   password: nil }
-      end
-
-      with_them do
-        subject { described_class.new('user@example.com:path.git', credentials: input).credentials }
-
-        it { is_expected.to eq(output) }
-      end
-
       it 'overrides URL-provided credentials' do
         sanitizer = described_class.new('http://a:b@example.com', credentials: { user: 'c', password: 'd' })
 
