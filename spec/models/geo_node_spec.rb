@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe GeoNode, type: :model do
+  include ::EE::GeoHelpers
+
   let(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   let(:new_primary_node) { create(:geo_node, :primary, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   let(:empty_node) { described_class.new }
@@ -122,13 +124,13 @@ describe GeoNode, type: :model do
     subject { described_class.new }
 
     it 'returns true when node is the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { subject }
+      stub_current_geo_node(subject)
 
       expect(subject.current?).to eq true
     end
 
     it 'returns false when node is not the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { double }
+      stub_current_geo_node(double)
 
       expect(subject.current?).to eq false
     end

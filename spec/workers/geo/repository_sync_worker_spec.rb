@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Geo::RepositorySyncWorker, :postgresql do
+  include ::EE::GeoHelpers
+
   set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   set(:secondary) { create(:geo_node) }
   set(:synced_group) { create(:group) }
@@ -10,7 +12,7 @@ describe Geo::RepositorySyncWorker, :postgresql do
   subject { described_class.new }
 
   before do
-    allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
+    stub_current_geo_node(secondary)
   end
 
   describe '#perform' do

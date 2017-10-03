@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
+  include ::EE::GeoHelpers
+
   describe '#run!' do
     set(:geo_node) { create(:geo_node) }
 
     before do
-      allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
+      stub_current_geo_node(geo_node)
     end
 
     it 'traps signals' do
@@ -135,7 +137,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
 
       it 'does not schedule a GeoRepositoryDestroyWorker when event node is not the current node' do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(build(:geo_node))
+        stub_current_geo_node(build(:geo_node))
 
         expect(Geo::RepositoriesCleanUpWorker).not_to receive(:perform_in)
 

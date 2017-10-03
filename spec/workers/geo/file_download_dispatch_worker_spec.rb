@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Geo::FileDownloadDispatchWorker do
+  include ::EE::GeoHelpers
+
   set(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   set(:secondary) { create(:geo_node) }
 
   before do
-    allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
+    stub_current_geo_node(secondary)
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
     allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew).and_return(true)
     allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
