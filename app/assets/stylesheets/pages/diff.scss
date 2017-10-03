@@ -735,7 +735,7 @@
 }
 
 .image-comment-badge {
-  @include btn-comment;
+  @include btn-comment-icon;
   position: absolute;
 
   &.inverted {
