@@ -26,7 +26,7 @@ so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
 servers. If you have a deployment service such as [Kubernetes][kubernetes-service]
 enabled for your project, you can use it to assist with your deployments, and
-can even access a web terminal for your environment from within GitLab!
+can even access a [web terminal](#web-terminals) for your environment from within GitLab!
 
 To better understand how environments and deployments work, let's consider an
 example. We assume that you have already created a project in GitLab and set up
@@ -119,7 +119,7 @@ where you can find information of the last deployment status of an environment.
 
 Here's how the Environments page looks so far.
 
-![Staging environment view](img/environments_available_staging.png)
+![Environment view](img/environments_available.png)
 
 There's a bunch of information there, specifically you can see:
 
@@ -229,7 +229,7 @@ You can find it in the pipeline, job, environment, and deployment views.
 
 | Pipelines | Single pipeline | Environments | Deployments | jobs |
 | --------- | ----------------| ------------ | ----------- | -------|
-| ![Pipelines manual action](img/environments_manual_action_pipelines.png) | ![Pipelines manual action](img/environments_manual_action_single_pipeline.png) | ![Environments manual action](img/environments_manual_action_environments.png) | ![Deployments manual action](img/environments_manual_action_deployments.png) | ![Builds manual action](img/environments_manual_action_builds.png) |
+| ![Pipelines manual action](img/environments_manual_action_pipelines.png) | ![Pipelines manual action](img/environments_manual_action_single_pipeline.png) | ![Environments manual action](img/environments_manual_action_environments.png) | ![Deployments manual action](img/environments_manual_action_deployments.png) | ![Builds manual action](img/environments_manual_action_jobs.png) |
 
 Clicking on the play button in either of these places will trigger the
 `deploy_prod` job, and the deployment will be recorded under a new
@@ -402,7 +402,7 @@ places within GitLab.
 
 | In a merge request widget as a link | In the Environments view as a button | In the Deployments view as a button |
 | -------------------- | ------------ | ----------- |
-| ![Environment URL in merge request](img/environments_mr_review_app.png) | ![Environment URL in environments](img/environments_link_url.png) | ![Environment URL in deployments](img/environments_link_url_deployments.png) |
+| ![Environment URL in merge request](img/environments_mr_review_app.png) | ![Environment URL in environments](img/environments_available.png) | ![Environment URL in deployments](img/deployments_view.png) |
 
 If a merge request is eventually merged to the default branch (in our case
 `master`) and that branch also deploys to an environment (in our case `staging`
@@ -574,7 +574,7 @@ Once configured, GitLab will attempt to retrieve [supported performance metrics]
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear for each environment.
 
-![Environment Detail with Metrics](img/prometheus_environment_detail_with_metrics.png)
+![Environment Detail with Metrics](img/deployments_view.png)
 
 Clicking on the Monitoring button will display a new page, showing up to the last
 8 hours of performance data. It may take a minute or two for data to appear
@@ -593,10 +593,11 @@ Web terminals were added in GitLab 8.15 and are only available to project
 masters and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
-the [Kubernetes service][kubernetes-service], GitLab can open
+the [Kubernetes service][kubernetes-service]), GitLab can open
 a terminal session to your environment! This is a very powerful feature that
 allows you to debug issues without leaving the comfort of your web browser. To
-enable it, just follow the instructions given in the service documentation.
+enable it, just follow the instructions given in the service integration
+documentation.
 
 Once enabled, your environments will gain a "terminal" button:
 
