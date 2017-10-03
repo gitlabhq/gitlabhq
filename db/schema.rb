@@ -759,6 +759,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["template"], name: "index_labels_on_template", where: "template", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
@@ -1246,6 +1247,8 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
     t.boolean "repository_read_only"
+    t.boolean "merge_requests_ff_only_enabled", default: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

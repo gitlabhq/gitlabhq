@@ -1,0 +1,5 @@
+---
+title: 'Kubernetes integration: ensure v1.8.0 compatibility'
+merge_request: 14635
+author:
+type: fixed

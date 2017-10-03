@@ -233,6 +233,8 @@ module Gitlab
     end
 
     def self.encode(s)
+      return "" if s.nil?
+
       s.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 
