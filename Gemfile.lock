@@ -1025,7 +1025,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly-proto (~> 0.38.0)
+  gitaly-proto (~> 0.39.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.6.2)
