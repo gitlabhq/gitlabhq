@@ -451,7 +451,7 @@
 }
 
 .files {
-  margin-top: -1px;
+  margin-top: 1px;
 
   .diff-file:last-child {
     margin-bottom: 0;
@@ -535,7 +535,6 @@
 }
 
 .diff-notes-collapse {
-  position: relative;
   width: 19px;
   height: 19px;
   padding: 0;
@@ -543,11 +542,7 @@
   z-index: 100;
 
   svg {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -5.5px;
-    margin-top: -5.5px;
+    vertical-align: text-top;
   }
 
   path {
@@ -586,11 +581,6 @@
       top: 76px;
     }
 
-    + .files,
-    + .alert {
-      margin-top: 1px;
-    }
-
     &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
       display: none;
     }
@@ -604,11 +594,6 @@
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
         display: none;
-      }
-
-      + .files,
-      + .alert {
-        margin-top: 32px;
       }
     }
   }

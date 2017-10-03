@@ -95,7 +95,7 @@ export default RepoFile;
       </div>
     </td>
 
-    <td class="hidden-xs">
+    <td class="hidden-xs text-right">
       <span
         class="commit-update"
         :title="tooltipTitle(file.lastCommitUpdate)">

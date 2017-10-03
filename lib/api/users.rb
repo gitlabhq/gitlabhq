@@ -6,12 +6,14 @@ module API
     allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
+      include CustomAttributesEndpoints
+
       before do
         authenticate_non_get!
       end
 
       helpers do
-        def find_user(params)
+        def find_user_by_id(params)
           id = params[:user_id] || params[:id]
           User.find_by(id: id) || not_found!('User')
         end
@@ -166,7 +168,7 @@ module API
 
         user_params[:password_expires_at] = Time.now if user_params[:password].present?
 
-        result = ::Users::UpdateService.new(user, user_params.except(:extern_uid, :provider)).execute
+        result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
           present user, with: Entities::UserPublic
@@ -326,7 +328,7 @@ module API
         user = User.find_by(id: params.delete(:id))
         not_found!('User') unless user
 
-        email = Emails::CreateService.new(user, declared_params(include_missing: false)).execute
+        email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
         if email.errors.blank?
           NotificationService.new.new_email(email)
@@ -367,7 +369,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: user, email: email.email).execute
         end
 
         user.update_secondary_emails!
@@ -430,7 +432,7 @@ module API
         resource :impersonation_tokens do
           helpers do
             def finder(options = {})
-              user = find_user(params)
+              user = find_user_by_id(params)
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
@@ -672,7 +674,7 @@ module API
         requires :email, type: String, desc: 'The new email'
       end
       post "emails" do
-        email = Emails::CreateService.new(current_user, declared_params).execute
+        email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
           NotificationService.new.new_email(email)
@@ -691,7 +693,7 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: current_user, email: email.email).execute
         end
 
         current_user.update_secondary_emails!
