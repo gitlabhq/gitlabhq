@@ -1,7 +1,6 @@
 module EE
   module Ci
     module Pipeline
-
       EE_FAILURE_REASONS = {
         activity_limit_exceeded: 20,
         size_limit_exceeded: 21
