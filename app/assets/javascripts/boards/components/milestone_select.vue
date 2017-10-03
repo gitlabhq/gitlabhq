@@ -1,62 +1,3 @@
-<template>
-  <div class="dropdown milestone" :class="{ open: isOpen }">
-    <div class="title append-bottom-10">
-      {{ title }}
-      <a
-        v-if="canEdit"
-        class="edit-link pull-right"
-        href="#"
-        @click.prevent="toggle"
-      >
-        Edit
-      </a>
-    </div>
-    <div
-      class="dropdown-menu dropdown-menu-wide"
-    >
-      <ul
-        ref="list"
-      >
-        <li
-          v-for="milestone in extraMilestones"
-          :key="milestone.id"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
-            <i
-              class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
-          </a>
-        </li>
-        <li class="divider"></li>
-        <li v-if="loading">
-          <loading-icon />
-        </li>
-        <li
-          v-else
-          v-for="milestone in milestones"
-          :key="milestone.id"
-          class="dropdown-menu-item"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
-            <i
-              class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="value">
-      {{ milestoneTitle }}
-    </div>
-  </div>
-</template>
-
 <script>
 /* global BoardService */
 
@@ -136,3 +77,62 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="dropdown milestone" :class="{ open: isOpen }">
+    <div class="title append-bottom-10">
+      {{ title }}
+      <a
+        v-if="canEdit"
+        class="edit-link pull-right"
+        href="#"
+        @click.prevent="toggle"
+      >
+        Edit
+      </a>
+    </div>
+    <div
+      class="dropdown-menu dropdown-menu-wide"
+    >
+      <ul
+        ref="list"
+      >
+        <li
+          v-for="milestone in extraMilestones"
+          :key="milestone.id"
+        >
+          <a
+            href="#"
+            @click.prevent.stop="selectMilestone(milestone)">
+            <i
+              class="fa fa-check"
+              v-if="milestone.id === value"></i>
+            {{ milestone.title }}
+          </a>
+        </li>
+        <li class="divider"></li>
+        <li v-if="loading">
+          <loading-icon />
+        </li>
+        <li
+          v-else
+          v-for="milestone in milestones"
+          :key="milestone.id"
+          class="dropdown-menu-item"
+        >
+          <a
+            href="#"
+            @click.prevent.stop="selectMilestone(milestone)">
+            <i
+              class="fa fa-check"
+              v-if="milestone.id === value"></i>
+            {{ milestone.title }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="value">
+      {{ milestoneTitle }}
+    </div>
+  </div>
+</template>

@@ -1,3 +1,55 @@
+<script>
+/* global LabelsSelect */
+
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import eventHub from '../eventhub';
+
+export default {
+  props: {
+    board: {
+      type: Object,
+      required: true,
+    },
+    labelsPath: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: Array,
+      required: false,
+    },
+    defaultText: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    canEdit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    selected: {
+      type: Array,
+      required: true,
+    },
+  },
+  components: {
+    loadingIcon,
+  },
+  computed: {
+    labelIds() {
+      return this.selected.map(label => label.id).join(',');
+    },
+  },
+  mounted() {
+    new LabelsSelect();
+  },
+};
+</script>
+
 <template>
   <div class="block labels">
     <div class="title append-bottom-10">
@@ -91,55 +143,3 @@
     </div>
   </div>
 </template>
-
-<script>
-/* global LabelsSelect */
-
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import eventHub from '../eventhub';
-
-export default {
-  props: {
-    board: {
-      type: Object,
-      required: true,
-    },
-    labelsPath: {
-      type: String,
-      required: true,
-    },
-    value: {
-      type: Array,
-      required: false,
-    },
-    defaultText: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
-    canEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    selected: {
-      type: Array,
-      required: true,
-    },
-  },
-  components: {
-    loadingIcon,
-  },
-  computed: {
-    labelIds() {
-      return this.selected.map(label => label.id).join(',');
-    },
-  },
-  mounted() {
-    new LabelsSelect();
-  },
-};
-</script>

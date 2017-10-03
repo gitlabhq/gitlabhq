@@ -1,3 +1,85 @@
+<script>
+import UsersSelect from '~/users_select';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+
+export default {
+  props: {
+    anyUserText: {
+      type: String,
+      required: false,
+      default: 'Any user',
+    },
+    board: {
+      type: Object,
+      required: true,
+    },
+    canEdit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fieldName: {
+      type: String,
+      required: true,
+    },
+    groupId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    placeholderText: {
+      type: String,
+      required: false,
+      default: 'Select user',
+    },
+    projectId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    selected: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    wrapperClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  components: {
+    loadingIcon,
+    UserAvatarImage,
+  },
+  computed: {
+    hasValue() {
+      return this.selected.id;
+    },
+  },
+  watch: {
+    board: {
+      handler() {
+        this.$nextTick(() => {
+          new UsersSelect();
+        });
+      },
+      deep: true,
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      new UsersSelect();
+    });
+  },
+};
+</script>
+
 <template>
   <div
     class="block"
@@ -95,85 +177,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import UsersSelect from '~/users_select';
-import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-
-export default {
-  props: {
-    anyUserText: {
-      type: String,
-      required: false,
-      default: 'Any user',
-    },
-    board: {
-      type: Object,
-      required: true,
-    },
-    canEdit: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    fieldName: {
-      type: String,
-      required: true,
-    },
-    groupId: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    placeholderText: {
-      type: String,
-      required: false,
-      default: 'Select user',
-    },
-    projectId: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    selected: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    wrapperClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
-  components: {
-    loadingIcon,
-    UserAvatarImage,
-  },
-  computed: {
-    hasValue() {
-      return this.selected.id;
-    },
-  },
-  watch: {
-    board: {
-      handler() {
-        this.$nextTick(() => {
-          new UsersSelect();
-        });
-      },
-      deep: true,
-    }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      new UsersSelect();
-    });
-  },
-};
-</script>

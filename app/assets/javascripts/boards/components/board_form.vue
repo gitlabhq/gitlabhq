@@ -54,7 +54,7 @@
           Board scope affects which issues are displayed for anyone who visits this board
         </p>
         <div v-if="!collapseScope || expanded">
-          <form-block>
+          <div class="list-item">
             <div
               v-if="board.milestone"
               slot="currentValue"
@@ -69,9 +69,9 @@
               default-text="Any milestone"
               :can-edit="canAdminBoard"
             />
-          </form-block>
+          </div>
 
-          <form-block>
+          <div class="list-item">
             <board-labels-select
               :board="board"
               :selected="board.labels"
@@ -80,9 +80,9 @@
               :can-edit="canAdminBoard"
               :labels-path="labelsPath"
             />
-          </form-block>
+          </div>
 
-          <form-block>
+          <div class="list-item">
             <user-select
               any-user-text="Any assignee"
               :board="board"
@@ -96,9 +96,9 @@
               :group-id="groupId"
               wrapper-class="assignee"
             />
-          </form-block>
+          </div>
 
-          <form-block>
+          <div class="list-item">
             <board-weight-select
               :board="board"
               :weights="weightsArray"
@@ -107,7 +107,7 @@
               default-text="Any weight"
               :can-edit="canAdminBoard"
             />
-          </form-block>
+          </div>
         </div>
       </div>
     </form>
@@ -123,7 +123,6 @@
 
 import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
-import FormBlock from './form_block.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
@@ -188,7 +187,6 @@ export default Vue.extend({
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
-    FormBlock,
     PopupDialog,
     UserSelect,
   },

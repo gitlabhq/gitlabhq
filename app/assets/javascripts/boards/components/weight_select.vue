@@ -1,55 +1,3 @@
-<template>
-  <div class="dropdown weight" :class="{ open: isOpen }">
-    <div class="title append-bottom-10">
-      {{ title }}
-      <a
-        v-if="canEdit"
-        class="edit-link pull-right"
-        href="#"
-        @click.prevent="toggle"
-      >
-        Edit
-      </a>
-    </div>
-    <div
-      class="dropdown-menu dropdown-menu-wide"
-    >
-      <ul
-        ref="list"
-      >
-        <li>
-          <a
-            href="#"
-            @click.prevent.stop="selectWeight(null)"
-          >
-            <i
-              class="fa fa-check"
-              v-if="!value"></i>
-            Any weight
-          </a>
-        </li>
-        <li
-          v-for="weight in weights"
-          :key="weight.id"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectWeight(weight)">
-            <i
-              class="fa fa-check"
-              v-if="weight === value"
-            />
-            {{ weight }}
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="value">
-      {{ weight }}
-    </div>
-  </div>
-</template>
-
 <script>
 /* global BoardService */
 
@@ -117,3 +65,55 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="dropdown weight" :class="{ open: isOpen }">
+    <div class="title append-bottom-10">
+      {{ title }}
+      <a
+        v-if="canEdit"
+        class="edit-link pull-right"
+        href="#"
+        @click.prevent="toggle"
+      >
+        Edit
+      </a>
+    </div>
+    <div
+      class="dropdown-menu dropdown-menu-wide"
+    >
+      <ul
+        ref="list"
+      >
+        <li>
+          <a
+            href="#"
+            @click.prevent.stop="selectWeight(null)"
+          >
+            <i
+              class="fa fa-check"
+              v-if="!value"></i>
+            Any weight
+          </a>
+        </li>
+        <li
+          v-for="weight in weights"
+          :key="weight.id"
+        >
+          <a
+            href="#"
+            @click.prevent.stop="selectWeight(weight)">
+            <i
+              class="fa fa-check"
+              v-if="weight === value"
+            />
+            {{ weight }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="value">
+      {{ weight }}
+    </div>
+  </div>
+</template>
