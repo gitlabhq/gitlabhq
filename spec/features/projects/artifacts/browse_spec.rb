@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Browse artifact', :js do
-  include ArtifactHelper
-
   let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -24,8 +22,8 @@ feature 'Browse artifact', :js do
     end
   end
 
-  context 'when browsing a directory with an HTML file' do
-    let(:html_entry) { job.artifacts_metadata_entry("other_artifacts_0.1.2/index.html") }
+  context 'when browsing a directory with an text file' do
+    let(:txt_entry) { job.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
 
     before do
       allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
@@ -37,8 +35,7 @@ feature 'Browse artifact', :js do
     it "shows external link icon and styles" do
       link = first('.tree-item-file-external-link')
 
-      expect(link).to have_content('index.html')
-      expect(link[:href]).to eq(html_artifact_url(project, job, html_entry.blob))
+      expect(link).to have_content('doc_sample.txt')
       expect(page).to have_selector('.js-artifact-tree-external-icon')
     end
   end
