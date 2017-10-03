@@ -80,7 +80,7 @@ describe('RepoSidebar', () => {
         };
         RepoStore.files = [file1];
         RepoStore.isRoot = true;
-        const vm = createComponent();
+        vm = createComponent();
 
         vm.fileClicked(file1);
 
@@ -95,7 +95,7 @@ describe('RepoSidebar', () => {
 
         spyOn(Helper, 'getFileFromPath').and.returnValue(file);
         spyOn(RepoStore, 'setActiveFiles');
-        const vm = createComponent();
+        vm = createComponent();
         vm.fileClicked(file);
 
         expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(file);
