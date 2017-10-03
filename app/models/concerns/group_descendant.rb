@@ -6,7 +6,7 @@ module GroupDescendant
 
   def self.build_hierarchy(descendants, hierarchy_top = nil)
     descendants = Array.wrap(descendants)
-    return if descendants.empty?
+    return [] if descendants.empty?
 
     unless descendants.all? { |hierarchy| hierarchy.is_a?(GroupDescendant) }
       raise ArgumentError.new('element is not a hierarchy')

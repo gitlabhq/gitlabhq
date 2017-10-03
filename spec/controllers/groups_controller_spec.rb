@@ -331,6 +331,16 @@ describe GroupsController do
           expect(response).to have_http_status(200)
         end
 
+        it 'returns an empty array when there are no search results' do
+          subgroup = create(:group, :public, parent: group)
+          l2_subgroup = create(:group, :public, parent: subgroup)
+          create(:project, :public, namespace: l2_subgroup, name: 'no-match')
+
+          get :children, id: subgroup.to_param, filter: 'test', format: :json
+
+          expect(json_response).to eq([])
+        end
+
         it 'includes pagination headers' do
           2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
 
