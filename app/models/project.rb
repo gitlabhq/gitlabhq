@@ -64,6 +64,7 @@ class Project < ActiveRecord::Base
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
+  after_create :check_repository_absence!
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
@@ -228,7 +229,7 @@ class Project < ActiveRecord::Base
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
-  validate :check_repository_path_availability, on: [:create, :update], if: ->(project) { !project.persisted? || project.renamed? }
+  validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -1022,7 +1023,9 @@ class Project < ActiveRecord::Base
 
     expires_full_path_cache # we need to clear cache to validate renames correctly
 
-    if gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+    # Check if repository with same path already exists on disk we can
+    # skip this for the hashed storage because the path does not change
+    if legacy_storage? && repository_with_same_path_already_exists?
       errors.add(:base, 'There is already a repository with that name on disk')
       return false
     end
@@ -1574,6 +1577,19 @@ class Project < ActiveRecord::Base
     if self.new_record? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
+  end
+
+  def check_repository_absence!
+    return if skip_disk_validation
+
+    if repository_storage_path.blank? || repository_with_same_path_already_exists?
+      errors.add(:base, 'There is already a repository with that name on disk')
+      throw :abort
+    end
+  end
+
+  def repository_with_same_path_already_exists?
+    gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
   end
 
   # set last_activity_at to the same as created_at
