@@ -46,10 +46,9 @@ class Projects::ClustersController < Projects::ApplicationController
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: {
-          status: cluster.status, # The current status of the operation.
-          status_reason: cluster.status_reason # If an error has occurred, a textual description of the error.
-        }
+        render json: ClusterSerializer
+          .new(project: @project, current_user: @current_user)
+          .represent_status(@cluster)
       end
     end
   end
@@ -62,7 +61,15 @@ class Projects::ClustersController < Projects::ApplicationController
       .new(project, current_user, cluster_params)
       .execute(cluster)
 
-    render :show
+    respond_to do |format|
+      format.html do
+        render :show
+      end
+
+      format.json do
+        head :no_data
+      end
+    end
   end
 
   def destroy
@@ -80,9 +87,13 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def cluster_params
-    params.require(:cluster)
-      .permit(:gcp_project_id, :gcp_cluster_zone, :gcp_cluster_name, :gcp_cluster_size,
-              :gcp_machine_type, :project_namespace, :enabled)
+    params.require(:cluster).permit(:gcp_project_id,
+      :gcp_cluster_zone,
+      :gcp_cluster_name,
+      :gcp_cluster_size,
+      :gcp_machine_type,
+      :project_namespace,
+      :enabled)
   end
 
   def authorize_google_api
@@ -103,10 +114,10 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def authorize_update_cluster!
-    return access_denied! unless can?(current_user, :update_cluster, cluster)
+    access_denied! unless can?(current_user, :update_cluster, cluster)
   end
 
   def authorize_admin_cluster!
-    return access_denied! unless can?(current_user, :admin_cluster, cluster)
+    access_denied! unless can?(current_user, :admin_cluster, cluster)
   end
 end
