@@ -12,7 +12,6 @@ class License < ActiveRecord::Base
     contribution_analytics
     elastic_search
     export_issues
-    fast_forward_merge
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
@@ -63,7 +62,6 @@ class License < ActiveRecord::Base
     cross_project_pipelines
     deploy_board
     export_issues
-    fast_forward_merge
     file_locks
     group_webhooks
     issuable_default_templates

@@ -1,4 +1,4 @@
-- if show_promotions? && show_callout?('promote_mr_features_dismissed') && (!@project.feature_available?(:merge_request_approvers) || !@project.feature_available?(:fast_forward_merge))
+- if show_promotions? && show_callout?('promote_mr_features_dismissed') && !@project.feature_available?(:merge_request_approvers)
   .user-callout.promotion-callout.append-bottom-20.js-mr-approval-callout#promote_mr_features{ data: { uid: 'promote_mr_features_dismissed' } }
     .bordered-box.content-block
       %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss Merge Request promotion' }
@@ -15,10 +15,5 @@
               = link_to 'Merge Request Approvals', help_page_path('user/project/merge_requests/merge_request_approvals.html'), target: '_blank'
               %p
                 Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project.
-          - unless @project.feature_available?(:fast_forward_merge)
-            %li
-              = link_to 'Fast-forward Merge', help_page_path('user/project/merge_requests/fast_forward_merge.html'), target: '_blank'
-              %p
-                If you prefer a linear Git history and a way to accept merge requests without creating merge commits, you can configure this on a per-project basis.
 
         = render 'shared/promotions/promotion_link_project'

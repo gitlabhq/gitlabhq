@@ -79,7 +79,7 @@ export default {
             Fast-forward merge is not possible.
             Rebase the source branch onto
             <span class="label-branch">{{mr.targetBranch}}</span>
-            to allow this merge request to be merged
+            to allow this merge request to be merged.
           </span>
         </template>
         <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
@@ -97,7 +97,7 @@ export default {
             <span class="bold">
               Fast-forward merge is not possible.
               Rebase the source branch onto the target branch or merge target
-              branch into source branch to allow this merge request to be merged
+              branch into source branch to allow this merge request to be merged.
             </span>
           </div>
         </template>

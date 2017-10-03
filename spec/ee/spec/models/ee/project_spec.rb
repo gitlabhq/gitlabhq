@@ -723,23 +723,15 @@ describe Project do
   end
 
   describe '#merge_method' do
-    where(:ff, :rebase, :ff_licensed, :rebase_licensed, :method) do
-      true  | true  | true  | true  | :ff
-      true  | true  | true  | false | :ff
-      true  | true  | false | true  | :rebase_merge
-      true  | true  | false | false | :merge
-      true  | false | true  | true  | :ff
-      true  | false | true  | false | :ff
-      true  | false | false | true  | :merge
-      true  | false | false | false | :merge
-      false | true  | true  | true  | :rebase_merge
-      false | true  | true  | false | :merge
-      false | true  | false | true  | :rebase_merge
-      false | true  | false | false | :merge
-      false | false | true  | true  | :merge
-      false | false | true  | false | :merge
-      false | false | false | true  | :merge
-      false | false | false | false | :merge
+    where(:ff, :rebase, :rebase_licensed, :method) do
+      true  | true  | true  | :ff
+      true  | true  | false | :ff
+      true  | false | true  | :ff
+      true  | false | false | :ff
+      false | true  | true  | :rebase_merge
+      false | true  | false | :merge
+      false | false | true  | :merge
+      false | false | false | :merge
     end
 
     with_them do
@@ -748,7 +740,7 @@ describe Project do
       subject { project.merge_method }
 
       before do
-        stub_licensed_features(merge_request_rebase: rebase_licensed, fast_forward_merge: ff_licensed)
+        stub_licensed_features(merge_request_rebase: rebase_licensed)
       end
 
       it { is_expected.to eq(method) }
