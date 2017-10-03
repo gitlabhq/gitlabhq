@@ -42,10 +42,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def after_sign_up_path_for(user)
+    Gitlab::AppLogger.info("User Created: username=#{user.username} email=#{user.email} ip=#{request.remote_ip} confirmed:#{user.confirmed?}")
     user.confirmed? ? dashboard_projects_path : users_almost_there_path
   end
 
-  def after_inactive_sign_up_path_for(_resource)
+  def after_inactive_sign_up_path_for(resource)
+    Gitlab::AppLogger.info("User Created: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip} confirmed:false")
     users_almost_there_path
   end
 

@@ -1,5 +1,0 @@
----
-title: Fix 500 error on merged merge requests when GitLab is restored from a backup
-merge_request:
-author:
-type: fixed

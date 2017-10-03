@@ -62,7 +62,7 @@
       },
       deleteHandler() {
         // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to delete this list?')) {
+        if (confirm('Are you sure you want to delete this comment?')) {
           this.isDeleting = true;
 
           this.deleteNote(this.note)

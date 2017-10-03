@@ -298,7 +298,7 @@ class CopyAsGFM {
     const documentFragment = getSelectedFragment();
     if (!documentFragment) return;
 
-    const el = transformer(documentFragment.cloneNode(true));
+    const el = transformer(documentFragment.cloneNode(true), e.currentTarget);
     if (!el) return;
 
     e.preventDefault();
@@ -338,55 +338,64 @@ class CopyAsGFM {
   }
 
   static transformGFMSelection(documentFragment) {
-    const gfmEls = documentFragment.querySelectorAll('.md, .wiki');
-    switch (gfmEls.length) {
+    const gfmElements = documentFragment.querySelectorAll('.md, .wiki');
+    switch (gfmElements.length) {
       case 0: {
         return documentFragment;
       }
       case 1: {
-        return gfmEls[0];
+        return gfmElements[0];
       }
       default: {
-        const allGfmEl = document.createElement('div');
+        const allGfmElement = document.createElement('div');
 
-        for (let i = 0; i < gfmEls.length; i += 1) {
-          const lineEl = gfmEls[i];
-          allGfmEl.appendChild(lineEl);
-          allGfmEl.appendChild(document.createTextNode('\n\n'));
+        for (let i = 0; i < gfmElements.length; i += 1) {
+          const gfmElement = gfmElements[i];
+          allGfmElement.appendChild(gfmElement);
+          allGfmElement.appendChild(document.createTextNode('\n\n'));
         }
 
-        return allGfmEl;
+        return allGfmElement;
       }
     }
   }
 
-  static transformCodeSelection(documentFragment) {
-    const lineEls = documentFragment.querySelectorAll('.line');
+  static transformCodeSelection(documentFragment, target) {
+    let lineSelector = '.line';
 
-    let codeEl;
-    if (lineEls.length > 1) {
-      codeEl = document.createElement('pre');
-      codeEl.className = 'code highlight';
+    if (target) {
+      const lineClass = ['left-side', 'right-side'].filter(name => target.classList.contains(name))[0];
+      if (lineClass) {
+        lineSelector = `.line_content.${lineClass} ${lineSelector}`;
+      }
+    }
 
-      const lang = lineEls[0].getAttribute('lang');
+    const lineElements = documentFragment.querySelectorAll(lineSelector);
+
+    let codeElement;
+    if (lineElements.length > 1) {
+      codeElement = document.createElement('pre');
+      codeElement.className = 'code highlight';
+
+      const lang = lineElements[0].getAttribute('lang');
       if (lang) {
-        codeEl.setAttribute('lang', lang);
+        codeElement.setAttribute('lang', lang);
       }
     } else {
-      codeEl = document.createElement('code');
+      codeElement = document.createElement('code');
     }
 
-    if (lineEls.length > 0) {
-      for (let i = 0; i < lineEls.length; i += 1) {
-        const lineEl = lineEls[i];
-        codeEl.appendChild(lineEl);
-        codeEl.appendChild(document.createTextNode('\n'));
+    if (lineElements.length > 0) {
+      for (let i = 0; i < lineElements.length; i += 1) {
+        const lineElement = lineElements[i];
+        codeElement.appendChild(lineElement);
+        codeElement.appendChild(document.createTextNode('\n'));
       }
     } else {
-      codeEl.appendChild(documentFragment);
+      codeElement.appendChild(documentFragment);
     }
 
-    return codeEl;
+    return codeElement;
   }
 
   static nodeToGFM(node, respectWhitespaceParam = false) {

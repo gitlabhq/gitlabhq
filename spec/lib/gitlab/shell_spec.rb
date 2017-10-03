@@ -156,7 +156,7 @@ describe Gitlab::Shell do
         end
       end
 
-      context 'with gitlay' do
+      context 'with gitaly' do
         it_behaves_like '#add_repository'
       end
 

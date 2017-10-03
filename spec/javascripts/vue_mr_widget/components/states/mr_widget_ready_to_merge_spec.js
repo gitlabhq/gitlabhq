@@ -182,36 +182,6 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
     });
-
-    describe('Remove source branch checkbox', () => {
-      describe('when user can merge but cannot delete branch', () => {
-        it('isRemoveSourceBranchButtonDisabled should be true', () => {
-          expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-        });
-
-        it('should be disabled in the rendered output', () => {
-          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
-        });
-      });
-
-      describe('when user can merge and can delete branch', () => {
-        beforeEach(() => {
-          this.customVm = createComponent({
-            mr: { canRemoveSourceBranch: true },
-          });
-        });
-
-        it('isRemoveSourceBranchButtonDisabled should be false', () => {
-          expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
-        });
-
-        it('should be enabled in rendered output', () => {
-          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBeNull();
-        });
-      });
-    });
   });
 
   describe('methods', () => {
@@ -465,6 +435,56 @@ describe('MRWidgetReadyToMerge', () => {
           done();
         }, 333);
       });
+    });
+  });
+
+  describe('Remove source branch checkbox', () => {
+    describe('when user can merge but cannot delete branch', () => {
+      it('isRemoveSourceBranchButtonDisabled should be true', () => {
+        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
+      });
+
+      it('should be disabled in the rendered output', () => {
+        const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+      });
+    });
+
+    describe('when user can merge and can delete branch', () => {
+      beforeEach(() => {
+        this.customVm = createComponent({
+          mr: { canRemoveSourceBranch: true },
+        });
+      });
+
+      it('isRemoveSourceBranchButtonDisabled should be false', () => {
+        expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
+      });
+
+      it('should be enabled in rendered output', () => {
+        const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBeNull();
+      });
+    });
+  });
+
+  describe('Commit message area', () => {
+    it('when using merge commits, should show "Modify commit message" button', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: false },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeNull();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+    });
+
+    it('when fast-forward merge is enabled, only show fast-forward message', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: true },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeDefined();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
 });
