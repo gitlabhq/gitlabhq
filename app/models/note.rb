@@ -141,8 +141,12 @@ class Note < ActiveRecord::Base
       groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
-        group_key = discussion.line_code_in_diffs(diff_refs)
-        group_key ||= discussion.file_identifier
+        group_key =
+          if discussion.on_image?
+            discussion.file_identifier
+          else
+            discussion.line_code_in_diffs(diff_refs)
+          end
 
         if group_key
           discussions = groups[group_key] ||= []

@@ -36,8 +36,8 @@ module Gitlab
 
         def ==(other)
           self.class == other.class &&
-          new_line == other.new_line &&
-          old_line == other.old_line
+            new_line == other.new_line &&
+            old_line == other.old_line
         end
       end
     end

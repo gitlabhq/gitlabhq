@@ -121,6 +121,8 @@ module NotesActions
   end
 
   def diff_discussion_html(discussion)
+    return unless discussion.diff_discussion?
+
     if params[:view] == 'parallel'
       template = "discussions/_parallel_diff_discussion"
       locals =

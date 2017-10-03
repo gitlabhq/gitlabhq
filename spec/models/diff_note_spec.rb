@@ -98,14 +98,14 @@ describe DiffNote do
       diff_line = subject.diff_line
 
       expect(diff_line.added?).to be true
-      expect(diff_line.new_line).to eq(position.new_line)
+      expect(diff_line.new_line).to eq(position.formatter.new_line)
       expect(diff_line.text).to eq("+    vars = {")
     end
   end
 
   describe "#line_code" do
     it "returns the correct line code" do
-      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.new_line, 15)
+      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.formatter.new_line, 15)
 
       expect(subject.line_code).to eq(line_code)
     end

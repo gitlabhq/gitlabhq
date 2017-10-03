@@ -45,8 +45,12 @@ module Gitlab
           other.formatter == formatter
       end
 
+      def to_h
+        formatter.to_h
+      end
+
       def inspect
-        %(#<#{self.class}:#{object_id} #{formatter.to_h}>)
+        %(#<#{self.class}:#{object_id} #{to_h}>)
       end
 
       def complete?

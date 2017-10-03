@@ -33,14 +33,14 @@ describe Gitlab::Diff::Position do
         diff_line = subject.diff_line(project.repository)
 
         expect(diff_line.added?).to be true
-        expect(diff_line.new_line).to eq(subject.new_line)
+        expect(diff_line.new_line).to eq(subject.formatter.new_line)
         expect(diff_line.text).to eq("+    <desc>Created with Sketch.</desc>")
       end
     end
 
     describe "#line_code" do
       it "returns the correct line code" do
-        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, 0)
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, 0)
 
         expect(subject.line_code(project.repository)).to eq(line_code)
       end
@@ -76,14 +76,14 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.added?).to be true
-          expect(diff_line.new_line).to eq(subject.new_line)
+          expect(diff_line.new_line).to eq(subject.formatter.new_line)
           expect(diff_line.text).to eq("+    vars = {")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, 15)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, 15)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -116,15 +116,15 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.unchanged?).to be true
-          expect(diff_line.old_line).to eq(subject.old_line)
-          expect(diff_line.new_line).to eq(subject.new_line)
+          expect(diff_line.old_line).to eq(subject.formatter.old_line)
+          expect(diff_line.new_line).to eq(subject.formatter.new_line)
           expect(diff_line.text).to eq("     unless File.directory?(path)")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, subject.old_line)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, subject.formatter.old_line)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -157,14 +157,14 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.removed?).to be true
-          expect(diff_line.old_line).to eq(subject.old_line)
+          expect(diff_line.old_line).to eq(subject.formatter.old_line)
           expect(diff_line.text).to eq("-    options = { chdir: path }")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 13, subject.old_line)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 13, subject.formatter.old_line)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -201,14 +201,14 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.added?).to be true
-          expect(diff_line.new_line).to eq(subject.new_line)
+          expect(diff_line.new_line).to eq(subject.formatter.new_line)
           expect(diff_line.text).to eq("+      new CommitFile(@)")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, 5)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, 5)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -241,15 +241,15 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.unchanged?).to be true
-          expect(diff_line.old_line).to eq(subject.old_line)
-          expect(diff_line.new_line).to eq(subject.new_line)
+          expect(diff_line.old_line).to eq(subject.formatter.old_line)
+          expect(diff_line.new_line).to eq(subject.formatter.new_line)
           expect(diff_line.text).to eq("     $('.files .diff-file').each ->")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, subject.old_line)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, subject.formatter.old_line)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -282,14 +282,14 @@ describe Gitlab::Diff::Position do
           diff_line = subject.diff_line(project.repository)
 
           expect(diff_line.removed?).to be true
-          expect(diff_line.old_line).to eq(subject.old_line)
+          expect(diff_line.old_line).to eq(subject.formatter.old_line)
           expect(diff_line.text).to eq("-      new CommitFile(this)")
         end
       end
 
       describe "#line_code" do
         it "returns the correct line code" do
-          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 4, subject.old_line)
+          line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 4, subject.formatter.old_line)
 
           expect(subject.line_code(project.repository)).to eq(line_code)
         end
@@ -325,14 +325,14 @@ describe Gitlab::Diff::Position do
         diff_line = subject.diff_line(project.repository)
 
         expect(diff_line.removed?).to be true
-        expect(diff_line.old_line).to eq(subject.old_line)
+        expect(diff_line.old_line).to eq(subject.formatter.old_line)
         expect(diff_line.text).to eq("-Copyright (c) 2014 gitlabhq")
       end
     end
 
     describe "#line_code" do
       it "returns the correct line code" do
-        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 0, subject.old_line)
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 0, subject.formatter.old_line)
 
         expect(subject.line_code(project.repository)).to eq(line_code)
       end
@@ -367,14 +367,14 @@ describe Gitlab::Diff::Position do
         diff_line = subject.diff_line(project.repository)
 
         expect(diff_line.added?).to be true
-        expect(diff_line.new_line).to eq(subject.new_line)
+        expect(diff_line.new_line).to eq(subject.formatter.new_line)
         expect(diff_line.text).to eq("+testme")
       end
     end
 
     describe "#line_code" do
       it "returns the correct line code" do
-        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, 0)
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.formatter.new_line, 0)
 
         expect(subject.line_code(project.repository)).to eq(line_code)
       end
@@ -415,14 +415,14 @@ describe Gitlab::Diff::Position do
         diff_line = subject.diff_line(project.repository)
 
         expect(diff_line.removed?).to be true
-        expect(diff_line.old_line).to eq(subject.old_line)
+        expect(diff_line.old_line).to eq(subject.formatter.old_line)
         expect(diff_line.text).to eq("-    puts 'bar'")
       end
     end
 
     describe "#line_code" do
       it "returns the correct line code" do
-        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 0, subject.old_line)
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, 0, subject.formatter.old_line)
 
         expect(subject.line_code(project.repository)).to eq(line_code)
       end
@@ -476,7 +476,8 @@ describe Gitlab::Diff::Position do
         new_line: 14,
         base_sha: nil,
         head_sha: nil,
-        start_sha: nil
+        start_sha: nil,
+        position_type: "text"
       }
     end
 
