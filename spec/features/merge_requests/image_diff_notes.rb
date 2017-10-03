@@ -5,8 +5,8 @@ feature 'Diff note avatars', js: true do
 
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public, :repository) }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
-  let(:path)          { "files/images/6049019_460s.jpg" }
+  let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user, title: "Added images and changes") }
+  let(:path)          { "files/images/ee_repo_logo.png" }
   let(:position) do
     Gitlab::Diff::Position.new(
       old_path: path,
