@@ -90,7 +90,7 @@ w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(document.location.href);
 // eslint-disable-next-line import/prefer-default-export
 export function visitUrl(url, external = false) {
   if (external) {
-    // Simulate `target="blank" ref="noopener noreferrer"`
+    // Simulate `target="blank" rel="noopener noreferrer"`
     // See https://mathiasbynens.github.io/rel-noopener/
     const otherWindow = window.open();
     otherWindow.opener = null;
