@@ -1,21 +1,25 @@
 <script>
-import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
-import iconCommit from '../svg/icon_commit.svg';
+  import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+  import iconCommit from '../svg/icon_commit.svg';
+  import limitWarning from './limit_warning_component.vue';
+  import totalTime from './total_time_component.vue';
 
-export default {
-  props: {
-    items: Array,
-    stage: Object,
-  },
-  components: {
-    userAvatarImage,
-  },
-  computed: {
-    iconCommit() {
-      return iconCommit;
+  export default {
+    props: {
+      items: Array,
+      stage: Object,
     },
-  },
-};
+    components: {
+      userAvatarImage,
+      totalTime,
+      limitWarning,
+    },
+    computed: {
+      iconCommit() {
+        return iconCommit;
+      },
+    },
+  };
 </script>
 <template>
   <div>

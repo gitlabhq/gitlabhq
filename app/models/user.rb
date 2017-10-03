@@ -130,6 +130,8 @@ class User < ActiveRecord::Base
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
   has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :custom_attributes, class_name: 'UserCustomAttribute'
+
   #
   # Validations
   #
@@ -690,7 +692,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    if identities.loaded?
+      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+    else
+      identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    end
   end
 
   def ldap_identity
@@ -1059,6 +1065,12 @@ class User < ActiveRecord::Base
 
   def read_only_attribute?(attribute)
     user_synced_attributes_metadata&.read_only?(attribute)
+  end
+
+  # override, from Devise
+  def lock_access!
+    Gitlab::AppLogger.info("Account Locked: username=#{username}")
+    super
   end
 
   protected

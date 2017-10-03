@@ -79,6 +79,20 @@ describe('RepoSidebar', () => {
         expect(Helper.getContent).toHaveBeenCalledWith(file1);
       });
 
+      it('should not fetch data for already opened files', () => {
+        const file = {
+          id: 42,
+          url: 'foo',
+        };
+
+        spyOn(Helper, 'getFileFromPath').and.returnValue(file);
+        spyOn(RepoStore, 'setActiveFiles');
+        const vm = createComponent();
+        vm.fileClicked(file);
+
+        expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(file);
+      });
+
       it('should hide files in directory if already open', () => {
         spyOn(RepoStore, 'removeChildFilesOfTree').and.callThrough();
         const file1 = {

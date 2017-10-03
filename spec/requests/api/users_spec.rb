@@ -1905,4 +1905,8 @@ describe API::Users do
       expect(impersonation_token.reload.revoked).to be_truthy
     end
   end
+
+  include_examples 'custom attributes endpoints', 'users' do
+    let(:attributable) { user }
+  end
 end

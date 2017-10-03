@@ -64,6 +64,7 @@ class Project < ActiveRecord::Base
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
+  after_create :check_repository_absence!
   after_create :ensure_storage_path_exists
   after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
@@ -72,6 +73,7 @@ class Project < ActiveRecord::Base
   attr_accessor :old_path_with_namespace
   attr_accessor :template_name
   attr_writer :pipeline_status
+  attr_accessor :skip_disk_validation
 
   alias_attribute :title, :name
 
@@ -227,7 +229,7 @@ class Project < ActiveRecord::Base
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
-  validate :can_create_repository?, on: [:create, :update], if: ->(project) { !project.persisted? || project.renamed? }
+  validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -244,6 +246,9 @@ class Project < ActiveRecord::Base
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
+
+  scope :with_hashed_storage, -> { where('storage_version >= 1') }
+  scope :with_legacy_storage, -> { where(storage_version: [nil, 0]) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -1015,12 +1020,15 @@ class Project < ActiveRecord::Base
   end
 
   # Check if repository already exists on disk
-  def can_create_repository?
+  def check_repository_path_availability
+    return true if skip_disk_validation
     return false unless repository_storage_path
 
     expires_full_path_cache # we need to clear cache to validate renames correctly
 
-    if gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
+    # Check if repository with same path already exists on disk we can
+    # skip this for the hashed storage because the path does not change
+    if legacy_storage? && repository_with_same_path_already_exists?
       errors.add(:base, 'There is already a repository with that name on disk')
       return false
     end
@@ -1032,7 +1040,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+    if gitlab_shell.add_repository(repository_storage, disk_path)
       repository.after_create
       true
     else
@@ -1550,18 +1558,72 @@ class Project < ActiveRecord::Base
   end
 
   def legacy_storage?
-    self.storage_version.nil?
+    [nil, 0].include?(self.storage_version)
+  end
+
+  def hashed_storage?
+    self.storage_version && self.storage_version >= 1
   end
 
   def renamed?
     persisted? && path_changed?
   end
 
+  def merge_method
+    if self.merge_requests_ff_only_enabled
+      :ff
+    elsif self.merge_requests_rebase_enabled
+      :rebase_merge
+    else
+      :merge
+    end
+  end
+
+  def merge_method=(method)
+    case method.to_s
+    when "ff"
+      self.merge_requests_ff_only_enabled = true
+      self.merge_requests_rebase_enabled = true
+    when "rebase_merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = true
+    when "merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = false
+    end
+  end
+
+  def ff_merge_must_be_possible?
+    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
+
+  def migrate_to_hashed_storage!
+    return if hashed_storage?
+
+    update!(repository_read_only: true)
+
+    if repo_reference_count > 0 || wiki_reference_count > 0
+      ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      ProjectMigrateHashedStorageWorker.perform_async(id)
+    end
+  end
+
+  def storage_version=(value)
+    super
+
+    @storage = nil if storage_version_changed?
+  end
+
+  def gl_repository(is_wiki:)
+    Gitlab::GlRepository.gl_repository(self, is_wiki)
+  end
+
   private
 
   def storage
     @storage ||=
-      if self.storage_version && self.storage_version >= 1
+      if hashed_storage?
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)
@@ -1572,6 +1634,27 @@ class Project < ActiveRecord::Base
     if self.new_record? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
+  end
+
+  def repo_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+  end
+
+  def wiki_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
+  end
+
+  def check_repository_absence!
+    return if skip_disk_validation
+
+    if repository_storage_path.blank? || repository_with_same_path_already_exists?
+      errors.add(:base, 'There is already a repository with that name on disk')
+      throw :abort
+    end
+  end
+
+  def repository_with_same_path_already_exists?
+    gitlab_shell.exists?(repository_storage_path, "#{disk_path}.git")
   end
 
   # set last_activity_at to the same as created_at

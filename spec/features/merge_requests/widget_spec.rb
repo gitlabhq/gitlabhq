@@ -202,6 +202,28 @@ describe 'Merge request', :js do
     end
   end
 
+  context 'view merge request where fast-forward merge is not possible' do
+    before do
+      project.update(merge_requests_ff_only_enabled: true)
+
+      merge_request.update(
+        merge_user: merge_request.author,
+        merge_status: :cannot_be_merged
+      )
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows information about the merge error' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Fast-forward merge is not possible')
+      end
+    end
+  end
+
   context 'merge error' do
     before do
       allow_any_instance_of(Repository).to receive(:merge).and_return(false)

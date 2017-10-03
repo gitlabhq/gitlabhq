@@ -77,6 +77,18 @@
           word-wrap: break-word;
         }
       }
+
+      &.left-side-selected {
+        td.line_content.parallel.right-side {
+          @include user-select(none);
+        }
+      }
+
+      &.right-side-selected {
+        td.line_content.parallel.left-side {
+          @include user-select(none);
+        }
+      }
     }
 
     tr.line_holder.parallel {

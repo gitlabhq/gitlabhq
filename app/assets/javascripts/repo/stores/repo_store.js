@@ -32,7 +32,6 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
-  targetBranch: 'new-branch',
   commitMessage: '',
   binaryTypes: {
     png: false,
@@ -84,7 +83,7 @@ const RepoStore = {
         }).catch(Helper.loadingError);
     }
 
-    if (!file.loading) Helper.updateHistoryEntry(file.url, file.name);
+    if (!file.loading) Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
     RepoStore.binary = file.binary;
   },
 
