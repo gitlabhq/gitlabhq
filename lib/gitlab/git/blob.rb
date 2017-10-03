@@ -12,15 +12,21 @@ module Gitlab
       # blob data should use load_all_data!.
       MAX_DATA_DISPLAY_SIZE = 10.megabytes
 
+      # These limits are used as a heuristic to ignore files which can't be LFS
+      # pointers. The format of these is described in
+      # https://github.com/git-lfs/git-lfs/blob/master/docs/spec.md#the-pointer
+      LFS_POINTER_MIN_SIZE = 120.bytes
+      LFS_POINTER_MAX_SIZE = 200.bytes
+
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
-        def find(repository, sha, path)
+        def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
             if is_enabled
-              find_by_gitaly(repository, sha, path)
+              find_by_gitaly(repository, sha, path, limit: limit)
             else
-              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+              find_by_rugged(repository, sha, path, limit: limit)
             end
           end
         end
@@ -56,6 +62,12 @@ module Gitlab
           blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
           blob_references.map do |sha, path|
             find_by_rugged(repository, sha, path, limit: blob_size_limit)
+          end
+        end
+
+        def batch_metadata(repository, blob_oids)
+          blob_references.map do |sha, path|
+            find(repository, sha, path, limit: LFS_POINTER_MAX_SIZE)
           end
         end
 
@@ -108,11 +120,11 @@ module Gitlab
           )
         end
 
-        def find_by_gitaly(repository, sha, path)
+        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, limit)
           return unless entry
 
           case entry.type
