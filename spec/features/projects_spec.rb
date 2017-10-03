@@ -77,6 +77,55 @@ feature 'Project' do
     end
   end
 
+  describe 'showing information about source of a project fork' do
+    let(:user) { create(:user) }
+    let(:base_project)  { create(:project, :public, :repository) }
+    let(:forked_project) { fork_project(base_project, user, repository: true) }
+
+    before do
+      sign_in user
+    end
+
+    it 'shows a link to the source project when it is available' do
+      visit project_path(forked_project)
+
+      expect(page).to have_content('Forked from')
+      expect(page).to have_link(base_project.full_name)
+    end
+
+    it 'does not contain fork network information for the root project' do
+      forked_project
+
+      visit project_path(base_project)
+
+      expect(page).not_to have_content('In fork network of')
+      expect(page).not_to have_content('Forked from')
+    end
+
+    it 'shows the name of the deleted project when the source was deleted' do
+      forked_project
+      Projects::DestroyService.new(base_project, base_project.owner).execute
+
+      visit project_path(forked_project)
+
+      expect(page).to have_content("Forked from #{base_project.full_name} (deleted)")
+    end
+
+    context 'a fork of a fork' do
+      let(:fork_of_fork) { fork_project(forked_project, user, repository: true) }
+
+      it 'links to the base project if the source project is removed' do
+        fork_of_fork
+        Projects::DestroyService.new(forked_project, user).execute
+
+        visit project_path(fork_of_fork)
+
+        expect(page).to have_content("Forked from")
+        expect(page).to have_link(base_project.full_name)
+      end
+    end
+  end
+
   describe 'removal', js: true do
     let(:user)    { create(:user, username: 'test', name: 'test') }
     let(:project) { create(:project, namespace: user.namespace, name: 'project1') }

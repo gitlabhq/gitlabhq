@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-04 17:48+0100\n"
-"PO-Revision-Date: 2017-10-04 17:48+0100\n"
+"POT-Creation-Date: 2017-10-06 22:39+0200\n"
+"PO-Revision-Date: 2017-10-06 22:39+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -439,6 +439,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "Clone repository"
+msgstr ""
+
 msgid "Close"
 msgstr ""
 
@@ -700,6 +703,9 @@ msgstr[1] ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
+msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -796,6 +802,11 @@ msgstr ""
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
+msgid "Instance"
+msgid_plural "Instances"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Interval Pattern"
 msgstr ""
 
@@ -877,6 +888,12 @@ msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Lock"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "Locked Files"
 msgstr ""
@@ -1018,7 +1035,13 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "Only project members can comment."
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
+msgstr ""
+
+msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
@@ -1043,6 +1066,9 @@ msgid "Pagination|« First"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "People without permission will never get a notification and won\\'t be able to comment."
 msgstr ""
 
 msgid "Pipeline"
@@ -1371,6 +1397,9 @@ msgstr[1] ""
 msgid "Snippets"
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+msgstr ""
+
 msgid "SortOptions|Access level, ascending"
 msgstr ""
 
@@ -1565,10 +1594,22 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "This is a confidential issue."
+msgstr ""
+
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
+msgid "This issue is confidential and locked."
+msgstr ""
+
+msgid "This issue is locked."
+msgstr ""
+
 msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
+msgid "This merge request is locked."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -1649,9 +1690,6 @@ msgstr ""
 msgid "Timeago|a week ago"
 msgstr ""
 
-msgid "Timeago|a while"
-msgstr ""
-
 msgid "Timeago|a year ago"
 msgstr ""
 
@@ -1703,6 +1741,9 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
+msgid "Timeago|in a while"
+msgstr ""
+
 msgid "Timeago|less than a minute ago"
 msgstr ""
 
@@ -1726,6 +1767,12 @@ msgid "Total test time for all commits/merges"
 msgstr ""
 
 msgid "Track activity with Contribution Analytics."
+msgstr ""
+
+msgid "Unlock"
+msgstr ""
+
+msgid "Unlocked"
 msgstr ""
 
 msgid "Unstar"
@@ -1896,6 +1943,9 @@ msgstr ""
 msgid "Wiki|Wiki Pages"
 msgstr ""
 
+msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
+msgstr ""
+
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -1942,6 +1992,9 @@ msgid "You won't be able to pull or push project code via %{protocol} until you 
 msgstr ""
 
 msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
+msgstr ""
+
+msgid "Your comment will not be visible to the public."
 msgstr ""
 
 msgid "Your name"
