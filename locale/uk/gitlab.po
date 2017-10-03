@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-15 05:20-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:43-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -31,29 +31,35 @@ msgstr[2] "%s доданих коммітів були виключені для
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} комміт %{commit_timeago}"
 
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr "%{number_of_failures} від %{maximum_failures} невдач. GitLab надасть доступ на наступну спробу."
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
-msgstr ""
+msgstr "%{number_of_failures} із %{maximum_failures} невдач. GitLab заблокує доступ на %{number_of_seconds} секунд."
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
+msgstr "%{number_of_failures} від %{maximum_failures} невдач. GitLab автоматично не повторюватиме спробу. Скиньте інформацію сховища при усуненні проблеми."
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%{storage_name}: спроба невдалого доступу до сховища на хості:"
+msgstr[1] "%{storage_name}: %{failed_attempts} невдалі спроби доступу до сховища:"
+msgstr[2] "%{storage_name}: %{failed_attempts} невдалих спроб доступу до сховища:"
 
 msgid "(checkout the %{link} for information on how to install it)."
-msgstr ""
+msgstr "(перейдіть за посиланням %{link} для отримання інформації стосовно встановлення)."
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] "1 конвеєр"
 msgstr[1] "%d конвеєра"
 msgstr[2] "%d конвеєрів"
+
+msgid "1st contribution!"
+msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Це набір графічних елементів для безперервної інтеграції"
@@ -62,16 +68,16 @@ msgid "About auto deploy"
 msgstr "Про авто розгортання"
 
 msgid "Abuse Reports"
-msgstr ""
+msgstr "Звіти про зловживання"
 
 msgid "Access Tokens"
-msgstr ""
+msgstr "Токени доступу"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
+msgstr "Доступ до помилкових сховищ тимчасово відключений для можливості монтування та відновлення. Скиньте інформацію про сховища після усунення проблеми, щоб дозволити доступ."
 
 msgid "Account"
-msgstr ""
+msgstr "Обліковий запис"
 
 msgid "Active"
 msgstr "Активний"
@@ -97,11 +103,11 @@ msgstr "Додати новий каталог"
 msgid "All"
 msgstr "Всі"
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
-msgstr ""
+msgstr "Додатки"
 
 msgid "Archived project! Repository is read-only"
 msgstr "Заархівований проект! Репозиторій доступний лише для читання"
@@ -116,15 +122,39 @@ msgid "Are you sure you want to reset registration token?"
 msgstr "Ви впевнені, що бажаєте скинути реєстраційний токен?"
 
 msgid "Are you sure you want to reset the health check token?"
-msgstr ""
+msgstr "Ви впевнені, що Ви хочете скинути цей ключ перевірки працездатності?"
 
 msgid "Are you sure?"
+msgstr "Ви впевнені?"
+
+msgid "Artifacts"
 msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Прикріпити файл за допомогою перетягування або %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -181,6 +211,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "Гілка"
@@ -199,6 +232,90 @@ msgstr "Переключити гілку"
 msgid "Branches"
 msgstr "Гілки"
 
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
+msgstr ""
+
 msgid "Browse Directory"
 msgstr "Переглянути каталог"
 
@@ -215,7 +332,7 @@ msgid "ByAuthor|by"
 msgstr "від"
 
 msgid "CI / CD"
-msgstr ""
+msgstr "CI / CD"
 
 msgid "CI configuration"
 msgstr "Налаштування CI"
@@ -224,7 +341,7 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 msgid "Cancel edit"
-msgstr ""
+msgstr "Відмінити правку"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr "Вибрати в гілці"
@@ -245,7 +362,7 @@ msgid "Charts"
 msgstr "Графіки"
 
 msgid "Chat"
-msgstr ""
+msgstr "Чат"
 
 msgid "Cherry-pick this commit"
 msgstr "Cherry-pick в цьому комміті"
@@ -308,7 +425,7 @@ msgid "CiStatus|running"
 msgstr "виконується"
 
 msgid "Comments"
-msgstr ""
+msgstr "Коментарі"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -343,9 +460,6 @@ msgstr "Комміт від"
 msgid "Compare"
 msgstr "Порівняти"
 
-msgid "Container Registry"
-msgstr ""
-
 msgid "Contribution guide"
 msgstr "Керівництво контриб’юторів"
 
@@ -365,7 +479,7 @@ msgid "Create New Directory"
 msgstr "Створити новий каталог"
 
 msgid "Create a new branch"
-msgstr ""
+msgstr "Створити нову гілку"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Створити токен доступу для вашого аккауета, щоб відправляти або отримувати через %{protocol}."
@@ -443,19 +557,19 @@ msgstr[1] "Розгортання"
 msgstr[2] "Розгортань"
 
 msgid "Deploy Keys"
-msgstr ""
+msgstr "Ключи для розгортування"
 
 msgid "Description"
 msgstr "Опис"
 
 msgid "Details"
-msgstr ""
+msgstr "Деталі"
 
 msgid "Directory name"
 msgstr "Ім'я каталогу"
 
 msgid "Discard changes"
-msgstr ""
+msgstr "Скасувати зміни"
 
 msgid "Don't show again"
 msgstr "Не показувати знову"
@@ -494,25 +608,28 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "Редагувати Розклад Конвеєра %{id}"
 
 msgid "Emails"
+msgstr "Адреси електронної пошти"
+
+msgid "Enable in settings"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
-msgstr ""
+msgstr "Всі"
 
 msgid "EventFilterBy|Filter by comments"
-msgstr ""
+msgstr "Коментарю"
 
 msgid "EventFilterBy|Filter by issue events"
-msgstr ""
+msgstr "Проблеми"
 
 msgid "EventFilterBy|Filter by merge events"
-msgstr ""
+msgstr "Запити на злиття"
 
 msgid "EventFilterBy|Filter by push events"
-msgstr ""
+msgstr "По відправленні комміту"
 
 msgid "EventFilterBy|Filter by team"
-msgstr ""
+msgstr "За командою"
 
 msgid "Every day (at 4:00am)"
 msgstr "Кожен день (в 4:00 ранку)"
@@ -522,6 +639,9 @@ msgstr "Кожен місяць (1-го числа о 4:00 ранку)"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "Щотижня (в неділю о 4:00 ранку)"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "Не вдалося змінити власника"
@@ -563,16 +683,16 @@ msgid "From merge request merge until deploy to production"
 msgstr "З об'єднання запиту злиття до розгортання на ПРОД"
 
 msgid "GPG Keys"
-msgstr ""
+msgstr "GPG ключі"
 
 msgid "Geo Nodes"
 msgstr ""
 
 msgid "Git storage health information has been reset"
-msgstr ""
+msgstr "Інформація про статус зберігання Git була скинута"
 
 msgid "GitLab Runner section"
-msgstr ""
+msgstr "Розділ GitLab Runner"
 
 msgid "Go to your fork"
 msgstr "Перейти до вашого форку"
@@ -580,32 +700,47 @@ msgstr "Перейти до вашого форку"
 msgid "GoToYourFork|Fork"
 msgstr "Форк"
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
-msgstr ""
+msgstr "Перевірки працездатності"
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
-msgstr ""
+msgstr "Інформацію про працездатність можна отримати з наступних ендпойнтів. Більше інформації доступно"
 
 msgid "HealthCheck|Access token is"
-msgstr ""
+msgstr "Токен доступу є"
 
 msgid "HealthCheck|Healthy"
-msgstr ""
+msgstr "Здоровий"
 
 msgid "HealthCheck|No Health Problems Detected"
-msgstr ""
+msgstr "Жодних проблем із здоров'ям не виявлено"
 
 msgid "HealthCheck|Unhealthy"
-msgstr ""
-
-msgid "Home"
-msgstr "Головна"
-
-msgid "Hooks"
-msgstr ""
+msgstr "Нездорові"
 
 msgid "Housekeeping successfully started"
 msgstr "Очищення успішно розпочато"
@@ -614,7 +749,7 @@ msgid "Import repository"
 msgstr "Імпорт репозеторія"
 
 msgid "Install a Runner compatible with GitLab CI"
-msgstr ""
+msgstr "Встановіть Runner, сумісний з GitLab CI"
 
 msgid "Interval Pattern"
 msgstr "Шаблон інтервалу"
@@ -623,9 +758,12 @@ msgid "Introducing Cycle Analytics"
 msgstr "Представляємо аналітику циклу"
 
 msgid "Issue events"
-msgstr ""
+msgstr "Події проблем"
 
 msgid "Issues"
+msgstr "Проблеми"
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -635,7 +773,7 @@ msgid "LFSStatus|Enabled"
 msgstr "Увімкнено"
 
 msgid "Labels"
-msgstr ""
+msgstr "Мітки"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -653,10 +791,10 @@ msgid "Last commit"
 msgstr "Останній комміт"
 
 msgid "LastPushEvent|You pushed to"
-msgstr ""
+msgstr "Ви надіслали зміни до"
 
 msgid "LastPushEvent|at"
-msgstr ""
+msgstr "в"
 
 msgid "Learn more in the"
 msgstr "Дізнайтесь більше"
@@ -686,25 +824,28 @@ msgid "Median"
 msgstr "Медіана"
 
 msgid "Members"
-msgstr ""
+msgstr "Користувачі"
 
 msgid "Merge Requests"
-msgstr ""
+msgstr "Запит на злиття"
 
 msgid "Merge events"
+msgstr "Події запит на злиття"
+
+msgid "Merge request"
 msgstr ""
 
 msgid "Messages"
-msgstr ""
+msgstr "Повідомлення"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "не додасте SSH ключ"
 
 msgid "Monitoring"
-msgstr ""
+msgstr "Моніторинг"
 
 msgid "More information is available|here"
-msgstr ""
+msgstr "тут"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -806,7 +947,7 @@ msgid "NotificationLevel|Watch"
 msgstr "Відстежувати"
 
 msgid "Notifications"
-msgstr ""
+msgstr "Сповіщення"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Фільтр"
@@ -818,13 +959,25 @@ msgid "Options"
 msgstr "Параметри"
 
 msgid "Overview"
-msgstr ""
+msgstr "Огляд"
 
 msgid "Owner"
 msgstr "Власник"
 
-msgid "Password"
+msgid "Pagination|Last »"
 msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
+msgid "Password"
+msgstr "Пароль"
 
 msgid "Pipeline"
 msgstr "Конвеєр"
@@ -905,13 +1058,13 @@ msgid "Pipelines charts"
 msgstr "Чарти Конвеєрів"
 
 msgid "Pipelines for last month"
-msgstr ""
+msgstr "Конвеєри за останній місяць"
 
 msgid "Pipelines for last week"
-msgstr ""
+msgstr "Конвеєри за останній тиждень"
 
 msgid "Pipelines for last year"
-msgstr ""
+msgstr "Конвеєри за останній рік"
 
 msgid "Pipeline|all"
 msgstr "всі"
@@ -926,12 +1079,9 @@ msgid "Pipeline|with stages"
 msgstr "зі стадіями"
 
 msgid "Preferences"
-msgstr ""
+msgstr "Налаштування"
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -950,7 +1100,7 @@ msgid "Project access must be granted explicitly to each user."
 msgstr "Доступ до проекту повинен надаватися кожному користувачеві."
 
 msgid "Project details"
-msgstr ""
+msgstr "Деталі проекту"
 
 msgid "Project export could not be deleted."
 msgstr "Неможливо видалити експорт проекту."
@@ -964,14 +1114,8 @@ msgstr "Закінчився термін дії посилання на про�
 msgid "Project export started. A download link will be sent by email."
 msgstr "Розпочато експорт проекту. Посилання для скачування буде надіслана електронною поштою."
 
-msgid "Project home"
-msgstr "Домашня сторінка проекту"
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
+msgstr "Підписатися"
 
 msgid "ProjectFeature|Disabled"
 msgstr "Вимкнено"
@@ -994,29 +1138,32 @@ msgstr "Етап"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Історія"
 
-msgid "Push Rules"
+msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
+msgstr "Завантаження проектів"
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr "Проекти, які ви часто відвідуєте, будуть відображені тут"
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr "Пошук по ваших проектах"
+
+msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
-msgstr ""
-
-msgid "ProjectsDropdown|Projects you visit often will appear here"
-msgstr ""
-
-msgid "ProjectsDropdown|Search your projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Something went wrong on our end"
-msgstr ""
+msgstr "На жаль, по вашоу запиту проектів не знайдено"
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr "Ця функція потребує підтримки localStorage вашим браузером"
+
+msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
-msgstr ""
+msgstr "Push події"
 
 msgid "Read more"
 msgstr "Докладніше"
@@ -1029,6 +1176,9 @@ msgstr "Гілки"
 
 msgid "RefSwitcher|Tags"
 msgstr "Теги"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "Пов'язані Комміти"
@@ -1055,19 +1205,19 @@ msgid "Remove project"
 msgstr "Видалити проект"
 
 msgid "Repository"
-msgstr ""
+msgstr "Репозиторій"
 
 msgid "Request Access"
 msgstr "Запит доступу"
 
 msgid "Reset git storage health information"
-msgstr ""
+msgstr "Скиньте інформацію про працездатність сховища git"
 
 msgid "Reset health check access token"
-msgstr ""
+msgstr "Скиньте токен доступу для перевірки перевірки працездатності"
 
 msgid "Reset runners registration token"
-msgstr ""
+msgstr "Скинути реєстраційний токен runner-ів"
 
 msgid "Revert this commit"
 msgstr "Скасувати цей комміт"
@@ -1076,13 +1226,16 @@ msgid "Revert this merge request"
 msgstr "Скасувати цей запит на злиття"
 
 msgid "SSH Keys"
-msgstr ""
+msgstr "Ключі SSH"
 
 msgid "Save pipeline schedule"
 msgstr "Зберегти Розклад Конвеєра"
 
 msgid "Schedule a new pipeline"
 msgstr "Розклад нового конвеєра"
+
+msgid "Schedules"
+msgstr ""
 
 msgid "Scheduling Pipelines"
 msgstr "Планування конвеєрів"
@@ -1097,13 +1250,13 @@ msgid "Select a timezone"
 msgstr "Вибрати часовий пояс"
 
 msgid "Select existing branch"
-msgstr ""
+msgstr "Виберіть гілку"
 
 msgid "Select target branch"
 msgstr "Вибір цільової гілки"
 
 msgid "Service Templates"
-msgstr ""
+msgstr "Сервіс шаблонів"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Встановіть пароль свого облікового запису, щоб відправляти або отримувати код через %{protocol}."
@@ -1121,6 +1274,12 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr "встановити пароль"
 
 msgid "Settings"
+msgstr "Налаштування"
+
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
 msgstr ""
 
 msgid "Showing %d event"
@@ -1130,28 +1289,130 @@ msgstr[1] "Показано %d події"
 msgstr[2] "Показано %d подій"
 
 msgid "Snippets"
+msgstr "Фрагменти"
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
 msgstr "Код"
 
 msgid "Spam Logs"
-msgstr ""
+msgstr "Спам-журнал"
 
 msgid "Specify the following URL during the Runner setup:"
-msgstr ""
+msgstr "Зазначте наступний URL під час встановлення Runner-а:"
 
 msgid "StarProject|Star"
 msgstr "Підписатися"
+
+msgid "Starred projects"
+msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Почати %{new_merge_request} з цих змін"
 
 msgid "Start the Runner!"
-msgstr ""
+msgstr "Запустіть Runner!"
 
 msgid "Switch branch/tag"
 msgstr "тег"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1166,7 +1427,7 @@ msgid "Target Branch"
 msgstr "Цільова гілка"
 
 msgid "Team"
-msgstr ""
+msgstr "Команда"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "На стадії написання коду, показує час першого комміту до створення запиту на об'єднання. Дані будуть автоматично додані після створення вашого першого запиту на об'єднання."
@@ -1217,6 +1478,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "Середнє значення в рядку. Приклад: між 3, 5, 9, середніми 5, між 3, 5, 7, 8, середніми (5 + 7) / 2 = 6."
 
 msgid "There are problems accessing Git storage: "
+msgstr "Є проблеми з доступом до сховища: "
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1391,13 +1655,19 @@ msgid "UploadLink|click to upload"
 msgstr "Натисніть, щоб завантажити"
 
 msgid "Use the following registration token during setup:"
-msgstr ""
+msgstr "Використовувати токен під час установки:"
 
 msgid "Use your global notification setting"
 msgstr "Використовуються глобальні налаштування повідомлень"
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "Перегляд відкритих запитів на злиття"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "Внутрішній"
@@ -1418,7 +1688,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "Ми не маємо достатньо даних для показу цього етапу."
 
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 msgid "Withdraw Access Request"
 msgstr "Скасувати запит доступу"
@@ -1470,6 +1740,12 @@ msgstr "Ви не зможете отримувати і відправляти 
 
 msgid "Your name"
 msgstr "Ваше ім'я"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

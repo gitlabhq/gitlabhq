@@ -4,6 +4,7 @@ describe Gitlab::OAuth::User do
   let(:oauth_user) { described_class.new(auth_hash) }
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
+  let(:dn) { 'uid=user1,ou=People,dc=example' }
   let(:provider) { 'my-provider' }
   let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
   let(:info_hash) do
@@ -197,7 +198,7 @@ describe Gitlab::OAuth::User do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
               allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
-              allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
+              allow(ldap_user).to receive(:dn) { dn }
             end
 
             context "and no account for the LDAP user" do
@@ -213,7 +214,7 @@ describe Gitlab::OAuth::User do
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
-                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                    { provider: 'ldapmain', extern_uid: dn },
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
@@ -221,7 +222,7 @@ describe Gitlab::OAuth::User do
             end
 
             context "and LDAP user has an account already" do
-              let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
+              let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
               it "adds the omniauth identity to the LDAP account" do
                 allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
 
@@ -234,7 +235,7 @@ describe Gitlab::OAuth::User do
                 identities_as_hash = gl_user.identities.map { |id| { provider: id.provider, extern_uid: id.extern_uid } }
                 expect(identities_as_hash).to match_array(
                   [
-                    { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                    { provider: 'ldapmain', extern_uid: dn },
                     { provider: 'twitter', extern_uid: uid }
                   ]
                 )
@@ -252,7 +253,7 @@ describe Gitlab::OAuth::User do
                 expect(identities_as_hash)
                   .to match_array(
                     [
-                      { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
+                      { provider: 'ldapmain', extern_uid: dn },
                       { provider: 'twitter', extern_uid: uid }
                     ]
                   )
@@ -310,8 +311,8 @@ describe Gitlab::OAuth::User do
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
           allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
-          allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
-          allow(oauth_user).to receive(:ldap_person).and_return(ldap_user)
+          allow(ldap_user).to receive(:dn) { dn }
+          allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
         end
 
         context "and no account for the LDAP user" do
@@ -341,7 +342,7 @@ describe Gitlab::OAuth::User do
         end
 
         context 'and LDAP user has an account already' do
-          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
+          let!(:existing_user) { create(:omniauth_user, email: 'john@example.com', extern_uid: dn, provider: 'ldapmain', username: 'john') }
 
           context 'dont block on create (LDAP)' do
             before do

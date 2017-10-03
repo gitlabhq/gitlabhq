@@ -174,7 +174,7 @@ class ProjectWiki
   private
 
   def init_repo(disk_path)
-    gitlab_shell.add_repository(project.repository_storage_path, disk_path)
+    gitlab_shell.add_repository(project.repository_storage, disk_path)
   end
 
   def commit_details(action, message = nil, title = nil)

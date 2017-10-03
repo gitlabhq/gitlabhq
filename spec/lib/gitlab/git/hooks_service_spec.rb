@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::HooksService, seed_helper: true do
-  let(:user) { Gitlab::Git::User.new('Jane Doe', 'janedoe@example.com', 'user-456') }
+  let(:user) { Gitlab::Git::User.new('janedoe', 'Jane Doe', 'janedoe@example.com', 'user-456') }
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, 'project-123') }
   let(:service) { described_class.new }
 

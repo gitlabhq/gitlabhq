@@ -434,7 +434,7 @@ module Ci
     def update_duration
       return unless started_at
 
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
+      self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
     def execute_hooks

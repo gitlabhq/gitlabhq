@@ -120,6 +120,40 @@ describe Projects::NotesController do
         expect(note_json[:diff_discussion_html]).to be_nil
       end
     end
+
+    context 'with cross-reference system note', :request_store do
+      let(:new_issue) { create(:issue) }
+      let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+
+      before do
+        note
+        create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+      end
+
+      it 'filters notes that the user should not see' do
+        get :index, request_params
+
+        expect(parsed_response[:notes].count).to eq(1)
+        expect(note_json[:id]).to eq(note.id)
+      end
+
+      it 'does not result in N+1 queries' do
+        # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
+        get :index, request_params
+
+        RequestStore.clear!
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get :index, request_params
+        end.count
+
+        RequestStore.clear!
+
+        create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+
+        expect { get :index, request_params }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   describe 'POST create' do

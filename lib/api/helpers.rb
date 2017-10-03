@@ -3,6 +3,8 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
+    UnauthorizedError = Class.new(StandardError)
+
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
@@ -139,7 +141,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user && can?(initial_current_user, :access_api)
+      unauthorized! unless current_user
     end
 
     def authenticate_non_get!
@@ -397,17 +399,25 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
-      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= find_user_from_warden
 
-        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-          @initial_current_user = nil
-        end
-
-        @initial_current_user
+      begin
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
+      rescue APIGuard::UnauthorizedError, UnauthorizedError
+        unauthorized!
       end
+    end
+
+    def find_current_user
+      user =
+        find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
+        doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
+        find_user_from_warden
+
+      return nil unless user
+
+      raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+
+      user
     end
 
     def sudo!
@@ -454,10 +464,12 @@ module API
       header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
-    # The Grape Error Middleware only has access to env but no params. We workaround this by
-    # defining a method that returns the right value.
+    # The Grape Error Middleware only has access to `env` but not `params` nor
+    # `request`. We workaround this by defining methods that returns the right
+    # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
     # We could get a Grape or a standard Ruby exception. We should only report anything that

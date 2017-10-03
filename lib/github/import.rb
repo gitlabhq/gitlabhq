@@ -1,45 +1,12 @@
 require_relative 'error'
+require_relative 'import/issue'
+require_relative 'import/legacy_diff_note'
+require_relative 'import/merge_request'
+require_relative 'import/note'
 
 module Github
   class Import
     include Gitlab::ShellAdapter
-
-    class MergeRequest < ::MergeRequest
-      self.table_name = 'merge_requests'
-
-      self.reset_callbacks :create
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Issue < ::Issue
-      self.table_name = 'issues'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :create
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Note < ::Note
-      self.table_name = 'notes'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class LegacyDiffNote < ::LegacyDiffNote
-      self.table_name = 'notes'
-
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
 
     attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
                 :options, :errors, :cached, :verbose
@@ -202,13 +169,8 @@ module Github
             merge_request.save!(validate: false)
             merge_request.merge_request_diffs.create
 
-            # Fetch review comments
             review_comments_url = "/repos/#{repo}/pulls/#{pull_request.iid}/comments"
             fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
-
-            # Fetch comments
-            comments_url = "/repos/#{repo}/issues/#{pull_request.iid}/comments"
-            fetch_comments(merge_request, :comment, comments_url)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
@@ -241,12 +203,17 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return unless representation.has_labels?
+          return unless representation.has_labels? || representation.has_comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
-          merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+
+          if representation.has_labels?
+            merge_request.update_attribute(:label_ids, label_ids(representation.labels))
+          end
+
+          fetch_comments_conditionally(merge_request, representation)
         else
-          return if Issue.where(iid: representation.iid, project_id: project.id).exists?
+          return if Issue.exists?(iid: representation.iid, project_id: project.id)
 
           author_id          = user_id(representation.author, project.creator_id)
           issue              = Issue.new
@@ -263,14 +230,17 @@ module Github
           issue.updated_at   = representation.updated_at
           issue.save!(validate: false)
 
-          # Fetch comments
-          if representation.has_comments?
-            comments_url = "/repos/#{repo}/issues/#{issue.iid}/comments"
-            fetch_comments(issue, :comment, comments_url)
-          end
+          fetch_comments_conditionally(issue, representation)
         end
       rescue => e
         error(:issue, representation.url, e.message)
+      end
+    end
+
+    def fetch_comments_conditionally(issuable, representation)
+      if representation.has_comments?
+        comments_url = "/repos/#{repo}/issues/#{issuable.iid}/comments"
+        fetch_comments(issuable, :comment, comments_url)
       end
     end
 

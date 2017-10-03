@@ -446,7 +446,7 @@ describe 'Copy as GFM', js: true do
     def verify(label, *gfms)
       aggregate_failures(label) do
         gfms.each do |gfm|
-          html = gfm_to_html(gfm)
+          html = gfm_to_html(gfm).gsub(/\A&#x000A;|&#x000A;\z/, '')
           output_gfm = html_to_gfm(html)
           expect(output_gfm.strip).to eq(gfm.strip)
         end
@@ -463,42 +463,98 @@ describe 'Copy as GFM', js: true do
     let(:project) { create(:project, :repository) }
 
     context 'from a diff' do
-      before do
-        visit project_commit_path(project, sample_commit.id)
-      end
+      shared_examples 'copying code from a diff' do
+        context 'selecting one word of text' do
+          it 'copies as inline code' do
+            verify(
+              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"] .line .no',
 
-      context 'selecting one word of text' do
-        it 'copies as inline code' do
-          verify(
-            '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"] .line .no',
+              '`RuntimeError`',
 
-            '`RuntimeError`'
-          )
+              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
+            )
+          end
+        end
+
+        context 'selecting one line of text' do
+          it 'copies as inline code' do
+            verify(
+              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]',
+
+              '`raise RuntimeError, "System commands must be given as an array of strings"`',
+
+              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
+            )
+          end
+        end
+
+        context 'selecting multiple lines of text' do
+          it 'copies as a code block' do
+            verify(
+              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
+
+              <<-GFM.strip_heredoc,
+                ```ruby
+                      raise RuntimeError, "System commands must be given as an array of strings"
+                    end
+                ```
+              GFM
+
+              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'
+            )
+          end
         end
       end
 
-      context 'selecting one line of text' do
-        it 'copies as inline code' do
-          verify(
-            '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"] .line',
-
-            '`raise RuntimeError, "System commands must be given as an array of strings"`'
-          )
+      context 'inline diff' do
+        before do
+          visit project_commit_path(project, sample_commit.id, view: 'inline')
         end
+
+        it_behaves_like 'copying code from a diff'
       end
 
-      context 'selecting multiple lines of text' do
-        it 'copies as a code block' do
-          verify(
-            '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
+      context 'parallel diff' do
+        before do
+          visit project_commit_path(project, sample_commit.id, view: 'parallel')
+        end
 
-            <<-GFM.strip_heredoc,
-              ```ruby
-                    raise RuntimeError, "System commands must be given as an array of strings"
-                  end
-              ```
-            GFM
-          )
+        it_behaves_like 'copying code from a diff'
+
+        context 'selecting code on the left' do
+          it 'copies as a code block' do
+            verify(
+              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
+
+              <<-GFM.strip_heredoc,
+                ```ruby
+                    unless cmd.is_a?(Array)
+                      raise "System commands must be given as an array of strings"
+                    end
+                ```
+              GFM
+
+              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].left-side'
+            )
+          end
+        end
+
+        context 'selecting code on the right' do
+          it 'copies as a code block' do
+            verify(
+              '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"], [id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10"]',
+
+              <<-GFM.strip_heredoc,
+                ```ruby
+                    unless cmd.is_a?(Array)
+                      raise RuntimeError, "System commands must be given as an array of strings"
+                    end
+                ```
+              GFM
+
+              target: '[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8"].right-side'
+            )
+          end
         end
       end
     end
@@ -587,9 +643,9 @@ describe 'Copy as GFM', js: true do
       end
     end
 
-    def verify(selector, gfm)
+    def verify(selector, gfm, target: nil)
       html = html_for_selector(selector)
-      output_gfm = html_to_gfm(html, 'transformCodeSelection')
+      output_gfm = html_to_gfm(html, 'transformCodeSelection', target: target)
       expect(output_gfm.strip).to eq(gfm.strip)
     end
   end
@@ -605,15 +661,21 @@ describe 'Copy as GFM', js: true do
     page.evaluate_script(js)
   end
 
-  def html_to_gfm(html, transformer = 'transformGFMSelection')
+  def html_to_gfm(html, transformer = 'transformGFMSelection', target: nil)
     js = <<-JS.strip_heredoc
       (function(html) {
         var transformer = window.gl.CopyAsGFM[#{transformer.inspect}];
 
         var node = document.createElement('div');
-        node.innerHTML = html;
+        $(html).each(function() { node.appendChild(this) });
 
-        node = transformer(node);
+        var targetSelector = #{target.to_json};
+        var target;
+        if (targetSelector) {
+          target = document.querySelector(targetSelector);
+        }
+
+        node = transformer(node, target);
         if (!node) return null;
 
         return window.gl.CopyAsGFM.nodeToGFM(node);
