@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diffs URL', js: true do
+feature 'Diffs URL', :js do
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }

@@ -1525,7 +1525,7 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects', truncate: true do
+  describe '#authorized_projects', :truncate do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1877,7 +1877,7 @@ describe User do
     end
   end
 
-  describe '#refresh_authorized_projects', clean_gitlab_redis_shared_state: true do
+  describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
     let(:project1) { create(:project) }
     let(:project2) { create(:project) }
     let(:user) { create(:user) }

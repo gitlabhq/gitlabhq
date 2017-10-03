@@ -10,7 +10,7 @@ feature 'Master deletes tag' do
     visit project_tags_path(project)
   end
 
-  context 'from the tags list page', js: true do
+  context 'from the tags list page', :js do
     scenario 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
@@ -34,7 +34,7 @@ feature 'Master deletes tag' do
     end
   end
 
-  context 'when pre-receive hook fails', js: true do
+  context 'when pre-receive hook fails', :js do
     context 'when Gitaly operation_user_delete_tag feature is enabled' do
       before do
         allow_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rm_tag)
@@ -48,7 +48,7 @@ feature 'Master deletes tag' do
       end
     end
 
-    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly operation_user_delete_tag feature is disabled', :skip_gitaly_mock do
       before do
         allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
           .and_raise(Gitlab::Git::HooksService::PreReceiveError, 'Do not delete tags')

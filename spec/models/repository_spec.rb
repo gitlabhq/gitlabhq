@@ -40,7 +40,7 @@ describe Repository do
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.branch_names_contains(sample_commit.id)
@@ -158,7 +158,7 @@ describe Repository do
 
       it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
 
-      describe 'when storage is broken', broken_storage: true  do
+      describe 'when storage is broken', :broken_storage  do
         it 'should raise a storage error' do
           expect_to_raise_storage_error do
             broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
@@ -171,7 +171,7 @@ describe Repository do
       it_behaves_like 'getting last commit for path'
     end
 
-    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
       it_behaves_like 'getting last commit for path'
     end
   end
@@ -192,7 +192,7 @@ describe Repository do
         is_expected.to eq('c1acaa5')
       end
 
-      describe 'when storage is broken', broken_storage: true  do
+      describe 'when storage is broken', :broken_storage  do
         it 'should raise a storage error' do
           expect_to_raise_storage_error do
             broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
@@ -205,7 +205,7 @@ describe Repository do
       it_behaves_like 'getting last commit ID for path'
     end
 
-    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
       it_behaves_like 'getting last commit ID for path'
     end
   end
@@ -255,11 +255,11 @@ describe Repository do
       it_behaves_like 'finding commits by message'
     end
 
-    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly commits_by_message feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding commits by message'
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
       end
@@ -589,7 +589,7 @@ describe Repository do
       expect(results).to match_array([])
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.search_files_by_content('feature', 'master')
@@ -626,7 +626,7 @@ describe Repository do
       expect(results).to match_array([])
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
       end
@@ -638,7 +638,7 @@ describe Repository do
     # before the actual test call
     set(:broken_repository) { create(:project, :broken_storage).repository }
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
@@ -848,7 +848,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', skip_gitaly_mock: true do
+    context 'with Gitaly disabled', :skip_gitaly_mock do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -1101,7 +1101,7 @@ describe Repository do
       expect(repository.exists?).to eq(false)
     end
 
-    context 'with broken storage', broken_storage: true do
+    context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
@@ -1113,7 +1113,7 @@ describe Repository do
       it_behaves_like 'repo exists check'
     end
 
-    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+    context 'when repository_exists is enabled', :skip_gitaly_mock do
       it_behaves_like 'repo exists check'
     end
   end
@@ -1676,7 +1676,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -1735,7 +1735,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', skip_gitaly_mock: true do
+    context 'with gitaly disabled', :skip_gitaly_mock do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
@@ -1794,7 +1794,7 @@ describe Repository do
       it_behaves_like 'removing tag'
     end
 
-    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly operation_user_delete_tag feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'removing tag'
     end
   end

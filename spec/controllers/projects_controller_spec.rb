@@ -141,7 +141,7 @@ describe ProjectsController do
       end
     end
 
-    context 'when the storage is not available', broken_storage: true do
+    context 'when the storage is not available', :broken_storage do
       set(:project) { create(:project, :broken_storage) }
 
       before do

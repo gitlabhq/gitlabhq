@@ -34,7 +34,7 @@ feature 'Merge request created from fork' do
                               commit_id: merge_request.commit_shas.first)
     end
 
-    scenario 'user can reply to the comment', js: true do
+    scenario 'user can reply to the comment', :js do
       visit_merge_request(merge_request)
 
       expect(page).to have_content(comment)
@@ -57,7 +57,7 @@ feature 'Merge request created from fork' do
       forked_project.destroy!
     end
 
-    scenario 'user can access merge request', js: true do
+    scenario 'user can access merge request', :js do
       visit_merge_request(merge_request)
 
       expect(page).to have_content 'Test merge request'
@@ -78,7 +78,7 @@ feature 'Merge request created from fork' do
       create(:ci_build, pipeline: pipeline, name: 'spinach')
     end
 
-    scenario 'user visits a pipelines page', js: true do
+    scenario 'user visits a pipelines page', :js do
       visit_merge_request(merge_request)
       page.within('.merge-request-tabs') { click_link 'Pipelines' }
 

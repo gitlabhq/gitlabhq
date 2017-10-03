@@ -5,7 +5,7 @@ RSpec.describe 'Dashboard Group' do
     sign_in(create(:user))
   end
 
-  it 'creates new group', js: true do
+  it 'creates new group', :js do
     visit dashboard_groups_path
     find('.btn-new').trigger('click')
     new_path = 'Samurai'
