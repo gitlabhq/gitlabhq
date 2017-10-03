@@ -183,13 +183,20 @@ aren't in the message with id `1 pipeline`.
 
 ### Interpolation
 
-- In Ruby/HAML:
+- In Ruby/HAML (see [sprintf]):
 
     ```ruby
     _("Hello %{name}") % { name: 'Joe' }
     ```
 
-- In JavaScript: Not supported at this moment.
+- In JavaScript: Only named parameters are supported (see also [#37992]):
+
+    ```javascript
+    __("Hello %{name}") % { name: 'Joe' }
+    ```
+
+[sprintf]: http://ruby-doc.org/core/Kernel.html#method-i-sprintf
+[#37992]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37992
 
 ### Plurals
 
