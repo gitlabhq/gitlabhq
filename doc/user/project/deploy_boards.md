@@ -17,6 +17,15 @@ With Deploy Boards you can gain more insight into deploys with benefits such as:
 - Finer state detail (Waiting, Deploying, Finished, Unknown)
 - See [Canary Deployments](canary_deployments.md)
 
+Here's an example of a Deploy Board of the production environment.
+
+![Deploy Boards landing page](img/deploy_boards_landing_page.png)
+
+The squares represent pods in your Kubernetes cluster that are associated with
+the given environment. Hovering above each square you can see the state of a
+deploy rolling out. The percentage is the percent of the pods that are updated
+to the latest release.
+
 Since Deploy Boards are tightly coupled with Kubernetes, there is some required
 knowledge. In particular you should be familiar with:
 
@@ -79,17 +88,6 @@ deploying, finished, unknown), and the Deploy Board status will finally appear.
 GitLab will only display a Deploy Board for top-level environments. Foldered
 environments like `review/*` (usually used for [Review Apps]) won't have a
 Deploy Board attached to them.
-
-## How it works
-
-Here's an example of a Deploy Board of the production environment.
-
-![Deploy Boards landing page](img/deploy_boards_landing_page.png)
-
-The squares represent pods in your Kubernetes cluster that are associated with
-the given environment. Hovering above each square you can see the state of a
-deploy rolling out. The percentage is the percent of the pods that are updated
-to the latest release.
 
 ## Canary Deployments
 
