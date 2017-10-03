@@ -75,7 +75,7 @@ export default {
       <tr>
         <th class="name">Name</th>
         <th class="hidden-sm hidden-xs last-commit">Last Commit</th>
-        <th class="hidden-xs last-update">Last Update</th>
+        <th class="hidden-xs last-update text-right">Last Update</th>
       </tr>
     </thead>
     <tbody>

@@ -514,6 +514,27 @@ describe API::Helpers do
 
       handle_api_exception(exception)
     end
+
+    context 'with a personal access token given' do
+      let(:token) { create(:personal_access_token, scopes: ['api'], user: user) }
+
+      # Regression test for https://gitlab.com/gitlab-org/gitlab-ce/issues/38571
+      it 'does not raise an additional exception because of missing `request`' do
+        # We need to stub at a lower level than #sentry_enabled? otherwise
+        # Sentry is not enabled when the request below is made, and the test
+        # would pass even without the fix
+        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
+        expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
+
+        get api('/projects', personal_access_token: token)
+
+        # The 500 status is expected as we're testing a case where an exception
+        # is raised, but Grape shouldn't raise an additional exception
+        expect(response).to have_gitlab_http_status(500)
+        expect(json_response['message']).not_to include("undefined local variable or method `request'")
+        expect(json_response['message']).to start_with("\nRuntimeError (Runtime Error!):")
+      end
+    end
   end
 
   describe '.authenticate_non_get!' do

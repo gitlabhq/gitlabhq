@@ -13,7 +13,7 @@
       - if @namespaces.present?
         %label.label-light
           %span
-            Click to fork the project to a user or group
+            Click to fork the project
           - @namespaces.in_groups_of(6, false) do |group|
             .row
               - group.each do |namespace|
@@ -29,8 +29,12 @@
                       .caption
                         = namespace.human_name
                 - else
-                  .fork-thumbnail
-                    = link_to project_forks_path(@project, namespace_key: namespace.id), method: "POST" do
+                  - can_create_project = current_user.can?(:create_projects, namespace)
+                  .fork-thumbnail{ class: ("disabled" unless can_create_project) }
+                    = link_to project_forks_path(@project, namespace_key: namespace.id),
+                        method: "POST",
+                        class: ("disabled has-tooltip" unless can_create_project),
+                        title: (_('You have reached your project limit') unless can_create_project) do
                       - if /no_((\w*)_)*avatar/.match(avatar)
                         .no-avatar
                           = icon 'question'

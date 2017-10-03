@@ -151,7 +151,7 @@ module Gitlab
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
 
       # Do no enforce limits in production
-      return if Rails.env.production?
+      return if Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"]
 
       # Check if this call is nested within a allow_n_plus_1_calls
       # block and skip check if it is

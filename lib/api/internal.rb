@@ -31,6 +31,12 @@ module API
         protocol = params[:protocol]
 
         actor.update_last_used_at if actor.is_a?(Key)
+        user =
+          if actor.is_a?(Key)
+            actor.user
+          else
+            actor
+          end
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
@@ -47,6 +53,7 @@ module API
         {
           status: true,
           gl_repository: gl_repository,
+          gl_username: user&.username,
           repository_path: repository_path,
           gitaly: gitaly_payload(params[:action]),
           geo_node: actor.is_a?(GeoNodeKey)

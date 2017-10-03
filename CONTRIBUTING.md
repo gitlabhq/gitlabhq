@@ -50,7 +50,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
-Looking for something to work on? Look for the label [Accepting Merge Requests](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
 
 GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -102,7 +102,7 @@ the remaining issues on the GitHub issue tracker.
 ## I want to contribute!
 
 If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
+look for [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight].
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
 
@@ -210,8 +210,7 @@ We add the ~"Accepting Merge Requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
 solve in the ~"Next Patch Release")
-- Small ~"feature proposal" that do not need ~UX / ~"Product work", or for which
-the ~UX / ~"Product work" is already done
+- Small ~"feature proposal"
 - Small ~"technical debt" issues
 
 After adding the ~"Accepting Merge Requests" label, we try to estimate the
@@ -223,6 +222,17 @@ know how difficult the issue is. Additionally:
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
   look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
+
+If you've decided that you would like to work on an issue, please @-mention
+the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+as soon as possible. The product manager will then pull in appropriate GitLab team
+members to further discuss scope, design, and technical considerations. This will
+ensure that that your contribution is aligned with the GitLab product and minimize
+any rework and delay in getting it merged into master.
+
+GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+should update the issue description with a responsible product manager, inviting
+any potential community contributor to @-mention per above.
 
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1

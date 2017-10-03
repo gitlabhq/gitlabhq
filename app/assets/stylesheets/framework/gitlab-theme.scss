@@ -126,7 +126,7 @@
     .search-input-wrap {
       .search-icon,
       .clear-icon {
-        color: rgba($color-200, .8);
+        fill: rgba($color-200, .8);
       }
     }
 
@@ -141,7 +141,7 @@
 
       .search-input-wrap {
         .search-icon {
-          color: rgba($color-200, .8);
+          fill: rgba($color-200, .8);
         }
       }
     }
@@ -252,7 +252,7 @@ body {
 
       .search-input-wrap {
         .search-icon {
-          color: $theme-gray-200;
+          fill: $theme-gray-200;
         }
 
         .search-input {

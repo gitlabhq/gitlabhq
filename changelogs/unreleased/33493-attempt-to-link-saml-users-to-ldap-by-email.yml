@@ -1,0 +1,5 @@
+---
+title: Link SAML users to LDAP by email.
+merge_request: 14216
+author:
+type: changed
