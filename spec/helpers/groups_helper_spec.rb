@@ -48,9 +48,8 @@ describe GroupsHelper do
 
     it 'returns an based url for the avatar if private' do
       allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
-      group = create(:group)
+      group = create(:group, :private)
       group.avatar = fixture_file_upload(avatar_file_path)
-      group.private = true
       group.save!
       expect(group_icon_url(group.path).to_s)
         .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
