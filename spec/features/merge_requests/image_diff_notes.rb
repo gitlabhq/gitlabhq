@@ -29,44 +29,62 @@ feature 'Diff note avatars', js: true do
     page.driver.set_cookie('sidebar_collapsed', 'true')
   end
 
-  context 'diff tab' do
-    # eventually split out for parallel and inline views
-    describe 'creating a new diff note' do
-      before do
-        visit diffs_project_merge_request_path(project, merge_request)
+  context 'commit view' do
+    before do
+      visit project_commit_path(project, merge_request.commits.first.id)
+    end
 
-        find('.js-add-image-diff-note-button').click
+    # same behavior as diff note
+  end
 
-        find('.note-textarea').native.send_keys('image diff test comment')
+  %w(inline parallel).each do |view|
+    context "#{view} view" do
 
-        click_button 'Comment'
+      describe 'creating a new diff note' do
+        before do
+          visit diffs_project_merge_request_path(project, merge_request, view: view)
+          create_image_diff_note
+        end
 
-        wait_for_requests
+        it 'shows indicator badge on image diff', focus: true do
+          indicator = find('.js-image-badge')
+
+          expect(indicator).to have_content('1')
+        end
+
+        it 'shows the avatar badge on the new note' do
+          badge = find('.image-diff-avatar-link .badge')
+
+          expect(badge).to have_content('1')
+        end
+
+        it 'allows collapsing the discussion notes' do
+          find('.js-diff-notes-toggle').click
+
+          expect(page).not_to have_content('image diff test comment')
+        end
+
+        it 'allows expanding discussion notes' do
+          find('.js-diff-notes-toggle').click
+          find('.js-diff-notes-toggle').click
+
+          expect(page).to have_content('image diff test comment')
+        end
       end
 
-      it 'shows indicator badge on image diff', focus: true do
-        indicator = find('.js-image-badge')
+      describe 'render diff notes' do
+        before do
+          # mock a couple separate comments on the image diff
+        end
 
-        expect(indicator).to have_content('1')
-      end
+        it 'render diff indicators within the image frame' do
+        end
 
-      it 'shows the avatar badge on the new note' do
-        badge = find('.image-diff-avatar-link .badge')
+        it 'shows the diff notes' do
+        end
 
-        expect(badge).to have_content('1')
-      end
-
-      it 'allows collapsing the discussion notes' do
-        find('.js-diff-notes-toggle').click
-
-        expect(page).not_to have_content('image diff test comment')
-      end
-
-      it 'allows expanding discussion notes' do
-        find('.js-diff-notes-toggle').click
-        find('.js-diff-notes-toggle').click
-
-        expect(page).to have_content('image diff test comment')
+        it 'shows the diff notes with correct avatar badge numbers' do
+        end
       end
     end
   end
@@ -76,144 +94,22 @@ feature 'Diff note avatars', js: true do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows the image diff' do
+    it 'shows the image diff frame' do
       frame = find('.js-image-frame')
     end
-  end
 
-  context 'commit view' do
-    before do
-      visit project_commit_path(project, merge_request.commits.first.id)
+    it 'shows the indicator on the frame' do
     end
 
-    it 'does not render avatar after commenting' do
-      first('.diff-line-num').trigger('mouseover')
-      find('.js-add-diff-note-button').click
-
-      page.within('.js-discussion-note-form') do
-        find('.note-textarea').native.send_keys('test comment')
-
-        click_button 'Comment'
-
-        wait_for_requests
-      end
-
-      visit project_merge_request_path(project, merge_request)
-
-      expect(page).to have_content('test comment')
-      expect(page).not_to have_selector('.js-avatar-container')
-      expect(page).not_to have_selector('.diff-comment-avatar-holders')
+    it 'shows the note with a generic comment icon' do
     end
   end
 
-  %w(inline parallel).each do |view|
-    context "#{view} view" do
-      before do
-        visit diffs_project_merge_request_path(project, merge_request, view: view)
+end
 
-        wait_for_requests
-      end
-
-      it 'shows note avatar' do
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
-
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 1)
-        end
-      end
-
-      it 'shows comment on note avatar' do
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
-
-          expect(first('img.js-diff-comment-avatar')["data-original-title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
-        end
-      end
-
-      it 'toggles comments when clicking avatar' do
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
-        end
-
-        expect(page).to have_selector('.notes_holder', visible: false)
-
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          first('img.js-diff-comment-avatar').click
-        end
-
-        expect(page).to have_selector('.notes_holder')
-      end
-
-      it 'removes avatar when note is deleted' do
-        open_more_actions_dropdown(note)
-
-        page.within find(".note-row-#{note.id}") do
-          find('.js-note-delete').click
-        end
-
-        wait_for_requests
-
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          expect(page).not_to have_selector('img.js-diff-comment-avatar')
-        end
-      end
-
-      it 'adds avatar when commenting' do
-        click_button 'Reply...'
-
-        page.within '.js-discussion-note-form' do
-          find('.js-note-text').native.send_keys('Test')
-
-          click_button 'Comment'
-
-          wait_for_requests
-        end
-
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').trigger('click')
-
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
-        end
-      end
-
-      it 'adds multiple comments' do
-        3.times do
-          click_button 'Reply...'
-
-          page.within '.js-discussion-note-form' do
-            find('.js-note-text').native.send_keys('Test')
-
-            find('.js-comment-button').trigger('click')
-
-            wait_for_requests
-          end
-        end
-
-        page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').trigger('click')
-
-          expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
-          expect(find('.diff-comments-more-count')).to have_content '+1'
-        end
-      end
-
-      context 'multiple comments' do
-        before do
-          create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
-
-          visit diffs_project_merge_request_path(project, merge_request, view: view)
-
-          wait_for_requests
-        end
-
-        it 'shows extra comment count' do
-          page.within find("[id='#{position.line_code(project.repository)}']") do
-            find('.diff-notes-collapse').click
-
-            expect(find('.diff-comments-more-count')).to have_content '+1'
-          end
-        end
-      end
-    end
-  end
+def create_image_diff_note
+  find('.js-add-image-diff-note-button').click
+  find('.note-textarea').native.send_keys('image diff test comment')
+  click_button 'Comment'
+  wait_for_requests
 end
