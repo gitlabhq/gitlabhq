@@ -29,7 +29,7 @@
           = s_('ClusterIntegration|Save changes')
 
 
-    - if can?(current_user, :update_cluster, @cluster) && @cluster.on_creation?
+    - if can?(current_user, :admin_cluster, @cluster)
       .form_group
         %label
           = s_('ClusterIntegration|Google container engine')
@@ -37,15 +37,18 @@
             - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), '', target: '_blank', rel: 'noopener noreferrer')
             = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
-      .hidden.js-cluster-error.alert.alert-danger{ role: 'alert' }
-        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
-        %code.js-error-reason
+      - if @cluster.errored?
+        .js-cluster-error.alert.alert-danger{ role: 'alert' }
+          = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
+          %code.js-error-reason
 
-      .hidden.js-cluster-success.alert.alert-info{ role: 'alert' }
-        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
+      - if @cluster.on_creation?
+        .js-cluster-creating.alert.alert-info{ role: 'alert' }
+          = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
 
-      .hidden.js-cluster-creating.alert.alert-info{ role: 'alert' }
-        = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
+      - if @cluster.created?
+        .js-cluster-success.alert.alert-info{ role: 'alert' }
+          = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
 
     .form_group
       %label

@@ -26,7 +26,7 @@
 
         .form-group
           = field.label :project_namespace
-          = field.text_field :project_namespace, class: 'form-control'
+          = field.text_field :project_namespace, class: 'form-control', placeholder: @cluster.project_namespace_placeholder
 
         .form-group
           = field.label :gcp_machine_type

@@ -9,7 +9,7 @@ module Ci
           kubernetes_token: token,
           username: username,
           password: password,
-          service: project.find_or_initialize_service('kubernetes'),
+          service: cluster.project.find_or_initialize_service('kubernetes'),
           status_event: :created)
 
         cluster.service.update!(

@@ -4,11 +4,7 @@ module Gcp
 
     delegate { @subject.project }
 
-    condition(:safe_to_change) do
-      can?(:master_access) && !cluster.on_creation?
-    end
-
-    rule { safe_to_change }.policy do
+    rule { can?(:master_access) }.policy do
       enable :update_cluster
       enable :admin_cluster
     end

@@ -6,6 +6,10 @@ module Gcp
     belongs_to :user
     belongs_to :service
 
+    default_value_for :gcp_cluster_zone, 'us-central1-a'
+    default_value_for :gcp_cluster_size, 3
+    default_value_for :gcp_machine_type, 'n1-standard-4'
+
     attr_encrypted :password,
       mode: :per_attribute_iv,
       key: Gitlab::Application.secrets.db_key_base,
@@ -27,6 +31,35 @@ module Gcp
       created: 3,
       errored: 4
     }
+
+    validates :gcp_project_id,
+      length: 1..63,
+      format: {
+        with: Gitlab::Regex.kubernetes_namespace_regex,
+        message: Gitlab::Regex.kubernetes_namespace_regex_message
+      }
+
+    validates :gcp_cluster_name,
+      length: 1..63,
+      format: {
+        with: Gitlab::Regex.kubernetes_namespace_regex,
+        message: Gitlab::Regex.kubernetes_namespace_regex_message
+      }
+
+    validates :gcp_cluster_zone, presence: true
+    validates :gcp_cluster_size, presence: true,
+              numericality: { only_integer: true, greater_than: 0 }
+
+    validates :project_namespace,
+      allow_blank: true,
+      length: 1..63,
+      format: {
+        with: Gitlab::Regex.kubernetes_namespace_regex,
+        message: Gitlab::Regex.kubernetes_namespace_regex_message
+      }
+
+    # if we do not do status transition we prevent change
+    validate :restrict_modification, on: :update, unless: :status_changed?
 
     state_machine :status, initial: :scheduled do
       event :creating do
@@ -52,22 +85,9 @@ module Gcp
       end
     end
 
-    validates :gcp_project_id, presence: true
-    validates :gcp_cluster_zone, presence: true
-    validates :gcp_cluster_name, presence: true
-    validates :gcp_cluster_size, presence: true,
-              numericality: { only_integer: true, greater_than: 0 }
-
-    validates :project_namespace,
-      allow_blank: true,
-      length: 1..63,
-      format: {
-        with: Gitlab::Regex.kubernetes_namespace_regex,
-        message: Gitlab::Regex.kubernetes_namespace_regex_message
-      }
-
-    # if we do not do status transition we prevent change
-    validate :restrict_modification, on: :update, unless: :status_changed?
+    def project_namespace_placeholder
+      "#{project.path}-#{project.id}"
+    end
 
     def on_creation?
       scheduled? || creating?
