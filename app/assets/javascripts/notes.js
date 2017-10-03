@@ -433,7 +433,7 @@ export default class Notes {
       if (noteEntity.diff_discussion_html) {
         var $discussion = $(noteEntity.diff_discussion_html).renderGFM();
 
-        if (!this.isParallelView() || row.hasClass('js-temp-notes-holder')) {
+        if (!this.isParallelView() || row.hasClass('js-temp-notes-holder') || noteEntity.on_image) {
           // insert the note and the reply button after the temp row
           row.after($discussion);
         } else {
