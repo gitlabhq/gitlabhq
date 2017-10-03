@@ -73,7 +73,7 @@ module Gitlab
         value = StringIO.new
         hex_buffer = ""
 
-        @dn.each_char do |char|
+        @dn.each_char.with_index do |char, dn_index|
           case state
           when :key then
             case char
@@ -108,7 +108,7 @@ module Gitlab
               value << char
             when ',' then
               state = :key
-              yield key.string.strip, value.string.rstrip
+              yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
               key = StringIO.new
               value = StringIO.new
             else
@@ -120,7 +120,7 @@ module Gitlab
             when '\\' then state = :value_normal_escape
             when ',' then
               state = :key
-              yield key.string.strip, value.string.rstrip
+              yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
               key = StringIO.new
               value = StringIO.new
             when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
@@ -131,9 +131,6 @@ module Gitlab
             when '0'..'9', 'a'..'f', 'A'..'F' then
               state = :value_normal_escape_hex
               hex_buffer = char
-            when /\s/ then
-              state = :value_normal_escape_whitespace
-              value << char
             else
               state = :value_normal
               value << char
@@ -144,17 +141,6 @@ module Gitlab
               state = :value_normal
               value << "#{hex_buffer}#{char}".to_i(16).chr
             else raise(MalformedDnError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
-            end
-          when :value_normal_escape_whitespace then
-            case char
-            when '\\' then state = :value_normal_escape
-            when ',' then
-              state = :key
-              yield key.string.strip, value.string # Don't strip trailing escaped space!
-              key = StringIO.new
-              value = StringIO.new
-            when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
-            else value << char
             end
           when :value_quoted then
             case char
@@ -186,7 +172,7 @@ module Gitlab
             when ' ' then state = :value_end
             when ',' then
               state = :key
-              yield key.string.strip, value.string.rstrip
+              yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
               key = StringIO.new
               value = StringIO.new
             else raise(MalformedDnError, "Expected the first character of a hex pair, but got \"#{char}\"")
@@ -203,7 +189,7 @@ module Gitlab
             when ' ' then state = :value_end
             when ',' then
               state = :key
-              yield key.string.strip, value.string.rstrip
+              yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
               key = StringIO.new
               value = StringIO.new
             else raise(MalformedDnError, "Expected the end of an attribute value, but got \"#{char}\"")
@@ -216,7 +202,25 @@ module Gitlab
         raise(MalformedDnError, 'DN string ended unexpectedly') unless
           [:value, :value_normal, :value_hexstring, :value_end].include? state
 
-        yield key.string.strip, value.string.rstrip
+        yield key.string.strip, rstrip_except_escaped(value.string, @dn.length)
+      end
+
+      def rstrip_except_escaped(str, dn_index)
+        str_ends_with_whitespace = str.match(/\s\z/)
+
+        if str_ends_with_whitespace
+          dn_part_ends_with_escaped_whitespace = @dn[0, dn_index].match(/\\(\s+)\z/)
+
+          if dn_part_ends_with_escaped_whitespace
+            dn_part_rwhitespace = dn_part_ends_with_escaped_whitespace[1]
+            num_chars_to_remove = dn_part_rwhitespace.length - 1
+            str = str[0, str.length - num_chars_to_remove]
+          else
+            str.rstrip!
+          end
+        end
+
+        str
       end
 
       ##
