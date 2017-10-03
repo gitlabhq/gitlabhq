@@ -124,7 +124,7 @@
             branch into source branch to allow this merge request to be merged.
           </span>
           <span
-            v-if="renderError"
+            v-else
             class="bold danger">
             {{rebasingError}}
           </span>
