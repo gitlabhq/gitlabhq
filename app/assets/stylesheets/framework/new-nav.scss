@@ -120,17 +120,24 @@ header.navbar-gitlab-new {
   .container-fluid {
     .navbar-toggle {
       min-width: 45px;
-      padding: 4px $gl-padding;
+      padding: 0 $gl-padding;
       margin-right: -7px;
-      font-size: 14px;
       text-align: center;
       color: currentColor;
+
+      svg {
+        fill: currentColor;
+      }
 
       &:hover,
       &:focus,
       &.active {
         color: currentColor;
         background-color: transparent;
+
+        svg {
+          fill: currentColor;
+        }
       }
     }
 
@@ -279,10 +286,6 @@ header.navbar-gitlab-new {
   }
 }
 
-.admin-icon i {
-  font-size: 18px;
-}
-
 .caret-down {
   height: 11px;
   width: 11px;
@@ -306,6 +309,8 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  padding-top: $gl-padding / 2;
+  padding-bottom: $gl-padding / 2;
   align-items: center;
   border-bottom: 1px solid $border-color;
 }
@@ -346,6 +351,7 @@ header.navbar-gitlab-new {
     display: flex;
     align-items: center;
     position: relative;
+    padding: 2px 0;
 
     &:not(:last-child) {
       margin-right: 20px;
@@ -381,7 +387,7 @@ header.navbar-gitlab-new {
   margin: 0;
   font-size: 12px;
   font-weight: 600;
-  line-height: 1;
+  line-height: 16px;
 
   a {
     color: $gl-text-color;

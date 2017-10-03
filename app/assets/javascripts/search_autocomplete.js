@@ -287,6 +287,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
 
     onClearInputClick(e) {
       e.preventDefault();
+      this.wrap.toggleClass('has-value', !!e.target.value);
       return this.searchInput.val('').focus();
     }
 

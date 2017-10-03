@@ -84,6 +84,62 @@ describe('common_utils', () => {
       expectGetElementIdToHaveBeenCalledWith('definição');
       expectGetElementIdToHaveBeenCalledWith('user-content-definição');
     });
+
+    it('scrolls element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls user content element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls to element with offset from navbar', () => {
+      spyOn(window, 'scrollBy').and.callThrough();
+      document.body.innerHTML += `
+        <div id="parent">
+          <div class="navbar-gitlab" style="position: fixed; top: 0; height: 50px;"></div>
+          <div style="height: 2000px; margin-top: 50px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
+      expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
+
+      document.getElementById('parent').remove();
+    });
   });
 
   describe('setParamInURL', () => {

@@ -85,6 +85,8 @@ entry.
 - [FIXED] Fixed merge request changes bar jumping.
 - [FIXED] Improve migrations using triggers.
 - [FIXED] Fix ConvDev Index nav item and Monitoring submenu regression.
+- [FIXED] disabling notifications globally now properly turns off group/project added
+  emails !13325
 - [DEPRECATED] Deprecate custom SSH client configuration for the git user. !13930
 - [CHANGED] allow all users to delete their account. !13636 (Jacopo Beschi @jacopo-beschi)
 - [CHANGED] Use full path of project's avatar in webhooks. !13649 (Vitaliy @blackst0ne Klachkov)
@@ -192,6 +194,13 @@ entry.
 - Move ConvDev Index location to after Cohorts.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
 
 ## 9.5.5 (2017-09-18)
 

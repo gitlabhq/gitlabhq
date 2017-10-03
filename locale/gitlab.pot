@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 11:10+0100\n"
-"PO-Revision-Date: 2017-09-27 11:10+0100\n"
+"POT-Creation-Date: 2017-09-28 13:28-0400\n"
+"PO-Revision-Date: 2017-09-28 13:28-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -134,6 +134,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Author"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
 msgstr ""
 
@@ -156,9 +159,6 @@ msgid "AutoDevOps|Enable in settings"
 msgstr ""
 
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
-msgstr ""
-
-msgid "Board"
 msgstr ""
 
 msgid "Branch"
@@ -274,6 +274,9 @@ msgstr ""
 msgid "CI configuration"
 msgstr ""
 
+msgid "CICD|Jobs"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -361,6 +364,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "Clone repository"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -368,6 +374,9 @@ msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Commit Message"
+msgstr ""
 
 msgid "Commit duration in minutes for last 30 commits"
 msgstr ""
@@ -610,6 +619,9 @@ msgstr[1] ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
+msgid "Format"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -673,6 +685,9 @@ msgstr ""
 msgid "HealthCheck|Unhealthy"
 msgstr ""
 
+msgid "History"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -691,10 +706,10 @@ msgstr ""
 msgid "Issue events"
 msgstr ""
 
-msgid "Issues"
+msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "Jobs"
+msgid "Issues"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -718,6 +733,15 @@ msgid "Last Update"
 msgstr ""
 
 msgid "Last commit"
+msgstr ""
+
+msgid "Last edited %{date}"
+msgstr ""
+
+msgid "Last edited by %{name}"
+msgstr ""
+
+msgid "Last updated"
 msgstr ""
 
 msgid "LastPushEvent|You pushed to"
@@ -1141,6 +1165,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "Save changes"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr ""
 
@@ -1382,7 +1409,7 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
-msgid "This is the author's first Merge Request to this project. Handle with care."
+msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1588,6 +1615,105 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "Wiki"
+msgstr ""
+
+msgid "WikiClone|Clone your wiki"
+msgstr ""
+
+msgid "WikiClone|Git Access"
+msgstr ""
+
+msgid "WikiClone|Install Gollum"
+msgstr ""
+
+msgid "WikiClone|It is recommended to install %{markdown} so that GFM features render locally:"
+msgstr ""
+
+msgid "WikiClone|Start Gollum and edit locally"
+msgstr ""
+
+msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgstr ""
+
+msgid "WikiHistoricalPage|This is an old version of this page."
+msgstr ""
+
+msgid "WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}."
+msgstr ""
+
+msgid "WikiHistoricalPage|history"
+msgstr ""
+
+msgid "WikiHistoricalPage|most recent version"
+msgstr ""
+
+msgid "WikiMarkdownDocs|More examples are in the %{docs_link}"
+msgstr ""
+
+msgid "WikiMarkdownDocs|documentation"
+msgstr ""
+
+msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
+msgstr ""
+
+msgid "WikiNewPagePlaceholder|how-to-setup"
+msgstr ""
+
+msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
+msgstr ""
+
+msgid "WikiNewPageTitle|New Wiki Page"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
+msgstr ""
+
+msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs."
+msgstr ""
+
+msgid "WikiPageConflictMessage|the page"
+msgstr ""
+
+msgid "WikiPageCreate|Create %{page_title}"
+msgstr ""
+
+msgid "WikiPageEdit|Update %{page_title}"
+msgstr ""
+
+msgid "WikiPage|Page slug"
+msgstr ""
+
+msgid "WikiPage|Write your content or drag files here..."
+msgstr ""
+
+msgid "Wiki|Create Page"
+msgstr ""
+
+msgid "Wiki|Create page"
+msgstr ""
+
+msgid "Wiki|Edit Page"
+msgstr ""
+
+msgid "Wiki|Empty page"
+msgstr ""
+
+msgid "Wiki|More Pages"
+msgstr ""
+
+msgid "Wiki|New page"
+msgstr ""
+
+msgid "Wiki|Page history"
+msgstr ""
+
+msgid "Wiki|Page version"
+msgstr ""
+
+msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Withdraw Access Request"

@@ -1,6 +1,6 @@
 # Writing documentation
 
-  - **General Documentation**: written by the developers responsible by creating features. Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
+  - **General Documentation**: written by the [developers responsible by creating features](#contributing-to-docs). Should be submitted in the same merge request containing code. Feature proposals (by GitLab contributors) should also be accompanied by its respective documentation. They can be later improved by PMs and Technical Writers.
   - **Technical Articles**: written by any [GitLab Team](https://about.gitlab.com/team/) member, GitLab contributors, or [Community Writers](https://about.gitlab.com/handbook/product/technical-writing/community-writers/).
   - **Indexes per topic**: initially prepared by the Technical Writing Team, and kept up-to-date by developers and PMs in the same merge request containing code. They gather all resources for that topic in a single page (user and admin documentation, articles, and third-party docs).
 
@@ -68,6 +68,51 @@ Use the [writing method](https://about.gitlab.com/handbook/product/technical-wri
 ## Documentation style guidelines
 
 All the docs follow the same [styleguide](doc_styleguide.md).
+
+### Contributing to docs
+
+Whenever a feature is changed, updated, introduced, or deprecated, the merge
+request introducing these changes must be accompanied by the documentation
+(either updating existing ones or creating new ones). This is also valid when
+changes are introduced to the UI.
+
+The one resposible for writing the first piece of documentation is the developer who
+wrote the code. It's the job of the Product Manager to ensure all features are
+shipped with its docs, whether is a small or big change. At the pace GitLab evolves,
+this is the only way to keep the docs up-to-date. If you have any questions about it,
+please ask a Technical Writer. Otherwise, when your content is ready, assign one of
+them to review it for you.
+
+We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
+is documented.
+
+### Feature overview and use cases
+
+Every major feature (regardless if present in GitLab Community or Enterprise editions)
+should present, at the beginning of the document, two main sections: **overview** and
+**use cases**. Every GitLab EE-only feature should also contain these sections.
+
+**Overview**: at the name suggests, the goal here is to provide an overview of the feature.
+Describe what is it, what it does, why it is important/cool/nice-to-have,
+what problem it solves, and what you can do with this feature that you couldn't
+do before.
+
+**Use cases**: provide at least two, ideally three, use cases for every major feature.
+You should answer this question: what can you do with this feature/change? Use cases
+are examples of how this feauture or change can be used in real life.
+
+Examples:
+- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
+- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
+- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
+- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
+
+Note that if you don't have anything to add between the doc title (`<h1>`) and
+the header `## Overview`, you can omit the header, but keep the content of the
+overview there.
+
+> **Overview** and **use cases** are required to **every** Enterprise Edition feature,
+and for every **major** feature present in Community Edition.
 
 ### Markdown
 
