@@ -722,9 +722,7 @@
   position: absolute;
   background-color: $blue-400;
   color: $white-light;
-  border-color: $white-light;
-  border-width: 1px;
-  border-style: solid;
+  border: $white-light 1px solid;
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
