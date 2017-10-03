@@ -12,15 +12,15 @@ import _ from 'underscore';
   @see https://gitlab.com/gitlab-org/gitlab-ce/issues/37992
 **/
 export default (input, parameters, escapeParameters = true) => {
-    let output = input;
+  let output = input;
 
-    if (parameters) {
-      Object.keys(parameters).forEach((parameterName) => {
-        const parameterValue = parameters[parameterName];
-        const escapedParameterValue = escapeParameters ? _.escape(parameterValue) : parameterValue;
-        output = output.replace(new RegExp(`%{${parameterName}}`, 'g'), escapedParameterValue);
-      });
-    }
+  if (parameters) {
+    Object.keys(parameters).forEach((parameterName) => {
+      const parameterValue = parameters[parameterName];
+      const escapedParameterValue = escapeParameters ? _.escape(parameterValue) : parameterValue;
+      output = output.replace(new RegExp(`%{${parameterName}}`, 'g'), escapedParameterValue);
+    });
+  }
 
-    return output;
-}
+  return output;
+};
