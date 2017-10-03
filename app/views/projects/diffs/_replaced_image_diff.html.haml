@@ -11,7 +11,7 @@
 
 .image.js-replaced-image{ data: diff_view_data }
   .two-up.view
-    %span.wrap
+    .wrap
       .frame.deleted
         = image_tag(old_blob_raw_path, alt: diff_file.old_path, lazy: false)
       %p.image-info.hide
@@ -22,7 +22,7 @@
         |
         %strong H:
         %span.meta-height
-    %span.wrap
+    .wrap
       = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_path, alt: diff_file.new_path }
       %p.image-info.hide
         %span.meta-filesize= number_to_human_size(blob.size)
