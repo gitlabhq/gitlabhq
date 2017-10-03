@@ -87,7 +87,7 @@ export default class ImageDiff {
   renderBadges() {
     const discussionsEls = this.el.querySelectorAll('.note-container .discussion-notes .notes');
 
-    [].forEach.call(discussionsEls, (discussionEl, index) => {
+    [...discussionsEls].forEach((discussionEl, index) => {
       const imageBadge = imageDiffHelper
         .generateBadgeFromDiscussionDOM(this.getImageFrameEl(), discussionEl);
 

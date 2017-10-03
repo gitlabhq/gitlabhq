@@ -7,7 +7,7 @@ export default () => {
   const renderCommentBadge = true;
 
   const diffFileEls = document.querySelectorAll('.timeline-content .diff-file.js-image-file');
-  [].forEach.call(diffFileEls, diffFileEl =>
+  [...diffFileEls].forEach(diffFileEl =>
     imageDiffHelper.initImageDiff(diffFileEl, canCreateNote, renderCommentBadge));
 
   $('.timeline-content .diff-file').on('click', '.js-image-badge', imageDiffHelper.imageBadgeOnClick);
