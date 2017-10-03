@@ -1,8 +1,8 @@
 import imageDiffHelper from './helpers/index';
 
 export default () => {
-  // Always pass can-create-note as false because user cannot place new badge markers
-  // on discussion tab
+  // Always pass can-create-note as false because a user
+  // cannot place new badge markers on discussion tab
   const canCreateNote = false;
   const renderCommentBadge = true;
 
