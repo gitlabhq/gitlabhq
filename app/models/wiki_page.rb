@@ -50,7 +50,7 @@ class WikiPage
   # The Gitlab ProjectWiki instance.
   attr_reader :wiki
 
-  # The raw Gitlab::Git::Page instance.
+  # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
 
   # The attributes Hash used for storing and validating

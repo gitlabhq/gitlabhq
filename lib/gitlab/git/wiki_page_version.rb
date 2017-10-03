@@ -13,7 +13,6 @@ module Gitlab
         @format = format
       end
 
-      # 'delegate' comes from active_support/core_ext/delegation
       delegate :message, :sha, :id, :author_name, :authored_date, to: :commit
     end
   end
