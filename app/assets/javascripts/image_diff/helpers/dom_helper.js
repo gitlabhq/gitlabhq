@@ -31,14 +31,18 @@ export function toggleCollapsed(event) {
   const toggleButtonEl = event.currentTarget;
   const discussionNotesEl = toggleButtonEl.closest('.discussion-notes');
   const formEl = discussionNotesEl.querySelector('.discussion-form');
-
-  discussionNotesEl.classList.toggle('collapsed');
   const isCollapsed = discussionNotesEl.classList.contains('collapsed');
 
+  if (isCollapsed) {
+    discussionNotesEl.classList.remove('collapsed');
+  } else {
+    discussionNotesEl.classList.add('collapsed');
+  }
+
   // Override the inline display style set in notes.js
-  if (formEl && isCollapsed) {
+  if (formEl && !isCollapsed) {
     formEl.style.display = 'none';
-  } else if (formEl && !isCollapsed) {
+  } else if (formEl && isCollapsed) {
     formEl.style.display = 'block';
   }
 }

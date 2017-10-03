@@ -1,7 +1,8 @@
 export function addCommentIndicator(containerEl, coordinate) {
   const { x, y } = coordinate;
   const buttonEl = document.createElement('button');
-  buttonEl.classList.add('btn-transparent', 'comment-indicator');
+  buttonEl.classList.add('btn-transparent');
+  buttonEl.classList.add('comment-indicator');
   buttonEl.setAttribute('type', 'button');
   buttonEl.style.left = `${x}px`;
   buttonEl.style.top = `${y}px`;
