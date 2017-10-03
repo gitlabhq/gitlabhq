@@ -42,7 +42,6 @@ export default {
 
       this.error = false;
 
-      // TODO: add board labels
       const labels = this.list.label ? [this.list.label] : [];
       const issue = new ListIssue({
         title: this.title,
@@ -53,7 +52,11 @@ export default {
       });
 
       if (Store.state.currentBoard) {
-        issue.milestone_id = Store.state.currentBoard.milestone_id;
+        const board = Store.state.currentBoard;
+
+        issue.assignees = [board.assignee];
+        issue.labels = _.sortBy(_.uniq([...labels, ...board.labels], label => label.id),
+                                'title');
       }
 
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
