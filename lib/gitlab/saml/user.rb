@@ -17,10 +17,9 @@ module Gitlab
         user ||= find_or_build_ldap_user if auto_link_ldap_user?
         user ||= build_new_user if signup_enabled?
 
-        if external_users_enabled? && user
-          # Check if there is overlap between the user's groups and the external groups
-          # setting then set user as external or internal.
-          user.external = !(auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
+        if user
+          user.external = !(auth_hash.groups & Gitlab::Saml::Config.external_groups).empty? if external_users_enabled?
+          user.admin = !(auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty? if admin_groups_enabled?
         end
 
         user
