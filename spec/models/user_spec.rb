@@ -1401,6 +1401,23 @@ describe User do
     end
   end
 
+  describe '#fork_of' do
+    let(:user) { create(:user) }
+
+    it "returns a user's fork of a project" do
+      project = create(:project, :public)
+      user_fork = fork_project(project, user, namespace: user.namespace)
+
+      expect(user.fork_of(project)).to eq(user_fork)
+    end
+
+    it 'returns nil if the project does not have a fork network' do
+      project = create(:project)
+
+      expect(user.fork_of(project)).to be_nil
+    end
+  end
+
   describe '#can_be_removed?' do
     subject { create(:user) }
 

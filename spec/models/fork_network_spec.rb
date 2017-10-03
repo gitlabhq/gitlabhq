@@ -12,6 +12,18 @@ describe ForkNetwork do
     end
   end
 
+  describe '#find_fork_in' do
+    it 'finds all fork of the current network in al collection' do
+      network = create(:fork_network)
+      root_project = network.root_project
+      another_project = fork_project(root_project)
+      create(:project)
+
+      expect(network.find_forks_in(Project.all))
+               .to contain_exactly(another_project, root_project)
+    end
+  end
+
   context 'for a deleted project' do
     it 'keeps the fork network' do
       project = create(:project, :public)

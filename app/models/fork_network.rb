@@ -8,4 +8,8 @@ class ForkNetwork < ActiveRecord::Base
   def add_root_as_member
     projects << root_project
   end
+
+  def find_forks_in(other_projects)
+    projects.where(id: other_projects)
+  end
 end

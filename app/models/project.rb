@@ -1005,6 +1005,11 @@ class Project < ActiveRecord::Base
   end
 
   def forked?
+    return true if fork_network && fork_network.root_project != self
+
+    # TODO: Use only the above conditional using the `fork_network`
+    # This is the old conditional that looks at the `forked_project_link`, we
+    # fall back to this while we're migrating the new models
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
