@@ -548,6 +548,7 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.positionMenuAbove = function() {
     var $menu = this.dropdown.find('.dropdown-menu');
 
+    $menu.addClass('dropdown-open-top');
     $menu.css('top', 'initial');
     $menu.css('bottom', '100%');
   };
