@@ -36,7 +36,7 @@ module Gitlab
         new(deployments)
       end
 
-      def self.loading_rollout
+      def self.loading
         new([], status: :loading)
       end
 

@@ -115,6 +115,12 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         go!
       end
 
+      it "calls a reactive_cache_updated after updated" do
+        expect(instance).to receive(:reactive_cache_updated)
+
+        go!
+      end
+
       context 'and #calculate_reactive_cache raises an exception' do
         before do
           stub_reactive_cache(instance, "preexisting")

@@ -7,6 +7,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
+  before_action :refresh_rollout_status, only: [:index]
 
   def index
     @environments = project.environments
@@ -145,6 +146,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def verify_api_request!
     Gitlab::Workhorse.verify_api_request!(request.headers)
+  end
+
+  def refresh_rollout_status
+    environment.rollout_status
   end
 
   def environment_params

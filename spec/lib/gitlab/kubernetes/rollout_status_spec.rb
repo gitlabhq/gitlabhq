@@ -94,12 +94,24 @@ describe Gitlab::Kubernetes::RolloutStatus do
     end
   end
 
+  describe '#not_found?' do
+    context 'when the specs are passed' do
+      it { is_expected.not_to be_not_found }
+    end
+
+    context 'when list of specs is empty' do
+      let(:specs) { specs_none }
+
+      it { is_expected.to be_not_found }
+    end
+  end
+
   describe '#found?' do
     context 'when the specs are passed' do
       it { is_expected.to be_found }
     end
 
-    context 'when no specs are passed' do
+    context 'when list of specs is empty' do
       let(:specs) { specs_none }
 
       it { is_expected.not_to be_found }

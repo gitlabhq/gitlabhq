@@ -52,6 +52,10 @@ describe Projects::EnvironmentsController do
           get :index, environment_params(format: :json, scope: :available)
         end
 
+        it 'responds with matching schema' do
+          expect(response).to match_response_schema('environments')
+        end
+
         it 'responds with a payload describing available environments' do
           expect(environments.count).to eq 2
           expect(environments.first['name']).to eq 'production'
