@@ -2,7 +2,7 @@ module Ci
   class ArtifactBlob
     include BlobLike
 
-    EXTENTIONS_SERVED_BY_PAGES = %w[.html .htm .txt].freeze
+    EXTENTIONS_SERVED_BY_PAGES = %w[.html .htm .txt .json].freeze
 
     attr_reader :entry
 
