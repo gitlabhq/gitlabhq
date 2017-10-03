@@ -39,7 +39,7 @@ export default class ImageDiff {
 
     // Render badges
     if (isImageLoaded(this.getImageEl())) {
-      this.renderBadgesWrapper();
+      this.renderBadges();
     } else {
       this.getImageEl().addEventListener('load', this.renderBadgesWrapper);
     }
