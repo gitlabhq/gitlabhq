@@ -10,7 +10,7 @@ export default class ImageDiff {
     this.el = el;
     this.canCreateNote = canCreateNote;
     this.renderCommentBadge = renderCommentBadge;
-    this.$noteContainer = $(this.el.querySelector('.note-container'));
+    this.$noteContainer = $('.note-container', this.el);
     this.imageBadges = [];
   }
 
