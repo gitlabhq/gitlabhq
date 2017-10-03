@@ -12,6 +12,6 @@
         title: ('Opens in a new window' if is_external_link) do
       %span.str-truncated>= blob.name
     - if is_external_link
-      = icon('external-link')
+      = icon('external-link', class: 'js-artifact-tree-external-icon')
   %td
     = number_to_human_size(blob.size, precision: 2)
