@@ -392,6 +392,14 @@ describe Gitlab::Checks::ChangeAccess do
             it 'returns an error' do
               expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
             end
+
+            context 'but the change is made in the web application' do
+              let(:protocol) { 'web' }
+
+              it 'does not return an error' do
+                expect { subject }.not_to raise_error
+              end
+            end
           end
 
           context 'and commit is signed' do

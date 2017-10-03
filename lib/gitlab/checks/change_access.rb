@@ -82,7 +82,7 @@ module Gitlab
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_master_delete_protected_branch]
         end
 
-        unless protocol == 'web'
+        unless updated_from_web?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_web_delete_protected_branch]
         end
       end
@@ -121,6 +121,10 @@ module Gitlab
       end
 
       private
+
+      def updated_from_web?
+        protocol == 'web'
+      end
 
       def tag_exists?
         project.repository.tag_exists?(@tag_name)
@@ -187,7 +191,7 @@ module Gitlab
 
       def tag_deletion_denied_by_push_rule?(push_rule)
         push_rule.try(:deny_delete_tag) &&
-          protocol != 'web' &&
+          !updated_from_web? &&
           deletion? &&
           tag_exists?
       end
@@ -196,10 +200,6 @@ module Gitlab
       # This method should return nil if no error found or a string if error.
       # In case of errors - all other checks will be canceled and push will be rejected.
       def check_commit(commit, push_rule)
-        unless push_rule.commit_signature_allowed?(commit)
-          return "Commit must be signed with a GPG key"
-        end
-
         unless push_rule.commit_message_allowed?(commit.safe_message)
           return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
         end
@@ -210,6 +210,10 @@ module Gitlab
 
         unless push_rule.author_email_allowed?(commit.author_email)
           return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
+        end
+
+        if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
+          return "Commit must be signed with a GPG key"
         end
 
         # Check whether author is a GitLab member
