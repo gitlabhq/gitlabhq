@@ -30,43 +30,95 @@ feature 'Diff note avatars', js: true do
   end
 
   context 'commit view' do
-    before do
-      visit project_commit_path(project, merge_request.commits.first.id)
+    describe 'creating a new diff note' do
+      before do
+        visit project_commit_path(project, '2f63565e7aac07bcdadb654e253078b727143ec4')
+        create_image_diff_note
+      end
+
+      it 'shows indicator badge on image diff' do
+        indicator = find('.js-image-badge')
+
+        expect(indicator).to have_content('1')
+      end
+
+      it 'shows the avatar badge on the new note' do
+        badge = find('.image-diff-avatar-link .badge')
+
+        expect(badge).to have_content('1')
+      end
+
+      it 'allows collapsing the discussion notes' do
+        find('.js-diff-notes-toggle').click
+
+        expect(page).not_to have_content('image diff test comment')
+      end
+
+      it 'allows expanding discussion notes' do
+        find('.js-diff-notes-toggle').click
+        find('.js-diff-notes-toggle').click
+
+        expect(page).to have_content('image diff test comment')
+      end
     end
 
-    # same behavior as diff note
+    describe 'render diff notes' do
+      commit_id = '2f63565e7aac07bcdadb654e253078b727143ec4'
+
+      let!(:note2) { create(:note_on_commit, commit_id: commit_id, project: project, note: 'my note 2') }
+      let!(:note3) { create(:note_on_commit, commit_id: commit_id, project: project, note: 'my note 3') }
+
+      before do
+        visit project_commit_path(project, commit_id)
+      end
+
+      it 'render diff indicators within the image diff frame' do
+        expect(page).to have_css('.js-image-badge', count: 2)
+      end
+
+      it 'shows the diff notes' do
+        expect(page).to have_css('.diff-content .note', count: 2)
+      end
+
+      it 'shows the diff notes with correct avatar badge numbers' do
+        first_note_avatar = find('.image-diff-avatar-link', match: :first)
+        second_note_avatar = find('.image-diff-avatar-link', match: :second)
+
+        expect(first_note_avatar).to have_content("1")
+        expect(second_note_avatar).to have_content("2")
+      end
+    end
   end
 
   %w(inline parallel).each do |view|
     context "#{view} view" do
-
-      describe 'creating a new diff note' do
+      describe 'creating a new diff note', focus: true do
         before do
           visit diffs_project_merge_request_path(project, merge_request, view: view)
           create_image_diff_note
         end
 
-        it 'shows indicator badge on image diff', focus: true do
-          indicator = find('.js-image-badge')
+        it 'shows indicator badge on image diff'do
+          indicator = find('.js-image-badge', match: :first)
 
           expect(indicator).to have_content('1')
         end
 
         it 'shows the avatar badge on the new note' do
-          badge = find('.image-diff-avatar-link .badge')
+          badge = find('.image-diff-avatar-link .badge', match: :first)
 
           expect(badge).to have_content('1')
         end
 
         it 'allows collapsing the discussion notes' do
-          find('.js-diff-notes-toggle').click
+          find('.js-diff-notes-toggle', match: :first).click
 
           expect(page).not_to have_content('image diff test comment')
         end
 
         it 'allows expanding discussion notes' do
-          find('.js-diff-notes-toggle').click
-          find('.js-diff-notes-toggle').click
+          find('.js-diff-notes-toggle', match: :first).click
+          find('.js-diff-notes-toggle', match: :first).click
 
           expect(page).to have_content('image diff test comment')
         end
@@ -109,7 +161,7 @@ end
 
 def create_image_diff_note
   find('.js-add-image-diff-note-button').click
-  find('.note-textarea').native.send_keys('image diff test comment')
+  find('.diff-content .note-textarea').native.send_keys('image diff test comment')
   click_button 'Comment'
   wait_for_requests
 end
