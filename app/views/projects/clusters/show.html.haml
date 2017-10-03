@@ -29,7 +29,7 @@
           = s_('ClusterIntegration|Save changes')
 
 
-    - if can?(current_user, :update_cluster, @cluster) && @cluster.scheduled? || @cluster.creating?
+    - if can?(current_user, :update_cluster, @cluster) && @cluster.on_creation?
       .form_group
         %label
           = s_('ClusterIntegration|Google container engine')
