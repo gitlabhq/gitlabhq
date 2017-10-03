@@ -418,7 +418,7 @@ export default class Notes {
     form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
     row = form.closest('tr');
 
-    if (row.length === 0) {
+    if (noteEntity.on_image) {
       row = form;
     }
 
