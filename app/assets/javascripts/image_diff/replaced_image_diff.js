@@ -5,9 +5,9 @@ import ImageDiff from './image_diff';
 export default class ReplacedImageDiff extends ImageDiff {
   init(defaultViewType = viewTypes.TWO_UP) {
     this.imageFrameEls = {
-      [viewTypes.TWO_UP]: this.el.querySelector('.two-up .frame.added'),
-      [viewTypes.SWIPE]: this.el.querySelector('.swipe .swipe-wrap .frame'),
-      [viewTypes.ONION_SKIN]: this.el.querySelector('.onion-skin .frame.added'),
+      [viewTypes.TWO_UP]: this.el.querySelector('.two-up .js-image-frame'),
+      [viewTypes.SWIPE]: this.el.querySelector('.swipe .js-image-frame'),
+      [viewTypes.ONION_SKIN]: this.el.querySelector('.onion-skin .js-image-frame'),
     };
 
     const viewModesEl = this.el.querySelector('.view-modes-menu');
@@ -51,11 +51,11 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.viewModesEls[viewTypes.ONION_SKIN].removeEventListener('click', this.changeToViewOnionSkin);
   }
 
-  getImageEl() {
+  get imageEl() {
     return this.imageEls[this.currentView];
   }
 
-  getImageFrameEl() {
+  get imageFrameEl() {
     return this.imageFrameEls[this.currentView];
   }
 
@@ -64,12 +64,12 @@ export default class ReplacedImageDiff extends ImageDiff {
       return;
     }
 
-    const indicator = imageDiffHelper.removeCommentIndicator(this.getImageFrameEl());
+    const indicator = imageDiffHelper.removeCommentIndicator(this.imageFrameEl);
 
     this.currentView = newView;
 
     // Clear existing badges on new view
-    const existingBadges = this.getImageFrameEl().querySelectorAll('.badge');
+    const existingBadges = this.imageFrameEl.querySelectorAll('.badge');
     [].map.call(existingBadges, badge => badge.remove());
 
     // Remove existing references to old view image badges
@@ -85,13 +85,13 @@ export default class ReplacedImageDiff extends ImageDiff {
       // Re-render indicator in new view
       if (indicator.removed) {
         const normalizedIndicator = imageDiffHelper
-          .resizeCoordinatesToImageElement(this.getImageEl(), {
+          .resizeCoordinatesToImageElement(this.imageEl, {
             x: indicator.x,
             y: indicator.y,
             width: indicator.image.width,
             height: indicator.image.height,
           });
-        imageDiffHelper.showCommentIndicator(this.getImageFrameEl(), normalizedIndicator);
+        imageDiffHelper.showCommentIndicator(this.imageFrameEl, normalizedIndicator);
       }
     }, 250);
   }
