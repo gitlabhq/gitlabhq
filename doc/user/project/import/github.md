@@ -42,6 +42,11 @@ The importer will create any new namespaces (groups) if they don't exist or in
 the case the namespace is taken, the repository will be imported under the user's
 namespace that started the import process.
 
+The importer will also import branches on forks of projects related to open pull
+requests. These branches will be imported with a naming scheume similar to 
+GH-SHA-Username/Pull-Request-number/fork-name/branch. This may lead to a discrepency
+in branches compared to the GitHub Repository. This is expected.
+
 ## Importing your GitHub repositories
 
 The importer page is visible when you create a new project.
