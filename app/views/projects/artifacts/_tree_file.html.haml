@@ -6,13 +6,12 @@
   %td.tree-item-file-name
     = tree_icon('file', blob.mode, blob.name)
     = link_to path_to_file,
-        class: 'tree-item-file-external-link js-artifact-tree-tooltip',
+        class: ('tree-item-file-external-link js-artifact-tree-tooltip' if is_external_link),
         target: ('_blank' if is_external_link),
         rel: ('noopener noreferrer' if is_external_link),
         title: ('Opens in a new window' if is_external_link) do
       %span.str-truncated>= blob.name
     - if is_external_link
-      = ' '
       = icon('external-link')
   %td
     = number_to_human_size(blob.size, precision: 2)
