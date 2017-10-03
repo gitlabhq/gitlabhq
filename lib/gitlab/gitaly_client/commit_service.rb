@@ -274,7 +274,7 @@ module Gitlab
           repository: @gitaly_repo,
           left_commit_id: from_id,
           right_commit_id: to_id,
-          paths: options.fetch(:paths, []).map { |path| GitalyClient.encode(path) }
+          paths: options.fetch(:paths, []).compact.map { |path| GitalyClient.encode(path) }
         }
       end
 
