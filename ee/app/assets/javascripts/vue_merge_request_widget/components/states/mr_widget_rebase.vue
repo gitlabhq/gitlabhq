@@ -117,6 +117,13 @@
             Rebase
           </button>
           <span
+            v-if="!renderError"
+            class="bold">
+            Fast-forward merge is not possible.
+            Rebase the source branch onto the target branch or merge target
+            branch into source branch to allow this merge request to be merged.
+          </span>
+          <span
             v-if="renderError"
             class="bold danger">
             {{rebasingError}}
