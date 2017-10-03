@@ -41,14 +41,6 @@ module Ci
           pipeline.process!
         end
       end
-
-      update_merge_requests_head_pipeline
-
-      cancel_pending_pipelines if project.enabled_auto_cancel_pending_pipelines?
-
-      pipeline_created_counter.increment(source: source)
-
-      pipeline.tap(&:process!)
     end
 
     private
