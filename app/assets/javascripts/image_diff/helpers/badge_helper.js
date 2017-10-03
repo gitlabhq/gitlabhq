@@ -27,6 +27,8 @@ export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   const buttonEl = createImageBadge(noteId, ['image-comment-badge', 'inverted']);
+  buttonEl.setAttribute('disabled', true);
+
   const iconEl = document.createElement('i');
   iconEl.classList.add('fa');
   iconEl.classList.add('fa-comment-o');
