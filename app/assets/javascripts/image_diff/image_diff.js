@@ -15,7 +15,7 @@ export default class ImageDiff {
   }
 
   init() {
-    this.imageFrameEl = this.el.querySelector('.diff-file .image .frame');
+    this.imageFrameEl = this.el.querySelector('.diff-file .js-image-frame');
     this.imageEl = this.imageFrameEl.querySelector('img');
 
     this.bindEvents();
