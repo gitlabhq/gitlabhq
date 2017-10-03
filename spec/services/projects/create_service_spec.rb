@@ -76,9 +76,8 @@ describe Projects::CreateService, '#execute' do
     context 'wiki_enabled true creates wiki repository directory' do
       it do
         project = create_project(user, opts)
-        path = ProjectWiki.new(project, user).send(:path_to_repo)
 
-        expect(File.exist?(path)).to be_truthy
+        expect(wiki_repo(project).exists?).to be_truthy
       end
     end
 
@@ -86,10 +85,14 @@ describe Projects::CreateService, '#execute' do
       it do
         opts[:wiki_enabled] = false
         project = create_project(user, opts)
-        path = ProjectWiki.new(project, user).send(:path_to_repo)
 
-        expect(File.exist?(path)).to be_falsey
+        expect(wiki_repo(project).exists?).to be_falsey
       end
+    end
+
+    def wiki_repo(project)
+      relative_path = ProjectWiki.new(project).disk_path + '.git'
+      Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar')
     end
   end
 
