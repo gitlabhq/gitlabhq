@@ -37,10 +37,8 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
-    this.mergedBy = MergeRequestStore.getAuthorObject(data.merge_event);
-    this.closedBy = MergeRequestStore.getAuthorObject(data.closed_event);
+    this.mergedEvent = MergeRequestStore.getEventObject(data.merge_event);
+    this.closedEvent = MergeRequestStore.getEventObject(data.closed_event);
     this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
@@ -120,6 +118,14 @@ export default class MergeRequestStore {
     }
   }
 
+  static getEventObject(event) {
+    return {
+      author: MergeRequestStore.getAuthorObject(event),
+      updatedAt: gl.utils.formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
+      formattedUpdatedAt: MergeRequestStore.getEventDate(event),
+    };
+  }
+
   static getAuthorObject(event) {
     if (!event) {
       return {};
@@ -133,6 +139,14 @@ export default class MergeRequestStore {
     };
   }
 
+  static getEventUpdatedAtDate(event) {
+    if (!event) {
+      return '';
+    }
+
+    return event.updated_at;
+  }
+
   static getEventDate(event) {
     const timeagoInstance = new Timeago();
 
@@ -140,7 +154,7 @@ export default class MergeRequestStore {
       return '';
     }
 
-    return timeagoInstance.format(event.updated_at);
+    return timeagoInstance.format(MergeRequestStore.getEventUpdatedAtDate(event));
   }
 
 }
