@@ -2,6 +2,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleSubscriptionAction
   include IssuableActions
   include RendersNotes
+  include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
 
@@ -20,10 +21,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_requests     = @merge_requests.page(params[:page])
     @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
+    @total_pages        = merge_requests_page_count(@merge_requests)
 
-    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
-    end
+    return if redirect_out_of_range(@merge_requests, @total_pages)
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -58,6 +58,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     close_merge_request_without_source_project
     check_if_can_be_merged
 
+    # Return if the response has already been rendered
+    return if response_body
+
     respond_to do |format|
       format.html do
         # Build a note object for comment form
@@ -72,6 +75,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         labels
 
         set_pipeline_variables
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
 
       format.json do
@@ -97,7 +105,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def commits
     # Get commits from repository
     # or from cache if already merged
-    @commits = @merge_request.commits
+    @commits = prepare_commits_for_rendering(@merge_request.commits)
     @note_counts = Note.where(commit_id: @commits.map(&:id))
       .group(:commit_id).count
 

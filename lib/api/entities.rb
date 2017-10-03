@@ -1,5 +1,15 @@
 module API
   module Entities
+    class WikiPageBasic < Grape::Entity
+      expose :format
+      expose :slug
+      expose :title
+    end
+
+    class WikiPage < WikiPageBasic
+      expose :content
+    end
+
     class UserSafe < Grape::Entity
       expose :id, :name, :username
     end
@@ -35,7 +45,7 @@ module API
       expose :confirmed_at
       expose :last_activity_on
       expose :email
-      expose :color_scheme_id, :projects_limit, :current_sign_in_at
+      expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
@@ -89,6 +99,9 @@ module API
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :avatar_url do |project, options|
+        project.avatar_url(only_path: false)
+      end
       expose :star_count, :forks_count
       expose :created_at, :last_activity_at
     end
@@ -129,6 +142,7 @@ module API
       expose :archived?, as: :archived
       expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
+      expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -145,9 +159,7 @@ module API
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
-      end
+
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
@@ -208,8 +220,8 @@ module API
       ## EE-only
 
       expose :lfs_enabled?, as: :lfs_enabled
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
+      expose :avatar_url do |group, options|
+        group.avatar_url(only_path: false)
       end
       expose :web_url
       expose :request_access_enabled
@@ -252,6 +264,7 @@ module API
     class RepoCommitDetail < RepoCommit
       expose :stats, using: Entities::RepoCommitStats
       expose :status
+      expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
 
     class RepoBranch < Grape::Entity
@@ -262,7 +275,10 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        options[:project].repository.merged_to_root_ref?(repo_branch.name)
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          options[:project].repository.merged_to_root_ref?(repo_branch.name)
+        end
       end
 
       expose :protected do |repo_branch, options|
@@ -319,10 +335,11 @@ module API
     end
 
     class RepoDiff < Grape::Entity
-      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+      expose :json_safe_diff, as: :diff
     end
 
     class ProtectedRefAccess < Grape::Entity
@@ -349,6 +366,7 @@ module API
     end
 
     class IssueBasic < ProjectEntity
+      expose :closed_at
       expose :labels do |issue, options|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
@@ -553,6 +571,10 @@ module API
       expose :user, using: Entities::UserPublic
     end
 
+    class GPGKey < Grape::Entity
+      expose :id, :key, :created_at
+    end
+
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
       NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
@@ -603,7 +625,7 @@ module API
     end
 
     class Event < Grape::Entity
-      expose :title, :project_id, :action_name
+      expose :project_id, :action_name
       expose :target_id, :target_iid, :target_type, :author_id
       expose :target_title
       expose :created_at
@@ -1133,6 +1155,11 @@ module API
       expose :storage_name
       expose :failing_on_hosts
       expose :total_failures
+    end
+
+    class CustomAttribute < Grape::Entity
+      expose :key
+      expose :value
     end
   end
 end

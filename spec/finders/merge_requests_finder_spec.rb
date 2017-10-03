@@ -114,4 +114,18 @@ describe MergeRequestsFinder do
       end
     end
   end
+
+  describe '#row_count', :request_store do
+    it 'returns the number of rows for the default state' do
+      finder = described_class.new(user)
+
+      expect(finder.row_count).to eq(3)
+    end
+
+    it 'returns the number of rows for a given state' do
+      finder = described_class.new(user, state: 'closed')
+
+      expect(finder.row_count).to eq(1)
+    end
+  end
 end

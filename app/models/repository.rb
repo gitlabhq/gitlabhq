@@ -10,6 +10,7 @@ class Repository
   RESERVED_REFS_NAMES = %W[
     heads
     tags
+    replace
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
     #{REF_ENVIRONMENTS}
@@ -97,6 +98,12 @@ class Repository
     )
   end
 
+  # we need to have this method here because it is not cached in ::Git and
+  # the method is called multiple times for every request
+  def has_visible_content?
+    branch_count > 0
+  end
+
   def inspect
     "#<#{self.class.name}:#{@disk_path}>"
   end
@@ -173,32 +180,25 @@ class Repository
   end
 
   def add_branch(user, branch_name, ref)
-    newrev = commit(ref).try(:sha)
-
-    return false unless newrev
-
-    Gitlab::Git::OperationService.new(user, raw_repository).add_branch(branch_name, newrev)
+    branch = raw_repository.add_branch(branch_name, user: user, target: ref)
 
     after_create_branch
-    find_branch(branch_name)
+
+    branch
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def add_tag(user, tag_name, target, message = nil)
-    newrev = commit(target).try(:id)
-    options = { message: message, tagger: user_to_committer(user) } if message
-
-    return false unless newrev
-
-    Gitlab::Git::OperationService.new(user, raw_repository).add_tag(tag_name, newrev, options)
-
-    find_tag(tag_name)
+    raw_repository.add_tag(tag_name, user: user, target: target, message: message)
+  rescue Gitlab::Git::Repository::InvalidRef
+    false
   end
 
   def rm_branch(user, branch_name)
     before_remove_branch
-    branch = find_branch(branch_name)
 
-    Gitlab::Git::OperationService.new(user, raw_repository).rm_branch(branch)
+    raw_repository.rm_branch(branch_name, user: user)
 
     after_remove_branch
     true
@@ -206,9 +206,8 @@ class Repository
 
   def rm_tag(user, tag_name)
     before_remove_tag
-    tag = find_tag(tag_name)
 
-    Gitlab::Git::OperationService.new(user, raw_repository).rm_tag(tag)
+    raw_repository.rm_tag(tag_name, user: user)
 
     after_remove_tag
     true
@@ -497,13 +496,7 @@ class Repository
   def exists?
     return false unless full_path
 
-    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
-      if enabled
-        raw_repository.exists?
-      else
-        refs_directory_exists?
-      end
-    end
+    raw_repository.exists?
   end
   cache_method :exists?
 
@@ -542,8 +535,11 @@ class Repository
   cache_method :tag_count, fallback: 0
 
   def avatar
-    if tree = file_on_head(:avatar)
-      tree.path
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
+      end
     end
   end
   cache_method :avatar
@@ -777,17 +773,23 @@ class Repository
     multi_action(**options)
   end
 
+  def with_cache_hooks
+    result = yield
+
+    return unless result
+
+    after_create if result.repo_created?
+    after_create_branch if result.branch_created?
+
+    result.newrev
+  end
+
   def with_branch(user, *args)
-    result = Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
-      yield start_commit
+    with_cache_hooks do
+      Gitlab::Git::OperationService.new(user, raw_repository).with_branch(*args) do |start_commit|
+        yield start_commit
+      end
     end
-
-    newrev, should_run_after_create, should_run_after_create_branch = result
-
-    after_create if should_run_after_create
-    after_create_branch if should_run_after_create_branch
-
-    newrev
   end
 
   # rubocop:disable Metrics/ParameterLists
@@ -837,10 +839,6 @@ class Repository
     }
   end
 
-  def user_to_committer(user)
-    Gitlab::Git.committer_hash(email: user.email, name: user.name)
-  end
-
   def can_be_merged?(source_sha, target_branch)
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)
@@ -871,81 +869,44 @@ class Repository
     end
   end
 
-  def merge(user, source, merge_request, options = {})
-    with_branch(
-      user,
-      merge_request.target_branch) do |start_commit|
-      our_commit = start_commit.sha
-      their_commit = source
-
-      raise 'Invalid merge target' unless our_commit
-      raise 'Invalid merge source' unless their_commit
-
-      merge_index = rugged.merge_commits(our_commit, their_commit)
-      break if merge_index.conflicts?
-
-      actual_options = options.merge(
-        parents: [our_commit, their_commit],
-        tree: merge_index.write_tree(rugged)
-      )
-
-      commit_id = create_commit(actual_options)
-      merge_request.update(in_progress_merge_commit_sha: commit_id)
-      commit_id
+  def merge(user, source_sha, merge_request, message)
+    with_cache_hooks do
+      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
+        merge_request.update(in_progress_merge_commit_sha: commit_id)
+        nil # Return value does not matter.
+      end
     end
-  rescue Gitlab::Git::CommitError # when merge_index.conflicts?
-    false
   end
 
   def revert(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
 
-      revert_tree_id = check_revert_content(commit, start_commit.sha)
-      unless revert_tree_id
-        raise Repository::CreateTreeError.new('Failed to revert commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.revert_message(user),
-                    author: committer,
-                    committer: committer,
-                    tree: revert_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.revert(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
   def cherry_pick(
-    user, commit, branch_name,
+    user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
-    with_branch(
-      user,
-      branch_name,
-      start_branch_name: start_branch_name,
-      start_repository: start_project.repository.raw_repository) do |start_commit|
 
-      cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-      unless cherry_pick_tree_id
-        raise Repository::CreateTreeError.new('Failed to cherry-pick commit')
-      end
-
-      committer = user_to_committer(user)
-
-      create_commit(message: commit.cherry_pick_message(user),
-                    author: {
-                        email: commit.author_email,
-                        name: commit.author_name,
-                        time: commit.authored_date
-                    },
-                    committer: committer,
-                    tree: cherry_pick_tree_id,
-                    parents: [start_commit.sha])
+    with_cache_hooks do
+      raw_repository.cherry_pick(
+        user: user,
+        commit: commit.raw,
+        branch_name: branch_name,
+        message: message,
+        start_branch_name: start_branch_name,
+        start_repository: start_project.repository.raw_repository
+      )
     end
   end
 
@@ -955,36 +916,6 @@ class Repository
 
       create_commit(params.merge(author: committer, committer: committer))
     end
-  end
-
-  def check_revert_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << { mainline: 1 } if target_commit.merge_commit?
-
-    revert_index = rugged.revert_commit(*args)
-    return false if revert_index.conflicts?
-
-    tree_id = revert_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def check_cherry_pick_content(target_commit, source_sha)
-    args = [target_commit.sha, source_sha]
-    args << 1 if target_commit.merge_commit?
-
-    cherry_pick_index = rugged.cherrypick_commit(*args)
-    return false if cherry_pick_index.conflicts?
-
-    tree_id = cherry_pick_index.write_tree(rugged)
-    return false unless diff_exists?(source_sha, tree_id)
-
-    tree_id
-  end
-
-  def diff_exists?(sha1, sha2)
-    rugged.diff(sha1, sha2).size > 0
   end
 
   def merged_to_root_ref?(branch_name)
@@ -1070,6 +1001,7 @@ class Repository
   def empty_repo?
     !exists? || !has_visible_content?
   end
+  cache_method :empty_repo?, memoize_only: true
 
   def search_files_by_content(query, ref)
     return [] if empty_repo? || query.blank?
@@ -1205,12 +1137,6 @@ class Repository
     blob.data
   end
 
-  def refs_directory_exists?
-    circuit_breaker.perform do
-      File.exist?(File.join(path_to_repo, 'refs'))
-    end
-  end
-
   def cache
     # TODO: should we use UUIDs here? We could move repositories without clearing this cache
     @cache ||= RepositoryCache.new(full_path, @project.id)
@@ -1239,12 +1165,6 @@ class Repository
     Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
-  def create_commit(params = {})
-    params[:message].delete!("\r")
-
-    Rugged::Commit.create(rugged, params)
-  end
-
   def last_commit_for_path_by_gitaly(sha, path)
     c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
     commit(c)
@@ -1266,10 +1186,6 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
-  end
-
-  def circuit_breaker
-    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

@@ -273,6 +273,25 @@ EOT
     end
   end
 
+  describe '#json_safe_diff' do
+    let(:project) { create(:project, :repository) }
+
+    it 'fake binary message when it detects binary' do
+      # Rugged will not detect this as binary, but we can fake it
+      diff_message = "Binary files files/images/icn-time-tracking.pdf and files/images/icn-time-tracking.pdf differ\n"
+      binary_diff = described_class.between(project.repository, 'add-pdf-text-binary', 'add-pdf-text-binary^').first
+
+      expect(binary_diff.diff).not_to be_empty
+      expect(binary_diff.json_safe_diff).to eq(diff_message)
+    end
+
+    it 'leave non-binary diffs as-is' do
+      diff = described_class.new(@rugged_diff)
+
+      expect(diff.json_safe_diff).to eq(diff.diff)
+    end
+  end
+
   describe '#submodule?' do
     before do
       commit = repository.lookup('5937ac0a7beb003549fc5fd26fc247adbce4a52e')

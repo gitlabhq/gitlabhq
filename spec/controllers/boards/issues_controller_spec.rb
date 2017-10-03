@@ -45,6 +45,17 @@ describe Boards::IssuesController do
           expect(parsed_response.length).to eq 2
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
+
+        it 'avoids N+1 database queries' do
+          create(:labeled_issue, project: project, labels: [development])
+          control_count = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: board, list: list2) }.count
+
+          # 25 issues is bigger than the page size
+          # the relative position will ignore the `#make_sure_position_set` queries
+          create_list(:labeled_issue, 25, project: project, labels: [development], assignees: [johndoe], relative_position: 1)
+
+          expect { list_issues(user: user, board: board, list: list2) }.not_to exceed_query_limit(control_count)
+        end
       end
 
       context 'with invalid list id' do

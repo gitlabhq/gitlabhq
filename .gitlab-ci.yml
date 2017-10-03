@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
@@ -43,9 +43,11 @@ stages:
   - test
   - post-test
   - pages
+  - post-cleanup
 
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
+  retry: 1
   tags:
     - gitlab-org
 
@@ -132,7 +134,7 @@ stages:
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
-    - knapsack spinach "-r rerun" || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
+    - knapsack spinach "-r rerun" -b || retry '[[ -e tmp/spinach-rerun.txt ]] && bundle exec spinach -b -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
     expire_in: 31d
     when: always
@@ -158,8 +160,7 @@ stages:
     - master@gitlab/gitlabhq
     - master@gitlab/gitlab-ee
 
-# Trigger a package build on omnibus-gitlab repository
-
+# Trigger a package build in omnibus-gitlab repository
 build-package:
   image: ruby:2.3-alpine
   before_script: []
@@ -172,10 +173,57 @@ build-package:
   cache: {}
   when: manual
   script:
-    - scripts/trigger-build
+    - scripts/trigger-build-omnibus
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
+
+# Review docs base
+.review-docs: &review-docs
+  image: ruby:2.4-alpine
+  before_script:
+    - gem install gitlab --no-doc
+    # We need to download the script rather than clone the repo since the
+    # review-docs-cleanup job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
+    - chmod 755 trigger-build-docs
+  services: []
+  cache: {}
+  dependencies: []
+  artifacts: {}
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+    GIT_STRATEGY: none
+  when: manual
+  only:
+    - branches
+
+# Trigger a docs build in gitlab-docs
+# Useful to preview the docs changes live
+review-docs-deploy:
+  <<: *review-docs
+  stage: build
+  environment:
+    name: review-docs/$CI_COMMIT_REF_NAME
+    # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
+    # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
+    url: http://preview-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
+    on_stop: review-docs-cleanup
+  script:
+    - ./trigger-build-docs deploy
+
+# Cleanup remote environment of gitlab-docs
+review-docs-cleanup:
+  <<: *review-docs
+  stage: post-cleanup
+  environment:
+    name: review-docs/$CI_COMMIT_REF_NAME
+    action: stop
+  script:
+    - ./trigger-build-docs cleanup
 
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
@@ -215,11 +263,10 @@ update-tests-metadata:
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - rm -f rspec_flaky/${CI_PROJECT_NAME}/all_node_*.json
+    - rm -f rspec_flaky/${CI_PROJECT_NAME}/*_node_*.json
 
 flaky-examples-check:
   <<: *dedicated-runner
-  <<: *except-docs
   image: ruby:2.3-alpine
   services: []
   before_script: []
@@ -234,6 +281,7 @@ flaky-examples-check:
     - branches
   except:
     - master
+    - /(^docs[\/-].*|.*-docs$)/
   artifacts:
     expire_in: 30d
     paths:
@@ -253,7 +301,6 @@ setup-test-env:
   script:
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
-    - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
     - scripts/gitaly-test-build # Do not use 'bundle exec' here
@@ -379,6 +426,26 @@ downtime_check:
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
 
+ee_compat_check:
+  <<: *rake-exec
+  except:
+    - master
+    - tags
+    - /^[\d-]+-stable(-ee)?/
+    - branches@gitlab-org/gitlab-ee
+    - branches@gitlab/gitlab-ee
+  allow_failure: yes
+  cache:
+    key: "ee_compat_check_repo"
+    paths:
+      - ee_compat_check/ee-repo/
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
+    when: on_failure
+    expire_in: 10d
+    paths:
+      - ee_compat_check/patches/*.patch
+
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
   <<: *dedicated-runner
@@ -399,6 +466,7 @@ db:migrate:reset-mysql:
 .migration-paths: &migration-paths
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   variables:
     SETUP_DB: "false"
@@ -464,6 +532,12 @@ db:seed_fu-mysql:
   <<: *db-seed_fu
   <<: *use-mysql
 
+db:check-schema-pg:
+  <<: *db-migrate-reset
+  <<: *use-pg
+  script:
+    - sh scripts/schema_changed.sh
+
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-runner
@@ -481,7 +555,6 @@ gitlab:assets:compile:
     NO_COMPRESSION: "true"
   script:
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
-    - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
@@ -494,7 +567,7 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-60.0-node-7.1-postgresql-9.6"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"

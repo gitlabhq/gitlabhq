@@ -31,9 +31,9 @@ describe Geo::RepositoryRenamedEventStore do
         expect(event.repository_storage_name).to eq(project.repository_storage)
         expect(event.repository_storage_path).to eq(project.repository_storage_path)
         expect(event.old_path_with_namespace).to eq(old_path_with_namespace)
-        expect(event.new_path_with_namespace).to eq(project.full_path)
+        expect(event.new_path_with_namespace).to eq(project.disk_path)
         expect(event.old_wiki_path_with_namespace).to eq("#{old_path_with_namespace}.wiki")
-        expect(event.new_wiki_path_with_namespace).to eq("#{project.full_path}.wiki")
+        expect(event.new_wiki_path_with_namespace).to eq("#{project.disk_path}.wiki")
         expect(event.old_path).to eq(old_path)
         expect(event.new_path).to eq(project.path)
       end

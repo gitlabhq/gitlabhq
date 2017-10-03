@@ -54,5 +54,13 @@ module EE
     def board_sidebar_user_data
       super.merge(group_id: @group&.id)
     end
+
+    def boards_link_text
+      if @project.multiple_issue_boards_available?(current_user)
+        s_("IssueBoards|Boards")
+      else
+        s_("IssueBoards|Board")
+      end
+    end
   end
 end

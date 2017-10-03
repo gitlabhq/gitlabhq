@@ -106,18 +106,20 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     # change storage
     self.object_store = new_store
 
-    storage.store!(file).tap do |new_file|
-      # since we change storage store the new storage
-      # in case of failure delete new file
-      begin
-        subject.save!
-      rescue => e
-        new_file.delete
-        self.object_store = old_store
-        raise e
-      end
+    with_callbacks(:store, file) do
+      storage.store!(file).tap do |new_file|
+        # since we change storage store the new storage
+        # in case of failure delete new file
+        begin
+          subject.save!
+        rescue => e
+          new_file.delete
+          self.object_store = old_store
+          raise e
+        end
 
-      old_file.delete
+        old_file.delete
+      end
     end
   end
 
@@ -159,7 +161,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   end
 
   def exists?
-    file.try(:exists?)
+    file.present?
   end
 
   def cache_dir

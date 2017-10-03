@@ -491,6 +491,7 @@ describe API::Commits do
         expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
         expect(json_response['stats']['total']).to eq(commit.stats.total)
         expect(json_response['status']).to be_nil
+        expect(json_response['last_pipeline']).to be_nil
       end
 
       context 'when ref does not exist' do
@@ -573,6 +574,10 @@ describe API::Commits do
           expect(response).to have_http_status(200)
           expect(response).to match_response_schema('public_api/v4/commit/detail')
           expect(json_response['status']).to eq('created')
+          expect(json_response['last_pipeline']['id']).to eq(pipeline.id)
+          expect(json_response['last_pipeline']['ref']).to eq(pipeline.ref)
+          expect(json_response['last_pipeline']['sha']).to eq(pipeline.sha)
+          expect(json_response['last_pipeline']['status']).to eq(pipeline.status)
         end
 
         context 'when pipeline succeeds' do
@@ -672,6 +677,12 @@ describe API::Commits do
 
           it_behaves_like 'ref diff'
         end
+      end
+
+      context 'when binary diff are treated as text' do
+        let(:commit_id) { TestEnv::BRANCH_SHA['add-pdf-text-binary'] }
+
+        it_behaves_like 'ref diff'
       end
     end
   end

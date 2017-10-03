@@ -207,11 +207,6 @@ eos
     context 'of a merge commit' do
       let(:repository) { project.repository }
 
-      let(:commit_options) do
-        author = repository.user_to_committer(user)
-        { message: 'Test message', committer: author, author: author }
-      end
-
       let(:merge_request) do
         create(:merge_request,
                source_branch: 'video',
@@ -224,7 +219,7 @@ eos
         merge_commit_id = repository.merge(user,
                                            merge_request.diff_head_sha,
                                            merge_request,
-                                           commit_options)
+                                           'Test message')
 
         repository.commit(merge_commit_id)
       end

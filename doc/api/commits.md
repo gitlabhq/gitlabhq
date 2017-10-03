@@ -181,6 +181,12 @@ Example response:
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
+  "last_pipeline" : {
+    "id": 8,
+    "ref": "master",
+    "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0"
+    "status": "created"
+  }
   "stats": {
     "additions": 15,
     "deletions": 10,

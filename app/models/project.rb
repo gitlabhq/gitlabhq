@@ -40,6 +40,7 @@ class Project < ActiveRecord::Base
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.pick_repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
@@ -148,6 +149,7 @@ class Project < ActiveRecord::Base
 
   has_many :requesters, -> { where.not(requested_at: nil) },
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+  has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
   has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
@@ -163,7 +165,7 @@ class Project < ActiveRecord::Base
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
-  has_one :project_feature
+  has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
 
   # Container repositories need to remove data from the container registry,
@@ -189,9 +191,12 @@ class Project < ActiveRecord::Base
 
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
+  has_one :auto_devops, class_name: 'ProjectAutoDevops'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
-  accepts_nested_attributes_for :project_feature
+  accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
+  accepts_nested_attributes_for :auto_devops, update_only: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -243,6 +248,9 @@ class Project < ActiveRecord::Base
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
+
+  scope :with_hashed_storage, -> { where('storage_version >= 1') }
+  scope :with_legacy_storage, -> { where(storage_version: [nil, 0]) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -461,6 +469,18 @@ class Project < ActiveRecord::Base
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
+  end
+
+  def auto_devops_enabled?
+    if auto_devops&.enabled.nil?
+      current_application_settings.auto_devops_enabled?
+    else
+      auto_devops.enabled?
+    end
+  end
+
+  def has_auto_devops_implicitly_disabled?
+    auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
   end
 
   def repository_storage_path
@@ -1015,7 +1035,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+    if gitlab_shell.add_repository(repository_storage, disk_path)
       repository.after_create
       true
     else
@@ -1144,6 +1164,23 @@ class Project < ActiveRecord::Base
     return unless sha
 
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
+  end
+
+  def latest_successful_pipeline_for_default_branch
+    if defined?(@latest_successful_pipeline_for_default_branch)
+      return @latest_successful_pipeline_for_default_branch
+    end
+
+    @latest_successful_pipeline_for_default_branch =
+      pipelines.latest_successful_for(default_branch)
+  end
+
+  def latest_successful_pipeline_for(ref = nil)
+    if ref && ref != default_branch
+      pipelines.latest_successful_for(ref)
+    else
+      latest_successful_pipeline_for_default_branch
+    end
   end
 
   def enable_ci
@@ -1376,6 +1413,10 @@ class Project < ActiveRecord::Base
     Gitlab::Utils.slugify(full_path.to_s)
   end
 
+  def has_ci?
+    repository.gitlab_ci_yml || auto_devops_enabled?
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
@@ -1419,6 +1460,12 @@ class Project < ActiveRecord::Base
     return [] unless deployment_service
 
     deployment_service.predefined_variables
+  end
+
+  def auto_devops_variables
+    return [] unless auto_devops_enabled?
+
+    auto_devops&.variables || []
   end
 
   def append_or_update_attribute(name, value)
@@ -1506,18 +1553,72 @@ class Project < ActiveRecord::Base
   end
 
   def legacy_storage?
-    self.storage_version.nil?
+    [nil, 0].include?(self.storage_version)
+  end
+
+  def hashed_storage?
+    self.storage_version && self.storage_version >= 1
   end
 
   def renamed?
     persisted? && path_changed?
   end
 
+  def migrate_to_hashed_storage!
+    return if hashed_storage?
+
+    update!(repository_read_only: true)
+
+    if repo_reference_count > 0 || wiki_reference_count > 0
+      ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      ProjectMigrateHashedStorageWorker.perform_async(id)
+    end
+  end
+
+  def storage_version=(value)
+    super
+
+    @storage = nil if storage_version_changed?
+  end
+
+  def gl_repository(is_wiki:)
+    Gitlab::GlRepository.gl_repository(self, is_wiki)
+  end
+
+  def merge_method
+    if self.merge_requests_ff_only_enabled
+      :ff
+    elsif self.merge_requests_rebase_enabled
+      :rebase_merge
+    else
+      :merge
+    end
+  end
+
+  def merge_method=(method)
+    case method.to_s
+    when "ff"
+      self.merge_requests_ff_only_enabled = true
+      self.merge_requests_rebase_enabled = true
+    when "rebase_merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = true
+    when "merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = false
+    end
+  end
+
+  def ff_merge_must_be_possible?
+    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
+
   private
 
   def storage
     @storage ||=
-      if self.storage_version && self.storage_version >= 1
+      if hashed_storage?
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)
@@ -1528,6 +1629,14 @@ class Project < ActiveRecord::Base
     if self.new_record? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
+  end
+
+  def repo_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+  end
+
+  def wiki_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
   end
 
   # set last_activity_at to the same as created_at

@@ -734,6 +734,11 @@
   overflow: hidden;
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+}
+
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
@@ -760,6 +765,10 @@
         padding: 8px 16px;
       }
 
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
       a,
       button,
       .menu-item {
@@ -767,8 +776,16 @@
         box-shadow: none;
         padding: 8px 16px;
         text-align: left;
-        width: 100%;
         white-space: normal;
+        width: 100%;
+
+        &.dropdown-menu-user-link {
+          white-space: nowrap;
+
+          .dropdown-menu-user-username {
+            display: block;
+          }
+        }
 
         // make sure the text color is not overriden
         &.text-danger {
@@ -779,6 +796,8 @@
         &:hover,
         &:active,
         &:focus {
+          @include dropdown-item-hover;
+
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
 
@@ -837,5 +856,167 @@
   }
 }
 
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+}
+
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
+
+header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
+  padding: 0;
+}
+
+.projects-dropdown-container {
+  display: flex;
+  flex-direction: row;
+  width: 500px;
+  height: 334px;
+
+  .project-dropdown-sidebar,
+  .project-dropdown-content {
+    padding: 8px 0;
+  }
+
+  .loading-animation {
+    color: $almost-black;
+  }
+
+  .project-dropdown-sidebar {
+    width: 30%;
+    border-right: 1px solid $border-color;
+  }
+
+  .project-dropdown-content {
+    position: relative;
+    width: 70%;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    flex: 1;
+
+    .project-dropdown-sidebar,
+    .project-dropdown-content {
+      width: 100%;
+    }
+
+    .project-dropdown-sidebar {
+      border-bottom: 1px solid $border-color;
+      border-right: 0;
+    }
+  }
+}
+
+.projects-dropdown-container {
+  .projects-list-frequent-container,
+  .projects-list-search-container, {
+    padding: 8px 0;
+    overflow-y: auto;
+  }
+
+  .section-header,
+  .projects-list-frequent-container li.section-empty,
+  .projects-list-search-container li.section-empty {
+    padding: 0 15px;
+  }
+
+  .section-header,
+  .projects-list-frequent-container li.section-empty,
+  .projects-list-search-container li.section-empty {
+    color: $gl-text-color-secondary;
+    font-size: $gl-font-size;
+  }
+
+  .projects-list-frequent-container,
+  .projects-list-search-container {
+    li.section-empty.section-failure {
+      color: $callout-danger-color;
+    }
+  }
+
+  .search-input-container {
+    position: relative;
+    padding: 4px $gl-padding;
+
+    .search-icon {
+      position: absolute;
+      top: 13px;
+      right: 25px;
+      color: $md-area-border;
+    }
+  }
+
+  .section-header {
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  .projects-list-search-container {
+    height: 284px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-list-frequent-container {
+      width: auto;
+      height: auto;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.projects-list-item-container {
+  .project-item-avatar-container
+  .project-item-metadata-container {
+    float: left;
+  }
+
+  .project-title,
+  .project-namespace {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    .project-item-avatar-container .avatar {
+      border-color: $md-area-border;
+    }
+  }
+
+  .project-title {
+    font-size: $gl-font-size;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .project-namespace {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 12px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .project-item-metadata-container {
+      float: none;
+    }
+  }
+}

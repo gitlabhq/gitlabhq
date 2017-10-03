@@ -1,23 +1,38 @@
 %ul.list-unstyled.navbar-sub-nav
-  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: "home"}) do
-    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+  = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects" }) do
+    %a{ href: "#", data: { toggle: "dropdown" } }
       Projects
+      = custom_icon('caret_down')
+    .dropdown-menu.projects-dropdown-menu
+      = render "layouts/nav/projects_dropdown/show"
 
-  = nav_link(controller: ['dashboard/groups', 'explore/groups']) do
+  = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "hidden-xs" }) do
     = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
       Groups
 
-  = nav_link(path: 'dashboard#activity', html_options: { class: "hidden-xs hidden-sm" }) do
+  = nav_link(path: 'dashboard#activity', html_options: { class: "visible-lg" }) do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       Activity
 
-  %li.dropdown
+  = nav_link(controller: 'dashboard/milestones', html_options: { class: "visible-lg" }) do
+    = link_to dashboard_milestones_path, class: 'dashboard-shortcuts-milestones', title: 'Milestones' do
+      Milestones
+
+  = nav_link(controller: 'dashboard/snippets', html_options: { class: "visible-lg" }) do
+    = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
+      Snippets
+
+  %li.header-more.dropdown.hidden-lg
     %a{ href: "#", data: { toggle: "dropdown" } }
       More
-      = icon("chevron-down", class: "dropdown-chevron")
+      = custom_icon('caret_down')
     .dropdown-menu
       %ul
-        = nav_link(path: 'dashboard#activity', html_options: { class: "visible-xs visible-sm" }) do
+        = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "visible-xs" }) do
+          = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
+            Groups
+
+        = nav_link(path: 'dashboard#activity') do
           = link_to activity_dashboard_path, title: 'Activity' do
             Activity
 
@@ -28,6 +43,24 @@
         = nav_link(controller: 'dashboard/snippets') do
           = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: 'Snippets' do
             Snippets
-        %li.divider
-        %li
-          = link_to "Help", help_path, title: 'About GitLab CE'
+
+  -# Shortcut to Dashboard > Projects
+  %li.hidden
+    = link_to dashboard_projects_path, title: 'Projects', class: 'dashboard-shortcuts-projects' do
+      Projects
+
+  - if current_user.admin? || Gitlab::Sherlock.enabled?
+    %li.line-separator.hidden-xs
+  - if current_user.admin?
+    = nav_link(controller: 'admin/dashboard') do
+      = link_to admin_root_path, class: 'admin-icon', title: 'Admin area', aria: { label: "Admin area" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+        = icon('wrench fw')
+  - if Gitlab::Sherlock.enabled?
+    %li
+      = link_to sherlock_transactions_path, class: 'admin-icon', title: 'Sherlock Transactions',
+        data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+        = icon('tachometer fw')
+  - if Gitlab::Geo.secondary? && Gitlab::Geo.primary_node_configured?
+    %li
+      = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+        = icon('globe fw')

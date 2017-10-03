@@ -24,6 +24,7 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
@@ -94,9 +95,6 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
-      this.filterManager.setup();
-
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
     },
@@ -104,6 +102,9 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then(response => response.json())
@@ -153,10 +154,10 @@ $(() => {
         modal: ModalStore.store,
         store: Store.state,
         isFullscreen: false,
-        focusModeAvailable: gl.utils.convertPermissionToBoolean(
+        focusModeAvailable: convertPermissionToBoolean(
           $boardApp.dataset.focusModeAvailable,
         ),
-        canAdminList: this.$options.el && gl.utils.convertPermissionToBoolean(
+        canAdminList: this.$options.el && convertPermissionToBoolean(
           this.$options.el.dataset.canAdminList,
         ),
       };
@@ -226,7 +227,7 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
       isFullscreen: false,
-      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
+      focusModeAvailable: convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
     },
     methods: {
       toggleFocusMode() {

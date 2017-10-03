@@ -9,6 +9,7 @@ class MoveToProjectFinder
     projects = @user.projects_where_can_admin_issues
     projects = projects.search(search) if search.present?
     projects = projects.excluding_project(from_project)
+    projects = projects.order_id_desc
 
     # infinite scroll using offset
     projects = projects.where('projects.id < ?', offset_id) if offset_id.present?

@@ -52,12 +52,71 @@ describe MarkupHelper do
     end
   end
 
-  describe '#link_to_gfm' do
+  describe '#markdown_field' do
+    let(:attribute) { :title }
+
+    describe 'with already redacted attribute' do
+      it 'returns the redacted attribute' do
+        commit.redacted_title_html = 'commit title'
+
+        expect(Banzai).not_to receive(:render_field)
+
+        expect(helper.markdown_field(commit, attribute)).to eq('commit title')
+      end
+    end
+
+    describe 'without redacted attribute' do
+      it 'renders the markdown value' do
+        expect(Banzai).to receive(:render_field).with(commit, attribute).and_call_original
+
+        helper.markdown_field(commit, attribute)
+      end
+    end
+  end
+
+  describe '#link_to_markdown_field' do
     let(:link)    { '/commits/0a1b2c3d' }
     let(:issues)  { create_list(:issue, 2, project: project) }
 
     it 'handles references nested in links with all the text' do
-      actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", link)
+      allow(commit).to receive(:title).and_return("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real")
+
+      actual = helper.link_to_markdown_field(commit, :title, link)
+      doc = Nokogiri::HTML.parse(actual)
+
+      # Make sure we didn't create invalid markup
+      expect(doc.errors).to be_empty
+
+      # Leading commit link
+      expect(doc.css('a')[0].attr('href')).to eq link
+      expect(doc.css('a')[0].text).to eq 'This should finally fix '
+
+      # First issue link
+      expect(doc.css('a')[1].attr('href'))
+        .to eq project_issue_path(project, issues[0])
+      expect(doc.css('a')[1].text).to eq issues[0].to_reference
+
+      # Internal commit link
+      expect(doc.css('a')[2].attr('href')).to eq link
+      expect(doc.css('a')[2].text).to eq ' and '
+
+      # Second issue link
+      expect(doc.css('a')[3].attr('href'))
+        .to eq project_issue_path(project, issues[1])
+      expect(doc.css('a')[3].text).to eq issues[1].to_reference
+
+      # Trailing commit link
+      expect(doc.css('a')[4].attr('href')).to eq link
+      expect(doc.css('a')[4].text).to eq ' for real'
+    end
+  end
+
+  describe '#link_to_markdown' do
+    let(:link)    { '/commits/0a1b2c3d' }
+    let(:issues)  { create_list(:issue, 2, project: project) }
+
+    it 'handles references nested in links with all the text' do
+      actual = helper.link_to_markdown("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", link)
       doc = Nokogiri::HTML.parse(actual)
 
       # Make sure we didn't create invalid markup
@@ -87,7 +146,7 @@ describe MarkupHelper do
     end
 
     it 'forwards HTML options' do
-      actual = helper.link_to_gfm("Fixed in #{commit.id}", link, class: 'foo')
+      actual = helper.link_to_markdown("Fixed in #{commit.id}", link, class: 'foo')
       doc = Nokogiri::HTML.parse(actual)
 
       expect(doc.css('a')).to satisfy do |v|
@@ -98,20 +157,40 @@ describe MarkupHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
-      expect(helper.link_to_gfm(actual, link))
+      expect(helper.link_to_markdown(actual, link))
         .to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
 
     it 'ignores reference links when they are the entire body' do
       text = issues[0].to_reference
-      act = helper.link_to_gfm(text, '/foo')
+      act = helper.link_to_markdown(text, '/foo')
       expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
     end
 
     it 'replaces commit message with emoji to link' do
-      actual = link_to_gfm(':book: Book', '/foo')
+      actual = link_to_markdown(':book: Book', '/foo')
       expect(actual)
         .to eq '<gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo"> Book</a>'
+    end
+  end
+
+  describe '#link_to_html' do
+    it 'wraps the rendered content in a link' do
+      link = '/commits/0a1b2c3d'
+      issue = create(:issue, project: project)
+
+      rendered = helper.markdown("This should finally fix #{issue.to_reference} for real", pipeline: :single_line)
+      doc = Nokogiri::HTML.parse(rendered)
+
+      expect(doc.css('a')[0].attr('href'))
+        .to eq project_issue_path(project, issue)
+      expect(doc.css('a')[0].text).to eq issue.to_reference
+
+      wrapped = helper.link_to_html(rendered, link)
+      doc = Nokogiri::HTML.parse(wrapped)
+
+      expect(doc.css('a')[0].attr('href')).to eq link
+      expect(doc.css('a')[0].text).to eq 'This should finally fix '
     end
   end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -8,12 +8,9 @@ describe Repository, models: true do
   let(:repository) { project.repository }
   let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
-  let(:committer) { Gitlab::Git::Committer.from_user(user) }
+  let(:git_user) { Gitlab::Git::User.from_gitlab(user) }
 
-  let(:commit_options) do
-    author = repository.user_to_committer(user)
-    { message: 'Test message', committer: author, author: author }
-  end
+  let(:message) { 'Test message' }
 
   let(:merge_commit) do
     merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
@@ -21,7 +18,7 @@ describe Repository, models: true do
     merge_commit_id = repository.merge(user,
                                        merge_request.diff_head_sha,
                                        merge_request,
-                                       commit_options)
+                                       message)
 
     repository.commit(merge_commit_id)
   end
@@ -892,7 +889,7 @@ describe Repository, models: true do
     context 'when pre hooks were successful' do
       it 'runs without errors' do
         expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-          .with(committer, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
+          .with(git_user, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -938,20 +935,20 @@ describe Repository, models: true do
         service = Gitlab::Git::HooksService.new
         expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, target_repository.raw_repository, old_rev, new_rev, updating_ref)
+          .with(git_user, target_repository.raw_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
-        service = Gitlab::Git::OperationService.new(committer, repository.raw_repository)
+        service = Gitlab::Git::OperationService.new(git_user, repository.raw_repository)
 
         expect(service).to receive(:update_autocrlf_option)
 
@@ -962,7 +959,7 @@ describe Repository, models: true do
         it 'updates the head' do
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(old_rev)
 
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
 
@@ -980,7 +977,7 @@ describe Repository, models: true do
           expect(target_project.repository.raw_repository).to receive(:fetch_ref)
             .and_call_original
 
-          Gitlab::Git::OperationService.new(committer, target_repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
             .with_branch(
               'master',
               start_repository: project.repository.raw_repository,
@@ -996,7 +993,7 @@ describe Repository, models: true do
         it 'does not fetch_ref and just pass the commit' do
           expect(target_repository).not_to receive(:fetch_ref)
 
-          Gitlab::Git::OperationService.new(committer, target_repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_repository.raw_repository)
             .with_branch('feature', start_repository: project.repository.raw_repository) { new_rev }
         end
       end
@@ -1015,7 +1012,7 @@ describe Repository, models: true do
         end
 
         expect do
-          Gitlab::Git::OperationService.new(committer, target_project.repository.raw_repository)
+          Gitlab::Git::OperationService.new(git_user, target_project.repository.raw_repository)
             .with_branch('feature',
                          start_repository: project.repository.raw_repository,
                          &:itself)
@@ -1037,7 +1034,7 @@ describe Repository, models: true do
         repository.add_branch(user, branch, old_rev)
 
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch(branch) do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.not_to raise_error
@@ -1055,7 +1052,7 @@ describe Repository, models: true do
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch(branch) do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch(branch) do
             new_rev
           end
         end.to raise_error(Gitlab::Git::CommitError)
@@ -1067,7 +1064,7 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          Gitlab::Git::OperationService.new(committer, repository.raw_repository).with_branch('feature') do
+          Gitlab::Git::OperationService.new(git_user, repository.raw_repository).with_branch('feature') do
             new_rev
           end
         end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
@@ -1293,10 +1290,7 @@ describe Repository, models: true do
   describe '#merge' do
     let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
 
-    let(:commit_options) do
-      author = repository.user_to_committer(user)
-      { message: 'Test \r\n\r\n message', committer: author, author: author }
-    end
+    let(:message) { 'Test \r\n\r\n message' }
 
     it 'merges the code and returns the commit id' do
       expect(merge_commit).to be_present
@@ -1304,19 +1298,19 @@ describe Repository, models: true do
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
     end
 
     it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, commit_options)
+      merge_commit_id = merge(repository, user, merge_request, message)
 
-      expect(repository.commit(merge_commit_id).message).to eq(commit_options[:message].delete("\r"))
+      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
     end
 
-    def merge(repository, user, merge_request, options = {})
-      repository.merge(user, merge_request.diff_head_sha, merge_request, options)
+    def merge(repository, user, merge_request, message)
+      repository.merge(user, merge_request.diff_head_sha, merge_request, message)
     end
   end
 
@@ -1351,24 +1345,25 @@ describe Repository, models: true do
   describe '#revert' do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+    let(:message) { 'revert message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already reverted' do
       it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master')
+        repository.revert(user, update_image_commit, 'master', message)
 
-        expect { repository.revert(user, update_image_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be reverted' do
       it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
+        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1377,7 +1372,7 @@ describe Repository, models: true do
         merge_commit
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
 
-        repository.revert(user, merge_commit, 'master')
+        repository.revert(user, merge_commit, 'master', message)
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
       end
     end
@@ -1387,24 +1382,25 @@ describe Repository, models: true do
     let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
     let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+    let(:message) { 'cherry-pick message' }
 
     context 'when there is a conflict' do
       it 'raises an error' do
-        expect { repository.cherry_pick(user, conflict_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit was already cherry-picked' do
       it 'raises an error' do
-        repository.cherry_pick(user, pickable_commit, 'master')
+        repository.cherry_pick(user, pickable_commit, 'master', message)
 
-        expect { repository.cherry_pick(user, pickable_commit, 'master') }.to raise_error(/Failed to/)
+        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
       end
     end
 
     context 'when commit can be cherry-picked' do
       it 'cherry-picks the changes' do
-        expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
+        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
       end
     end
 
@@ -1412,11 +1408,11 @@ describe Repository, models: true do
       it 'cherry-picks the changes' do
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
 
-        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome')
+        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
         cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
 
         expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
-        expect(cherry_pick_commit_message).to include('cherry picked from')
+        expect(cherry_pick_commit_message).to eq(message)
       end
     end
   end
@@ -1697,27 +1693,41 @@ describe Repository, models: true do
   end
 
   describe '#add_tag' do
-    context 'with a valid target' do
-      let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user) }
 
-      it 'creates the tag using rugged' do
-        expect(repository.rugged.tags).to receive(:create)
-          .with('8.5', repository.commit('master').id,
-            hash_including(message: 'foo',
-                           tagger: hash_including(name: user.name, email: user.email)))
-          .and_call_original
+    shared_examples 'adding tag' do
+      context 'with a valid target' do
+        it 'creates the tag' do
+          repository.add_tag(user, '8.5', 'master', 'foo')
 
-        repository.add_tag(user, '8.5', 'master', 'foo')
+          tag = repository.find_tag('8.5')
+          expect(tag).to be_present
+          expect(tag.message).to eq('foo')
+          expect(tag.dereferenced_target.id).to eq(repository.commit('master').id)
+        end
+
+        it 'returns a Gitlab::Git::Tag object' do
+          tag = repository.add_tag(user, '8.5', 'master', 'foo')
+
+          expect(tag).to be_a(Gitlab::Git::Tag)
+        end
       end
 
-      it 'returns a Gitlab::Git::Tag object' do
-        tag = repository.add_tag(user, '8.5', 'master', 'foo')
-
-        expect(tag).to be_a(Gitlab::Git::Tag)
+      context 'with an invalid target' do
+        it 'returns false' do
+          expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
+        end
       end
+    end
 
-      it 'passes commit SHA to pre-receive and update hooks,\
-        and tag SHA to post-receive hook' do
+    context 'when Gitaly operation_user_add_tag feature is enabled' do
+      it_behaves_like 'adding tag'
+    end
+
+    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'adding tag'
+
+      it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
         pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
         update_hook = Gitlab::Git::Hook.new('update', project)
         post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
@@ -1742,12 +1752,6 @@ describe Repository, models: true do
           .with(anything, anything, tag_sha, anything)
       end
     end
-
-    context 'with an invalid target' do
-      it 'returns false' do
-        expect(repository.add_tag(user, '8.5', 'bar', 'foo')).to be false
-      end
-    end
   end
 
   describe '#rm_branch' do
@@ -1762,12 +1766,22 @@ describe Repository, models: true do
   end
 
   describe '#rm_tag' do
-    it 'removes a tag' do
-      expect(repository).to receive(:before_remove_tag)
+    shared_examples 'removing tag' do
+      it 'removes a tag' do
+        expect(repository).to receive(:before_remove_tag)
 
-      repository.rm_tag(create(:user), 'v1.1.0')
+        repository.rm_tag(build_stubbed(:user), 'v1.1.0')
 
-      expect(repository.find_tag('v1.1.0')).to be_nil
+        expect(repository.find_tag('v1.1.0')).to be_nil
+      end
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is enabled' do
+      it_behaves_like 'removing tag'
+    end
+
+    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'removing tag'
     end
   end
 
@@ -2067,7 +2081,7 @@ describe Repository, models: true do
     it 'returns the local branches' do
       masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev.id)
 
       expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
@@ -2078,7 +2092,7 @@ describe Repository, models: true do
     it 'returns the remote branches' do
       masterrev = repository.find_branch('master').dereferenced_target
       create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev.id)
 
       expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
       expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import RelatedIssuesRoot from './related_issues/components/related_issues_root.vue';
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 document.addEventListener('DOMContentLoaded', () => {
   const relatedIssuesRootElement = document.querySelector('.js-related-issues-root');
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render: createElement => createElement('related-issues-root', {
         props: {
           endpoint: relatedIssuesRootElement.dataset.endpoint,
-          canAddRelatedIssues: gl.utils.convertPermissionToBoolean(
+          canAddRelatedIssues: convertPermissionToBoolean(
             relatedIssuesRootElement.dataset.canAddRelatedIssues,
           ),
           helpPath: relatedIssuesRootElement.dataset.helpPath,

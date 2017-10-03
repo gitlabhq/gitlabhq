@@ -79,4 +79,8 @@ module BoardsHelper
       'max-select': dropdown_options[:data][:'max-select']
     }
   end
+
+  def boards_link_text
+    s_("IssueBoards|Board")
+  end
 end

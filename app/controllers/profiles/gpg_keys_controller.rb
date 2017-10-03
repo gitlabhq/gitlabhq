@@ -7,9 +7,9 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
   end
 
   def create
-    @gpg_key = current_user.gpg_keys.new(gpg_key_params)
+    @gpg_key = GpgKeys::CreateService.new(current_user, gpg_key_params).execute
 
-    if @gpg_key.save
+    if @gpg_key.persisted?
       redirect_to profile_gpg_keys_path
     else
       @gpg_keys = current_user.gpg_keys.select(&:persisted?)

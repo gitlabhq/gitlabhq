@@ -74,7 +74,15 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-### 5. Update gitlab-shell to the corresponding version
+### 5. Update gitaly to the corresponding version
+
+```bash
+cd /home/git/gitlab
+
+sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+```
+
+### 6. Update gitlab-shell to the corresponding version
 
 ```bash
 cd /home/git/gitlab-shell
@@ -84,14 +92,14 @@ sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`ca
 sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
 ```
 
-### 6. Start application
+### 7. Start application
 
 ```bash
 sudo service gitlab start
 sudo service nginx restart
 ```
 
-### 7. Check application status
+### 8. Check application status
 
 Check if GitLab and its environment are configured correctly:
 

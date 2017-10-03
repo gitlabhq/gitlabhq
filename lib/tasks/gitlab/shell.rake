@@ -79,7 +79,7 @@ namespace :gitlab do
         if File.exist?(path_to_repo)
           print '-'
         else
-          if Gitlab::Shell.new.add_repository(project.repository_storage_path,
+          if Gitlab::Shell.new.add_repository(project.repository_storage,
                                               project.disk_path)
             print '.'
           else
@@ -132,7 +132,7 @@ namespace :gitlab do
   end
 
   def ensure_write_to_authorized_keys_is_enabled
-    return if current_application_settings.authorized_keys_enabled
+    return if Gitlab::CurrentSettings.current_application_settings.authorized_keys_enabled
 
     puts authorized_keys_is_disabled_warning
 

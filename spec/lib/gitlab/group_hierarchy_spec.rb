@@ -23,6 +23,11 @@ describe Gitlab::GroupHierarchy, :postgresql do
 
       expect(relation).to include(parent, child1, child2)
     end
+
+    it 'does not allow the use of #update_all' do
+      expect { relation.update_all(share_with_group_lock: false) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
+    end
   end
 
   describe '#base_and_descendants' do
@@ -42,6 +47,11 @@ describe Gitlab::GroupHierarchy, :postgresql do
       relation = described_class.new(Group.none, Group.where(id: parent.id)).base_and_descendants
 
       expect(relation).to include(parent, child1, child2)
+    end
+
+    it 'does not allow the use of #update_all' do
+      expect { relation.update_all(share_with_group_lock: false) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
   end
 
@@ -72,6 +82,11 @@ describe Gitlab::GroupHierarchy, :postgresql do
       relation = described_class.new(Group.where(id: Group.maximum(:id).succ), Group.where(id: child1.id)).all_groups
 
       expect(relation).to include(child2)
+    end
+
+    it 'does not allow the use of #update_all' do
+      expect { relation.update_all(share_with_group_lock: false) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
   end
 end

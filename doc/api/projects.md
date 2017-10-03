@@ -69,6 +69,7 @@ GET /projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -137,6 +138,7 @@ GET /projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -246,6 +248,7 @@ GET /users/:user_id/projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -313,6 +316,7 @@ GET /users/:user_id/projects
     "jobs_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
     "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
@@ -409,6 +413,7 @@ GET /projects/:id
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -533,6 +538,7 @@ POST /projects
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -569,6 +575,7 @@ POST /projects/user/:user_id
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -605,6 +612,7 @@ PUT /projects/:id
 | `jobs_enabled` | boolean | no | Enable jobs for this project |
 | `wiki_enabled` | boolean | no | Enable wiki for this project |
 | `snippets_enabled` | boolean | no | Enable snippets for this project |
+| `resolve_outdated_diff_discussions` | boolean | no | Automatically resolve merge request diffs discussions on lines changed with a push |
 | `container_registry_enabled` | boolean | no | Enable container registry for this project |
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
@@ -636,6 +644,98 @@ POST /projects/:id/fork
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
+
+## List Forks of a project
+
+>**Note:** This feature was introduced in GitLab 10.1
+
+List the projects accessible to the calling user that have an established, forked relationship with the specified project
+
+```
+GET /projects/:id/forks
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `archived` | boolean | no | Limit by archived status |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of projects matching the search criteria |
+| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `owned` | boolean | no | Limit by projects owned by the current user |
+| `membership` | boolean | no | Limit by projects that the current user is a member of |
+| `starred` | boolean | no | Limit by projects starred by the current user |
+| `statistics` | boolean | no | Include project statistics |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/forks"
+```
+
+Example responses:
+
+```json
+[
+  {
+    "id": 3,
+    "description": null,
+    "default_branch": "master",
+    "visibility": "internal",
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
+    "web_url": "http://example.com/diaspora/diaspora-project-site",
+    "tag_list": [
+      "example",
+      "disapora project"
+    ],
+    "name": "Diaspora Project Site",
+    "name_with_namespace": "Diaspora / Diaspora Project Site",
+    "path": "diaspora-project-site",
+    "path_with_namespace": "diaspora/diaspora-project-site",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "jobs_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "id": 3,
+      "name": "Diaspora",
+      "path": "diaspora",
+      "kind": "group",
+      "full_path": "diaspora"
+    },
+    "import_status": "none",
+    "archived": true,
+    "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 1,
+    "public_jobs": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_pipeline_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
+    "request_access_enabled": false,
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
+    }
+  }
+]
+```
 
 ## Star a project
 
@@ -678,6 +778,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -753,6 +854,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -834,6 +936,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -927,6 +1030,7 @@ Example response:
   "jobs_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
+  "resolve_outdated_diff_discussions": false,
   "container_registry_enabled": false,
   "created_at": "2013-09-30T13:46:02Z",
   "last_activity_at": "2013-09-30T13:46:02Z",
@@ -1222,11 +1326,14 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
-## Push Rules (EE only)
+## Push Rules
+
+>**Note:**
+Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee).
 
 ### Get project push rules
 
-Get a project push rule.
+Get the push rules of a project.
 
 ```
 GET /projects/:id/push_rule
@@ -1294,6 +1401,8 @@ PUT /projects/:id/push_rule
 
 ### Delete project push rule
 
+> Introduced in GitLab 9.0.
+
 Removes a push rule from a project. This is an idempotent method and can be called multiple times.
 Either the push rule is available or not.
 
@@ -1301,6 +1410,8 @@ Either the push rule is available or not.
 DELETE /projects/:id/push_rule
 ```
 
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ## Branches

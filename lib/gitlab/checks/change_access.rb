@@ -14,7 +14,8 @@ module Gitlab
         change_existing_tags: 'You are not allowed to change existing tags on this project.',
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
-        create_protected_tag: 'You are not allowed to create this tag as it is protected.'
+        create_protected_tag: 'You are not allowed to create this tag as it is protected.',
+        push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'"
       }.freeze
 
       # protocol is currently used only in EE
@@ -152,22 +153,36 @@ module Gitlab
             raise GitAccess::UnauthorizedError, 'You cannot delete a tag'
           end
         else
-          commit_validation = push_rule.try(:commit_validation?)
+          unless branch_name_allowed_by_push_rule?(push_rule)
+            message = ERROR_MESSAGES[:push_rule_branch_name] % { branch_name_regex: push_rule.branch_name_regex }
+            raise GitAccess::UnauthorizedError.new(message)
+          end
 
+          commit_validation = push_rule.try(:commit_validation?)
           # if newrev is blank, the branch was deleted
           return if deletion? || !(commit_validation || validate_path_locks?)
 
-          commits.each do |commit|
-            if commit_validation
-              error = check_commit(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error if error
-            end
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commits.each do |commit|
+              if commit_validation
+                error = check_commit(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error if error
+              end
 
-            if error = check_commit_diff(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error
+              if error = check_commit_diff(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error
+              end
             end
           end
         end
+      end
+
+      def branch_name_allowed_by_push_rule?(push_rule)
+        return true unless push_rule
+        return true if @branch_name.blank?
+
+        push_rule.branch_name_allowed?(@branch_name)
       end
 
       def tag_deletion_denied_by_push_rule?(push_rule)
@@ -183,10 +198,6 @@ module Gitlab
       def check_commit(commit, push_rule)
         unless push_rule.commit_message_allowed?(commit.safe_message)
           return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
-        end
-
-        if @branch_name && !push_rule.branch_name_allowed?(@branch_name)
-          return "Branch name does not follow the pattern '#{push_rule.branch_name_regex}'"
         end
 
         unless push_rule.author_email_allowed?(commit.committer_email)

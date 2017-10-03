@@ -1,7 +1,7 @@
 # Pipelines settings
 
 To reach the pipelines settings navigate to your project's
-**Settings ➔ Pipelines**.
+**Settings ➔ CI/CD**.
 
 The following settings can be configured per project.
 
@@ -66,10 +66,30 @@ in the pipelines settings page.
 
 ## Visibility of pipelines
 
-For public and internal projects, the pipelines page can be accessed by
-anyone and those logged in respectively. If you wish to hide it so that only
-the members of the project or group have access to it, uncheck the **Public
-pipelines** checkbox and save the changes.
+Access to pipelines and job details (including output of logs and artifacts)
+is checked against your current user access level and the **Public pipelines**
+project setting.
+
+If **Public pipelines** is enabled (default):
+
+- for **public** projects, anyone can view the pipelines and access the job details
+  (output logs and artifacts)
+- for **internal** projects, any logged in user can view the pipelines
+  and access the job details
+  (output logs and artifacts)
+- for **private** projects, any member (guest or higher) can view the pipelines
+  and access the job details
+  (output logs and artifacts)
+
+If **Public pipelines** is disabled:
+
+- for **public** projects, anyone can view the pipelines, but only members
+  (reporter or higher) can access the job details (output logs and artifacts)
+- for **internal** projects, any logged in user can view the pipelines,
+  but only members (reporter or higher) can access the job details (output logs
+  and artifacts)
+- for **private** projects, only members (reporter or higher)
+  can view the pipelines and access the job details (output logs and artifacts)
 
 ## Auto-cancel pending pipelines
 

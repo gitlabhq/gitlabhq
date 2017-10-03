@@ -53,6 +53,7 @@ describe Project do
     it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
+    it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -75,6 +76,7 @@ describe Project do
     it { is_expected.to have_many(:approver_groups).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
+    it { is_expected.to have_many(:members_and_requesters) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -91,22 +93,8 @@ describe Project do
         project.team << [developer, :developer]
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = project.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = project.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { project }
       end
     end
   end
@@ -1496,7 +1484,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1506,7 +1494,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1563,7 +1551,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.disk_path)
+        .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
       project.ensure_repository
@@ -2854,9 +2842,27 @@ describe Project do
 
     describe '#legacy_storage?' do
       it 'returns true when storage_version is nil' do
-        project = build(:project)
+        project = build(:project, storage_version: nil)
 
         expect(project.legacy_storage?).to be_truthy
+      end
+
+      it 'returns true when the storage_version is 0' do
+        project = build(:project, storage_version: 0)
+
+        expect(project.legacy_storage?).to be_truthy
+      end
+    end
+
+    describe '#hashed_storage?' do
+      it 'returns false' do
+        expect(project.hashed_storage?).to be_falsey
+      end
+    end
+
+    describe '#hashed_storage?' do
+      it 'returns false' do
+        expect(project.hashed_storage?).to be_falsey
       end
     end
 
@@ -2916,6 +2922,38 @@ describe Project do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
       end
     end
+
+    describe '#migrate_to_hashed_storage!' do
+      it 'returns true' do
+        expect(project.migrate_to_hashed_storage!).to be_truthy
+      end
+
+      it 'flags as readonly' do
+        expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
+        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
+
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+
+        project.migrate_to_hashed_storage!
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the wiki repo is in use' do
+        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
+
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+
+        project.migrate_to_hashed_storage!
+      end
+
+      it 'schedules ProjectMigrateHashedStorageWorker' do
+        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).with(project.id)
+
+        project.migrate_to_hashed_storage!
+      end
+    end
   end
 
   context 'hashed storage' do
@@ -2927,6 +2965,18 @@ describe Project do
       stub_application_setting(hashed_storage_enabled: true)
       allow(Digest::SHA2).to receive(:hexdigest) { hash }
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    describe '#legacy_storage?' do
+      it 'returns false' do
+        expect(project.legacy_storage?).to be_falsey
+      end
+    end
+
+    describe '#hashed_storage?' do
+      it 'returns true' do
+        expect(project.hashed_storage?).to be_truthy
+      end
     end
 
     describe '#base_dir' do
@@ -2997,6 +3047,255 @@ describe Project do
     describe '#pages_path' do
       it 'returns a path where pages are stored' do
         expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
+      end
+    end
+
+    describe '#migrate_to_hashed_storage!' do
+      it 'returns nil' do
+        expect(project.migrate_to_hashed_storage!).to be_nil
+      end
+
+      it 'does not flag as readonly' do
+        expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
+      end
+    end
+  end
+
+  describe '#gl_repository' do
+    let(:project) { create(:project) }
+
+    it 'delegates to Gitlab::GlRepository.gl_repository' do
+      expect(Gitlab::GlRepository).to receive(:gl_repository).with(project, true)
+
+      project.gl_repository(is_wiki: true)
+    end
+  end
+
+  describe '#has_ci?' do
+    set(:project) { create(:project) }
+    let(:repository) { double }
+
+    before do
+      expect(project).to receive(:repository) { repository }
+    end
+
+    context 'when has .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { 'content' }
+      end
+
+      it "CI is available" do
+        expect(project).to have_ci
+      end
+    end
+
+    context 'when there is no .gitlab-ci.yml' do
+      before do
+        expect(repository).to receive(:gitlab_ci_yml) { nil }
+      end
+
+      it "CI is not available" do
+        expect(project).not_to have_ci
+      end
+
+      context 'when auto devops is enabled' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it "CI is available" do
+          expect(project).to have_ci
+        end
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_enabled? }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly enabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it "auto devops is disabled" do
+          expect(project).not_to be_auto_devops_enabled
+        end
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project.auto_devops).to be_nil
+        expect(project).not_to be_auto_devops_enabled
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it "auto devops is enabled" do
+          expect(project).to be_auto_devops_enabled
+        end
+      end
+    end
+  end
+
+  describe '#has_auto_devops_implicitly_disabled?' do
+    set(:project) { create(:project) }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_disabled
+      end
+    end
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_disabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+    end
+  end
+
+  context '#auto_devops_variables' do
+    set(:project) { create(:project) }
+
+    subject { project.auto_devops_variables }
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      context 'when domain is empty' do
+        before do
+          create(:project_auto_devops, project: project, domain: nil)
+        end
+
+        it 'variables are empty' do
+          is_expected.to be_empty
+        end
+      end
+
+      context 'when domain is configured' do
+        before do
+          create(:project_auto_devops, project: project, domain: 'example.com')
+        end
+
+        it "variables are not empty" do
+          is_expected.not_to be_empty
+        end
+      end
+    end
+  end
+
+  describe '#latest_successful_builds_for' do
+    let(:project) { build(:project) }
+
+    before do
+      allow(project).to receive(:default_branch).and_return('master')
+    end
+
+    context 'without a ref' do
+      it 'returns a pipeline for the default branch' do
+        expect(project)
+          .to receive(:latest_successful_pipeline_for_default_branch)
+
+        project.latest_successful_pipeline_for
+      end
+    end
+
+    context 'with the ref set to the default branch' do
+      it 'returns a pipeline for the default branch' do
+        expect(project)
+          .to receive(:latest_successful_pipeline_for_default_branch)
+
+        project.latest_successful_pipeline_for(project.default_branch)
+      end
+    end
+
+    context 'with a ref that is not the default branch' do
+      it 'returns the latest successful pipeline for the given ref' do
+        expect(project.pipelines).to receive(:latest_successful_for).with('foo')
+
+        project.latest_successful_pipeline_for('foo')
+      end
+    end
+  end
+
+  describe '#latest_successful_pipeline_for_default_branch' do
+    let(:project) { build(:project) }
+
+    before do
+      allow(project).to receive(:default_branch).and_return('master')
+    end
+
+    it 'memoizes and returns the latest successful pipeline for the default branch' do
+      pipeline = double(:pipeline)
+
+      expect(project.pipelines).to receive(:latest_successful_for)
+        .with(project.default_branch)
+        .and_return(pipeline)
+        .once
+
+      2.times do
+        expect(project.latest_successful_pipeline_for_default_branch)
+          .to eq(pipeline)
       end
     end
   end

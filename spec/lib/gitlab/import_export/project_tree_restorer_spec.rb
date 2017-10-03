@@ -11,8 +11,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
 
-        allow(@project.repository).to receive(:fetch_ref).and_return(true)
-        allow(@project.repository.raw).to receive(:rugged_branch_exists?).and_return(false)
+        allow_any_instance_of(Repository).to receive(:fetch_ref).and_return(true)
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
 
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
@@ -57,10 +57,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Ci::Pipeline.where(ref: nil)).not_to be_empty
       end
 
-      it 'restores the correct event with symbolised data' do
-        expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
-      end
-
       it 'preserves updated_at on issues' do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 
@@ -80,7 +76,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'event at forth level of the tree' do
-        let(:event) { Event.where(title: 'test levels').first }
+        let(:event) { Event.where(action: 6).first }
 
         it 'restores the event' do
           expect(event).not_to be_nil

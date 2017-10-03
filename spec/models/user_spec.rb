@@ -44,6 +44,7 @@ describe User do
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
+    it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
 
     describe "#abuse_report" do
       let(:current_user) { create(:user) }
@@ -744,6 +745,7 @@ describe User do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
+        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
       end
     end
@@ -754,6 +756,7 @@ describe User do
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
+        expect(user.theme_id).to eq(1)
       end
     end
 
@@ -1415,56 +1418,24 @@ describe User do
   end
 
   describe "#recent_push" do
-    subject { create(:user) }
-    let!(:project1) { create(:project, :repository) }
-    let!(:project2) { create(:project, :repository, forked_from_project: project1) }
+    let(:user) { build(:user) }
+    let(:project) { build(:project) }
+    let(:event) { build(:push_event) }
 
-    let!(:push_event) do
-      event = create(:push_event, project: project2, author: subject)
+    it 'returns the last push event for the user' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:last_event_for_user)
+        .and_return(event)
 
-      create(:push_event_payload,
-             event: event,
-             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-             commit_count: 0,
-             ref: 'master')
-
-      event
+      expect(user.recent_push).to eq(event)
     end
 
-    before do
-      project1.team << [subject, :master]
-      project2.team << [subject, :master]
-    end
+    it 'returns the last push event for a project when one is given' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:last_event_for_project)
+        .and_return(event)
 
-    it "includes push event" do
-      expect(subject.recent_push).to eq(push_event)
-    end
-
-    it "excludes push event if branch has been deleted" do
-      allow_any_instance_of(Repository).to receive(:branch_exists?).with('master').and_return(false)
-
-      expect(subject.recent_push).to eq(nil)
-    end
-
-    it "excludes push event if MR is opened for it" do
-      create(:merge_request, source_project: project2, target_project: project1, source_branch: project2.default_branch, target_branch: 'fix', author: subject)
-
-      expect(subject.recent_push).to eq(nil)
-    end
-
-    it "includes push events on any of the provided projects" do
-      expect(subject.recent_push(project1)).to eq(nil)
-      expect(subject.recent_push(project2)).to eq(push_event)
-
-      push_event1 = create(:push_event, project: project1, author: subject)
-
-      create(:push_event_payload,
-             event: push_event1,
-             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
-             commit_count: 0,
-             ref: 'master')
-
-      expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
+      expect(user.recent_push(project)).to eq(event)
     end
   end
 
@@ -1585,7 +1556,7 @@ describe User do
       developer_project = create(:project) { |p| p.add_developer(user) }
       master_project    = create(:project) { |p| p.add_master(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
+      expect(user.projects_where_can_admin_issues.to_a).to match_array([master_project, developer_project, reporter_project])
       expect(user.can?(:admin_issue, master_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)
@@ -2221,6 +2192,86 @@ describe User do
             end.not_to change { user.namespace.updated_at }
           end
         end
+      end
+    end
+  end
+
+  describe '#verified_email?' do
+    it 'returns true when the email is the primary email' do
+      user = build :user, email: 'email@example.com'
+
+      expect(user.verified_email?('email@example.com')).to be true
+    end
+
+    it 'returns false when the email is not the primary email' do
+      user = build :user, email: 'email@example.com'
+
+      expect(user.verified_email?('other_email@example.com')).to be false
+    end
+  end
+
+  describe '#sync_attribute?' do
+    let(:user) { described_class.new }
+
+    context 'oauth user' do
+      it 'returns true if name can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(name location))
+        expect(user.sync_attribute?(:name)).to be_truthy
+      end
+
+      it 'returns true if email can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(name email))
+        expect(user.sync_attribute?(:email)).to be_truthy
+      end
+
+      it 'returns true if location can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:email)).to be_truthy
+      end
+
+      it 'returns false if name can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns false if email can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns false if location can not be synced' do
+        stub_omniauth_setting(sync_profile_attributes: %w(location email))
+        expect(user.sync_attribute?(:name)).to be_falsey
+      end
+
+      it 'returns true for all syncable attributes if all syncable attributes can be synced' do
+        stub_omniauth_setting(sync_profile_attributes: true)
+        expect(user.sync_attribute?(:name)).to be_truthy
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_truthy
+      end
+
+      it 'returns false for all syncable attributes but email if no syncable attributes are declared' do
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_falsey
+      end
+    end
+
+    context 'ldap user' do
+      it 'returns true for email if ldap user' do
+        allow(user).to receive(:ldap_user?).and_return(true)
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_falsey
+      end
+
+      it 'returns true for email and location if ldap user and location declared as syncable' do
+        allow(user).to receive(:ldap_user?).and_return(true)
+        stub_omniauth_setting(sync_profile_attributes: %w(location))
+        expect(user.sync_attribute?(:name)).to be_falsey
+        expect(user.sync_attribute?(:email)).to be_truthy
+        expect(user.sync_attribute?(:location)).to be_truthy
       end
     end
   end

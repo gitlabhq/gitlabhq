@@ -171,13 +171,6 @@ module IssuablesHelper
     html.html_safe
   end
 
-  def cached_assigned_issuables_count(assignee, issuable_type, state)
-    cache_key = hexdigest(['assigned_issuables_count', assignee.id, issuable_type, state].join('-'))
-    Rails.cache.fetch(cache_key, expires_in: 2.minutes) do
-      assigned_issuables_count(assignee, issuable_type, state)
-    end
-  end
-
   def issuable_first_contribution_icon
     content_tag(:span, class: 'fa-stack') do
       concat(icon('certificate', class: "fa-stack-2x"))
@@ -221,7 +214,6 @@ module IssuablesHelper
       canUpdate: can?(current_user, :update_issue, issuable),
       canDestroy: can?(current_user, :destroy_issue, issuable),
       issuableRef: issuable.to_reference,
-      isConfidential: issuable.confidential,
       markdownPreviewPath: preview_markdown_path(@project),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
@@ -253,19 +245,29 @@ module IssuablesHelper
 
   def issuables_count_for_state(issuable_type, state)
     finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-    finder.count_by_state[state]
+
+    Gitlab::IssuablesCountForState.new(finder)[state]
   end
 
-  def close_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :close))
+  def close_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :close))
   end
 
-  def reopen_issuable_url(issuable)
-    issuable_url(issuable, close_reopen_params(issuable, :reopen))
+  def reopen_issuable_path(issuable)
+    issuable_path(issuable, close_reopen_params(issuable, :reopen))
   end
 
-  def close_reopen_issuable_url(issuable, should_inverse = false)
-    issuable.closed? ^ should_inverse ? reopen_issuable_url(issuable) : close_issuable_url(issuable)
+  def close_reopen_issuable_path(issuable, should_inverse = false)
+    issuable.closed? ^ should_inverse ? reopen_issuable_path(issuable) : close_issuable_path(issuable)
+  end
+
+  def issuable_path(issuable, *options)
+    case issuable
+    when Issue
+      issue_path(issuable, *options)
+    when MergeRequest
+      merge_request_path(issuable, *options)
+    end
   end
 
   def issuable_url(issuable, *options)

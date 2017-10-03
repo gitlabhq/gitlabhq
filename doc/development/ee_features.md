@@ -27,6 +27,12 @@ Merging changes from GitLab CE to EE can result in numerous conflicts.
 To reduce conflicts, EE code should be separated in to the `EE` module
 as much as possible.
 
+When referencing constants *outside* of the `EE` namespace from within it, you
+should always use absolute constants - e.g., `::User` instead of `User`. This
+will prevent `::EE::User` from being picked instead of `::User`. Follow this
+rule even if the constant doesn't exist in the `EE` namespace at present - it
+may be added in the future.
+
 ### Classes vs. Module Mixins
 
 If the feature being developed is not present in any form in CE,

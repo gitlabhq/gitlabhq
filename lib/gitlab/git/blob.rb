@@ -32,6 +32,8 @@ module Gitlab
             else
               blob = repository.lookup(sha)
 
+              next unless blob.is_a?(Rugged::Blob)
+
               new(
                 id: blob.oid,
                 size: blob.size,
@@ -40,14 +42,6 @@ module Gitlab
               )
             end
           end
-        end
-
-        def binary?(data)
-          # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
-          # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
-          # which is what we use below to keep a consistent behavior.
-          detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
-          detect && detect[:type] == :binary
         end
 
         # Returns an array of Blob instances, specified in blob_references as
@@ -63,6 +57,10 @@ module Gitlab
           blob_references.map do |sha, path|
             find_by_rugged(repository, sha, path, limit: blob_size_limit)
           end
+        end
+
+        def binary?(data)
+          EncodingHelper.detect_libgit2_binary?(data)
         end
 
         private

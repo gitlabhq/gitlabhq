@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:44-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -27,6 +27,9 @@ msgstr[0] "为提高页面加载速度及性能，已省略了 %s 次提交。"
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交于 %{commit_timeago}"
 
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
+msgstr ""
+
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "已失败 %{number_of_failures} 次/最多允许失败失败 %{maximum_failures} 次，GitLab 将继续重试。"
 
@@ -47,6 +50,9 @@ msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] "%d 条流水线"
 
+msgid "1st contribution!"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持续集成数据图"
 
@@ -54,16 +60,16 @@ msgid "About auto deploy"
 msgstr "关于自动部署"
 
 msgid "Abuse Reports"
-msgstr ""
+msgstr "滥用报告"
 
 msgid "Access Tokens"
-msgstr ""
+msgstr "访问令牌"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "为方便修复挂载问题，访问故障存储已被暂时禁用。在问题解决后请重置存储健康信息，以允许再次访问。"
 
 msgid "Account"
-msgstr ""
+msgstr "帐号"
 
 msgid "Active"
 msgstr "启用"
@@ -89,11 +95,11 @@ msgstr "添加目录"
 msgid "All"
 msgstr "全部"
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
-msgstr ""
+msgstr "应用程序"
 
 msgid "Archived project! Repository is read-only"
 msgstr "项目已归档！存储库为只读状态"
@@ -113,10 +119,34 @@ msgstr "确定要重置健康检查令牌吗？"
 msgid "Are you sure?"
 msgstr "确定吗？"
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放文件到此处或者 %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -173,6 +203,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "分支"
@@ -188,6 +221,90 @@ msgstr "切换分支"
 
 msgid "Branches"
 msgstr "分支"
+
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
+msgstr ""
 
 msgid "Browse Directory"
 msgstr "浏览目录"
@@ -205,7 +322,7 @@ msgid "ByAuthor|by"
 msgstr "作者:"
 
 msgid "CI / CD"
-msgstr ""
+msgstr "CI / CD"
 
 msgid "CI configuration"
 msgstr "CI 配置"
@@ -235,7 +352,7 @@ msgid "Charts"
 msgstr "统计图"
 
 msgid "Chat"
-msgstr ""
+msgstr "交流"
 
 msgid "Cherry-pick this commit"
 msgstr "优选此提交"
@@ -330,9 +447,6 @@ msgstr "提交者："
 
 msgid "Compare"
 msgstr "比较"
-
-msgid "Container Registry"
-msgstr ""
 
 msgid "Contribution guide"
 msgstr "贡献指南"
@@ -429,7 +543,7 @@ msgid_plural "Deploys"
 msgstr[0] "部署"
 
 msgid "Deploy Keys"
-msgstr ""
+msgstr "部署密钥"
 
 msgid "Description"
 msgstr "描述"
@@ -480,6 +594,9 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "编辑 %{id} 流水线计划"
 
 msgid "Emails"
+msgstr "电子邮件"
+
+msgid "Enable in settings"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -508,6 +625,9 @@ msgstr "每月执行（每月 1 日凌晨 4 点）"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "每周执行（周日凌晨 4 点）"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "无法变更所有者"
@@ -547,7 +667,7 @@ msgid "From merge request merge until deploy to production"
 msgstr "从合并请求被合并后到部署至生产环境"
 
 msgid "GPG Keys"
-msgstr ""
+msgstr "GPG 密钥"
 
 msgid "Geo Nodes"
 msgstr ""
@@ -564,7 +684,28 @@ msgstr "跳转到派生项目"
 msgid "GoToYourFork|Fork"
 msgstr "跳转到派生项目"
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
@@ -585,12 +726,6 @@ msgstr "没有检测到健康问题"
 msgid "HealthCheck|Unhealthy"
 msgstr "非健康"
 
-msgid "Home"
-msgstr "首页"
-
-msgid "Hooks"
-msgstr ""
-
 msgid "Housekeeping successfully started"
 msgstr "已开始维护"
 
@@ -610,6 +745,9 @@ msgid "Issue events"
 msgstr "议题事件"
 
 msgid "Issues"
+msgstr "议题"
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -619,7 +757,7 @@ msgid "LFSStatus|Enabled"
 msgstr "启用"
 
 msgid "Labels"
-msgstr ""
+msgstr "标签"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -666,22 +804,25 @@ msgid "Median"
 msgstr "中位数"
 
 msgid "Members"
-msgstr ""
+msgstr "成员"
 
 msgid "Merge Requests"
-msgstr ""
+msgstr "合并请求"
 
 msgid "Merge events"
 msgstr "合并事件"
 
-msgid "Messages"
+msgid "Merge request"
 msgstr ""
+
+msgid "Messages"
+msgstr "消息"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新建 SSH 公钥"
 
 msgid "Monitoring"
-msgstr ""
+msgstr "监控"
 
 msgid "More information is available|here"
 msgstr "帮助文档"
@@ -784,7 +925,7 @@ msgid "NotificationLevel|Watch"
 msgstr "关注"
 
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "筛选"
@@ -796,13 +937,25 @@ msgid "Options"
 msgstr "操作"
 
 msgid "Overview"
-msgstr ""
+msgstr "概览"
 
 msgid "Owner"
 msgstr "所有者"
 
-msgid "Password"
+msgid "Pagination|Last »"
 msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
+msgid "Password"
+msgstr "密码"
 
 msgid "Pipeline"
 msgstr "流水线"
@@ -883,13 +1036,13 @@ msgid "Pipelines charts"
 msgstr "流水线统计图"
 
 msgid "Pipelines for last month"
-msgstr ""
+msgstr "上个月的流水线"
 
 msgid "Pipelines for last week"
-msgstr ""
+msgstr "上周的流水线"
 
 msgid "Pipelines for last year"
-msgstr ""
+msgstr "去年的流水线"
 
 msgid "Pipeline|all"
 msgstr "所有"
@@ -904,13 +1057,10 @@ msgid "Pipeline|with stages"
 msgstr "于阶段"
 
 msgid "Preferences"
-msgstr ""
+msgstr "偏好设置"
 
-msgid "Profile Settings"
+msgid "Profile"
 msgstr ""
-
-msgid "Project"
-msgstr "项目"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "项目 '%{project_name}' 已进入删除队列。"
@@ -942,12 +1092,6 @@ msgstr "项目导出链接已过期。请从项目设置中重新生成项目导
 msgid "Project export started. A download link will be sent by email."
 msgstr "项目导出已开始。下载链接将通过电子邮件发送。"
 
-msgid "Project home"
-msgstr "项目首页"
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "订阅"
 
@@ -972,6 +1116,27 @@ msgstr "阶段"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "分支图"
 
+msgid "ProjectsDropdown|Frequently visited"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr "加载项目中"
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr "您经常访问的项目将出现在这里"
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr "搜索您的项目"
+
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr "对不起，没有搜索到符合条件的项目"
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr "此功能需要浏览器支持 localStorage"
+
 msgid "Push Rules"
 msgstr ""
 
@@ -989,6 +1154,9 @@ msgstr "分支"
 
 msgid "RefSwitcher|Tags"
 msgstr "标签"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "相关的提交"
@@ -1036,13 +1204,16 @@ msgid "Revert this merge request"
 msgstr "还原此合并请求"
 
 msgid "SSH Keys"
-msgstr ""
+msgstr "SSH 密钥"
 
 msgid "Save pipeline schedule"
 msgstr "保存流水线计划"
 
 msgid "Schedule a new pipeline"
 msgstr "新建流水线计划"
+
+msgid "Schedules"
+msgstr ""
 
 msgid "Scheduling Pipelines"
 msgstr "流水线计划"
@@ -1063,7 +1234,7 @@ msgid "Select target branch"
 msgstr "选择目标分支"
 
 msgid "Service Templates"
-msgstr ""
+msgstr "服务模板"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "为账号创建一个用于推送或拉取的 %{protocol} 密码。"
@@ -1081,6 +1252,12 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr "设置密码"
 
 msgid "Settings"
+msgstr "设置"
+
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
 msgstr ""
 
 msgid "Showing %d event"
@@ -1088,19 +1265,118 @@ msgid_plural "Showing %d events"
 msgstr[0] "显示 %d 个事件"
 
 msgid "Snippets"
+msgstr "代码片段"
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
 msgstr "源代码"
 
 msgid "Spam Logs"
-msgstr ""
+msgstr "垃圾信息日志"
 
 msgid "Specify the following URL during the Runner setup:"
 msgstr "在 Runner 设置时指定以下 URL："
 
 msgid "StarProject|Star"
 msgstr "星标"
+
+msgid "Starred projects"
+msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "由此更改 %{new_merge_request}"
@@ -1110,6 +1386,9 @@ msgstr "启动 Runner!"
 
 msgid "Switch branch/tag"
 msgstr "切换分支/标签"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1174,6 +1453,9 @@ msgstr "中位数是一个数列中最中间的值。例如在 3、5、9 之间�
 
 msgid "There are problems accessing Git storage: "
 msgstr "访问 Git 存储时出现问题："
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
+msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "在创建一个空的存储库或导入现有存储库之前，将无法推送代码。"
@@ -1348,8 +1630,14 @@ msgstr "在安装过程中使用以下注册令牌："
 msgid "Use your global notification setting"
 msgstr "使用全局通知设置"
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "查看待处理的合并请求"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "内部"
@@ -1370,7 +1658,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "该阶段的数据不足，无法显示。"
 
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 msgid "Withdraw Access Request"
 msgstr "取消权限申请"
@@ -1422,6 +1710,12 @@ msgstr "在账号中 %{add_ssh_key_link} 之前将无法通过 SSH 拉取或推�
 
 msgid "Your name"
 msgstr "您的名字"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

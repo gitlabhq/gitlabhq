@@ -1,0 +1,5 @@
+---
+title: Fixes project denial of service via gitmodules using Extended ASCII.
+merge_request: 14301
+author:
+type: fixed

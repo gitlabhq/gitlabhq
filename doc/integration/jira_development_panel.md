@@ -91,7 +91,14 @@ Click these links to see your GitLab repository data.
 
 ![GitLab commit details on a JIRA issue](img/jira_dev_panel_jira_setup_4.png)
 
+
+## Limitations
+
+- This integration is currently not supported on GitLab instances under a [relative url][relative-url] (e.g. `http://example.com/gitlab`).
+- Projects under nested groups are not supported
+
 [existing-jira]: ../user/project/integrations/jira.md
 [jira-development-panel]: https://confluence.atlassian.com/adminjiraserver070/integrating-with-development-tools-776637096.html#Integratingwithdevelopmenttools-Developmentpanelonissues
 [eep]: https://about.gitlab.com/gitlab-ee/
 [ee-2786]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2786
+[relative-url]: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab

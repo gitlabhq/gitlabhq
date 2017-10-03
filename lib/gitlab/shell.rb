@@ -65,7 +65,7 @@ module Gitlab
 
     # Init new repository
     #
-    # storage - project's storage path
+    # storage - project's storage name
     # name - project path with namespace
     #
     # Ex.
@@ -73,7 +73,19 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
-      Gitlab::Git::Repository.create(storage, name, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
+      relative_path = name.dup
+      relative_path << '.git' unless relative_path.end_with?('.git')
+
+      gitaly_migrate(:create_repository) do |is_enabled|
+        if is_enabled
+          repository = Gitlab::Git::Repository.new(storage, relative_path, '')
+          repository.gitaly_repository_client.create_repository
+          true
+        else
+          repo_path = File.join(Gitlab.config.repositories.storages[storage]['path'], relative_path)
+          Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
+        end
+      end
     rescue => err
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
@@ -388,10 +400,14 @@ module Gitlab
     # Ex.
     #   push_remote_branches('upstream', 'feature')
     #
-    def push_remote_branches(storage, project_name, remote_name, branch_names)
-      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, '600', *branch_names]
+    def push_remote_branches(storage, project_name, remote_name, branch_names, forced: true)
+      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, '600']
+      args << '--force' if forced
+      args += [*branch_names]
+
       output, status = Popen.popen(args)
       raise Error, output unless status.zero?
+
       true
     end
 

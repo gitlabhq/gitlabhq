@@ -43,6 +43,6 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
   end
 
   def ldap_group_link_params
-    params.require(:ldap_group_link).permit(:cn, :group_access, :provider)
+    params.require(:ldap_group_link).permit(:cn, :filter, :group_access, :provider)
   end
 end

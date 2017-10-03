@@ -11,6 +11,7 @@ class GroupPolicy < BasePolicy
   condition(:has_access) { access_level != GroupMember::NO_ACCESS }
 
   condition(:guest) { access_level >= GroupMember::GUEST }
+  condition(:developer) { access_level >= GroupMember::DEVELOPER }
   condition(:owner) { access_level >= GroupMember::OWNER }
   condition(:master) { access_level >= GroupMember::MASTER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
@@ -44,11 +45,11 @@ class GroupPolicy < BasePolicy
   rule { admin }             .enable :read_group
   rule { has_projects }      .enable :read_group
 
+  rule { developer }.enable :admin_milestones
   rule { reporter }.enable :admin_label
 
   rule { master }.policy do
     enable :create_projects
-    enable :admin_milestones
     enable :admin_pipeline
     enable :admin_build
   end
@@ -60,7 +61,7 @@ class GroupPolicy < BasePolicy
     enable :change_visibility_level
   end
 
-  rule { owner & can_create_group & nested_groups_supported }.enable :create_subgroup
+  rule { owner & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 

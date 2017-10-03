@@ -11,7 +11,7 @@ module API
       class Repository < Grape::Entity
         expose :id
         expose :namespace, as: :owner, using: Namespace
-        expose :name
+        expose :path, as: :name
       end
 
       class BranchCommit < Grape::Entity

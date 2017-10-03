@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService do
-  let(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository) }
   let(:user) { create(:admin) }
   let(:ref_name) { 'refs/heads/master' }
 
@@ -130,6 +130,26 @@ describe Ci::CreatePipelineService do
 
             expect(head_pipeline).to be_persisted
             expect(head_pipeline.yaml_errors).to be_present
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
+          end
+        end
+
+        context 'when pipeline has been skipped' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:git_commit_message)
+              .and_return('some commit [ci skip]')
+          end
+
+          it 'updates merge request head pipeline' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_skipped
+            expect(head_pipeline).to be_persisted
             expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
@@ -479,106 +499,6 @@ describe Ci::CreatePipelineService do
           expect(Ci::Pipeline.count).to eq(1)
         end
       end
-    end
-  end
-
-  describe '#allowed_to_create?' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
-    let(:ref) { 'master' }
-
-    subject do
-      described_class.new(project, user, ref: ref)
-        .send(:allowed_to_create?)
-    end
-
-    context 'when user is a developer' do
-      before do
-        project.add_developer(user)
-      end
-
-      it { is_expected.to be_truthy }
-
-      context 'when the branch is protected' do
-        let!(:protected_branch) do
-          create(:protected_branch, project: project, name: ref)
-        end
-
-        it { is_expected.to be_falsey }
-
-        context 'when developers are allowed to merge' do
-          let!(:protected_branch) do
-            create(:protected_branch,
-                   :developers_can_merge,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'when the tag is protected' do
-        let(:ref) { 'v1.0.0' }
-
-        let!(:protected_tag) do
-          create(:protected_tag, project: project, name: ref)
-        end
-
-        it { is_expected.to be_falsey }
-
-        context 'when developers are allowed to create the tag' do
-          let!(:protected_tag) do
-            create(:protected_tag,
-                   :developers_can_create,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-    end
-
-    context 'when user is a master' do
-      before do
-        project.add_master(user)
-      end
-
-      it { is_expected.to be_truthy }
-
-      context 'when the branch is protected' do
-        let!(:protected_branch) do
-          create(:protected_branch, project: project, name: ref)
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when the tag is protected' do
-        let(:ref) { 'v1.0.0' }
-
-        let!(:protected_tag) do
-          create(:protected_tag, project: project, name: ref)
-        end
-
-        it { is_expected.to be_truthy }
-
-        context 'when no one can create the tag' do
-          let!(:protected_tag) do
-            create(:protected_tag,
-                   :no_one_can_create,
-                   project: project,
-                   name: ref)
-          end
-
-          it { is_expected.to be_falsey }
-        end
-      end
-    end
-
-    context 'when owner cannot create pipeline' do
-      it { is_expected.to be_falsey }
     end
   end
 end

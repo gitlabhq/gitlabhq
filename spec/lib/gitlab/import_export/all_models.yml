@@ -269,6 +269,7 @@ project:
 - environments
 - deployments
 - project_feature
+- auto_devops
 - pages_domains
 - authorized_users
 - project_authorizations
@@ -291,6 +292,7 @@ project:
 - mirror_data
 - source_pipelines
 - sourced_pipelines
+- members_and_requesters
 award_emoji:
 - awardable
 - user

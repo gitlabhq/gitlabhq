@@ -9,6 +9,11 @@ export default {
       type: String,
       required: true,
     },
+    sizeClass: {
+      type: String,
+      required: false,
+      default: 's40',
+    },
   },
   computed: {
     /**
@@ -38,7 +43,8 @@ export default {
 
 <template>
   <div
-    class="avatar s40 identicon"
+    class="avatar identicon"
+    :class="sizeClass"
     :style="identiconStyles">
     {{identiconTitle}}
   </div>

@@ -6,7 +6,7 @@ import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
-import '../../lib/utils/common_utils';
+import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
 import Poll from '../../lib/utils/poll';
 import environmentsMixin from '../mixins/environments_mixin';
@@ -52,19 +52,19 @@ export default {
 
   computed: {
     scope() {
-      return gl.utils.getParameterByName('scope');
+      return getParameterByName('scope');
     },
 
     canReadEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canReadEnvironment);
+      return convertPermissionToBoolean(this.canReadEnvironment);
     },
 
     canCreateDeploymentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateDeployment);
+      return convertPermissionToBoolean(this.canCreateDeployment);
     },
 
     canCreateEnvironmentParsed() {
-      return gl.utils.convertPermissionToBoolean(this.canCreateEnvironment);
+      return convertPermissionToBoolean(this.canCreateEnvironment);
     },
 
     /**
@@ -83,8 +83,8 @@ export default {
    * Toggles loading property.
    */
   created() {
-    const scope = gl.utils.getParameterByName('scope') || this.visibility;
-    const page = gl.utils.getParameterByName('page') || this.pageNumber;
+    const scope = getParameterByName('scope') || this.visibility;
+    const page = getParameterByName('page') || this.pageNumber;
 
     this.service = new EnvironmentsService(this.endpoint);
 
@@ -139,11 +139,11 @@ export default {
       }
     },
 
-    toggleFolder(folder, folderUrl) {
+    toggleFolder(folder) {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, folderUrl, true);
+        this.fetchChildEnvironments(folder, true);
       }
     },
 
@@ -154,15 +154,15 @@ export default {
      * @return {String}
      */
     changePage(pageNumber) {
-      const param = gl.utils.setParamInURL('page', pageNumber);
+      const param = setParamInURL('page', pageNumber);
 
       gl.utils.visitUrl(param);
       return param;
     },
 
     fetchEnvironments() {
-      const scope = gl.utils.getParameterByName('scope') || this.visibility;
-      const page = gl.utils.getParameterByName('page') || this.pageNumber;
+      const scope = getParameterByName('scope') || this.visibility;
+      const page = getParameterByName('page') || this.pageNumber;
 
       this.isLoading = true;
 
@@ -171,10 +171,10 @@ export default {
         .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, folderUrl, showLoader = false) {
+    fetchChildEnvironments(folder, showLoader = false) {
       this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
-      this.service.getFolderContent(folderUrl)
+      this.service.getFolderContent(folder.folder_path)
         .then(resp => resp.json())
         .then(response => this.store.setfolderContent(folder, response.environments))
         .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
@@ -191,7 +191,7 @@ export default {
 
         this.service.postAction(endpoint)
           .then(() => this.fetchEnvironments())
-          .catch(() => new Flash('An error occured while making the request.'));
+          .catch(() => new Flash('An error occurred while making the request.'));
       }
     },
 
@@ -201,12 +201,7 @@ export default {
       // We need to verify if any folder is open to also update it
       const openFolders = this.store.getOpenFolders();
       if (openFolders.length) {
-        openFolders.forEach((folder) => {
-          // TODO - Move this to the backend
-          const folderUrl = `${window.location.pathname}/folders/${folder.folderName}`;
-
-          return this.fetchChildEnvironments(folder, folderUrl);
-        });
+        openFolders.forEach(folder => this.fetchChildEnvironments(folder));
       }
 
       const openDeployBoards = this.store.getOpenDeployBoards();

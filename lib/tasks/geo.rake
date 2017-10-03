@@ -2,14 +2,28 @@ task spec: ['geo:db:test:prepare']
 
 namespace :geo do
   namespace :db do |ns|
-    %i(drop create setup migrate rollback seed version reset).each do |task_name|
+    {
+      drop: 'Drops the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.',
+      create: 'Creates the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.',
+      setup: 'Create the Geo tracking database, load the schema, and initialize with the seed data.',
+      migrate: 'Migrate the Geo tracking database (options: VERSION=x, VERBOSE=false, SCOPE=blog).',
+      rollback: 'Rolls the schema back to the previous version (specify steps w/ STEP=n).',
+      seed: 'Load the seed data from db/geo/seeds.rb',
+      version: 'Retrieves the current schema version number.',
+      reset: 'Drops and recreates the database from db/geo/schema.rb for the current environment and loads the seeds.'
+    }.each do |task_name, task_desc|
+      desc task_desc
       task task_name do
         Rake::Task["db:#{task_name}"].invoke
       end
     end
 
     namespace :schema do
-      %i(load dump).each do |task_name|
+      {
+        load: 'Load a db/geo/schema.rb file into the database',
+        dump: 'Create a db/geo/schema.rb file that is portable against any DB supported by AR.'
+      }.each do |task_name, task_desc|
+        desc task_desc
         task task_name do
           Rake::Task["db:schema:#{task_name}"].invoke
         end
@@ -17,7 +31,12 @@ namespace :geo do
     end
 
     namespace :migrate do
-      %i(up down redo).each do |task_name|
+      {
+        up: 'Runs the "up" for a given migration VERSION.',
+        down: 'Runs the "down" for a given migration VERSION.',
+        redo: 'Rollbacks the database one migration and re migrate up (options: STEP=x, VERSION=x).'
+      }.each do |task_name, task_desc|
+        desc task_desc
         task task_name do
           Rake::Task["db:migrate:#{task_name}"].invoke
         end
@@ -25,6 +44,7 @@ namespace :geo do
     end
 
     namespace :test do
+      desc 'Check for pending migrations and load the test schema'
       task :prepare do
         Rake::Task['db:test:prepare'].invoke
       end
@@ -79,33 +99,21 @@ namespace :geo do
   end
 
   desc 'Make this node the Geo primary'
-  task :set_primary_node, [:ssh_key_filename] => :environment do |_, args|
-    filename = args[:ssh_key_filename]
+  task set_primary_node: :environment do
     abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
-    abort 'You must specify a filename of an SSH public key' unless filename.present?
     abort 'GitLab Geo primary node already present' if Gitlab::Geo.primary_node.present?
 
-    public_key = load_ssh_public_key(filename)
-
-    abort "Invalid SSH public key in #{filename}, aborting" unless public_key
-
-    set_primary_geo_node(public_key)
+    set_primary_geo_node
   end
 
-  def load_ssh_public_key(filename)
-    File.open(filename).read
-  rescue => e
-    puts "Error opening #{filename}: #{e}".color(:red)
-    nil
-  end
-
-  def set_primary_geo_node(public_key)
-    params = { schema: Gitlab.config.gitlab.protocol,
-               host: Gitlab.config.gitlab.host,
-               port: Gitlab.config.gitlab.port,
-               relative_url_root: Gitlab.config.gitlab.relative_url_root,
-               primary: true,
-               geo_node_key_attributes: { key: public_key } }
+  def set_primary_geo_node
+    params = {
+      schema: Gitlab.config.gitlab.protocol,
+      host: Gitlab.config.gitlab.host,
+      port: Gitlab.config.gitlab.port,
+      relative_url_root: Gitlab.config.gitlab.relative_url_root,
+      primary: true
+    }
 
     node = GeoNode.new(params)
     puts "Saving primary GeoNode with URL #{node.url}".color(:green)

@@ -326,6 +326,7 @@ class ProjectsController < Projects::ApplicationController
       :build_allow_git_fetch,
       :build_coverage_regex,
       :build_timeout_in_minutes,
+      :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :default_branch,
       :description,
@@ -346,6 +347,7 @@ class ProjectsController < Projects::ApplicationController
       :tag_list,
       :visibility_level,
       :template_name,
+      :merge_method,
 
       project_feature_attributes: %i[
         builds_access_level

@@ -42,6 +42,21 @@ describe Gitlab::Gpg do
         described_class.user_infos_from_key('bogus')
       ).to eq []
     end
+
+    it 'downcases the email' do
+      public_key = double(:key)
+      fingerprints = double(:fingerprints)
+      uid = double(:uid, name: 'Nannie Bernhard', email: 'NANNIE.BERNHARD@EXAMPLE.COM')
+      raw_key = double(:raw_key, uids: [uid])
+      allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
+      allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
+
+      user_infos = described_class.user_infos_from_key(public_key)
+      expect(user_infos).to eq([{
+        name: 'Nannie Bernhard',
+        email: 'nannie.bernhard@example.com'
+      }])
+    end
   end
 
   describe '.current_home_dir' do

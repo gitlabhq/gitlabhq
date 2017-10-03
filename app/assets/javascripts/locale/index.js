@@ -16,9 +16,8 @@ const locales = allLocales.reduce((d, obj) => {
   return data;
 }, {});
 
-let lang = document.querySelector('html').getAttribute('lang') || 'en';
-lang = lang.replace(/-/g, '_');
-
+const langAttribute = document.querySelector('html').getAttribute('lang');
+const lang = (langAttribute || 'en').replace(/-/g, '_');
 const locale = new Jed(locales[lang]);
 
 /**

@@ -1,5 +1,0 @@
----
-title: Handle Geo DB replication lag as 24h/day & 7d/week
-merge_request: 2833
-author:
-type: fixed

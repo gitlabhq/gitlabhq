@@ -26,12 +26,12 @@ gem 'doorkeeper', '~> 4.2.0'
 gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
-gem 'omniauth-azure-oauth2', '~> 0.0.6'
+gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.4.1'
+gem 'omniauth-google-oauth2', '~> 0.5.2'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.7.0'
@@ -126,7 +126,7 @@ gem 'faraday_middleware-aws-signers-v4'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.5.1'
+gem 'gitlab-markup', '~> 1.6.2'
 gem 'redcarpet', '~> 3.4'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 4.2'
@@ -138,7 +138,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.0'
+gem 'nokogiri', '~> 1.8.1'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -191,7 +191,7 @@ gem 'connection_pool', '~> 2.0'
 gem 'hipchat', '~> 1.5.0'
 
 # JIRA integration
-gem 'jira-ruby', '~> 1.1.2'
+gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
@@ -374,6 +374,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'timecop', '~> 0.8.0'
   gem 'concurrent-ruby', '~> 1.0.5'
+  gem 'test-prof', '~> 0.2.5'
 end
 
 gem 'octokit', '~> 4.6.2'
@@ -413,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.31.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.38.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
@@ -423,3 +424,4 @@ gem 'flipper-active_record', '~> 0.10.2'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
+gem 'grape_logging', '~> 1.7'

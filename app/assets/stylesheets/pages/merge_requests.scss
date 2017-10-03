@@ -342,6 +342,14 @@
   }
 }
 
+.mr-widget-body-controls {
+  flex-wrap: wrap;
+}
+
+.mr-widget-body-controls {
+  flex-wrap: wrap;
+}
+
 .mr_source_commit,
 .mr_target_commit {
   margin-bottom: 0;
@@ -631,7 +639,7 @@
 }
 
 .merge-request-tabs-holder {
-  top: $header-height;
+  top: $new-navbar-height;
   z-index: 200;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
@@ -661,7 +669,7 @@
 }
 
 .with-performance-bar .merge-request-tabs-holder {
-  top: $header-height + $performance-bar-height;
+  top: $new-navbar-height + $performance-bar-height;
 }
 
 .merge-request-tabs {

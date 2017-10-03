@@ -19,7 +19,7 @@ module MergeRequests
       @merge_request = merge_request
 
       unless @merge_request.mergeable?
-        return log_merge_error('Merge request is not mergeable', save_message_on_model: true)
+        return handle_merge_error(log_message: 'Merge request is not mergeable', save_message_on_model: true)
       end
 
       check_size_limit
@@ -27,7 +27,7 @@ module MergeRequests
       @source = find_merge_source
 
       unless @source
-        return log_merge_error('No source for merge', save_message_on_model: true)
+        return handle_merge_error(log_message: 'No source for merge', save_message_on_model: true)
       end
 
       merge_request.in_locked_state do
@@ -38,8 +38,7 @@ module MergeRequests
         end
       end
     rescue MergeError => e
-      clean_merge_jid
-      log_merge_error(e.message, save_message_on_model: true)
+      handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
     def hooks_validation_pass?(merge_request)
@@ -52,12 +51,12 @@ module MergeRequests
       return true unless push_rule
 
       unless push_rule.commit_message_allowed?(params[:commit_message])
-        log_merge_error("Commit message does not follow the pattern '#{push_rule.commit_message_regex}'", save_message_on_model: true)
+        handle_merge_error(log_message: "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'", save_message_on_model: true)
         return false
       end
 
       unless push_rule.author_email_allowed?(current_user.email)
-        log_merge_error("Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
+        handle_merge_error(log_message: "Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'", save_message_on_model: true)
         return false
       end
 
@@ -67,15 +66,9 @@ module MergeRequests
     private
 
     def commit
-      committer = repository.user_to_committer(current_user)
+      message = params[:commit_message] || merge_request.merge_commit_message
 
-      options = {
-        message: params[:commit_message] || merge_request.merge_commit_message,
-        author: committer,
-        committer: committer
-      }
-
-      commit_id = repository.merge(current_user, source, merge_request, options)
+      commit_id = repository.merge(current_user, source, merge_request, message)
 
       raise MergeError, 'Conflicts detected during merge' unless commit_id
 
@@ -109,10 +102,16 @@ module MergeRequests
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
 
-    def log_merge_error(message, save_message_on_model: false)
-      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{message}")
+    # Logs merge error message and cleans `MergeRequest#merge_jid`.
+    #
+    def handle_merge_error(log_message:, save_message_on_model: false)
+      Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
 
-      @merge_request.update(merge_error: message) if save_message_on_model
+      if save_message_on_model
+        @merge_request.update(merge_error: log_message, merge_jid: nil)
+      else
+        clean_merge_jid
+      end
     end
 
     def merge_request_info

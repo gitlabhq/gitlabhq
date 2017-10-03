@@ -41,4 +41,8 @@ export default function initSettingsPanels() {
     $section.on('click.toggleSection', '.js-settings-toggle', () => toggleSection($section));
     $section.find('.settings-content:not(.expanded)').on('scroll.expandSection', () => expandSection($section));
   });
+
+  if (location.hash) {
+    expandSection($(location.hash));
+  }
 }

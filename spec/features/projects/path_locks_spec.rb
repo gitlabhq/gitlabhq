@@ -19,6 +19,9 @@ feature 'Path Locks', :js do
       click_link "encoding"
     end
     click_link "Lock"
+
+    expect(page).to have_selector('.fa-lock')
+
     visit tree_path
 
     expect(page).to have_selector('.fa-lock')
@@ -33,6 +36,8 @@ feature 'Path Locks', :js do
 
     within '.file-actions' do
       click_link "Lock"
+
+      expect(page).to have_link('Unlock')
     end
 
     visit tree_path

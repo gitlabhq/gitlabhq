@@ -4,7 +4,7 @@ A separate system for documentation called Wiki, is built right into each
 GitLab project. It is enabled by default on all new projects and you can find
 it under **Wiki** in your project.
 
-Wikis are very convenient if you don't want to keep you documentation in your
+Wikis are very convenient if you don't want to keep your documentation in your
 repository, but you do want to keep it in the same project where your code
 resides.
 

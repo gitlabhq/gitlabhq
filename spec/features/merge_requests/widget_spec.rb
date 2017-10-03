@@ -142,24 +142,21 @@ describe 'Merge request', :js do
     end
   end
 
-  context 'view merge request with MWPS enabled but automatically merge fails' do
+  context 'view merge request where project has CI setup but no CI status' do
     before do
-      merge_request.update(
-        merge_when_pipeline_succeeds: true,
-        merge_user: merge_request.author,
-        merge_error: 'Something went wrong'
-      )
+      pipeline = create(:ci_pipeline, project: project,
+                                      sha: merge_request.diff_head_sha,
+                                      ref: merge_request.source_branch)
+      create(:ci_build, pipeline: pipeline)
 
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows information about the merge error' do
+    it 'has pipeline error text' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      page.within('.mr-widget-body') do
-        expect(page).to have_content('Something went wrong')
-      end
+      expect(page).to have_text('Could not connect to the CI server. Please check your settings and try again')
     end
   end
 
@@ -184,14 +181,34 @@ describe 'Merge request', :js do
     end
   end
 
-  context 'view merge request with MWPS enabled but fast-forward merge is not possible' do
+  context 'view merge request with MWPS enabled but automatically merge fails' do
+    before do
+      merge_request.update(
+        merge_when_pipeline_succeeds: true,
+        merge_user: merge_request.author,
+        merge_error: 'Something went wrong'
+      )
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows information about the merge error' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      page.within('.mr-widget-body') do
+        expect(page).to have_content('Something went wrong')
+      end
+    end
+  end
+
+  context 'view merge request where fast-forward merge is not possible' do
     before do
       project.update(merge_requests_ff_only_enabled: true)
 
       merge_request.update(
-        merge_when_pipeline_succeeds: true,
         merge_user: merge_request.author,
-        state: :can_be_merged
+        merge_status: :cannot_be_merged
       )
 
       visit project_merge_request_path(project, merge_request)

@@ -39,9 +39,11 @@ module Geo
 
             Array([message, details].compact.join("\n"))
           end
+        rescue Gitlab::Geo::GeoNodeNotFoundError
+          ['This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.']
         rescue OpenSSL::Cipher::CipherError
           ['Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.']
-        rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => e
+        rescue HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
           [e.message]
         end
 

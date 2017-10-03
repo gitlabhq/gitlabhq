@@ -173,11 +173,14 @@ describe API::Groups do
 
     context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
+        group1.add_master(user2)
+
         get api('/groups', user2), owned: true
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group2.name)
       end
     end
@@ -474,6 +477,30 @@ describe API::Groups do
         post api("/groups", user1), attributes_for(:group)
 
         expect(response).to have_http_status(403)
+      end
+
+      context 'as owner', :nested_groups do
+        before do
+          group2.add_owner(user1)
+        end
+
+        it 'can create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_http_status(201)
+        end
+      end
+
+      context 'as master', :nested_groups do
+        before do
+          group2.add_master(user1)
+        end
+
+        it 'cannot create subgroups' do
+          post api("/groups", user1), parent_id: group2.id, name: 'foo', path: 'foo'
+
+          expect(response).to have_http_status(403)
+        end
       end
     end
 

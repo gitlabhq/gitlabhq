@@ -95,8 +95,7 @@ Parameters:
 
 ## Delete snippet
 
-Deletes an existing project snippet. This is an idempotent function and deleting a non-existent
-snippet still returns a `200 OK` status code.
+Deletes an existing project snippet. This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id

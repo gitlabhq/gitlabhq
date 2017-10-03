@@ -3,7 +3,7 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
-  import monitoringPaths from './monitoring_paths.vue';
+  import GraphPath from './graph_path.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
@@ -17,10 +17,6 @@
     props: {
       graphData: {
         type: Object,
-        required: true,
-      },
-      classType: {
-        type: String,
         required: true,
       },
       updateAspectRatio: {
@@ -44,8 +40,6 @@
         graphHeightOffset: 120,
         margin: {},
         unitOfDisplay: '',
-        areaColorRgb: '#8fbce8',
-        lineColorRgb: '#1f78d1',
         yAxisLabel: '',
         legendTitle: '',
         reducedDeploymentData: [],
@@ -67,7 +61,7 @@
       GraphLegend,
       GraphFlag,
       GraphDeployment,
-      monitoringPaths,
+      GraphPath,
     },
 
     computed: {
@@ -147,7 +141,7 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.graphData.queries[0].result,
+        this.timeSeries = createTimeSeries(this.graphData.queries[0],
         this.graphWidth,
         this.graphHeight,
         this.graphHeightOffset);
@@ -166,7 +160,7 @@
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
-          .ticks(measurements.xTicks)
+          .ticks(d3.time.minute, 60)
           .tickFormat(timeScaleFormat)
           .orient('bottom');
 
@@ -207,12 +201,11 @@
     },
   };
 </script>
+
 <template>
-  <div
-    :class="classType">
-    <h5
-      class="text-center graph-title">
-        {{graphData.title}}
+  <div class="prometheus-graph">
+    <h5 class="text-center graph-title">
+      {{graphData.title}}
     </h5>
     <div
       class="prometheus-svg-container"
@@ -243,7 +236,7 @@
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
-            <monitoring-paths 
+            <graph-path
               v-for="(path, index) in timeSeries"
               :key="index"
               :generated-line-path="path.linePath"
@@ -251,7 +244,7 @@
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />
-            <monitoring-deployment
+            <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"

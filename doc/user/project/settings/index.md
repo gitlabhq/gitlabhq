@@ -23,7 +23,7 @@ Add an [issue description template](../description_templates.md#description-temp
 
 Set up your project's merge request settings:
 
-- Set up the merge request method (merge commit, [fast-forward merge](https://docs.gitlab.com/ee/user/project/merge_requests/fast_forward_merge.html#fast-forward-merge-requests)). _Fast-forward is available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)._
+- Set up the merge request method (merge commit, [fast-forward merge](../merge_requests/fast_forward_merge.html)).
 - Merge request [description templates](../description_templates.md#description-templates).
 - Enable [merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html#merge-request-approvals), _available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)_.
 - Enable [merge only of pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).

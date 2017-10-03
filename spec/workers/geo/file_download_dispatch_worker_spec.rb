@@ -6,10 +6,9 @@ describe Geo::FileDownloadDispatchWorker do
 
   before do
     allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
-    allow_any_instance_of(Gitlab::ExclusiveLease)
-      .to receive(:try_obtain).and_return(true)
-    allow_any_instance_of(Gitlab::ExclusiveLease)
-      .to receive(:renew).and_return(true)
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew).and_return(true)
+    allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
     WebMock.stub_request(:get, /primary-geo-node/).to_return(status: 200, body: "", headers: {})
   end
 
@@ -37,13 +36,21 @@ describe Geo::FileDownloadDispatchWorker do
       subject.perform
     end
 
-    it 'executes GeoFileDownloadWorker for each LFS object' do
-      create_list(:lfs_object, 2, :with_file)
+    context 'with LFS objects' do
+      let!(:lfs_object_local_store) { create(:lfs_object, :with_file) }
+      let!(:lfs_object_remote_store) { create(:lfs_object, :with_file) }
 
-      allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
-      expect(GeoFileDownloadWorker).to receive(:perform_async).twice.and_call_original
+      before do
+        stub_lfs_object_storage
+        lfs_object_remote_store.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+      end
 
-      subject.perform
+      it 'filters S3-backed files' do
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with(:lfs, lfs_object_local_store.id)
+        expect(GeoFileDownloadWorker).not_to receive(:perform_async).with(:lfs, lfs_object_remote_store.id)
+
+        subject.perform
+      end
     end
 
     # Test the case where we have:
@@ -59,8 +66,6 @@ describe Geo::FileDownloadDispatchWorker do
       create_list(:user, 2, avatar: avatar)
       create_list(:note, 2, :with_attachment)
       create(:appearance, logo: avatar, header_logo: avatar)
-
-      allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
 
       expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(8).times.and_call_original
       # For 8 downloads, we expect three database reloads:
@@ -82,7 +87,6 @@ describe Geo::FileDownloadDispatchWorker do
 
       before do
         allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
-        allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
 
         secondary.update_attribute(:namespaces, [synced_group])
       end

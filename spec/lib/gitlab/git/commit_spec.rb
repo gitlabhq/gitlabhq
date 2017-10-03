@@ -181,7 +181,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
-    describe '.where' do
+    shared_examples '.where' do
       context 'path is empty string' do
         subject do
           commits = described_class.where(
@@ -277,6 +277,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it { is_expected.to include("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
         it { is_expected.not_to include(SeedRepo::Commit::ID) }
       end
+    end
+
+    describe '.where with gitaly' do
+      it_should_behave_like '.where'
+    end
+
+    describe '.where without gitaly', skip_gitaly_mock: true do
+      it_should_behave_like '.where'
     end
 
     describe '.between' do
@@ -401,7 +409,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
   end
 
-  describe '#stats' do
+  shared_examples '#stats' do
     subject { commit.stats }
 
     describe '#additions' do
@@ -413,6 +421,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
       subject { super().deletions }
       it { is_expected.to eq(6) }
     end
+  end
+
+  describe '#stats with gitaly on' do
+    it_should_behave_like '#stats'
+  end
+
+  describe '#stats with gitaly disabled', skip_gitaly_mock: true do
+    it_should_behave_like '#stats'
   end
 
   describe '#to_diff' do

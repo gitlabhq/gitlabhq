@@ -6,6 +6,7 @@ module EE
       belongs_to :milestone
       belongs_to :group
 
+      validates :name, presence: true
       validates :group, presence: true, unless: :project
     end
 

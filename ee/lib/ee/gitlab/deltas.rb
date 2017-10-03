@@ -7,18 +7,30 @@ module EE
         begin
           tree_a = repo.lookup(change[:oldrev])
           tree_b = repo.lookup(change[:newrev])
+
+          return size_of_deltas unless diffable?(tree_a) && diffable?(tree_b)
+
           diff = tree_a.diff(tree_b)
 
           diff.each_delta do |d|
-            new_file_size = d.deleted? ? 0 : ::Gitlab::Git::Blob.raw(repo, d.new_file[:oid]).size
+            next if d.deleted?
 
-            size_of_deltas += new_file_size
+            blob = ::Gitlab::Git::Blob.raw(repo, d.new_file[:oid])
+
+            # It's possible the OID points to a commit or empty object
+            next unless blob
+
+            size_of_deltas += blob.size
           end
 
           size_of_deltas
         rescue Rugged::OdbError, Rugged::ReferenceError, Rugged::InvalidError
           size_of_deltas
         end
+      end
+
+      def self.diffable?(object)
+        [Rugged::Commit, Rugged::Tree].include?(object.class)
       end
     end
   end

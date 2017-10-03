@@ -10,10 +10,10 @@ module SystemCheck
       ].freeze
 
       set_name 'Git user has default SSH configuration?'
-      set_skip_reason 'skipped (git user is not present or configured)'
+      set_skip_reason 'skipped (Geo secondary, or git user is not present / configured)'
 
       def skip?
-        !home_dir || !File.directory?(home_dir)
+        Gitlab::Geo.secondary? || !home_dir || !File.directory?(home_dir)
       end
 
       def check?

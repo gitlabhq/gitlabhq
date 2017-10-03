@@ -35,6 +35,20 @@ describe SystemCheck::SimpleExecutor do
     end
   end
 
+  class DynamicSkipCheck < SystemCheck::BaseCheck
+    set_name 'dynamic skip check'
+    set_skip_reason 'this is a skip reason'
+
+    def skip?
+      self.skip_reason = 'this is a dynamic skip reason'
+      true
+    end
+
+    def check?
+      raise 'should not execute this'
+    end
+  end
+
   class MultiCheck < SystemCheck::BaseCheck
     set_name 'multi check'
 
@@ -127,6 +141,10 @@ describe SystemCheck::SimpleExecutor do
 
       expect(subject.checks.size).to eq(1)
     end
+
+    it 'errors out when passing multiple items' do
+      expect { subject << [SimpleCheck, OtherCheck] }.to raise_error(ArgumentError)
+    end
   end
 
   subject { described_class.new('Test') }
@@ -205,8 +223,12 @@ describe SystemCheck::SimpleExecutor do
         subject.run_check(SkipCheck)
       end
 
-      it 'displays #skip_reason' do
+      it 'displays .skip_reason' do
         expect { subject.run_check(SkipCheck) }.to output(/this is a skip reason/).to_stdout
+      end
+
+      it 'displays #skip_reason' do
+        expect { subject.run_check(DynamicSkipCheck) }.to output(/this is a dynamic skip reason/).to_stdout
       end
 
       it 'does not execute #check when #skip? is true' do

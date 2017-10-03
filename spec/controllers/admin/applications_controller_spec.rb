@@ -28,6 +28,8 @@ describe Admin::ApplicationsController do
 
   describe 'POST #create' do
     it 'creates the application' do
+      stub_licensed_features(extended_audit_events: true)
+
       create_params = attributes_for(:application, trusted: true)
 
       expect do
@@ -38,6 +40,7 @@ describe Admin::ApplicationsController do
 
       expect(response).to redirect_to(admin_application_path(application))
       expect(application).to have_attributes(create_params.except(:uid, :owner_type))
+      expect(SecurityEvent.count).to eq(1)
     end
 
     it 'renders the application form on errors' do

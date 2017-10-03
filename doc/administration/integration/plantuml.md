@@ -71,6 +71,15 @@ And in Markdown using fenced code blocks:
     Alice -> Bob : Go Away
     ```
 
+And in reStructuredText using a directive:
+
+```
+.. plantuml::
+
+   Bob -> Alice: hello
+   Alice -> Bob: Go Away
+```
+
 The above blocks will be converted to an HTML img tag with source pointing to the
 PlantUML instance. If the PlantUML server is correctly configured, this should
 render a nice diagram instead of the block:

@@ -24,10 +24,6 @@ describe EE::Gitlab::LDAP::Sync::Groups do
         stub_ldap_config(group_base: nil)
       end
 
-      it 'does not call EE::Gitlab::LDAP::Sync::Group#execute' do
-        expect(EE::Gitlab::LDAP::Sync::Group).not_to receive(:execute)
-      end
-
       it 'does not call EE::Gitlab::LDAP::Sync::AdminUsers#execute' do
         expect(EE::Gitlab::LDAP::Sync::AdminUsers).not_to receive(:execute)
       end

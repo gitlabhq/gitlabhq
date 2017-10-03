@@ -6,7 +6,7 @@
   ":current-board" => current_board_json,
   "milestone-path" => milestones_filter_path(milestone_filter_opts) }
   .dropdown
-    %button.dropdown-menu-toggle{ "@click" => "loadBoards",
+    %button.dropdown-menu-toggle{ "v-on:click" => "loadBoards",
       data: { toggle: "dropdown" } }
       {{ board.name }}
       = icon("chevron-down")
@@ -14,7 +14,7 @@
       .dropdown-title
         %button.dropdown-title-button.dropdown-menu-back{ type: "button",
           aria: { label: "Go back" },
-          "@click.stop.prevent" => "showPage('')",
+          "v-on:click.stop.prevent" => "showPage('')",
           "v-if" => "currentPage !== ''" }
           = icon("arrow-left")
         {{ title }}
@@ -45,23 +45,23 @@
               method: :delete do
               Delete
             %button.btn.btn-default.pull-right{ type: "button",
-              "@click.stop.prevent" => "showPage('')" }
+              "v-on:click.stop.prevent" => "showPage('')" }
               Cancel
       - if can?(current_user, :admin_board, parent)
         .dropdown-footer{ "v-if" => "currentPage === ''" }
           %ul.dropdown-footer-list
             - if parent.feature_available?(:multiple_issue_boards)
               %li
-                %a{ "href" => "#", "@click.stop.prevent" => "showPage('new')" }
+                %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('new')" }
                   Create new board
             %li
-              %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
+              %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('edit')" }
                 Edit board name
             - if parent.issue_board_milestone_available?(current_user)
               %li
-                %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
+                %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('milestone')" }
                   Edit board milestone
             %li{ "v-if" => "showDelete" }
-              %a{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
+              %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('delete')" }
                 %span.text-danger
                   Delete board

@@ -120,6 +120,11 @@ If a project is private, credentials will need to be provided for authorization.
 The preferred way to do this, is by using [personal access tokens][pat].
 The minimal scope needed is `read_registry`.
 
+Example of using a personal access token:
+```
+docker login registry.example.com -u <your_username> -p <your_personal_access_token>
+```
+
 ## Troubleshooting the GitLab Container Registry
 
 ### Basic Troubleshooting

@@ -25,7 +25,7 @@ feature 'Group merge requests page' do
     end
 
     it 'ignores archived merge request count badges in navbar' do
-      expect( page.find('[aria-label="Merge Requests"] span.badge.count').text).to eq("1")
+      expect(first(:link, text: 'Merge Requests').find('.badge').text).to eq("1")
     end
 
     it 'ignores archived merge request count badges in state-filters' do

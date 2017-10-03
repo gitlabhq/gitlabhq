@@ -44,6 +44,10 @@ digging into specific reference guides.
   - [User permissions](../user/permissions.md#gitlab-ci)
   - [Jobs permissions](../user/permissions.md#jobs-permissions)
 
+## Auto DevOps
+
+- [Auto DevOps](../topics/autodevops/index.md)
+
 ## GitLab CI + Docker
 
 Leverage the power of Docker to run your CI pipelines.

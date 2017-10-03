@@ -38,7 +38,6 @@
   - [invalid_gpg_signature_update, 2]
   - [create_gpg_signature, 2]
   - [upload_checksum, 1]
-  - [use_key, 1]
   - [repository_fork, 1]
   - [repository_import, 1]
   - [project_service, 1]
@@ -63,6 +62,8 @@
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
+  - [project_migrate_hashed_storage, 1]
+  - [storage_migrator, 1]
   # EE specific queues
   - [ldap_group_sync, 2]
   - [geo, 1]

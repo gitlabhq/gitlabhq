@@ -11,6 +11,7 @@ const createComponent = (customConfig = {}) => {
     isPipelineActive: false,
     pipeline: null,
     isPipelineFailed: false,
+    isPipelinePassing: false,
     onlyAllowMergeIfPipelineSucceeds: false,
     hasCI: false,
     ciStatus: null,
@@ -68,6 +69,18 @@ describe('MRWidgetReadyToMerge', () => {
   });
 
   describe('computed', () => {
+    describe('shouldShowMergeWhenPipelineSucceedsText', () => {
+      it('should return true with active pipeline', () => {
+        vm.mr.isPipelineActive = true;
+        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeTruthy();
+      });
+
+      it('should return false with inactive pipeline', () => {
+        vm.mr.isPipelineActive = false;
+        expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
+      });
+    });
+
     describe('commitMessageLinkTitle', () => {
       const withDesc = 'Include description in commit message';
       const withoutDesc = "Don't include description in commit message";
@@ -83,7 +96,7 @@ describe('MRWidgetReadyToMerge', () => {
     });
 
     describe('mergeButtonClass', () => {
-      const defaultClass = 'btn btn-small btn-success accept-merge-request';
+      const defaultClass = 'btn btn-sm btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
 
@@ -169,53 +182,58 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
     });
-
-    describe('Remove source branch checkbox', () => {
-      describe('when user can merge but cannot delete branch', () => {
-        it('isRemoveSourceBranchButtonDisabled should be true', () => {
-          expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-        });
-
-        it('should be disabled in the rendered output', () => {
-          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
-        });
-      });
-
-      describe('when user can merge and can delete branch', () => {
-        beforeEach(() => {
-          this.customVm = createComponent({
-            mr: { canRemoveSourceBranch: true },
-          });
-        });
-
-        it('isRemoveSourceBranchButtonDisabled should be false', () => {
-          expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
-        });
-
-        it('should be enabled in rendered output', () => {
-          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBeNull();
-        });
-      });
-    });
   });
 
   describe('methods', () => {
     describe('isMergeAllowed', () => {
-      it('should return false with initial data', () => {
+      it('should return true when no pipeline and not required to succeed', () => {
+        vm.mr.onlyAllowMergeIfPipelineSucceeds = false;
+        vm.mr.isPipelinePassing = false;
         expect(vm.isMergeAllowed()).toBeTruthy();
       });
 
-      it('should return false when MR is set only merge when pipeline succeeds', () => {
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+      it('should return true when pipeline failed and not required to succeed', () => {
+        vm.mr.onlyAllowMergeIfPipelineSucceeds = false;
+        vm.mr.isPipelinePassing = false;
         expect(vm.isMergeAllowed()).toBeTruthy();
       });
 
-      it('should return true true', () => {
+      it('should return false when pipeline failed and required to succeed', () => {
         vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
-        vm.mr.isPipelineFailed = true;
+        vm.mr.isPipelinePassing = false;
         expect(vm.isMergeAllowed()).toBeFalsy();
+      });
+
+      it('should return true when pipeline succeeded and required to succeed', () => {
+        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+        vm.mr.isPipelinePassing = true;
+        expect(vm.isMergeAllowed()).toBeTruthy();
+      });
+    });
+
+    describe('shouldShowMergeControls', () => {
+      it('should return false when an external pipeline is running and required to succeed', () => {
+        spyOn(vm, 'isMergeAllowed').and.returnValue(false);
+        vm.mr.isPipelineActive = false;
+        expect(vm.shouldShowMergeControls()).toBeFalsy();
+      });
+
+      it('should return true when the build succeeded or build not required to succeed', () => {
+        spyOn(vm, 'isMergeAllowed').and.returnValue(true);
+        vm.mr.isPipelineActive = false;
+        expect(vm.shouldShowMergeControls()).toBeTruthy();
+      });
+
+      it('should return true when showing the MWPS button and a pipeline is running that needs to be successful', () => {
+        spyOn(vm, 'isMergeAllowed').and.returnValue(false);
+        vm.mr.isPipelineActive = true;
+        expect(vm.shouldShowMergeControls()).toBeTruthy();
+      });
+
+      it('should return true when showing the MWPS button but not required for the pipeline to succeed', () => {
+        spyOn(vm, 'isMergeAllowed').and.returnValue(true);
+        vm.mr.isPipelineActive = true;
+        expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
     });
 
@@ -417,6 +435,56 @@ describe('MRWidgetReadyToMerge', () => {
           done();
         }, 333);
       });
+    });
+  });
+
+  describe('Remove source branch checkbox', () => {
+    describe('when user can merge but cannot delete branch', () => {
+      it('isRemoveSourceBranchButtonDisabled should be true', () => {
+        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
+      });
+
+      it('should be disabled in the rendered output', () => {
+        const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+      });
+    });
+
+    describe('when user can merge and can delete branch', () => {
+      beforeEach(() => {
+        this.customVm = createComponent({
+          mr: { canRemoveSourceBranch: true },
+        });
+      });
+
+      it('isRemoveSourceBranchButtonDisabled should be false', () => {
+        expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
+      });
+
+      it('should be enabled in rendered output', () => {
+        const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBeNull();
+      });
+    });
+  });
+
+  describe('Commit message area', () => {
+    it('when using merge commits, should show "Modify commit message" button', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: false },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeNull();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+    });
+
+    it('when fast-forward merge is enabled, only show fast-forward message', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: true },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeDefined();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
 });

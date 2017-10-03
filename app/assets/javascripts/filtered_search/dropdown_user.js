@@ -15,6 +15,8 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         params: {
           per_page: 20,
           active: true,
+          group_id: this.getGroupId(),
+          project_id: this.getProjectId(),
           current_user: true,
           ...this.projectOrGroupId(),
         },
@@ -25,7 +27,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         },
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },

@@ -59,6 +59,8 @@ export default class MergeRequestStore {
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
+    this.ffOnlyEnabled = data.ff_only_enabled;
+    this.shouldBeRebased = !!data.should_be_rebased;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -87,7 +89,9 @@ export default class MergeRequestStore {
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
-    this.isPipelineFailed = this.ciStatus ? (this.ciStatus === 'failed' || this.ciStatus === 'canceled') : false;
+    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
+    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;

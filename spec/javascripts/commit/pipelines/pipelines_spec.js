@@ -29,6 +29,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
           },
         }).$mount();
       });
@@ -64,6 +67,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
           },
         }).$mount();
       });
@@ -115,6 +121,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
           propsData: {
             endpoint: 'endpoint',
             helpPagePath: 'foo',
+            emptyStateSvgPath: 'foo',
+            errorStateSvgPath: 'foo',
+            autoDevopsHelpPath: 'foo',
           },
         }).$mount();
         element.appendChild(this.component.$el);
@@ -136,6 +145,9 @@ describe('Pipelines table in Commits and Merge requests', () => {
         propsData: {
           endpoint: 'endpoint',
           helpPagePath: 'foo',
+          emptyStateSvgPath: 'foo',
+          errorStateSvgPath: 'foo',
+          autoDevopsHelpPath: 'foo',
         },
       }).$mount();
     });

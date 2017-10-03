@@ -23,6 +23,7 @@ import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
 import TaskList from './task_list';
+import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 
 window.autosize = autosize;
 window.Dropzone = Dropzone;
@@ -81,7 +82,7 @@ export default class Notes {
     this.setViewType(view);
 
     // We are in the Merge Requests page so we need another edit form for Changes tab
-    if (gl.utils.getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests') {
       $('.note-edit-form').clone()
         .addClass('mr-note-edit-form').insertAfter('.note-edit-form');
     }
@@ -175,7 +176,7 @@ export default class Notes {
 
   keydownNoteText(e) {
     var $textarea, discussionNoteForm, editNote, myLastNote, myLastNoteEditBtn, newText, originalText;
-    if (gl.utils.isMetaKey(e)) {
+    if (isMetaKey(e)) {
       return;
     }
 
@@ -464,7 +465,6 @@ export default class Notes {
   }
 
   renderDiscussionAvatar(diffAvatarContainer, noteEntity) {
-    var commentButton = diffAvatarContainer.find('.js-add-diff-note-button');
     var avatarHolder = diffAvatarContainer.find('.diff-comment-avatar-holders');
 
     if (!avatarHolder.length) {
@@ -474,10 +474,6 @@ export default class Notes {
       diffAvatarContainer.append(avatarHolder);
 
       gl.diffNotesCompileComponents();
-    }
-
-    if (commentButton.length) {
-      commentButton.remove();
     }
   }
 
@@ -649,10 +645,10 @@ export default class Notes {
     }
     else {
       var $buttons = $el.find('.note-form-actions');
-      var isWidgetVisible = gl.utils.isInViewport($el.get(0));
+      var isWidgetVisible = isInViewport($el.get(0));
 
       if (!isWidgetVisible) {
-        gl.utils.scrollToElement($el);
+        scrollToElement($el);
       }
 
       $el.find('.js-finish-edit-warning').show();
@@ -767,6 +763,7 @@ export default class Notes {
         var $note, $notes;
         $note = $(el);
         $notes = $note.closest('.discussion-notes');
+        const discussionId = $('.notes', $notes).data('discussion-id');
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           if (gl.diffNoteApps[noteElId]) {
@@ -782,6 +779,8 @@ export default class Notes {
 
           // "Discussions" tab
           $notes.closest('.timeline-entry').remove();
+
+          $(`.js-diff-avatars-${discussionId}`).trigger('remove.vue');
 
           // The notes tr can contain multiple lists of notes, like on the parallel diff
           if (notesTr.find('.discussion-notes').length > 1) {
@@ -1190,7 +1189,7 @@ export default class Notes {
   }
 
   static checkMergeRequestStatus() {
-    if (gl.utils.getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests') {
       gl.mrWidget.checkStatus();
     }
   }
@@ -1274,16 +1273,16 @@ export default class Notes {
       `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
          <div class="timeline-entry-inner">
             <div class="timeline-icon">
-               <a href="/${currentUsername}">
+               <a href="/${_.escape(currentUsername)}">
                  <img class="avatar s40" src="${currentUserAvatar}" />
                </a>
             </div>
             <div class="timeline-content ${discussionClass}">
                <div class="note-header">
                   <div class="note-header-info">
-                     <a href="/${currentUsername}">
-                       <span class="hidden-xs">${currentUserFullname}</span>
-                       <span class="note-headline-light">@${currentUsername}</span>
+                     <a href="/${_.escape(currentUsername)}">
+                       <span class="hidden-xs">${_.escape(currentUsername)}</span>
+                       <span class="note-headline-light">${_.escape(currentUsername)}</span>
                      </a>
                   </div>
                </div>
@@ -1296,6 +1295,9 @@ export default class Notes {
          </div>
       </li>`
     );
+
+    $tempNote.find('.hidden-xs').text(_.escape(currentUserFullname));
+    $tempNote.find('.note-headline-light').text(`@${_.escape(currentUsername)}`);
 
     return $tempNote;
   }
@@ -1325,7 +1327,7 @@ export default class Notes {
    * 2) Identify comment type; a) Main thread b) Discussion thread c) Discussion resolve
    * 3) Build temporary placeholder element (using `createPlaceholderNote`)
    * 4) Show placeholder note on UI
-   * 5) Perform network request to submit the note using `gl.utils.ajaxPost`
+   * 5) Perform network request to submit the note using `ajaxPost`
    *    a) If request is successfully completed
    *        1. Remove placeholder element
    *        2. Show submitted Note element
@@ -1407,7 +1409,7 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to submit comment on server
-    gl.utils.ajaxPost(formAction, formData)
+    ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
@@ -1480,7 +1482,7 @@ export default class Notes {
    *
    * 1) Get Form metadata
    * 2) Update note element with new content
-   * 3) Perform network request to submit the updated note using `gl.utils.ajaxPost`
+   * 3) Perform network request to submit the updated note using `ajaxPost`
    *    a) If request is successfully completed
    *        1. Show submitted Note element
    *    b) If request failed
@@ -1509,7 +1511,7 @@ export default class Notes {
 
     /* eslint-disable promise/catch-or-return */
     // Make request to update comment on server
-    gl.utils.ajaxPost(formAction, formData)
+    ajaxPost(formAction, formData)
       .then((note) => {
         // Submission successful! render final note element
         this.updateNote(note, $editingNote);

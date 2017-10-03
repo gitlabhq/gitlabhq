@@ -47,4 +47,9 @@ class GlobalPolicy < BasePolicy
   rule { ~(anonymous & restricted_public_level) }.policy do
     enable :read_users_list
   end
+
+  rule { admin }.policy do
+    enable :read_custom_attribute
+    enable :update_custom_attribute
+  end
 end

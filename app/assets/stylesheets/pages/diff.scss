@@ -451,7 +451,7 @@
 }
 
 .files {
-  margin-top: -1px;
+  margin-top: 1px;
 
   .diff-file:last-child {
     margin-bottom: 0;
@@ -535,7 +535,6 @@
 }
 
 .diff-notes-collapse {
-  position: relative;
   width: 19px;
   height: 19px;
   padding: 0;
@@ -543,11 +542,7 @@
   z-index: 100;
 
   svg {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-left: -5.5px;
-    margin-top: -5.5px;
+    vertical-align: text-top;
   }
 
   path {
@@ -578,17 +573,12 @@
   @media (min-width: $screen-sm-min) {
     position: -webkit-sticky;
     position: sticky;
-    top: 34px;
+    top: 24px;
     background-color: $white-light;
     z-index: 190;
 
     &.diff-files-changed-merge-request {
-      top: 84px;
-    }
-
-    + .files,
-    + .alert {
-      margin-top: 1px;
+      top: 76px;
     }
 
     &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
@@ -605,11 +595,14 @@
       .inline-parallel-buttons {
         display: none;
       }
+    }
+  }
+}
 
-      + .files,
-      + .alert {
-        margin-top: 30px;
-      }
+@media (min-width: $screen-sm-min) {
+  .with-performance-bar {
+    .diff-files-changed.diff-files-changed-merge-request {
+      top: 76px + $performance-bar-height;
     }
   }
 }
@@ -626,8 +619,16 @@
     padding-top: 8px;
     padding-bottom: 8px;
   }
+
+  .diff-changed-file {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .diff-file-changes-path {
-  @include str-truncated(78%);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

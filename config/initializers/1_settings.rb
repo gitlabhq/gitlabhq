@@ -204,7 +204,20 @@ Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_prov
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
-Settings.omniauth['sync_email_from_provider'] ||= nil
+
+Settings.omniauth['sync_profile_from_provider'] = false if Settings.omniauth['sync_profile_from_provider'].nil?
+Settings.omniauth['sync_profile_attributes'] = ['email'] if Settings.omniauth['sync_profile_attributes'].nil?
+
+# Handle backwards compatibility with merge request 11268
+if Settings.omniauth['sync_email_from_provider']
+  if Settings.omniauth['sync_profile_from_provider'].is_a?(Array)
+    Settings.omniauth['sync_profile_from_provider'] |= [Settings.omniauth['sync_email_from_provider']]
+  elsif !Settings.omniauth['sync_profile_from_provider']
+    Settings.omniauth['sync_profile_from_provider'] = [Settings.omniauth['sync_email_from_provider']]
+  end
+
+  Settings.omniauth['sync_profile_attributes'] |= ['email'] unless Settings.omniauth['sync_profile_attributes'] == true
+end
 
 Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -250,6 +263,7 @@ Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
+Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
@@ -290,7 +304,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
+Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
@@ -564,9 +578,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
-Settings.git['max_size']  ||= 20971520 # 20.megabytes
-Settings.git['bin_path']  ||= '/usr/bin/git'
-Settings.git['timeout']   ||= 10
+Settings.git['bin_path'] ||= '/usr/bin/git'
 
 # Important: keep the satellites.path setting until GitLab 9.0 at
 # least. This setting is fed to 'rm -rf' in

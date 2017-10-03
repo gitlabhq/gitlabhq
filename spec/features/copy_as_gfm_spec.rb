@@ -288,8 +288,6 @@ describe 'Copy as GFM', js: true do
         'SanitizationFilter',
 
         <<-GFM.strip_heredoc
-        <a name="named-anchor"></a>
-
         <sub>sub</sub>
 
         <dl>

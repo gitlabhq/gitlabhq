@@ -1,7 +1,7 @@
 class GeoNode < ActiveRecord::Base
   include Presentable
 
-  belongs_to :geo_node_key, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
+  belongs_to :geo_node_key, inverse_of: :geo_node, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   has_many :geo_node_namespace_links
@@ -21,6 +21,8 @@ class GeoNode < ActiveRecord::Base
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
   validates :access_key, presence: true
   validates :encrypted_secret_access_key, presence: true
+
+  validates :geo_node_key, presence: true, if: :secondary?
 
   after_initialize :build_dependents
   after_save :expire_cache!
@@ -112,11 +114,14 @@ class GeoNode < ActiveRecord::Base
   end
 
   def lfs_objects
-    if restricted_project_ids
-      LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
-    else
-      LfsObject.all
-    end
+    relation =
+      if restricted_project_ids
+        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+      else
+        LfsObject.all
+      end
+
+    relation.with_files_stored_locally
   end
 
   def projects
@@ -133,6 +138,27 @@ class GeoNode < ActiveRecord::Base
     else
       Geo::ProjectRegistry.all
     end
+  end
+
+  # These are projects that meet the project restriction but haven't yet been
+  # synced (i.e., do not yet have a project registry entry).
+  #
+  # This query requires data from two different databases, and unavoidably
+  # plucks a list of project IDs from one into the other. This will not scale
+  # well with the number of synchronized projects - the query will increase
+  # linearly in size - so this should be replaced with postgres_fdw ASAP.
+  def unsynced_projects
+    registry_project_ids = project_registries.pluck(:project_id)
+    return projects if registry_project_ids.empty?
+
+    joined_relation = projects.joins(<<~SQL)
+      LEFT OUTER JOIN
+      (VALUES #{registry_project_ids.map { |id| "(#{id}, 't')" }.join(',')})
+      project_registry(project_id, registry_present)
+      ON projects.id = project_registry.project_id
+    SQL
+
+    joined_relation.where(project_registry: { registry_present: [nil, false] })
   end
 
   def uploads
@@ -172,13 +198,15 @@ class GeoNode < ActiveRecord::Base
   end
 
   def build_dependents
-    unless persisted?
-      self.build_geo_node_key unless geo_node_key.present?
-    end
+    build_geo_node_key if new_record? && secondary? && geo_node_key.nil?
   end
 
   def update_dependents_attributes
-    self.geo_node_key&.title = "Geo node: #{self.url}"
+    if primary?
+      self.geo_node_key = nil
+    else
+      self.geo_node_key&.title = "Geo node: #{self.url}"
+    end
 
     if self.primary?
       self.oauth_application = nil

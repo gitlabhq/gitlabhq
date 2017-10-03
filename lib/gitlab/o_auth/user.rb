@@ -14,7 +14,7 @@ module Gitlab
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
-        update_email
+        update_profile if sync_profile_from_provider?
       end
 
       def persisted?
@@ -34,7 +34,7 @@ module Gitlab
 
         block_after_save = needs_blocking?
 
-        Users::UpdateService.new(gl_user).execute!
+        Users::UpdateService.new(gl_user, user: gl_user).execute!
 
         gl_user.block if block_after_save
 
@@ -186,20 +186,30 @@ module Gitlab
         }
       end
 
-      def sync_email_from_provider?
-        auth_hash.provider.to_s == Gitlab.config.omniauth.sync_email_from_provider.to_s
+      def sync_profile_from_provider?
+        providers = Gitlab.config.omniauth.sync_profile_from_provider
+
+        if providers.is_a?(Array)
+          providers.include?(auth_hash.provider)
+        else
+          providers
+        end
       end
 
-      def update_email
-        if auth_hash.has_email? && sync_email_from_provider?
-          if persisted?
-            gl_user.skip_reconfirmation!
-            gl_user.email = auth_hash.email
-          end
+      def update_profile
+        user_synced_attributes_metadata = gl_user.user_synced_attributes_metadata || gl_user.build_user_synced_attributes_metadata
 
-          gl_user.external_email = true
-          gl_user.email_provider = auth_hash.provider
+        UserSyncedAttributesMetadata::SYNCABLE_ATTRIBUTES.each do |key|
+          if auth_hash.has_attribute?(key) && gl_user.sync_attribute?(key)
+            gl_user[key] = auth_hash.public_send(key) # rubocop:disable GitlabSecurity/PublicSend
+            user_synced_attributes_metadata.set_attribute_synced(key, true)
+          else
+            user_synced_attributes_metadata.set_attribute_synced(key, false)
+          end
         end
+
+        user_synced_attributes_metadata.provider = auth_hash.provider
+        gl_user.user_synced_attributes_metadata = user_synced_attributes_metadata
       end
 
       def log

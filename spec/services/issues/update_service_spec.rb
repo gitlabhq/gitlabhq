@@ -64,6 +64,13 @@ describe Issues::UpdateService, :mailer do
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do
+        issue # make sure the issue is created first so our counts are correct.
+
+        expect { update_issue(confidential: true) }
+          .to change { project.open_issues_count }.from(1).to(0)
+      end
+
       it 'updates open issue counter for assignees when issue is reassigned' do
         update_issue(assignee_ids: [user2.id])
 

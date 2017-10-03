@@ -17,7 +17,8 @@ module Gitlab
       'it' => 'Italiano',
       'uk' => 'Українська',
       'ja' => '日本語',
-      'ko' => '한국어'
+      'ko' => '한국어',
+      'nl_NL' => 'Nederlands'
     }.freeze
 
     def available_locales

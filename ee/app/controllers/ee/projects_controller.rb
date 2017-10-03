@@ -12,7 +12,6 @@ module EE
         approver_group_ids
         approver_ids
         issues_template
-        merge_method
         merge_requests_template
         disable_overriding_approvers_per_merge_request
         repository_size_limit

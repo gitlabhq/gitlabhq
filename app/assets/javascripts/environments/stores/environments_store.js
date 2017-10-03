@@ -1,4 +1,4 @@
-import '~/lib/utils/common_utils';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 /**
  * Environments Store.
  *
@@ -97,8 +97,8 @@ export default class EnvironmentsStore {
    * @return {Object}
    */
   setPagination(pagination = {}) {
-    const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
-    const paginationInformation = gl.utils.parseIntPagination(normalizedHeaders);
+    const normalizedHeaders = normalizeHeaders(pagination);
+    const paginationInformation = parseIntPagination(normalizedHeaders);
 
     this.state.paginationInformation = paginationInformation;
     return paginationInformation;

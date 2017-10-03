@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe Ci::RetryBuildService do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project) }
+  set(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   let(:service) do
@@ -38,7 +39,7 @@ describe Ci::RetryBuildService do
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :triggered, :trace, :teardown_environment,
              description: 'my-job', stage: 'test',  pipeline: pipeline,
-             auto_canceled_by: create(:ci_empty_pipeline)) do |build|
+             auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
                ##
                # TODO, workaround for FactoryGirl limitation when having both
                # stage (text) and stage_id (integer) columns in the table.
@@ -51,6 +52,17 @@ describe Ci::RetryBuildService do
         it "clones #{attribute} build attribute" do
           expect(new_build.send(attribute)).not_to be_nil
           expect(new_build.send(attribute)).to eq build.send(attribute)
+        end
+      end
+
+      context 'when job has nullified protected' do
+        before do
+          build.update_attribute(:protected, nil)
+        end
+
+        it "clones protected build attribute" do
+          expect(new_build.protected).to be_nil
+          expect(new_build.protected).to eq build.protected
         end
       end
     end

@@ -439,8 +439,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    merge_request_diffs.create
-    reload_merge_request_diff
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      merge_request_diffs.create
+      reload_merge_request_diff
+    end
   end
 
   def reload_merge_request_diff
@@ -544,6 +547,14 @@ class MergeRequest < ActiveRecord::Base
     return false unless mergeable_discussions_state?
 
     true
+  end
+
+  def ff_merge_possible?
+    project.repository.ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    project.ff_merge_must_be_possible? && !ff_merge_possible?
   end
 
   def can_cancel_merge_when_pipeline_succeeds?(current_user)
@@ -943,6 +954,12 @@ class MergeRequest < ActiveRecord::Base
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -978,8 +995,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def update_project_counter_caches
-    return unless update_project_counter_caches?
-
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 

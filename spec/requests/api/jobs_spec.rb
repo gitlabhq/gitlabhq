@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe API::Jobs do
-  let!(:project) do
+  set(:project) do
     create(:project, :repository, public_builds: false)
   end
 
-  let(:pipeline) do
+  set(:pipeline) do
     create(:ci_empty_pipeline, project: project,
                                sha: project.commit.id,
                                ref: project.default_branch)
@@ -194,6 +194,84 @@ describe API::Jobs do
     end
   end
 
+  describe 'GET /projects/:id/jobs/:job_id/artifacts/:artifact_path' do
+    context 'when job has artifacts' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+      let(:artifact) do
+        'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
+      end
+
+      context 'when user is anonymous' do
+        let(:api_user) { nil }
+
+        context 'when project is public' do
+          it 'allows to access artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, true)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context 'when project is public with builds access disabled' do
+          it 'rejects access to artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PUBLIC)
+            project.update_column(:public_builds, false)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(403)
+          end
+        end
+
+        context 'when project is private' do
+          it 'rejects access and hides existence of artifacts' do
+            project.update_column(:visibility_level,
+                                  Gitlab::VisibilityLevel::PRIVATE)
+            project.update_column(:public_builds, true)
+
+            get_artifact_file(artifact)
+
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
+
+      context 'when user is authorized' do
+        it 'returns a specific artifact file for a valid path' do
+          expect(Gitlab::Workhorse)
+            .to receive(:send_artifacts_entry)
+            .and_call_original
+
+          get_artifact_file(artifact)
+
+          expect(response).to have_http_status(200)
+          expect(response.headers)
+            .to include('Content-Type' => 'application/json',
+                        'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+        end
+      end
+    end
+
+    context 'when job does not have artifacts' do
+      it 'does not return job artifact file' do
+        get_artifact_file('some/artifact')
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def get_artifact_file(artifact_path)
+      get api("/projects/#{project.id}/jobs/#{job.id}/" \
+              "artifacts/#{artifact_path}", api_user)
+    end
+  end
+
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
     shared_examples 'downloads artifact' do
       let(:download_headers) do
@@ -226,7 +304,7 @@ describe API::Jobs do
             let(:api_user) { nil }
 
             it 'does not return specific job artifacts' do
-              expect(response).to have_http_status(401)
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -258,10 +336,11 @@ describe API::Jobs do
         it_behaves_like 'downloads artifact'
       end
 
-      context 'user is admin, but not member' do
-        let(:api_user) { create(:admin) }
+      context 'when anonymous user is accessing private artifacts' do
+        let(:api_user) { nil }
 
-        it 'does not allow to see that artfiact is present' do
+        it 'hides artifacts and rejects request' do
+          expect(project).to be_private
           expect(response).to have_http_status(404)
         end
       end
@@ -297,8 +376,9 @@ describe API::Jobs do
         get_for_ref
       end
 
-      it 'gives 401' do
-        expect(response).to have_http_status(401)
+      it 'does not find a resource in a private project' do
+        expect(project).to be_private
+        expect(response).to have_http_status(404)
       end
     end
 

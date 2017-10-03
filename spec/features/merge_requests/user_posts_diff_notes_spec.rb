@@ -6,7 +6,7 @@ feature 'Merge requests > User posts diff notes', :js do
   let(:project) { merge_request.source_project }
 
   before do
-    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+    page.driver.set_cookie('sidebar_collapsed', 'true')
 
     project.add_developer(user)
     sign_in(user)
@@ -95,6 +95,16 @@ feature 'Merge requests > User posts diff notes', :js do
   context 'when hovering over an inline view diff file' do
     before do
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
+    end
+
+    context 'after deleteing a note' do
+      it 'allows commenting' do
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+
+        first('.js-note-delete', visible: false).trigger('click')
+
+        should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+      end
     end
 
     context 'with a new line' do

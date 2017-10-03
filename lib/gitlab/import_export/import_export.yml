@@ -50,6 +50,7 @@ project_tree:
         - :push_event_payload
     - :stages
     - :statuses
+  - :auto_devops
   - :triggers
   - :pipeline_schedules
   - :services
@@ -120,6 +121,7 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
+    - :when
   push_event_payload:
     - :event_id
 

@@ -1,8 +1,10 @@
 class Profiles::KeysController < Profiles::ApplicationController
+  prepend ::EE::Profiles::KeysController
+
   skip_before_action :authenticate_user!, only: [:get_keys]
 
   def index
-    @keys = current_user.keys
+    @keys = current_user.keys.order_id_desc
     @key = Key.new
   end
 
@@ -11,10 +13,10 @@ class Profiles::KeysController < Profiles::ApplicationController
   end
 
   def create
-    @key = current_user.keys.new(key_params)
+    @key = Keys::CreateService.new(current_user, key_params).execute
 
-    if @key.save
-      redirect_to profile_key_path(@key)
+    if @key.persisted?
+      redirect_to_profile_key_path
     else
       @keys = current_user.keys.select(&:persisted?)
       render :index
@@ -48,6 +50,12 @@ class Profiles::KeysController < Profiles::ApplicationController
     else
       return render_404
     end
+  end
+
+  protected
+
+  def redirect_to_profile_key_path
+    redirect_to profile_key_path(@key)
   end
 
   private
