@@ -6,12 +6,6 @@ describe Gitlab::LDAP::DN do
   describe '#to_normalized_s' do
     subject { described_class.new(given).to_normalized_s }
 
-    # Regarding the telephoneNumber test:
-    #
-    # I am not sure whether a space after the telephoneNumber plus sign is valid,
-    # and I am not sure if this is "proper" behavior under these conditions, and
-    # I am not sure if it matters to us or anyone else, so rather than dig
-    # through RFCs, I am only documenting the behavior here.
     where(:test_description, :given, :expected) do
       'strips extraneous whitespace'                                                                 | 'uid     =John Smith ,  ou = People, dc=  example,dc =com'                                            | 'uid=john smith,ou=people,dc=example,dc=com'
       'strips extraneous whitespace for a DN with a single RDN'                                      | 'uid  =  John Smith'                                                                                  | 'uid=john smith'
