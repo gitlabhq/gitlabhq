@@ -474,11 +474,7 @@ describe Gitlab::Shell do
         end
       end
 
-<<<<<<< HEAD
       context 'with gitlay' do
-=======
-      context 'with gitaly' do
->>>>>>> bdc50ed779cb0c7d266c0f80f3e66a25da8b1964
         it_behaves_like '#add_repository'
       end
 

@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2017-09-27 16:26+0200\n"
-"PO-Revision-Date: 2017-09-27 16:26+0200\n"
-=======
 "POT-Creation-Date: 2017-09-28 13:28-0400\n"
 "PO-Revision-Date: 2017-09-28 13:28-0400\n"
->>>>>>> bdc50ed779cb0c7d266c0f80f3e66a25da8b1964
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -441,11 +436,7 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Close"
-=======
-msgid "Clone repository"
->>>>>>> bdc50ed779cb0c7d266c0f80f3e66a25da8b1964
 msgstr ""
 
 msgid "Comments"
@@ -1788,9 +1779,6 @@ msgstr ""
 msgid "Wiki"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
-=======
 msgid "WikiClone|Clone your wiki"
 msgstr ""
 
@@ -1888,7 +1876,6 @@ msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"
->>>>>>> bdc50ed779cb0c7d266c0f80f3e66a25da8b1964
 msgstr ""
 
 msgid "Withdraw Access Request"
