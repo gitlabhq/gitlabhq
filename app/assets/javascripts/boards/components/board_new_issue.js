@@ -42,6 +42,7 @@ export default {
 
       this.error = false;
 
+      const board = Store.state.currentBoard;
       const labels = this.list.label ? [this.list.label] : [];
       const issue = new ListIssue({
         title: this.title,
@@ -51,9 +52,7 @@ export default {
         project_id: this.selectedProject.id,
       });
 
-      if (Store.state.currentBoard) {
-        const board = Store.state.currentBoard;
-
+      if (board) {
         issue.assignees = [board.assignee];
         issue.labels = _.sortBy(_.uniq([...labels, ...board.labels], label => label.id),
                                 'title');
