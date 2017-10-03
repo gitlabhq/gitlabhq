@@ -144,8 +144,6 @@ module Gitlab
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
     def self.enforce_gitaly_request_limits(call_site)
-      # FIXME: THIS NEEDS TO BE REMOVED. It's a workaround until we get rid of the n+1 issue
-      return
       # Only count limits in request-response environments (not sidekiq for example)
       return unless RequestStore.active?
 
