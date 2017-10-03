@@ -1,6 +1,10 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
-    FAILURE_REASONS = {}
+    FAILURE_REASONS = {
+      config_error: 'CI/CD YAML configuration error!'
+    }.freeze
+
+    presents :pipeline
 
     def failure_reason
       return unless pipeline.failure_reason?
