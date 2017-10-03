@@ -25,9 +25,31 @@ class IssuableFinder
 
   NONE = '0'.freeze
 
-  SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight my_reaction_emoji).freeze
+  SCALAR_PARAMS = %i[
+    assignee_id
+    assignee_username
+    author_id
+    author_username
+    authorized_only
+    due_date
+    group_id
+    iids
+    label_name
+    milestone_title
+    non_archived
+    project_id
+    scope
+    search
+    sort
+    state
+  ].freeze
   ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
-  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
+
+  EE_SCALAR_PARAMS = %i[
+    weight
+  ].freeze
+
+  VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS] + EE_SCALAR_PARAMS).freeze
 
   attr_accessor :current_user, :params
 

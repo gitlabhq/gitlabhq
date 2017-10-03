@@ -181,7 +181,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
-    describe '.where' do
+    shared_examples '.where' do
       context 'path is empty string' do
         subject do
           commits = described_class.where(
@@ -277,6 +277,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it { is_expected.to include("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
         it { is_expected.not_to include(SeedRepo::Commit::ID) }
       end
+    end
+
+    describe '.where with gitaly' do
+      it_should_behave_like '.where'
+    end
+
+    describe '.where without gitaly', skip_gitaly_mock: true do
+      it_should_behave_like '.where'
     end
 
     describe '.between' do

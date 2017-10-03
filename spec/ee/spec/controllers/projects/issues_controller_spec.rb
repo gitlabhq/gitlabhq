@@ -100,19 +100,10 @@ describe Projects::IssuesController do
       end
 
       describe '#index' do
-        it 'allows sorting by weight (ascending)' do
+        it 'allows sorting by weight' do
           expected = [issue, issue2].sort_by(&:weight)
 
-          perform :get, :index, sort: 'weight_asc'
-
-          expect(response).to have_http_status(200)
-          expect(assigns(:issues)).to eq(expected)
-        end
-
-        it 'allows sorting by weight (descending)' do
-          expected = [issue, issue2].sort { |a, b| b.weight <=> a.weight }
-
-          perform :get, :index, sort: 'weight_desc'
+          perform :get, :index, sort: 'weight'
 
           expect(response).to have_http_status(200)
           expect(assigns(:issues)).to eq(expected)
@@ -157,9 +148,6 @@ describe Projects::IssuesController do
       end
 
       describe '#index' do
-        it 'ignores sorting by weight (ascending)'
-        it 'ignores sorting by weight (descending)'
-
         it 'ignores filtering by weight' do
           expected = [issue, issue2]
 

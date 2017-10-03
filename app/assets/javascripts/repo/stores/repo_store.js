@@ -32,7 +32,6 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
-  targetBranch: 'new-branch',
   commitMessage: '',
   binaryTypes: {
     png: false,

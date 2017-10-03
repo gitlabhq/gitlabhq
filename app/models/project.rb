@@ -249,6 +249,9 @@ class Project < ActiveRecord::Base
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
 
+  scope :with_hashed_storage, -> { where('storage_version >= 1') }
+  scope :with_legacy_storage, -> { where(storage_version: [nil, 0]) }
+
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
 
@@ -1032,7 +1035,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     return if forked? && !force
 
-    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+    if gitlab_shell.add_repository(repository_storage, disk_path)
       repository.after_create
       true
     else
@@ -1550,18 +1553,44 @@ class Project < ActiveRecord::Base
   end
 
   def legacy_storage?
-    self.storage_version.nil?
+    [nil, 0].include?(self.storage_version)
+  end
+
+  def hashed_storage?
+    self.storage_version && self.storage_version >= 1
   end
 
   def renamed?
     persisted? && path_changed?
   end
 
+  def migrate_to_hashed_storage!
+    return if hashed_storage?
+
+    update!(repository_read_only: true)
+
+    if repo_reference_count > 0 || wiki_reference_count > 0
+      ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      ProjectMigrateHashedStorageWorker.perform_async(id)
+    end
+  end
+
+  def storage_version=(value)
+    super
+
+    @storage = nil if storage_version_changed?
+  end
+
+  def gl_repository(is_wiki:)
+    Gitlab::GlRepository.gl_repository(self, is_wiki)
+  end
+
   private
 
   def storage
     @storage ||=
-      if self.storage_version && self.storage_version >= 1
+      if hashed_storage?
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)
@@ -1572,6 +1601,14 @@ class Project < ActiveRecord::Base
     if self.new_record? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
+  end
+
+  def repo_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+  end
+
+  def wiki_reference_count
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
   end
 
   # set last_activity_at to the same as created_at

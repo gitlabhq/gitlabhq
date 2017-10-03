@@ -17,7 +17,7 @@
       = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
         = link_to group_path(@group) do
           .nav-icon-container
-            = custom_icon('project')
+            = sprite_icon('project')
           %span.nav-item-name
             Overview
 
@@ -46,7 +46,7 @@
       = nav_link(path: issues_sub_menu_items) do
         = link_to issues_group_path(@group) do
           .nav-icon-container
-            = custom_icon('issues')
+            = sprite_icon('issues')
           %span.nav-item-name
             Issues
           %span.badge.count= number_with_delimiter(issues.count)
@@ -82,7 +82,7 @@
       = nav_link(path: 'groups#merge_requests') do
         = link_to merge_requests_group_path(@group) do
           .nav-icon-container
-            = custom_icon('mr_bold')
+            = sprite_icon('git-merge')
           %span.nav-item-name
             Merge Requests
           %span.badge.count= number_with_delimiter(merge_requests.count)
@@ -95,7 +95,7 @@
       = nav_link(path: 'group_members#index') do
         = link_to group_group_members_path(@group) do
           .nav-icon-container
-            = custom_icon('members')
+            = sprite_icon('users')
           %span.nav-item-name
             Members
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -107,7 +107,7 @@
         = nav_link(path: %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]) do
           = link_to edit_group_path(@group) do
             .nav-icon-container
-              = custom_icon('settings')
+              = sprite_icon('settings')
             %span.nav-item-name
               Settings
           %ul.sidebar-sub-level-items

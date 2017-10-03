@@ -2,5 +2,5 @@
 title: Allow to use same periods for different housekeeping tasks (effectively
   skipping the lesser task)
 merge_request: 13711
-author: @cernvcs
+author: cernvcs
 type: added

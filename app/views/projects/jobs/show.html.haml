@@ -2,7 +2,6 @@
 - add_to_breadcrumbs "Jobs", project_jobs_path(@project)
 - breadcrumb_title "##{@build.id}"
 - page_title "#{@build.name} (##{@build.id})", "Jobs"
-= render "projects/pipelines/head"
 
 %div{ class: container_class }
   .build-page.js-build-page

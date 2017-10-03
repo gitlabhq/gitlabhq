@@ -26,7 +26,7 @@ gem 'doorkeeper', '~> 4.2.0'
 gem 'doorkeeper-openid_connect', '~> 1.1.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
-gem 'omniauth-azure-oauth2', '~> 0.0.6'
+gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
@@ -138,7 +138,7 @@ gem 'asciidoctor-plantuml', '0.0.7'
 gem 'rouge', '~> 2.0'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.0'
+gem 'nokogiri', '~> 1.8.1'
 
 # Diffs
 gem 'diffy', '~> 3.1.0'
@@ -414,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.33.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.38.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

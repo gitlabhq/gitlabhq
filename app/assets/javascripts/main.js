@@ -8,6 +8,7 @@ import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
+import svg4everybody from 'svg4everybody';
 
 // libraries with import side-effects
 import 'mousetrap';
@@ -160,6 +161,8 @@ if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
 Dropzone.autoDiscover = false;
 
+svg4everybody();
+
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
@@ -308,7 +311,10 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
+  $('.navbar-toggle').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+    gl.lazyLoader.loadCheck();
+  });
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

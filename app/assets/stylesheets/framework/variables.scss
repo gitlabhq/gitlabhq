@@ -6,6 +6,8 @@ $gutter_width: 290px;
 $gutter_inner_width: 250px;
 $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
+$default-transition-duration: .15s;
+$right-sidebar-transition-duration: .3s;
 
 /*
  * Color schema
@@ -28,46 +30,45 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
-$green-25: #f6fcf8;
-$green-50: #e4f5eb;
-$green-100: #bae6cc;
-$green-200: #8dd5aa;
-$green-300: #5fc488;
-$green-400: #3cb76f;
+$green-50: #f1fdf6;
+$green-100: #dcf5e7;
+$green-200: #b3e6c8;
+$green-300: #75d09b;
+$green-400: #37b96d;
 $green-500: #1aaa55;
 $green-600: #168f48;
 $green-700: #12753a;
 $green-800: #0e5a2d;
 $green-900: #0a4020;
+$green-950: #072b15;
 
-$blue-25: #f6fafd;
-$blue-50: #e4eff9;
-$blue-100: #bcd7f1;
-$blue-200: #8fbce8;
-$blue-300: #62a1df;
-$blue-400: #418cd8;
+$blue-50: #f6fafe;
+$blue-100: #e4f0fb;
+$blue-200: #b8d6f4;
+$blue-300: #73afea;
+$blue-400: #2e87e0;
 $blue-500: #1f78d1;
 $blue-600: #1b69b6;
 $blue-700: #17599c;
 $blue-800: #134a81;
 $blue-900: #0f3b66;
+$blue-950: #0a2744;
 
-$orange-25: #fffcf8;
-$orange-50: #fff2e1;
-$orange-100: #fedfb3;
-$orange-200: #feca81;
-$orange-300: #fdb44f;
-$orange-400: #fca429;
+$orange-50: #fffaf4;
+$orange-100: #fff1de;
+$orange-200: #fed69f;
+$orange-300: #fdbc60;
+$orange-400: #fca121;
 $orange-500: #fc9403;
 $orange-600: #de7e00;
 $orange-700: #c26700;
-$orange-800: #a35100;
-$orange-900: #853b00;
+$orange-800: #a35200;
+$orange-900: #853c00;
+$orange-950: #592800;
 
-$red-25: #fef7f6;
-$red-50: #fbe7e4;
-$red-100: #f4c4bc;
-$red-200: #ed9d90;
+$red-50: #fef6f5;
+$red-100: #fbe5e1;
+$red-200: #f2b4a9;
 $red-300: #e67664;
 $red-400: #e05842;
 $red-500: #db3b21;
@@ -75,6 +76,7 @@ $red-600: #c0341d;
 $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
+$red-950: #4b140b;
 
 // GitLab themes
 
@@ -185,8 +187,8 @@ $list-text-disabled-color: $gl-text-color-tertiary;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
-$list-warning-row-bg: $orange-50;
-$list-warning-row-border: $orange-100;
+$list-warning-row-bg: $orange-100;
+$list-warning-row-border: $orange-200;
 $list-warning-row-color: $orange-700;
 
 /*
@@ -215,8 +217,8 @@ $gl-sidebar-padding: 22px;
 /*
  * Misc
  */
-$row-hover: $blue-25;
-$row-hover-border: $blue-100;
+$row-hover: $blue-50;
+$row-hover-border: $blue-200;
 $progress-color: #c0392b;
 $header-height: 50px;
 $new-navbar-height: 40px;
@@ -271,8 +273,8 @@ $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
 $error-bg: $red-400;
-$warning-message-bg: $orange-50;
-$warning-message-border: $orange-100;
+$warning-message-bg: $orange-100;
+$warning-message-border: $orange-200;
 $warning-message-color: $orange-700;
 $control-group-descr-color: #666;
 $table-permission-x-bg: #d9edf7;
@@ -458,17 +460,17 @@ $builds-trace-bg: #111;
 /*
 * Callout
 */
-$callout-danger-bg: $red-50;
-$callout-danger-border: $red-100;
+$callout-danger-bg: $red-100;
+$callout-danger-border: $red-200;
 $callout-danger-color: $red-700;
-$callout-warning-bg: $orange-50;
-$callout-warning-border: $orange-100;
+$callout-warning-bg: $orange-100;
+$callout-warning-border: $orange-200;
 $callout-warning-color: $orange-700;
-$callout-info-bg: $blue-50;
-$callout-info-border: $blue-100;
+$callout-info-bg: $blue-100;
+$callout-info-border: $blue-200;
 $callout-info-color: $blue-700;
-$callout-success-bg: $green-50;
-$callout-success-border: $green-100;
+$callout-success-bg: $green-100;
+$callout-success-border: $green-200;
 $callout-success-color: $green-700;
 
 /*

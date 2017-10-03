@@ -183,11 +183,20 @@ build-package:
   image: ruby:2.4-alpine
   before_script:
     - gem install gitlab --no-doc
+    # We need to download the script rather than clone the repo since the
+    # review-docs-cleanup job will not be able to run when the branch gets
+    # deleted (when merging the MR).
+    - apk add --update openssl
+    - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
+    - chmod 755 trigger-build-docs
   services: []
+  cache: {}
+  dependencies: []
+  artifacts: {}
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
-  cache: {}
+    GIT_STRATEGY: none
   when: manual
   only:
     - branches
@@ -204,7 +213,7 @@ review-docs-deploy:
     url: http://preview-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
   script:
-    - scripts/trigger-build-docs deploy
+    - ./trigger-build-docs deploy
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
@@ -214,7 +223,7 @@ review-docs-cleanup:
     name: review-docs/$CI_COMMIT_REF_NAME
     action: stop
   script:
-    - scripts/trigger-build-docs cleanup
+    - ./trigger-build-docs cleanup
 
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:

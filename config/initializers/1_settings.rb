@@ -578,9 +578,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
-Settings.git['max_size']  ||= 20971520 # 20.megabytes
-Settings.git['bin_path']  ||= '/usr/bin/git'
-Settings.git['timeout']   ||= 10
+Settings.git['bin_path'] ||= '/usr/bin/git'
 
 # Important: keep the satellites.path setting until GitLab 9.0 at
 # least. This setting is fed to 'rm -rf' in

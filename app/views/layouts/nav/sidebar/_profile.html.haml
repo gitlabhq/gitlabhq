@@ -9,7 +9,7 @@
       = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
         = link_to profile_path do
           .nav-icon-container
-            = custom_icon('profile')
+            = sprite_icon('profile')
           %span.nav-item-name
             Profile
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -20,7 +20,7 @@
       = nav_link(controller: [:accounts, :two_factor_auths]) do
         = link_to profile_account_path do
           .nav-icon-container
-            = custom_icon('account')
+            = sprite_icon('account')
           %span.nav-item-name
             Account
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -44,7 +44,7 @@
         = nav_link(controller: 'oauth/applications') do
           = link_to applications_profile_path do
             .nav-icon-container
-              = custom_icon('applications')
+              = sprite_icon('applications')
             %span.nav-item-name
               Applications
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -55,7 +55,7 @@
       = nav_link(controller: :chat_names) do
         = link_to profile_chat_names_path do
           .nav-icon-container
-            = custom_icon('chat')
+            = sprite_icon('comment')
           %span.nav-item-name
             Chat
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -66,7 +66,7 @@
       = nav_link(controller: :personal_access_tokens) do
         = link_to profile_personal_access_tokens_path do
           .nav-icon-container
-            = custom_icon('access_tokens')
+            = sprite_icon('token')
           %span.nav-item-name
             Access Tokens
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -77,7 +77,7 @@
       = nav_link(controller: :emails) do
         = link_to profile_emails_path do
           .nav-icon-container
-            = custom_icon('emails')
+            = sprite_icon('mail')
           %span.nav-item-name
             Emails
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -89,7 +89,7 @@
         = nav_link(controller: :passwords) do
           = link_to edit_profile_password_path do
             .nav-icon-container
-              = custom_icon('lock')
+              = sprite_icon('lock')
             %span.nav-item-name
               Password
           %ul.sidebar-sub-level-items.is-fly-out-only
@@ -100,7 +100,7 @@
       = nav_link(controller: :notifications) do
         = link_to profile_notifications_path do
           .nav-icon-container
-            = custom_icon('notifications')
+            = sprite_icon('notifications')
           %span.nav-item-name
             Notifications
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -111,7 +111,7 @@
       = nav_link(controller: :keys) do
         = link_to profile_keys_path do
           .nav-icon-container
-            = custom_icon('key')
+            = sprite_icon('key')
           %span.nav-item-name
             SSH Keys
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -122,7 +122,7 @@
       = nav_link(controller: :gpg_keys) do
         = link_to profile_gpg_keys_path do
           .nav-icon-container
-            = custom_icon('key_2')
+            = sprite_icon('key-2')
           %span.nav-item-name
             GPG Keys
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -133,7 +133,7 @@
       = nav_link(controller: :preferences) do
         = link_to profile_preferences_path do
           .nav-icon-container
-            = custom_icon('preferences')
+            = sprite_icon('preferences')
           %span.nav-item-name
             Preferences
         %ul.sidebar-sub-level-items.is-fly-out-only
@@ -144,7 +144,7 @@
       = nav_link(path: 'profiles#audit_log') do
         = link_to audit_log_profile_path do
           .nav-icon-container
-            = custom_icon('authentication_log')
+            = sprite_icon('log')
           %span.nav-item-name
             Authentication log
         %ul.sidebar-sub-level-items.is-fly-out-only

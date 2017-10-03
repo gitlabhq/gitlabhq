@@ -125,6 +125,15 @@ describe API::Users do
     end
 
     context "when admin" do
+      context 'when sudo is defined' do
+        it 'does not return 500' do
+          admin_personal_access_token = create(:personal_access_token, user: admin).token
+          get api("/users?private_token=#{admin_personal_access_token}&sudo=#{user.id}", admin)
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+
       it "returns an array of users" do
         get api("/users", admin)
 
@@ -194,10 +203,9 @@ describe API::Users do
 
     context "when authenticated and ldap is enabled" do
       it "returns non-ldap user" do
-        User.delete_all
         create :omniauth_user, provider: "ldapserver1"
         get api("/users", user), skip_ldap: "true"
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         username = user.username
         expect(json_response.first["username"]).to eq username
@@ -474,10 +482,13 @@ describe API::Users do
     end
 
     it "updates user with new password and forces reset on next login" do
+      stub_licensed_features(extended_audit_events: true)
+
       put api("/users/#{user.id}", admin), password: '12345678'
 
       expect(response).to have_http_status(200)
       expect(user.reload.password_expires_at).to be <= Time.now
+      expect(AuditEvent.count).to eq(1)
     end
 
     it "updates user with organization" do
@@ -1926,5 +1937,9 @@ describe API::Users do
       expect(impersonation_token.revoked).to be_falsey
       expect(impersonation_token.reload.revoked).to be_truthy
     end
+  end
+
+  include_examples 'custom attributes endpoints', 'users' do
+    let(:attributable) { user }
   end
 end

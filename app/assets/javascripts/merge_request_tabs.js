@@ -248,6 +248,8 @@ import {
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
@@ -350,7 +352,7 @@ import {
     }
 
     expandViewContainer() {
-      const $wrapper = $('.content-wrapper .container-fluid');
+      const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }

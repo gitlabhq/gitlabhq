@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-15 05:19-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:43-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Korean\n"
 "Language: ko_KR\n"
@@ -27,6 +27,9 @@ msgstr[0] "%s 추가 커밋은 성능 이슈를 방지하기 위해 생략되었
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_timeago} 에 %{commit_author_link} 님이 커밋하였습니다. "
 
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
+msgstr ""
+
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "%{number_of_failures} / %{maximum_failures} 실패. GitLab 은 다음 시도에서 성공하면 접근을 허용할 것입니다."
 
@@ -46,6 +49,9 @@ msgstr "설치 방법에 대한 정보를 얻기 위해 %{link} 를 체크아웃
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] "%d 파이프라인"
+
+msgid "1st contribution!"
+msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "지속적인 통합에 관한 그래프 모음"
@@ -89,7 +95,7 @@ msgstr "새 디렉토리 추가"
 msgid "All"
 msgstr "전체"
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
@@ -113,10 +119,34 @@ msgstr "헬스 체크 토큰을 초기화 하시겠습니까?"
 msgid "Are you sure?"
 msgstr "확실합니까?"
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "드래그 &amp; 드롭 또는 %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -173,6 +203,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "브랜치"
@@ -188,6 +221,90 @@ msgstr "브랜치 변경"
 
 msgid "Branches"
 msgstr "브랜치"
+
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
+msgstr ""
 
 msgid "Browse Directory"
 msgstr "디렉토리 찾아보기"
@@ -330,9 +447,6 @@ msgstr "커밋한 사용자"
 
 msgid "Compare"
 msgstr "비교"
-
-msgid "Container Registry"
-msgstr ""
 
 msgid "Contribution guide"
 msgstr "기여에 대한 안내"
@@ -482,6 +596,9 @@ msgstr "파이프라인 스케줄 편집 %{id}"
 msgid "Emails"
 msgstr ""
 
+msgid "Enable in settings"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr "모든 값을 기준으로 필터"
 
@@ -508,6 +625,9 @@ msgstr "매월 (1일 오전 4시)"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "매주 (일요일 오전 4시에)"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "소유자를 변경하지 못했습니다"
@@ -564,7 +684,28 @@ msgstr "당신의 포크로 이동하세요"
 msgid "GoToYourFork|Fork"
 msgstr "포크"
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
@@ -585,12 +726,6 @@ msgstr " 헬스 문제가 발견되지 않았습니다."
 msgid "HealthCheck|Unhealthy"
 msgstr "비정상"
 
-msgid "Home"
-msgstr "홈"
-
-msgid "Hooks"
-msgstr ""
-
 msgid "Housekeeping successfully started"
 msgstr "Housekeeping이 성공적으로 시작되었습니다"
 
@@ -610,6 +745,9 @@ msgid "Issue events"
 msgstr "이슈 이벤트"
 
 msgid "Issues"
+msgstr ""
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -673,6 +811,9 @@ msgstr ""
 
 msgid "Merge events"
 msgstr "머지 이벤트"
+
+msgid "Merge request"
+msgstr ""
 
 msgid "Messages"
 msgstr ""
@@ -801,6 +942,18 @@ msgstr ""
 msgid "Owner"
 msgstr "소유자"
 
+msgid "Pagination|Last »"
+msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -906,10 +1059,7 @@ msgstr "스테이징"
 msgid "Preferences"
 msgstr ""
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -942,12 +1092,6 @@ msgstr "프로젝트 내보내기 링크가 만료되었습니다. 프로젝트 
 msgid "Project export started. A download link will be sent by email."
 msgstr "프로젝트 내보내기가 시작되었습니다. 다운로드 링크는 이메일로 전송됩니다."
 
-msgid "Project home"
-msgstr "프로젝트 홈"
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "구독"
 
@@ -972,13 +1116,10 @@ msgstr "스테이징"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "그래프"
 
-msgid "Push Rules"
+msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|Projects you visit often will appear here"
@@ -987,10 +1128,16 @@ msgstr ""
 msgid "ProjectsDropdown|Search your projects"
 msgstr ""
 
-msgid "ProjectsDropdown|Something went wrong on our end"
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
@@ -1007,6 +1154,9 @@ msgstr "브랜치"
 
 msgid "RefSwitcher|Tags"
 msgstr "태그"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "관련 커밋"
@@ -1062,6 +1212,9 @@ msgstr "파이프라인  스케줄 저장"
 msgid "Schedule a new pipeline"
 msgstr "새로운 파이프라인 스케줄 잡기"
 
+msgid "Schedules"
+msgstr ""
+
 msgid "Scheduling Pipelines"
 msgstr "파이프라인 스케줄링"
 
@@ -1101,11 +1254,113 @@ msgstr "패스워드 설정"
 msgid "Settings"
 msgstr ""
 
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "%d 개의 이벤트 표시 중"
 
 msgid "Snippets"
+msgstr ""
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
@@ -1120,6 +1375,9 @@ msgstr "Runner 설정 중 다음 URL을 지정하세요."
 msgid "StarProject|Star"
 msgstr "별표"
 
+msgid "Starred projects"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "이 변경 사항으로 %{new_merge_request} 을 시작하십시오."
 
@@ -1128,6 +1386,9 @@ msgstr "Runner 시작!"
 
 msgid "Switch branch/tag"
 msgstr "스위치 브랜치/태그"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1192,6 +1453,9 @@ msgstr "값은 일련의 관측 값 중점에 있습니다. 예를 들어, 3, 5,
 
 msgid "There are problems accessing Git storage: "
 msgstr "git storage에 접근하는데 문제가 발생했습니다. "
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
+msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "즉, 빈 저장소를 만들거나 기존 저장소를 가져올 때까지 코드를 Push 할 수 없습니다."
@@ -1366,8 +1630,14 @@ msgstr "설정 중에 다음 등록 토큰 이용 : "
 msgid "Use your global notification setting"
 msgstr "전체 알림 설정 사용"
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "열린 머지 리퀘스트보기"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "내부"
@@ -1440,6 +1710,12 @@ msgstr "당신의 프로필에 %{add_ssh_key_link} 를 하기 전에는 SSH를 �
 
 msgid "Your name"
 msgstr "귀하의 이름"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

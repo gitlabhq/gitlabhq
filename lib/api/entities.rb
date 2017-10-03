@@ -99,6 +99,9 @@ module API
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :avatar_url do |project, options|
+        project.avatar_url(only_path: false)
+      end
       expose :star_count, :forks_count
       expose :created_at, :last_activity_at
     end
@@ -156,9 +159,7 @@ module API
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
-      end
+
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
@@ -219,8 +220,8 @@ module API
       ## EE-only
 
       expose :lfs_enabled?, as: :lfs_enabled
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
+      expose :avatar_url do |group, options|
+        group.avatar_url(only_path: false)
       end
       expose :web_url
       expose :request_access_enabled
@@ -263,6 +264,7 @@ module API
     class RepoCommitDetail < RepoCommit
       expose :stats, using: Entities::RepoCommitStats
       expose :status
+      expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
 
     class RepoBranch < Grape::Entity
@@ -1153,6 +1155,11 @@ module API
       expose :storage_name
       expose :failing_on_hosts
       expose :total_failures
+    end
+
+    class CustomAttribute < Grape::Entity
+      expose :key
+      expose :value
     end
   end
 end

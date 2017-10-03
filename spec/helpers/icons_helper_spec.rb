@@ -16,6 +16,25 @@ describe IconsHelper do
     end
   end
 
+  describe 'sprite_icon' do
+    icon_name = 'clock'
+
+    it 'returns svg icon html' do
+      expect(sprite_icon(icon_name).to_s)
+        .to eq "<svg><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+    end
+
+    it 'returns svg icon html + size classes' do
+      expect(sprite_icon(icon_name, size: 72).to_s)
+        .to eq "<svg class=\"s72\"><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+    end
+
+    it 'returns svg icon html + size classes + additional class' do
+      expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
+        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+    end
+  end
+
   describe 'file_type_icon_class' do
     it 'returns folder class' do
       expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-15 05:21-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:44-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -27,6 +27,9 @@ msgstr[0] "因效能考量，不顯示 %s 個更動 (commit)。"
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} 在 %{commit_timeago} 送交"
 
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
+msgstr ""
+
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "已失敗 %{number_of_failures} 次，在失敗 %{maximum_failures} 次前 GitLab 會重試。"
 
@@ -47,6 +50,9 @@ msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] "%d 條流水線"
 
+msgid "1st contribution!"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持續整合 (CI) 相關的圖表"
 
@@ -63,7 +69,7 @@ msgid "Access to failing storages has been temporarily disabled to allow the mou
 msgstr "已暫時停用失敗的 Git 儲存空間。當儲存空間恢復正常後，請重置儲存空間健康指數。"
 
 msgid "Account"
-msgstr ""
+msgstr "帳號"
 
 msgid "Active"
 msgstr "啟用"
@@ -89,8 +95,8 @@ msgstr "新增目錄"
 msgid "All"
 msgstr "全部"
 
-msgid "Appearances"
-msgstr "外觀"
+msgid "Appearance"
+msgstr ""
 
 msgid "Applications"
 msgstr "應用程式"
@@ -113,10 +119,34 @@ msgstr "確定要重置健康檢查存取憑證 (access token) 嗎？"
 msgid "Are you sure?"
 msgstr "確定嗎？"
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放檔案到此處或者 %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -173,6 +203,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "分支 (branch) "
@@ -188,6 +221,90 @@ msgstr "切換分支 (branch)"
 
 msgid "Branches"
 msgstr "分支 (branch) "
+
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
+msgstr ""
 
 msgid "Browse Directory"
 msgstr "瀏覽目錄"
@@ -331,9 +448,6 @@ msgstr "送交者為 "
 msgid "Compare"
 msgstr "比較"
 
-msgid "Container Registry"
-msgstr ""
-
 msgid "Contribution guide"
 msgstr "協作指南"
 
@@ -429,7 +543,7 @@ msgid_plural "Deploys"
 msgstr[0] "部署"
 
 msgid "Deploy Keys"
-msgstr ""
+msgstr "部署金鑰"
 
 msgid "Description"
 msgstr "描述"
@@ -482,6 +596,9 @@ msgstr "編輯 %{id} 流水線 (pipeline) 排程"
 msgid "Emails"
 msgstr "電子郵件"
 
+msgid "Enable in settings"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr "顯示全部"
 
@@ -508,6 +625,9 @@ msgstr "每月執行（每月一日淩晨四點）"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "每週執行（週日淩晨 四點）"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "無法變更所有權"
@@ -547,7 +667,7 @@ msgid "From merge request merge until deploy to production"
 msgstr "從請求被合併後 (merge request merged) 直到部署至營運環境"
 
 msgid "GPG Keys"
-msgstr ""
+msgstr "GPG 金鑰"
 
 msgid "Geo Nodes"
 msgstr ""
@@ -564,8 +684,29 @@ msgstr "前往您的分支 (fork) "
 msgid "GoToYourFork|Fork"
 msgstr "前往您的分支 (fork) "
 
-msgid "Group overview"
-msgstr "群組總覽"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
+msgstr ""
 
 msgid "Health Check"
 msgstr "健康檢查"
@@ -584,12 +725,6 @@ msgstr "沒有檢測到健康問題"
 
 msgid "HealthCheck|Unhealthy"
 msgstr "不良"
-
-msgid "Home"
-msgstr "首頁"
-
-msgid "Hooks"
-msgstr ""
 
 msgid "Housekeeping successfully started"
 msgstr "已開始維護"
@@ -611,6 +746,9 @@ msgstr "議題 (issue) 事件"
 
 msgid "Issues"
 msgstr "議題"
+
+msgid "Jobs"
+msgstr ""
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -669,13 +807,16 @@ msgid "Members"
 msgstr "成員"
 
 msgid "Merge Requests"
-msgstr ""
+msgstr "合併請求 (merge request)"
 
 msgid "Merge events"
 msgstr "合併 (merge) 事件"
 
+msgid "Merge request"
+msgstr ""
+
 msgid "Messages"
-msgstr "訊息"
+msgstr "公告"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新增 SSH 金鑰"
@@ -801,6 +942,18 @@ msgstr "總覽"
 msgid "Owner"
 msgstr "所有權"
 
+msgid "Pagination|Last »"
+msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
 msgid "Password"
 msgstr "密碼"
 
@@ -904,13 +1057,10 @@ msgid "Pipeline|with stages"
 msgstr "於階段"
 
 msgid "Preferences"
-msgstr ""
+msgstr "偏好設定"
 
-msgid "Profile Settings"
+msgid "Profile"
 msgstr ""
-
-msgid "Project"
-msgstr "專案"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "專案 '%{project_name}' 已加入刪除佇列。"
@@ -942,12 +1092,6 @@ msgstr "專案的匯出連結已失效。請到專案設定中產生新的連結
 msgid "Project export started. A download link will be sent by email."
 msgstr "專案導出已開始。完成後下載連結會送到您的信箱。"
 
-msgid "Project home"
-msgstr "專案首頁"
-
-msgid "Project overview"
-msgstr "專案總覽"
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "訂閱"
 
@@ -972,25 +1116,28 @@ msgstr "階段"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "分支圖"
 
-msgid "Push Rules"
+msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|Projects you visit often will appear here"
 msgstr ""
 
 msgid "ProjectsDropdown|Search your projects"
+msgstr "搜尋您的專案"
+
+msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
-msgid "ProjectsDropdown|Something went wrong on our end"
-msgstr ""
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr "抱歉，沒有符合搜尋條件的專案"
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr "此功能需要瀏覽器支援 localStorage"
+
+msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
@@ -1007,6 +1154,9 @@ msgstr "分支 (branch) "
 
 msgid "RefSwitcher|Tags"
 msgstr "標籤"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "相關的更動記錄 (commit) "
@@ -1054,13 +1204,16 @@ msgid "Revert this merge request"
 msgstr "還原此合併請求 (merge request) "
 
 msgid "SSH Keys"
-msgstr ""
+msgstr "SSH 金鑰"
 
 msgid "Save pipeline schedule"
 msgstr "儲存流水線 (pipeline) 排程"
 
 msgid "Schedule a new pipeline"
 msgstr "建立流水線 (pipeline) 排程"
+
+msgid "Schedules"
+msgstr ""
 
 msgid "Scheduling Pipelines"
 msgstr "流水線 (pipeline) 排程"
@@ -1101,11 +1254,113 @@ msgstr "設定密碼"
 msgid "Settings"
 msgstr "設定"
 
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] "顯示 %d 個事件"
 
 msgid "Snippets"
+msgstr ""
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
@@ -1120,6 +1375,9 @@ msgstr "在安裝 Runner 時指定以下 URL："
 msgid "StarProject|Star"
 msgstr "收藏"
 
+msgid "Starred projects"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "以這些改動建立一個新的 %{new_merge_request} "
 
@@ -1128,6 +1386,9 @@ msgstr "啟動 Runner!"
 
 msgid "Switch branch/tag"
 msgstr "切換分支 (branch) 或標籤"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1192,6 +1453,9 @@ msgstr "中位數是一個數列中最中間的值。例如在 3、5、9 之間�
 
 msgid "There are problems accessing Git storage: "
 msgstr "存取 Git 儲存空間時出現問題："
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
+msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "這代表在您建立一個空的檔案庫 (repository) 或是匯入一個現存的檔案庫之前，您將無法上傳更新 (push) 。"
@@ -1366,8 +1630,14 @@ msgstr "在安裝過程中使用此註冊憑證 (registration token)："
 msgid "Use your global notification setting"
 msgstr "使用全域通知設定"
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "查看此分支的合併請求 (merge request)"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "內部"
@@ -1388,7 +1658,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "因該階段的資料不足而無法顯示相關資訊"
 
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 msgid "Withdraw Access Request"
 msgstr "取消權限申請"
@@ -1440,6 +1710,12 @@ msgstr "在個人帳號中 %{add_ssh_key_link} 之前， 將無法使用 SSH 上
 
 msgid "Your name"
 msgstr "您的名字"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

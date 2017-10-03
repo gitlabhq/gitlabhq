@@ -38,6 +38,7 @@ class License < ActiveRecord::Base
     cross_project_pipelines
     db_load_balancing
     deploy_board
+    extended_audit_events
     file_locks
     geo
     group_issue_boards
@@ -107,6 +108,7 @@ class License < ActiveRecord::Base
     auditor_user
     db_load_balancing
     elastic_search
+    extended_audit_events
     geo
     ldap_extras
     object_storage
@@ -220,7 +222,7 @@ class License < ActiveRecord::Base
   end
 
   def features_from_add_ons
-    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count > 0 }.compact
+    add_ons.map { |name, count| FEATURES_FOR_ADD_ONS[name] if count.to_i > 0 }.compact
   end
 
   def features

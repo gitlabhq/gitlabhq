@@ -54,36 +54,9 @@ describe('MergeRequestStore', () => {
     });
   });
 
-  describe('setCodeclimateHeadMetrics', () => {
-    it('should set defaults', () => {
-      expect(store.codeclimate).toEqual(mockData.codeclimate);
-      expect(store.codeclimateMetrics).toEqual({
-        headIssues: [],
-        baseIssues: [],
-        newIssues: [],
-        resolvedIssues: [],
-      });
-    });
-
-    it('should set the provided head metrics', () => {
-      store.setCodeclimateHeadMetrics(headIssues);
-      expect(store.codeclimateMetrics.headIssues).toEqual(headIssues);
-    });
-  });
-
-  describe('setCodeclimateBaseMetrics', () => {
-    it('should set the provided base metrics', () => {
-      store.setCodeclimateBaseMetrics(baseIssues);
-
-      expect(store.codeclimateMetrics.baseIssues).toEqual(baseIssues);
-    });
-  });
-
   describe('compareCodeclimateMetrics', () => {
     beforeEach(() => {
-      store.setCodeclimateHeadMetrics(headIssues);
-      store.setCodeclimateBaseMetrics(baseIssues);
-      store.compareCodeclimateMetrics();
+      store.compareCodeclimateMetrics(headIssues, baseIssues);
     });
 
     it('should return the new issues', () => {

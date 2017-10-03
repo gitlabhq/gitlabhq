@@ -185,7 +185,7 @@ export default {
 
         this.service.postAction(endpoint)
           .then(() => this.fetchEnvironments())
-          .catch(() => new Flash('An error occured while making the request.'));
+          .catch(() => new Flash('An error occurred while making the request.'));
       }
     },
 
