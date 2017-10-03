@@ -3,6 +3,78 @@ require 'spec_helper'
 describe Gitlab::LDAP::DN do
   using RSpec::Parameterized::TableSyntax
 
+  describe '#normalize_value' do
+    subject { described_class.normalize_value(given) }
+
+    it_behaves_like 'normalizes a DN attribute value'
+
+    context 'when the given DN is malformed' do
+      context 'when ending with a comma' do
+        let(:given) { 'John Smith,' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+        end
+      end
+
+      context 'when given a BER encoded attribute value with a space in it' do
+        let(:given) { '#aa aa' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the end of an attribute value, but got \"a\"")
+        end
+      end
+
+      context 'when given a BER encoded attribute value with a non-hex character in it' do
+        let(:given) { '#aaXaaa' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the first character of a hex pair, but got \"X\"")
+        end
+      end
+
+      context 'when given a BER encoded attribute value with a non-hex character in it' do
+        let(:given) { '#aaaYaa' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair, but got \"Y\"")
+        end
+      end
+
+      context 'when given a hex pair with a non-hex character in it, inside double quotes' do
+        let(:given) { '"Sebasti\\cX\\a1n"' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"X\"")
+        end
+      end
+
+      context 'with an open (as opposed to closed) double quote' do
+        let(:given) { '"James' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+        end
+      end
+
+      context 'with an invalid escaped hex code' do
+        let(:given) { 'J\ames' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'Invalid escaped hex code "\am"')
+        end
+      end
+
+      context 'with a value ending with the escape character' do
+        let(:given) { 'foo\\' }
+
+        it 'raises MalformedDnError' do
+          expect { subject }.to raise_error(Gitlab::LDAP::MalformedDnError, 'DN string ended unexpectedly')
+        end
+      end
+    end
+  end
+
   describe '#to_normalized_s' do
     subject { described_class.new(given).to_normalized_s }
 

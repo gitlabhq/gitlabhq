@@ -25,6 +25,12 @@ module Gitlab
     UnsupportedDnFormatError = Class.new(StandardError)
 
     class DN
+      def self.normalize_value(given_value)
+        dummy_dn = "placeholder=#{given_value}"
+        normalized_dn = new(*dummy_dn).to_normalized_s
+        normalized_dn.sub(/\Aplaceholder=/, '')
+      end
+
       ##
       # Initialize a DN, escaping as required. Pass in attributes in name/value
       # pairs. If there is a left over argument, it will be appended to the dn

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Person do
-  using RSpec::Parameterized::TableSyntax
   include LdapHelpers
 
   let(:entry) { ldap_user_entry('john.doe') }
@@ -17,38 +16,13 @@ describe Gitlab::LDAP::Person do
     )
   end
 
-  shared_examples_for 'normalizes the UID' do
-    where(:test_description, :given, :expected) do
-      'strips extraneous whitespace'                                        | ' John C. Smith   '                     | 'john c. smith'
-      'strips extraneous whitespace without changing escaped characters'    | '  Sebasti\\c3\\a1n\\ C.\\20Smith\\   ' | 'sebasti\\c3\\a1n\\ c.\\20smith\\ '
-      'downcases the whole string'                                          | 'John Smith'                            | 'john smith'
-      'does not strip the escaped leading space in an attribute value'      | '   \\ John Smith '                     | '\\ john smith'
-      'does not strip the escaped trailing space in an attribute value'     | '    John Smith\\   '                   | 'john smith\\ '
-      'does not strip the escaped leading newline in an attribute value'    | '     \\\nJohn Smith  '                 | '\\\njohn smith'
-      'does not strip the escaped trailing newline in an attribute value'   | '    John Smith\\\n  '                  | 'john smith\\\n'
-      'does not strip the unescaped leading newline in an attribute value'  | '   \nJohn Smith '                      | '\njohn smith'
-      'does not strip the unescaped trailing newline in an attribute value' | '  John Smith\n   '                     | 'john smith\n'
-      'does not strip non whitespace'                                       | 'John Smith'                            | 'john smith'
-      'does not treat escaped equal signs as attribute delimiters'          | ' foo  \\=  bar'                        | 'foo  \\=  bar'
-      'does not treat escaped hex equal signs as attribute delimiters'      | ' foo  \\3D  bar'                       | 'foo  \\3d  bar'
-      'does not treat escaped commas as attribute delimiters'               | ' Smith\\, John C.'                     | 'smith\\, john c.'
-      'does not treat escaped hex commas as attribute delimiters'           | ' Smith\\2C John C.'                    | 'smith\\2c john c.'
-    end
-
-    with_them do
-      it 'normalizes the UID' do
-        assert_generic_test(test_description, subject, expected)
-      end
-    end
-  end
-
   describe '.normalize_uid' do
     subject { described_class.normalize_uid(given) }
 
-    it_behaves_like 'normalizes the UID'
+    it_behaves_like 'normalizes a DN attribute value'
 
     context 'with an exception during normalization' do
-      let(:given) { described_class } # just something that will cause an exception
+      let(:given) { 'John "Smith,' } # just something that will cause an exception
 
       it 'returns the given UID unmodified' do
         expect(subject).to eq(given)

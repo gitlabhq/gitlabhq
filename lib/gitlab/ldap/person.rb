@@ -41,8 +41,8 @@ module Gitlab
       # 1. Excess spaces are stripped
       # 2. The string is downcased (for case-insensitivity)
       def self.normalize_uid(uid)
-        normalize_dn_part(uid)
-      rescue StandardError => e
+        ::Gitlab::LDAP::DN.normalize_value(uid)
+      rescue ::Gitlab::LDAP::MalformedDnError, ::Gitlab::LDAP::UnsupportedDnFormatError => e
         Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
         Rails.logger.info(e.backtrace.join("\n"))
 
@@ -76,37 +76,6 @@ module Gitlab
       end
 
       private
-
-      def self.normalize_dn_part(part)
-        cleaned = part.strip.downcase
-
-        if cleaned.ends_with?('\\')
-          # If it ends with an escape character that is not followed by a
-          # character to be escaped, then this part may be malformed. But let's
-          # not worry too much about it, and just return it unmodified.
-          #
-          # Why? Because the reason we clean DNs is to make our simplistic
-          # string comparisons work better, even though there are all kinds of
-          # ways that equivalent DNs can vary as strings. If we run into a
-          # strange DN, we should just try to work with it.
-          #
-          # See https://www.ldap.com/ldap-dns-and-rdns for more.
-          return part unless part.ends_with?(' ')
-
-          # Ends with an escaped space (which is valid).
-          cleaned = cleaned + ' '
-        end
-
-        # Get rid of blanks. This can happen if a split character is followed by
-        # whitespace and then another split character.
-        #
-        # E.g. this DN: 'uid=john+telephoneNumber= +1 555-555-5555'
-        #
-        # Should be returned as: 'uid=john+telephoneNumber=+1 555-555-5555'
-        cleaned = '' if cleaned.blank?
-
-        cleaned
-      end
 
       def entry
         @entry
