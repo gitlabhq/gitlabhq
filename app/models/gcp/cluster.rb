@@ -22,49 +22,52 @@ module Gcp
       algorithm: 'aes-256-cbc'
 
     enum status: {
-      unknown: nil,
       scheduled: 1,
       creating: 2,
       created: 3,
       errored: 4
     }
 
+    state_machine :status, initial: :scheduled do
+      event :creating do
+        transition any - [:creating] => :creating
+      end
+
+      event :created do
+        transition any - [:created] => :created
+      end
+
+      event :errored do
+        transition any - [:errored] => :errored
+      end
+
+      before_transition any => [:errored, :created] do |cluster|
+        cluster.gcp_token = nil
+        cluster.gcp_operation_id = nil
+      end
+
+      before_transition any => [:errored] do |cluster|
+        status_reason = transition.args.first
+        cluster.status_reason = status_reason
+      end
+    end
+
     validates :gcp_project_id, presence: true
     validates :gcp_cluster_zone, presence: true
     validates :gcp_cluster_name, presence: true
     validates :gcp_cluster_size, presence: true,
               numericality: { only_integer: true, greater_than: 0 }
-    validate :restrict_modification, on: :update
 
-    def errored!(reason)
-      self.status = :errored
-      self.status_reason = reason
-      self.gcp_token = nil
+    validates :project_namespace,
+      allow_blank: true,
+      length: 1..63,
+      format: {
+        with: Gitlab::Regex.kubernetes_namespace_regex,
+        message: Gitlab::Regex.kubernetes_namespace_regex_message
+      }
 
-      save!(validate: false)
-    end
-
-    def creating!(gcp_operation_id)
-      self.status = :creating
-      self.gcp_operation_id = gcp_operation_id
-
-      save!(validate: false)
-    end
-
-    def created!(endpoint, ca_cert, kubernetes_token, username, password)
-      self.status = :created
-      self.enabled = true
-      self.endpoint = endpoint
-      self.ca_cert = ca_cert
-      self.kubernetes_token = kubernetes_token
-      self.username = username
-      self.password = password
-      self.service = project.find_or_initialize_service('kubernetes')
-      self.gcp_token = nil
-      self.gcp_operation_id = nil
-
-      save!
-    end
+    # if we do not do status transition we prevent change
+    validate :restrict_modification, on: :update, unless: :status_changed?
 
     def on_creation?
       scheduled? || creating?
