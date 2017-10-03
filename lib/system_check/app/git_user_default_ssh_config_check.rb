@@ -5,6 +5,7 @@ module SystemCheck
       # whitelisted as it may change the SSH client's behaviour dramatically.
       WHITELIST = %w[
         authorized_keys
+        authorized_keys.lock
         authorized_keys2
         known_hosts
       ].freeze
