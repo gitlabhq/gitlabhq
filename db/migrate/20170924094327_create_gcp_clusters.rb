@@ -19,22 +19,19 @@ class CreateGcpClusters < ActiveRecord::Migration
       t.string :endpoint
       t.text :ca_cert
       t.string :encrypted_kubernetes_token
-      t.string :encrypted_kubernetes_token_salt
       t.string :encrypted_kubernetes_token_iv
       t.string :username
       t.string :encrypted_password
-      t.string :encrypted_password_salt
       t.string :encrypted_password_iv
 
       # GKE
       t.string :gcp_project_id, null: false
-      t.string :cluster_zone, null: false
-      t.string :cluster_name, null: false
-      t.integer :cluster_size, null: false
-      t.string :machine_type
+      t.string :gcp_cluster_zone, null: false
+      t.string :gcp_cluster_name, null: false
+      t.integer :gcp_cluster_size, null: false
+      t.string :gcp_machine_type
       t.string :gcp_operation_id
       t.string :encrypted_gcp_token
-      t.string :encrypted_gcp_token_salt
       t.string :encrypted_gcp_token_iv
 
       t.datetime_with_timezone :created_at, null: false

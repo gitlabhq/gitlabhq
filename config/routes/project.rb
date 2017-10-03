@@ -183,7 +183,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:show] do
+      resources :clusters, except: [:edit] do
         collection do
           get :login
         end

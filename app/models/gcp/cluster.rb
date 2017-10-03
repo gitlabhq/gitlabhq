@@ -8,19 +8,16 @@ module Gcp
 
     attr_encrypted :password,
       mode: :per_attribute_iv,
-      insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
     attr_encrypted :kubernetes_token,
       mode: :per_attribute_iv,
-      insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
     attr_encrypted :gcp_token,
       mode: :per_attribute_iv,
-      insecure_mode: true,
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
@@ -33,9 +30,9 @@ module Gcp
     }
 
     validates :gcp_project_id, presence: true
-    validates :cluster_zone, presence: true
-    validates :cluster_name, presence: true
-    validates :cluster_size, presence: true,
+    validates :gcp_cluster_zone, presence: true
+    validates :gcp_cluster_name, presence: true
+    validates :gcp_cluster_size, presence: true,
               numericality: { only_integer: true, greater_than: 0 }
     validate :restrict_modification, on: :update
 

@@ -164,6 +164,7 @@ class ProjectPolicy < BasePolicy
     enable :create_pipeline
     enable :update_pipeline
     enable :create_pipeline_schedule
+    enable :read_cluster
     enable :create_merge_request
     enable :create_wiki
     enable :push_code
@@ -188,7 +189,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_build
     enable :admin_container_image
     enable :admin_pipeline
-    enable :admin_cluster
+    enable :create_cluster
     enable :admin_environment
     enable :admin_deployment
     enable :admin_pages

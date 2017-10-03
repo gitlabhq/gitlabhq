@@ -267,38 +267,6 @@ ActiveRecord::Schema.define(version: 20170928100231) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
-  create_table "ci_clusters", force: :cascade do |t|
-    t.integer "project_id", null: false
-    t.integer "user_id", null: false
-    t.integer "service_id"
-    t.boolean "enabled", default: true
-    t.integer "status"
-    t.string "status_reason"
-    t.string "project_namespace"
-    t.string "endpoint"
-    t.text "ca_cert"
-    t.string "encrypted_kubernetes_token"
-    t.string "encrypted_kubernetes_token_salt"
-    t.string "encrypted_kubernetes_token_iv"
-    t.string "username"
-    t.string "encrypted_password"
-    t.string "encrypted_password_salt"
-    t.string "encrypted_password_iv"
-    t.string "gcp_project_id", null: false
-    t.string "cluster_zone", null: false
-    t.string "cluster_name", null: false
-    t.integer "cluster_size", null: false
-    t.string "machine_type"
-    t.string "gcp_operation_id"
-    t.string "encrypted_gcp_token"
-    t.string "encrypted_gcp_token_salt"
-    t.string "encrypted_gcp_token_iv"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "ci_clusters", ["project_id"], name: "index_ci_clusters_on_project_id", unique: true, using: :btree
-
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -619,20 +587,17 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.string "endpoint"
     t.text "ca_cert"
     t.string "encrypted_kubernetes_token"
-    t.string "encrypted_kubernetes_token_salt"
     t.string "encrypted_kubernetes_token_iv"
     t.string "username"
     t.string "encrypted_password"
-    t.string "encrypted_password_salt"
     t.string "encrypted_password_iv"
     t.string "gcp_project_id", null: false
-    t.string "cluster_zone", null: false
-    t.string "cluster_name", null: false
-    t.integer "cluster_size", null: false
-    t.string "machine_type"
+    t.string "gcp_cluster_zone", null: false
+    t.string "gcp_cluster_name", null: false
+    t.integer "gcp_cluster_size", null: false
+    t.string "gcp_machine_type"
     t.string "gcp_operation_id"
     t.string "encrypted_gcp_token"
-    t.string "encrypted_gcp_token_salt"
     t.string "encrypted_gcp_token_iv"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1749,9 +1714,6 @@ ActiveRecord::Schema.define(version: 20170928100231) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
-  add_foreign_key "ci_clusters", "projects", on_delete: :cascade
-  add_foreign_key "ci_clusters", "services"
-  add_foreign_key "ci_clusters", "users"
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade

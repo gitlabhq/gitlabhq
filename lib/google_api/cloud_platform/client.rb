@@ -3,7 +3,8 @@ require 'google/apis/container_v1'
 module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Auth
-      DEFAULT_MACHINE_TYPE = 'n1-standard-1'
+      DEFAULT_MACHINE_TYPE = 'n1-standard-1'.freeze
+      SCOPE = 'https://www.googleapis.com/auth/cloud-platform'.freeze
 
       class << self
         def session_key_for_token
@@ -16,7 +17,7 @@ module GoogleApi
       end
 
       def scope
-        'https://www.googleapis.com/auth/cloud-platform'
+        SCOPE
       end
 
       def validate_token(expires_at)
@@ -35,14 +36,7 @@ module GoogleApi
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        begin
-          cluster = service.get_zone_cluster(project_id, zone, cluster_id)
-        rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return e
-        end
-
-        puts "#{self.class.name} - #{__callee__}: cluster: #{cluster.inspect}"
-        cluster
+        service.get_zone_cluster(project_id, zone, cluster_id)
       end
 
       def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
@@ -61,28 +55,14 @@ module GoogleApi
             }
           )
 
-        begin
-          operation = service.create_cluster(project_id, zone, request_body)
-        rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return e
-        end
-
-        puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
-        operation
+        service.create_cluster(project_id, zone, request_body)
       end
 
       def projects_zones_operations(project_id, zone, operation_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        begin
-          operation = service.get_zone_operation(project_id, zone, operation_id)
-        rescue Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-          return e
-        end
-
-        puts "#{self.class.name} - #{__callee__}: operation: #{operation.inspect}"
-        operation
+        service.get_zone_operation(project_id, zone, operation_id)
       end
 
       def parse_operation_id(self_link)

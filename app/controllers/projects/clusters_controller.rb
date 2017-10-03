@@ -1,7 +1,10 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:login, :index, :new, :create]
-  before_action :authorize_admin_cluster!
-  before_action :authorize_google_api, except: [:login]
+  before_action :authorize_read_cluster!
+  before_action :authorize_create_cluster!, only: [:new, :create]
+  before_action :authorize_google_api, only: [:new, :create]
+  before_action :authorize_update_cluster!, only: [:update]
+  before_action :authorize_admin_cluster!, only: [:destroy]
 
   def login
     begin
@@ -16,7 +19,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def index
     if project.cluster
-      redirect_to edit_project_cluster_path(project, project.cluster)
+      redirect_to project_cluster_path(project, project.cluster)
     else
       redirect_to new_project_cluster_path(project)
     end
@@ -32,7 +35,6 @@ class Projects::ClustersController < Projects::ApplicationController
       .execute(token_in_session)
 
     if @cluster.persisted?
-      ClusterCreationWorker.perform_async(@cluster.id)
       redirect_to project_clusters_path(project)
     else
       render :new
@@ -52,7 +54,7 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  def edit
+  def show
   end
 
   def update
@@ -60,14 +62,14 @@ class Projects::ClustersController < Projects::ApplicationController
       .new(project, current_user, cluster_params)
       .execute(cluster)
 
-    render :edit
+    render :show
   end
 
   def destroy
     if cluster.destroy
       redirect_to project_clusters_path(project), status: 302
     else
-      render :edit
+      render :show
     end
   end
 
@@ -79,8 +81,8 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def cluster_params
     params.require(:cluster)
-      .permit(:gcp_project_id, :cluster_zone, :cluster_name, :cluster_size,
-              :machine_type, :project_namespace, :enabled)
+      .permit(:gcp_project_id, :gcp_cluster_zone, :gcp_cluster_name, :gcp_cluster_size,
+              :gcp_machine_type, :project_namespace, :enabled)
   end
 
   def authorize_google_api
@@ -98,5 +100,13 @@ class Projects::ClustersController < Projects::ApplicationController
   def expires_at_in_session
     @expires_at_in_session ||=
       session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at]
+  end
+
+  def authorize_update_cluster!
+    return access_denied! unless can?(current_user, :update_cluster, cluster)
+  end
+
+  def authorize_admin_cluster!
+    return access_denied! unless can?(current_user, :admin_cluster, cluster)
   end
 end

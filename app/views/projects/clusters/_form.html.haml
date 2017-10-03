@@ -7,8 +7,8 @@
       = form_for [@project.namespace.becomes(Namespace), @project, @cluster] do |field|
         = form_errors(@cluster)
         .form-group
-          = field.label :cluster_name
-          = field.text_field :cluster_name, class: 'form-control'
+          = field.label :gcp_cluster_name
+          = field.text_field :gcp_cluster_name, class: 'form-control'
 
         .form-group
           = field.label :gcp_project_id
@@ -16,25 +16,25 @@
           = field.text_field :gcp_project_id, class: 'form-control'
 
         .form-group
-          = field.label :cluster_zone
+          = field.label :gcp_cluster_zone
           = link_to(s_('ClusterIntegration|See zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
-          = field.text_field :cluster_zone, class: 'form-control'
+          = field.text_field :gcp_cluster_zone, class: 'form-control'
 
         .form-group
-          = field.label :cluster_size
-          = field.text_field :cluster_size, class: 'form-control'
+          = field.label :gcp_cluster_size
+          = field.text_field :gcp_cluster_size, class: 'form-control'
 
         .form-group
           = field.label :project_namespace
           = field.text_field :project_namespace, class: 'form-control'
 
         .form-group
-          = field.label :machine_type
+          = field.label :gcp_machine_type
           = link_to(s_('ClusterIntegration|Machine type'), 'https://cloud.google.com/compute/docs/machine-types', target: '_blank', rel: 'noopener noreferrer')
-          = field.text_field :machine_type, class: 'form-control'
+          = field.text_field :gcp_machine_type, class: 'form-control'
 
         .form-group
           = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-save'
 
           -# TODO: Remove before merge
-          = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, cluster: {cluster_name: "gke-test-creation#{Random.rand(100)}", gcp_project_id: 'gitlab-internal-153318', cluster_zone: 'us-central1-a', cluster_size: '1', project_namespace: 'aaa', machine_type: 'n1-standard-1'}), method: :post
+          = link_to "Create on Google Container Engine", namespace_project_clusters_path(@project.namespace, @project, cluster: {gcp_cluster_name: "gke-test-creation#{Random.rand(100)}", gcp_project_id: 'gitlab-internal-153318', gcp_cluster_zone: 'us-central1-a', gcp_cluster_size: '1', project_namespace: 'aaa', gcp_machine_type: 'n1-standard-1'}), method: :post
