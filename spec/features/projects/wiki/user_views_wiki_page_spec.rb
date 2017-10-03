@@ -83,7 +83,7 @@ describe 'User views a wiki page' do
     it 'shows a file stored in a page' do
       file = Gollum::File.new(project.wiki)
 
-      allow_any_instance_of(Gollum::Wiki).to receive(:file).with('image.jpg', 'master', true).and_return(file)
+      allow_any_instance_of(Gollum::Wiki).to receive(:file).with('image.jpg', 'master').and_return(file)
       allow_any_instance_of(Gollum::File).to receive(:mime_type).and_return('image/jpeg')
 
       expect(page).to have_xpath('//img[@data-src="image.jpg"]')
