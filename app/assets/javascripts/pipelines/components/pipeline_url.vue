@@ -73,6 +73,13 @@
         :title="pipeline.yaml_errors">
         yaml invalid
       </span>
+      <span
+        v-if="pipeline.flags.failure_reason"
+        v-tooltip
+        class="js-pipeline-url-failure label label-danger"
+        :title="pipeline.failure_reason">
+        error
+      </span>
       <a
         v-if="pipeline.flags.auto_devops"
         class="js-pipeline-url-autodevops label label-info autodevops-badge"
