@@ -255,4 +255,7 @@ describe DiffNote do
       end
     end
   end
+
+  describe "image diff notes" do
+  end
 end
