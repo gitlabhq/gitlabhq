@@ -181,7 +181,7 @@ describe('IntegrationSettingsForm', () => {
 
       deferred.reject();
 
-      expect($('.flash-container .flash-text').text()).toEqual(errorMessage);
+      expect($('.flash-container .flash-text').text().trim()).toEqual(errorMessage);
     });
 
     it('should always call `toggleSubmitBtnState` with `false` once request is completed', () => {

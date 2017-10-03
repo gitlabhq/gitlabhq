@@ -1,8 +1,10 @@
 import _ from 'underscore';
 
 const hideFlash = (flashEl) => {
-  flashEl.style.transition = 'opacity .3s'; // eslint-disable-line no-param-reassign
-  flashEl.style.opacity = '0'; // eslint-disable-line no-param-reassign
+  Object.assign(flashEl.style, {
+    transition: 'opacity .3s',
+    opacity: '0',
+  });
 
   flashEl.addEventListener('transitionend', () => {
     flashEl.remove();
@@ -33,8 +35,11 @@ const createFlashEl = (message, type) => `
   </div>
 `;
 
-const Flash = function Flash(message, type = 'alert', parent = document, actionConfig = null) {
+const createFlash = function createFlash(message, type = 'alert', parent = document, actionConfig = null) {
   const flashContainer = parent.querySelector('.flash-container');
+
+  if (!flashContainer) return null;
+
   flashContainer.innerHTML = createFlashEl(message, type);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
@@ -61,8 +66,8 @@ const Flash = function Flash(message, type = 'alert', parent = document, actionC
 };
 
 export {
-  Flash as default,
+  createFlash as default,
   createFlashEl,
   hideFlash,
 };
-window.Flash = Flash;
+window.Flash = createFlash;

@@ -354,7 +354,7 @@ export default class Notes {
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline); // TODO: CHECK THIS!
+        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline.get(0));
         this.refresh();
       }
       return;
@@ -593,7 +593,7 @@ export default class Notes {
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
-    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
+    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline.get(0));
   }
 
   updateNoteError($parentTimeline) {
