@@ -161,7 +161,7 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'when running on a primary node' do
-    let!(:geo_node) { create(:geo_node, :primary, :current) }
+    let!(:geo_node) { create(:geo_node, :primary) }
 
     it 'logs an event to the Geo event log' do
       expect { create_project(user, opts) }.to change(Geo::RepositoryCreatedEvent, :count).by(1)

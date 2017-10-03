@@ -1,13 +1,19 @@
 require 'spec_helper'
 
 describe Geo::RepositorySyncWorker, :postgresql do
-  let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
-  let!(:secondary) { create(:geo_node, :current) }
-  let(:synced_group) { create(:group) }
-  let!(:project_in_synced_group) { create(:project, group: synced_group) }
-  let!(:unsynced_project) { create(:project) }
+  include ::EE::GeoHelpers
+
+  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  set(:secondary) { create(:geo_node) }
+  set(:synced_group) { create(:group) }
+  set(:project_in_synced_group) { create(:project, group: synced_group) }
+  set(:unsynced_project) { create(:project) }
 
   subject { described_class.new }
+
+  before do
+    stub_current_geo_node(secondary)
+  end
 
   describe '#perform' do
     before do

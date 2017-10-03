@@ -749,7 +749,7 @@ describe Project do
 
   describe '#rename_repo' do
     context 'when running on a primary node' do
-      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let!(:geo_node) { create(:geo_node, :primary) }
       let(:project) { create(:project, :repository) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 
