@@ -7,7 +7,7 @@ module Ci
         params.merge(user: current_user,
                      status: Gcp::Cluster.statuses[:scheduled],
                      gcp_token: access_token)).tap do |cluster|
-        ClusterCreationWorker.perform_async(cluster.id) if cluster.persisted?
+        ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
       end
     end
   end

@@ -1,5 +1,5 @@
 module Ci
-  class CreateGkeClusterService
+  class ProvisionClusterService
     def execute(cluster)
       api_client =
         GoogleApi::CloudPlatform::Client.new(cluster.gcp_token, nil)
@@ -15,18 +15,18 @@ module Ci
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         return cluster.errored!("Failed to request to CloudPlatform; #{e.message}")
       end
-        
+
       unless operation.status == 'RUNNING' || operation.status == 'PENDING'
         return cluster.errored!("Operation status is unexpected; #{operation.status_message}")
       end
 
-      operation_id = api_client.parse_operation_id(operation.self_link)
+      cluster.gcp_operation_id = api_client.parse_operation_id(operation.self_link)
 
-      unless operation_id
+      unless cluster.gcp_operation_id
         return cluster.errored!('Can not find operation_id from self_link')
       end
 
-      if cluster.creating!(operation_id)
+      if cluster.creating
         WaitForClusterCreationWorker.perform_in(
           WaitForClusterCreationWorker::INITIAL_INTERVAL, cluster.id)
       else
