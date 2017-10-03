@@ -9,7 +9,7 @@
         class: ('tree-item-file-external-link js-artifact-tree-tooltip' if is_external_link),
         target: ('_blank' if is_external_link),
         rel: ('noopener noreferrer' if is_external_link),
-        title: ('Opens in a new window' if is_external_link) do
+        title: (_('Opens in a new window') if is_external_link) do
       %span.str-truncated>= blob.name
     - if is_external_link
       = icon('external-link', class: 'js-artifact-tree-external-icon')
