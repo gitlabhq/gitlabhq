@@ -43,7 +43,7 @@ export default {
           if (!isNaN(lineNumber)) {
             Store.setActiveLine(lineNumber);
             if (Store.isPreviewView()) {
-              document.getElementById(`L${lineNumber}`).scrollIntoView();
+              if (document.getElementById(`L${lineNumber}`)) document.getElementById(`L${lineNumber}`).scrollIntoView();
             } else {
               Helper.monacoInstance.setPosition({
                 lineNumber: this.activeLine,
