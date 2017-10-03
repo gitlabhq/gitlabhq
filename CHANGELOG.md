@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
+
 ## 9.5.6 (2017-09-29)
 
 - [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
