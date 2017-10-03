@@ -1,6 +1,6 @@
 class WaitForClusterCreationWorker
   include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ClusterQueue
 
   INITIAL_INTERVAL = 2.minutes
   EAGER_INTERVAL = 10.seconds

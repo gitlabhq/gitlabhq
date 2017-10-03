@@ -62,5 +62,4 @@
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
-  - [cluster_creation, 1]
-  - [wait_for_cluster_creation, 1]
+  - [manage_cluster, 1]
