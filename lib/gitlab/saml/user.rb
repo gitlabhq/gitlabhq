@@ -23,28 +23,7 @@ module Gitlab
           user.external = !(auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
         end
 
-<<<<<<< HEAD
-        if admin_groups_enabled? && @user
-          @user.admin =
-            if (auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty?
-              false
-            else
-              true
-            end
-        end
-
-        @user
-      end
-
-      def find_by_email
-        if auth_hash.has_attribute?(:email)
-          user = ::User.find_by(email: auth_hash.email.downcase)
-          user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider) if user
-          user
-        end
-=======
         user
->>>>>>> bdc50ed779cb0c7d266c0f80f3e66a25da8b1964
       end
 
       def changed?
