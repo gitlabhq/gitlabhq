@@ -543,10 +543,16 @@
   transition: transform .1s ease-out;
   z-index: 100;
 
+  .collapse-icon {
+    height: 50%;
+    width: 100%;
+  }
+
   svg {
     vertical-align: middle;
   }
 
+  .collapse-icon,
   path {
     fill: $white-light;
   }
