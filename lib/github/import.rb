@@ -9,7 +9,7 @@ module Github
     include Gitlab::ShellAdapter
 
     attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
-                :options, :errors, :cached, :verbose
+                :options, :errors, :cached, :verbose, :last_fetched_at
 
     def initialize(project, options = {})
       @project = project
@@ -21,12 +21,13 @@ module Github
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
+      @last_fetched_at = nil
     end
 
     # rubocop: disable Rails/Output
     def execute
       puts 'Fetching repository...'.color(:aqua) if verbose
-      fetch_repository
+      setup_and_fetch_repository
       puts 'Fetching labels...'.color(:aqua) if verbose
       fetch_labels
       puts 'Fetching milestones...'.color(:aqua) if verbose
@@ -52,17 +53,22 @@ module Github
 
     private
 
-    def fetch_repository
+    def setup_and_fetch_repository
       begin
         project.ensure_repository
         project.repository.add_remote('github', repo_url)
         project.repository.set_import_remote_as_mirror('github')
         project.repository.add_remote_fetch_config('github', '+refs/pull/*/head:refs/merge-requests/*/head')
-        project.repository.fetch_remote('github', forced: true)
+        fetch_remote(forced: true)
       rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
+    end
+
+    def fetch_remote(forced: false)
+      @last_fetched_at = Time.now
+      project.repository.fetch_remote('github', forced: forced)
     end
 
     def fetch_wiki_repository
@@ -144,6 +150,10 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
+            # If the PR has been created/updated after we last fetched the
+            # remote, we fetch again to get the up-to-date refs.
+            fetch_remote if pull_request.updated_at > last_fetched_at
+
             author_id   = user_id(pull_request.author, project.creator_id)
             description = format_description(pull_request.description, pull_request.author)
 
