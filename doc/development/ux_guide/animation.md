@@ -39,6 +39,12 @@ When information is updating in place, a quick, subtle animation is needed. The 
 
 ![Quick update animation](img/animation-quickupdate.gif)
 
+### Skeleton loading
+
+Skeleton loading is explained in the [component section](components.html#skeleton-loading) of the UX guide. It includes a horizontally pulsating animation that shows motion as if it's growing. It's timing is a slower `linear 1s`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
+
 ### Moving transitions
 
 When elements move on screen, there should be a quick animation so it is clear to users what moved where. The timing of this animation differs based on the amount of movement and change. Consider animations between `200ms` and `400ms`.
@@ -51,7 +57,9 @@ View the [interactive example](http://codepen.io/awhildy/full/ALyKPE/) here.
 ![Reorder animation](img/animation-reorder.gif)
 
 #### Autoscroll the page
+
 Another example of a moving transition is when you have to autoscroll the page to keep an active element visible.
 
 View the [interactive example](http://codepen.io/awhildy/full/PbxgVo/) here.
+
 ![Autoscroll animation](img/animation-autoscroll.gif)
