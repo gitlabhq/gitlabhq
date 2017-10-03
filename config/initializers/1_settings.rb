@@ -415,6 +415,10 @@ Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
 Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
 
+Settings.cron_jobs['lfs_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['lfs_cleanup_worker']['cron'] ||= '0 0 * * 0'
+Settings.cron_jobs['lfs_cleanup_worker']['job_class'] = 'LfsCleanupWorker'
+
 #
 # GitLab Shell
 #
