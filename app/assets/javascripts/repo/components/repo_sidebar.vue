@@ -18,45 +18,46 @@ export default {
   },
 
   created() {
-    this.addPopEventListener();
+    window.addEventListener('popstate', this.checkHistory);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.checkHistory);
   },
 
   data: () => Store,
 
   methods: {
-    addPopEventListener() {
-      window.addEventListener('popstate', () => {
-        let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
-        if (!selectedFile) {
-          // Maybe it is not in the current tree but in the opened tabs
-          selectedFile = Store.openedFiles.find(file => location.pathname.indexOf(file.url) > -1);
+    checkHistory() {
+      let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
+      if (!selectedFile) {
+        // Maybe it is not in the current tree but in the opened tabs
+        selectedFile = Store.openedFiles.find(file => location.pathname.indexOf(file.url) > -1);
+      }
+      if (selectedFile) {
+        if (selectedFile.url !== this.activeFile.url) {
+          this.fileClicked(selectedFile);
         }
-        if (selectedFile) {
-          if (selectedFile.url !== this.activeFile.url) {
-            this.fileClicked(selectedFile);
-          }
 
-          if (location.hash.indexOf('#L') > -1) {
-            const lineNumber = Number(location.hash.substr(2));
-            if (!isNaN(lineNumber)) {
-              Store.setActiveLine(lineNumber);
-              if (Store.isPreviewView()) {
-                document.getElementById(`L${lineNumber}`).scrollIntoView();
-              } else {
-                Helper.monacoInstance.setPosition({
-                  lineNumber: this.activeLine,
-                  column: 1,
-                });
-              }
+        if (location.hash.indexOf('#L') > -1) {
+          const lineNumber = Number(location.hash.substr(2));
+          if (!isNaN(lineNumber)) {
+            Store.setActiveLine(lineNumber);
+            if (Store.isPreviewView()) {
+              document.getElementById(`L${lineNumber}`).scrollIntoView();
+            } else {
+              Helper.monacoInstance.setPosition({
+                lineNumber: this.activeLine,
+                column: 1,
+              });
             }
           }
-        } else {
-          // Not opened at all lets open new tab
-          this.fileClicked({
-            url: location.href,
-          });
         }
-      });
+      } else {
+        // Not opened at all lets open new tab
+        this.fileClicked({
+          url: location.href,
+        });
+      }
     },
 
     fileClicked(clickedFile) {
