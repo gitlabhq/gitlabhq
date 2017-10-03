@@ -44,11 +44,11 @@ class DiffNote < Note
   end
 
   def on_text?
-    position_type == "text"
+    position.position_type == "text"
   end
 
   def on_image?
-    position_type == "image"
+    position.position_type == "image"
   end
 
   def diff_file
@@ -64,13 +64,9 @@ class DiffNote < Note
   end
 
   def original_line_code
-    return if self.position_type != "text"
+    return unless on_text?
 
     self.diff_file.line_code(self.diff_line)
-  end
-
-  def position_type
-    position.position_type
   end
 
   def active?(diff_refs = nil)
