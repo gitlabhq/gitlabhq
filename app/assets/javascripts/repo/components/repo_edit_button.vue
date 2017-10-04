@@ -23,9 +23,7 @@ export default {
   },
   methods: {
     editCancelClicked() {
-      console.log('canCommit',typeof this.canCommit);
       if(!this.canCommit) {
-        console.log('noooooo')
         this.showForkDialog = true;
         return;
       }
@@ -42,10 +40,10 @@ export default {
       const csrfParam = document
         .querySelector('meta[name="csrf-param"]')
         .content;
-      console.log(csrfParam);
       const authToken = document
         .querySelector('meta[name="csrf-token"]')
         .content;
+      Store.showForkDialog = false;
       forkForm.name = 'fork-repo';
       forkForm.method = 'POST';
       let input = document.createElement('INPUT');
