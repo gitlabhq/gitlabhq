@@ -47,7 +47,9 @@ module Gcp
       }
 
     validates :gcp_cluster_zone, presence: true
-    validates :gcp_cluster_size, presence: true,
+
+    validates :gcp_cluster_size,
+      presence: true,
       numericality: {
         only_integer: true,
         greater_than: 0
