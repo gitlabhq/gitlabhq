@@ -7,7 +7,7 @@ class AddFastForwardOptionToProject < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def add
+  def up
     add_column_with_default(:projects, :merge_requests_ff_only_enabled, :boolean, default: false)
   end
 
