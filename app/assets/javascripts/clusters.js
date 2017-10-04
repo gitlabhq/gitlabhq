@@ -11,7 +11,6 @@ import './flash';
  *
  * - Polling status while creating or scheduled
  * -- Update status area with the response result
- *
  */
 
 class ClusterService {
@@ -23,7 +22,7 @@ class ClusterService {
   }
 }
 
-export default class ClusterEdit {
+export default class Clusters {
   constructor() {
     const dataset = document.querySelector('.js-edit-cluster-form').dataset;
 
@@ -54,12 +53,7 @@ export default class ClusterEdit {
 
   toggle() {
     this.toggleButton.classList.toggle('checked');
-    this.state.toggleStatus = this.toggleButton.classList.contains('checked').toString();
-    this.toggleInput.setAttribute('value', this.state.toggleStatus);
-  }
-
-  updateData() {
-    this.service.updateData(this.state.toggleStatus);
+    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('checked').toString());
   }
 
   initPoling() {
@@ -104,7 +98,7 @@ export default class ClusterEdit {
         break;
       case 'errored':
         this.errorContainer.classList.remove('hidden');
-        this.errorContainer.querySelector('.js-error-reason').textContent = error.status_reason;
+        this.errorContainer.querySelector('.js-error-reason').textContent = error;
         break;
       case 'scheduled':
       case 'creating':
@@ -114,5 +108,4 @@ export default class ClusterEdit {
         this.hideAll();
     }
   }
-
 }
