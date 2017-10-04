@@ -366,7 +366,7 @@ module EE
       end
 
       url = ::Gitlab::UrlSanitizer.new(value)
-      creds = url.credentials.slice(:user) if url.credentials[:user].present?
+      creds = url.credentials.slice(:user)
 
       write_attribute(:import_url, url.sanitized_url)
       create_or_update_import_data(credentials: creds)

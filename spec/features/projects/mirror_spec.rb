@@ -70,11 +70,12 @@ feature 'Project mirror', js: true do
     before do
       project.add_master(user)
       sign_in(user)
-      visit project_settings_repository_path(project)
     end
 
     describe 'password authentication' do
       it 'can be set up' do
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           check 'Mirror repository'
           fill_in 'Git repository URL', with: 'http://user@example.com'
@@ -89,10 +90,30 @@ feature 'Project mirror', js: true do
         expect(import_data.auth_method).to eq('password')
         expect(project.import_url).to eq('http://user:foo@example.com')
       end
+
+      it 'can be changed to unauthenticated' do
+        project.update!(import_url: 'http://user:password@example.com')
+
+        visit project_settings_repository_path(project)
+
+        page.within('.project-mirror-settings') do
+          fill_in 'Git repository URL', with: 'http://2.example.com'
+          fill_in 'Password', with: ''
+          click_without_sidekiq 'Save changes'
+        end
+
+        expect(page).to have_content('Mirroring settings were successfully updated')
+
+        project.reload
+        expect(import_data.auth_method).to eq('password')
+        expect(project.import_url).to eq('http://2.example.com')
+      end
     end
 
     describe 'SSH public key authentication' do
       it 'can be set up' do
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           check 'Mirror repository'
           fill_in 'Git repository URL', with: 'ssh://user@example.com'
@@ -137,6 +158,8 @@ feature 'Project mirror', js: true do
       it 'fills fingerprints and host keys when detecting' do
         stub_reactive_cache(cache, known_hosts: key.key_text)
 
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
           click_on 'Detect host keys'
@@ -153,6 +176,8 @@ feature 'Project mirror', js: true do
       it 'displays error if detection fails' do
         stub_reactive_cache(cache, error: 'Some error text here')
 
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
           click_on 'Detect host keys'
@@ -164,6 +189,8 @@ feature 'Project mirror', js: true do
       end
 
       it 'allows manual host keys entry' do
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
           click_on 'Show advanced'
@@ -178,6 +205,8 @@ feature 'Project mirror', js: true do
 
     describe 'authentication methods' do
       it 'shows SSH related fields for an SSH URL' do
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'ssh://example.com'
 
@@ -198,6 +227,8 @@ feature 'Project mirror', js: true do
       end
 
       it 'hides SSH-related fields for a HTTP URL' do
+        visit project_settings_repository_path(project)
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'https://example.com'
 
