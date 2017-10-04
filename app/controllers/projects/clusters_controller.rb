@@ -60,21 +60,20 @@ class Projects::ClustersController < Projects::ApplicationController
       .new(project, current_user, cluster_params)
       .execute(cluster)
 
-    respond_to do |format|
-      format.html do
+      if cluster.valid?
+        flash[:notice] = "Cluster updated"
+        redirect_to project_cluster_path(project, project.cluster)
+      else
         render :show
       end
-
-      format.json do
-        head :no_data
-      end
-    end
   end
 
   def destroy
     if cluster.destroy
+      flash[:notice] = "Cluster removed"
       redirect_to project_clusters_path(project), status: 302
     else
+      flash[:notice] = "Cluster removed"
       render :show
     end
   end
