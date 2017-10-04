@@ -156,6 +156,7 @@ export default {
             eventHub.$emit('FetchActionsContent');
             if (window.mergeRequest) {
               window.mergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
+              window.mergeRequest.hideCloseButton();
               window.mergeRequest.decreaseCounter();
             }
             stopPolling();
