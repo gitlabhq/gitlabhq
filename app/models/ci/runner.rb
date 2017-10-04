@@ -37,15 +37,7 @@ module Ci
           INNER JOIN namespaces ON namespaces.id = ci_runner_groups.group_id
           INNER JOIN projects ON projects.namespace_id = namespaces.id
         }
-      ).where(
-        %{
-          projects.id = :project_id
-            AND
-          projects.group_runners_enabled = :true
-        },
-          project_id: project_id,
-          true: true
-      )
+      ).where('projects.id = :project_id', project_id: project_id)
     }
 
     scope :owned_or_shared, -> (project_id) do
