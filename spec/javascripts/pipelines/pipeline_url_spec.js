@@ -135,12 +135,13 @@ describe('Pipeline Url Component', () => {
           flags: {
             failure_reason: true,
           },
-          failure_reason: 'some reason'
+          failure_reason: 'some reason',
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
     expect(component.$el.querySelector('.js-pipeline-url-failure').textContent).toContain('error');
-    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('title').toContain('some reason');
+    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('title')).toContain('some reason');
   });
 });
