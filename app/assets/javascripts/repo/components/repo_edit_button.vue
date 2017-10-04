@@ -38,7 +38,24 @@ export default {
     },
 
     forkRepoSubmit() {
-
+      const forkForm = document.createElement('FORM');
+      const csrfParam = document
+        .querySelector('meta[name="csrf-param"]')
+        .content;
+      console.log(csrfParam);
+      const authToken = document
+        .querySelector('meta[name="csrf-token"]')
+        .content;
+      forkForm.name = 'fork-repo';
+      forkForm.method = 'POST';
+      let input = document.createElement('INPUT');
+      input.type = 'HIDDEN';
+      input.name = csrfParam;
+      input.value = authToken;
+      forkForm.appendChild(input);
+      forkForm.action = Store.forkUrl;
+      document.body.appendChild(forkForm);
+      forkForm.submit();
     },
   },
 };

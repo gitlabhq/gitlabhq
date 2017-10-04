@@ -30,7 +30,6 @@ function setInitialStore(data) {
   Store.projectName = data.projectName;
   Store.projectUrl = data.projectUrl;
   Store.forkUrl = data.forkUrl;
-  console.log('Store.forkUrl',Store.forkUrl)
   Store.canCommit = data.canCommit === 'true' ? true : false;
   Store.onTopOfBranch = data.onTopOfBranch;
   Store.signedIn = data.signedIn === 'true' ? true : false;
