@@ -8,7 +8,7 @@ describe WaitForClusterCreationWorker do
 
       before do
         allow(operation).to receive(:status).and_return(status)
-        allow(operation).to receive(:start_time).and_return(1.minutes.ago)
+        allow(operation).to receive(:start_time).and_return(1.minute.ago)
         allow(operation).to receive(:status_message).and_return('error')
         allow_any_instance_of(Ci::FetchGcpOperationService).to receive(:execute).and_yield(operation)
       end
@@ -17,7 +17,7 @@ describe WaitForClusterCreationWorker do
         let(:status) { 'RUNNING' }
 
         it 'reschedules worker' do
-          expect(WaitForClusterCreationWorker).to receive(:perform_in)
+          expect(described_class).to receive(:perform_in)
 
           described_class.new.perform(cluster.id)
         end

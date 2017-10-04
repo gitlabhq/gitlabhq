@@ -31,5 +31,4 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
     expect(response).to be_success
     store_frontend_fixture(response, example.description)
   end
-
 end

@@ -13,7 +13,7 @@ describe Ci::CreateClusterService do
           gcp_project_id: 'gcp-project',
           gcp_cluster_name: 'test-cluster',
           gcp_cluster_zone: 'us-central1-a',
-          gcp_cluster_size: 1,
+          gcp_cluster_size: 1
         }
       end
 
@@ -34,7 +34,7 @@ describe Ci::CreateClusterService do
           gcp_project_id: 'gcp-project',
           gcp_cluster_name: 'test-cluster',
           gcp_cluster_zone: 'us-central1-a',
-          gcp_cluster_size: 'ABC',
+          gcp_cluster_size: 'ABC'
         }
       end
 

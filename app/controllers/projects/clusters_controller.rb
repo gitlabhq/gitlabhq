@@ -60,12 +60,12 @@ class Projects::ClustersController < Projects::ApplicationController
       .new(project, current_user, cluster_params)
       .execute(cluster)
 
-      if cluster.valid?
-        flash[:notice] = "Cluster was successfully updated."
-        redirect_to project_cluster_path(project, project.cluster)
-      else
-        render :show
-      end
+    if cluster.valid?
+      flash[:notice] = "Cluster was successfully updated."
+      redirect_to project_cluster_path(project, project.cluster)
+    else
+      render :show
+    end
   end
 
   def destroy

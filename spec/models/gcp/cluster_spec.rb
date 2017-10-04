@@ -34,7 +34,7 @@ describe Gcp::Cluster do
       end
 
       context 'when too long' do
-        let(:gcp_project_id) { 'A'*64 }
+        let(:gcp_project_id) { 'A' * 64 }
 
         it { is_expected.to be_falsey }
       end
@@ -62,7 +62,7 @@ describe Gcp::Cluster do
       end
 
       context 'when too long' do
-        let(:gcp_cluster_name) { 'A'*64 }
+        let(:gcp_cluster_name) { 'A' * 64 }
 
         it { is_expected.to be_falsey }
       end
@@ -106,7 +106,7 @@ describe Gcp::Cluster do
       end
 
       context 'when too long' do
-        let(:project_namespace) { 'A'*64 }
+        let(:project_namespace) { 'A' * 64 }
 
         it { is_expected.to be_falsey }
       end
