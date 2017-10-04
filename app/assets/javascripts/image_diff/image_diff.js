@@ -118,7 +118,7 @@ export default class ImageDiff {
       },
     });
 
-    const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+    const discussionEl = this.el.querySelector(`#discussion_${discussionId}`);
     imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, badgeText);
   }
 
@@ -133,7 +133,7 @@ export default class ImageDiff {
         if (index > indexToRemove) {
           const { discussionId } = badge;
           const updatedBadgeNumber = index;
-          const discussionEl = this.el.querySelector(`.notes[data-discussion-id="${discussionId}"]`);
+          const discussionEl = this.el.querySelector(`#discussion_${discussionId}`);
 
           imageBadgeEls[index].innerText = updatedBadgeNumber;
 
