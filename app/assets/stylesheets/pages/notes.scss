@@ -703,6 +703,12 @@ ul.notes {
   color: $note-disabled-comment-color;
   padding: 90px 0;
 
+  &.discussion-locked {
+    border: none;
+    background-color: $white-light;
+  }
+
+
   a {
     color: $gl-link-color;
   }

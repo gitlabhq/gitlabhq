@@ -1,5 +1,12 @@
 - referenced_users = local_assigns.fetch(:referenced_users, nil)
 
+- if defined?(@merge_request) && @merge_request.discussion_locked?
+  .issuable-note-warning
+    = icon('lock')
+    %span
+      = _('This merge request is locked.')
+      = _('Only project members can comment.')
+
 .md-area
   .md-header
     %ul.nav-links.clearfix

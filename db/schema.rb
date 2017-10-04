@@ -866,6 +866,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
+    t.boolean "discussion_locked"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -1110,6 +1111,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
     t.string "merge_jid"
+    t.boolean "discussion_locked"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
