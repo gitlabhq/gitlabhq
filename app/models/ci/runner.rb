@@ -21,17 +21,17 @@ module Ci
 
     before_validation :set_default_values
 
-    scope :specific, ->() { where(is_shared: false) }
-    scope :shared, ->() { where(is_shared: true) }
-    scope :active, ->() { where(active: true) }
-    scope :paused, ->() { where(active: false) }
-    scope :online, ->() { where('contacted_at > ?', contact_time_deadline) }
-    scope :ordered, ->() { order(id: :desc) }
-
-    scope :owned_or_shared, ->(project_id) do
-      project_runners = joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
-
-      group_runners = joins(
+    scope :specific, -> { where(is_shared: false) }
+    scope :shared, -> { where(is_shared: true) }
+    scope :active, -> { where(active: true) }
+    scope :paused, -> { where(active: false) }
+    scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    scope :ordered, -> { order(id: :desc) }
+    scope :belonging_to_project, -> (project_id) {
+      joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
+    }
+    scope :belonging_to_group, -> (project_id) {
+      joins(
         %{
           INNER JOIN ci_runner_groups ON ci_runner_groups.runner_id = ci_runners.id
           INNER JOIN namespaces ON namespaces.id = ci_runner_groups.group_id
@@ -43,13 +43,13 @@ module Ci
             AND
           projects.group_runners_enabled = :true
         },
-        project_id: project_id,
-        true: true
+          project_id: project_id,
+          true: true
       )
+    }
 
-      shared_runners = where(is_shared: true)
-
-      union = Gitlab::SQL::Union.new([project_runners, group_runners, shared_runners])
+    scope :owned_or_shared, -> (project_id) do
+      union = Gitlab::SQL::Union.new([belonging_to_project(project_id), belonging_to_group(project_id), shared])
       from("(#{union.to_sql}) ci_runners")
     end
 
