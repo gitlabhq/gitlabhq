@@ -580,9 +580,9 @@ ActiveRecord::Schema.define(version: 20171004121444) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "gpg_key_subkeys", force: :cascade do |t|
+    t.integer "gpg_key_id", null: false
     t.binary "keyid"
     t.binary "fingerprint"
-    t.integer "gpg_key_id", null: false
   end
 
   add_index "gpg_key_subkeys", ["fingerprint"], name: "index_gpg_key_subkeys_on_fingerprint", unique: true, using: :btree

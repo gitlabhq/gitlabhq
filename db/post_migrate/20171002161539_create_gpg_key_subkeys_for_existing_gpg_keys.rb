@@ -28,8 +28,10 @@ class CreateGpgKeySubkeysForExistingGpgKeys < ActiveRecord::Migration
   end
 
   def up
-    GpgKey.each_batch do |batch|
+    GpgKey.with_subkeys.each_batch do |batch|
       batch.each do |gpg_key|
+        return if gpg_key.subkeys.any?
+
         create_subkeys(gpg_key) && update_signatures(gpg_key)
       end
     end

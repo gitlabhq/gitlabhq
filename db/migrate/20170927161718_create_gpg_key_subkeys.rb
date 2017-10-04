@@ -3,10 +3,10 @@ class CreateGpgKeySubkeys < ActiveRecord::Migration
 
   def up
     create_table :gpg_key_subkeys do |t|
+      t.references :gpg_key, null: false, index: true, foreign_key: { on_delete: :cascade }
+
       t.binary :keyid
       t.binary :fingerprint
-
-      t.references :gpg_key, null: false, index: true, foreign_key: { on_delete: :cascade }
 
       t.index :keyid, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
       t.index :fingerprint, unique: true, length: Gitlab::Database.mysql? ? 20 : nil

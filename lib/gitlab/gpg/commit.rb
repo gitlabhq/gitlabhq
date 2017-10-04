@@ -43,6 +43,8 @@ module Gitlab
           # key belonging to the keyid.
           # This way we can add the key to the temporary keychain and extract
           # the proper signature.
+          # NOTE: the invoked method is #fingerprint but it's only returning
+          # 16 characters (the format used by keyid) instead of 40.
           gpg_key = find_gpg_key(verified_signature.fingerprint)
 
           if gpg_key

@@ -23,8 +23,13 @@ class GpgSignature < ActiveRecord::Base
 
   def gpg_key=(model)
     case model
-    when GpgKey       then super
-    when GpgKeySubkey then self.gpg_key_subkey = model
+    when GpgKey
+      super
+    when GpgKeySubkey
+      self.gpg_key_subkey = model
+    when NilClass
+      super
+      self.gpg_key_subkey = nil
     end
   end
 
