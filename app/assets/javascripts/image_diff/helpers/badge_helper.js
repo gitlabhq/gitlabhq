@@ -1,6 +1,6 @@
 export function createImageBadge(noteId, { x, y }, classNames = []) {
   const buttonEl = document.createElement('button');
-  const classList = classNames.concat(['btn-transparent', 'js-image-badge']);
+  const classList = classNames.concat(['js-image-badge']);
   classList.forEach(className => buttonEl.classList.add(className));
   buttonEl.setAttribute('type', 'button');
   buttonEl.setAttribute('disabled', true);
