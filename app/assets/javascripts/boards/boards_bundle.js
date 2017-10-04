@@ -103,6 +103,8 @@ $(() => {
         if (labelIndex === -1) {
           filterPath.push(param);
         }
+
+        this.cantEdit.push('label');
       });
 
       Store.filter.path = filterPath.join('&');
