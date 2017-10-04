@@ -1552,7 +1552,7 @@ export default class Notes {
           } else {
             // Add image badge, avatar badge and toggle discussion badge for new image diffs
             if ($diffFile.length > 0) {
-              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
+              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position').val());
               const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
                 detail: {
                   x: x_axis,
