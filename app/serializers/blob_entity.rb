@@ -4,7 +4,7 @@ class BlobEntity < Grape::Entity
   expose :id, :path, :name, :mode
 
   expose :last_commit do |blob|
-    request.project.repository.last_commit_for_path(blob.commit_id, blob.path)
+    request.project.repository.last_commit_for_path_lazy(blob.commit_id, blob.path)
   end
 
   expose :icon do |blob|

@@ -409,3 +409,5 @@ gem 'flipper-active_record', '~> 0.10.2'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+gem 'batch-loader'

@@ -1,4 +1,5 @@
 require 'securerandom'
+require 'batch-loader'
 
 class Repository
   REF_MERGE_REQUEST = 'merge-requests'.freeze
@@ -621,6 +622,46 @@ class Repository
       blob_at(last_commit.sha, path)
     else
       nil
+    end
+  end
+
+  # TODO: Ruby may already offer a function like this
+  # otherwise move it somewhere else, ie a collection
+  # utils class
+  def hash_by_kv(array, key, value)
+    array.inject(Hash.new) do |memo, item|
+      k = item[key]
+      v = item[value]
+
+      array = memo[k]
+      if array
+        array.push(v)
+      else
+        memo[k] = [v]
+      end
+
+      memo
+    end
+  end
+
+  def last_commit_for_path_lazy(sha, path)
+    BatchLoader.for({ sha: sha, path: path }).batch do |items, loader|
+      paths_by_sha = hash_by_kv(items, :sha, :path)
+      # Bulk fetch the paths for each SHA
+      last_commits_for_items = Hash.new
+      paths_by_sha.each do |for_sha, paths|
+        last_commits_for_sha = raw_repository.last_commit_for_paths(for_sha, paths)
+
+        last_commits_for_sha.each do |result_path, last_commit|
+          last_commits_for_items[{ sha: for_sha, path: result_path }] = last_commit
+        end
+      end
+
+      # Present the results to the loader
+      items.each do |item|
+        last_commit = last_commits_for_items[item]
+        loader.call(item, last_commit)
+      end
     end
   end
 

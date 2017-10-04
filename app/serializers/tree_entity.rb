@@ -4,7 +4,7 @@ class TreeEntity < Grape::Entity
   expose :id, :path, :name, :mode
 
   expose :last_commit do |tree|
-    request.project.repository.last_commit_for_path(tree.commit_id, tree.path)
+    request.project.repository.last_commit_for_path_lazy(tree.commit_id, tree.path)
   end
 
   expose :icon do |tree|

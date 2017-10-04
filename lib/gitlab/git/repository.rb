@@ -484,6 +484,35 @@ module Gitlab
         commits
       end
 
+      # A placeholder. This should be replaced with a Gitaly batch call
+      def last_commit_for_paths(sha, paths)
+        results = Hash.new
+        return results if paths.empty?
+
+        path_set = Set.new paths
+
+        walker = Rugged::Walker.new(rugged)
+        walker.sorting(Rugged::SORT_DATE)
+
+        sha_from = sha_from_ref(sha)
+        walker.push(sha_from)
+        walker.each do |commit|
+          # TODO: handle directories too
+          diff = commit.diff(paths: path_set.to_a)
+          diff.each_delta do |delta|
+            delta_path = delta.new_file[:path]
+            if path_set.include?(delta_path)
+              results[delta_path] = commit.oid
+              path_set.delete(delta_path)
+
+              return results if path_set.empty?
+            end
+          end
+        end
+
+        results
+      end
+
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to)
         Commit.between(self, from, to).size

@@ -38,9 +38,9 @@ class Projects::TreeController < Projects::ApplicationController
         page_title @path.presence || _("Files"), @ref, @project.name_with_namespace
 
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
-        end
+        serialized_tree = TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+
+        render json: serialized_tree
       end
     end
   end
