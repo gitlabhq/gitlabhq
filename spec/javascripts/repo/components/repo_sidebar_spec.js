@@ -161,6 +161,8 @@ describe('RepoSidebar', () => {
         window.dispatchEvent(popEvent);
 
         expect(Helper.getContent.calls.mostRecent().args[0].url).toContain(file1.url);
+
+        window.history.pushState({}, null, '/');
       });
     });
   });
