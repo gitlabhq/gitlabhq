@@ -1,5 +1,5 @@
 <script>
-/* global BoardService */
+/* global BoardService, MilestoneSelect */
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import extraMilestones from '../mixins/extra_milestones';
@@ -13,10 +13,6 @@ export default {
     milestonePath: {
       type: String,
       required: true,
-    },
-    value: {
-      type: Number,
-      required: false,
     },
     defaultText: {
       type: String,
@@ -45,94 +41,107 @@ export default {
   },
   computed: {
     milestoneTitle() {
-      return this.board.milestone ? this.board.milestone.title : this.defaultText;
+      return this.board.milestone ? this.board.milestone.title : '';
     },
   },
   methods: {
     selectMilestone(milestone) {
       this.$set(this.board, 'milestone', milestone);
-      this.$emit('input', milestone.id);
-      this.close();
-    },
-    open() {
-      this.isOpen = true;
-    },
-    close() {
-      this.isOpen = false;
-    },
-    toggle() {
-      this.isOpen = !this.isOpen;
     },
   },
   mounted() {
-    this.$http.get(this.milestonePath)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.milestones = data;
-        this.loading = false;
-      })
-      .catch(() => {
-        this.loading = false;
-      });
+    new MilestoneSelect(null, this.$refs.dropdownButton, {
+      handleClick: this.selectMilestone,
+    });
   },
 };
 </script>
 
 <template>
-  <div class="dropdown milestone" :class="{ open: isOpen }">
+  <div class="block milestone">
     <div class="title append-bottom-10">
-      {{ title }}
+      Milestone
       <a
         v-if="canEdit"
         class="edit-link pull-right"
         href="#"
-        @click.prevent="toggle"
       >
         Edit
       </a>
     </div>
-    <div
-      class="dropdown-menu dropdown-menu-wide"
-    >
-      <ul
-        ref="list"
-      >
-        <li
-          v-for="milestone in extraMilestones"
-          :key="milestone.id"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
-            <i
-              class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
-          </a>
-        </li>
-        <li class="divider"></li>
-        <li v-if="loading">
-          <loading-icon />
-        </li>
-        <li
-          v-else
-          v-for="milestone in milestones"
-          :key="milestone.id"
-          class="dropdown-menu-item"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectMilestone(milestone)">
-            <i
-              class="fa fa-check"
-              v-if="milestone.id === value"></i>
-            {{ milestone.title }}
-          </a>
-        </li>
-      </ul>
-    </div>
     <div class="value">
-      {{ milestoneTitle }}
+      <span
+        class="no-value"
+        v-if="!board.milestone"
+      >
+        None
+      </span>
+      <span
+        class="bold has-tooltip"
+        v-if="board.milestone"
+      >
+        {{ board.milestone.title }}
+      </span>
+    </div>
+    <div
+      class="selectbox"
+      style="display: none;"
+    >
+      <input
+        :value="board.milestone.id"
+        name="milestone_id"
+        type="hidden"
+        v-if="board.milestone"
+      >
+      <div class="dropdown">
+        <button
+          ref="dropdownButton"
+          :data-selected="milestoneTitle"
+          class="dropdown-menu-toggle wide"
+          :data-milestones="milestonePath"
+          :data-show-no="true"
+          :data-show-any="true"
+          :data-show-started="true"
+          :data-show-upcoming="true"
+          data-toggle="dropdown"
+          :data-use-id="true"
+          type="button"
+        >
+          Milestone
+          <i
+            aria-hidden="true"
+            data-hidden="true"
+            class="fa fa-chevron-down"
+          />
+        </button>
+        <div class="dropdown-menu dropdown-select dropdown-menu-selectable">
+          <div
+            class="dropdown-input"
+          >
+            <input
+              type="search"
+              class="dropdown-input-field"
+              placeholder="Search milestones"
+              autocomplete="off"
+            >
+            <i
+              aria-hidden="true"
+              data-hidden="true"
+              class="fa fa-search dropdown-input-search"
+            />
+            <i
+              role="button"
+              aria-hidden="true"
+              data-hidden="true"
+              class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
+            />
+          </div>
+          <div class="dropdown-content" />
+          <div class="dropdown-loading">
+            <loading-icon />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -59,7 +59,6 @@
             <board-milestone-select
               :board="board"
               :milestone-path="milestonePath"
-              v-model="board.milestone_id"
               title="Milestone"
               default-text="Any milestone"
               :can-edit="canAdminBoard"
