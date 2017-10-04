@@ -15,7 +15,7 @@ class SessionsController < Devise::SessionsController
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
-  after_action :log_failed_login, only: [:new]
+  after_action :log_failed_login, only: [:new], if: :failed_login?
 
   def new
     set_minimum_password_length
@@ -48,8 +48,6 @@ class SessionsController < Devise::SessionsController
   private
 
   def log_failed_login
-    return unless failed_login?
-
     Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
   end
 
