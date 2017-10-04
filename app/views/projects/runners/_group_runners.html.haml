@@ -1,0 +1,19 @@
+%h3 Group Runners
+
+.bs-callout.bs-callout-warning
+  GitLab Group Runners can execute code for all the projects in this group.
+  They can be managed using the #{link_to 'Runners API', help_page_path('api/runners.md')}.
+
+- if !@project.group
+  This project does not belong to a group and can therefore not make use of group Runners.
+
+- elsif @group_runners.empty?
+  This group does not provide any group Runners yet.
+
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: @project.group.runners_token, type: 'group' }
+
+- else
+  %h4.underlined-title Available group Runners : #{@group_runners.count}
+  %ul.bordered-list
+    = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
