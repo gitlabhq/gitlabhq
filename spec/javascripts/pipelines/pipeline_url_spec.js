@@ -125,4 +125,22 @@ describe('Pipeline Url Component', () => {
       component.$el.querySelector('.js-pipeline-url-autodevops').textContent.trim(),
     ).toEqual('Auto DevOps');
   });
+
+  it('should render error badge when pipeline has a failure reason set', () => {
+    const component = new PipelineUrlComponent({
+      propsData: {
+        pipeline: {
+          id: 1,
+          path: 'foo',
+          flags: {
+            failure_reason: true,
+          },
+          failure_reason: 'some reason'
+        },
+      },
+    }).$mount();
+
+    expect(component.$el.querySelector('.js-pipeline-url-failure').textContent).toContain('error');
+    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('title').toContain('some reason');
+  });
 });
