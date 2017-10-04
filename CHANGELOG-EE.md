@@ -53,6 +53,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
 
+## 9.5.7 (2017-10-03)
+
+- No changes.
+
 ## 9.5.6 (2017-09-29)
 
 - [FIXED] Show group tab if member lock is enabled.
