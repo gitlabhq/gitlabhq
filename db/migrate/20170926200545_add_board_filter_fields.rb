@@ -7,18 +7,13 @@ class AddBoardFilterFields < ActiveRecord::Migration
 
   def up
     add_column :boards, :weight, :integer, index: true
-    add_reference :boards, :author, index: true
     add_reference :boards, :assignee, index: true
 
-    add_concurrent_foreign_key :boards, :users, column: :author_id, on_delete: :nullify
     add_concurrent_foreign_key :boards, :users, column: :assignee_id, on_delete: :nullify
   end
 
   def down
     remove_column :boards, :weight
-
-    remove_foreign_key :boards, column: :author_id
-    remove_reference :boards, :author
 
     remove_foreign_key :boards, column: :assignee_id
     remove_reference :boards, :assignee

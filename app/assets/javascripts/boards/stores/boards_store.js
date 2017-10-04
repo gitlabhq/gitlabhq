@@ -28,7 +28,6 @@ gl.issueBoards.BoardsStore = {
     labels: [],
     milestone_id: undefined,
     milestone: {},
-    author_id: '',
     assignee: {},
     assignee_id: '',
     weight: null,
@@ -60,7 +59,6 @@ gl.issueBoards.BoardsStore = {
     this.boardConfig.id = board.id;
     this.boardConfig.weight = board.weight;
     this.boardConfig.labels = board.labels || [];
-    this.boardConfig.author_id = board.author_id;
     this.boardConfig.assignee_id = board.assignee_id;
     Vue.set(this.boardConfig, 'assignee', board.assignee);
   },

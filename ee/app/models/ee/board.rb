@@ -5,7 +5,6 @@ module EE
     prepended do
       belongs_to :group
       belongs_to :milestone
-      belongs_to :author, class_name: 'User'
       belongs_to :assignee, class_name: 'User'
 
       has_many :board_filter_labels

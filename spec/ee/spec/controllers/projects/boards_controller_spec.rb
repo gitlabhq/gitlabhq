@@ -44,7 +44,6 @@ describe Projects::BoardsController do
           { name: 'Backend',
             weight: 1,
             milestone_id: milestone.id,
-            author_id: user.id,
             assignee_id: user.id,
             label_ids: [label.id] }
         end
@@ -118,7 +117,6 @@ describe Projects::BoardsController do
       { name: 'Frontend',
         weight: 1,
         milestone_id: milestone.id,
-        author_id: user.id,
         assignee_id: user.id,
         label_ids: [label.id] }
     end

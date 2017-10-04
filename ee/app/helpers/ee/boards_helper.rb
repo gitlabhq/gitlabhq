@@ -11,7 +11,6 @@ module EE
                                  !@project.feature_available?(:issue_board_focus_mode))).to_s
       data = {
         board_milestone_title: board&.milestone&.title,
-        board_author_username: board&.author&.username,
         board_assignee_username: board&.assignee&.username,
         label_ids: board&.label_ids,
         labels: board&.labels.to_json(only: [:id, :title, :color] ),
@@ -33,10 +32,9 @@ module EE
       board = @board || @boards.first
 
       board.to_json(
-        only: [:id, :name, :milestone_id, :author_id, :assignee_id, :weight, :label_ids],
+        only: [:id, :name, :milestone_id, :assignee_id, :weight, :label_ids],
         include: {
           milestone: { only: [:id, :title, :name] },
-          author: { only: [:id, :name, :username ], methods: [:avatar_url] },
           assignee: { only: [:id, :name, :username ], methods: [:avatar_url] },
           labels: { only: [:title, :color, :id] }
         }

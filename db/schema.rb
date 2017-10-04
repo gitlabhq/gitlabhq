@@ -231,12 +231,10 @@ ActiveRecord::Schema.define(version: 20170926203418) do
     t.integer "milestone_id"
     t.integer "group_id"
     t.integer "weight"
-    t.integer "author_id"
     t.integer "assignee_id"
   end
 
   add_index "boards", ["assignee_id"], name: "index_boards_on_assignee_id", using: :btree
-  add_index "boards", ["author_id"], name: "index_boards_on_author_id", using: :btree
   add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
   add_index "boards", ["milestone_id"], name: "index_boards_on_milestone_id", using: :btree
   add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
@@ -2066,7 +2064,6 @@ ActiveRecord::Schema.define(version: 20170926203418) do
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "boards", "users", column: "assignee_id", name: "fk_2a3450e77c", on_delete: :nullify
-  add_foreign_key "boards", "users", column: "author_id", name: "fk_58e8fc64f3", on_delete: :nullify
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade

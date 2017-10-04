@@ -56,7 +56,7 @@ module EE
       end
 
       def board_params
-        params.require(:board).permit(:name, :weight, :milestone_id, :author_id, :assignee_id, label_ids: [])
+        params.require(:board).permit(:name, :weight, :milestone_id, :assignee_id, label_ids: [])
       end
 
       def find_board

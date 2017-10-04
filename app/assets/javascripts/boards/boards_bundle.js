@@ -70,7 +70,6 @@ $(() => {
       detailIssue: Store.detail,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
       weight: $boardApp.dataset.boardWeight,
-      authorUsername: $boardApp.dataset.boardAuthorUsername,
       assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
       labels: JSON.parse($boardApp.dataset.labels || []),
       defaultAvatar: $boardApp.dataset.defaultAvatar,
