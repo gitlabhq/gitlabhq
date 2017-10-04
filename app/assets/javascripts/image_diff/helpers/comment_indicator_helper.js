@@ -24,8 +24,8 @@ export function removeCommentIndicator(imageFrameEl) {
 
   if (willRemove) {
     meta = {
-      x: parseInt(commentIndicatorEl.style.left.replace('px', ''), 10),
-      y: parseInt(commentIndicatorEl.style.top.replace('px', ''), 10),
+      x: parseInt(commentIndicatorEl.style.left, 10),
+      y: parseInt(commentIndicatorEl.style.top, 10),
       image: {
         width: imageEl.width,
         height: imageEl.height,
