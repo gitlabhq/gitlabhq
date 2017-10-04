@@ -465,14 +465,19 @@ export default class Notes {
       if (noteEntity.on_image) {
         const $noteEl = $(`.note-row-${noteEntity.id}:visible`);
         const $notesContainer = $noteEl.closest('.notes');
-        const badgeNumber = parseInt($notesContainer.find('.badge.js-diff-notes-toggle').text().trim(), 10);
+        const $badge = $notesContainer.find('.badge.js-diff-notes-toggle');
+        const badgeNumber = parseInt($badge.text().trim(), 10);
 
-        imageDiffHelper.addAvatarBadge($notesContainer[0], {
-          detail: {
-            badgeNumber,
-            noteId: `note_${noteEntity.id}`
-          }
-        });
+        // Only add avatar badge if the badge exists
+        // as there are no avatar badges for discussion tab
+        if ($badge.length > 0) {
+          imageDiffHelper.addAvatarBadge($notesContainer[0], {
+            detail: {
+              badgeNumber,
+              noteId: `note_${noteEntity.id}`
+            }
+          });
+        }
       }
     }
 
