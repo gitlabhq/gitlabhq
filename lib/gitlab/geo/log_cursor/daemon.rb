@@ -183,7 +183,7 @@ module Gitlab
           new_path = event.new_path_with_namespace
 
           job_id = ::Geo::MoveRepositoryService
-                     .new(event.project_id, '', old_path, new_path)
+                     .new(event.project_id, old_path, new_path)
                      .async_execute
 
           log_event_info(

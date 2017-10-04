@@ -211,7 +211,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         new_path_with_namespace = repository_rename_event.new_path_with_namespace
 
         expect(::GeoRepositoryMoveWorker).to receive(:perform_async)
-          .with(project_id, '', old_path_with_namespace, new_path_with_namespace)
+          .with(project_id, old_path_with_namespace, new_path_with_namespace)
 
         daemon.run_once!
       end

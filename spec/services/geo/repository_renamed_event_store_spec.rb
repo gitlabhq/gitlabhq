@@ -6,13 +6,13 @@ describe Geo::RepositoryRenamedEventStore do
   let(:old_path) { 'foo' }
   let(:old_path_with_namespace) { "#{project.namespace.full_path}/foo" }
 
-  subject { described_class.new(project, old_path: old_path, old_path_with_namespace: old_path_with_namespace) }
+  subject(:event_store) { described_class.new(project, old_path: old_path, old_path_with_namespace: old_path_with_namespace) }
 
   describe '#create' do
     it 'does not create an event when not running on a primary node' do
       allow(Gitlab::Geo).to receive(:primary?) { false }
 
-      expect { subject.create }.not_to change(Geo::RepositoryRenamedEvent, :count)
+      expect { event_store.create }.not_to change(Geo::RepositoryRenamedEvent, :count)
     end
 
     context 'when running on a primary node' do
@@ -27,11 +27,11 @@ describe Geo::RepositoryRenamedEventStore do
       end
 
       it 'creates a renamed event' do
-        expect { subject.create }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
+        expect { event_store.create }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
       end
 
       it 'tracks old and new paths for project repositories' do
-        subject.create
+        event_store.create
 
         event = Geo::RepositoryRenamedEvent.last
 

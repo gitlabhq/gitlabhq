@@ -2,22 +2,23 @@ module Geo
   class MoveRepositoryService
     include Gitlab::ShellAdapter
 
-    attr_reader :id, :name, :old_path_with_namespace, :new_path_with_namespace
+    attr_reader :id, :old_path_with_namespace, :new_path_with_namespace
 
-    def initialize(id, name, old_path_with_namespace, new_path_with_namespace)
+    def initialize(id, old_path_with_namespace, new_path_with_namespace)
       @id = id
-      @name = name
       @old_path_with_namespace = old_path_with_namespace
       @new_path_with_namespace = new_path_with_namespace
     end
 
     def async_execute
-      GeoRepositoryMoveWorker.perform_async(id, name, old_path_with_namespace, new_path_with_namespace)
+      GeoRepositoryMoveWorker.perform_async(id, old_path_with_namespace, new_path_with_namespace)
     end
 
     def execute
       project = Project.find(id)
       project.expire_caches_before_rename(old_path_with_namespace)
+
+      return true if project.hashed_storage?(:repository)
 
       # Make sure target directory exists (used when transfering repositories)
       project.ensure_storage_path_exists

@@ -936,14 +936,19 @@ describe Project do
       let(:project) { create(:project, :repository) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 
-      before do
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      it 'logs the Geo::RepositoryRenamedEvent for project backed by legacy storage' do
+        project_hashed_storage = create(:project, :hashed)
+
+        allow(project_hashed_storage).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project_hashed_storage).to receive(:previous_changes).and_return('path' => ['foo'])
+        allow(gitlab_shell).to receive(:mv_repository).twice.and_return(true)
+
+        expect { project_hashed_storage.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count)
       end
 
-      it 'logs the Geo::RepositoryRenamedEvent' do
-        stub_container_registry_config(enabled: false)
-
+      it 'logs the Geo::RepositoryRenamedEvent for project backed by legacy storage' do
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
         allow(gitlab_shell).to receive(:mv_repository).twice.and_return(true)
 
         expect(Geo::RepositoryRenamedEventStore).to receive(:new)
