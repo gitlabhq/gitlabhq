@@ -73,7 +73,7 @@ module Gitlab
             elsif event_log.repositories_changed_event
               handle_repositories_changed(event_log.repositories_changed_event)
             elsif event_log.repository_renamed_event
-              handle_repository_rename(event_log)
+              handle_repository_renamed(event_log)
             end
           end
         end
@@ -172,7 +172,7 @@ module Gitlab
           end
         end
 
-        def handle_repository_rename(event_log)
+        def handle_repository_renamed(event_log)
           event = event_log.repository_renamed_event
           return unless event.project_id
 
