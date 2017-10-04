@@ -101,8 +101,8 @@ describe 'Issue Boards add issue modal', :js do
           click_button 'Cancel'
         end
 
-        first('.board-delete').click
-
+        accept_confirm { first('.board-delete').click }
+        
         click_button('Add issues')
 
         wait_for_requests
