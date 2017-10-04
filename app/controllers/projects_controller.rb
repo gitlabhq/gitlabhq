@@ -297,8 +297,6 @@ class ProjectsController < Projects::ApplicationController
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'application'
-    elsif [:edit, :update].include?(action_name.to_sym)
-      'project_settings'
     else
       'project'
     end

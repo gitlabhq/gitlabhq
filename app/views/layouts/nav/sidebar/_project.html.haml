@@ -215,57 +215,49 @@
                 %strong.fly-out-top-item-name
                   #{ _('Snippets') }
 
+      = nav_link(controller: :project_members) do
+        = link_to project_settings_members_path(@project), title: 'Members' do
+          .nav-icon-container
+            = sprite_icon('users')
+          %span.nav-item-name
+            Members
+
       - if project_nav_tab? :settings
-        = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show]) do
-          = link_to edit_project_path(@project), class: 'shortcuts-tree' do
+        = nav_link(path: %w[projects#edit integrations#show services#edit repository#show ci_cd#show pages#show]) do
+          = link_to edit_project_path(@project) do
             .nav-icon-container
               = sprite_icon('settings')
             %span.nav-item-name
               Settings
 
           %ul.sidebar-sub-level-items
-            - can_edit = can?(current_user, :admin_project, @project)
-            - if can_edit
-              = nav_link(path: %w[projects#edit project_members#index integrations#show services#edit repository#show ci_cd#show pages#show], html_options: { class: "fly-out-top-item" } ) do
-                = link_to edit_project_path(@project) do
-                  %strong.fly-out-top-item-name
-                    #{ _('Settings') }
-              %li.divider.fly-out-top-item
-              = nav_link(path: %w[projects#edit]) do
-                = link_to edit_project_path(@project), title: 'General' do
-                  %span
-                    General
-            = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: 'Members' do
+            = nav_link(path: %w[projects#edit integrations#show services#edit repository#show ci_cd#show pages#show], html_options: { class: "fly-out-top-item" } ) do
+              = link_to edit_project_path(@project) do
+                %strong.fly-out-top-item-name
+                  #{ _('Settings') }
+            %li.divider.fly-out-top-item
+            = nav_link(path: %w[projects#edit]) do
+              = link_to edit_project_path(@project), title: 'General' do
                 %span
-                  Members
-            - if can_edit
-              = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
-                = link_to project_settings_integrations_path(@project), title: 'Integrations' do
+                  General
+            = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
+              = link_to project_settings_integrations_path(@project), title: 'Integrations' do
+                %span
+                  Integrations
+            = nav_link(controller: :repository) do
+              = link_to project_settings_repository_path(@project), title: 'Repository' do
+                %span
+                  Repository
+            - if @project.feature_available?(:builds, current_user)
+              = nav_link(controller: :ci_cd) do
+                = link_to project_settings_ci_cd_path(@project), title: 'CI / CD' do
                   %span
-                    Integrations
-              = nav_link(controller: :repository) do
-                = link_to project_settings_repository_path(@project), title: 'Repository' do
+                    CI / CD
+            - if @project.pages_available?
+              = nav_link(controller: :pages) do
+                = link_to project_pages_path(@project), title: 'Pages' do
                   %span
-                    Repository
-              - if @project.feature_available?(:builds, current_user)
-                = nav_link(controller: :ci_cd) do
-                  = link_to project_settings_ci_cd_path(@project), title: 'CI / CD' do
-                    %span
-                      CI / CD
-              - if @project.pages_available?
-                = nav_link(controller: :pages) do
-                  = link_to project_pages_path(@project), title: 'Pages' do
-                    %span
-                      Pages
-
-      - else
-        = nav_link(path: %w[members#show]) do
-          = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
-            .nav-icon-container
-              = sprite_icon('users')
-            %span.nav-item-name
-              Members
+                    Pages
 
       = render 'shared/sidebar_toggle_button'
 
