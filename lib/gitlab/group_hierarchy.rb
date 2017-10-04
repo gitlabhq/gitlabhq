@@ -17,12 +17,33 @@ module Gitlab
       @model = ancestors_base.model
     end
 
+    # Returns the set of descendants of a given relation, but excluding the given
+    # relation
+    def descendants
+      base_and_descendants.where.not(id: descendants_base.select(:id))
+    end
+
+    # Returns the set of ancestors of a given relation, but excluding the given
+    # relation
+    #
+    # Passing an `upto` will stop the recursion once the specified parent_id is
+    # reached. So all ancestors *lower* than the specified ancestor will be
+    # included.
+    def ancestors(upto: nil)
+      read_only(base_and_ancestors_cte(upto).apply_to(model.all))
+        .where.not(id: ancestors_base.select(:id))
+    end
+
     # Returns a relation that includes the ancestors_base set of groups
     # and all their ancestors (recursively).
-    def base_and_ancestors
+    #
+    # Passing an `upto` will stop the recursion once the specified parent_id is
+    # reached. So all ancestors *lower* than the specified acestor will be
+    # included.
+    def base_and_ancestors(upto: nil)
       return ancestors_base unless Group.supports_nested_groups?
 
-      read_only(base_and_ancestors_cte.apply_to(model.all))
+      read_only(base_and_ancestors_cte(upto).apply_to(model.all))
     end
 
     # Returns a relation that includes the descendants_base set of groups
@@ -78,17 +99,19 @@ module Gitlab
 
     private
 
-    def base_and_ancestors_cte
+    def base_and_ancestors_cte(stop_id = nil)
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
       cte << ancestors_base.except(:order)
 
       # Recursively get all the ancestors of the base set.
-      cte << model
+      parent_query = model
         .from([groups_table, cte.table])
         .where(groups_table[:id].eq(cte.table[:parent_id]))
         .except(:order)
+      parent_query = parent_query.where(cte.table[:parent_id].not_eq(stop_id)) if stop_id
 
+      cte << parent_query
       cte
     end
 
