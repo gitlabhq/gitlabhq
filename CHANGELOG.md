@@ -195,6 +195,10 @@ entry.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
 
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
+
 ## 9.5.6 (2017-09-29)
 
 - [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
