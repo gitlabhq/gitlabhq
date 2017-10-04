@@ -41,13 +41,14 @@
       showDisabledButton() {
         return ['failed', 'loading'].includes(this.status);
       },
-      renderError() {
+      hasRebasingError() {
         return this.rebasingError.length;
       },
     },
     methods: {
       rebase() {
         this.isMakingRequest = true;
+        this.rebasingError = '';
 
         this.service.rebase()
           .then(() => {
@@ -117,7 +118,7 @@
             Rebase
           </button>
           <span
-            v-if="!renderError"
+            v-if="!hasRebasingError"
             class="bold">
             Fast-forward merge is not possible.
             Rebase the source branch onto the target branch or merge target
