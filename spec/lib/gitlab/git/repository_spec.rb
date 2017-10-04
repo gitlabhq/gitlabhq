@@ -1472,6 +1472,23 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#write_ref' do
+    context 'validations' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:ref_path, :ref) do
+        'foo bar' | '123'
+        'foobar'  | "12\x003"
+      end
+
+      with_them do
+        it 'raises ArgumentError' do
+          expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged
