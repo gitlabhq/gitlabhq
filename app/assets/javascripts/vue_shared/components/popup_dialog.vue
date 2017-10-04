@@ -52,12 +52,10 @@ export default {
     class="modal popup-dialog"
     role="dialog"
     tabindex="-1"
-    @click="close"
   >
     <div
       class="modal-dialog modal-md"
       role="document"
-      @click.stop
     >
       <div class="modal-content">
         <div class="modal-header">
@@ -103,6 +101,9 @@ export default {
       </div>
     </div>
   </div>
-  <div class="modal-backdrop fade in" />
+  <div
+    class="modal-backdrop fade in"
+    @click="close"
+  />
 </div>
 </template>

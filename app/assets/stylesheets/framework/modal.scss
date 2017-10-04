@@ -46,13 +46,6 @@ body.modal-open {
   padding: $gl-padding;
 }
 
-.modal-header,
-.modal-footer {
-  padding: $gl-padding;
-  background-color: $gray-light;
-  border-top: 1px solid $border-color;
-}
-
 .modal.popup-dialog {
   display: block;
 

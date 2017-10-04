@@ -65,7 +65,7 @@ export default {
     <div class="value issuable-show-labels">
       <span
         v-if="board.labels.length === 0"
-        class="no-value"
+        class="text-secondary"
       >
         Any label
       </span>

@@ -44,7 +44,7 @@ export default {
   computed: {
     valueClass() {
       if (this.value === 'Any Weight') {
-        return 'placeholder';
+        return 'text-secondary';
       }
       return 'bold';
     },

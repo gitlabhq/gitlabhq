@@ -56,12 +56,6 @@
         </p>
         <div v-if="!collapseScope || expanded">
           <div class="list-item">
-            <div
-              v-if="board.milestone"
-              slot="currentValue"
-            >
-              {{ board.milestone.title }}
-            </div>
             <board-milestone-select
               :board="board"
               :milestone-path="milestonePath"

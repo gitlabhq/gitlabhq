@@ -115,7 +115,10 @@ export default {
           </div>
         </div>
       </div>
-      <div v-else>
+      <div
+        v-else
+        class="text-secondary"
+      >
         {{ anyUserText }}
       </div>
     </div>
