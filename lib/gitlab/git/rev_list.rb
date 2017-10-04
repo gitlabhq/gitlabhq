@@ -29,7 +29,7 @@ module Gitlab
         output, status = Gitlab::Popen.popen(args, nil, Gitlab::Git::Env.all.stringify_keys)
 
         unless status.zero?
-          raise "Got a non-zero exit code while calling out `#{args.join(' ')}`."
+          raise "Got a non-zero exit code while calling out `#{args.join(' ')}`: #{output}"
         end
 
         output.split("\n")
