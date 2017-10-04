@@ -32,7 +32,7 @@ module Projects
         @shared_runners = Ci::Runner.shared.active
         @shared_runners_count = @shared_runners.count(:all)
 
-        @group_runners = Ci::Runner.project_group(@project.id)
+        @group_runners = Ci::Runner.belonging_to_group(@project.id)
       end
 
       def define_secret_variables
