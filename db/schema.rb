@@ -1619,6 +1619,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.boolean "reject_unsigned_commits"
   end
 
+  add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
 
   create_table "redirect_routes", force: :cascade do |t|
