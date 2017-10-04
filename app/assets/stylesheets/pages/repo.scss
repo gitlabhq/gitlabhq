@@ -16,15 +16,6 @@
   background: $black-transparent;
 }
 
-.tree-holder {
-  @include editor-height(32);
-}
-
-.repository-view {
-  @include editor-height(0);
-  overflow: hidden;
-}
-
 .modal.popup-dialog {
   display: block;
   background-color: $black-transparent;
@@ -74,10 +65,6 @@
   .tree-content-holder {
     display: flex;
     min-height: 300px;
-  }
-
-  .tree-content-holder-mini {
-    height: 100vh;
   }
 
   .panel-right {
