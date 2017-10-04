@@ -208,6 +208,15 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when skip_disk_validation is used' do
+    it 'sets the project attribute' do
+      opts[:skip_disk_validation] = true
+      project = create_project(user, opts)
+
+      expect(project.skip_disk_validation).to be_truthy
+    end
+  end
+
   def create_project(user, opts)
     Projects::CreateService.new(user, opts).execute
   end

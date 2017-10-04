@@ -190,6 +190,28 @@ module Gitlab
         end
       end
 
+      def has_local_branches?
+        gitaly_migrate(:has_local_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
+
+      def has_local_branches_rugged?
+        rugged.branches.each(:local).any? do |ref|
+          begin
+            ref.name && ref.target # ensures the branch is valid
+
+            true
+          rescue Rugged::ReferenceError
+            false
+          end
+        end
+      end
+
       # Returns the number of valid tags
       def tag_count
         gitaly_migrate(:tag_names) do |is_enabled|
@@ -909,7 +931,9 @@ module Gitlab
       # This method return true if repository contains some content visible in project page.
       #
       def has_visible_content?
-        branch_count > 0
+        return @has_visible_content if defined?(@has_visible_content)
+
+        @has_visible_content = has_local_branches?
       end
 
       def gitaly_repository

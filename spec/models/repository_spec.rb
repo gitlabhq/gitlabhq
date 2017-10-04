@@ -1134,21 +1134,31 @@ describe Repository, models: true do
   end
 
   describe '#has_visible_content?' do
-    subject { repository.has_visible_content? }
-
-    describe 'when there are no branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
-      end
-
-      it { is_expected.to eq(false) }
+    before do
+      # If raw_repository.has_visible_content? gets called more than once then
+      # caching is broken. We don't want that.
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .once
+        .and_return(result)
     end
 
-    describe 'when there are branches' do
-      it 'returns true' do
-        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+    context 'when true' do
+      let(:result) { true }
 
-        expect(subject).to eq(true)
+      it 'returns true and caches it' do
+        expect(repository.has_visible_content?).to eq(true)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(true)
+      end
+    end
+
+    context 'when false' do
+      let(:result) { false }
+
+      it 'returns false and caches it' do
+        expect(repository.has_visible_content?).to eq(false)
+        # Second call hits the cache
+        expect(repository.has_visible_content?).to eq(false)
       end
     end
   end
@@ -1265,6 +1275,7 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(true)
 
       expect(cache).to receive(:expire).with(:empty?)
+      expect(cache).to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
     end
@@ -1273,6 +1284,7 @@ describe Repository, models: true do
       allow(repository).to receive(:empty?).and_return(false)
 
       expect(cache).not_to receive(:expire).with(:empty?)
+      expect(cache).not_to receive(:expire).with(:has_visible_content?)
 
       repository.expire_emptiness_caches
     end
@@ -1603,7 +1615,7 @@ describe Repository, models: true do
   describe '#expire_branches_cache' do
     it 'expires the cache' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(branch_names branch_count))
+        .with(%i(branch_names branch_count has_visible_content?))
         .and_call_original
 
       repository.expire_branches_cache
@@ -1863,6 +1875,15 @@ describe Repository, models: true do
         .with(Repository::CACHED_METHODS)
 
       repository.expire_all_method_caches
+    end
+
+    it 'all cache_method definitions are in the lists of method caches' do
+      methods = repository.methods.map do |method|
+        match = /^_uncached_(.*)/.match(method)
+        match[1].to_sym if match
+      end.compact
+
+      expect(methods).to match_array(Repository::CACHED_METHODS + Repository::MEMOIZED_CACHED_METHODS)
     end
   end
 

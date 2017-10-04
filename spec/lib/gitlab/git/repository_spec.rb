@@ -389,6 +389,40 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#has_local_branches?' do
+    shared_examples 'check for local branches' do
+      it { expect(repository.has_local_branches?).to eq(true) }
+
+      context 'mutable' do
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns false when there are no branches' do
+          # Sanity check
+          expect(repository.has_local_branches?).to eq(true)
+
+          FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
+          heads_dir = File.join(repository.path, 'refs/heads')
+          FileUtils.rm_rf(heads_dir)
+          FileUtils.mkdir_p(heads_dir)
+
+          expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like 'check for local branches'
+    end
+
+    context 'without gitaly', skip_gitaly_mock: true do
+      it_behaves_like 'check for local branches'
+    end
+  end
+
   describe "#delete_branch" do
     shared_examples "deleting a branch" do
       let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
