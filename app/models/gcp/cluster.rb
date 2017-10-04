@@ -25,13 +25,6 @@ module Gcp
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
-    enum status: {
-      scheduled: 1,
-      creating: 2,
-      created: 3,
-      errored: 4
-    }
-
     validates :gcp_project_id,
       length: 1..63,
       format: {
@@ -67,6 +60,11 @@ module Gcp
     validate :restrict_modification, on: :update, unless: :status_changed?
 
     state_machine :status, initial: :scheduled do
+      state :scheduled, value: 1
+      state :creating, value: 2
+      state :created, value: 3
+      state :errored, value: 4
+
       event :make_creating do
         transition any - [:creating] => :creating
       end
@@ -86,7 +84,7 @@ module Gcp
 
       before_transition any => [:errored] do |cluster, transition|
         status_reason = transition.args.first
-        cluster.status_reason = status_reason
+        cluster.status_reason = status_reason if status_reason
       end
     end
 

@@ -1,7 +1,7 @@
 - status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster) && @cluster.on_creation?
 .row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
-  cluster_status: @cluster.status,
+  cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason }}
   = render 'sidebar'
   .col-lg-8
