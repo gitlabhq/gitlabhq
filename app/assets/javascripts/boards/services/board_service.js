@@ -30,20 +30,16 @@ class BoardService {
   }
 
   createBoard (board) {
-    board.board = board.board || {};
-    board.board.label_ids = (board.labels || []).map(b => b.id);
+    board.label_ids = (board.labels || []).map(b => b.id);
 
     if (board.assignee) {
-      board.board.assignee_id = board.assignee.id;
+      board.assignee_id = board.assignee.id;
     }
-
-    board.board.milestone_id = board.milestone_id;
-    board.board.weight = board.weight;
 
     if (board.id) {
-      return this.boards.update({ id: board.id }, board);
+      return this.boards.update({ id: board.id }, { board });
     }
-    return this.boards.save({}, board);
+    return this.boards.save({}, { board });
   }
 
   all () {
