@@ -49,22 +49,46 @@ describe Projects::ArtifactsController do
   describe 'GET file' do
     before do
       allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
-      allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
     end
 
-    context 'when the file exists' do
-      it 'renders the file view' do
-        get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+    context 'when the file is served by GitLab Pages' do
+      before do
+        allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      end
 
-        expect(response).to have_http_status(302)
+      context 'when the file exists' do
+        it 'renders the file view' do
+          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+
+          expect(response).to have_http_status(302)
+        end
+      end
+
+      context 'when the file does not exist' do
+        it 'responds Not Found' do
+          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+
+          expect(response).to be_not_found
+        end
       end
     end
 
-    context 'when the file does not exist' do
-      it 'responds Not Found' do
-        get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+    context 'when the file is served through Rails' do
+      context 'when the file exists' do
+        it 'renders the file view' do
+          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
-        expect(response).to be_not_found
+          expect(response).to have_http_status(:ok)
+          expect(response).to render_template('projects/artifacts/file')
+        end
+      end
+
+      context 'when the file does not exist' do
+        it 'responds Not Found' do
+          get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+
+          expect(response).to be_not_found
+        end
       end
     end
   end

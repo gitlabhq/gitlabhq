@@ -42,7 +42,7 @@ describe Ci::ArtifactBlob do
     end
   end
 
-  describe '#url' do
+  describe '#external_url' do
     before do
       allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
       allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
