@@ -150,11 +150,12 @@ module Gitlab
                      .new(event.project_id, event.deleted_project_name, full_path, event.repository_storage_name)
                      .async_execute
 
-          log_event_info(event_log.created_at,
-                         message: 'Deleted project',
-                         project_id: event.project_id,
-                         full_path: full_path,
-                         job_id: job_id)
+          log_event_info(
+            event_log.created_at,
+            message: 'Deleted project',
+            project_id: event.project_id,
+            full_path: full_path,
+            job_id: job_id)
 
           # No need to create a project entry if it doesn't exist
           ::Geo::ProjectRegistry.where(project_id: event.project_id).delete_all
@@ -183,12 +184,13 @@ module Gitlab
                      .new(event.project_id, '', old_path, new_path)
                      .async_execute
 
-          log_event_info(event_log.created_at,
-                         message: 'Renaming project',
-                         project_id: event.project_id,
-                         old_path: old_path,
-                         new_path: new_path,
-                         job_id: job_id)
+          log_event_info(
+            event_log.created_at,
+            message: 'Renaming project',
+            project_id: event.project_id,
+            old_path: old_path,
+            new_path: new_path,
+            job_id: job_id)
         end
 
         def find_or_initialize_registry(project_id, attrs)
