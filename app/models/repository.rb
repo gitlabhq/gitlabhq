@@ -482,6 +482,10 @@ class Repository
   end
   cache_method :root_ref
 
+  def root_branch
+    @root_branch ||= find_branch(root_ref)
+  end
+
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
     return false unless full_path

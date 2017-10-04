@@ -1,0 +1,7 @@
+---
+title: Improve branch listing page performance by not trying to indicate if it is
+  merged or not when the branch was not updated from default branch more than 3 months.
+  Instead, we show that it is stale.
+merge_request: 14678
+author:
+type: changed

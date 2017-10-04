@@ -1,4 +1,5 @@
 - commit = @repository.commit(branch.dereferenced_target)
+- default_branch_commit_date = @repository.root_branch.dereferenced_target.committed_date
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
@@ -12,6 +13,9 @@
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
+    - elsif branch_stale?(branch, from: default_branch_commit_date)
+      %span.label.label-warning.has-tooltip{ title: s_('Branches|Not updated since %{date}') % { date: time_ago_in_words(branch.dereferenced_target.committed_date) } }
+        = s_('Branches|stale')
     - elsif @repository.merged_to_root_ref? branch.name
       %span.label.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
         = s_('Branches|merged')
@@ -47,7 +51,7 @@
                 target: "#modal-delete-branch",
                 delete_path: project_branch_path(@project, branch.name),
                 branch_name: branch.name,
-                is_merged: ("true" if @repository.merged_to_root_ref?(branch.name)) } }
+                is_merged: ("true" if !branch_stale?(branch, from: default_branch_commit_date) && @repository.merged_to_root_ref?(branch.name)) } }
               = icon("trash-o")
           - else
             %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",

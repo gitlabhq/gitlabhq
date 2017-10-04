@@ -23,4 +23,8 @@ module BranchesHelper
   def protected_branch?(project, branch)
     ProtectedBranch.protected?(project, branch.name)
   end
+
+  def branch_stale?(branch, from: Date.today, age: 3.months)
+    branch.dereferenced_target.committed_date < from - age
+  end
 end
