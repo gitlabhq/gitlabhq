@@ -19,12 +19,9 @@
             discussion_expanded: true,
             plain: true }
   - else
+    - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replace_image_diff'
 
-    - locals = { diff_file: diff_file, position: discussion.position.to_json, click_to_comment: false }
-    - if diff_file.new_file? || diff_file.deleted_file?
-      = render partial: "projects/diffs/single_image_diff", locals: locals
-    - else
-      = render partial: "projects/diffs/replaced_image_diff", locals: locals
+    = render partial: "projects/diffs/#{partial}", locals: { diff_file: diff_file, position: discussion.position.to_json, click_to_comment: false }
 
     .note-container
       = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse: true }
