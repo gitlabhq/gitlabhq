@@ -19,6 +19,7 @@ const RepoStore = {
   currentBlobView: 'repo-preview',
   openedFiles: [],
   submitCommitsLoading: false,
+  showForkDialog: false,
   dialog: {
     open: false,
     title: '',

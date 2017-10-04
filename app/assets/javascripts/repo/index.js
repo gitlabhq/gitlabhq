@@ -29,7 +29,7 @@ function setInitialStore(data) {
   Store.projectId = data.projectId;
   Store.projectName = data.projectName;
   Store.projectUrl = data.projectUrl;
-  Store.canCommit = data.canCommit;
+  Store.canCommit = data.canCommit === 'true' ? true : false;
   Store.onTopOfBranch = data.onTopOfBranch;
   Store.signedIn = data.signedIn === 'true' ? true : false;
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
