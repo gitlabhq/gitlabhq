@@ -237,30 +237,4 @@ describe Gcp::Cluster do
       end
     end
   end
-
-  describe '#destroy' do
-    subject { cluster.destroy }
-
-    let(:cluster) { create(:gcp_cluster) }
-
-    context 'when status is created' do
-      before do
-        cluster.make_created!
-      end
-
-      it 'destory the cluster' do
-        is_expected.to eq(cluster)
-      end
-    end
-
-    context 'when status is creating' do
-      before do
-        cluster.make_creating!
-      end
-
-      it 'does not destory the cluster' do
-        is_expected.to be_nil
-      end
-    end
-  end
 end

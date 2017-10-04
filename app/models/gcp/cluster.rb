@@ -110,9 +110,5 @@ module Gcp
 
       true
     end
-
-    def destroy
-      super if restrict_modification
-    end
   end
 end
