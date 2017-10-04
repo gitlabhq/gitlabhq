@@ -16,6 +16,7 @@ feature 'Dashboard Groups page', :js do
 
     sign_in(user)
     visit dashboard_groups_path
+    wait_for_requests
 
     expect(page).to have_content(group.full_name)
     expect(page).to have_content(nested_group.full_name)
@@ -33,7 +34,7 @@ feature 'Dashboard Groups page', :js do
     end
 
     it 'filters groups' do
-      fill_in 'filter_groups', with: group.name
+      fill_in 'filter', with: group.name
       wait_for_requests
 
       expect(page).to have_content(group.full_name)
@@ -42,10 +43,10 @@ feature 'Dashboard Groups page', :js do
     end
 
     it 'resets search when user cleans the input' do
-      fill_in 'filter_groups', with: group.name
+      fill_in 'filter', with: group.name
       wait_for_requests
 
-      fill_in 'filter_groups', with: ''
+      fill_in 'filter', with: ''
       wait_for_requests
 
       expect(page).to have_content(group.full_name)

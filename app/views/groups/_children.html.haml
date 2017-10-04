@@ -1,4 +1,5 @@
-- if children.any?
-  render children here
-- else
-  .nothing-here-block No children found
+= webpack_bundle_tag 'common_vue'
+= webpack_bundle_tag 'groups'
+
+.js-groups-list-holder
+  #js-groups-tree{ data: { hide_projects: 'false', group_id: group.id, endpoint: group_children_path(group, format: :json), path: group_path(group), form_sel: 'form#group-filter-form', filter_sel: '.js-groups-list-filter', holder_sel: '.js-groups-list-holder', dropdown_sel: '.js-group-filter-dropdown-wrap' } }

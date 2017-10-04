@@ -7,12 +7,35 @@
 = render 'groups/home_panel'
 
 .groups-header{ class: container_class }
-  .top-area
-    .nav-controls
-      = render 'shared/projects/search_form'
-      = render 'shared/projects/dropdown'
+  .group-nav-container
+    .nav-controls.clearfix
+      = render "shared/groups/search_form"
+      = render "shared/groups/dropdown"
       - if can? current_user, :create_projects, @group
-        = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
-          New Project
+        - new_project_label = _("New project")
+        - new_subgroup_label = _("New subgroup")
+        .btn-group.new-project-subgroup.droplab-dropdown.js-new-project-subgroup{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
+          %input.btn.btn-success.dropdown-primary.js-new-group-child{ type: "button", value: new_project_label, data: { action: "new-project" } }
+          %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown" } }
+            = icon("caret-down", class: "dropdown-btn-icon")
+          %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-align-right{ data: { dropdown: true } }
+            %li.droplab-item-selected{ role: "button", data: { value: "new-project", text: new_project_label } }
+              .menu-item
+                .icon-container
+                  = icon("check", class: "list-item-checkmark")
+                .description
+                  %strong= new_project_label
+                  %span= s_("GroupsTree|Create project under this group.")
+            %li.divider.droplap-item-ignore
+            %li{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
+              .menu-item
+                .icon-container
+                  = icon("check", class: "list-item-checkmark")
+                .description
+                  %strong= new_subgroup_label
+                  %span= s_("GroupsTree|Create a subgroup under this group.")
 
-  = render "children", children: @children
+  - if params[:filter].blank? && @children.empty?
+    = render "shared/groups/empty_state"
+  - else
+    = render "children", children: @children, group: @group

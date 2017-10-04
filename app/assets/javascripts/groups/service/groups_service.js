@@ -20,7 +20,7 @@ export default class GroupsService {
       }
 
       if (filterGroups) {
-        data.filter_groups = filterGroups;
+        data.filter = filterGroups;
       }
 
       if (sort) {

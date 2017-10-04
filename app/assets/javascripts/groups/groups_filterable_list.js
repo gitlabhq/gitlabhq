@@ -3,12 +3,13 @@ import eventHub from './event_hub';
 import { getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
-  constructor({ form, filter, holder, filterEndpoint, pagePath }) {
-    super(form, filter, holder);
+  constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
+    super(form, filter, holder, filterInputField);
     this.form = form;
     this.filterEndpoint = filterEndpoint;
     this.pagePath = pagePath;
-    this.$dropdown = $('.js-group-filter-dropdown-wrap');
+    this.filterInputField = filterInputField;
+    this.$dropdown = $(dropdownSel);
   }
 
   getFilterEndpoint() {
@@ -35,11 +36,11 @@ export default class GroupFilterableList extends FilterableList {
     e.preventDefault();
 
     const $form = $(this.form);
-    const filterGroupsParam = $form.find('[name="filter_groups"]').val();
+    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
     const queryData = {};
 
     if (filterGroupsParam) {
-      queryData.filter_groups = filterGroupsParam;
+      queryData[this.filterInputField] = filterGroupsParam;
     }
 
     this.filterResults(queryData);
@@ -47,7 +48,7 @@ export default class GroupFilterableList extends FilterableList {
   }
 
   setDefaultFilterOption() {
-    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu a:first-child').text());
+    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu a').first().text());
     this.$dropdown.find('.dropdown-label').text(defaultOption);
   }
 
@@ -65,13 +66,15 @@ export default class GroupFilterableList extends FilterableList {
 
     // Active selected option
     this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
+    this.$dropdown.find('.dropdown-menu li a').removeClass('is-active');
+    $(e.target).addClass('is-active');
 
     // Clear current value on search form
-    this.form.querySelector('[name="filter_groups"]').value = '';
+    this.form.querySelector(`[name="${this.filterInputField}"]`).value = '';
   }
 
   onFilterSuccess(data, xhr, queryData) {
-    super.onFilterSuccess(data, xhr, queryData);
+    const currentPath = this.getPagePath(queryData);
 
     const paginationData = {
       'X-Per-Page': xhr.getResponseHeader('X-Per-Page'),
@@ -82,7 +85,11 @@ export default class GroupFilterableList extends FilterableList {
       'X-Prev-Page': xhr.getResponseHeader('X-Prev-Page'),
     };
 
-    eventHub.$emit('updateGroups', data);
+    window.history.replaceState({
+      page: currentPath,
+    }, document.title, currentPath);
+
+    eventHub.$emit('updateGroups', data, Object.prototype.hasOwnProperty.call(queryData, this.filterInputField));
     eventHub.$emit('updatePagination', paginationData);
   }
 }
