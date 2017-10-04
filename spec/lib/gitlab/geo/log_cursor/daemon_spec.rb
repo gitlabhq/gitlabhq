@@ -62,8 +62,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
 
       it 'performs Geo::ProjectSyncWorker' do
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
-          .with(anything, project.id, anything).once.and_return(spy)
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project.id, anything).once.and_return(spy)
 
         subject.run!
       end
@@ -102,8 +102,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
 
       it 'performs Geo::ProjectSyncWorker' do
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
-          .with(anything, project.id, anything).once.and_return(spy)
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project.id, anything).once.and_return(spy)
 
         subject.run!
       end
@@ -171,7 +171,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
       before do
         allow(subject).to receive(:exit?).and_return(false, true)
-        allow(Geo::ProjectSyncWorker).to receive(:perform_in).and_return(spy)
+        allow(Geo::ProjectSyncWorker).to receive(:perform_async).and_return(spy)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do

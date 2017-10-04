@@ -5,7 +5,6 @@ module Gitlab
         VERSION = '0.1.0'.freeze
         POOL_WAIT = 5.seconds.freeze
         BATCH_SIZE = 250
-        SYNC_BACKOFF_DELAY = 5.minutes
 
         attr_reader :options
 
@@ -122,7 +121,7 @@ module Gitlab
 
           registry.save!
 
-          ::Geo::ProjectSyncWorker.perform_in(SYNC_BACKOFF_DELAY, event.project_id, Time.now)
+          ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
         end
 
         def handle_repository_updated(event_log)
@@ -139,7 +138,7 @@ module Gitlab
 
           registry.save!
 
-          ::Geo::ProjectSyncWorker.perform_in(SYNC_BACKOFF_DELAY, event.project_id, Time.now)
+          ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
         end
 
         def handle_repository_deleted(event_log)
