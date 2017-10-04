@@ -15,13 +15,13 @@ describe GroupsHelper do
 
       avatar_url = "/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
 
-      expect(group_icon(group).to_s)
+      expect(helper.group_icon(group).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
       avatar_url = "#{asset_host}/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
 
-      expect(group_icon(group).to_s)
+      expect(helper.group_icon(group).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
   end

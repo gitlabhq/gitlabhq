@@ -60,7 +60,7 @@ describe ApplicationHelper do
     let(:asset_host) { 'http://assets' }
 
     it 'returns an url for the avatar' do
-      project = create(:project, avatar: File.open(uploaded_image_temp_path))
+      project = create(:project, :public, avatar: File.open(uploaded_image_temp_path))
       avatar_url = "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
