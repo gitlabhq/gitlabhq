@@ -5,6 +5,10 @@ describe GroupDescendant, :nested_groups do
   let(:subgroup) { create(:group, parent: parent) }
   let(:subsub_group) { create(:group, parent: subgroup) }
 
+  def all_preloaded_groups(*groups)
+    groups + [parent, subgroup, subsub_group]
+  end
+
   context 'for a group' do
     describe '#hierarchy' do
       it 'only queries once for the ancestors' do
@@ -19,9 +23,8 @@ describe GroupDescendant, :nested_groups do
       it 'only queries once for the ancestors when a top is given' do
         test_group = create(:group, parent: subsub_group).reload
 
-        query_count = ActiveRecord::QueryRecorder.new { test_group.hierarchy(subgroup) }.count
-
-        expect(query_count).to eq(1)
+        recorder = ActiveRecord::QueryRecorder.new { test_group.hierarchy(subgroup) }
+        expect(recorder.count).to eq(1)
       end
 
       it 'builds a hierarchy for a group' do
@@ -37,7 +40,8 @@ describe GroupDescendant, :nested_groups do
       end
 
       it 'raises an error if specifying a base that is not part of the tree' do
-        expect { subsub_group.hierarchy(build_stubbed(:group)) }.to raise_error('specified top is not part of the tree')
+        expect { subsub_group.hierarchy(build_stubbed(:group)) }
+          .to raise_error('specified top is not part of the tree')
       end
     end
 
@@ -46,7 +50,7 @@ describe GroupDescendant, :nested_groups do
         other_subgroup = create(:group, parent: parent)
         other_subsub_group = create(:group, parent: subgroup)
 
-        groups = [other_subgroup, subsub_group, other_subsub_group]
+        groups = all_preloaded_groups(other_subgroup, subsub_group, other_subsub_group)
 
         expected_hierarchy = { parent => [other_subgroup, { subgroup => [subsub_group, other_subsub_group] }] }
 
@@ -58,9 +62,9 @@ describe GroupDescendant, :nested_groups do
         other_subsub_group = create(:group, parent: subgroup)
 
         groups = [other_subgroup, subsub_group, other_subsub_group]
+        groups << subgroup # Add the parent as if it was preloaded
 
         expected_hierarchy = [other_subgroup, { subgroup => [subsub_group, other_subsub_group] }]
-
         expect(described_class.build_hierarchy(groups, parent)).to eq(expected_hierarchy)
       end
 
@@ -69,10 +73,15 @@ describe GroupDescendant, :nested_groups do
         other_subgroup2 = create(:group, parent: parent)
         other_subsub_group = create(:group, parent: other_subgroup)
 
-        groups = [subsub_group, other_subgroup2, other_subsub_group]
+        groups = all_preloaded_groups(subsub_group, other_subgroup2, other_subsub_group, other_subgroup)
         expected_hierarchy = { parent => [{ subgroup => subsub_group }, other_subgroup2, { other_subgroup => other_subsub_group }] }
 
         expect(described_class.build_hierarchy(groups)).to eq(expected_hierarchy)
+      end
+
+      it 'raises an error if not all elements were preloaded' do
+        expect { described_class.build_hierarchy([subsub_group]) }
+          .to raise_error('parent was not preloaded')
       end
     end
   end
@@ -81,7 +90,7 @@ describe GroupDescendant, :nested_groups do
     let(:project) { create(:project, namespace: subsub_group) }
 
     describe '#hierarchy' do
-      it 'builds a hierarchy for a group' do
+      it 'builds a hierarchy for a project' do
         expected_hierarchy = { parent => { subgroup => { subsub_group => project } } }
 
         expect(project.hierarchy).to eq(expected_hierarchy)
@@ -92,10 +101,6 @@ describe GroupDescendant, :nested_groups do
 
         expect(project.hierarchy(subgroup)).to eq(expected_hierarchy)
       end
-
-      it 'raises an error if specifying a base that is not part of the tree' do
-        expect { project.hierarchy(build_stubbed(:group)) }.to raise_error('specified top is not part of the tree')
-      end
     end
 
     describe '.build_hierarchy' do
@@ -103,7 +108,7 @@ describe GroupDescendant, :nested_groups do
         other_project = create(:project, namespace: parent)
         other_subgroup_project = create(:project, namespace: subgroup)
 
-        elements = [other_project, subsub_group, other_subgroup_project]
+        elements = all_preloaded_groups(other_project, subsub_group, other_subgroup_project)
 
         expected_hierarchy = { parent => [other_project, { subgroup => [subsub_group, other_subgroup_project] }] }
 
@@ -115,6 +120,7 @@ describe GroupDescendant, :nested_groups do
         other_subgroup_project = create(:project, namespace: subgroup)
 
         elements = [other_project, subsub_group, other_subgroup_project]
+        elements << subgroup # Added as if it was preloaded
 
         expected_hierarchy = [other_project, { subgroup => [subsub_group, other_subgroup_project] }]
 
@@ -136,7 +142,9 @@ describe GroupDescendant, :nested_groups do
         other_subgroup = create(:group, parent: parent)
         other_subproject = create(:project, namespace: other_subgroup)
 
-        projects = [project, subsubsub_project, sub_project, other_subproject, subsub_project]
+        elements = [project, subsubsub_project, sub_project, other_subproject, subsub_project]
+        # Add parent groups as if they were preloaded
+        elements += [other_subgroup, subsubsub_group, subsub_group, subgroup]
 
         expected_hierarchy = [
           project,
@@ -149,7 +157,7 @@ describe GroupDescendant, :nested_groups do
           { other_subgroup => other_subproject }
         ]
 
-        actual_hierarchy = described_class.build_hierarchy(projects, parent)
+        actual_hierarchy = described_class.build_hierarchy(elements, parent)
 
         expect(actual_hierarchy).to eq(expected_hierarchy)
       end

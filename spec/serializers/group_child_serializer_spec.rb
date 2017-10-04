@@ -27,7 +27,7 @@ describe GroupChildSerializer do
         subgroup = create(:group, parent: parent)
         subsub_group = create(:group, parent: subgroup)
 
-        json = serializer.represent(subsub_group)
+        json = serializer.represent([subgroup, subsub_group]).first
         subsub_group_json = json[:children].first
 
         expect(json[:id]).to eq(subgroup.id)
@@ -41,7 +41,7 @@ describe GroupChildSerializer do
         subgroup2 = create(:group, parent: parent)
         subsub_group2 = create(:group, parent: subgroup2)
 
-        json = serializer.represent([subsub_group1, subsub_group2])
+        json = serializer.represent([subgroup1, subsub_group1, subgroup1, subgroup2])
         subgroup1_json = json.first
         subsub_group1_json = subgroup1_json[:children].first
 
@@ -58,7 +58,7 @@ describe GroupChildSerializer do
         it 'can render a tree' do
           subgroup = create(:group, parent: parent)
 
-          json = serializer.represent([subgroup])
+          json = serializer.represent([parent, subgroup])
           parent_json = json.first
 
           expect(parent_json[:id]).to eq(parent.id)
@@ -89,7 +89,7 @@ describe GroupChildSerializer do
           subgroup2 = create(:group, parent: parent)
           project2 = create(:project, namespace: subgroup2)
 
-          json = serializer.represent([project1, project2])
+          json = serializer.represent([project1, project2, subgroup1, subgroup2])
           project1_json, project2_json = json.map { |group_json| group_json[:children].first }
 
           expect(json.size).to eq(2)

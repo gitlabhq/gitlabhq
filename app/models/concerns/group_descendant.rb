@@ -22,16 +22,22 @@ module GroupDescendant
   private
 
   def ancestors_upto(hierarchy_top = nil)
-    if hierarchy_top
-      Gitlab::GroupHierarchy.new(Group.where(id: hierarchy_top)).base_and_descendants
+    if self.is_a?(Group)
+      Gitlab::GroupHierarchy.new(Group.where(id: id))
+        .ancestors(upto: hierarchy_top)
     else
-      Gitlab::GroupHierarchy.new(Group.where(id: self)).all_groups
+      Gitlab::GroupHierarchy.new(Group.where(id: parent_id))
+        .base_and_ancestors(upto: hierarchy_top)
     end
   end
 
   def expand_hierarchy_for_child(child, hierarchy, hierarchy_top, preloaded)
-    parent = preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
-    parent ||= child.parent
+    parent = hierarchy_top if hierarchy_top && child.parent_id == hierarchy_top.id
+    parent ||= preloaded.detect { |possible_parent| possible_parent.is_a?(Group) && possible_parent.id == child.parent_id }
+
+    if parent.nil? && !child.parent_id.nil?
+      raise ArgumentError.new('parent was not preloaded')
+    end
 
     if parent.nil? && hierarchy_top.present?
       raise ArgumentError.new('specified top is not part of the tree')
