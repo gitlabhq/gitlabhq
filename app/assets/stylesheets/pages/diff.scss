@@ -732,11 +732,15 @@
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
-  transform: translate3d(-50%, -50%, 0);
 
   &:focus {
     outline: none;
   }
+}
+
+.frame .badge {
+  // Center align badges on the frame
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .image-comment-badge {
