@@ -44,14 +44,14 @@ const createFlashEl = (message, type) => `
  *  along with ability to provide actionConfig which can be used to show
  *  additional action or link on banner next to message
  *
- *  @param {String} message             Flash message text
- *  @param {String} type                Type of Flash, it can be `notice` or `alert` (default)
- *  @param {Object} parent              Reference to parent element under which Flash needs to appear
- *  @param {Object} actonConfig         Map of config to show action on banner
- *    @param {String} href              URL to which action config should point to (default: '#')
- *    @param {String} title             Title of action
- *    @param {Function} clickHandler    Method to call when action is clicked on
- *  @param {Boolean} fadeTransition     Boolean to determine whether to fade the alert out
+ *  @param {String} message           Flash message text
+ *  @param {String} type              Type of Flash, it can be `notice` or `alert` (default)
+ *  @param {Object} parent            Reference to parent element under which Flash needs to appear
+ *  @param {Object} actonConfig       Map of config to show action on banner
+ *    @param {String} href            URL to which action config should point to (default: '#')
+ *    @param {String} title           Title of action
+ *    @param {Function} clickHandler  Method to call when action is clicked on
+ *  @param {Boolean} fadeTransition   Boolean to determine whether to fade the alert out
  */
 const createFlash = function createFlash(
   message,

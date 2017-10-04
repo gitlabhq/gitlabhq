@@ -135,7 +135,6 @@ describe('Flash', () => {
   describe('createFlash', () => {
     describe('no flash-container', () => {
       it('does not add to the DOM', () => {
-        const el = flash('test');
         const flashEl = flash('testing');
 
         expect(
@@ -185,7 +184,7 @@ describe('Flash', () => {
 
         expect(
           document.querySelector('.flash-text').className,
-        ).toBe('flash-text container-fluid container-limited')
+        ).toBe('flash-text container-fluid container-limited');
       });
 
       it('does not add container when outside of content-wrapper', () => {
@@ -194,7 +193,7 @@ describe('Flash', () => {
 
         expect(
           document.querySelector('.flash-text').className,
-        ).toBe('flash-text')
+        ).toBe('flash-text');
       });
 
       it('removes element after clicking', () => {
