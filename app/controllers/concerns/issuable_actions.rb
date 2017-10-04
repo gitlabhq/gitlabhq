@@ -78,7 +78,7 @@ module IssuableActions
       :weight,
       label_ids: [],
       add_label_ids: [],
-      remove_label_ids: [],
+      remove_label_ids: []
     ]
 
     if resource_name == 'issue'

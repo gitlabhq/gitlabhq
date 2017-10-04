@@ -32,8 +32,11 @@ describe API::Boards do
   set(:board_label) { create(:label, project: project) }
 
   set(:board) do
-    create(:board, project: project, milestone: milestone, assignee: user,
-           label_ids: [board_label.id], lists: [dev_list, test_list])
+    create(:board, project: project,
+                   milestone: milestone,
+                   assignee: user,
+                   label_ids: [board_label.id],
+                   lists: [dev_list, test_list])
   end
 
   before do

@@ -26,7 +26,7 @@ module BoardsHelper
     board = @board || @boards.first
 
     board.to_json(
-      only: [:id, :name, :milestone_id],
+      only: [:id, :name, :milestone_id]
     )
   end
 

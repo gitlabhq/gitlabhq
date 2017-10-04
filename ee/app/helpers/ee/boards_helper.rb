@@ -35,7 +35,7 @@ module EE
         only: [:id, :name, :milestone_id, :assignee_id, :weight, :label_ids],
         include: {
           milestone: { only: [:id, :title, :name] },
-          assignee: { only: [:id, :name, :username ], methods: [:avatar_url] },
+          assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
           labels: { only: [:title, :color, :id] }
         }
       )

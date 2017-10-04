@@ -237,9 +237,6 @@ describe 'issue board config', :js do
         end
       end
 
-      # context 'author' do
-      # end
-
       context 'weight' do
         let!(:issue_weight_1) { create(:issue, project: project, weight: 1) }
 
@@ -255,13 +252,6 @@ describe 'issue board config', :js do
 
           expect(page).to have_selector('.card', count: 4)
         end
-
-        # it 'sets board to No weight' do
-          # TODO
-        #   update_board_weight('No weight')
-
-        #   expect(page).to have_selector('.card', count: 3)
-        # end
 
         it 'does not display weight in search hint' do
           update_board_weight(1)
@@ -378,6 +368,6 @@ describe 'issue board config', :js do
 
     click_button 'Save'
     expect(page).to have_selector('.board-list-loading')
-    expect(page).to_not have_selector('.board-list-loading')
+    expect(page).not_to have_selector('.board-list-loading')
   end
 end
