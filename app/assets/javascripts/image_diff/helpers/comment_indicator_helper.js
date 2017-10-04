@@ -1,5 +1,4 @@
-export function addCommentIndicator(containerEl, coordinate) {
-  const { x, y } = coordinate;
+export function addCommentIndicator(containerEl, { x, y }) {
   const buttonEl = document.createElement('button');
   buttonEl.classList.add('btn-transparent');
   buttonEl.classList.add('comment-indicator');
