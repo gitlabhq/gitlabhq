@@ -1,5 +1,4 @@
 <script>
-// TODO: There is no file raw content for the copy source button.
 // TODO: Ask @douwe to confirm v-if="!activeFile.binary" for the copy source button.
 // TODO: Make sure that we implement all possible cases for the button types.
 // FIXME: Preserve preview mode when editor tabs are changed.
@@ -65,6 +64,15 @@ const RepoFileButtons = {
       this.toggleViewer('rich', Store.activeFile.rich_viewer.path);
     },
   },
+  mounted() {
+    Service
+      .getRaw(Store.activeFile.raw_path)
+      .then((res) => {
+        Store.activeFile.plain = res.data;
+        this.$refs.clipboardButton.setAttribute('data-clipboard-text', res.data);
+      })
+      .catch(Helper.loadingError);
+  },
 };
 
 export default RepoFileButtons;
@@ -126,8 +134,8 @@ export default RepoFileButtons;
         v-tooltip
         class="btn btn-default"
         data-container="body"
-        data-title="Copy source to clipboard"
-        :data-clipboard-text="activeFile.raw_path">
+        ref="clipboardButton"
+        data-title="Copy source to clipboard">
         <i
           class="fa fa-clipboard"
           aria-hidden="true"></i>
