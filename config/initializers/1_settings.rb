@@ -373,7 +373,7 @@ Settings.pages['protocol']          ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
 Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
 Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
-Settings.pages['artifacts_server']  ||= Settings.pages['enabled']
+Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 
 #
 # Geo
