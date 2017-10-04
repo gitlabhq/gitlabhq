@@ -46,7 +46,7 @@ module GoogleApi
         config.app_id,
         config.app_secret,
         site: 'https://accounts.google.com',
-        token_url: '/o/oauth2/token', 
+        token_url: '/o/oauth2/token',
         authorize_url: '/o/oauth2/auth'
       )
     end

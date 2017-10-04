@@ -147,6 +147,10 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
+clusters:
+- project
+- user
+- service
 services:
 - project
 - service_hook
@@ -177,6 +181,7 @@ project:
 - tag_taggings
 - tags
 - chat_services
+- cluster
 - creator
 - group
 - namespace

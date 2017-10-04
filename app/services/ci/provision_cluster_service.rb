@@ -6,12 +6,11 @@ module Ci
 
       begin
         operation = api_client.projects_zones_clusters_create(
-            cluster.gcp_project_id,
-            cluster.gcp_cluster_zone,
-            cluster.gcp_cluster_name,
-            cluster.gcp_cluster_size,
-            machine_type: cluster.gcp_machine_type
-          )
+          cluster.gcp_project_id,
+          cluster.gcp_cluster_zone,
+          cluster.gcp_cluster_name,
+          cluster.gcp_cluster_size,
+          machine_type: cluster.gcp_machine_type)
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         return cluster.errored!("Failed to request to CloudPlatform; #{e.message}")
       end

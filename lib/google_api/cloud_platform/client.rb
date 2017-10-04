@@ -44,16 +44,15 @@ module GoogleApi
         service.authorization = access_token
 
         request_body = Google::Apis::ContainerV1::CreateClusterRequest.new(
-            {
-              "cluster": {
-                "name": cluster_name,
-                "initial_node_count": cluster_size,
-                "node_config": {
-                  "machine_type": machine_type # Default 3.75 GB, if ommit
-                }
+          {
+            "cluster": {
+              "name": cluster_name,
+              "initial_node_count": cluster_size,
+              "node_config": {
+                "machine_type": machine_type
               }
             }
-          )
+          } )
 
         service.create_cluster(project_id, zone, request_body)
       end

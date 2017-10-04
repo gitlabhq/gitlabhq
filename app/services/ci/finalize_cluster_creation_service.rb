@@ -1,7 +1,7 @@
 module Ci
   class FinalizeClusterCreationService
     def execute(cluster)
-      api_client = 
+      api_client =
         GoogleApi::CloudPlatform::Client.new(cluster.gcp_token, nil)
 
       begin
