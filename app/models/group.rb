@@ -44,7 +44,13 @@ class Group < Namespace
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   add_authentication_token_field :runners_token
-  before_save :ensure_runners_token
+
+  # each existing group needs to have a `runners_token`.
+  # we do this on read since migrating all existing groups is not a feasible
+  # solution.
+  def runners_token
+    ensure_runners_token!
+  end
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
