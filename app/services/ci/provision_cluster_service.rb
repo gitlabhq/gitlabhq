@@ -12,24 +12,24 @@ module Ci
           cluster.gcp_cluster_size,
           machine_type: cluster.gcp_machine_type)
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        return cluster.errored!("Failed to request to CloudPlatform; #{e.message}")
+        return cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       end
 
       unless operation.status == 'RUNNING' || operation.status == 'PENDING'
-        return cluster.errored!("Operation status is unexpected; #{operation.status_message}")
+        return cluster.make_errored!("Operation status is unexpected; #{operation.status_message}")
       end
 
       cluster.gcp_operation_id = api_client.parse_operation_id(operation.self_link)
 
       unless cluster.gcp_operation_id
-        return cluster.errored!('Can not find operation_id from self_link')
+        return cluster.make_errored!('Can not find operation_id from self_link')
       end
 
-      if cluster.creating
+      if cluster.make_creating
         WaitForClusterCreationWorker.perform_in(
           WaitForClusterCreationWorker::INITIAL_INTERVAL, cluster.id)
       else
-        return cluster.errored!("Failed to update cluster record; #{cluster.errors}")
+        return cluster.make_errored!("Failed to update cluster record; #{cluster.errors}")
       end
     end
   end

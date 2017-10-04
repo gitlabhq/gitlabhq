@@ -10,7 +10,7 @@ module Ci
           username: username,
           password: password,
           service: cluster.project.find_or_initialize_service('kubernetes'),
-          status_event: :created)
+          status_event: :make_created)
 
         cluster.service.update!(
           active: true,

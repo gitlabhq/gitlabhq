@@ -12,14 +12,14 @@ class WaitForClusterCreationWorker
         case operation.status
         when 'RUNNING'
           if TIMEOUT < Time.zone.now - operation.start_time.to_time
-            return cluster.errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
+            return cluster.make_errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
           end
 
           WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, cluster.id)
         when 'DONE'
           Ci::FinalizeClusterCreationService.new.execute(cluster)
         else
-          return cluster.errored!("Unexpected operation status; #{operation.status} #{operation.status_message}")
+          return cluster.make_errored!("Unexpected operation status; #{operation.status} #{operation.status_message}")
         end
       end
     end

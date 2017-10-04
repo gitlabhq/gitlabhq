@@ -11,7 +11,7 @@ module Ci
 
       yield(operation) if block_given?
     rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-      return cluster.errored!("Failed to request to CloudPlatform; #{e.message}")
+      return cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
     end
   end
 end

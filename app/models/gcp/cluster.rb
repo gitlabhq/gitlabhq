@@ -67,15 +67,15 @@ module Gcp
     validate :restrict_modification, on: :update, unless: :status_changed?
 
     state_machine :status, initial: :scheduled do
-      event :creating do
+      event :make_creating do
         transition any - [:creating] => :creating
       end
 
-      event :created do
+      event :make_created do
         transition any - [:created] => :created
       end
 
-      event :errored do
+      event :make_errored do
         transition any - [:errored] => :errored
       end
 

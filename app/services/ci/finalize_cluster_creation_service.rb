@@ -10,7 +10,7 @@ module Ci
           cluster.gcp_cluster_zone,
           cluster.gcp_cluster_name)
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        return cluster.errored!("Failed to request to CloudPlatform; #{e.message}")
+        return cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       end
 
       endpoint = gke_cluster.endpoint
@@ -23,7 +23,7 @@ module Ci
         api_url, ca_cert, username, password).execute
 
       unless kubernetes_token
-        return cluster.errored!('Failed to get a default token of kubernetes')
+        return cluster.make_errored!('Failed to get a default token of kubernetes')
       end
 
       Ci::IntegrateClusterService.new.execute(
