@@ -218,10 +218,6 @@ class Namespace < ActiveRecord::Base
     feature_available?(:multiple_issue_boards)
   end
 
-  def scoped_issue_board_available?(user = nil)
-    feature_available?(:scoped_issue_board)
-  end
-
   private
 
   def refresh_access_of_projects_invited_groups

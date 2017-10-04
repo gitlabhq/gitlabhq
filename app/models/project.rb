@@ -1535,10 +1535,6 @@ class Project < ActiveRecord::Base
     feature_available?(:multiple_issue_boards, user)
   end
 
-  def scoped_issue_board_available?(user = nil)
-    feature_available?(:scoped_issue_board, user)
-  end
-
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end
