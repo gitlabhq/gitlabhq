@@ -747,7 +747,7 @@ describe Gitlab::GitAccess do
     context "when in a read-only GitLab instance" do
       before do
         create(:protected_branch, name: 'feature', project: project)
-        allow(Gitlab::Database).to receive(:readonly?) { true }
+        allow(Gitlab::Database).to receive(:read_only?) { true }
       end
 
       # Only check admin; if an admin can't do it, other roles can't either

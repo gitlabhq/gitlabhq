@@ -1,7 +1,7 @@
 module EE
   module Projects
     module LfsApiController
-      def lfs_readonly_message
+      def lfs_read_only_message
         raise NotImplementedError unless defined?(super)
 
         return super unless ::Gitlab::Geo.secondary_with_primary?

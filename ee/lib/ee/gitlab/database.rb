@@ -1,7 +1,7 @@
 module EE
   module Gitlab
     module Database
-      def self.readonly?
+      def self.read_only?
         raise NotImplementedError unless defined?(super)
 
         Gitlab::Geo.secondary? || super

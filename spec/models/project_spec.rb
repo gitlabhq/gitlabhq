@@ -823,7 +823,7 @@ describe Project do
     end
 
     it 'does not cache data when in a read-only GitLab instance' do
-      allow(Gitlab::Database).to receive(:readonly?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect do
         project.cache_has_external_issue_tracker
@@ -853,7 +853,7 @@ describe Project do
     end
 
     it 'does not cache data when in a read-only GitLab instance' do
-      allow(Gitlab::Database).to receive(:readonly?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect do
         project.cache_has_external_wiki

@@ -31,8 +31,13 @@ module Gitlab
       adapter_name.casecmp('postgresql').zero?
     end
 
-    def self.readonly?
+    # Overridden in EE
+    def self.read_only?
       false
+    end
+
+    def self.read_write?
+      !self.read_only?
     end
 
     def self.version

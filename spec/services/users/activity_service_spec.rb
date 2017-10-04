@@ -41,7 +41,7 @@ describe Users::ActivityService do
 
     context 'when in GitLab read-only instance' do
       before do
-        allow(Gitlab::Database).to receive(:readonly?).and_return(true)
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
       end
 
       it 'does not update last_activity_at' do

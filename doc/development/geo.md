@@ -89,7 +89,7 @@ and prevent user from trying to update the database and getting a 500 error
 Database will already be read-only in a replicated setup, so we don't need to
 take any extra step for that.
 
-We do use our feature toggle `Gitlab::Database.readonly?` to deny write operations
+We do use our feature toggle `Gitlab::Database.read_only?` to deny write operations
 on a node that is in read-only mode. This toggle is also available in CE.
 
 ## File Transfers

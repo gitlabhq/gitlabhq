@@ -13,7 +13,7 @@ module Gitlab
       def call(env)
         @env = env
 
-        if disallowed_request? && Gitlab::Database.readonly?
+        if disallowed_request? && Gitlab::Database.read_only?
           Rails.logger.debug('GitLab Readonly: preventing possible non readonly operation')
           error_message = 'You cannot do writing operations on a read-only GitLab instance'
 

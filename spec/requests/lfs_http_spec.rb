@@ -877,8 +877,7 @@ describe 'Git LFS API and storage' do
     end
   end
 
-  describe 'when handling lfs batch request on a secondary Geo node' do
-    let!(:primary) { create(:geo_node, :primary) }
+  describe 'when handling lfs batch request on a read-only GitLab instance' do
     let(:authorization) { authorize_user }
     let(:project) { create(:project) }
     let(:path) { "#{project.http_url_to_repo}/info/lfs/objects/batch" }
@@ -887,7 +886,7 @@ describe 'Git LFS API and storage' do
     end
 
     before do
-      allow(Gitlab::Database).to receive(:readonly?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
       project.team << [user, :master]
       enable_lfs
     end

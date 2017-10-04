@@ -478,15 +478,11 @@ class User < ActiveRecord::Base
   end
 
   def remember_me!
-    raise NotImplementedError unless defined?(super)
-
-    super unless ::Gitlab::Database.readonly?
+    super if ::Gitlab::Database.read_write?
   end
 
   def forget_me!
-    raise NotImplementedError unless defined?(super)
-
-    super unless ::Gitlab::Database.readonly?
+    super if ::Gitlab::Database.read_write?
   end
 
   def disable_two_factor!
@@ -1079,7 +1075,7 @@ class User < ActiveRecord::Base
   # we do this on read since migrating all existing users is not a feasible
   # solution.
   def rss_token
-    return read_attribute(:rss_token) if Gitlab::Database.readonly?
+    return read_attribute(:rss_token) if Gitlab::Database.read_only?
 
     ensure_rss_token!
   end

@@ -1,7 +1,7 @@
 module EE
   module Admin
     module ApplicationController
-      def readonly_message
+      def read_only_message
         raise NotImplementedError unless defined?(super)
 
         return super unless Gitlab::Geo.secondary_with_primary?

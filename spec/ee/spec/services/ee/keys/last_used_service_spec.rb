@@ -5,7 +5,7 @@ describe Keys::LastUsedService do
     key = create(:key, last_used_at: 1.year.ago)
     original_time = key.last_used_at
 
-    allow(::Gitlab::Database).to receive(:readonly?).and_return(true)
+    allow(::Gitlab::Database).to receive(:read_only?).and_return(true)
     described_class.new(key).execute
 
     expect(key.reload.last_used_at).to be_like_time(original_time)

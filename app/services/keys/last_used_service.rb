@@ -16,7 +16,7 @@ module Keys
     end
 
     def update?
-      return false if ::Gitlab::Database.readonly?
+      return false if ::Gitlab::Database.read_only?
 
       last_used = key.last_used_at
 

@@ -27,7 +27,7 @@ describe Gitlab::GitAccessWiki do
 
       context 'when in a read-only GitLab instance' do
         before do
-          allow(Gitlab::Database).to receive(:readonly?) { true }
+          allow(Gitlab::Database).to receive(:read_only?) { true }
         end
 
         it 'does not give access to upload wiki code' do

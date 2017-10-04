@@ -176,7 +176,7 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:readonly]
       end
 
-      if Gitlab::Database.readonly?
+      if Gitlab::Database.read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_readonly]
       end
 

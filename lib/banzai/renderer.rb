@@ -165,7 +165,7 @@ module Banzai
 
     # GitLab needs to disable updates on GET requests if database is readonly
     def self.update_object?(object)
-      !Gitlab::Database.readonly?
+      Gitlab::Database.read_write?
     end
   end
 end

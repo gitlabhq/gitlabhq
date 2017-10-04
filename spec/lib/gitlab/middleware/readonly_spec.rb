@@ -42,7 +42,7 @@ describe Gitlab::Middleware::Readonly do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     before do
-      allow(Gitlab::Database).to receive(:readonly?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
     it 'expects PATCH requests to be disallowed' do
@@ -112,7 +112,7 @@ describe Gitlab::Middleware::Readonly do
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
 
     before do
-      allow(Gitlab::Database).to receive(:readonly?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
     it 'expects PATCH requests to be disallowed' do

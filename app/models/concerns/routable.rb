@@ -152,7 +152,7 @@ module Routable
   end
 
   def update_route
-    return if Gitlab::Database.readonly?
+    return if Gitlab::Database.read_only?
 
     prepare_route
     route.save

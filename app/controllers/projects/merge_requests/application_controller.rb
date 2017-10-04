@@ -15,7 +15,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   # Make sure merge requests created before 8.0
   # have head file in refs/merge-requests/
   def ensure_ref_fetched
-    @merge_request.ensure_ref_fetched unless Gitlab::Database.readonly?
+    @merge_request.ensure_ref_fetched if Gitlab::Database.read_write?
   end
 
   def merge_request_params

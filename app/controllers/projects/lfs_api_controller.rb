@@ -98,10 +98,10 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   def lfs_check_batch_operation!
-    if upload_request? && Gitlab::Database.readonly?
+    if upload_request? && Gitlab::Database.read_only?
       render(
         json: {
-          message: lfs_readonly_message
+          message: lfs_read_only_message
         },
         content_type: 'application/vnd.git-lfs+json',
         status: 403
@@ -110,7 +110,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   # Overridden in EE
-  def lfs_readonly_message
+  def lfs_read_only_message
     _('You cannot write to this read-only GitLab instance.')
   end
 end
