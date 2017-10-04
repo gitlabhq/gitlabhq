@@ -19,7 +19,7 @@
             discussion_expanded: true,
             plain: true }
   - else
-    - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replace_image_diff'
+    - partial = (diff_file.new_file? || diff_file.deleted_file?) ? 'single_image_diff' : 'replaced_image_diff'
 
     = render partial: "projects/diffs/#{partial}", locals: { diff_file: diff_file, position: discussion.position.to_json, click_to_comment: false }
 
