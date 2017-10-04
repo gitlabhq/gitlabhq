@@ -1616,6 +1616,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "max_file_size", default: 0, null: false
     t.boolean "prevent_secrets", default: false, null: false
     t.string "branch_name_regex"
+    t.boolean "reject_unsigned_commits"
   end
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
