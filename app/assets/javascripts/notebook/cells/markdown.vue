@@ -1,10 +1,3 @@
-<template>
-  <div class="cell text-cell">
-    <prompt />
-    <div class="markdown" v-html="markdown"></div>
-  </div>
-</template>
-
 <script>
   /* global katex */
   import marked from 'marked';
@@ -94,6 +87,13 @@
     },
   };
 </script>
+
+<template>
+  <div class="cell text-cell">
+    <prompt />
+    <div class="markdown" v-html="markdown"></div>
+  </div>
+</template>
 
 <style>
 .markdown .katex {
