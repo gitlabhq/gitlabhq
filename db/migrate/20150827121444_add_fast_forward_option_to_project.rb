@@ -12,6 +12,8 @@ class AddFastForwardOptionToProject < ActiveRecord::Migration
   end
 
   def down
-    remove_column(:projects, :merge_requests_ff_only_enabled)
+    if column_exists?(:projects, :merge_requests_ff_only_enabled)
+      remove_column(:projects, :merge_requests_ff_only_enabled)
+    end
   end
 end
