@@ -1,11 +1,3 @@
-<template>
-  <div class="output">
-    <prompt />
-    <img
-      :src="'data:' + outputType + ';base64,' + rawCode" />
-  </div>
-</template>
-
 <script>
 import Prompt from '../prompt.vue';
 
@@ -25,3 +17,11 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div class="output">
+    <prompt />
+    <img
+      :src="'data:' + outputType + ';base64,' + rawCode" />
+  </div>
+</template>
