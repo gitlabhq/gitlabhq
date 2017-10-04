@@ -40,12 +40,6 @@ body.modal-open {
   max-width: 440px;
 }
 
-.modal-dialog {
-  // TODO: this needs top and bottom padding (inside content area)
-  max-height: calc(100vh - #{$new-navbar-height});
-  padding: $gl-padding;
-}
-
 .modal.popup-dialog {
   display: block;
 

@@ -41,7 +41,7 @@ export default {
       return this.board.milestone ? this.board.milestone.id : '';
     },
     milestoneTitleClass() {
-      return this.milestoneTitle === 'ANY_MILESTONE' ? 'bold' : 'text-secondary';
+      return this.milestoneTitle === 'ANY_MILESTONE' ? 'text-secondary': 'bold';
     },
     selected() {
       return this.board.milestone ? this.board.milestone.name : '';
