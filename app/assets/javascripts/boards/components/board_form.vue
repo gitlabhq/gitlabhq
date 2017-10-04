@@ -31,6 +31,7 @@
           type="text"
           id="board-new-name"
           v-model="board.name"
+          placeholder="Enter board name"
         >
       </div>
       <div v-if="scopedIssueBoardFeatureEnabled">
@@ -202,16 +203,17 @@ export default Vue.extend({
     },
     buttonText() {
       if (this.isNewForm) {
-        return 'Create';
+        return 'Create board';
       }
-
       if (this.isDeleteForm) {
         return 'Delete';
       }
-
-      return 'Save';
+      return 'Save changes';
     },
     buttonKind() {
+      if (this.isNewForm) {
+        return 'success';
+      }
       if (this.isDeleteForm) {
         return 'danger';
       }
@@ -221,15 +223,12 @@ export default Vue.extend({
       if (this.isNewForm) {
         return 'Create new board';
       }
-
       if (this.isDeleteForm) {
         return 'Delete board';
       }
-
       if (this.readonly) {
         return 'Board scope';
       }
-
       return 'Edit board';
     },
     milestoneToggleText() {
