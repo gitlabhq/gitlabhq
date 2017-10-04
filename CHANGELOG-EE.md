@@ -53,6 +53,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
 
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fix EE delta size check handling with annotated tags.
+- [FIXED] Fix delta size check to handle commit or nil objects.
+
 ## 9.5.7 (2017-10-03)
 
 - No changes.
