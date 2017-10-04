@@ -236,6 +236,13 @@ describe Ci::Runner do
       build.project.runners << runner
     end
 
+    context 'a different runner' do
+      it 'cannot handle builds' do
+        other_runner = create :ci_runner
+        expect(other_runner.can_pick?(build)).to be_falsey
+      end
+    end
+
     context 'when runner does not have tags' do
       it 'can handle builds without tags' do
         expect(runner.can_pick?(build)).to be_truthy
@@ -277,7 +284,7 @@ describe Ci::Runner do
 
       context 'when runner cannot pick untagged jobs' do
         before do
-          runner.run_untagged = false
+          runner.update_attributes!(run_untagged: false)
         end
 
         it 'cannot handle builds without tags' do
@@ -290,7 +297,7 @@ describe Ci::Runner do
 
     context 'when runner is shared' do
       before do
-        runner.is_shared = true
+        runner.update_attributes!(is_shared: true)
         build.project.runners = []
       end
 
@@ -300,7 +307,7 @@ describe Ci::Runner do
 
       context 'when runner is locked' do
         before do
-          runner.locked = true
+          runner.update_attributes!(locked: true)
         end
 
         it 'can handle builds' do
@@ -323,6 +330,17 @@ describe Ci::Runner do
 
         it 'cannot handle builds' do
           expect(runner.can_pick?(build)).to be_falsey
+        end
+      end
+
+      context 'when runner is assigned to a group' do
+        before do
+          build.project.runners = []
+          runner.groups << create(:group, projects: [build.project])
+        end
+
+        it 'can handle builds' do
+          expect(runner.can_pick?(build)).to be_truthy
         end
       end
     end

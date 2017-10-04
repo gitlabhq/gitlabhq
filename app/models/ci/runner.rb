@@ -227,7 +227,7 @@ module Ci
     end
 
     def assignable_for?(project_id)
-      is_shared? || projects.exists?(id: project_id)
+      self.class.owned_or_shared(project_id).where(id: self.id).any?
     end
 
     def accepting_tags?(build)
