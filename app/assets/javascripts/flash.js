@@ -1,23 +1,27 @@
 import _ from 'underscore';
 
-const hideFlash = (flashEl) => {
-  Object.assign(flashEl.style, {
-    transition: 'opacity .3s',
-    opacity: '0',
-  });
+const hideFlash = (flashEl, fadeTransition = true) => {
+  if (fadeTransition) {
+    Object.assign(flashEl.style, {
+      transition: 'opacity .3s',
+      opacity: '0',
+    });
+  }
 
   flashEl.addEventListener('transitionend', () => {
     flashEl.remove();
   }, {
     once: true,
   });
+
+  if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
 };
 
 const createAction = config => `
   <a
     href="${config.href || '#'}"
     class="flash-action"
-    ${config.href ? 'role="button"' : ''}
+    ${config.href ? '' : 'role="button"'}
   >
     ${_.escape(config.title)}
   </a>
@@ -35,7 +39,27 @@ const createFlashEl = (message, type) => `
   </div>
 `;
 
-const createFlash = function createFlash(message, type = 'alert', parent = document, actionConfig = null) {
+/*
+ *  Flash banner supports different types of Flash configurations
+ *  along with ability to provide actionConfig which can be used to show
+ *  additional action or link on banner next to message
+ *
+ *  @param {String} message             Flash message text
+ *  @param {String} type                Type of Flash, it can be `notice` or `alert` (default)
+ *  @param {Object} parent              Reference to parent element under which Flash needs to appear
+ *  @param {Object} actonConfig         Map of config to show action on banner
+ *    @param {String} href              URL to which action config should point to (default: '#')
+ *    @param {String} title             Title of action
+ *    @param {Function} clickHandler    Method to call when action is clicked on
+ *  @param {Boolean} fadeTransition     Boolean to determine whether to fade the alert out
+ */
+const createFlash = function createFlash(
+  message,
+  type = 'alert',
+  parent = document,
+  actionConfig = null,
+  fadeTransition = true,
+) {
   const flashContainer = parent.querySelector('.flash-container');
 
   if (!flashContainer) return null;
@@ -43,7 +67,7 @@ const createFlash = function createFlash(message, type = 'alert', parent = docum
   flashContainer.innerHTML = createFlashEl(message, type);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
-  flashEl.addEventListener('click', () => hideFlash(flashEl));
+  flashEl.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 
   if (actionConfig) {
     flashEl.innerHTML += createAction(actionConfig);
@@ -55,9 +79,7 @@ const createFlash = function createFlash(message, type = 'alert', parent = docum
 
   if (flashContainer.parentNode.classList.contains('content-wrapper')) {
     const flashText = flashEl.querySelector('.flash-text');
-
-    flashText.classList.add('container-fluid');
-    flashText.classList.add('container-limited');
+    flashText.className = `${flashText.className} container-fluid container-limited`;
   }
 
   flashContainer.style.display = 'block';
@@ -68,6 +90,7 @@ const createFlash = function createFlash(message, type = 'alert', parent = docum
 export {
   createFlash as default,
   createFlashEl,
+  createAction,
   hideFlash,
 };
 window.Flash = createFlash;
