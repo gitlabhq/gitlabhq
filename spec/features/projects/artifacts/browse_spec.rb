@@ -35,7 +35,10 @@ feature 'Browse artifact', :js do
     it "shows external link icon and styles" do
       link = first('.tree-item-file-external-link')
 
-      expect(link).to have_content('doc_sample.txt')
+      expect(page).to have_link('doc_sample.txt', href: file_project_job_artifacts_path(project, job, path: txt_entry.blob.path))
+      expect(link[:target]).to eq('_blank')
+      expect(link[:rel]).to include('noopener')
+      expect(link[:rel]).to include('noreferrer')
       expect(page).to have_selector('.js-artifact-tree-external-icon')
     end
   end
