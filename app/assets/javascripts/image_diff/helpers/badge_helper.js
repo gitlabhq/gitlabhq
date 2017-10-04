@@ -32,8 +32,7 @@ export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   buttonEl.setAttribute('disabled', true);
 
   const iconEl = document.createElement('i');
-  iconEl.classList.add('fa');
-  iconEl.classList.add('fa-comment-o');
+  iconEl.className = 'fa fa-comment-o';
   iconEl.setAttribute('aria-label', 'comment');
 
   buttonEl.appendChild(iconEl);
