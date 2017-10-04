@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Flash from '../../flash';
 import Store from '../stores/repo_store';
 import Api from '../../api';
 import Helper from '../helpers/repo_helper';
@@ -72,9 +71,9 @@ const RepoService = {
 
   commitFlash(data) {
     if (data.short_id && data.stats) {
-      Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      window.Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
     } else {
-      Flash(data.message);
+      window.Flash(data.message);
     }
   },
 };

@@ -1,6 +1,5 @@
 <script>
 import Visibility from 'visibilityjs';
-import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';
@@ -153,7 +152,7 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error updating issue');
+          window.Flash('Error updating issue');
         });
     },
     deleteIssuable() {
@@ -167,7 +166,7 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error deleting issue');
+          window.Flash('Error deleting issue');
         });
     },
   },

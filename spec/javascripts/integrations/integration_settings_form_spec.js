@@ -138,9 +138,9 @@ describe('IntegrationSettingsForm', () => {
       deferred.resolve({ error: true, message: errorMessage, service_response: 'some error' });
 
       const $flashContainer = $('.flash-container');
-      expect($flashContainer.find('.flash-text').text()).toEqual('Test failed. some error');
+      expect($flashContainer.find('.flash-text').text().trim()).toEqual('Test failed. some error');
       expect($flashContainer.find('.flash-action')).toBeDefined();
-      expect($flashContainer.find('.flash-action').text()).toEqual('Save anyway');
+      expect($flashContainer.find('.flash-action').text().trim()).toEqual('Save anyway');
     });
 
     it('should submit form if ajax request responds without any error in test', () => {
@@ -168,7 +168,7 @@ describe('IntegrationSettingsForm', () => {
       expect($flashAction).toBeDefined();
 
       spyOn(integrationSettingsForm.$form, 'submit');
-      $flashAction.trigger('click');
+      $flashAction.get(0).click();
       expect(integrationSettingsForm.$form.submit).toHaveBeenCalled();
     });
 
