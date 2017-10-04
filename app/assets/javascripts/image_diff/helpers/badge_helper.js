@@ -3,6 +3,7 @@ export function createImageBadge(noteId, classNames = []) {
   const classList = classNames.concat(['btn-transparent', 'js-image-badge']);
   classList.forEach(className => buttonEl.classList.add(className));
   buttonEl.setAttribute('type', 'button');
+  buttonEl.setAttribute('disabled', true);
   buttonEl.dataset.noteId = noteId;
 
   return buttonEl;
@@ -21,7 +22,6 @@ export function centerButtonToCoordinate(buttonEl, coordinate) {
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
   const buttonEl = createImageBadge(noteId, ['badge']);
   buttonEl.innerText = badgeText;
-  buttonEl.setAttribute('disabled', true);
 
   containerEl.appendChild(buttonEl);
   centerButtonToCoordinate(buttonEl, coordinate);
@@ -29,8 +29,6 @@ export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   const buttonEl = createImageBadge(noteId, ['image-comment-badge', 'inverted']);
-  buttonEl.setAttribute('disabled', true);
-
   const iconEl = document.createElement('i');
   iconEl.className = 'fa fa-comment-o';
   iconEl.setAttribute('aria-label', 'comment');
