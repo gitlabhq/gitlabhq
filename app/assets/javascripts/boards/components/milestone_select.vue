@@ -4,6 +4,8 @@
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import extraMilestones from '../mixins/extra_milestones';
 
+const ANY_MILESTONE = 'Any Milestone';
+
 export default {
   props: {
     board: {
@@ -28,21 +30,22 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      isOpen: false,
-      loading: true,
-      milestones: [],
-      extraMilestones,
-    };
-  },
   components: {
     loadingIcon,
   },
   computed: {
     milestoneTitle() {
-      return this.board.milestone ? this.board.milestone.title : '';
+      return this.board.milestone ? this.board.milestone.title : ANY_MILESTONE;
     },
+    milestoneId() {
+      return this.board.milestone ? this.board.milestone.id : '';
+    },
+    milestoneTitleClass() {
+      return this.milestoneTitle === 'ANY_MILESTONE' ? 'bold' : 'text-secondary';
+    },
+    selected() {
+      return this.board.milestone ? this.board.milestone.name : '';
+    }
   },
   methods: {
     selectMilestone(milestone) {
@@ -70,17 +73,8 @@ export default {
       </a>
     </div>
     <div class="value">
-      <span
-        class="no-value"
-        v-if="!board.milestone"
-      >
-        None
-      </span>
-      <span
-        class="bold has-tooltip"
-        v-if="board.milestone"
-      >
-        {{ board.milestone.title }}
+      <span :class="milestoneTitleClass">
+        {{ milestoneTitle }}
       </span>
     </div>
     <div
@@ -88,15 +82,14 @@ export default {
       style="display: none;"
     >
       <input
-        :value="board.milestone.id"
+        :value="milestoneId"
         name="milestone_id"
         type="hidden"
-        v-if="board.milestone"
       >
       <div class="dropdown">
         <button
           ref="dropdownButton"
-          :data-selected="milestoneTitle"
+          :data-selected="selected"
           class="dropdown-menu-toggle wide"
           :data-milestones="milestonePath"
           :data-show-no="true"

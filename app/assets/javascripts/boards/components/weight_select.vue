@@ -5,6 +5,8 @@ import '~/weight_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../eventhub';
 
+const ANY_WEIGHT = 'Any Weight';
+
 export default {
   props: {
     board: {
@@ -43,11 +45,14 @@ export default {
   },
   computed: {
     valueClass() {
-      if (this.value === 'Any Weight') {
+      if (this.valueText === ANY_WEIGHT) {
         return 'text-secondary';
       }
       return 'bold';
     },
+    valueText() {
+      return this.value || ANY_WEIGHT;
+    }
   },
   methods: {
     selectWeight(weight) {
@@ -80,7 +85,7 @@ export default {
       class="value"
       :class="valueClass"
     >
-      {{ value }}
+      {{ valueText }}
     </div>
     <div
       class="selectbox"

@@ -36,6 +36,10 @@ class BoardService {
       board.assignee_id = board.assignee.id;
     }
 
+    if (board.milestone) {
+      board.milestone_id = board.milestone.id;
+    }
+
     if (board.id) {
       return this.boards.update({ id: board.id }, { board });
     }

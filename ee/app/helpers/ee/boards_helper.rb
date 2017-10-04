@@ -35,7 +35,7 @@ module EE
       board.to_json(
         only: [:id, :name, :milestone_id, :author_id, :assignee_id, :weight, :label_ids],
         include: {
-          milestone: { only: [:title] },
+          milestone: { only: [:id, :title, :name] },
           author: { only: [:id, :name, :username ], methods: [:avatar_url] },
           assignee: { only: [:id, :name, :username ], methods: [:avatar_url] },
           labels: { only: [:title, :color, :id] }
