@@ -191,5 +191,29 @@ describe GpgKey do
 
       expect(unrelated_gpg_key.destroyed?).to be false
     end
+
+    it 'deletes all the associated subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+
+      expect(gpg_key.subkeys).to be_present
+
+      gpg_key.revoke
+
+      expect(gpg_key.subkeys(true)).to be_blank
+    end
+
+    it 'invalidates all signatures associated to the subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+      gpg_key_subkey = gpg_key.subkeys.last
+      gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: gpg_key_subkey
+
+      gpg_key.revoke
+
+      expect(gpg_signature.reload).to have_attributes(
+        verification_status: 'unknown_key',
+        gpg_key: nil,
+        gpg_key_subkey: nil
+      )
+    end
   end
 end

@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe GpgSignature do
+  let(:gpg_key) { create(:gpg_key) }
+  let(:gpg_key_subkey) { create(:gpg_key_subkey) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:gpg_key) }
@@ -24,6 +27,28 @@ RSpec.describe GpgSignature do
       expect_any_instance_of(Project).to receive(:commit).with(commit_sha).and_return(commit)
 
       gpg_signature.commit
+    end
+  end
+
+  describe '#gpg_key=' do
+    it 'supports the assignment of a GpgKey' do
+      gpg_signature = create(:gpg_signature, gpg_key: gpg_key)
+
+      expect(gpg_signature.gpg_key).to be_an_instance_of(GpgKey)
+    end
+
+    it 'supports the assignment of a GpgKeySubkey' do
+      gpg_signature = create(:gpg_signature, gpg_key: gpg_key_subkey)
+
+      expect(gpg_signature.gpg_key).to be_an_instance_of(GpgKeySubkey)
+    end
+
+    it 'clears gpg_key and gpg_key_subkey_id when passing nil' do
+      gpg_signature = create(:gpg_signature, gpg_key: gpg_key_subkey)
+      gpg_signature.update_attribute(:gpg_key, nil)
+
+      expect(gpg_signature.gpg_key_id).to be_nil
+      expect(gpg_signature.gpg_key_subkey_id).to be_nil
     end
   end
 end
