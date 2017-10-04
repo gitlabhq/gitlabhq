@@ -1022,6 +1022,7 @@ module API
         expose :cache, using: Cache
         expose :credentials, using: Credentials
         expose :dependencies, using: Dependency
+        expose :features
       end
     end
 
