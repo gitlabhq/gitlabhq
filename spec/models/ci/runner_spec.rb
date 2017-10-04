@@ -65,7 +65,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.project' do
+  describe '.belonging_to_project' do
     it 'returns the specific project runner' do
       # own
       specific_project = create :project
@@ -75,11 +75,11 @@ describe Ci::Runner do
       other_project = create :project
       create :ci_runner, :specific, projects: [other_project]
 
-      expect(described_class.project(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_project(specific_project.id)).to eq [specific_runner]
     end
   end
 
-  describe '.project_group' do
+  describe '.belonging_to_group' do
     it 'returns the specific group runner' do
       # own
       specific_group = create :group
@@ -91,7 +91,7 @@ describe Ci::Runner do
       create :project, group: other_group
       create :ci_runner, :specific, groups: [other_group]
 
-      expect(described_class.project_group(specific_project.id)).to eq [specific_runner]
+      expect(described_class.belonging_to_group(specific_project.id)).to eq [specific_runner]
     end
 
     it 'does not return the group runner if the project has group runners disabled' do
@@ -99,7 +99,7 @@ describe Ci::Runner do
       specific_project = create :project, group: specific_group, group_runners_enabled: false
       create :ci_runner, :specific, groups: [specific_group]
 
-      expect(described_class.project_group(specific_project.id)).to be_empty
+      expect(described_class.belonging_to_group(specific_project.id)).to be_empty
     end
   end
 

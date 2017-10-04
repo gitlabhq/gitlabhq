@@ -26,10 +26,10 @@ module Ci
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, -> { order(id: :desc) }
-    scope :project, -> (project_id) {
+    scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
-    scope :project_group, -> (project_id) {
+    scope :belonging_to_group, -> (project_id) {
       joins(
         %{
           INNER JOIN ci_runner_groups ON ci_runner_groups.runner_id = ci_runners.id
@@ -48,7 +48,7 @@ module Ci
     }
 
     scope :owned_or_shared, -> (project_id) do
-      union = Gitlab::SQL::Union.new([project(project_id), project_group(project_id), shared])
+      union = Gitlab::SQL::Union.new([belonging_to_project(project_id), belonging_to_group(project_id), shared])
       from("(#{union.to_sql}) ci_runners")
     end
 
