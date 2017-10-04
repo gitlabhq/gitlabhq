@@ -11,7 +11,8 @@ export default {
     },
 
     showButton() {
-      return this.isCommitable &&
+      return this.signedIn &&
+        this.isCommitable &&
         !this.activeFile.render_error &&
         !this.binary &&
         this.openedFiles.length;
@@ -19,6 +20,10 @@ export default {
   },
   methods: {
     editCancelClicked() {
+      if(!this.canCommit) {
+        
+        return;
+      }
       if (this.changedFiles.length) {
         this.dialog.open = true;
         return;

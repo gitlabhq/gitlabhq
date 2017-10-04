@@ -4,6 +4,7 @@ import Service from '../services/repo_service';
 const RepoStore = {
   monaco: {},
   monacoLoading: false,
+  signedIn: '',
   service: '',
   canCommit: false,
   onTopOfBranch: false,

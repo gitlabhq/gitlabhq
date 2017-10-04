@@ -9,6 +9,10 @@ export default {
 
   mixins: [RepoMixin],
 
+  mounted() {
+    console.log('Store.currentUser',Store.currentUser);
+  },
+
   computed: {
     showCommitable() {
       return this.isCommitable && this.changedFiles.length;
@@ -86,7 +90,7 @@ export default {
         <label
           class="col-md-4 control-label"
           for="commit-message">
-          Commit message
+          Commit message ({{canCommit}})
         </label>
         <div class="col-md-6">
           <textarea
