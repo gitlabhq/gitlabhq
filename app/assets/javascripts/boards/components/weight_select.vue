@@ -1,6 +1,7 @@
 <script>
-/* global BoardService */
+/* global BoardService, WeightSelect */
 
+import '~/weight_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../eventhub';
 
@@ -34,86 +35,99 @@ export default {
   },
   data() {
     return {
-      isOpen: false,
+      fieldName: 'weight',
     };
   },
   components: {
     loadingIcon,
   },
   computed: {
-    weight() {
-      if (parseInt(this.board.weight, 10) === 0) {
-        return 'No Weight';
+    valueClass() {
+      if (this.value === 'Any Weight') {
+        return 'placeholder';
       }
-      return this.board.weight || 'Any weight';
+      return 'bold';
     },
   },
   methods: {
     selectWeight(weight) {
       this.$set(this.board, 'weight', weight);
-      this.close();
-    },
-    open() {
-      this.isOpen = true;
-    },
-    close() {
-      this.isOpen = false;
-    },
-    toggle() {
-      this.isOpen = !this.isOpen;
     },
   },
+  mounted() {
+    new WeightSelect(this.$refs.dropdownButton, {
+      handleClick: this.selectWeight,
+      selected: this.value,
+      fieldName: this.fieldName,
+    });
+  }
 };
 </script>
 
 <template>
-  <div class="dropdown weight" :class="{ open: isOpen }">
+  <div class="block weight">
     <div class="title append-bottom-10">
       {{ title }}
       <a
         v-if="canEdit"
         class="edit-link pull-right"
         href="#"
-        @click.prevent="toggle"
       >
         Edit
       </a>
     </div>
     <div
-      class="dropdown-menu dropdown-menu-wide"
+      class="value"
+      :class="valueClass"
     >
-      <ul
-        ref="list"
-      >
-        <li>
-          <a
-            href="#"
-            @click.prevent.stop="selectWeight(null)"
-          >
-            <i
-              class="fa fa-check"
-              v-if="!value"></i>
-            Any weight
-          </a>
-        </li>
-        <li
-          v-for="weight in weights"
-          :key="weight.id"
-        >
-          <a
-            href="#"
-            @click.prevent.stop="selectWeight(weight)">
-            <i
-              class="fa fa-check"
-              v-if="weight === value"
-            />
-            {{ weight }}
-          </a>
-        </li>
-      </ul>
+      {{ value }}
     </div>
-    <div class="value">
-      {{ weight }}
+    <div
+      class="selectbox"
+      style="display: none;"
+    >
+      <input
+        type="hidden"
+        :name="this.fieldName"
+      />
+      <div class="dropdown ">
+        <button
+          ref="dropdownButton"
+          class="dropdown-menu-toggle js-weight-select wide"
+          type="button"
+          data-default-label="Weight"
+          data-toggle="dropdown"
+        >
+          <span class="dropdown-toggle-text is-default">
+            Weight
+          </span>
+          <i
+            aria-hidden="true"
+            data-hidden="true"
+            class="fa fa-chevron-down"
+          />
+        </button>
+        <div class="dropdown-menu dropdown-select dropdown-menu-selectable dropdown-menu-weight">
+          <div class="dropdown-content ">
+            <ul>
+              <li
+                v-for="weight in weights"
+                :key="weight"
+              >
+                <a
+                  :data-id="weight"
+                  href="#"
+                >
+                  {{ weight }}
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="dropdown-loading">
+            <loading-icon />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

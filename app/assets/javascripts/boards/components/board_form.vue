@@ -51,7 +51,7 @@
             {{ expandButtonText }}
           </button>
         </div>
-        <p class="light append-bottom-10">
+        <p class="text-secondary append-bottom-10">
           Board scope affects which issues are displayed for anyone who visits this board
         </p>
         <div v-if="!collapseScope || expanded">
