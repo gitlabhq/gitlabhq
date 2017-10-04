@@ -2,6 +2,7 @@
                project_name: project.name,
                refs_url: refs_project_path(project, format: :json),
                project_url: project_path(project),
+               fork_url: namespace_project_forks_path(project.namespace, project),
                project_id: project.id,
                can_commit: (!!can_push_branch?(project, @ref)).to_s,
                signed_in: current_user ? 'true' : false,

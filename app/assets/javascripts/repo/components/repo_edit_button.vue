@@ -48,10 +48,10 @@ export default {
 <div>
   <popup-dialog
     v-if="showForkDialog"
-    :primary-button-label="__('Create New Branch')"
+    :primary-button-label="__('Create Fork')"
     kind="primary"
-    :title="__('Branch has changed')"
-    :body="__('This branch has changed since your started editing. Would you like to create a new branch?')"
+    :title="__('Create a Fork')"
+    :body="__('You are not allowed to edit files in this project directly. Please fork this project, make your changes there, and submit a merge request.')"
     @submit="forkRepoSubmit"
   />
   <button

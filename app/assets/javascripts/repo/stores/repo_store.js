@@ -15,6 +15,7 @@ const RepoStore = {
   projectId: '',
   projectName: '',
   projectUrl: '',
+  forkUrl: '',
   blobRaw: '',
   currentBlobView: 'repo-preview',
   openedFiles: [],
