@@ -40,8 +40,9 @@ export function generateBadgeFromDiscussionDOM(imageFrameEl, discussionEl) {
 export function getTargetSelection(event) {
   const containerEl = event.currentTarget;
   const imageEl = containerEl.querySelector('img');
-  const x = event.offsetX ? (event.offsetX) : event.pageX - containerEl.offsetLeft;
-  const y = event.offsetY ? (event.offsetY) : event.pageY - containerEl.offsetTop;
+
+  const x = event.offsetX;
+  const y = event.offsetY;
 
   const width = imageEl.width;
   const height = imageEl.height;
