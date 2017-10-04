@@ -4,74 +4,58 @@ import axios from 'axios';
 import Poll from './lib/utils/poll';
 import { s__ } from './locale';
 import './flash';
-import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
-class ClusterService {
-  constructor(options = {}) {
-    this.options = options;
-  }
-
-  fetchData() {
-    return axios.get(this.options.endpoints.checkStatus);
-  }
-
-  updateData(value) {
-    return axios.put(this.options.endpoints.editPath,
-      {
-        cluster: {
-          enabled: value,
-        },
-      },
-    );
-  }
-}
 /**
  * Cluster page has 2 separate parts:
- * - Update form with toggle button
- * -- Check initial state and set the toggle button
- * -- Listen to changes
- * -- Check permissions in order to disable
- * -- Update cluster based on toggle status
+ *   Toggle button
  *
  * - Polling status while creating or scheduled
  * -- Update status area with the response result
  *
  */
+
+class ClusterService {
+  constructor(options = {}) {
+    this.options = options;
+  }
+  fetchData() {
+    return axios.get(this.options.endpoint);
+  }
+}
+
 export default class ClusterEdit {
   constructor() {
     const dataset = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.state = {
-      endpoints: {
-        checkStatus: dataset.checkStatus,
-        editPath: dataset.editPath,
-      },
-      canUpdate: convertPermissionToBoolean(dataset.canUpdate),
+      statusPath: dataset.statusPath,
       clusterStatus: dataset.clusterStatus,
+      clusterStatusReason: dataset.clusterStatusReason,
       toggleStatus: dataset.toggleStatus,
     };
 
-    this.service = new ClusterService({ endpoints: this.state.endpoints });
+    this.service = new ClusterService({ endpoint: this.state.statusPath });
     this.toggleButton = document.querySelector('.js-toggle-cluster');
+    this.toggleInput = document.querySelector('.js-toggle-input');
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
 
-    this.initEditForm();
+    this.toggleButton.addEventListener('click', this.toggle.bind(this));
 
-    if (this.clusterStatus === 'scheduled' || this.clusterStatus === 'creating') {
+    if (this.state.clusterStatus !== 'created') {
+      this.updateContainer(this.state.clusterStatus, this.state.clusterStatusReason);
+    }
+
+    if (this.state.statusPath) {
       this.initPoling();
     }
-  }
-
-  initEditForm() {
-    this.toggleButton.addEventListener('click', this.toggle.bind(this));
-    document.querySelector('.js-edit-cluster-button').addEventListener('click', this.updateData.bind(this));
   }
 
   toggle() {
     this.toggleButton.classList.toggle('checked');
     this.state.toggleStatus = this.toggleButton.classList.contains('checked').toString();
+    this.toggleInput.setAttribute('value', this.state.toggleStatus);
   }
 
   updateData() {
@@ -83,11 +67,10 @@ export default class ClusterEdit {
       resource: this.service,
       method: 'fetchData',
       successCallback: (data) => {
-        const { status } = data.data;
-        this.updateContainer(status);
+        const { status, status_reason } = data.data;
+        this.updateContainer(status, status_reason);
       },
-      errorCallback: (error) => {
-        this.updateContainer('error', error);
+      errorCallback: () => {
         Flash(s__('ClusterIntegration|Something went wrong on our end.'));
       },
     });
@@ -119,12 +102,13 @@ export default class ClusterEdit {
       case 'created':
         this.successContainer.classList.remove('hidden');
         break;
-      case 'error':
+      case 'errored':
         this.errorContainer.classList.remove('hidden');
         this.errorContainer.querySelector('.js-error-reason').textContent = error.status_reason;
         break;
+      case 'scheduled':
       case 'creating':
-        this.creatingContainer.classList.add('hidden');
+        this.creatingContainer.classList.remove('hidden');
         break;
       default:
         this.hideAll();

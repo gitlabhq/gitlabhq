@@ -1,8 +1,8 @@
-.row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { check_status: status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json),
-  edit_path: namespace_project_cluster_path(@project.namespace, @project, @cluster.id, format: :json),
-  can_update: can?(current_user, :update_cluster, @cluster),
+- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster) && @cluster.on_creation?
+.row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
-  cluster_status: @cluster.status }}
+  cluster_status: @cluster.status,
+  cluster_status_reason: @cluster.status_reason }}
   = render 'sidebar'
   .col-lg-8
     %h4.prepend-top-0
@@ -16,39 +16,38 @@
       - else
         = s_('ClusterIntegration|Cluster integration is disabled for this project.')
 
-    %label.toggle-wrapper
-      %button{ type: 'button',
-        class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
-        'aria-label': 'Toggle',
-        disabled: !can?(current_user, :update_cluster, @cluster),
-        data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
-
-    - if can?(current_user, :update_cluster, @cluster)
+    = form_for [@project.namespace.becomes(Namespace), @project, @cluster] do |field|
+      = form_errors(@cluster)
       .form-group
-        %button{ type: 'button', class: 'js-edit-cluster-button btn btn-success'}
-          = s_('ClusterIntegration|Save changes')
+        %label.toggle-wrapper
+          = field.hidden_field :enabled, { class: 'js-toggle-input'}
 
+          %button{ type: 'button',
+            class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
+            'aria-label': 'Toggle',
+            disabled: !can?(current_user, :update_cluster, @cluster),
+            data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
+
+        - if can?(current_user, :update_cluster, @cluster)
+          .form-group
+            = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'
 
     - if can?(current_user, :admin_cluster, @cluster)
-      .form_group
-        %label
-          = s_('ClusterIntegration|Google container engine')
-          %p
-            - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), '', target: '_blank', rel: 'noopener noreferrer')
-            = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
+      %label
+        = s_('ClusterIntegration|Google container engine')
+      %p
+        - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), '', target: '_blank', rel: 'noopener noreferrer')
+        = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
-      - if @cluster.errored?
-        .js-cluster-error.alert.alert-danger{ role: 'alert' }
-          = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
-          %code.js-error-reason
+      .hidden.js-cluster-error.alert.alert-danger{ role: 'alert' }
+        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
+        %code.js-error-reason
 
-      - if @cluster.on_creation?
-        .js-cluster-creating.alert.alert-info{ role: 'alert' }
-          = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
+      .hidden.js-cluster-creating.alert.alert-info{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
 
-      - if @cluster.created?
-        .js-cluster-success.alert.alert-info{ role: 'alert' }
-          = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
+      .hidden.js-cluster-success.alert.alert-info{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
 
     .form_group
       %label
