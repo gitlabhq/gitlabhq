@@ -14,13 +14,15 @@ export function setPositionDataAttribute(el, options) {
 }
 
 export function updateAvatarBadgeNumber(discussionEl, newBadgeNumber) {
-  const avatarBadges = discussionEl.querySelectorAll('.image-diff-avatar-link .badge');
+  let avatarBadgeEls = discussionEl.querySelectorAll('.image-diff-avatar-link .badge');
 
-  [].map.call(avatarBadges, avatarBadge =>
-    Object.assign(avatarBadge, {
+  avatarBadgeEls = [...avatarBadgeEls].map(avatarBadgeEl =>
+    Object.assign(avatarBadgeEl, {
       innerText: newBadgeNumber,
     }),
   );
+
+  return avatarBadgeEls;
 }
 
 export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {
