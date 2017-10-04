@@ -123,10 +123,6 @@ var config = {
         }
       },
       {
-        test: /locale\/\w+\/(.*)\.js$/,
-        loader: 'exports-loader?locales',
-      },
-      {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
         use: [
           { loader: 'exports-loader', options: 'l.global' },
@@ -224,7 +220,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'webpack_runtime'],
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // enable scope hoisting
