@@ -45,12 +45,12 @@ describe GroupTree do
         expect(assigns(:groups)).to contain_exactly(subgroup)
       end
 
-      it 'allows filtering for subgroups' do
+      it 'allows filtering for subgroups and includes the parents for rendering' do
         subgroup = create(:group, :public, parent: group, name: 'filter')
 
         get :index, filter: 'filt', format: :json
 
-        expect(assigns(:groups)).to contain_exactly(subgroup)
+        expect(assigns(:groups)).to contain_exactly(group, subgroup)
       end
     end
 

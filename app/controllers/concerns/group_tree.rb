@@ -2,7 +2,7 @@ module GroupTree
   def render_group_tree(groups)
     if params[:filter].present?
       @groups = Gitlab::GroupHierarchy.new(groups).all_groups
-      @groups = @groups.search(params[:filter])
+      @groups = Gitlab::GroupHierarchy.new(@groups.search(params[:filter])).base_and_ancestors
     else
       # Only show root groups if no parent-id is given
       @groups = groups.where(parent_id: params[:parent_id])
