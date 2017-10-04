@@ -1,10 +1,12 @@
 .row.prepend-top-default
-  = render 'sidebar'
-  = render 'header'
+  .col-sm-4
+    = render 'sidebar'
+  .col-sm-8
+    = render 'header'
 .row
   .col-sm-8.col-sm-offset-4
     - if @authorize_url
-      %a{ href: @authorize_url }
+      = link_to @authorize_url do
         = image_tag('auth_buttons/signin_with_google.png')
     - else
       - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')

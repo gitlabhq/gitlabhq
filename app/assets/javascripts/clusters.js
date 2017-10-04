@@ -39,6 +39,7 @@ export default class Clusters {
     this.errorContainer = document.querySelector('.js-cluster-error');
     this.successContainer = document.querySelector('.js-cluster-success');
     this.creatingContainer = document.querySelector('.js-cluster-creating');
+    this.errorReasonContainer = this.errorContainer.querySelector('.js-error-reason');
 
     this.toggleButton.addEventListener('click', this.toggle.bind(this));
 
@@ -47,7 +48,7 @@ export default class Clusters {
     }
 
     if (this.state.statusPath) {
-      this.initPoling();
+      this.initPolling();
     }
   }
 
@@ -56,7 +57,7 @@ export default class Clusters {
     this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('checked').toString());
   }
 
-  initPoling() {
+  initPolling() {
     this.poll = new Poll({
       resource: this.service,
       method: 'fetchData',
@@ -98,7 +99,7 @@ export default class Clusters {
         break;
       case 'errored':
         this.errorContainer.classList.remove('hidden');
-        this.errorContainer.querySelector('.js-error-reason').textContent = error;
+        this.errorReasonContainer.textContent = error;
         break;
       case 'scheduled':
       case 'creating':

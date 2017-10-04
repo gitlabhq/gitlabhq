@@ -3,8 +3,9 @@
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason }}
-  = render 'sidebar'
-  .col-lg-8
+  .col-sm-4
+    = render 'sidebar'
+  .col-sm-8
     %h4.prepend-top-0
       = s_('ClusterIntegration|Enable cluster integration')
     %p
@@ -24,7 +25,7 @@
 
           %button{ type: 'button',
             class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
-            'aria-label': 'Toggle',
+            'aria-label': s_('ClusterIntegration|Toggle Cluster'),
             disabled: !can?(current_user, :update_cluster, @cluster),
             data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
 
@@ -50,7 +51,7 @@
         = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
 
     .form_group
-      %label
+      %label{ for: 'cluter_name' }
         = s_('ClusterIntegration|Cluster name')
       .input-group
         %input.form-control{ value: @cluster.gcp_cluster_name, disabled: true}

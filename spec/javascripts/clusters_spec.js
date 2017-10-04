@@ -29,14 +29,14 @@ describe('Clusters', () => {
         cluster.updateContainer('creating');
 
         expect(
-          cluster.creatingContainer.classList,
-        ).not.toContain('hidden');
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeFalsy();
         expect(
-          cluster.successContainer.classList,
-        ).toContain('hidden');
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeTruthy();
         expect(
-          cluster.errorContainer.classList,
-        ).toContain('hidden');
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeTruthy();
       });
     });
 
@@ -45,14 +45,14 @@ describe('Clusters', () => {
         cluster.updateContainer('created');
 
         expect(
-          cluster.creatingContainer.classList,
-        ).toContain('hidden');
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeTruthy();
         expect(
-          cluster.successContainer.classList,
-        ).not.toContain('hidden');
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeFalsy();
         expect(
-          cluster.errorContainer.classList,
-        ).toContain('hidden');
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeTruthy();
       });
     });
 
@@ -61,17 +61,17 @@ describe('Clusters', () => {
         cluster.updateContainer('errored', 'this is an error');
 
         expect(
-          cluster.creatingContainer.classList,
-        ).toContain('hidden');
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeTruthy();
         expect(
-          cluster.successContainer.classList,
-        ).toContain('hidden');
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeTruthy();
         expect(
-          cluster.errorContainer.classList,
-        ).not.toContain('hidden');
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeFalsy();
 
         expect(
-          cluster.errorContainer.querySelector('.js-error-reason').textContent,
+          cluster.errorReasonContainer.textContent,
         ).toContain('this is an error');
       });
     });
