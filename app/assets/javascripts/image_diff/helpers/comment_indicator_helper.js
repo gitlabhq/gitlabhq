@@ -19,7 +19,7 @@ export function addCommentIndicator(containerEl, coordinate) {
 export function removeCommentIndicator(imageFrameEl) {
   const commentIndicatorEl = imageFrameEl.querySelector('.comment-indicator');
   const imageEl = imageFrameEl.querySelector('img');
-  const willRemove = commentIndicatorEl !== null;
+  const willRemove = !!commentIndicatorEl;
   let meta = {};
 
   if (willRemove) {
