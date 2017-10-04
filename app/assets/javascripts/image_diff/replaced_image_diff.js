@@ -43,14 +43,6 @@ export default class ReplacedImageDiff extends ImageDiff {
     this.viewModesEls[viewTypes.ONION_SKIN].addEventListener('click', this.changeToViewOnionSkin);
   }
 
-  unbindEvents() {
-    super.unbindEvents();
-
-    this.viewModesEls[viewTypes.TWO_UP].removeEventListener('click', this.changeToViewTwoUp);
-    this.viewModesEls[viewTypes.SWIPE].removeEventListener('click', this.changeToViewSwipe);
-    this.viewModesEls[viewTypes.ONION_SKIN].removeEventListener('click', this.changeToViewOnionSkin);
-  }
-
   get imageEl() {
     return this.imageEls[this.currentView];
   }

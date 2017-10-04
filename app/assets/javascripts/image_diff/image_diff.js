@@ -49,20 +49,6 @@ export default class ImageDiff {
     }
   }
 
-  unbindEvents() {
-    this.imageEl.removeEventListener('load', this.renderBadgesWrapper);
-    this.$noteContainer.off('click', '.js-diff-notes-toggle', imageDiffHelper.toggleCollapsed);
-    $(this.el).off('click', '.comment-indicator', imageDiffHelper.commentIndicatorOnClick);
-
-    if (this.canCreateNote) {
-      this.el.removeEventListener('click.imageDiff', this.imageClickedWrapper);
-      this.el.removeEventListener('blur.imageDiff', this.imageBlurredWrapper);
-      this.el.removeEventListener('addBadge.imageDiff', this.addBadgeWrapper);
-      this.el.removeEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
-      this.el.removeEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
-    }
-  }
-
   imageClicked(event) {
     const customEvent = event.detail;
     const selection = imageDiffHelper.getTargetSelection(customEvent);
