@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fixed fork button being disabled for users who can fork to a group.
+
 ## 9.5.7 (2017-10-03)
 
 - Fix gitlab rake:import:repos task.
