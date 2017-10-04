@@ -163,6 +163,8 @@ const RepoHelper = {
             .then((res) => {
               data.html = res.data.html;
               data.previewMode = viewer.type;
+              data.viewerHTML = data.viewerHTML || {};
+              data.viewerHTML[viewer.type] = data.html;
               RepoHelper.setFile(data, file);
             })
             .catch(RepoHelper.loadingError);
