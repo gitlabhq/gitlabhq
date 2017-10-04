@@ -144,17 +144,17 @@ module Gitlab
         def handle_repository_deleted(event_log)
           event = event_log.repository_deleted_event
 
-          full_path = File.join(event.repository_storage_path, event.deleted_path)
+          disk_path = File.join(event.repository_storage_path, event.deleted_path)
 
           job_id = ::Geo::RepositoryDestroyService
-                     .new(event.project_id, event.deleted_project_name, full_path, event.repository_storage_name)
+                     .new(event.project_id, event.deleted_project_name, disk_path, event.repository_storage_name)
                      .async_execute
 
           log_event_info(
             event_log.created_at,
             message: 'Deleted project',
             project_id: event.project_id,
-            full_path: full_path,
+            disk_path: disk_path,
             job_id: job_id)
 
           # No need to create a project entry if it doesn't exist
