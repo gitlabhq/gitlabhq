@@ -2,7 +2,6 @@
 // TODO: There is no file raw content for the copy source button.
 // TODO: Ask @douwe to confirm v-if="!activeFile.binary" for the copy source button.
 // TODO: Make sure that we implement all possible cases for the button types.
-// TODO: Don't fetch simple and rich mode html if we already fetched once.
 // FIXME: Preserve preview mode when editor tabs are changed.
 
 import Store from '../stores/repo_store';
@@ -41,21 +40,29 @@ const RepoFileButtons = {
     },
   },
   methods: {
+    toggleViewer(type, requestPath) {
+      const { activeFile } = Store;
+      const html = activeFile.viewerHTML[type];
+
+      if (html) {
+        activeFile.html = html;
+        activeFile.previewMode = type;
+      } else {
+        Service
+          .getContent(requestPath)
+          .then((res) => {
+            activeFile.previewMode = type;
+            activeFile.html = res.data.html;
+            activeFile.viewerHTML[type] = res.data.html;
+          })
+          .catch(Helper.loadingError);
+      }
+    },
     showSimpleViewer() {
-      Service
-        .getContent(Store.activeFile.simple_viewer.path)
-        .then((res) => {
-          Store.activeFile.previewMode = 'simple';
-          Store.activeFile.html = res.data.html;
-        });
+      this.toggleViewer('simple', Store.activeFile.simple_viewer.path);
     },
     showRichViewer() {
-      Service
-        .getContent(Store.activeFile.rich_viewer.path)
-        .then((res) => {
-          Store.activeFile.previewMode = 'rich';
-          Store.activeFile.html = res.data.html;
-        });
+      this.toggleViewer('rich', Store.activeFile.rich_viewer.path);
     },
   },
 };

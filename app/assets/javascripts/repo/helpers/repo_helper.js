@@ -21,6 +21,7 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
+      viewerHTML: {},
     };
   },
 
