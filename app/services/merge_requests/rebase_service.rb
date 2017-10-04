@@ -12,7 +12,7 @@ module MergeRequests
 
     def rebase
       if merge_request.rebase_in_progress?
-        log_error('Rebase task canceled: Another rebase is already in progress')
+        log_error('Rebase task canceled: Another rebase is already in progress', save_message_on_model: true)
         return false
       end
 
@@ -52,7 +52,7 @@ module MergeRequests
       false
     rescue => e
       log_error('Failed to rebase branch:')
-      log_error(e)
+      log_error(e.message, save_message_on_model: true)
       false
     ensure
       clean_dir
