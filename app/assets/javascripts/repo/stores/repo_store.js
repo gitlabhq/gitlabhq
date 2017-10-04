@@ -1,5 +1,6 @@
 /* global Flash */
 import Helper from '../helpers/repo_helper';
+import Service from '../services/repo_service';
 
 const RepoStore = {
   monaco: {},
@@ -70,6 +71,12 @@ const RepoStore = {
       RepoStore.blobRaw = file.base64;
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
+    } else {
+      Service.getRaw(file.raw_path)
+        .then((rawResponse) => {
+          RepoStore.blobRaw = rawResponse.data;
+          Helper.findOpenedFileFromActive().plain = rawResponse.data;
+        }).catch(Helper.loadingError);
     }
 
     if (!file.loading) Helper.updateHistoryEntry(file.url, file.name);
