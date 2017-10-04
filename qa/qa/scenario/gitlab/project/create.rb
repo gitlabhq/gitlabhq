@@ -13,7 +13,10 @@ module QA
 
           def perform
             Page::Main::Menu.act { go_to_groups }
-            Page::Dashboard::Groups.act { prepare_test_namespace }
+            Page::Dashboard::Groups.act do
+              prepare_sandbox
+              prepare_test_namespace
+            end
             Page::Group::Show.act { go_to_new_project }
 
             Page::Project::New.perform do |page|
