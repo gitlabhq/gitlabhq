@@ -14,7 +14,7 @@ describe 'Gitlab::Popen' do
     end
 
     it { expect(@status).to be_zero }
-    it { expect(@output).to include('cache') }
+    it { expect(@output).to include('tests') }
   end
 
   context 'non-zero status' do

@@ -1,6 +1,8 @@
 <script>
   import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
   import iconBranch from '../svg/icon_branch.svg';
+  import limitWarning from './limit_warning_component.vue';
+  import totalTime from './total_time_component.vue';
 
   export default {
     props: {
@@ -9,6 +11,8 @@
     },
     components: {
       userAvatarImage,
+      totalTime,
+      limitWarning,
     },
     computed: {
       iconBranch() {

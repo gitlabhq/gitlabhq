@@ -53,7 +53,7 @@ describe Gitlab::GitalyClient::CommitService do
     end
 
     it 'encodes paths correctly' do
-      expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt']) }.not_to raise_error
+      expect { client.diff_from_parent(commit, paths: ['encoding/test.txt', 'encoding/テスト.txt', nil]) }.not_to raise_error
     end
   end
 

@@ -229,6 +229,10 @@ members to further discuss scope, design, and technical considerations. This wil
 ensure that that your contribution is aligned with the GitLab product and minimize
 any rework and delay in getting it merged into master.
 
+GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+should update the issue description with a responsible product manager, inviting
+any potential community contributor to @-mention per above.
+
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
 
