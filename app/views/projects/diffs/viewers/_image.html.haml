@@ -1,6 +1,6 @@
 - diff_file = viewer.diff_file
 - image_point = Gitlab::Diff::ImagePoint.new(nil, nil, nil, nil)
-- discussions = @grouped_diff_discussions[diff_file.file_identifier] if @grouped_diff_discussions
+- discussions = @grouped_diff_discussions[diff_file.new_path] if @grouped_diff_discussions
 
 - locals = { diff_file: diff_file, position: diff_file.position(image_point, position_type: :image).to_json, click_to_comment: true, diff_view_data: diff_view_data }
 

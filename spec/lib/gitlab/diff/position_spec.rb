@@ -5,7 +5,7 @@ describe Gitlab::Diff::Position do
 
   let(:project) { create(:project, :repository) }
 
-  describe "position for an added file" do
+  describe "position for an added text file" do
     let(:commit) { project.commit("2ea1f3dec713d940208fb5ce4a38765ecb5d3f73") }
 
     subject do
@@ -44,6 +44,31 @@ describe Gitlab::Diff::Position do
 
         expect(subject.line_code(project.repository)).to eq(line_code)
       end
+    end
+  end
+
+  describe "position for an added image file" do
+    let(:commit) { project.commit("33f3729a45c02fc67d00adb1b8bca394b0e761d9") }
+
+    subject do
+      described_class.new(
+        old_path: "files/images/6049019_460s.jpg",
+        new_path: "files/images/6049019_460s.jpg",
+        width: 100,
+        height: 100,
+        x_axis: 1,
+        y_axis: 100,
+        diff_refs: commit.diff_refs,
+        position_type: "image"
+      )
+    end
+
+    it "returns the correct diff file" do
+      diff_file = subject.diff_file(project.repository)
+
+      expect(diff_file.new_file?).to be true
+      expect(diff_file.new_path).to eq(subject.new_path)
+      expect(diff_file.diff_refs).to eq(subject.diff_refs)
     end
   end
 
@@ -508,8 +533,8 @@ describe Gitlab::Diff::Position do
           width: 100,
           height: 100,
           x_axis: 1,
-          y_axis: 100
-          position_type: "image",
+          y_axis: 100,
+          position_type: "image"
         }
       end
 

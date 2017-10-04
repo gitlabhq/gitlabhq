@@ -16,7 +16,6 @@ module DiscussionOnDiff
               to: :first_note
 
     delegate  :file_path,
-              :file_identifier,
               :blob,
               :highlighted_diff_lines,
               :diff_lines,
@@ -27,6 +26,10 @@ module DiscussionOnDiff
 
   def diff_discussion?
     true
+  end
+
+  def file_new_path
+    first_note.position.new_path
   end
 
   # Returns an array of at most 16 highlighted lines above a diff note

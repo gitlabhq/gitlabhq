@@ -314,6 +314,56 @@ describe Note do
         expect(subject[active_diff_note1.line_code].first.id).to eq(active_diff_note1.discussion_id)
         expect(subject[active_diff_note3.line_code].first.id).to eq(active_diff_note3.discussion_id)
       end
+
+      context 'with image discussions' do
+        let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images and changes") }
+        let(:image_path) { "files/images/ee_repo_logo.png" }
+        let(:text_path) { "bar/branch-test.txt" }
+        let!(:image_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: image_position) }
+        let!(:text_note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request2, position: text_position) }
+
+        let(:image_position) do
+          Gitlab::Diff::Position.new(
+            old_path: image_path,
+            new_path: image_path,
+            width: 100,
+            height: 100,
+            x_axis: 1,
+            y_axis: 1,
+            position_type: "image",
+            diff_refs: merge_request2.diff_refs
+          )
+        end
+
+        let(:text_position) do
+          Gitlab::Diff::Position.new(
+            old_path: text_path,
+            new_path: text_path,
+            old_line: nil,
+            new_line: 2,
+            position_type: "text",
+            diff_refs: merge_request2.diff_refs
+          )
+        end
+
+        it "groups image discussions by file identifier" do
+          diff_discussion = DiffDiscussion.new([image_note])
+
+          discussions = merge_request2.notes.grouped_diff_discussions
+
+          expect(discussions.size).to eq(2)
+          expect(discussions[image_note.diff_file.new_path]).to include(diff_discussion)
+        end
+
+        it "groups text discussions by line code" do
+          diff_discussion = DiffDiscussion.new([text_note])
+
+          discussions = merge_request2.notes.grouped_diff_discussions
+
+          expect(discussions.size).to eq(2)
+          expect(discussions[text_note.line_code]).to include(diff_discussion)
+        end
+      end
     end
 
     context 'diff discussions for older diff refs' do
