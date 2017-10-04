@@ -25,10 +25,14 @@ module Projects
 
       def define_runners_variables
         @project_runners = @project.runners.ordered
+
         @assignable_runners = current_user.ci_authorized_runners
           .assignable_for(project).ordered.page(params[:page]).per(20)
+
         @shared_runners = Ci::Runner.shared.active
         @shared_runners_count = @shared_runners.count(:all)
+
+        @group_runners = Ci::Runner.project_group(@project.id)
       end
 
       def define_secret_variables

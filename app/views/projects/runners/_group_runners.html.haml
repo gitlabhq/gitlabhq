@@ -1,0 +1,18 @@
+%h3 Group Runners
+
+.bs-callout.bs-callout-warning.shared-runners-description
+  GitLab group Runners execute code of different projects on the same Runner.
+
+- if !@project.group
+  This project does not belong to a group and can therefore not make use of group Runners.
+
+- elsif @group_runners.empty?
+  This group does not provide any group Runners yet.
+
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: @project.group.runners_token, type: 'group' }
+
+- else
+  %h4.underlined-title Available group Runners : #{@group_runners.count}
+  %ul.bordered-list.available-shared-runners
+    = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
