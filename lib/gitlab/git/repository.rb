@@ -1495,7 +1495,7 @@ module Gitlab
 
         OperationService.new(user, self).add_branch(branch_name, target_object.oid)
         find_branch(branch_name)
-      rescue Rugged::ReferenceError
+      rescue Rugged::ReferenceError => ex
         raise InvalidRef, ex
       end
     end
