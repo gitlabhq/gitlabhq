@@ -6,12 +6,8 @@ export function addCommentIndicator(containerEl, { x, y }) {
   buttonEl.style.left = `${x}px`;
   buttonEl.style.top = `${y}px`;
 
-  const imageEl = document.createElement('img');
-  imageEl.classList.add('image-comment-dark');
-  imageEl.src = '/assets/icon_image_comment_dark.svg';
-  imageEl.alt = 'comment indicator';
+  buttonEl.innerHTML = gl.utils.spriteIcon('image-comment-dark');
 
-  buttonEl.appendChild(imageEl);
   containerEl.appendChild(buttonEl);
 }
 

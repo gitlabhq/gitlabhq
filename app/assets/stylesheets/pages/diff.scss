@@ -705,19 +705,15 @@
   .comment-indicator {
     position: absolute;
     padding: 0;
+    width: (2px * $image-comment-cursor-left-offset);
+    height: (1px * $image-comment-cursor-top-offset);
+    // center the indicator to match the top left click region
+    margin-top: (-1px * $image-comment-cursor-top-offset) + 2;
+    margin-left: (-1px * $image-comment-cursor-left-offset) + 1;
 
-    .image-comment-dark {
-      // Override styling set by .image .frame
-      background-image: inherit;
-      border: none;
-      background-position: inherit;
-      background-size: inherit;
-      max-width: inherit;
-
-      // Compensate for cursor offsets
-      position: absolute;
-      left: (-1px * $image-comment-cursor-left-offset);
-      top: (-1px * $image-comment-cursor-top-offset);
+    svg {
+      width: 100%;
+      height: 100%;
     }
   }
 }
