@@ -53,7 +53,7 @@ project_tree:
   - :auto_devops
   - :triggers
   - :pipeline_schedules
-  - :clusters
+  - :cluster
   - :services
   - :hooks
   - protected_branches:
