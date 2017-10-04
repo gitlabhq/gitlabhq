@@ -11,11 +11,10 @@ export default {
 
   addImageBadge: badgeHelper.addImageBadge,
   addImageCommentBadge: badgeHelper.addImageCommentBadge,
-  imageBadgeOnClick: badgeHelper.imageBadgeOnClick,
   addAvatarBadge: badgeHelper.addAvatarBadge,
 
   setPositionDataAttribute: domHelper.setPositionDataAttribute,
-  updateAvatarBadgeNumber: domHelper.updateAvatarBadgeNumber,
+  updateDiscussionAvatarBadgeNumber: domHelper.updateDiscussionAvatarBadgeNumber,
   updateDiscussionBadgeNumber: domHelper.updateDiscussionBadgeNumber,
   toggleCollapsed: domHelper.toggleCollapsed,
 

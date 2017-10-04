@@ -461,24 +461,6 @@ export default class Notes {
       gl.diffNotesCompileComponents();
 
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
-
-      if (noteEntity.on_image) {
-        const $noteEl = $(`.note-row-${noteEntity.id}:visible`);
-        const $notesContainer = $noteEl.closest('.notes');
-        const $badge = $notesContainer.find('.badge.js-diff-notes-toggle');
-        const badgeNumber = parseInt($badge.text().trim(), 10);
-
-        // Only add avatar badge if the badge exists
-        // as there are no avatar badges for discussion tab
-        if ($badge.length > 0) {
-          imageDiffHelper.addAvatarBadge($notesContainer[0], {
-            detail: {
-              badgeNumber,
-              noteId: `note_${noteEntity.id}`
-            }
-          });
-        }
-      }
     }
 
     gl.utils.localTimeAgo($('.js-timeago'), false);
@@ -793,7 +775,6 @@ export default class Notes {
         $note = $(el);
         $notes = $note.closest('.discussion-notes');
         const discussionId = $('.notes', $notes).data('discussion-id');
-        const badgeNumber = parseInt($note.find('.image-diff-avatar-link .badge').text(), 10);
 
         if (typeof gl.diffNotesCompileComponents !== 'undefined') {
           if (gl.diffNoteApps[noteElId]) {
@@ -819,7 +800,8 @@ export default class Notes {
             if ($diffFile.length > 0) {
               const removeBadgeEvent = new CustomEvent('removeBadge.imageDiff', {
                 detail: {
-                  badgeNumber,
+                  // badgeNumber's start with 1 and index starts with 0
+                  badgeNumber: $notes.index() + 1,
                 },
               });
 
@@ -1534,25 +1516,10 @@ export default class Notes {
           const isNewDiffComment = $notesContainer.length === 0;
           this.addDiscussionNote($form, note, isNewDiffComment);
 
-          if (!isNewDiffComment) {
-            // Note's added to existing discussions do not preload with avatar badge counts
-            // Use $notesContainer to locate .diff-file because $form does not have parent
-            $diffFile = $notesContainer.closest('.diff-file');
-            if ($diffFile.length > 0) {
-              const badgeNumber = parseInt($notesContainer.find('.badge.js-diff-notes-toggle').text().trim(), 10);
-              const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
-                detail: {
-                  noteId: `note_${note.id}`,
-                  badgeNumber,
-                },
-              });
-
-              $diffFile[0].dispatchEvent(addAvatarBadgeEvent);
-            }
-          } else {
+          if (isNewDiffComment) {
             // Add image badge, avatar badge and toggle discussion badge for new image diffs
             if ($diffFile.length > 0) {
-              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position')[0].value);
+              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position').val());
               const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
                 detail: {
                   x: x_axis,
@@ -1657,18 +1624,6 @@ export default class Notes {
       .then((note) => {
         // Submission successful! render final note element
         this.updateNote(note, $editingNote);
-
-        if ($diffFile.length > 0) {
-          const badgeNumber = parseInt($notesContainer.find('.badge').text().trim(), 10);
-          const addAvatarBadgeEvent = new CustomEvent('addAvatarBadge.imageDiff', {
-            detail: {
-              noteId: `note_${note.id}`,
-              badgeNumber,
-            },
-          });
-
-          $diffFile[0].dispatchEvent(addAvatarBadgeEvent);
-        }
       })
       .fail(() => {
         // Submission failed, revert back to original note

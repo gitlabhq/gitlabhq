@@ -13,14 +13,9 @@ export function setPositionDataAttribute(el, options) {
   el.setAttribute('data-position', JSON.stringify(positionObject));
 }
 
-export function updateAvatarBadgeNumber(discussionEl, newBadgeNumber) {
-  const avatarBadges = discussionEl.querySelectorAll('.image-diff-avatar-link .badge');
-
-  [].map.call(avatarBadges, avatarBadge =>
-    Object.assign(avatarBadge, {
-      innerText: newBadgeNumber,
-    }),
-  );
+export function updateDiscussionAvatarBadgeNumber(discussionEl, newBadgeNumber) {
+  const avatarBadgeEl = discussionEl.querySelector('.image-diff-avatar-link .badge');
+  avatarBadgeEl.innerText = newBadgeNumber;
 }
 
 export function updateDiscussionBadgeNumber(discussionEl, newBadgeNumber) {

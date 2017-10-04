@@ -25,7 +25,6 @@ export default class ImageDiff {
     this.imageClickedWrapper = this.imageClicked.bind(this);
     this.imageBlurredWrapper = this.imageBlurred.bind(this);
     this.addBadgeWrapper = this.addBadge.bind(this);
-    this.addAvatarBadgeWrapper = imageDiffHelper.addAvatarBadge.bind(null, this.el);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
 
@@ -44,7 +43,6 @@ export default class ImageDiff {
       this.el.addEventListener('click.imageDiff', this.imageClickedWrapper);
       this.el.addEventListener('blur.imageDiff', this.imageBlurredWrapper);
       this.el.addEventListener('addBadge.imageDiff', this.addBadgeWrapper);
-      this.el.addEventListener('addAvatarBadge.imageDiff', this.addAvatarBadgeWrapper);
       this.el.addEventListener('removeBadge.imageDiff', this.removeBadgeWrapper);
     }
   }
@@ -138,7 +136,7 @@ export default class ImageDiff {
           imageBadgeEls[index].innerText = updatedBadgeNumber;
 
           imageDiffHelper.updateDiscussionBadgeNumber(discussionEl, updatedBadgeNumber);
-          imageDiffHelper.updateAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
+          imageDiffHelper.updateDiscussionAvatarBadgeNumber(discussionEl, updatedBadgeNumber);
         }
       });
     }

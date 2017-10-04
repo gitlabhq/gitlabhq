@@ -1,50 +1,31 @@
-export function createImageBadge(noteId, classNames = []) {
+export function createImageBadge(noteId, { x, y }, classNames = []) {
   const buttonEl = document.createElement('button');
-  const classList = classNames.concat(['btn-transparent', 'js-image-badge']);
+  const classList = classNames.concat(['js-image-badge']);
   classList.forEach(className => buttonEl.classList.add(className));
   buttonEl.setAttribute('type', 'button');
+  buttonEl.setAttribute('disabled', true);
   buttonEl.dataset.noteId = noteId;
+  buttonEl.style.left = `${x}px`;
+  buttonEl.style.top = `${y}px`;
 
   return buttonEl;
 }
 
-export function centerButtonToCoordinate(buttonEl, coordinate) {
-  const { x, y } = coordinate;
-  const updatedButtonEl = buttonEl;
-
-  const { width, height } = updatedButtonEl.getBoundingClientRect();
-  // Set button center to be the center of the clicked position
-  updatedButtonEl.style.left = `${x - (width * 0.5)}px`;
-  updatedButtonEl.style.top = `${y - (height * 0.5)}px`;
-}
-
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
-  const buttonEl = createImageBadge(noteId, ['badge']);
+  const buttonEl = createImageBadge(noteId, coordinate, ['badge']);
   buttonEl.innerText = badgeText;
-  buttonEl.setAttribute('disabled', true);
 
   containerEl.appendChild(buttonEl);
-  centerButtonToCoordinate(buttonEl, coordinate);
 }
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
-  const buttonEl = createImageBadge(noteId, ['image-comment-badge', 'inverted']);
-  buttonEl.setAttribute('disabled', true);
-
+  const buttonEl = createImageBadge(noteId, coordinate, ['image-comment-badge', 'inverted']);
   const iconEl = document.createElement('i');
-  iconEl.classList.add('fa');
-  iconEl.classList.add('fa-comment-o');
+  iconEl.className = 'fa fa-comment-o';
   iconEl.setAttribute('aria-label', 'comment');
 
   buttonEl.appendChild(iconEl);
   containerEl.appendChild(buttonEl);
-  centerButtonToCoordinate(buttonEl, coordinate);
-}
-
-export function imageBadgeOnClick(event) {
-  event.stopPropagation();
-  const badge = event.currentTarget;
-  window.location.hash = badge.dataset.noteId;
 }
 
 export function addAvatarBadge(el, event) {
