@@ -4,7 +4,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   include ::EE::GeoHelpers
 
   describe '#run!' do
-    set(:geo_node) { create(:geo_node) }
+    set(:geo_node) { create(:geo_node, :primary) }
 
     before do
       stub_current_geo_node(geo_node)
@@ -63,7 +63,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
       it 'performs Geo::ProjectSyncWorker' do
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
-          .with(project.id, anything).once.and_return(spy)
+          .with(project.id, anything).once
 
         subject.run!
       end
@@ -103,7 +103,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
       it 'performs Geo::ProjectSyncWorker' do
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
-          .with(project.id, anything).once.and_return(spy)
+          .with(project.id, anything).once
 
         subject.run!
       end
@@ -171,7 +171,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
       before do
         allow(subject).to receive(:exit?).and_return(false, true)
-        allow(Geo::ProjectSyncWorker).to receive(:perform_async).and_return(spy)
+        allow(Geo::ProjectSyncWorker).to receive(:perform_async)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do
