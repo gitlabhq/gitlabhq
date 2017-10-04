@@ -14,7 +14,7 @@ export default {
   addAvatarBadge: badgeHelper.addAvatarBadge,
 
   setPositionDataAttribute: domHelper.setPositionDataAttribute,
-  updateAvatarBadgeNumber: domHelper.updateAvatarBadgeNumber,
+  updateDiscussionAvatarBadgeNumber: domHelper.updateDiscussionAvatarBadgeNumber,
   updateDiscussionBadgeNumber: domHelper.updateDiscussionBadgeNumber,
   toggleCollapsed: domHelper.toggleCollapsed,
 
