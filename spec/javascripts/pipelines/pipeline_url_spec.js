@@ -141,7 +141,8 @@ describe('Pipeline Url Component', () => {
       },
     }).$mount();
 
+
     expect(component.$el.querySelector('.js-pipeline-url-failure').textContent).toContain('error');
-    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('title')).toContain('some reason');
+    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('data-original-title')).toContain('some reason');
   });
 });
