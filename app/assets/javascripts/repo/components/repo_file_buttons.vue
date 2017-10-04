@@ -64,15 +64,11 @@ const RepoFileButtons = {
       this.toggleViewer('rich', Store.activeFile.rich_viewer.path);
     },
   },
-  mounted() {
-    Service
-      .getRaw(Store.activeFile.raw_path)
-      .then((res) => {
-        Store.activeFile.plain = res.data;
-        this.$refs.clipboardButton.setAttribute('data-clipboard-text', res.data);
-      })
-      .catch(Helper.loadingError);
-  },
+  watch: {
+    blobRaw() {
+      this.$refs.clipboardButton.setAttribute('data-clipboard-text', this.blobRaw);
+    },
+  }
 };
 
 export default RepoFileButtons;
