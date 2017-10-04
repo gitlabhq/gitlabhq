@@ -797,8 +797,21 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
+
+      # EE-specific
+      # Default filtering configuration
       expose :milestone,
-             if: -> (board, _) { board.project.feature_available?(:scoped_issue_board) }
+             using: Entities::Milestone,
+             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
+      expose :assignee,
+             using: Entities::UserBasic,
+             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
+      expose :labels,
+             using: Entities::LabelBasic,
+             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
+      expose :weight,
+             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
       end
