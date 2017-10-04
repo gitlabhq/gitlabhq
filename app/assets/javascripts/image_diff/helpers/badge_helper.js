@@ -9,11 +9,13 @@ export function createImageBadge(noteId, classNames = []) {
 }
 
 export function centerButtonToCoordinate(buttonEl, coordinate) {
-  // Set button center to be the center of the clicked position
   const { x, y } = coordinate;
-  const { width, height } = buttonEl.getBoundingClientRect();
-  buttonEl.style.left = `${x - (width * 0.5)}px`; // eslint-disable-line no-param-reassign
-  buttonEl.style.top = `${y - (height * 0.5)}px`; // eslint-disable-line no-param-reassign
+  const updatedButtonEl = buttonEl;
+
+  const { width, height } = updatedButtonEl.getBoundingClientRect();
+  // Set button center to be the center of the clicked position
+  updatedButtonEl.style.left = `${x - (width * 0.5)}px`;
+  updatedButtonEl.style.top = `${y - (height * 0.5)}px`;
 }
 
 export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
