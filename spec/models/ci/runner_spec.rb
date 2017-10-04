@@ -660,9 +660,7 @@ describe Ci::Runner do
   describe 'group?' do
     it 'returns false when the runner is a project runner' do
       project = create :project
-      runner = create(:ci_runner, description: 'Project runner').tap do |r|
-        create :ci_runner_project, runner: r, project: project
-      end
+      runner = create :ci_runner, description: 'Project runner', projects: [project]
 
       expect(runner.group?).to be false
     end
@@ -678,6 +676,28 @@ describe Ci::Runner do
       runner = create :ci_runner, description: 'Group runner', groups: [group]
 
       expect(runner.group?).to be true
+    end
+  end
+
+  describe 'project?' do
+    it 'returns false when the runner is a group prunner' do
+      group = create :group
+      runner = create :ci_runner, description: 'Group runner', groups: [group]
+
+      expect(runner.project?).to be false
+    end
+
+    it 'returns false when the runner is a shared runner' do
+      runner = create :ci_runner, :shared, description: 'Shared runner'
+
+      expect(runner.project?).to be false
+    end
+
+    it 'returns true when the runner is assigned to a project' do
+      project = create :project
+      runner = create :ci_runner, description: 'Group runner', projects: [project]
+
+      expect(runner.project?).to be true
     end
   end
 end
