@@ -36,10 +36,13 @@ class GroupDescendantsFinder
   def execute
     # The children array might be extended with the ancestors of projects when
     # filtering. In that case, take the maximum so the aray does not get limited
-    # Otherwise, allow paginating through the search results
+    # Otherwise, allow paginating through all results
     #
-    total_count = [children.size, subgroup_count + project_count].max
-    Kaminari.paginate_array(children, total_count: total_count)
+    all_required_elements = children
+    all_required_elements |= ancestors_for_projects if params[:filter]
+    total_count = [all_required_elements.size, paginator.total_count].max
+
+    Kaminari.paginate_array(all_required_elements, total_count: total_count)
   end
 
   def subgroup_count
@@ -53,50 +56,15 @@ class GroupDescendantsFinder
   private
 
   def children
-    return @children if @children
-
-    subgroups_with_counts = subgroups.with_route
-                              .page(params[:page]).per(per_page)
-                              .select(GROUP_SELECTS)
-
-    paginated_projects = paginate_projects_after_groups(subgroups_with_counts)
-
-    subgroups_with_counts = add_project_ancestors_when_searching(subgroups_with_counts, paginated_projects)
-
-    @children = subgroups_with_counts + paginated_projects
+    @children ||= paginator.paginate(params[:page])
   end
 
-  def add_project_ancestors_when_searching(groups, projects)
-    return groups unless params[:filter]
-
-    project_ancestors = ancestors_for_projects(projects)
-                          .with_route.select(GROUP_SELECTS)
-    groups | project_ancestors
+  def collections
+    [subgroups.with_route.select(GROUP_SELECTS), projects]
   end
 
-  def paginate_projects_after_groups(loaded_subgroups)
-    # We adjust the pagination for projects for the combination with groups:
-    # - We limit the first page (page 0) where we show  projects:
-    #   Page size = 20: 17 groups, 3 projects
-    # - We ofset the page to start at 0 after the group pages:
-    #   3 pages of projects:
-    #   - currently on page 3: Show page 0 (first page) limited to the number of
-    #     projects that still fit the page (no offset)
-    #   - currently on page 4: Show page 1 show all projects, offset by the number
-    #     of projects shown on project-page 0.
-    group_page_count = loaded_subgroups.total_pages
-    subgroup_page = loaded_subgroups.current_page
-    group_last_page_count = subgroups.page(group_page_count).count
-    project_page = subgroup_page - group_page_count
-    offset = if project_page.zero? || group_page_count.zero?
-               0
-             else
-               per_page - group_last_page_count
-             end
-
-    projects.with_route.page(project_page)
-      .per(per_page - loaded_subgroups.size)
-      .padding(offset)
+  def paginator
+    Gitlab::MultiCollectionPaginator.new(*collections, per_page: params[:per_page])
   end
 
   def direct_child_groups
@@ -107,22 +75,22 @@ class GroupDescendantsFinder
 
   def all_visible_descendant_groups
     groups_table = Group.arel_table
+    visible_for_user = groups_table[:visibility_level]
+                         .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
     visible_for_user = if current_user
-                         groups_table[:id].in(
-                           Arel::Nodes::SqlLiteral.new(GroupsFinder.new(current_user, all_available: true).execute.select(:id).to_sql)
-                         )
-                       else
-                         groups_table[:visibility_level].eq(Gitlab::VisibilityLevel::PUBLIC)
+                         visible_projects = GroupsFinder.new(current_user).execute.as('visible')
+                         authorized = groups_table.project(1).from(visible_projects)
+                                        .where(visible_projects[:id].eq(groups_table[:id]))
+                                        .exists
+                         visible_for_user.or(authorized)
                        end
-
-    Gitlab::GroupHierarchy.new(Group.where(id: parent_group))
-      .base_and_descendants
+    hierarchy_for_parent
+      .descendants
       .where(visible_for_user)
   end
 
   def subgroups_matching_filter
     all_visible_descendant_groups
-      .where.not(id: parent_group)
       .search(params[:filter])
   end
 
@@ -137,14 +105,15 @@ class GroupDescendantsFinder
   # So when searching 'project', on the 'subgroup' page we want to preload
   # 'nested-group' but not 'subgroup' or 'root'
   def ancestors_for_groups(base_for_ancestors)
-    ancestors_for_parent = Gitlab::GroupHierarchy.new(Group.where(id: parent_group))
-                             .base_and_ancestors
     Gitlab::GroupHierarchy.new(base_for_ancestors)
-      .base_and_ancestors.where.not(id: ancestors_for_parent)
+      .base_and_ancestors(upto: parent_group.id)
   end
 
-  def ancestors_for_projects(projects)
-    ancestors_for_groups(Group.where(id: projects.select(:namespace_id)))
+  def ancestors_for_projects
+    projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
+    groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
+    ancestors_for_groups(groups_to_load_ancestors_of)
+      .with_route.select(GROUP_SELECTS)
   end
 
   def subgroups
@@ -169,9 +138,11 @@ class GroupDescendantsFinder
     projects_for_user.where(namespace: parent_group)
   end
 
+  # Finds all projects nested under `parent_group` or any of it's descendant
+  # groups
   def projects_matching_filter
     projects_for_user.search(params[:filter])
-      .where(namespace: all_visible_descendant_groups)
+      .where(namespace_id: hierarchy_for_parent.base_and_descendants.select(:id))
   end
 
   def projects
@@ -182,14 +153,14 @@ class GroupDescendantsFinder
                else
                  direct_child_projects
                end
-    projects.order_by(sort)
+    projects.with_route.order_by(sort)
   end
 
   def sort
     params.fetch(:sort, 'id_asc')
   end
 
-  def per_page
-    params.fetch(:per_page, Kaminari.config.default_per_page)
+  def hierarchy_for_parent
+    @hierarchy ||= Gitlab::GroupHierarchy.new(Group.where(id: parent_group.id))
   end
 end
