@@ -24,7 +24,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     context 'JSON' do
       it 'restores models based on JSON' do
-        expect(@restored_project_json).to be true
+        expect(@restored_project_json).to be_truthy
       end
 
       it 'restore correct project features' do
@@ -203,7 +203,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
           restored_project_json
 
-          expect(shared.errors.first).to be_nil
+          expect(shared.errors).to be_empty
         end
       end
     end
@@ -212,7 +212,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       it 'restores project json correctly' do
         create(:ci_build, token: 'abcd')
 
-        expect(restored_project_json).to be true
+        expect(restored_project_json).to be_truthy
       end
     end
 
@@ -233,8 +233,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'correctly restores project' do
-        expect(restored_project_json).to be_truthy
         expect(shared.errors).to be_empty
+        expect(restored_project_json).to be_truthy
       end
 
       it 'has labels' do
