@@ -84,7 +84,7 @@ module Gcp
         cluster.gcp_operation_id = nil
       end
 
-      before_transition any => [:errored] do |cluster|
+      before_transition any => [:errored] do |cluster, transition|
         status_reason = transition.args.first
         cluster.status_reason = status_reason
       end
