@@ -11,7 +11,6 @@ export default {
 
   addImageBadge: badgeHelper.addImageBadge,
   addImageCommentBadge: badgeHelper.addImageCommentBadge,
-  imageBadgeOnClick: badgeHelper.imageBadgeOnClick,
   addAvatarBadge: badgeHelper.addAvatarBadge,
 
   setPositionDataAttribute: domHelper.setPositionDataAttribute,

@@ -41,12 +41,6 @@ export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   centerButtonToCoordinate(buttonEl, coordinate);
 }
 
-export function imageBadgeOnClick(event) {
-  event.stopPropagation();
-  const badge = event.currentTarget;
-  window.location.hash = badge.dataset.noteId;
-}
-
 export function addAvatarBadge(el, event) {
   const { noteId, badgeNumber } = event.detail;
 
