@@ -51,10 +51,10 @@ export default class ProtectedBranchCreate {
     const $allowedToMergeInput = this.$form.find('input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]');
     const $allowedToPushInput = this.$form.find('input[name="protected_branch[push_access_levels_attributes][0][access_level]"]');
     const completedForm = !(
-                            $branchInput.val() &&
-                            $allowedToMergeInput.length &&
-                            $allowedToPushInput.length
-                          );
+      $branchInput.val() &&
+      $allowedToMergeInput.length &&
+      $allowedToPushInput.length
+    );
 
     this.savePreviousSelection($allowedToMergeInput.val(), $allowedToPushInput.val());
     this.$form.find('input[type="submit"]').attr('disabled', completedForm);
