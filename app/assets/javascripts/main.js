@@ -57,7 +57,6 @@ import './u2f/register';
 import './u2f/util';
 
 // everything else
-import './abuse_reports';
 import './activities';
 import './admin';
 import './ajax_loading_spinner';
