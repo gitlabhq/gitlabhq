@@ -31,7 +31,7 @@ export default {
       let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
       if (!selectedFile) {
         // Maybe it is not in the current tree but in the opened tabs
-        selectedFile = Store.openedFiles.find(file => location.pathname.indexOf(file.url) > -1);
+        selectedFile = Helper.getFileFromPath(location.pathname);
       }
       if (selectedFile) {
         if (selectedFile.url !== this.activeFile.url) {
