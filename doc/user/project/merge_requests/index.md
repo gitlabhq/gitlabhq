@@ -27,26 +27,13 @@ With GitLab merge requests, you can:
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
-<<<<<<< HEAD
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
-
 
 - View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md) (available only in GitLab Enterprise Edition Premium)
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
 - Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
-=======
-
-
-With **[GitLab Enterprise Edition][ee]**, you can also:
-
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) (available only in GitLab Enterprise Edition Premium)
-- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers (available in GitLab Enterprise Edition Starter)
-- [Squash and merge](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
-- Enable [semi-linear history merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch (available in GitLab Enterprise Edition Starter)
-- Analise the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html) (available in GitLab Enterprise Edition Starter)
->>>>>>> ce/master
 
 ## Use cases
 
@@ -338,11 +325,9 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
-<<<<<<< HEAD
+
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
-=======
->>>>>>> ce/master
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"

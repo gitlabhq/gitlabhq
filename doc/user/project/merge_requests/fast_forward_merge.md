@@ -9,11 +9,7 @@ When the fast-forward merge ([`--ff-only`][ffonly]) setting is enabled, no merge
 commits will be created and all merges are fast-forwarded, which means that
 merging is only allowed if the branch could be fast-forwarded.
 
-<<<<<<< HEAD
-When a fast-forward merge is not possible, the user is given the option to rebase.
-=======
 When a fast-forward merge is not possible, the user must rebase the branch manually.
->>>>>>> ce/master
 
 ## Use cases
 

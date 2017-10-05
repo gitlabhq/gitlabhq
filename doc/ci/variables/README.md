@@ -461,10 +461,7 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
-<<<<<<< HEAD
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
-=======
->>>>>>> ce/master
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
 [envs]: ../environments.md
