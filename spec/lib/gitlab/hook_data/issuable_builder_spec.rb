@@ -37,15 +37,23 @@ describe Gitlab::HookData::IssuableBuilder do
             lock_version: %w[foo bar],
             merge_jid: %w[foo bar],
             title: ['A title', 'Hello World'],
-            title_html: %w[foo bar]
+            title_html: %w[foo bar],
+            labels: [
+              [{ id: 1, title: 'foo' }],
+              [{ id: 1, title: 'foo' }, { id: 2, title: 'bar' }]
+            ]
           }
         end
         let(:data) { builder.build(user: user, changes: changes) }
 
         it 'populates the :changes hash' do
           expect(data[:changes]).to match(hash_including({
-            title: ['A title', 'Hello World'],
-            description: ['A description', 'A cool description']
+            title: { previous: 'A title', current: 'Hello World' },
+            description: { previous: 'A description', current: 'A cool description' },
+            labels: {
+              previous: [{ id: 1, title: 'foo' }],
+              current: [{ id: 1, title: 'foo' }, { id: 2, title: 'bar' }]
+            }
           }))
         end
 
@@ -73,7 +81,7 @@ describe Gitlab::HookData::IssuableBuilder do
     end
 
     context 'issue is assigned' do
-      let(:issue) { create(:issue).tap { |i| i.assignees << user } }
+      let(:issue) { create(:issue, assignees: [user]) }
       let(:data) { described_class.new(issue).build(user: user) }
 
       it 'returns correct hook data' do
@@ -84,7 +92,7 @@ describe Gitlab::HookData::IssuableBuilder do
     end
 
     context 'merge_request is assigned' do
-      let(:merge_request) { create(:merge_request).tap { |mr| mr.update(assignee: user) } }
+      let(:merge_request) { create(:merge_request, assignee: user) }
       let(:data) { described_class.new(merge_request).build(user: user) }
 
       it 'returns correct hook data' do

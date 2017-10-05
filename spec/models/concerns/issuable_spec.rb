@@ -267,53 +267,70 @@ describe Issuable do
   describe '#to_hook_data' do
     context 'labels are updated' do
       let(:labels) { create_list(:label, 2) }
-      let(:data) { issue.to_hook_data(user, old_labels: [labels[0]]) }
 
       before do
         issue.update(labels: [labels[1]])
       end
 
-      it 'includes labels in the hook data' do
-        expect(data[:labels]).to eq([labels[1].hook_attrs])
-        expect(data[:changes]).to match(hash_including({
-          labels: [[labels[0].hook_attrs], [labels[1].hook_attrs]]
-        }))
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        builder = double
+
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_labels: [labels[0]])
       end
     end
 
     context 'issue is assigned' do
       let(:user2) { create(:user) }
-      let(:data) { issue.to_hook_data(user, old_assignees: [user]) }
 
       before do
         issue.assignees << user << user2
       end
 
-      it 'returns correct hook data' do
-        expect(data[:assignees]).to eq([user.hook_attrs, user2.hook_attrs])
-        expect(data[:changes]).to match(hash_including({
-          assignees: [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
-        }))
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        builder = double
+
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
+          ))
+
+        issue.to_hook_data(user, old_assignees: [user])
       end
     end
 
     context 'merge_request is assigned' do
       let(:merge_request) { create(:merge_request) }
       let(:user2) { create(:user) }
-      let(:data) { merge_request.to_hook_data(user, old_assignees: [user]) }
 
       before do
         merge_request.update(assignee: user)
         merge_request.update(assignee: user2)
       end
 
-      it 'returns correct hook data' do
-        expect(data[:object_attributes]['assignee_id']).to eq(user2.id)
-        expect(data[:assignee]).to eq(user2.hook_attrs)
-        expect(data[:changes]).to match(hash_including({
-          assignee_id: [user.id, user2.id],
-          assignee: [user.hook_attrs, user2.hook_attrs]
-        }))
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        builder = double
+
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(merge_request).and_return(builder)
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'assignee_id' => [user.id, user2.id],
+            'assignee' => [user.hook_attrs, user2.hook_attrs]
+          ))
+
+        merge_request.to_hook_data(user, old_assignees: [user])
       end
     end
   end

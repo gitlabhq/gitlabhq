@@ -661,59 +661,14 @@ describe MergeRequest do
   end
 
   describe '#hook_attrs' do
-    let(:attrs_hash) { subject.hook_attrs }
+    it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
+      builder = double
 
-    it 'includes safe attribute' do
-      %w[
-        assignee_id
-        author_id
-        created_at
-        deleted_at
-        description
-        head_pipeline_id
-        id
-        iid
-        last_edited_at
-        last_edited_by_id
-        merge_commit_sha
-        merge_error
-        merge_params
-        merge_status
-        merge_user_id
-        merge_when_pipeline_succeeds
-        milestone_id
-        ref_fetched
-        source_branch
-        source_project_id
-        state
-        target_branch
-        target_project_id
-        time_estimate
-        title
-        updated_at
-        updated_by_id
-      ].each do |key|
-        expect(attrs_hash).to include(key)
-      end
-    end
+      expect(Gitlab::HookData::MergeRequestBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    %i[source target].each do |key|
-      describe "#{key} key" do
-        include_examples 'project hook data', project_key: key do
-          let(:data)    { attrs_hash }
-          let(:project) { subject.public_send("#{key}_project") }
-        end
-      end
-    end
-
-    it 'includes additional attrs' do
-      expect(attrs_hash).to include(:source)
-      expect(attrs_hash).to include(:target)
-      expect(attrs_hash).to include(:last_commit)
-      expect(attrs_hash).to include(:work_in_progress)
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
+      subject.hook_attrs
     end
   end
 
