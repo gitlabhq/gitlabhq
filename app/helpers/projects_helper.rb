@@ -22,7 +22,7 @@ module ProjectsHelper
     classes << opts[:avatar_class] if opts[:avatar_class]
 
     avatar = avatar_icon(author, opts[:size])
-    src = opts[:lazy_load] ? nil : avatar
+    src = opts[:lazy_load] ? '' : avatar
 
     image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
   end
