@@ -2,44 +2,40 @@ class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
 
-  expose :id, :name, :description, :visibility, :full_name, :relative_path,
-         :created_at, :updated_at, :can_edit, :type, :avatar_url, :permission, :edit_path
+  expose :id, :name, :description, :visibility, :full_name,
+         :created_at, :updated_at, :avatar_url
 
-  def project?
-    object.is_a?(Project)
+  expose :type do |instance|
+    instance.class.name.downcase
   end
 
-  def type
-    object.class.name.downcase
-  end
-
-  def can_edit
+  expose :can_edit do |instance|
     return false unless request.respond_to?(:current_user)
 
     if project?
-      can?(request.current_user, :admin_project, object)
+      can?(request.current_user, :admin_project, instance)
     else
-      can?(request.current_user, :admin_group, object)
+      can?(request.current_user, :admin_group, instance)
     end
   end
 
-  def edit_path
+  expose :edit_path do |instance|
     if project?
-      edit_project_path(object)
+      edit_project_path(instance)
     else
-      edit_group_path(object)
+      edit_group_path(instance)
     end
   end
 
-  def relative_path
+  expose :relative_path do |instance|
     if project?
-      project_path(object)
+      project_path(instance)
     else
-      group_path(object)
+      group_path(instance)
     end
   end
 
-  def permission
+  expose :permission do |instance|
     membership&.human_access
   end
 
@@ -48,15 +44,14 @@ class GroupChildEntity < Grape::Entity
          if: lambda { |_instance, _options| project? }
 
   # Group only attributes
-  expose :children_count, :leave_path, :parent_id, :number_projects_with_delimiter,
-         :number_users_with_delimiter, :project_count, :subgroup_count, :can_leave,
+  expose :children_count, :parent_id, :project_count, :subgroup_count,
          unless: lambda { |_instance, _options| project? }
 
-  def leave_path
-    leave_group_members_path(object)
+  expose :leave_path, unless: lambda { |_instance, _options| project? } do |instance|
+    leave_group_members_path(instance)
   end
 
-  def can_leave
+  expose :can_leave, unless: lambda { |_instance, _options| project? } do |instance|
     if membership
       can?(request.current_user, :destroy_group_member, membership)
     else
@@ -64,12 +59,12 @@ class GroupChildEntity < Grape::Entity
     end
   end
 
-  def number_projects_with_delimiter
-    number_with_delimiter(object.project_count)
+  expose :number_projects_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
+    number_with_delimiter(instance.project_count)
   end
 
-  def number_users_with_delimiter
-    number_with_delimiter(object.member_count)
+  expose :number_users_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
+    number_with_delimiter(instance.member_count)
   end
 
   private
@@ -78,5 +73,9 @@ class GroupChildEntity < Grape::Entity
     return unless request.current_user
 
     @membership ||= request.current_user.membership_for_object(object)
+  end
+
+  def project?
+    object.is_a?(Project)
   end
 end
