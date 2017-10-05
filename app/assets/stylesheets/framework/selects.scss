@@ -54,40 +54,18 @@
   }
 }
 
-<<<<<<< HEAD
-.select2-drop {
-  background-color: $white-light;
-  border: 1px solid $dropdown-border-color;
-  border-radius: $border-radius-base;
-  box-shadow: 0 2px 4px $dropdown-shadow-color;
-=======
 .select2-drop,
 .select2-drop.select2-drop-above {
   box-shadow: 0 2px 4px $dropdown-shadow-color;
   border-radius: $border-radius-base;
   border: 1px solid $dropdown-border-color;
->>>>>>> ce/master
   min-width: 175px;
   color: $gl-text-color;
 }
 
-<<<<<<< HEAD
-.select2-results .select2-result-label,
-.select2-more-results {
-  padding: 10px 15px;
-}
-
-.select2-drop {
-  color: $gl-grayish-blue;
-}
-
-.select2-highlighted {
-  background: $dropdown-hover-color !important;
-=======
 .select2-drop.select2-drop-above.select2-drop-active {
   border-top: 1px solid $dropdown-border-color;
   margin-top: -6px;
->>>>>>> ce/master
 }
 
 .select2-results li.select2-result-with-children > .select2-result-label {
@@ -144,15 +122,6 @@
       }
     }
   }
-<<<<<<< HEAD
-
-  &.select2-container-active .select2-choices,
-  &.select2-dropdown-open .select2-choices {
-    border-color: $dropdown-input-focus-border;
-    box-shadow: 0 0 4px $search-input-focus-shadow-color;
-  }
-=======
->>>>>>> ce/master
 }
 
 .select2-drop-active {
@@ -300,67 +269,10 @@
   min-width: 250px !important;
 }
 
-<<<<<<< HEAD
-// TODO: change global style
-.ajax-project-dropdown,
-.ajax-users-dropdown,
-body[data-page="projects:edit"] #select2-drop,
-.ajax-users-dropdown,
-body[data-page="projects:settings:repository:show"] #select2-drop,
-body[data-page="projects:new"] #select2-drop,
-body[data-page="projects:merge_requests:edit"] #select2-drop,
-body[data-page="projects:blob:new"] #select2-drop,
-body[data-page="profiles:show"] #select2-drop,
-body[data-page="admin:groups:show"] #select2-drop,
-body[data-page="projects:issues:show"] #select2-drop,
-body[data-page="admin:groups:show"] #select2-drop,
-body[data-page="projects:blob:edit"] #select2-drop {
-  &.select2-drop {
-    border: 1px solid $dropdown-border-color;
-    border-radius: $border-radius-base;
-    color: $gl-text-color;
-  }
-
-  &.select2-drop-above {
-    border-top: none;
-    margin-top: -4px;
-  }
-
-  .select2-results {
-    .select2-no-results,
-    .select2-searching,
-    .select2-ajax-error,
-    .select2-selection-limit {
-      background: transparent;
-    }
-
-    .select2-result {
-      padding: 0 1px;
-
-      .select2-match {
-        font-weight: $gl-font-weight-bold;
-        text-decoration: none;
-      }
-
-      .select2-result-label {
-        padding: #{$gl-padding / 2} $gl-padding;
-      }
-
-      &.select2-highlighted {
-        background-color: transparent !important;
-        color: $gl-text-color;
-
-        .select2-result-label {
-          background-color: $dropdown-item-hover-bg;
-        }
-      }
-    }
-=======
 .select2-result-selectable,
 .select2-result-unselectable {
   .select2-match {
     font-weight: $gl-font-weight-bold;
     text-decoration: none;
->>>>>>> ce/master
   }
 }
