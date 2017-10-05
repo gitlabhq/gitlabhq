@@ -95,35 +95,84 @@ describe('MRWidgetReadyToMerge', () => {
       });
     });
 
+    describe('status', () => {
+      it('defaults to success', () => {
+        vm.mr.pipeline = true;
+        expect(vm.status).toEqual('success');
+      });
+
+      it('returns failed when MR has CI but also has an unknown status', () => {
+        vm.mr.hasCI = true;
+        expect(vm.status).toEqual('failed');
+      });
+
+      it('returns default when MR has no pipeline', () => {
+        expect(vm.status).toEqual('success');
+      });
+
+      it('returns pending when pipeline is active', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineActive = true;
+        expect(vm.status).toEqual('pending');
+      });
+
+      it('returns failed when pipeline is failed', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineFailed = true;
+        expect(vm.status).toEqual('failed');
+      });
+    });
+
     describe('mergeButtonClass', () => {
       const defaultClass = 'btn btn-small btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
 
-      it('should return default class', () => {
+      it('defaults to success class', () => {
+        expect(vm.mergeButtonClass).toEqual(defaultClass);
+      });
+
+      it('returns success class for success status', () => {
         vm.mr.pipeline = true;
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
-      it('should return failed class when MR has CI but also has an unknown status', () => {
-        vm.mr.hasCI = true;
-        expect(vm.mergeButtonClass).toEqual(failedClass);
-      });
-
-      it('should return default class when MR has no pipeline', () => {
-        expect(vm.mergeButtonClass).toEqual(defaultClass);
-      });
-
-      it('should return in action class when pipeline is active', () => {
+      it('returns info class for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
 
-      it('should return failed class when pipeline is failed', () => {
-        vm.mr.pipeline = {};
-        vm.mr.isPipelineFailed = true;
+      it('returns failed class for failed status', () => {
+        vm.mr.hasCI = true;
         expect(vm.mergeButtonClass).toEqual(failedClass);
+      });
+    });
+
+    describe('status icon', () => {
+      it('defaults to tick icon', () => {
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows tick for success status', () => {
+        vm.mr.pipeline = true;
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows tick for pending status', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineActive = true;
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows x for failed status', () => {
+        vm.mr.hasCI = true;
+        expect(vm.iconClass).toEqual('failed');
+      });
+
+      it('shows x for merge not allowed', () => {
+        vm.mr.hasCI = true;
+        expect(vm.iconClass).toEqual('failed');
       });
     });
 
@@ -177,7 +226,7 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
-      it('should return true when there vm instance is making request', () => {
+      it('should return true when the vm instance is making request', () => {
         vm.isMakingRequest = true;
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });

@@ -38,23 +38,39 @@ export default {
 
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
+    status() {
+      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
+
+      if (hasCI && !ciStatus) {
+        return 'failed';
+      } else if (!pipeline) {
+        return 'success';
+      } else if (isPipelineActive) {
+        return 'pending';
+      } else if (isPipelineFailed) {
+        return 'failed';
+      }
+
+      return 'success';
+    },
     mergeButtonClass() {
       const defaultClass = 'btn btn-small btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
-      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
-      if (hasCI && !ciStatus) {
+      if (this.status === 'failed') {
         return failedClass;
-      } else if (!pipeline) {
-        return defaultClass;
-      } else if (isPipelineActive) {
+      } else if (this.status === 'pending') {
         return inActionClass;
-      } else if (isPipelineFailed) {
-        return failedClass;
       }
 
       return defaultClass;
+    },
+    iconClass() {
+      if (this.status === 'failed' || !this.commitMessage.length || !this.isMergeAllowed() || this.mr.preventMerge) {
+        return 'failed';
+      }
+      return 'success';
     },
     mergeButtonText() {
       if (this.isMergingImmediately) {
@@ -208,7 +224,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="success" />
+      <status-icon :status="iconClass" />
       <div class="media-body">
         <div class="mr-widget-body-controls media space-children">
           <span class="btn-group append-bottom-5">
