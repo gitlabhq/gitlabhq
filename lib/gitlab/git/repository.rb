@@ -53,14 +53,15 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :storage, :gl_repository, :relative_path, :gitaly_resolver
 
-      # 'path' must be the path to a _bare_ git repository, e.g.
-      # /path/to/my-repo.git
+      # This initializer method is only used on the client side (gitlab-ce).
+      # Gitaly-ruby uses a different initializer.
       def initialize(storage, relative_path, gl_repository)
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
+        @gitaly_resolver = Gitlab::GitalyClient
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -656,13 +657,13 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
+        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+          if is_enabled
+            gitaly_add_branch(branch_name, user, target)
+          else
+            rugged_add_branch(branch_name, user, target)
+          end
+        end
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -676,7 +677,13 @@ module Gitlab
       end
 
       def rm_branch(branch_name, user:)
-        OperationService.new(user, self).rm_branch(find_branch(branch_name))
+        gitaly_migrate(:operation_user_delete_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operations_client.user_delete_branch(branch_name, user)
+          else
+            OperationService.new(user, self).rm_branch(find_branch(branch_name))
+          end
+        end
       end
 
       def rm_tag(tag_name, user:)
@@ -981,9 +988,9 @@ module Gitlab
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
         tmp_ref = fetch_ref(
-          start_repository.path,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          "refs/tmp/#{SecureRandom.hex}/head"
+          start_repository,
+          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
         yield commit(sha)
@@ -1015,13 +1022,27 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, sha)
-        rugged.references.create(ref_path, sha, force: true)
+      def write_ref(ref_path, ref)
+        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
+        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
+
+        command = [Gitlab.config.git.bin_path] + %w[update-ref --stdin -z]
+        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        output, status = circuit_breaker.perform do
+          popen(command, path) { |stdin| stdin.write(input) }
+        end
+
+        raise GitError, output unless status.zero?
       end
 
-      def fetch_ref(source_path, source_ref, target_ref)
-        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-        message, status = run_git(args)
+      def fetch_ref(source_repository, source_ref:, target_ref:)
+        message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
+          if is_enabled
+            gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
+          else
+            local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
+          end
+        end
 
         # Make sure ref was created, and raise Rugged::ReferenceError when not
         raise Rugged::ReferenceError, message if status != 0
@@ -1030,9 +1051,9 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args)
+      def run_git(args, env: {})
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path)
+          popen([Gitlab.config.git.bin_path, *args], path, env)
         end
       end
 
@@ -1062,7 +1083,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
 
       def gitaly_operations_client
@@ -1081,12 +1102,18 @@ module Gitlab
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
       end
 
+      def gitaly_operation_client
+        @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
+      end
+
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
+      rescue GRPC::InvalidArgument => e
+        raise ArgumentError.new(e)
       end
 
       private
@@ -1471,6 +1498,46 @@ module Gitlab
         File.open(info_attributes_path, "wb") do |file|
           file.write(gitattributes_content)
         end
+      end
+
+      def gitaly_add_branch(branch_name, user, target)
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
+      end
+
+      def rugged_add_branch(branch_name, user, target)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
+        find_branch(branch_name)
+      rescue Rugged::ReferenceError => ex
+        raise InvalidRef, ex
+      end
+
+      def local_fetch_ref(source_path, source_ref:, target_ref:)
+        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+        run_git(args)
+      end
+
+      def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
+        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
+        gitaly_address = gitaly_resolver.address(source_repository.storage)
+        gitaly_token = gitaly_resolver.token(source_repository.storage)
+
+        request = Gitaly::SSHUploadPackRequest.new(repository: source_repository.gitaly_repository)
+        env = {
+          'GITALY_ADDRESS' => gitaly_address,
+          'GITALY_PAYLOAD' => request.to_json,
+          'GITALY_WD' => Dir.pwd,
+          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
+        }
+        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
+
+        args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
+
+        run_git(args, env: env)
       end
     end
   end

@@ -11,6 +11,11 @@ module MergeRequests
     attr_reader :merge_request, :source
 
     def execute(merge_request)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
       unless @merge_request.mergeable?

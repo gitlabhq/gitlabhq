@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-28 13:28-0400\n"
-"PO-Revision-Date: 2017-09-28 13:28-0400\n"
+"POT-Creation-Date: 2017-10-03 16:06-0400\n"
+"PO-Revision-Date: 2017-10-03 16:06-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -420,9 +420,6 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
-msgid "Create a new branch"
-msgstr ""
-
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr ""
 
@@ -729,9 +726,6 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
-msgid "Last Update"
-msgstr ""
-
 msgid "Last commit"
 msgstr ""
 
@@ -739,6 +733,9 @@ msgid "Last edited %{date}"
 msgstr ""
 
 msgid "Last edited by %{name}"
+msgstr ""
+
+msgid "Last update"
 msgstr ""
 
 msgid "Last updated"
@@ -1189,9 +1186,6 @@ msgstr ""
 msgid "Select a timezone"
 msgstr ""
 
-msgid "Select existing branch"
-msgstr ""
-
 msgid "Select target branch"
 msgstr ""
 
@@ -1493,9 +1487,6 @@ msgstr ""
 msgid "Timeago|a week ago"
 msgstr ""
 
-msgid "Timeago|a while"
-msgstr ""
-
 msgid "Timeago|a year ago"
 msgstr ""
 
@@ -1545,6 +1536,9 @@ msgid "Timeago|in 1 week"
 msgstr ""
 
 msgid "Timeago|in 1 year"
+msgstr ""
+
+msgid "Timeago|in a while"
 msgstr ""
 
 msgid "Timeago|less than a minute ago"

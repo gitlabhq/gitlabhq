@@ -34,7 +34,10 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref).freeze
+                      tag_count avatar exists? empty? root_ref has_visible_content?).freeze
+
+  # Methods that use cache_method but only memoize the value
+  MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -269,7 +272,7 @@ class Repository
   end
 
   def expire_branches_cache
-    expire_method_caches(%i(branch_names branch_count))
+    expire_method_caches(%i(branch_names branch_count has_visible_content?))
     @local_branches = nil
     @branch_exists_memo = nil
   end
@@ -340,7 +343,7 @@ class Repository
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(empty?))
+    expire_method_caches(%i(empty? has_visible_content?))
   end
 
   def lookup_cache
@@ -847,6 +850,25 @@ class Repository
     end
   end
 
+  def ff_merge(user, source, target_branch, merge_request: nil)
+    our_commit = rugged.branches[target_branch].target
+    their_commit =
+      if source.is_a?(Gitlab::Git::Commit)
+        source.raw_commit
+      else
+        rugged.lookup(source)
+      end
+
+    raise 'Invalid merge target' if our_commit.nil?
+    raise 'Invalid merge source' if their_commit.nil?
+
+    with_branch(user, target_branch) do |start_commit|
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
+
+      their_commit.oid
+    end
+  end
+
   def revert(
     user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
@@ -967,7 +989,7 @@ class Repository
   end
 
   def create_ref(ref, ref_path)
-    fetch_ref(path_to_repo, ref, ref_path)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)

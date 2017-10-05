@@ -3,6 +3,7 @@ require 'spec_helper'
 feature 'issuable templates', js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
+  let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
 
   before do
     project.team << [user, :master]
@@ -28,14 +29,17 @@ feature 'issuable templates', js: true do
         longtemplate_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_project_issue_path project, issue
-      fill_in :'issue[title]', with: 'test issue title'
+      visit project_issue_path project, issue
+      page.within('.content .issuable-actions') do
+        click_on 'Edit'
+      end
+      fill_in :'issue-title', with: 'test issue title'
     end
 
     scenario 'user selects "bug" template' do
       select_template 'bug'
       wait_for_requests
-      assert_template
+      assert_template(page_part: issue_form_location)
       save_changes
     end
 
@@ -43,29 +47,18 @@ feature 'issuable templates', js: true do
       select_template 'bug'
       wait_for_requests
       select_option 'No template'
-      assert_template('')
+      assert_template(expected_content: '', page_part: issue_form_location)
       save_changes('')
     end
 
     scenario 'user selects "bug" template, edits description and then selects "reset template"' do
       select_template 'bug'
       wait_for_requests
-      find_field('issue_description').send_keys(description_addition)
-      assert_template(template_content + description_addition)
+      find_field('issue-description').send_keys(description_addition)
+      assert_template(expected_content: template_content + description_addition, page_part: issue_form_location)
       select_option 'Reset template'
-      assert_template
+      assert_template(page_part: issue_form_location)
       save_changes
-    end
-
-    it 'updates height of markdown textarea' do
-      start_height = page.evaluate_script('$(".markdown-area").outerHeight()')
-
-      select_template 'test'
-      wait_for_requests
-
-      end_height = page.evaluate_script('$(".markdown-area").outerHeight()')
-
-      expect(end_height).not_to eq(start_height)
     end
   end
 
@@ -81,15 +74,18 @@ feature 'issuable templates', js: true do
         template_content,
         message: 'added issue template',
         branch_name: 'master')
-      visit edit_project_issue_path project, issue
-      fill_in :'issue[title]', with: 'test issue title'
-      fill_in :'issue[description]', with: prior_description
+      visit project_issue_path project, issue
+      page.within('.content .issuable-actions') do
+        click_on 'Edit'
+      end
+      fill_in :'issue-title', with: 'test issue title'
+      fill_in :'issue-description', with: prior_description
     end
 
     scenario 'user selects "bug" template' do
       select_template 'bug'
       wait_for_requests
-      assert_template("#{template_content}")
+      assert_template(page_part: issue_form_location)
       save_changes
     end
   end
@@ -154,8 +150,10 @@ feature 'issuable templates', js: true do
     end
   end
 
-  def assert_template(expected_content = template_content)
-    expect(find('textarea')['value']).to eq(expected_content)
+  def assert_template(expected_content: template_content, page_part: '#content-body')
+    page.within(page_part) do
+      expect(find('textarea')['value']).to eq(expected_content)
+    end
   end
 
   def save_changes(expected_content = template_content)

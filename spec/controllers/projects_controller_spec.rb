@@ -140,7 +140,8 @@ describe ProjectsController do
     end
 
     context 'when the storage is not available', broken_storage: true do
-      let(:project) { create(:project, :broken_storage) }
+      set(:project) { create(:project, :broken_storage) }
+
       before do
         project.add_developer(user)
         sign_in(user)
@@ -286,6 +287,24 @@ describe ProjectsController do
 
         expect(controller).to set_flash[:alert].to(/container registry tags/)
         expect(response).to have_http_status(200)
+      end
+    end
+
+    it 'updates Fast Forward Merge attributes' do
+      controller.instance_variable_set(:@project, project)
+
+      params = {
+        merge_method: :ff
+      }
+
+      put :update,
+          namespace_id: project.namespace,
+          id: project.id,
+          project: params
+
+      expect(response).to have_http_status(302)
+      params.each do |param, value|
+        expect(project.public_send(param)).to eq(value)
       end
     end
 

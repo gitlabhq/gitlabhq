@@ -40,6 +40,40 @@ module Gitlab
       rescue GRPC::FailedPrecondition => e
         raise Gitlab::Git::Repository::InvalidRef, e
       end
+
+      def user_create_branch(branch_name, user, start_point)
+        request = Gitaly::UserCreateBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: GitalyClient.encode(branch_name),
+          user: Util.gitaly_user(user),
+          start_point: GitalyClient.encode(start_point)
+        )
+        response = GitalyClient.call(@repository.storage, :operation_service,
+          :user_create_branch, request)
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
+        end
+
+        branch = response.branch
+        return nil unless branch
+
+        target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+        Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
+      end
+
+      def user_delete_branch(branch_name, user)
+        request = Gitaly::UserDeleteBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: GitalyClient.encode(branch_name),
+          user: Util.gitaly_user(user)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+        end
+      end
     end
   end
 end

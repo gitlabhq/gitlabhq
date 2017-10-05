@@ -15,10 +15,6 @@ describe Gitlab::Shell do
   it { is_expected.to respond_to :add_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
-  it { is_expected.to respond_to :add_namespace }
-  it { is_expected.to respond_to :rm_namespace }
-  it { is_expected.to respond_to :mv_namespace }
-  it { is_expected.to respond_to :exists? }
 
   it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
 
@@ -156,7 +152,7 @@ describe Gitlab::Shell do
         end
       end
 
-      context 'with gitlay' do
+      context 'with gitaly' do
         it_behaves_like '#add_repository'
       end
 
@@ -360,6 +356,54 @@ describe Gitlab::Shell do
               nil, popen_vars).and_return(["error", 1])
 
         expect { gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git') }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+    end
+  end
+
+  describe 'namespace actions' do
+    subject { described_class.new }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+
+    describe '#add_namespace' do
+      it 'creates a namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(true)
+      end
+    end
+
+    describe '#exists?' do
+      context 'when the namespace does not exist' do
+        it 'returns false' do
+          expect(subject.exists?(storage_path, "non-existing")).to be(false)
+        end
+      end
+
+      context 'when the namespace exists' do
+        it 'returns true' do
+          subject.add_namespace(storage_path, "mepmep")
+
+          expect(subject.exists?(storage_path, "mepmep")).to be(true)
+        end
+      end
+    end
+
+    describe '#remove' do
+      it 'removes the namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+        subject.rm_namespace(storage_path, "mepmep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(false)
+      end
+    end
+
+    describe '#mv_namespace' do
+      it 'renames the namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+        subject.mv_namespace(storage_path, "mepmep", "2mep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(false)
+        expect(subject.exists?(storage_path, "2mep")).to be(true)
       end
     end
   end
