@@ -87,7 +87,10 @@ $(() => {
         Store.filter.path = [querystring].concat(
           Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
         ).join('&');
-        this.cantEdit.push(tokenName);
+        this.cantEdit.push({
+          tokenName,
+          value,
+        });
       };
 
       updateFilterPath('milestone_title', this.milestoneTitle, 'milestone');
@@ -104,7 +107,10 @@ $(() => {
           filterPath.push(param);
         }
 
-        this.cantEdit.push('label');
+        this.cantEdit.push({
+          tokenName: 'label',
+          value: label.title,
+        });
       });
 
       Store.filter.path = filterPath.join('&');

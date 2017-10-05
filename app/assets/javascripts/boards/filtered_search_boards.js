@@ -12,6 +12,7 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     // instead or reloading the page, we just re-fire the list ajax requests
     this.isHandledAsync = true;
     this.cantEdit = cantEdit;
+    this.hiddenTokenNames = cantEdit.map(i => i.tokenName);
   }
 
   updateObject(path) {
@@ -42,7 +43,10 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
     this.filteredSearchInput.dispatchEvent(new Event('input'));
   }
 
-  canEdit(tokenName) {
-    return this.cantEdit.indexOf(tokenName) === -1;
+  canEdit(tokenName, tokenValue) {
+    if (tokenValue && this.hiddenTokenNames.includes(tokenName)) {
+      return this.cantEdit.findIndex(i => i.tokenName === tokenName && i.value === tokenValue) === -1;
+    }
+    return this.hiddenTokenNames.indexOf(tokenName) === -1;
   }
 }
