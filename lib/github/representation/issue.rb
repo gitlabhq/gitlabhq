@@ -5,7 +5,7 @@ module Github
         raw['state'] == 'closed' ? 'closed' : 'opened'
       end
 
-      def has_comments?
+      def comments?
         raw['comments'] > 0
       end
 

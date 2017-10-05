@@ -211,7 +211,7 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return unless representation.labels? || representation.has_comments?
+          return unless representation.labels? || representation.comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
 
@@ -248,7 +248,7 @@ module Github
     end
 
     def fetch_comments_conditionally(issuable, representation)
-      if representation.has_comments?
+      if representation.comments?
         comments_url = "/repos/#{repo}/issues/#{issuable.iid}/comments"
         fetch_comments(issuable, :comment, comments_url)
       end

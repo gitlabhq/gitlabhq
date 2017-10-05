@@ -1,8 +1,8 @@
 module Github
   module Representation
     class PullRequest < Representation::Issuable
-      delegate :user, :repo, :ref, :sha, to: :source_branch, prefix: true
-      delegate :user, :exists?, :repo, :ref, :sha, :short_sha, to: :target_branch, prefix: true
+      delegate :sha, to: :source_branch, prefix: true
+      delegate :sha, to: :target_branch, prefix: true
 
       def source_project
         project
@@ -11,7 +11,7 @@ module Github
       def source_branch_name
         # Mimic the "user:branch" displayed in the MR widget,
         # i.e. "Request to merge rymai:add-external-mounts into master"
-        cross_project? ? "#{source_branch_user}:#{source_branch_ref}" : source_branch_ref
+        cross_project? ? "#{source_branch.user}:#{source_branch.ref}" : source_branch.ref
       end
 
       def target_project
@@ -19,7 +19,7 @@ module Github
       end
 
       def target_branch_name
-        target_branch_ref
+        target_branch.ref
       end
 
       def state
@@ -62,9 +62,9 @@ module Github
       end
 
       def cross_project?
-        return true if source_branch_repo.nil?
+        return true unless source_branch.repo?
 
-        source_branch_repo.id != target_branch_repo.id
+        source_branch.repo.id != target_branch.repo.id
       end
     end
   end

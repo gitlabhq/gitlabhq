@@ -7,10 +7,14 @@ module Github
         raw.dig('user', 'login') || 'unknown'
       end
 
-      def repo
-        return @repo if defined?(@repo)
+      def repo?
+        raw['repo'].present?
+      end
 
-        @repo = Github::Representation::Repo.new(raw['repo']) if raw['repo'].present?
+      def repo
+        return unless repo?
+
+        @repo ||= Github::Representation::Repo.new(raw['repo'])
       end
 
       def ref
@@ -23,12 +27,6 @@ module Github
 
       def short_sha
         Commit.truncate_sha(sha)
-      end
-
-      def exists?
-        return @exists if defined?(@exists)
-
-        @exists = repository.branch_exists?(ref)
       end
 
       def valid?
