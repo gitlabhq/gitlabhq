@@ -583,8 +583,11 @@ ActiveRecord::Schema.define(version: 20171004121444) do
     t.integer "project_id", null: false
     t.integer "user_id"
     t.integer "service_id"
-    t.boolean "enabled", default: true
     t.integer "status"
+    t.integer "gcp_cluster_size", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled", default: true
     t.text "status_reason"
     t.string "project_namespace"
     t.string "endpoint"
@@ -597,13 +600,10 @@ ActiveRecord::Schema.define(version: 20171004121444) do
     t.string "gcp_project_id", null: false
     t.string "gcp_cluster_zone", null: false
     t.string "gcp_cluster_name", null: false
-    t.integer "gcp_cluster_size", null: false
     t.string "gcp_machine_type"
     t.string "gcp_operation_id"
     t.text "encrypted_gcp_token"
     t.string "encrypted_gcp_token_iv"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
