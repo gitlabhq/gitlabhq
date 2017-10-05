@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Ci::ArtifactBlob do
-  set(:build) { create(:ci_build, :artifacts) }
+  set(:project) { create(:project, :public) }
+  set(:build) { create(:ci_build, :artifacts, project: project) }
   let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }
 
   subject { described_class.new(entry) }
@@ -74,12 +75,18 @@ describe Ci::ArtifactBlob do
       allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
     end
 
-    it { is_expected.not_to be_external_link }
+    context 'gif extensions' do
+      it 'returns false' do
+        expect(subject.external_link?(build)).to be false
+      end
+    end
 
     context 'txt extensions' do
       let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
 
-      it { is_expected.to be_external_link }
+      it 'returns true' do
+        expect(subject.external_link?(build)).to be true
+      end
     end
   end
 end
