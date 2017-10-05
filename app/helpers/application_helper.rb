@@ -41,15 +41,7 @@ module ApplicationHelper
       end
 
     if project.avatar_url
-      #if project.private?
-      #  options[:use_original_source] = true
-      #  image_tag project.avatar_url(use_asset_path: false), options
-      #else
-      #  image_tag project.avatar_url, options
-      #end
-
       image_tag project.avatar_url(use_asset_path: project.public?), options
-
     else # generated icon
       project_identicon(project, options)
     end
