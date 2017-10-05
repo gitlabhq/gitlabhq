@@ -4,7 +4,7 @@
   .col-sm-8
     = render 'header'
 .row
-  .col-sm-8.col-sm-offset-4
+  .col-sm-8.col-sm-offset-4.signin-with-google
     - if @authorize_url
       = link_to @authorize_url do
         = image_tag('auth_buttons/signin_with_google.png')

@@ -54,7 +54,7 @@
       %label{ for: 'cluter_name' }
         = s_('ClusterIntegration|Cluster name')
       .input-group
-        %input.form-control{ value: @cluster.gcp_cluster_name, disabled: true}
+        %input.form-control.cluster-name{ value: @cluster.gcp_cluster_name, disabled: true}
         %span.input-group-addon.clipboard-addon
           = clipboard_button(text: @cluster.gcp_cluster_name, title: s_('ClusterIntegration|Copy cluster name'))
 
