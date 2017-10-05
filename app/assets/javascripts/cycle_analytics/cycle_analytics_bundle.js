@@ -1,5 +1,3 @@
-/* global Flash */
-
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Flash from '../flash';
