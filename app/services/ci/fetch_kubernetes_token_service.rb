@@ -22,6 +22,8 @@ module Ci
           return Base64.decode64(token_base64) if token_base64
         end
       end
+
+      nil
     end
 
     private

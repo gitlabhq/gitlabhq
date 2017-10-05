@@ -122,12 +122,12 @@ describe Gcp::Cluster do
       let(:cluster) { create(:gcp_cluster) }
 
       before do
-        cluster.creating!
+        cluster.make_creating!
       end
 
       context 'when created' do
         before do
-          cluster.created!
+          cluster.make_created!
         end
 
         it { is_expected.to be_truthy }
