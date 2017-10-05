@@ -711,7 +711,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    if identities.loaded?
+      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+    else
+      identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+    end
   end
 
   def ldap_identity
@@ -1084,6 +1088,12 @@ class User < ActiveRecord::Base
 
   def read_only_attribute?(attribute)
     user_synced_attributes_metadata&.read_only?(attribute)
+  end
+
+  # override, from Devise
+  def lock_access!
+    Gitlab::AppLogger.info("Account Locked: username=#{username}")
+    super
   end
 
   protected

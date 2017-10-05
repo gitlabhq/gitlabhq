@@ -152,13 +152,15 @@ module Gitlab
         # (and have!) accidentally reset the ref to an earlier state, clobbering
         # commits. See also https://github.com/libgit2/libgit2/issues/1534.
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        _, status = popen(
+
+        output, status = popen(
           command,
           repository.path) do |stdin|
           stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
         end
 
         unless status.zero?
+          Gitlab::GitLogger.error("'git update-ref' in #{repository.path}: #{output}")
           raise Gitlab::Git::CommitError.new(
             "Could not update branch #{Gitlab::Git.branch_name(ref)}." \
             " Please refresh and try again.")

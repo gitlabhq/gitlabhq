@@ -28,8 +28,7 @@
       popoverOptions() {
         return {
           html: true,
-          delay: { hide: 600 },
-          trigger: 'hover',
+          trigger: 'focus',
           placement: 'top',
           title: '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>',
           content: `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`,
@@ -82,6 +81,7 @@
       </span>
       <a
         v-if="pipeline.flags.auto_devops"
+        tabindex="0"
         class="js-pipeline-url-autodevops label label-info autodevops-badge"
         v-popover="popoverOptions"
         role="button">

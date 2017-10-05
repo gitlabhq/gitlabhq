@@ -81,17 +81,10 @@ input[type="checkbox"]:hover {
     .clear-icon {
       position: absolute;
       right: 5px;
-      top: 0;
-
-      &::before {
-        font-family: FontAwesome;
-        font-weight: $gl-font-weight-normal;
-        font-style: normal;
-      }
+      top: 4px;
     }
 
     .search-icon {
-      @extend .fa-search;
       transition: color $default-transition-duration;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -99,7 +92,6 @@ input[type="checkbox"]:hover {
     }
 
     .clear-icon {
-      @extend .fa-times;
       display: none;
     }
 

@@ -182,7 +182,12 @@ describe Gitlab::Workhorse do
     let(:repo_path) { repository.path_to_repo }
     let(:action) { 'info_refs' }
     let(:params) do
-      { GL_ID: "user-#{user.id}", GL_REPOSITORY: "project-#{project.id}", RepoPath: repo_path }
+      {
+        GL_ID: "user-#{user.id}",
+        GL_USERNAME: user.username,
+        GL_REPOSITORY: "project-#{project.id}",
+        RepoPath: repo_path
+      }
     end
 
     subject { described_class.git_http_ok(repository, false, user, action) }
@@ -191,7 +196,12 @@ describe Gitlab::Workhorse do
 
     context 'when is_wiki' do
       let(:params) do
-        { GL_ID: "user-#{user.id}", GL_REPOSITORY: "wiki-#{project.id}", RepoPath: repo_path }
+        {
+          GL_ID: "user-#{user.id}",
+          GL_USERNAME: user.username,
+          GL_REPOSITORY: "wiki-#{project.id}",
+          RepoPath: repo_path
+        }
       end
 
       subject { described_class.git_http_ok(repository, true, user, action) }
@@ -216,7 +226,8 @@ describe Gitlab::Workhorse do
       it 'includes a Repository param' do
         repo_param = {
           storage_name: 'default',
-          relative_path: project.full_path + '.git'
+          relative_path: project.full_path + '.git',
+          gl_repository: "project-#{project.id}"
         }
 
         expect(subject[:Repository]).to include(repo_param)

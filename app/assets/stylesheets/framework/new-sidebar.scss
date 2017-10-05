@@ -56,8 +56,8 @@ $new-sidebar-collapsed-width: 50px;
     color: $hover-color;
 
     .settings-avatar {
-      i {
-        color: $hover-color;
+      svg {
+        fill: $hover-color;
       }
     }
   }
@@ -76,12 +76,9 @@ $new-sidebar-collapsed-width: 50px;
 .settings-avatar {
   background-color: $white-light;
 
-  i {
-    font-size: 20px;
-    width: 100%;
-    color: $gl-text-color-secondary;
-    text-align: center;
-    align-self: center;
+  svg {
+    fill: $gl-text-color-secondary;
+    margin: auto;
   }
 }
 
@@ -177,15 +174,15 @@ $new-sidebar-collapsed-width: 50px;
   .nav-icon-container {
     display: flex;
     margin-right: 8px;
-
-    svg {
-      height: 16px;
-      width: 16px;
-    }
   }
 
   .fly-out-top-item {
     display: none;
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
   }
 }
 
@@ -354,18 +351,22 @@ $new-sidebar-collapsed-width: 50px;
   display: flex;
   align-items: center;
 
-  i {
-    font-size: 20px;
+  svg {
+    fill: $gl-text-color-secondary;
     margin-right: 8px;
   }
 
-  .fa-angle-double-right {
+  .icon-angle-double-right {
     display: none;
   }
 
   &:hover {
     background-color: $border-color;
     color: $gl-text-color;
+
+    svg {
+      fill: $gl-text-color;
+    }
   }
 }
 
@@ -407,15 +408,16 @@ $new-sidebar-collapsed-width: 50px;
 
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
-    padding: 16px 18px;
+    padding: 16px;
 
     .collapse-text,
-    .fa-angle-double-left {
+    .icon-angle-double-left {
       display: none;
     }
 
-    .fa-angle-double-right {
+    .icon-angle-double-right {
       display: block;
+      margin: 0;
     }
   }
 }
