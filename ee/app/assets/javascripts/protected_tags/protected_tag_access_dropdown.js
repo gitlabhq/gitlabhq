@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this */
-/* global Flash */
-
+import Flash from '~/flash';
 import { LEVEL_TYPES, LEVEL_ID_PROP, ACCESS_LEVEL_NONE } from './constants';
 
 export default class ProtectedTagAccessDropdown {

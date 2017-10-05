@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../../../flash';
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';

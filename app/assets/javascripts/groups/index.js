@@ -1,6 +1,5 @@
-/* global Flash */
-
 import Vue from 'vue';
+import Flash from '../flash';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
 import GroupFolder from './components/group_folder.vue';

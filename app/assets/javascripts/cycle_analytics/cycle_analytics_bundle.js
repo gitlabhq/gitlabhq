@@ -1,7 +1,6 @@
-/* global Flash */
-
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import Flash from '../flash';
 import Translate from '../vue_shared/translate';
 import stageCodeComponent from './components/stage_code_component.vue';
 import stagePlanComponent from './components/stage_plan_component.vue';

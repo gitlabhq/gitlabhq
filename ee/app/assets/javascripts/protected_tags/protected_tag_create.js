@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import ProtectedTagDropdown from './protected_tag_dropdown';

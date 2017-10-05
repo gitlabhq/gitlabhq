@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,

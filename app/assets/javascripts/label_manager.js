@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
-/* global Flash */
 /* global Sortable */
+
+import Flash from './flash';
 
 ((global) => {
   class LabelManager {
