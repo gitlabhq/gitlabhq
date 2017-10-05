@@ -5,9 +5,9 @@
   "milestones": [
     {
       "id": 1,
-      "title": "test milestone",
+      "title": "Project milestone",
       "project_id": 8,
-      "description": "test milestone",
+      "description": "Project-level milestone",
       "due_date": null,
       "created_at": "2016-06-14T15:02:04.415Z",
       "updated_at": "2016-06-14T15:02:04.415Z",
@@ -65,9 +65,9 @@
       "group_milestone_id": null,
       "milestone": {
         "id": 1,
-        "title": "test milestone",
+        "title": "Project milestone",
         "project_id": 8,
-        "description": "test milestone",
+        "description": "Project-level milestone",
         "due_date": null,
         "created_at": "2016-06-14T15:02:04.415Z",
         "updated_at": "2016-06-14T15:02:04.415Z",
@@ -76,27 +76,6 @@
         "group_id": null
       },
       "label_links": [
-        {
-          "id": 11,
-          "label_id": 6,
-          "target_id": 1,
-          "target_type": "Issue",
-          "created_at": "2017-08-15T18:37:40.795Z",
-          "updated_at": "2017-08-15T18:37:40.795Z",
-          "label": {
-            "id": 6,
-            "title": "group label",
-            "color": "#A8D695",
-            "project_id": null,
-            "created_at": "2017-08-15T18:37:19.698Z",
-            "updated_at": "2017-08-15T18:37:19.698Z",
-            "template": false,
-            "description": "",
-            "group_id": 5,
-            "type": "GroupLabel",
-            "priorities": []
-          }
-        },
         {
           "id": 11,
           "label_id": 2,
@@ -113,7 +92,7 @@
             "updated_at": "2017-08-15T18:37:19.698Z",
             "template": false,
             "description": "",
-            "group_id": 5,
+            "group_id": null,
             "type": "ProjectLabel",
             "priorities": []
           }
@@ -121,10 +100,6 @@
       ]
     }
   ],
-  "snippets": [
-
-  ],
-  "hooks": [
-
-  ]
+  "snippets": [],
+  "hooks": []
 }

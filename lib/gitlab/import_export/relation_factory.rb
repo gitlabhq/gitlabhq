@@ -35,7 +35,7 @@ module Gitlab
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:)
         @relation_name = OVERRIDES[relation_sym] || relation_sym
-        @relation_hash = relation_hash.except('noteable_id').merge('project_id' => project.id)
+        @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
         @project = project
@@ -248,7 +248,14 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_attributes = @relation_name == :group_label ? %w[title group_id] : %w[title project_id]
+        # TODO: Trying to find how I can correctly use the correct id depending on the object's type
+        finder_attributes = if @relation_type == :group_label
+                              %w[title group_id]
+                            elsif parsed_relation_hash['project_id']
+                              %w[title project_id]
+                            else
+                              %w[title group_id]
+                            end
         finder_hash = parsed_relation_hash.slice(*finder_attributes)
 
         if label?
