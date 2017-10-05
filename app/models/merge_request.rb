@@ -549,6 +549,14 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def ff_merge_possible?
+    project.repository.ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    project.ff_merge_must_be_possible? && !ff_merge_possible?
+  end
+
   def can_cancel_merge_when_pipeline_succeeds?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end

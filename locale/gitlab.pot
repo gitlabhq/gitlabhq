@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-28 13:28-0400\n"
-"PO-Revision-Date: 2017-09-28 13:28-0400\n"
+"POT-Creation-Date: 2017-10-02 15:48-0400\n"
+"PO-Revision-Date: 2017-10-02 15:48-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -182,6 +182,9 @@ msgstr ""
 msgid "BillingPlans|Customer Support"
 msgstr ""
 
+msgid "BillingPlans|Downgrade"
+msgstr ""
+
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
 msgstr ""
 
@@ -216,9 +219,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Billinglans|Downgrade"
 msgstr ""
 
 msgid "Branch"
@@ -493,9 +493,6 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Create New Directory"
-msgstr ""
-
-msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
@@ -1310,9 +1307,6 @@ msgid "Select Archive Format"
 msgstr ""
 
 msgid "Select a timezone"
-msgstr ""
-
-msgid "Select existing branch"
 msgstr ""
 
 msgid "Select target branch"

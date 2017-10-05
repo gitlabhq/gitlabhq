@@ -1,6 +1,19 @@
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
+    prepend ::EE::Ci::PipelinePresenter
+
+    FAILURE_REASONS = {
+      config_error: 'CI/CD YAML configuration error!'
+    }.merge(EE_FAILURE_REASONS)
+
     presents :pipeline
+
+    def failure_reason
+      return unless pipeline.failure_reason?
+
+      FAILURE_REASONS[pipeline.failure_reason.to_sym] ||
+        pipeline.failure_reason
+    end
 
     def status_title
       if auto_canceled?

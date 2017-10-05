@@ -13,16 +13,6 @@ module EE
       delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
     end
 
-    def ff_merge_possible?
-      project.repository.ancestor?(target_branch_sha, diff_head_sha)
-    end
-
-    def should_be_rebased?
-      project.feature_available?(:merge_request_rebase) &&
-        project.ff_merge_must_be_possible? &&
-        !ff_merge_possible?
-    end
-
     def rebase_dir_path
       File.join(::Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
     end

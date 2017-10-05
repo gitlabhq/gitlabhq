@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Geo::FileDownloadService do
-  let!(:primary)  { create(:geo_node, :primary) }
-  let(:secondary) { create(:geo_node) }
+  include ::EE::GeoHelpers
+
+  set(:primary)  { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
 
   before do
-    allow(described_class).to receive(:current_node) { secondary }
+    stub_current_geo_node(secondary)
   end
 
   describe '#execute' do

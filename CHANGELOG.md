@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.3 (2017-10-05)
+
+- [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
+- [FIXED] Fix CSRF validation issue when closing/opening merge requests from the UI. !14555
+- [FIXED] Kubernetes integration: ensure v1.8.0 compatibility. !14635
+- [FIXED] Fixes data parameter not being sent in ajax request for jobs log.
+- [FIXED] Improves UX of autodevops popover to match gpg one.
+- [FIXED] Fixed commenting on side-by-side commit diff.
+- [FIXED] Make sure API responds with 401 when invalid authentication info is provided.
+- [FIXED] Fix merge request counter updates after merge.
+- [FIXED] Fix gitlab-rake gitlab:import:repos task failing.
+- [FIXED] Fix pushes to an empty repository not invalidating has_visible_content? cache.
+- [FIXED] Ensure all refs are restored on a restore from backup.
+- [FIXED] Gitaly RepositoryExists remains opt-in for all method calls.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+- [FIXED] Adjust MRs being stuck on "process of being merged" for more than 2 hours.
+
 ## 10.0.2 (2017-09-27)
 
 - [FIXED] Notes will not show an empty bubble when the author isn't a member. !14450
@@ -194,6 +211,14 @@ entry.
 - Move ConvDev Index location to after Cohorts.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fixed fork button being disabled for users who can fork to a group.
+
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
 
 ## 9.5.6 (2017-09-29)
 

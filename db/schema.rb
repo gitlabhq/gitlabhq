@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170928100231) do
+ActiveRecord::Schema.define(version: 20171002105019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -403,6 +403,7 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "source"
     t.integer "config_source"
     t.boolean "protected"
+    t.integer "failure_reason"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -1367,6 +1368,8 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.datetime_with_timezone "updated_at", null: false
     t.string "name"
     t.string "title"
+    t.integer "active_pipelines_limit"
+    t.integer "pipeline_size_limit"
   end
 
   add_index "plans", ["name"], name: "index_plans_on_name", using: :btree
@@ -1616,8 +1619,10 @@ ActiveRecord::Schema.define(version: 20170928100231) do
     t.integer "max_file_size", default: 0, null: false
     t.boolean "prevent_secrets", default: false, null: false
     t.string "branch_name_regex"
+    t.boolean "reject_unsigned_commits"
   end
 
+  add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
 
   create_table "redirect_routes", force: :cascade do |t|

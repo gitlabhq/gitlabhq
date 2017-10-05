@@ -15,6 +15,11 @@ module EE
       with_scope :global
       condition(:is_development) { Rails.env.development? }
 
+      with_scope :global
+      condition(:reject_unsigned_commits_disabled_globally) do
+        !PushRule.global&.reject_unsigned_commits
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -70,6 +75,8 @@ module EE
       end
 
       rule { ~can?(:push_code) }.prevent :push_code_to_protected_branches
+
+      rule { admin | (reject_unsigned_commits_disabled_globally & can?(:master_access)) }.enable :change_reject_unsigned_commits
     end
   end
 end
