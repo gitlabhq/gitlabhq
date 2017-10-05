@@ -1,5 +1,0 @@
----
-title: find_user Users helper method no longer overrides find_user API helper method.
-merge_request: 14418
-author:
-type: fixed

@@ -29,6 +29,7 @@
         showEmptyState: true,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
+        hoverData: {},
         resizeThrottled: {},
       };
     },
@@ -64,6 +65,10 @@
           this.updatedAspectRatios = 0;
         }
       },
+
+      hoverChanged(data) {
+        this.hoverData = data;
+      },
     },
 
     created() {
@@ -72,10 +77,12 @@
         deploymentEndpoint: this.deploymentEndpoint,
       });
       eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$on('hoverChanged', this.hoverChanged);
     },
 
     beforeDestroy() {
       eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$off('hoverChanged', this.hoverChanged);
       window.removeEventListener('resize', this.resizeThrottled, false);
     },
 
@@ -102,6 +109,7 @@
         v-for="(graphData, index) in groupData.metrics"
         :key="index"
         :graph-data="graphData"
+        :hover-data="hoverData"
         :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
       />

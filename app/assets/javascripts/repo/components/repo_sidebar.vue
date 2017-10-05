@@ -74,8 +74,8 @@ export default {
     <thead v-if="!isMini">
       <tr>
         <th class="name">Name</th>
-        <th class="hidden-sm hidden-xs last-commit">Last Commit</th>
-        <th class="hidden-xs last-update text-right">Last Update</th>
+        <th class="hidden-sm hidden-xs last-commit">Last commit</th>
+        <th class="hidden-xs last-update text-right">Last update</th>
       </tr>
     </thead>
     <tbody>

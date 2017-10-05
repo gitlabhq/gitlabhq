@@ -1,5 +1,0 @@
----
-title: Fix pushes to an empty repository not invalidating has_visible_content? cache
-merge_request:
-author:
-type: fixed
