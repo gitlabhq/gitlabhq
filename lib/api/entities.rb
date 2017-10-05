@@ -226,7 +226,6 @@ module API
       expose :requested_at
     end
 
-
     class BasicGroupDetails < Grape::Entity
       expose :id
       expose :web_url
