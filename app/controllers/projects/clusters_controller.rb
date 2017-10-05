@@ -6,6 +6,14 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
 
+  def index
+    if project.cluster
+      redirect_to project_cluster_path(project, project.cluster)
+    else
+      redirect_to new_project_cluster_path(project)
+    end
+  end
+
   def login
     begin
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
@@ -16,25 +24,17 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  def index
-    if project.cluster
-      redirect_to project_cluster_path(project, project.cluster)
-    else
-      redirect_to new_project_cluster_path(project)
-    end
-  end
-
   def new
     @cluster = project.build_cluster
   end
 
   def create
     @cluster = Ci::CreateClusterService
-      .new(project, current_user, cluster_params)
+      .new(project, current_user, create_params)
       .execute(token_in_session)
 
     if @cluster.persisted?
-      redirect_to project_clusters_path(project)
+      redirect_to project_cluster_path(project, @cluster)
     else
       render :new
     end
@@ -57,7 +57,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def update
     Ci::UpdateClusterService
-      .new(project, current_user, cluster_params)
+      .new(project, current_user, update_params)
       .execute(cluster)
 
     if cluster.valid?
@@ -84,12 +84,19 @@ class Projects::ClustersController < Projects::ApplicationController
     @cluster ||= project.cluster
   end
 
-  def cluster_params
-    params.require(:cluster).permit(:gcp_project_id,
+  def create_params
+    params.require(:cluster).permit(
+      :gcp_project_id,
       :gcp_cluster_zone,
       :gcp_cluster_name,
       :gcp_cluster_size,
       :gcp_machine_type,
+      :project_namespace,
+      :enabled)
+  end
+
+  def update_params
+    params.require(:cluster).permit(
       :project_namespace,
       :enabled)
   end
