@@ -18,9 +18,7 @@ module Github
       end
 
       def assignees
-        return [] unless assigned?
-
-        @assignees ||= raw['assignees'].map do |user|
+        @assignees ||= Array(raw['assignees']).map do |user|
           Github::Representation::User.new(user, options)
         end
       end

@@ -28,9 +28,7 @@ module Github
       end
 
       def labels
-        return [] unless labels?
-
-        @labels ||= raw['labels'].map do |label|
+        @labels ||= Array(raw['labels']).map do |label|
           Github::Representation::Label.new(label, options)
         end
       end
