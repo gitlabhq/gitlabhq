@@ -25,13 +25,12 @@ describe('RepoSidebar', () => {
     expect(thead.querySelector('.name').textContent).toEqual('Name');
     expect(thead.querySelector('.last-commit').textContent).toEqual('Last Commit');
     expect(thead.querySelector('.last-update').textContent).toEqual('Last Update');
-    expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
     expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
     expect(tbody.querySelector('.file')).toBeTruthy();
   });
 
-  it('does not render a thead, renders repo-file-options and sets sidebar-mini class if isMini', () => {
+  it('does not render a theads and sets sidebar-mini class if isMini', () => {
     RepoStore.openedFiles = [{
       id: 0,
     }];
@@ -39,7 +38,6 @@ describe('RepoSidebar', () => {
 
     expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
     expect(vm.$el.querySelector('thead')).toBeFalsy();
-    expect(vm.$el.querySelector('tbody .repo-file-options')).toBeTruthy();
   });
 
   it('renders 5 loading files if tree is loading and not hasFiles', () => {
