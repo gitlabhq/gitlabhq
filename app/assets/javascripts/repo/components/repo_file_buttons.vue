@@ -1,8 +1,4 @@
 <script>
-// TODO: Ask @douwe to confirm v-if="!activeFile.binary" for the copy source button.
-// TODO: Make sure that we implement all possible cases for the button types.
-// FIXME: Preserve preview mode when editor tabs are changed.
-
 import Store from '../stores/repo_store';
 import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
@@ -68,7 +64,7 @@ const RepoFileButtons = {
     blobRaw() {
       this.$refs.clipboardButton.setAttribute('data-clipboard-text', this.blobRaw);
     },
-  }
+  },
 };
 
 export default RepoFileButtons;
@@ -78,7 +74,7 @@ export default RepoFileButtons;
   <div id="repo-file-buttons">
     <div
       v-if="activeFile.rich_viewer && !editMode"
-      class="btn-group"
+      class="btn-group js-viewer-buttons"
       role="group"
       aria-label="File viewer actions">
       <a
@@ -88,7 +84,7 @@ export default RepoFileButtons;
         v-tooltip
         data-container="body"
         target="_blank"
-        class="btn btn-default"
+        class="btn btn-default js-btn-simple-view"
         rel="noopener noreferrer">
         <i
           :class="simpleViewerIconClass"
@@ -101,7 +97,7 @@ export default RepoFileButtons;
         v-tooltip
         data-container="body"
         target="_blank"
-        class="btn btn-default"
+        class="btn btn-default js-btn-rich-view"
         rel="noopener noreferrer">
         <i
           :class="richViewerIconClass"
@@ -128,7 +124,7 @@ export default RepoFileButtons;
       <button
         v-if="!activeFile.binary"
         v-tooltip
-        class="btn btn-default"
+        class="btn btn-default js-btn-copy-clipboard"
         data-container="body"
         ref="clipboardButton"
         data-title="Copy source to clipboard">
