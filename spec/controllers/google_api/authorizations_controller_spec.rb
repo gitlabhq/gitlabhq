@@ -4,7 +4,7 @@ describe GoogleApi::AuthorizationsController do
   describe 'GET|POST #callback' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:state) { namespace_project_clusters_url(project.namespace, project).to_s }
+    let(:state) { project_clusters_url(project).to_s }
     let(:token) { 'token' }
     let(:expires_at) { 1.hour.since.strftime('%s') }
 
