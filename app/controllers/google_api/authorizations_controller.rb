@@ -9,10 +9,10 @@ module GoogleApi
       session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] =
         expires_at.to_s
 
-      if params[:state]
+      if params[:state].present?
         redirect_to params[:state]
       else
-        redirect_to root_url
+        redirect_to root_path
       end
     end
   end
