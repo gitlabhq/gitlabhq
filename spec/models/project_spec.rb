@@ -2095,6 +2095,13 @@ describe Project do
     it { expect(project.parent).to eq(project.namespace) }
   end
 
+  describe '#parent_id' do
+    let(:project) { create(:project) }
+
+    it { expect(project.parent_id).to eq(project.namespace_id) }
+  end
+
+
   describe '#parent_changed?' do
     let(:project) { create(:project) }
 
