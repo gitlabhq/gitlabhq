@@ -8,7 +8,7 @@ module QA
       end
 
       def password
-        ENV['GITLAB_PASSWORD'] || 'test1234'
+        ENV['GITLAB_PASSWORD'] || '5iveL!fe'
       end
     end
   end
