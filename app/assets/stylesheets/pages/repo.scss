@@ -295,31 +295,6 @@
       animation: fadein 0.5s;
       cursor: pointer;
 
-      &.repo-file-options td {
-        padding: 0;
-        border-top: none;
-        background: $gray-light;
-        width: 100%;
-        display: inline-block;
-
-        &:first-child {
-          border-top-left-radius: 2px;
-        }
-
-        .title {
-          display: inline-block;
-          font-size: 10px;
-          text-transform: uppercase;
-          font-weight: $gl-font-weight-bold;
-          color: $gray-darkest;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          vertical-align: middle;
-          padding: 2px 16px;
-        }
-      }
-
       .file-icon {
         margin-right: 5px;
       }
