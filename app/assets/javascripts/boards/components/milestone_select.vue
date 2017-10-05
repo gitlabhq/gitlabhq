@@ -41,7 +41,7 @@ export default {
       return this.board.milestone ? this.board.milestone.id : '';
     },
     milestoneTitleClass() {
-      return this.milestoneTitle === 'ANY_MILESTONE' ? 'text-secondary': 'bold';
+      return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary': 'bold';
     },
     selected() {
       return this.board.milestone ? this.board.milestone.name : '';
@@ -72,10 +72,11 @@ export default {
         Edit
       </a>
     </div>
-    <div class="value">
-      <span :class="milestoneTitleClass">
-        {{ milestoneTitle }}
-      </span>
+    <div
+      class="value"
+      :class="milestoneTitleClass"
+    >
+      {{ milestoneTitle }}
     </div>
     <div
       class="selectbox"

@@ -307,6 +307,12 @@ h6 {
 
 .edit-link {
   color: $gl-text-color;
+
+  &:focus,
+  &:hover {
+    color: $gl-text-color;
+    text-decoration: none;
+  }
 }
 
 .light-header {

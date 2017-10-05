@@ -391,15 +391,16 @@ import DropdownUtils from './filtered_search/dropdown_utils';
                 .catch(fadeOutLoader);
             }
             else if ($dropdown.hasClass('js-board-config-modal')) {
-              if ($el.hasClass('is-active')) {
+              if (label.isAny) {
+                gl.issueBoards.BoardsStore.boardConfig.labels = [];
+              } else if ($el.hasClass('is-active')) {
                 gl.issueBoards.BoardsStore.boardConfig.labels.push(new ListLabel({
                   id: label.id,
                   title: label.title,
                   color: label.color[0],
-                  textColor: '#fff'
+                  textColor: label.text_color || '#fff',
                 }));
-              }
-              else {
+              } else {
                 let labels = gl.issueBoards.BoardsStore.boardConfig.labels;
                 labels = labels.filter(function (selectedLabel) {
                   return selectedLabel.id !== label.id;
