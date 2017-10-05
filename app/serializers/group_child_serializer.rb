@@ -33,7 +33,7 @@ class GroupChildSerializer < BaseSerializer
   end
 
   def represent_hierarchy(hierarchy, opts)
-    serializer = self.class.new(parameters)
+    serializer = self.class.new(params)
 
     if hierarchy.is_a?(Hash)
       hierarchy.map do |parent, children|

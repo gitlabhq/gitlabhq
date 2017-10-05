@@ -1,9 +1,9 @@
 class BaseSerializer
-  attr_reader :parameters
+  attr_reader :params
 
-  def initialize(parameters = {})
-    @parameters = parameters
-    @request = EntityRequest.new(parameters)
+  def initialize(params = {})
+    @params = params
+    @request = EntityRequest.new(params)
   end
 
   def represent(resource, opts = {}, entity_class = nil)
