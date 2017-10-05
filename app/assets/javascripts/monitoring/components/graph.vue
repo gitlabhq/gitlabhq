@@ -141,10 +141,12 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.graphData.queries[0],
-        this.graphWidth,
-        this.graphHeight,
-        this.graphHeightOffset);
+        this.timeSeries = createTimeSeries(
+          this.graphData.queries[0],
+          this.graphWidth,
+          this.graphHeight,
+          this.graphHeightOffset
+        );
 
         if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
