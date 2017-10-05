@@ -157,30 +157,40 @@ comments in greater detail.
 
 > [Introduced][ce-14531] in GitLab 10.1.
 
-When the discussion of an issue or a merge request is locked only team members can write new comments and edit the old ones.
+There might be some cases where a discussion is better off if it's locked down.
+For example:
 
-### Modifying discussion lock
+- Discussions that are several years old and the issue/merge request is closed,
+  but people continue to try to resurrect the discussion.
+- Discussions where someone or a group of people are trolling, are abusive, or
+  in-general are causing the discussion to be unproductive.
 
-To lock or unlock a dicsussion, find the Lock section in the sidebar and click **Edit**. A popup should appear and give you the option to turn on or turn off the discussion lock.
+In locked discussions, only team members can write new comments and edit the old
+ones.
+
+To lock or unlock a discussion, you need to have at least Master [permissions]:
+
+1. Find the "Lock" section in the sidebar and click **Edit**
+1. In the dialog that will appear, you can choose to turn on or turn off the
+   discussion lock
+1. Optionally, leave a comment to explain your reasoning behind that action
 
 | Turn off discussion lock | Turn on discussion lock |
 | :-----------: | :----------: |
 | ![Turn off discussion lock](img/turn_off_lock.png) | ![Turn on discussion lock](img/turn_on_lock.png) |
 
-Every change is indicated by a system note in the issue's or merge request's comments.
+Every change is indicated by a system note in the issue's or merge request's
+comments.
 
 ![Discussion lock system notes](img/discussion_lock_system_notes.png)
 
-### Indications of locked issues or merge requests
-
-While you are inside the locked issue or merge request and you are a project team member you can see an indicator in the comment form that the issue or merge request is locked.
-
-If you are not a team member you won't see the comment form but only the information that the dicussion is locked.
+Once an issue or merge request is locked, project members can see the indicator
+in the comment area, whereas non project members can only see the information
+that the discussion is locked.
 
 | Team member | Not a member |
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
-
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
