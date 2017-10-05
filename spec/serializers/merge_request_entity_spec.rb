@@ -11,16 +11,6 @@ describe MergeRequestEntity do
     described_class.new(resource, request: request).as_json
   end
 
-  it 'includes author' do
-    req = double('request')
-
-    author_payload = UserEntity
-      .represent(resource.author, request: req)
-      .as_json
-
-    expect(subject[:author]).to eq(author_payload)
-  end
-
   it 'includes pipeline' do
     req = double('request', current_user: user)
     pipeline = build_stubbed(:ci_pipeline)
@@ -48,11 +38,15 @@ describe MergeRequestEntity do
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
                                :target_branch_tree_path, :commits_count, :merge_ongoing,
+<<<<<<< HEAD
                                :ff_only_enabled,
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,
                                :approvals_path)
+=======
+                               :ff_only_enabled)
+>>>>>>> ce/master
   end
 
   it 'has email_patches_path' do

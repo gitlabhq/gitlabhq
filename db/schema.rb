@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20171002105019) do
+=======
+ActiveRecord::Schema.define(version: 20171004121444) do
+>>>>>>> ce/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -317,7 +321,7 @@ ActiveRecord::Schema.define(version: 20171002105019) do
   add_index "ci_builds", ["commit_id", "status", "type"], name: "index_ci_builds_on_commit_id_and_status_and_type", using: :btree
   add_index "ci_builds", ["commit_id", "type", "name", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_name_and_ref", using: :btree
   add_index "ci_builds", ["commit_id", "type", "ref"], name: "index_ci_builds_on_commit_id_and_type_and_ref", using: :btree
-  add_index "ci_builds", ["project_id"], name: "index_ci_builds_on_project_id", using: :btree
+  add_index "ci_builds", ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id", using: :btree
   add_index "ci_builds", ["protected"], name: "index_ci_builds_on_protected", using: :btree
   add_index "ci_builds", ["runner_id"], name: "index_ci_builds_on_runner_id", using: :btree
   add_index "ci_builds", ["stage_id"], name: "index_ci_builds_on_stage_id", using: :btree
@@ -590,8 +594,12 @@ ActiveRecord::Schema.define(version: 20171002105019) do
     t.string "email", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
   end
 
+  add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
   add_index "emails", ["email"], name: "index_emails_on_email", unique: true, using: :btree
   add_index "emails", ["user_id"], name: "index_emails_on_user_id", using: :btree
 
@@ -937,6 +945,7 @@ ActiveRecord::Schema.define(version: 20171002105019) do
 
   add_index "labels", ["group_id", "project_id", "title"], name: "index_labels_on_group_id_and_project_id_and_title", unique: true, using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["template"], name: "index_labels_on_template", where: "template", using: :btree
   add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
   add_index "labels", ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
 
@@ -1517,6 +1526,12 @@ ActiveRecord::Schema.define(version: 20171002105019) do
     t.boolean "disable_overriding_approvers_per_merge_request"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
+<<<<<<< HEAD
+=======
+    t.boolean "repository_read_only"
+    t.boolean "merge_requests_ff_only_enabled", default: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
+>>>>>>> ce/master
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

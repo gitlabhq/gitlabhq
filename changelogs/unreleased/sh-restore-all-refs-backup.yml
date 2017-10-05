@@ -1,5 +1,0 @@
----
-title: Ensure all refs are restored on a restore from backup
-merge_request:
-author:
-type: fixed

@@ -306,7 +306,7 @@ range of inputs, might look like this:
 
 ```ruby
 describe "#==" do
-  using Rspec::Parameterized::TableSyntax
+  using RSpec::Parameterized::TableSyntax
 
   let(:project1) { create(:project) }
   let(:project2) { create(:project) }

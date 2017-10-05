@@ -12,8 +12,9 @@ module Gitlab
     #
     #     Project.where("id IN (#{sql})")
     class Union
-      def initialize(relations)
+      def initialize(relations, remove_duplicates: true)
         @relations = relations
+        @remove_duplicates = remove_duplicates
       end
 
       def to_sql
@@ -25,7 +26,11 @@ module Gitlab
           @relations.map { |rel| rel.reorder(nil).to_sql }.reject(&:blank?)
         end
 
-        fragments.join("\nUNION\n")
+        fragments.join("\n#{union_keyword}\n")
+      end
+
+      def union_keyword
+        @remove_duplicates ? 'UNION' : 'UNION ALL'
       end
     end
   end

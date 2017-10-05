@@ -272,6 +272,7 @@
                   v-model="note"
                   ref="textarea"
                   slot="textarea"
+                  :disabled="isSubmitting"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()">

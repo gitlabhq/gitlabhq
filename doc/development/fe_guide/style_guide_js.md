@@ -470,7 +470,25 @@ On those a default key should not be provided.
   ```
 
 #### Ordering
-1. Order for a Vue Component:
+
+1. Tag order in `.vue` file
+
+  ```
+  <script>
+    // ...
+  </script>
+
+  <template>
+    // ...
+  </template>
+
+  // We don't use scoped styles but there are few instances of this
+  <style>
+    // ...
+  </style>
+  ```
+
+1. Properties in a Vue Component:
   1. `name`
   1. `props`
   1. `mixins`
@@ -489,6 +507,7 @@ On those a default key should not be provided.
   1. `deactivated`
   1. `beforeDestroy`
   1. `destroyed`
+
 
 #### Vue and Bootstrap
 

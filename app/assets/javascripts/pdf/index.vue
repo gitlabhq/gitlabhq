@@ -1,13 +1,3 @@
-<template>
-  <div class="pdf-viewer" v-if="hasPDF">
-    <page v-for="(page, index) in pages"
-      :key="index"
-      :v-if="!loading"
-      :page="page"
-      :number="index + 1" />
-  </div>
-</template>
-
 <script>
   import pdfjsLib from 'vendor/pdf';
   import workerSrc from 'vendor/pdf.worker.min';
@@ -63,6 +53,16 @@
     },
   };
 </script>
+
+<template>
+  <div class="pdf-viewer" v-if="hasPDF">
+    <page v-for="(page, index) in pages"
+      :key="index"
+      :v-if="!loading"
+      :page="page"
+      :number="index + 1" />
+  </div>
+</template>
 
 <style>
   .pdf-viewer {

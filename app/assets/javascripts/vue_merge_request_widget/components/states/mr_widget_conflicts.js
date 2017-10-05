@@ -12,7 +12,11 @@ export default {
     <div class="mr-widget-body media">
       <status-icon
         status="failed"
+<<<<<<< HEAD
         showDisabledButton />
+=======
+        :show-disabled-button="true" />
+>>>>>>> ce/master
       <div class="media-body space-children">
         <span
           v-if="mr.shouldBeRebased"

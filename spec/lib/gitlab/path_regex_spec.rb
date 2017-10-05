@@ -84,9 +84,13 @@ describe Gitlab::PathRegex do
   let(:top_level_words) do
     words = routes_not_starting_in_wildcard.map do |route|
       route.split('/')[1]
-    end.compact.uniq
+    end.compact
 
+<<<<<<< HEAD
     words + files_in_public + Array(API::API.prefix.to_s)
+=======
+    (words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)).uniq
+>>>>>>> ce/master
   end
 
   let(:ee_top_level_words) do
@@ -95,10 +99,11 @@ describe Gitlab::PathRegex do
 
   let(:files_in_public) do
     git = Gitlab.config.git.bin_path
-    `cd #{Rails.root} && #{git} ls-files public`
+    tracked = `cd #{Rails.root} && #{git} ls-files public`
       .split("\n")
       .map { |entry| entry.gsub('public/', '') }
       .uniq
+    tracked + %w(assets uploads)
   end
 
   # All routes that start with a namespaced path, that have 1 or more

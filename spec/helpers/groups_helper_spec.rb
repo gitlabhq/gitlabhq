@@ -17,7 +17,7 @@ describe GroupsHelper do
 
     it 'gives default avatar_icon when no avatar is present' do
       group.save!
-      expect(group_icon(group.path)).to match('group_avatar.png')
+      expect(group_icon(group.path)).to match_asset_path('group_avatar.png')
     end
 
     context 'in a geo secondary node' do

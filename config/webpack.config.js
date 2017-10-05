@@ -74,9 +74,13 @@ var config = {
     protected_branches:   './protected_branches',
     ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
+<<<<<<< HEAD
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
+=======
+    registry_list:        './registry/index.js',
+>>>>>>> ce/master
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -129,10 +133,6 @@ var config = {
         options: {
           name: '[name].[hash].[ext]',
         }
-      },
-      {
-        test: /locale\/\w+\/(.*)\.js$/,
-        loader: 'exports-loader?locales',
       },
       {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
@@ -210,6 +210,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'registry_list',
         'repo',
         'schedule_form',
         'schedules_index',
@@ -234,7 +235,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'webpack_runtime'],
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // enable scope hoisting

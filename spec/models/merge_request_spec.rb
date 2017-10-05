@@ -1000,6 +1000,49 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_ci?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    context 'has ci' do
+      it 'returns true if MR has head_pipeline_id and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { double }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+
+      it 'returns true if MR has any pipeline and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive(:all_pipelines) { [double] }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+
+      it 'returns true if MR has CI service and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { double }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive(:all_pipelines) { [] }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+    end
+
+    context 'has no ci' do
+      it 'returns false if MR has no CI service nor pipeline, and no commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:all_pipelines) { [] }
+        allow(merge_request).to receive(:has_no_commits?) { true }
+
+        expect(merge_request.has_ci?).to be(false)
+      end
+    end
+  end
+
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do

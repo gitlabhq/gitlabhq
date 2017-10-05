@@ -16,7 +16,7 @@ Rails.application.configure do
   config.cache_classes = ENV['CACHE_CLASSES'] == 'true'
 
   # Configure static asset server for tests with Cache-Control for performance
-  config.assets.digest = false
+  config.assets.compile = false if ENV['CI']
   config.serve_static_files = true
   config.static_cache_control = "public, max-age=3600"
 

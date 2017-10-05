@@ -204,6 +204,25 @@ Cover blocks are generally used to create a heading element for a page, such as 
 
 ---
 
+## Skeleton loading
+
+Skeleton loading is a way to convey to the user what kind of content is currently being loaded. It's a paradigm with which content can independently and asynchronously be loaded, while still adhering to the structure and look of the completely loaded view.
+
+### Requirements
+
+* A skeleton should represent an organism in a recognisable way
+* Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
+* Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows)
+* Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
+
+### Usage
+
+Skeleton loading can replace any existing UI elements for the period in which they are loaded and should aim for maintaining a similar structure visually.
+
+---
+
 ## Panels
 
 > TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
