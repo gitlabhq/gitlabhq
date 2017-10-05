@@ -2,11 +2,13 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    let!(:project) { FactoryBot.create :project, shared_runners_enabled: false }
-    let!(:pipeline) { FactoryBot.create :ci_pipeline, project: project }
-    let!(:pending_job) { FactoryBot.create :ci_build, pipeline: pipeline }
-    let!(:shared_runner) { FactoryBot.create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { FactoryBot.create(:ci_runner, is_shared: false) }
+    let!(:project) { create :project, shared_runners_enabled: false }
+    let!(:group) { create :group }
+    let!(:pipeline) { create :ci_pipeline, project: project }
+    let!(:pending_job) { create :ci_build, pipeline: pipeline }
+    let!(:shared_runner) { create :ci_runner, is_shared: true }
+    let!(:specific_runner) { create :ci_runner, is_shared: false }
+    let!(:group_runner) { create :ci_runner, groups: [group] }
 
     before do
       specific_runner.assign_to(project)
@@ -162,6 +164,73 @@ module Ci
 
         context 'and uses specific runner' do
           let(:build) { execute(specific_runner) }
+
+          it { expect(build).to be_nil }
+        end
+      end
+
+      context 'allow group runners' do
+        before do
+          project.update!(group_runners_enabled: true, group: group)
+        end
+
+        context 'for multiple builds' do
+          let!(:project2) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline2) { create :ci_pipeline, project: project2 }
+          let!(:project3) { create :project, group_runners_enabled: true, group: group }
+          let!(:pipeline3) { create :ci_pipeline, project: project3 }
+          let!(:build1_project1) { pending_job }
+          let!(:build2_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build3_project1) { create :ci_build, pipeline: pipeline }
+          let!(:build1_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build2_project2) { create :ci_build, pipeline: pipeline2 }
+          let!(:build1_project3) { create :ci_build, pipeline: pipeline3 }
+
+          it 'prefers projects without builds first' do
+            # it gets for one build from each of the projects
+            expect(execute(group_runner)).to eq(build1_project1)
+            expect(execute(group_runner)).to eq(build1_project2)
+            expect(execute(group_runner)).to eq(build1_project3)
+
+            # then it gets a second build from each of the projects
+            expect(execute(group_runner)).to eq(build2_project1)
+            expect(execute(group_runner)).to eq(build2_project2)
+
+            # in the end the third build
+            expect(execute(group_runner)).to eq(build3_project1)
+          end
+
+          it 'equalises number of running builds' do
+            # after finishing the first build for project 1, get a second build from the same project
+            expect(execute(group_runner)).to eq(build1_project1)
+            build1_project1.reload.success
+            expect(execute(group_runner)).to eq(build2_project1)
+
+            expect(execute(group_runner)).to eq(build1_project2)
+            build1_project2.reload.success
+            expect(execute(group_runner)).to eq(build2_project2)
+            expect(execute(group_runner)).to eq(build1_project3)
+            expect(execute(group_runner)).to eq(build3_project1)
+          end
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
+
+          it { expect(build).to be_kind_of(Build) }
+          it { expect(build).to be_valid }
+          it { expect(build).to be_running }
+          it { expect(build.runner).to eq(group_runner) }
+        end
+      end
+
+      context 'disallow group runners' do
+        before do
+          project.update(group_runners_enabled: false)
+        end
+
+        context 'group runner' do
+          let(:build) { execute(group_runner) }
 
           it { expect(build).to be_nil }
         end
