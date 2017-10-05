@@ -636,18 +636,18 @@ describe Repository do
   describe '#fetch_ref' do
     describe 'when storage is broken', broken_storage: true  do
       it 'should raise a storage error' do
-        path = broken_repository.path_to_repo
-
-        expect_to_raise_storage_error { broken_repository.fetch_ref(path, '1', '2') }
+        expect_to_raise_storage_error do
+          broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
+        end
       end
     end
   end
 
   describe '#create_ref' do
-    it 'redirects the call to fetch_ref' do
+    it 'redirects the call to write_ref' do
       ref, ref_path = '1', '2'
 
-      expect(repository).to receive(:fetch_ref).with(repository.path_to_repo, ref, ref_path)
+      expect(repository.raw_repository).to receive(:write_ref).with(ref_path, ref)
 
       repository.create_ref(ref, ref_path)
     end
@@ -897,47 +897,6 @@ describe Repository do
 
       2.times do
         expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
-      end
-    end
-  end
-
-  describe '#rm_branch' do
-    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
-    let(:blank_sha) { '0000000000000000000000000000000000000000' }
-
-    context 'when pre hooks were successful' do
-      it 'runs without errors' do
-        expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
-          .with(git_user, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
-
-        expect { repository.rm_branch(user, 'feature') }.not_to raise_error
-      end
-
-      it 'deletes the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-        expect { repository.rm_branch(user, 'feature') }.not_to raise_error
-
-        expect(repository.find_branch('feature')).to be_nil
-      end
-    end
-
-    context 'when pre hooks failed' do
-      it 'gets an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-        expect do
-          repository.rm_branch(user, 'feature')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-      end
-
-      it 'does not delete the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
-
-        expect do
-          repository.rm_branch(user, 'feature')
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
-        expect(repository.find_branch('feature')).not_to be_nil
       end
     end
   end
@@ -1744,13 +1703,75 @@ describe Repository do
   end
 
   describe '#rm_branch' do
-    let(:user) { create(:user) }
+    shared_examples "user deleting a branch" do
+      it 'removes a branch' do
+        expect(repository).to receive(:before_remove_branch)
+        expect(repository).to receive(:after_remove_branch)
 
-    it 'removes a branch' do
-      expect(repository).to receive(:before_remove_branch)
-      expect(repository).to receive(:after_remove_branch)
+        repository.rm_branch(user, 'feature')
+      end
+    end
 
-      repository.rm_branch(user, 'feature')
+    context 'with gitaly enabled' do
+      it_behaves_like "user deleting a branch"
+
+      context 'when pre hooks failed' do
+        before do
+          allow_any_instance_of(Gitlab::GitalyClient::OperationService)
+            .to receive(:user_delete_branch).and_raise(Gitlab::Git::HooksService::PreReceiveError)
+        end
+
+        it 'gets an error and does not delete the branch' do
+          expect do
+            repository.rm_branch(user, 'feature')
+          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+
+          expect(repository.find_branch('feature')).not_to be_nil
+        end
+      end
+    end
+
+    context 'with gitaly disabled', skip_gitaly_mock: true do
+      it_behaves_like "user deleting a branch"
+
+      let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+      let(:blank_sha) { '0000000000000000000000000000000000000000' }
+
+      context 'when pre hooks were successful' do
+        it 'runs without errors' do
+          expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
+            .with(git_user, repository.raw_repository, old_rev, blank_sha, 'refs/heads/feature')
+
+          expect { repository.rm_branch(user, 'feature') }.not_to raise_error
+        end
+
+        it 'deletes the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+
+          expect { repository.rm_branch(user, 'feature') }.not_to raise_error
+
+          expect(repository.find_branch('feature')).to be_nil
+        end
+      end
+
+      context 'when pre hooks failed' do
+        it 'gets an error' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+          expect do
+            repository.rm_branch(user, 'feature')
+          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end
+
+        it 'does not delete the branch' do
+          allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
+
+          expect do
+            repository.rm_branch(user, 'feature')
+          end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+          expect(repository.find_branch('feature')).not_to be_nil
+        end
+      end
     end
   end
 

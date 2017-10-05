@@ -1,6 +1,7 @@
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     set_index_vars
+    @personal_access_token = finder.build
   end
 
   def create
@@ -40,7 +41,6 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes
 
-    @personal_access_token = finder.build
     @inactive_personal_access_tokens = finder(state: 'inactive').execute
     @active_personal_access_tokens = finder(state: 'active').execute.order(:expires_at)
   end
