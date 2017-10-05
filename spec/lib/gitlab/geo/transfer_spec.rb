@@ -34,7 +34,9 @@ describe Gitlab::Geo::Transfer do
       expect(HTTParty).to receive(:get).and_yield(content.to_s).and_return(response)
 
       expect(subject.download_from_primary).to eq(size)
-      expect(File.stat(lfs_object.file.path).size).to eq(size)
+      stat = File.stat(lfs_object.file.path)
+      expect(stat.size).to eq(size)
+      expect(stat.mode & 0777).to eq(0666 - File.umask)
       expect(File.binread(lfs_object.file.path)).to eq(content)
     end
 
