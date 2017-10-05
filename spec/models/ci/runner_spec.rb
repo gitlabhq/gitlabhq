@@ -93,6 +93,15 @@ describe Ci::Runner do
 
       expect(described_class.belonging_to_group(specific_project.id)).to eq [specific_runner]
     end
+
+    it 'returns the group runner from a parent group' do
+      parent_group = create :group
+      group = create :group, parent: parent_group
+      project = create :project, group: group
+      runner = create :ci_runner, :specific, groups: [parent_group]
+
+      expect(described_class.belonging_to_group(project.id)).to eq [runner]
+    end
   end
 
   describe '.owned_or_shared' do
