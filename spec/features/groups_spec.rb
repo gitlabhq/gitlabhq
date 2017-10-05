@@ -90,11 +90,7 @@ feature 'Group' do
 
     context 'as admin' do
       before do
-        visit group_path(group)
-
-        pending('use the new subgroup button')
-
-        click_link 'New Subgroup'
+        visit new_group_path(group, parent_id: group.id)
       end
 
       it 'creates a nested group' do
@@ -114,11 +110,8 @@ feature 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit group_path(group)
+        visit new_group_path(group, parent_id: group.id)
 
-        pending('use the new subgroup button')
-
-        click_link 'New Subgroup'
         fill_in 'Group path', with: 'bar'
         click_button 'Create group'
 
@@ -206,13 +199,15 @@ feature 'Group' do
   describe 'group page with nested groups', :nested_groups, js: true do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
+    let!(:project) { create(:project, namespace: group) }
     let!(:path)  { group_path(group) }
 
-    it 'has nested groups tab with nested groups inside' do
-      pending('the child should be visible on the show page')
+    it 'it renders projects and groups on the page' do
       visit path
+      wait_for_requests
 
       expect(page).to have_content(nested_group.name)
+      expect(page).to have_content(project.name)
     end
   end
 
