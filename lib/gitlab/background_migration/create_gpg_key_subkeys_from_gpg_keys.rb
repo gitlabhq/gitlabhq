@@ -1,11 +1,4 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
-class CreateGpgKeySubkeysForExistingGpgKeys < ActiveRecord::Migration
-  disable_ddl_transaction!
-
-  DOWNTIME = false
-
+class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
   class GpgKey < ActiveRecord::Base
     self.table_name = 'gpg_keys'
 
@@ -27,17 +20,13 @@ class CreateGpgKeySubkeysForExistingGpgKeys < ActiveRecord::Migration
     sha_attribute :fingerprint
   end
 
-  def up
-    GpgKey.with_subkeys.each_batch do |batch|
-      batch.each do |gpg_key|
-        next if gpg_key.subkeys.any?
+  def perform(gpg_key_id)
+    gpg_key = GpgKey.find_by(id: gpg_key_id)
 
-        create_subkeys(gpg_key) && update_signatures(gpg_key)
-      end
-    end
-  end
+    return if gpg_key.nil?
+    return if gpg_key.subkeys.any?
 
-  def down
+    create_subkeys(gpg_key) && update_signatures(gpg_key)
   end
 
   private
