@@ -738,7 +738,7 @@ GitLabDropdown = (function() {
       : selectedObject.id;
     if (isInput) {
       field = $(this.el);
-    } else if (value) {
+    } else if (value != null) {
       field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
     }
 
@@ -746,7 +746,7 @@ GitLabDropdown = (function() {
       return;
     }
 
-    if (el.hasClass(ACTIVE_CLASS)) {
+    if (el.hasClass(ACTIVE_CLASS) && value !== 0) {
       isMarking = false;
       el.removeClass(ACTIVE_CLASS);
       if (field && field.length) {
@@ -852,7 +852,7 @@ GitLabDropdown = (function() {
       if (href && href !== '#') {
         gl.utils.visitUrl(href);
       } else {
-        $el.first().trigger('click');
+        $el.trigger('click');
       }
     }
   };
