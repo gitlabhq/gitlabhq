@@ -4,7 +4,6 @@ import Vue from 'vue';
 
 import Translate from '../vue_shared/translate';
 import GroupFilterableList from './groups_filterable_list';
-import NewGroupChild from './new_group_child';
 import GroupsStore from './store/groups_store';
 import GroupsService from './service/groups_service';
 
@@ -16,7 +15,6 @@ Vue.use(Translate);
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('js-groups-tree');
-  const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
 
   // Don't do anything if element doesn't exist (No groups)
   // This is for when the user enters directly to the page via URL
@@ -26,11 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   Vue.component('group-folder', groupFolderComponent);
   Vue.component('group-item', groupItemComponent);
-
-  if (newGroupChildWrapper) {
-    // eslint-disable-next-line no-new
-    new NewGroupChild(newGroupChildWrapper);
-  }
 
   // eslint-disable-next-line no-new
   new Vue({
