@@ -133,7 +133,6 @@ LineHighlighter.prototype.hashToRange = function(hash) {
 //
 // lineNumber - Line number to highlight
 LineHighlighter.prototype.highlightLine = function(lineNumber) {
-  console.log('LINE : ' + lineNumber);
   return $("#LC" + lineNumber).addClass(this.highlightLineClass);
 };
 
