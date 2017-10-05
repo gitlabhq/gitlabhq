@@ -45,7 +45,7 @@ namespace that started the import process.
 The importer will also import branches on forks of projects related to open pull
 requests. These branches will be imported with a naming scheume similar to 
 GH-SHA-Username/Pull-Request-number/fork-name/branch. This may lead to a discrepency
-in branches compared to the GitHub Repository. This is expected.
+in branches compared to the GitHub Repository.
 
 ## Importing your GitHub repositories
 
