@@ -37,6 +37,16 @@ module Github
         source_branch.valid? && target_branch.valid?
       end
 
+      def assigned?
+        raw['assignee'].present?
+      end
+
+      def assignee
+        return unless assigned?
+
+        @assignee ||= Github::Representation::User.new(raw['assignee'], options)
+      end
+
       private
 
       def project

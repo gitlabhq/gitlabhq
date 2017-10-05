@@ -23,14 +23,16 @@ module Github
         @author ||= Github::Representation::User.new(raw['user'], options)
       end
 
-      def assignee
-        return unless assigned?
-
-        @assignee ||= Github::Representation::User.new(raw['assignee'], options)
+      def labels?
+        raw['labels'].any?
       end
 
-      def assigned?
-        raw['assignee'].present?
+      def labels
+        return [] unless labels?
+
+        @labels ||= raw['labels'].map do |label|
+          Github::Representation::Label.new(label, options)
+        end
       end
     end
   end

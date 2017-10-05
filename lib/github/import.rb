@@ -99,7 +99,7 @@ module Github
               label.color = representation.color
             end
 
-            cached[:label_ids][label.title] = label.id
+            cached[:label_ids][representation.title] = label.id
           rescue => e
             error(:label, representation.url, e.message)
           end
@@ -211,11 +211,11 @@ module Github
         # for both features, like manipulating assignees, labels
         # and milestones, are provided within the Issues API.
         if representation.pull_request?
-          return unless representation.has_labels? || representation.has_comments?
+          return unless representation.labels? || representation.has_comments?
 
           merge_request = MergeRequest.find_by!(target_project_id: project.id, iid: representation.iid)
 
-          if representation.has_labels?
+          if representation.labels?
             merge_request.update_attribute(:label_ids, label_ids(representation.labels))
           end
 
@@ -230,13 +230,15 @@ module Github
           issue.title        = representation.title
           issue.description  = format_description(representation.description, representation.author)
           issue.state        = representation.state
-          issue.label_ids    = label_ids(representation.labels)
           issue.milestone_id = milestone_id(representation.milestone)
           issue.author_id    = author_id
-          issue.assignee_ids = [user_id(representation.assignee)]
           issue.created_at   = representation.created_at
           issue.updated_at   = representation.updated_at
           issue.save!(validate: false)
+
+          issue.update(
+            label_ids: label_ids(representation.labels),
+            assignee_ids: assignee_ids(representation.assignees))
 
           fetch_comments_conditionally(issue, representation)
         end
@@ -310,7 +312,11 @@ module Github
     end
 
     def label_ids(labels)
-      labels.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
+      labels.map { |label| cached[:label_ids][label.title] }.compact
+    end
+
+    def assignee_ids(assignees)
+      assignees.map { |assignee| user_id(assignee) }.compact
     end
 
     def milestone_id(milestone)
