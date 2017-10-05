@@ -31,13 +31,10 @@ module Ci
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
     scope :belonging_to_group, -> (project_id) {
-      joins(
-        %{
-          INNER JOIN ci_runner_groups ON ci_runner_groups.runner_id = ci_runners.id
-          INNER JOIN namespaces ON namespaces.id = ci_runner_groups.group_id
-          INNER JOIN projects ON projects.namespace_id = namespaces.id
-        }
-      ).where('projects.id = :project_id', project_id: project_id)
+      project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
+      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
+
+      joins(:groups).where(namespaces: { id: hierarchy_groups })
     }
 
     scope :owned_or_shared, -> (project_id) do
