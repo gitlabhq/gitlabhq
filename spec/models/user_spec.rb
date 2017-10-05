@@ -405,12 +405,14 @@ describe User do
 
       it 'gets called when email updated' do
         expect(@user).to receive(:update_emails_with_primary_email)
+
         @user.update_attributes!(email: 'new_primary@example.com')
       end
 
       it 'adds old primary to secondary emails when secondary is a new email ' do
         @user.update_attributes!(email: 'new_primary@example.com')
         @user.reload
+
         expect(@user.emails.count).to eq 2
         expect(@user.emails.pluck(:email)).to match_array([@secondary.email, 'primary@example.com'])
       end
@@ -418,6 +420,7 @@ describe User do
       it 'adds old primary to secondary emails if secondary is becoming a primary' do
         @user.update_attributes!(email: @secondary.email)
         @user.reload
+
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.email).to eq 'primary@example.com'
       end
@@ -425,6 +428,7 @@ describe User do
       it 'transfers old confirmation values into new secondary' do
         @user.update_attributes!(email: @secondary.email)
         @user.reload
+
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
       end
@@ -516,6 +520,7 @@ describe User do
   describe '#generate_password' do
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
+
       expect(user.password).to eq('abcdefghe')
     end
   end
@@ -523,6 +528,7 @@ describe User do
   describe 'authentication token' do
     it "has authentication token" do
       user = create(:user)
+
       expect(user.authentication_token).not_to be_blank
     end
   end
@@ -530,6 +536,7 @@ describe User do
   describe 'ensure incoming email token' do
     it 'has incoming email token' do
       user = create(:user)
+
       expect(user.incoming_email_token).not_to be_blank
     end
   end
@@ -572,6 +579,7 @@ describe User do
     it 'ensures an rss token on read' do
       user = create(:user, rss_token: nil)
       rss_token = user.rss_token
+
       expect(rss_token).not_to be_blank
       expect(user.reload.rss_token).to eq rss_token
     end
@@ -682,6 +690,7 @@ describe User do
 
     it "blocks user" do
       user.block
+
       expect(user.blocked?).to be_truthy
     end
   end
@@ -1015,6 +1024,7 @@ describe User do
 
     it 'is case-insensitive' do
       user = create(:user, username: 'JohnDoe')
+
       expect(described_class.find_by_username('JOHNDOE')).to eq user
     end
   end
@@ -1027,6 +1037,7 @@ describe User do
 
     it 'is case-insensitive' do
       user = create(:user, username: 'JohnDoe')
+
       expect(described_class.find_by_username!('JOHNDOE')).to eq user
     end
   end
@@ -1116,11 +1127,13 @@ describe User do
 
     it 'is true if avatar is image' do
       user.update_attribute(:avatar, 'uploads/avatar.png')
+
       expect(user.avatar_type).to be_truthy
     end
 
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
+
       expect(user.avatar_type).to eq(['only images allowed'])
     end
   end
@@ -1150,6 +1163,7 @@ describe User do
       email_confirmed   = create :email, user: user, confirmed_at: Time.now
       email_unconfirmed = create :email, user: user
       user.reload
+
       expect(user.all_emails).to match_array([user.email, email_unconfirmed.email, email_confirmed.email])
     end
   end
@@ -1161,6 +1175,7 @@ describe User do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
       user.reload
+
       expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
     end
   end
@@ -1192,6 +1207,7 @@ describe User do
       # Create a condition which would otherwise cause 'true' to be returned
       allow(user).to receive(:ldap_user?).and_return(true)
       user.last_credential_check_at = nil
+
       expect(user.requires_ldap_check?).to be_falsey
     end
 
@@ -1202,6 +1218,7 @@ describe User do
 
       it 'is false for non-LDAP users' do
         allow(user).to receive(:ldap_user?).and_return(false)
+
         expect(user.requires_ldap_check?).to be_falsey
       end
 
@@ -1212,11 +1229,13 @@ describe User do
 
         it 'is true when the user has never had an LDAP check before' do
           user.last_credential_check_at = nil
+
           expect(user.requires_ldap_check?).to be_truthy
         end
 
         it 'is true when the last LDAP check happened over 1 hour ago' do
           user.last_credential_check_at = 2.hours.ago
+
           expect(user.requires_ldap_check?).to be_truthy
         end
       end
@@ -1227,16 +1246,19 @@ describe User do
     describe '#ldap_user?' do
       it 'is true if provider name starts with ldap' do
         user = create(:omniauth_user, provider: 'ldapmain')
+
         expect(user.ldap_user?).to be_truthy
       end
 
       it 'is false for other providers' do
         user = create(:omniauth_user, provider: 'other-provider')
+
         expect(user.ldap_user?).to be_falsey
       end
 
       it 'is false if no extern_uid is provided' do
         user = create(:omniauth_user, extern_uid: nil)
+
         expect(user.ldap_user?).to be_falsey
       end
     end
@@ -1244,6 +1266,7 @@ describe User do
     describe '#ldap_identity' do
       it 'returns ldap identity' do
         user = create :omniauth_user
+
         expect(user.ldap_identity.provider).not_to be_empty
       end
     end
@@ -1253,6 +1276,7 @@ describe User do
 
       it 'blocks user flaging the action caming from ldap' do
         user.ldap_block
+
         expect(user.blocked?).to be_truthy
         expect(user.ldap_blocked?).to be_truthy
       end
@@ -1325,18 +1349,22 @@ describe User do
       expect(user.starred?(project2)).to be_falsey
 
       star1 = UsersStarProject.create!(project: project1, user: user)
+
       expect(user.starred?(project1)).to be_truthy
       expect(user.starred?(project2)).to be_falsey
 
       star2 = UsersStarProject.create!(project: project2, user: user)
+
       expect(user.starred?(project1)).to be_truthy
       expect(user.starred?(project2)).to be_truthy
 
       star1.destroy
+
       expect(user.starred?(project1)).to be_falsey
       expect(user.starred?(project2)).to be_truthy
 
       star2.destroy
+
       expect(user.starred?(project1)).to be_falsey
       expect(user.starred?(project2)).to be_falsey
     end
@@ -1348,9 +1376,13 @@ describe User do
       project = create(:project, :public)
 
       expect(user.starred?(project)).to be_falsey
+
       user.toggle_star(project)
+
       expect(user.starred?(project)).to be_truthy
+
       user.toggle_star(project)
+
       expect(user.starred?(project)).to be_falsey
     end
   end
@@ -1529,9 +1561,11 @@ describe User do
       user    = create(:user)
 
       member = group.add_developer(user)
+
       expect(user.authorized_projects).to include(project)
 
       member.destroy
+
       expect(user.authorized_projects).not_to include(project)
     end
 
@@ -1552,9 +1586,11 @@ describe User do
       project = create(:project, :private, namespace: user1.namespace)
 
       project.team << [user2, Gitlab::Access::DEVELOPER]
+
       expect(user2.authorized_projects).to include(project)
 
       project.destroy
+
       expect(user2.authorized_projects).not_to include(project)
     end
 
@@ -1564,9 +1600,11 @@ describe User do
       user    = create(:user)
 
       group.add_developer(user)
+
       expect(user.authorized_projects).to include(project)
 
       group.destroy
+
       expect(user.authorized_projects).not_to include(project)
     end
   end
@@ -2110,7 +2148,9 @@ describe User do
 
       it 'creates the namespace' do
         expect(user.namespace).to be_nil
+
         user.save!
+
         expect(user.namespace).not_to be_nil
       end
     end
@@ -2131,11 +2171,13 @@ describe User do
 
           it 'updates the namespace name' do
             user.update_attributes!(username: new_username)
+
             expect(user.namespace.name).to eq(new_username)
           end
 
           it 'updates the namespace path' do
             user.update_attributes!(username: new_username)
+
             expect(user.namespace.path).to eq(new_username)
           end
 
@@ -2149,6 +2191,7 @@ describe User do
 
             it 'adds the namespace errors to the user' do
               user.update_attributes(username: new_username)
+
               expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
             end
           end
@@ -2171,36 +2214,43 @@ describe User do
     context 'oauth user' do
       it 'returns true if name can be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(name location))
+
         expect(user.sync_attribute?(:name)).to be_truthy
       end
 
       it 'returns true if email can be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(name email))
+
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns true if location can be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(location email))
+
         expect(user.sync_attribute?(:email)).to be_truthy
       end
 
       it 'returns false if name can not be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(location email))
+
         expect(user.sync_attribute?(:name)).to be_falsey
       end
 
       it 'returns false if email can not be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(location email))
+
         expect(user.sync_attribute?(:name)).to be_falsey
       end
 
       it 'returns false if location can not be synced' do
         stub_omniauth_setting(sync_profile_attributes: %w(location email))
+
         expect(user.sync_attribute?(:name)).to be_falsey
       end
 
       it 'returns true for all syncable attributes if all syncable attributes can be synced' do
         stub_omniauth_setting(sync_profile_attributes: true)
+
         expect(user.sync_attribute?(:name)).to be_truthy
         expect(user.sync_attribute?(:email)).to be_truthy
         expect(user.sync_attribute?(:location)).to be_truthy
@@ -2216,6 +2266,7 @@ describe User do
     context 'ldap user' do
       it 'returns true for email if ldap user' do
         allow(user).to receive(:ldap_user?).and_return(true)
+
         expect(user.sync_attribute?(:name)).to be_falsey
         expect(user.sync_attribute?(:email)).to be_truthy
         expect(user.sync_attribute?(:location)).to be_falsey
@@ -2224,6 +2275,7 @@ describe User do
       it 'returns true for email and location if ldap user and location declared as syncable' do
         allow(user).to receive(:ldap_user?).and_return(true)
         stub_omniauth_setting(sync_profile_attributes: %w(location))
+
         expect(user.sync_attribute?(:name)).to be_falsey
         expect(user.sync_attribute?(:email)).to be_truthy
         expect(user.sync_attribute?(:location)).to be_truthy
