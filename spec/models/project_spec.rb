@@ -421,20 +421,10 @@ describe Project do
   end
 
   describe '#repository_storage_path' do
-    let(:project) { create(:project, repository_storage: 'custom') }
-
-    before do
-      FileUtils.mkdir('tmp/tests/custom_repositories')
-      storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-    end
-
-    after do
-      FileUtils.rm_rf('tmp/tests/custom_repositories')
-    end
+    let(:project) { create(:project) }
 
     it 'returns the repository storage path' do
-      expect(project.repository_storage_path).to eq('tmp/tests/custom_repositories')
+      expect(Dir.exist?(project.repository_storage_path)).to be(true)
     end
   end
 
