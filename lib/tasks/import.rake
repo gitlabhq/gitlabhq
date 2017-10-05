@@ -59,18 +59,23 @@ class GithubImport
       namespace_path, _sep, name = @project_path.rpartition('/')
       namespace = find_or_create_namespace(namespace_path)
 
-      Projects::CreateService.new(
+      project = Projects::CreateService.new(
         @current_user,
         name: name,
         path: name,
         description: @repo['description'],
         namespace_id: namespace.id,
         visibility_level: visibility_level,
-        import_type: 'github',
-        import_source: @repo['full_name'],
-        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@"),
         skip_wiki: @repo['has_wiki']
       ).execute
+
+      project.update!(
+        import_type: 'github',
+        import_source: @repo['full_name'],
+        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@")
+      )
+
+      project
     end
   end
 
