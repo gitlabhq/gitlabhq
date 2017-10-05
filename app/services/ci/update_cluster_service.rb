@@ -2,7 +2,7 @@ module Ci
   class UpdateClusterService < BaseService
     def execute(cluster)
       Gcp::Cluster.transaction do
-        cluster.update!(enabled: params['enabled'])
+        cluster.update!(params)
 
         if params['enabled'] == 'true'
           cluster.service.update!(
