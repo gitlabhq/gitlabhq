@@ -17,9 +17,6 @@ module RepositoryMirroring
 
     raw_repository.rugged.config["remote.#{remote_name}.mirror"] = true
     raw_repository.rugged.config["remote.#{remote_name}.prune"] = true
-  rescue Rugged::ConfigError
-    # Ignore multivar errors when the config already exist
-    # TODO: refactor/fix this
   end
 
   def add_remote_fetch_config(remote_name, refspec)
