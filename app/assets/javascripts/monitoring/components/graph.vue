@@ -250,6 +250,7 @@
             <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
+              :graph-width="graphWidth"
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
             />
