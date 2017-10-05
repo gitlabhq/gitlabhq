@@ -1,0 +1,5 @@
+---
+title: Sync up hover and legend data across all graphs for the prometheus dashboard
+merge_request:
+author:
+type: fixed
