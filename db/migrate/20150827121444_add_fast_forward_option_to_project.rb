@@ -1,9 +1,5 @@
 # rubocop:disable all
 class AddFastForwardOptionToProject < ActiveRecord::Migration
-<<<<<<< HEAD
-  def change
-    add_column :projects, :merge_requests_ff_only_enabled, :boolean, default: false
-=======
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -19,6 +15,5 @@ class AddFastForwardOptionToProject < ActiveRecord::Migration
     if column_exists?(:projects, :merge_requests_ff_only_enabled)
       remove_column(:projects, :merge_requests_ff_only_enabled)
     end
->>>>>>> ce/master
   end
 end

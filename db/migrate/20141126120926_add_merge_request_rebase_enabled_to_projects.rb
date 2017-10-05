@@ -1,9 +1,5 @@
 # rubocop:disable all
 class AddMergeRequestRebaseEnabledToProjects < ActiveRecord::Migration
-<<<<<<< HEAD
-  def change
-    add_column :projects, :merge_requests_rebase_enabled, :boolean, default: false
-=======
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -17,6 +13,5 @@ class AddMergeRequestRebaseEnabledToProjects < ActiveRecord::Migration
 
   def down
     remove_column(:projects, :merge_requests_rebase_enabled)
->>>>>>> ce/master
   end
 end
