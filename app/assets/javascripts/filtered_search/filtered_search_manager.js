@@ -481,7 +481,7 @@ class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          const canEdit = this.canEdit && this.canEdit(sanitizedKey);
+          const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
           gl.FilteredSearchVisualTokens.addFilterVisualToken(
             sanitizedKey,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,
