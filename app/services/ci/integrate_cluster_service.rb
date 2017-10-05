@@ -20,7 +20,7 @@ module Ci
           token: token)
       end
     rescue ActiveRecord::RecordInvalid => e
-      cluster.error!("Failed to integrate cluster into kubernetes_service: #{e.message}")
+      cluster.make_errored!("Failed to integrate cluster into kubernetes_service: #{e.message}")
     end
   end
 end

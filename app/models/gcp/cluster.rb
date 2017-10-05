@@ -97,7 +97,7 @@ module Gcp
     end
 
     def api_url
-      'https://' + endpoint
+      'https://' + endpoint if endpoint
     end
 
     def restrict_modification
