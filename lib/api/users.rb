@@ -331,7 +331,6 @@ module API
         email = Emails::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -369,10 +368,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, user: user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: user).execute(email)
         end
-
-        user.update_secondary_emails!
       end
 
       desc 'Delete a user. Available only for admins.' do
@@ -677,7 +674,6 @@ module API
         email = Emails::CreateService.new(current_user, declared_params.merge(user: current_user)).execute
 
         if email.errors.blank?
-          NotificationService.new.new_email(email)
           present email, with: Entities::Email
         else
           render_validation_error!(email)
@@ -693,10 +689,8 @@ module API
         not_found!('Email') unless email
 
         destroy_conditionally!(email) do |email|
-          Emails::DestroyService.new(current_user, user: current_user, email: email.email).execute
+          Emails::DestroyService.new(current_user, user: current_user).execute(email)
         end
-
-        current_user.update_secondary_emails!
       end
 
       desc 'Get a list of user activities'
