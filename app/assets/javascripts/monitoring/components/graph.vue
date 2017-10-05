@@ -65,7 +65,7 @@
     },
 
     computed: {
-      outterViewBox() {
+      outerViewBox() {
         return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
       },
 
@@ -213,7 +213,7 @@
       class="prometheus-svg-container"
       :style="paddingBottomRootSvg">
       <svg
-        :viewBox="outterViewBox"
+        :viewBox="outerViewBox"
         ref="baseSvg">
         <g
           class="x-axis"
