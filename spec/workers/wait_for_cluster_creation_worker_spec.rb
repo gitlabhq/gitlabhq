@@ -56,9 +56,9 @@ describe WaitForClusterCreationWorker do
 
     context 'when cluster does not exist' do
       it 'does not provision a cluster' do
-        expect_any_instance_of(Ci::FetchGcpOperationService).to receive(:execute).with(nil)
+        expect_any_instance_of(Ci::FetchGcpOperationService).not_to receive(:execute)
 
-        described_class.new.perform(123)
+        described_class.new.perform(1234)
       end
     end
   end
