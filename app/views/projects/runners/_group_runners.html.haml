@@ -11,7 +11,8 @@
         Disable group Runners
     - else
       = link_to toggle_group_runners_project_runners_path(@project), class: 'btn btn-success', method: :post do
-        Enable group Runners &nbsp; for this project
+        Enable group Runners
+    &nbsp; for this project
 
 - if !@project.group
   This project does not belong to a group and can therefore not make use of group Runners.
