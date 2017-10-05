@@ -219,6 +219,20 @@ feature 'Runners' do
         expect(page).to have_content 'Available group Runners : 1'
         expect(page).to have_content 'group-runner'
       end
+
+      scenario 'group runners may be disabled for a project' do
+        visit runners_path(project)
+
+        click_on 'Disable group Runners'
+
+        expect(page).to have_content 'Enable group Runners'
+        expect(project.reload.group_runners_enabled).to be false
+
+        click_on 'Enable group Runners'
+
+        expect(page).to have_content 'Disable group Runners'
+        expect(project.reload.group_runners_enabled).to be true
+      end
     end
   end
 end
