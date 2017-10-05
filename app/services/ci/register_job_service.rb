@@ -17,6 +17,8 @@ module Ci
       builds =
         if runner.shared?
           builds_for_shared_runner
+        elsif runner.group?
+          builds_for_group_runner
         else
           builds_for_specific_runner
         end
@@ -69,16 +71,33 @@ module Ci
     private
 
     def builds_for_shared_runner
-      new_builds.
-        # don't run projects which have not enabled shared runners and builds
-        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
-        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
-        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+      builds_for_scheduled_runner(
+        running_builds_for_shared_runners,
+        projects: { shared_runners_enabled: true }
+      )
+    end
 
-        # Implement fair scheduling
-        # this returns builds that are ordered by number of running builds
-        # we prefer projects that don't use shared runners at all
-        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+    def builds_for_group_runner
+      builds_for_scheduled_runner(
+        running_builds_for_group_runners,
+        projects: { group_runners_enabled: true }
+      )
+    end
+
+    def builds_for_scheduled_runner(build_join, project_where)
+      project_where = project_where.deep_merge(projects: { pending_delete: false })
+
+      # don't run projects which have not enabled group runners and builds
+      builds = new_builds
+        .joins(:project).where(project_where)
+        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
+
+      # Implement fair scheduling
+      # this returns builds that are ordered by number of running builds
+      # we prefer projects that don't use group runners at all
+      builds
+        .joins("LEFT JOIN (#{build_join.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
         .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
@@ -87,7 +106,15 @@ module Ci
     end
 
     def running_builds_for_shared_runners
-      Ci::Build.running.where(runner: Ci::Runner.shared)
+      running_builds_for_runners(Ci::Runner.shared)
+    end
+
+    def running_builds_for_group_runners
+      running_builds_for_runners(Ci::Runner.joins(:runner_groups))
+    end
+
+    def running_builds_for_runners(runners)
+      Ci::Build.running.where(runner: runners)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
