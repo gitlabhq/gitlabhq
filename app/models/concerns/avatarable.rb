@@ -9,11 +9,9 @@ module Avatarable
     asset_host = ActionController::Base.asset_host
     gitlab_host = only_path ? gitlab_config.relative_url_root : gitlab_config.url
 
-    if use_asset_path
-      # If asset_host is set then it is expected that assets are handled by a standalone host.
-      # That means we do not want to get GitLab's relative_url_root option anymore.
-      host = asset_host.present? ? asset_host : gitlab_host
-    end
+    # If asset_host is set then it is expected that assets are handled by a standalone host.
+    # That means we do not want to get GitLab's relative_url_root option anymore.
+    host = (asset_host.present? && use_asset_path) ? asset_host : gitlab_host
 
     [host, avatar.url].join
   end
