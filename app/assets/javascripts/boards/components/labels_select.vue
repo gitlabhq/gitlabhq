@@ -18,14 +18,6 @@ export default {
       type: Array,
       required: false,
     },
-    defaultText: {
-      type: String,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
     canEdit: {
       type: Boolean,
       required: false,
@@ -46,6 +38,18 @@ export default {
   },
   mounted() {
     new LabelsSelect();
+  },
+  methods: {
+    labelStyle(label) {
+      let style;
+      if (label.textColor) {
+        style += `color: ${label.textColor};`
+      }
+      if (label.color) {
+        style += `background-color: ${label.color};`
+      }
+      return style;
+    },
   },
 };
 </script>
@@ -70,17 +74,14 @@ export default {
         Any label
       </span>
       <a
+        v-else
         href="#"
         v-for="label in board.labels"
         :key="label.id"
       >
         <span
-          class="label color-label has-tooltip"
-          :style="`
-            background-color: ${label.color};
-            color: ${label.textColor};
-          `"
-          title=""
+          class="label color-label"
+          :style="labelStyle(label)"
         >
           {{ label.title }}
         </span>
@@ -100,8 +101,9 @@ export default {
       <div class="dropdown">
         <button
           v-bind:data-labels="labelsPath"
-          class="dropdown-menu-toggle wide js-label-select js-multiselect js-board-config-modal"
+          class="dropdown-menu-toggle wide js-label-select js-multiselect js-extra-options js-board-config-modal"
           data-field-name="label_id[]"
+          :data-show-any="true"
           data-toggle="dropdown"
           type="button"
         >
