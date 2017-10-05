@@ -1,6 +1,6 @@
 - blob = file.blob
 - path_to_file = file_project_job_artifacts_path(@project, @build, path: file.path)
-- external_link = blob.external_link? && @project.public?
+- external_link = blob.external_link?(@build)
 
 %tr.tree-item.js-artifact-tree-row{ data: { link: path_to_file, external_link: "#{external_link}" } }
   %td.tree-item-file-name

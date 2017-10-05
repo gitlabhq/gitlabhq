@@ -34,7 +34,7 @@ module Ci
     end
 
     def external_url(project, job)
-      return unless external_link?
+      return unless external_link?(job)
 
       components = project.full_path_components
       components << "-/jobs/#{job.id}/artifacts/file/#{path}"
@@ -43,10 +43,11 @@ module Ci
       "#{pages_config.protocol}://#{components[0]}.#{pages_config.host}/#{artifact_path}"
     end
 
-    def external_link?
+    def external_link?(job)
       pages_config.enabled &&
         pages_config.artifacts_server &&
-        EXTENTIONS_SERVED_BY_PAGES.include?(File.extname(name))
+        EXTENTIONS_SERVED_BY_PAGES.include?(File.extname(name)) &&
+        job.project.public?
     end
 
     private
