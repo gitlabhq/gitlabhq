@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::ArtifactsController do
   set(:user) { create(:user) }
-  set(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository, :public) }
 
   let(:pipeline) do
     create(:ci_pipeline,
@@ -89,6 +89,25 @@ describe Projects::ArtifactsController do
 
           expect(response).to be_not_found
         end
+      end
+    end
+
+    context 'when the project is private' do
+      let(:private_project) { create(:project, :repository, :private) }
+      let(:pipeline) { create(:ci_pipeline, project: private_project) }
+      let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+      before do
+        private_project.add_developer(user)
+
+        allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      end
+
+      it 'does not redirect the request' do
+        get :file, namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt'
+
+        expect(response).to have_http_status(:ok)
+        expect(response).to render_template('projects/artifacts/file')
       end
     end
   end

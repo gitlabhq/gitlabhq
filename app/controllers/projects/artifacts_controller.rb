@@ -26,7 +26,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     blob = @entry.blob
     conditionally_expand_blob(blob)
 
-    if blob.external_link?
+    if blob.external_link?(build)
       redirect_to blob.external_url(@project, build)
     else
       respond_to do |format|
