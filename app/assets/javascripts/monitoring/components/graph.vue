@@ -153,7 +153,7 @@
         }
 
         const axisXScale = d3.time.scale()
-          .range([0, this.graphWidth]);
+          .range([0, this.graphWidth - 70]);
         const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
 
