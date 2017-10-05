@@ -7,11 +7,9 @@
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { timeScaleFormat } from '../utils/date_time_formatters';
+  import { timeScaleFormat, bisectDate } from '../utils/date_time_formatters';
   import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
-
-  const bisectDate = d3.bisector(d => d.time).left;
 
   export default {
     props: {
@@ -26,6 +24,11 @@
       deploymentData: {
         type: Array,
         required: true,
+      },
+      hoverData: {
+        type: Object,
+        required: false,
+        default: () => ({}),
       },
     },
 
@@ -52,6 +55,7 @@
         currentXCoordinate: 0,
         currentFlagPosition: 0,
         showFlag: false,
+        showFlagContent: false,
         showDeployInfo: true,
         timeSeries: [],
       };
@@ -122,22 +126,14 @@
         const d1 = firstTimeSeries.values[overlayIndex];
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
-        this.currentData = evalTime ? d1 : d0;
-        this.currentDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
-        this.currentXCoordinate = Math.floor(firstTimeSeries.timeSeriesScaleX(this.currentData.time));
+        const hoveredDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
+        const hoveredDate = firstTimeSeries.values[hoveredDataIndex].time;
         const currentDeployXPos = this.mouseOverDeployInfo(point.x);
 
-        if (this.currentXCoordinate > (this.graphWidth - 200)) {
-          this.currentFlagPosition = this.currentXCoordinate - 103;
-        } else {
-          this.currentFlagPosition = this.currentXCoordinate;
-        }
-
-        if (currentDeployXPos) {
-          this.showFlag = false;
-        } else {
-          this.showFlag = true;
-        }
+        eventHub.$emit('hoverChanged', {
+          hoveredDate,
+          currentDeployXPos,
+        });
       },
 
       renderAxesPaths() {
@@ -194,6 +190,10 @@
           eventHub.$emit('toggleAspectRatio');
         }
       },
+
+      hoverData() {
+        this.positionFlag();
+      },
     },
 
     mounted() {
@@ -203,7 +203,10 @@
 </script>
 
 <template>
-  <div class="prometheus-graph">
+  <div 
+    class="prometheus-graph"
+    @mouseover="showFlagContent = true"
+    @mouseleave="showFlagContent = false">
     <h5 class="text-center graph-title">
       {{graphData.title}}
     </h5>
@@ -257,6 +260,7 @@
               :current-flag-position="currentFlagPosition"
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
+              :show-flag-content="showFlagContent"
             />
             <rect
               class="prometheus-graph-overlay"
