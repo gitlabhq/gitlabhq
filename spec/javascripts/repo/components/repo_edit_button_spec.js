@@ -2,7 +2,7 @@ import Vue from 'vue';
 import repoEditButton from '~/repo/components/repo_edit_button.vue';
 import RepoStore from '~/repo/stores/repo_store';
 
-fdescribe('RepoEditButton', () => {
+describe('RepoEditButton', () => {
   function createComponent() {
     const RepoEditButton = Vue.extend(repoEditButton);
 

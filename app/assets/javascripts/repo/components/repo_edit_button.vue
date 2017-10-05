@@ -23,14 +23,16 @@ export default {
   },
   methods: {
     editCancelClicked() {
-      if(!this.canCommit) {
+      if (!this.canCommit) {
         this.showForkDialog = true;
         return;
       }
-      if(this.changedFiles.length) {
+
+      if (this.changedFiles.length) {
         this.dialog.open = true;
         return;
       }
+
       this.editMode = !this.editMode;
       Store.toggleBlobView();
     },
@@ -46,7 +48,7 @@ export default {
       Store.showForkDialog = false;
       forkForm.name = 'fork-repo';
       forkForm.method = 'POST';
-      let input = document.createElement('INPUT');
+      const input = document.createElement('INPUT');
       input.type = 'HIDDEN';
       input.name = csrfParam;
       input.value = authToken;
