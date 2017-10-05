@@ -228,6 +228,7 @@ Ci::Pipeline:
 - auto_canceled_by_id
 - pipeline_schedule_id
 - config_source
+- failure_reason
 - protected
 Ci::Stage:
 - id

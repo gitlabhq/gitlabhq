@@ -156,6 +156,86 @@ describe Namespace do
     end
   end
 
+  describe '#max_active_pipelines' do
+    context 'when there is no limit defined' do
+      it 'returns zero' do
+        expect(namespace.max_active_pipelines).to be_zero
+      end
+    end
+
+    context 'when free plan has limit defined' do
+      before do
+        Plan.find_by(name: Namespace::FREE_PLAN)
+          .update_column(:active_pipelines_limit, 40)
+      end
+
+      it 'returns a free plan limits' do
+        expect(namespace.max_active_pipelines).to be 40
+      end
+    end
+
+    context 'when associated plan has no limit defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns zero' do
+        expect(namespace.max_active_pipelines).to be_zero
+      end
+    end
+
+    context 'when limit is defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan.update_column(:active_pipelines_limit, 10)
+      end
+
+      it 'returns a number of maximum active pipelines' do
+        expect(namespace.max_active_pipelines).to eq 10
+      end
+    end
+  end
+
+  describe '#max_pipeline_size' do
+    context 'when there are no limits defined' do
+      it 'returns zero' do
+        expect(namespace.max_pipeline_size).to be_zero
+      end
+    end
+
+    context 'when free plan has limit defined' do
+      before do
+        Plan.find_by(name: Namespace::FREE_PLAN)
+          .update_column(:pipeline_size_limit, 40)
+      end
+
+      it 'returns a free plan limits' do
+        expect(namespace.max_pipeline_size).to be 40
+      end
+    end
+
+    context 'when associated plan has no limits defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns zero' do
+        expect(namespace.max_pipeline_size).to be_zero
+      end
+    end
+
+    context 'when limit is defined' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan.update_column(:pipeline_size_limit, 15)
+      end
+
+      it 'returns a number of maximum pipeline size' do
+        expect(namespace.max_pipeline_size).to eq 15
+      end
+    end
+  end
+
   describe '#shared_runners_enabled?' do
     subject { namespace.shared_runners_enabled? }
 
@@ -292,6 +372,44 @@ describe Namespace do
       expect(nested_group.root_ancestor).to eq(root_group)
       expect(deep_nested_group.root_ancestor).to eq(root_group)
       expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+    end
+  end
+
+  describe '#actual_plan' do
+    context 'when namespace has a plan associated' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns an associated plan' do
+        expect(namespace.plan).not_to be_nil
+        expect(namespace.actual_plan.name).to eq 'gold'
+      end
+    end
+
+    context 'when namespace does not have plan associated' do
+      it 'returns a free plan object' do
+        expect(namespace.plan).to be_nil
+        expect(namespace.actual_plan.name).to eq 'free'
+      end
+    end
+  end
+
+  describe '#actual_plan_name' do
+    context 'when namespace has a plan associated' do
+      before do
+        namespace.plan = Namespace::GOLD_PLAN
+      end
+
+      it 'returns an associated plan name' do
+        expect(namespace.actual_plan_name).to eq 'gold'
+      end
+    end
+
+    context 'when namespace does not have plan associated' do
+      it 'returns a free plan name' do
+        expect(namespace.actual_plan_name).to eq 'free'
+      end
     end
   end
 end

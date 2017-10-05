@@ -108,5 +108,18 @@ describe PipelineEntity do
         expect(subject[:ref][:path]).to be_nil
       end
     end
+
+    context 'when pipeline has a failure reason set' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        pipeline.drop!(:config_error)
+      end
+
+      it 'has a correct failure reason' do
+        expect(subject[:failure_reason])
+          .to eq 'CI/CD YAML configuration error!'
+      end
+    end
   end
 end
