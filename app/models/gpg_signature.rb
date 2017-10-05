@@ -22,14 +22,11 @@ class GpgSignature < ActiveRecord::Base
   validates :gpg_key_primary_keyid, presence: true
 
   def self.with_key_and_subkeys(gpg_key)
-    return none unless gpg_key
-
-    t = arel_table
-    subkey_ids = gpg_key&.subkeys&.pluck(:id)
+    subkey_ids = gpg_key.subkeys.pluck(:id)
 
     where(
-      t[:gpg_key_id].eq(gpg_key&.id).or(
-        t[:gpg_key_subkey_id].in(subkey_ids)
+      arel_table[:gpg_key_id].eq(gpg_key.id).or(
+        arel_table[:gpg_key_subkey_id].in(subkey_ids)
       )
     )
   end

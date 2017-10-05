@@ -8,11 +8,13 @@ class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
 
   class GpgKey < ActiveRecord::Base
     self.table_name = 'gpg_keys'
+
+    include EachBatch
   end
 
   def up
-    GpgKey.select(:id).in_batches do |relation|
-      jobs = relation.pluck(:id).map do |id|
+    GpgKey.select(:id).each_batch do |gpg_keys|
+      jobs = gpg_keys.pluck(:id).map do |id|
         ['CreateGpgKeySubkeysFromGpgKeys', [id]]
       end
 
