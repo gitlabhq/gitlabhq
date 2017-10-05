@@ -33,6 +33,21 @@ the database](ssh.md) to avoid having to maintain consistency of the
 `authorized_keys` file for SSH access. Failing to do this will prevent users
 from being able to clone via SSH.
 
+Note that in older versions of Geo, attachments downloaded on the secondary
+nodes would be saved to the wrong directory. We recommend that you do the
+following to clean this up.
+
+On the SECONDARY Geo nodes, run as root:
+
+```sh
+mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
+mkdir /var/opt/gitlab/gitlab-rails/working
+chmod 700 /var/opt/gitlab/gitlab-rails/working
+chown git:git /var/opt/gitlab/gitlab-rails/working
+```
+
+You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
+
 ## Upgrading from GitLab 9.3 or older
 
 If you started running Geo on GitLab 9.3 or older, we recommend that you

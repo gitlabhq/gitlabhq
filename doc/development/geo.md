@@ -141,7 +141,7 @@ The database configuration is set in `config/database_geo.yml`.
 To write a migration for the database, use the `GeoMigrationGenerator`:
 
 ```
-rails g geo_generator [args] [options]
+rails g geo_generation [args] [options]
 ```
 
 To migrate the tracking database, run:
