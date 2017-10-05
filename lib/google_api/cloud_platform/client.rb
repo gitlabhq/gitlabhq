@@ -65,7 +65,8 @@ module GoogleApi
       end
 
       def parse_operation_id(self_link)
-        self_link.match(%r{projects/.*/zones/.*/operations/(.*)})[1]
+        m = self_link.match(%r{projects/.*/zones/.*/operations/(.*)})
+        m[1] if m
       end
     end
   end
