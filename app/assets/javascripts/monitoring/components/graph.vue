@@ -145,7 +145,7 @@
           this.graphData.queries[0],
           this.graphWidth,
           this.graphHeight,
-          this.graphHeightOffset
+          this.graphHeightOffset,
         );
 
         if (this.timeSeries.length > 3) {
