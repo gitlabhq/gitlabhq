@@ -1,5 +1,6 @@
 <script>
   import getActionIcon from '../../../vue_shared/ci_action_icons';
+  import icon from '../../../vue_shared/components/icon.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
@@ -29,12 +30,17 @@
       },
     },
 
+    components: {
+      icon,
+    },
+
     directives: {
       tooltip,
     },
 
     computed: {
       actionIconSvg() {
+        alert('LA');
         return getActionIcon(this.actionIcon);
       },
     },
@@ -49,7 +55,9 @@
     rel="nofollow"
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
-    v-html="actionIconSvg"
     aria-label="Job's action">
+    {{actionIcon}}
+    <icon
+      name="retry"/>
   </a>
 </template>

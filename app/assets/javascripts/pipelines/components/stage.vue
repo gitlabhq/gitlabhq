@@ -14,7 +14,7 @@
  */
 
 import Flash from '../../flash';
-import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import icon from '../../vue_shared/components/icon.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -45,6 +45,7 @@ export default {
 
   components: {
     loadingIcon,
+    icon,
   },
 
   updated() {
@@ -121,10 +122,6 @@ export default {
     triggerButtonClass() {
       return `ci-status-icon-${this.stage.status.group}`;
     },
-
-    svgIcon() {
-      return borderlessStatusIconEntityMap[this.stage.status.icon];
-    },
   },
 };
 </script>
@@ -145,9 +142,10 @@ export default {
       aria-expanded="false">
 
       <span
-        v-html="svgIcon"
         aria-hidden="true"
         :aria-label="stage.title">
+        <icon
+          :name="stage.status.icon"/>
       </span>
 
       <i

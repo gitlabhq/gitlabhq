@@ -165,8 +165,9 @@
       z-index: 300;
     }
 
-    .ci-action-icon-wrapper {
-      line-height: 16px;
+    .ci-action-icon-wrapper svg {
+      width: 16px;
+      height: 16px;
     }
   }
 
