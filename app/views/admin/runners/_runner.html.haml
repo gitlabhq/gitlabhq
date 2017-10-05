@@ -2,6 +2,8 @@
   %td
     - if runner.shared?
       %span.label.label-success shared
+    - elsif runner.group?
+      %span.label.label-success group
     - else
       %span.label.label-info specific
     - if runner.locked?
@@ -19,7 +21,7 @@
   %td
     = runner.ip_address
   %td
-    - if runner.shared?
+    - if runner.shared? || runner.group?
       n/a
     - else
       = runner.projects.count(:all)

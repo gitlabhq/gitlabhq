@@ -59,6 +59,47 @@ describe "Admin Runners" do
         expect(page).to have_text 'No runners found'
       end
     end
+
+    context 'group runner' do
+      it 'shows the label and does not show the project count' do
+        group = create :group
+        runner = create :ci_runner, groups: [group]
+
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.label', text: 'group'
+          expect(page).to have_text 'n/a'
+        end
+      end
+    end
+
+    context 'shared runner' do
+      it 'shows the label and does not show the project count' do
+        runner = create :ci_runner, :shared
+
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.label', text: 'shared'
+          expect(page).to have_text 'n/a'
+        end
+      end
+    end
+
+    context 'specific runner' do
+      it 'shows the label and the project count' do
+        project = create :project
+        runner = create :ci_runner, projects: [project]
+
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.label', text: 'specific'
+          expect(page).to have_text '1'
+        end
+      end
+    end
   end
 
   describe "Runner show page" do
