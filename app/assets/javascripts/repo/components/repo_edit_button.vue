@@ -71,7 +71,7 @@ export default {
   />
   <button
   v-if="showButton"
-  class="btn btn-default"
+  class="btn btn-default edit-button"
   type="button"
   @click.prevent="editCancelClicked">
   <i
