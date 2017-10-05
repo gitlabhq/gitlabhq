@@ -56,7 +56,6 @@ describe RspecFlaky::Listener, :aggregate_failures do
 
         expect(listener.to_report(listener.suite_flaky_examples))
           .to eq(expected_suite_flaky_examples)
-        expect(listener.__send__(:_new_flaky_examples)).to eq({})
         expect(listener.flaky_examples).to eq({})
       end
     end
