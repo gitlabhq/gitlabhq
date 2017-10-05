@@ -194,6 +194,7 @@ feature 'Merge requests > User posts diff notes', :js do
     before do
       merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
+      wait_for_requests
     end
 
     context 'with a new line' do
