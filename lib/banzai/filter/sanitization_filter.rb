@@ -45,8 +45,9 @@ module Banzai
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
 
-        # Disallow `name` attribute globally
+        # Disallow `name` attribute globally, allow on `a`
         whitelist[:attributes][:all].delete('name')
+        whitelist[:attributes]['a'].push('name')
 
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
@@ -72,8 +73,9 @@ module Banzai
             return unless node.has_attribute?('href')
 
             begin
+              node['href'] = node['href'].strip
               uri = Addressable::URI.parse(node['href'])
-              uri.scheme = uri.scheme.strip.downcase if uri.scheme
+              uri.scheme = uri.scheme.downcase if uri.scheme
 
               node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
             rescue Addressable::URI::InvalidURIError

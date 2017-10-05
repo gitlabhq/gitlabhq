@@ -7,7 +7,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def create
-    @email = Emails::CreateService.new(current_user, email_params).execute
+    @email = Emails::CreateService.new(current_user, email_params.merge(user: current_user)).execute
     unless @email.errors.blank?
       flash[:alert] = @email.errors.full_messages.first
     end
@@ -16,7 +16,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def destroy
-    Emails::DestroyService.new(current_user).execute(@email)
+    Emails::DestroyService.new(current_user, user: current_user).execute(@email)
 
     respond_to do |format|
       format.html { redirect_to profile_emails_url, status: 302 }
@@ -25,7 +25,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def resend_confirmation_instructions
-    if Emails::ConfirmService.new(current_user).execute(@email)
+    if Emails::ConfirmService.new(current_user, user: current_user).execute(@email)
       flash[:notice] = "Confirmation email sent to #{@email.email}"
     else
       flash[:alert] = "There was a problem sending the confirmation email"

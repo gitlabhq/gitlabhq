@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.3 (2017-10-05)
+
+- [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
+- [FIXED] Fix CSRF validation issue when closing/opening merge requests from the UI. !14555
+- [FIXED] Kubernetes integration: ensure v1.8.0 compatibility. !14635
+- [FIXED] Fixes data parameter not being sent in ajax request for jobs log.
+- [FIXED] Improves UX of autodevops popover to match gpg one.
+- [FIXED] Fixed commenting on side-by-side commit diff.
+- [FIXED] Make sure API responds with 401 when invalid authentication info is provided.
+- [FIXED] Fix merge request counter updates after merge.
+- [FIXED] Fix gitlab-rake gitlab:import:repos task failing.
+- [FIXED] Fix pushes to an empty repository not invalidating has_visible_content? cache.
+- [FIXED] Ensure all refs are restored on a restore from backup.
+- [FIXED] Gitaly RepositoryExists remains opt-in for all method calls.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+- [FIXED] Adjust MRs being stuck on "process of being merged" for more than 2 hours.
+
+## 10.0.2 (2017-09-27)
+
+- [FIXED] Notes will not show an empty bubble when the author isn't a member. !14450
+- [FIXED] Some checks in `rake gitlab:check` were failling with 'undefined method `run_command`'. !14469
+- [FIXED] Make locked setting of Runner to not affect jobs scheduling. !14483
+- [FIXED] Re-allow `name` attribute on user-provided anchor HTML.
+
+## 10.0.1 (2017-09-23)
+
+- [FIXED] Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration.
+
 ## 10.0.0 (2017-09-22)
 
 - [SECURITY] Upgrade brace-expansion NPM package due to security issue. !13665 (Markus Koller)
@@ -74,6 +102,8 @@ entry.
 - [FIXED] Fixed merge request changes bar jumping.
 - [FIXED] Improve migrations using triggers.
 - [FIXED] Fix ConvDev Index nav item and Monitoring submenu regression.
+- [FIXED] disabling notifications globally now properly turns off group/project added
+  emails !13325
 - [DEPRECATED] Deprecate custom SSH client configuration for the git user. !13930
 - [CHANGED] allow all users to delete their account. !13636 (Jacopo Beschi @jacopo-beschi)
 - [CHANGED] Use full path of project's avatar in webhooks. !13649 (Vitaliy @blackst0ne Klachkov)
@@ -181,6 +211,21 @@ entry.
 - Move ConvDev Index location to after Cohorts.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fixed fork button being disabled for users who can fork to a group.
+
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
+
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
 
 ## 9.5.5 (2017-09-18)
 

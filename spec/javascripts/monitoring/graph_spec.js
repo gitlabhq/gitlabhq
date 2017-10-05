@@ -86,4 +86,22 @@ describe('Graph', () => {
     expect(component.yAxisLabel).toEqual(component.graphData.y_label);
     expect(component.legendTitle).toEqual(component.graphData.queries[0].label);
   });
+
+  it('sets the currentData object based on the hovered data index', () => {
+    const component = createComponent({
+      graphData: convertedMetrics[1],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+      graphIdentifier: 0,
+      hoverData: {
+        hoveredDate: new Date('Sun Aug 27 2017 06:11:51 GMT-0500 (CDT)'),
+        currentDeployXPos: null,
+      },
+    });
+
+    component.positionFlag();
+    expect(component.currentData).toBe(component.timeSeries[0].values[10]);
+    expect(component.currentDataIndex).toEqual(10);
+  });
 });

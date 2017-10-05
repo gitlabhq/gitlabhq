@@ -116,7 +116,8 @@ class Issue < ActiveRecord::Base
 
   def self.sort(method, excluded_labels: [])
     case method.to_s
-    when 'due_date_asc' then order_due_date_asc
+    when 'due_date'      then order_due_date_asc
+    when 'due_date_asc'  then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
     else
       super

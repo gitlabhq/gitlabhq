@@ -352,7 +352,7 @@ import {
     }
 
     expandViewContainer() {
-      const $wrapper = $('.content-wrapper .container-fluid');
+      const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }

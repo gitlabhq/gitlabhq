@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Emails::CreateService do
   let(:user) { create(:user) }
-  let(:opts) { { email: 'new@email.com' } }
+  let(:opts) { { email: 'new@email.com', user: user } }
 
   subject(:service) { described_class.new(user, opts) }
 

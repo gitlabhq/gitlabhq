@@ -96,18 +96,6 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request')
         end
       end
-
-      context 'number of queries', :request_store do
-        it 'verifies number of queries' do
-          # pre-create objects
-          merge_request
-
-          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
-
-          expect(recorded.count).to be_within(5).of(30)
-          expect(recorded.cached_count).to eq(0)
-        end
-      end
     end
 
     describe "as diff" do
@@ -658,7 +646,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
       end
     end
 
