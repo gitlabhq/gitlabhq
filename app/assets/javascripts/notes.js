@@ -1213,13 +1213,13 @@ export default class Notes {
   }
 
   addFlash(...flashParams) {
-    this.flashInstance = new Flash(...flashParams);
+    this.flashContainer = new Flash(...flashParams);
   }
 
   clearFlash() {
-    if (this.flashInstance && this.flashInstance.flashContainer) {
-      this.flashInstance.flashContainer.hide();
-      this.flashInstance = null;
+    if (this.flashContainer) {
+      this.flashContainer.style.display = 'none';
+      this.flashContainer = null;
     }
   }
 

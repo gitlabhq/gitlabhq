@@ -31,6 +31,17 @@ describe('Flash', () => {
         el.querySelector('.flash-text').textContent.trim(),
       ).toBe('<script>alert("a");</script>');
     });
+
+    it('adds container classes when inside content wrapper', () => {
+      el.innerHTML = createFlashEl('testing', 'alert', true);
+
+      expect(
+        el.querySelector('.flash-text').classList.contains('container-fluid'),
+      ).toBeTruthy();
+      expect(
+        el.querySelector('.flash-text').classList.contains('container-limited'),
+      ).toBeTruthy();
+    });
   });
 
   describe('hideFlash', () => {
@@ -55,6 +66,17 @@ describe('Flash', () => {
       expect(
         el.style.opacity,
       ).toBe('0');
+    });
+
+    it('does not set styles when fadeTransition is false', () => {
+      hideFlash(el, false);
+
+      expect(
+        el.style.opacity,
+      ).toBe('');
+      expect(
+        el.style.transition,
+      ).toBe('');
     });
 
     it('removes element after transitionend', () => {
@@ -192,7 +214,7 @@ describe('Flash', () => {
         flash('test');
 
         expect(
-          document.querySelector('.flash-text').className,
+          document.querySelector('.flash-text').className.trim(),
         ).toBe('flash-text');
       });
 

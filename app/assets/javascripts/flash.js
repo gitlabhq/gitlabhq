@@ -12,6 +12,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
     flashEl.remove();
   }, {
     once: true,
+    passive: true,
   });
 
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
@@ -27,12 +28,12 @@ const createAction = config => `
   </a>
 `;
 
-const createFlashEl = (message, type) => `
+const createFlashEl = (message, type, isInContentWrapper = false) => `
   <div
     class="flash-${type}"
   >
     <div
-      class="flash-text"
+      class="flash-text ${isInContentWrapper ? 'container-fluid container-limited' : ''}"
     >
       ${_.escape(message)}
     </div>
@@ -64,7 +65,9 @@ const createFlash = function createFlash(
 
   if (!flashContainer) return null;
 
-  flashContainer.innerHTML = createFlashEl(message, type);
+  const isInContentWrapper = flashContainer.parentNode.classList.contains('content-wrapper');
+
+  flashContainer.innerHTML = createFlashEl(message, type, isInContentWrapper);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
   flashEl.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
@@ -75,11 +78,6 @@ const createFlash = function createFlash(
     if (actionConfig.clickHandler) {
       flashEl.querySelector('.flash-action').addEventListener('click', e => actionConfig.clickHandler(e));
     }
-  }
-
-  if (flashContainer.parentNode.classList.contains('content-wrapper')) {
-    const flashText = flashEl.querySelector('.flash-text');
-    flashText.className = `${flashText.className} container-fluid container-limited`;
   }
 
   flashContainer.style.display = 'block';
