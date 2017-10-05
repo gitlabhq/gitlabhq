@@ -12,6 +12,10 @@ module Gitlab
         GIT_OBJECT_DIRECTORY
         GIT_ALTERNATE_OBJECT_DIRECTORIES
       ].freeze
+      ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES = %w[
+        GIT_OBJECT_DIRECTORY_RELATIVE
+        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
+      ].freeze
       SEARCH_CONTEXT_LINES = 3
 
       NoRepository = Class.new(StandardError)
@@ -1220,7 +1224,15 @@ module Gitlab
       end
 
       def alternate_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
+        relative_paths = Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+
+        if relative_paths.any?
+          relative_paths.map { |d| File.join(path, d) }
+        else
+          Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
+            .compact
+            .flat_map { |d| d.split(File::PATH_SEPARATOR) }
+        end
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit
