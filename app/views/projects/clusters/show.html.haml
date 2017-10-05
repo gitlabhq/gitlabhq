@@ -1,8 +1,11 @@
+- breadcrumb_title "Cluster"
+- page_title _("Cluster")
+
 - status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster) && @cluster.on_creation?
 .row.prepend-top-default.edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
-  cluster_status_reason: @cluster.status_reason }}
+  cluster_status_reason: @cluster.status_reason } }
   .col-sm-4
     = render 'sidebar'
   .col-sm-8
@@ -35,26 +38,26 @@
 
     - if can?(current_user, :admin_cluster, @cluster)
       %label
-        = s_('ClusterIntegration|Google container engine')
+        = s_('ClusterIntegration|Google Container Engine')
       %p
         - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), @cluster.gke_cluster_url, target: '_blank', rel: 'noopener noreferrer')
         = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
       .hidden.js-cluster-error.alert.alert-danger{ role: 'alert' }
-        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine.')
+        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine')
         %p.js-error-reason
 
       .hidden.js-cluster-creating.alert.alert-info{ role: 'alert' }
         = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
 
       .hidden.js-cluster-success.alert.alert-info{ role: 'alert' }
-        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine.')
+        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine')
 
     .form_group
       %label{ for: 'cluter_name' }
         = s_('ClusterIntegration|Cluster name')
       .input-group
-        %input.form-control.cluster-name{ value: @cluster.gcp_cluster_name, disabled: true}
+        %input.form-control.cluster-name{ value: @cluster.gcp_cluster_name, disabled: true }
         %span.input-group-addon.clipboard-addon
           = clipboard_button(text: @cluster.gcp_cluster_name, title: s_('ClusterIntegration|Copy cluster name'))
 

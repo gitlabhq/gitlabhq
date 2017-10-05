@@ -388,7 +388,7 @@ msgstr ""
 msgid "ClusterIntegration|Cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine."
+msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Copy cluster name"
@@ -412,13 +412,13 @@ msgstr ""
 msgid "ClusterIntegration|Google Container Engine project"
 msgstr ""
 
-msgid "ClusterIntegration|Google container engine"
+msgid "ClusterIntegration|Google Container Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
-msgid "ClusterIntegration|Machine type"
+msgid "ClusterIntegration|See machine types"
 msgstr ""
 
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
@@ -457,13 +457,13 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine."
 msgstr ""
 
-msgid "ClusterIntegration|To create a new cluster on Google Container Engine, please sign in with your Google account:"
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Use our %{link_to_help_page} on cluster integration."
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."

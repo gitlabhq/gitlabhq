@@ -282,7 +282,7 @@ describe Projects::ClustersController do
         subject
 
         expect(response).to redirect_to(project_clusters_path(project))
-        expect(flash[:notice]).to eq('Cluster was successfully removed.')
+        expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
       end
     end
 

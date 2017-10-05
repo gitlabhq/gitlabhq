@@ -7,7 +7,7 @@ class WaitForClusterCreationWorker
   TIMEOUT = 20.minutes
 
   def perform(cluster_id)
-    Gcp::Cluster.find_by_id(cluster_id).tap do |cluster|
+    Gcp::Cluster.find_by_id(cluster_id).try do |cluster|
       Ci::FetchGcpOperationService.new.execute(cluster) do |operation|
         case operation.status
         when 'RUNNING'

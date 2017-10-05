@@ -70,10 +70,10 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def destroy
     if cluster.destroy
-      flash[:notice] = "Cluster was successfully removed."
+      flash[:notice] = "Cluster integration was successfully removed."
       redirect_to project_clusters_path(project), status: 302
     else
-      flash[:notice] = "Cluster was not removed."
+      flash[:notice] = "Cluster integration was not removed."
       render :show
     end
   end

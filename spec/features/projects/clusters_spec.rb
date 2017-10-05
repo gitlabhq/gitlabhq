@@ -46,7 +46,7 @@ feature 'Clusters', :js do
 
           Gcp::Cluster.last.make_created!
 
-          expect(page).to have_content('Cluster was successfully created on Google Container Engine.')
+          expect(page).to have_content('Cluster was successfully created on Google Container Engine')
         end
       end
 
@@ -92,7 +92,7 @@ feature 'Clusters', :js do
         end
 
         it 'user sees creation form with the succeccful message' do
-          expect(page).to have_content('Cluster was successfully removed.')
+          expect(page).to have_content('Cluster integration was successfully removed.')
           expect(page).to have_button('Create cluster')
         end
       end
