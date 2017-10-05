@@ -256,14 +256,10 @@ describe 'gitlab:app namespace rake task' do
       after do
         FileUtils.rm_rf('tmp/tests/default_storage')
         FileUtils.rm_rf('tmp/tests/custom_storage')
-<<<<<<< HEAD
-        FileUtils.rm(@backup_tar)
+        FileUtils.rm(@backup_tar) if @backup_tar
 
         # We unstub the storages to be able to reconfigure the actual Gitaly channels
         allow(Gitlab.config.repositories).to receive(:storages).and_call_original
-=======
-        FileUtils.rm(@backup_tar) if @backup_tar
->>>>>>> ce/master
       end
 
       it 'includes repositories in all repository storages' do

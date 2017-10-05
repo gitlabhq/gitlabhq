@@ -38,15 +38,11 @@ describe MergeRequestEntity do
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
                                :target_branch_tree_path, :commits_count, :merge_ongoing,
-<<<<<<< HEAD
                                :ff_only_enabled,
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,
                                :approvals_path)
-=======
-                               :ff_only_enabled)
->>>>>>> ce/master
   end
 
   it 'has email_patches_path' do

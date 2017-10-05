@@ -28,17 +28,11 @@ shared_examples 'update invalid issuable' do |klass|
     if klass == MergeRequest
       it 'renders edit when format is html' do
         put :update, params
-<<<<<<< HEAD
 
         expect(response).to render_template(:edit)
         expect(assigns[:conflict]).to be_truthy
 
         expect(assigns[:suggested_approvers]).to be_an(Array) if issuable.requires_approve?
-=======
-
-        expect(response).to render_template(:edit)
-        expect(assigns[:conflict]).to be_truthy
->>>>>>> ce/master
       end
     end
 

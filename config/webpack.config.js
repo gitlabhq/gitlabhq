@@ -74,13 +74,10 @@ var config = {
     protected_branches:   './protected_branches',
     ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
-<<<<<<< HEAD
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
-=======
     registry_list:        './registry/index.js',
->>>>>>> ce/master
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',

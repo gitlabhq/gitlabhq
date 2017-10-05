@@ -678,14 +678,6 @@ describe Gitlab::Shell do
     end
   end
 
-<<<<<<< HEAD
-  def find_in_authorized_keys_file(key_id)
-    gitlab_shell.batch_read_key_ids do |ids|
-      return true if ids.include?(key_id)
-    end
-
-    false
-=======
   describe 'namespace actions' do
     subject { described_class.new }
     let(:storage_path) { Gitlab.config.repositories.storages.default.path }
@@ -732,6 +724,13 @@ describe Gitlab::Shell do
         expect(subject.exists?(storage_path, "2mep")).to be(true)
       end
     end
->>>>>>> ce/master
+  end
+
+  def find_in_authorized_keys_file(key_id)
+    gitlab_shell.batch_read_key_ids do |ids|
+      return true if ids.include?(key_id)
+    end
+
+    false
   end
 end

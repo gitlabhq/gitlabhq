@@ -13,19 +13,17 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
 
-<<<<<<< HEAD
+  expose :should_be_rebased?, as: :should_be_rebased
+  expose :ff_only_enabled do |merge_request|
+    merge_request.project.merge_requests_ff_only_enabled
+  end
+
   # EE-specific
   expose :approvals_before_merge
   expose :squash
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress
-=======
->>>>>>> ce/master
-  expose :should_be_rebased?, as: :should_be_rebased
-  expose :ff_only_enabled do |merge_request|
-    merge_request.project.merge_requests_ff_only_enabled
-  end
-<<<<<<< HEAD
+
   expose :can_push_to_source_branch do |merge_request|
     presenter(merge_request).can_push_to_source_branch?
   end
@@ -35,8 +33,6 @@ class MergeRequestEntity < IssuableEntity
   expose :approvals_path do |merge_request|
     presenter(merge_request).approvals_path
   end
-=======
->>>>>>> ce/master
 
   # Events
   expose :merge_event, using: EventEntity

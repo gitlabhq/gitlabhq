@@ -86,11 +86,7 @@ describe Gitlab::PathRegex do
       route.split('/')[1]
     end.compact
 
-<<<<<<< HEAD
-    words + files_in_public + Array(API::API.prefix.to_s)
-=======
     (words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)).uniq
->>>>>>> ce/master
   end
 
   let(:ee_top_level_words) do

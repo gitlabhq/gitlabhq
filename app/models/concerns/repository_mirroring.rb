@@ -1,5 +1,7 @@
 module RepositoryMirroring
-<<<<<<< HEAD
+  IMPORT_HEAD_REFS = '+refs/heads/*:refs/heads/*'.freeze
+  IMPORT_TAG_REFS = '+refs/tags/*:refs/tags/*'.freeze
+
   def storage_path
     @project.repository_storage_path
   end
@@ -11,13 +13,6 @@ module RepositoryMirroring
   def delete_remote_branches(remote, branches)
     gitlab_shell.delete_remote_branches(storage_path, disk_path, remote, branches)
   end
-
-  def set_remote_as_mirror(name)
-    config = raw_repository.rugged.config
-=======
-  IMPORT_HEAD_REFS = '+refs/heads/*:refs/heads/*'.freeze
-  IMPORT_TAG_REFS = '+refs/tags/*:refs/tags/*'.freeze
->>>>>>> ce/master
 
   def set_remote_as_mirror(name)
     # This is used to define repository as equivalent as "git clone --mirror"
