@@ -16,6 +16,20 @@ describe Gitlab::LDAP::Person do
     )
   end
 
+  describe '.normalize_dn' do
+    subject { described_class.normalize_dn(given) }
+
+    it_behaves_like 'normalizes a DN'
+
+    context 'with an exception during normalization' do
+      let(:given) { 'John "Smith,' } # just something that will cause an exception
+
+      it 'returns the given DN unmodified' do
+        expect(subject).to eq(given)
+      end
+    end
+  end
+
   describe '.normalize_uid' do
     subject { described_class.normalize_uid(given) }
 

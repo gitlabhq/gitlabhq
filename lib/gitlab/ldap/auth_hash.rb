@@ -4,7 +4,7 @@ module Gitlab
   module LDAP
     class AuthHash < Gitlab::OAuth::AuthHash
       def uid
-        Gitlab::LDAP::DN.new(super).to_normalized_s
+        Gitlab::LDAP::Person.normalize_dn(super)
       end
 
       private

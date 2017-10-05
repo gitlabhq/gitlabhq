@@ -36,6 +36,14 @@ module Gitlab
         ]
       end
 
+      def self.normalize_dn(dn)
+        ::Gitlab::LDAP::DN.new(dn).to_normalized_s
+      rescue ::Gitlab::LDAP::DN::FormatError => e
+        Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}")
+
+        dn
+      end
+
       # Returns the UID in a normalized form.
       #
       # 1. Excess spaces are stripped
@@ -44,7 +52,6 @@ module Gitlab
         ::Gitlab::LDAP::DN.normalize_value(uid)
       rescue ::Gitlab::LDAP::DN::FormatError => e
         Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
-        Rails.logger.info(e.backtrace.join("\n"))
 
         uid
       end
@@ -72,7 +79,7 @@ module Gitlab
       end
 
       def dn
-        DN.new(entry.dn).to_normalized_s
+        self.class.normalize_dn(entry.dn)
       end
 
       private
