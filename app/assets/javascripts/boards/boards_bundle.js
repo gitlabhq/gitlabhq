@@ -88,7 +88,7 @@ $(() => {
           Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
         ).join('&');
         this.cantEdit.push({
-          tokenName,
+          name: tokenName,
           value,
         });
       };
@@ -108,7 +108,7 @@ $(() => {
         }
 
         this.cantEdit.push({
-          tokenName: 'label',
+          name: 'label',
           value: label.title,
         });
       });

@@ -44,8 +44,9 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
   }
 
   canEdit(tokenName, tokenValue) {
-    if (tokenValue && this.hiddenTokenNames.includes(tokenName)) {
-      return this.cantEdit.findIndex(i => i.tokenName === tokenName && i.value === tokenValue) === -1;
+    // only hide tokens if both name and value match. This allows mix of hidden and visible Label tokens
+    if (tokenValue) {
+      return this.cantEdit.findIndex(t => t.name === tokenName && t.value === tokenValue) === -1;
     }
     return this.hiddenTokenNames.indexOf(tokenName) === -1;
   }
