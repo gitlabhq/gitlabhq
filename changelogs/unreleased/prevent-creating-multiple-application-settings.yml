@@ -1,0 +1,5 @@
+---
+title: Prevent creating multiple ApplicationSetting instances
+merge_request:
+author:
+type: fixed
