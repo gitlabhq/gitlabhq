@@ -12,6 +12,6 @@ class AddRunnersTokenToGroups < ActiveRecord::Migration
   end
 
   def down
-    remove_column :groups, :runners_token
+    remove_column :namespaces, :runners_token
   end
 end
