@@ -42,7 +42,7 @@ module Gitlab
       # 2. The string is downcased (for case-insensitivity)
       def self.normalize_uid(uid)
         ::Gitlab::LDAP::DN.normalize_value(uid)
-      rescue ::Gitlab::LDAP::MalformedDnError, ::Gitlab::LDAP::UnsupportedDnFormatError => e
+      rescue ::Gitlab::LDAP::DN::FormatError => e
         Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
         Rails.logger.info(e.backtrace.join("\n"))
 

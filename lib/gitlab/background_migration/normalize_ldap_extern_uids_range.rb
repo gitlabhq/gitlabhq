@@ -10,10 +10,11 @@ module Gitlab
       # accompanied by another migration.
       module Gitlab
         module LDAP
-          MalformedDnError = Class.new(StandardError)
-          UnsupportedDnFormatError = Class.new(StandardError)
-
           class DN
+            FormatError = Class.new(StandardError)
+            MalformedError = Class.new(FormatError)
+            UnsupportedError = Class.new(FormatError)
+
             def self.normalize_value(given_value)
               dummy_dn = "placeholder=#{given_value}"
               normalized_dn = new(*dummy_dn).to_normalized_s
@@ -79,19 +80,19 @@ module Gitlab
                     state = :key_oid
                     key << char
                   when ' ' then state = :key
-                  else raise(MalformedDnError, "Unrecognized first character of an RDN attribute type name \"#{char}\"")
+                  else raise(MalformedError, "Unrecognized first character of an RDN attribute type name \"#{char}\"")
                   end
                 when :key_normal then
                   case char
                   when '=' then state = :value
                   when 'a'..'z', 'A'..'Z', '0'..'9', '-', ' ' then key << char
-                  else raise(MalformedDnError, "Unrecognized RDN attribute type name character \"#{char}\"")
+                  else raise(MalformedError, "Unrecognized RDN attribute type name character \"#{char}\"")
                   end
                 when :key_oid then
                   case char
                   when '=' then state = :value
                   when '0'..'9', '.', ' ' then key << char
-                  else raise(MalformedDnError, "Unrecognized RDN OID attribute type name character \"#{char}\"")
+                  else raise(MalformedError, "Unrecognized RDN OID attribute type name character \"#{char}\"")
                   end
                 when :value then
                   case char
@@ -118,7 +119,7 @@ module Gitlab
                     yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
                     key = StringIO.new
                     value = StringIO.new
-                  when '+' then raise(UnsupportedDnFormatError, "Multivalued RDNs are not supported")
+                  when '+' then raise(UnsupportedError, "Multivalued RDNs are not supported")
                   else value << char
                   end
                 when :value_normal_escape then
@@ -135,7 +136,7 @@ module Gitlab
                   when '0'..'9', 'a'..'f', 'A'..'F' then
                     state = :value_normal
                     value << "#{hex_buffer}#{char}".to_i(16).chr
-                  else raise(MalformedDnError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
+                  else raise(MalformedError, "Invalid escaped hex code \"\\#{hex_buffer}#{char}\"")
                   end
                 when :value_quoted then
                   case char
@@ -157,7 +158,7 @@ module Gitlab
                   when '0'..'9', 'a'..'f', 'A'..'F' then
                     state = :value_quoted
                     value << "#{hex_buffer}#{char}".to_i(16).chr
-                  else raise(MalformedDnError, "Expected the second character of a hex pair inside a double quoted value, but got \"#{char}\"")
+                  else raise(MalformedError, "Expected the second character of a hex pair inside a double quoted value, but got \"#{char}\"")
                   end
                 when :value_hexstring then
                   case char
@@ -170,14 +171,14 @@ module Gitlab
                     yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
                     key = StringIO.new
                     value = StringIO.new
-                  else raise(MalformedDnError, "Expected the first character of a hex pair, but got \"#{char}\"")
+                  else raise(MalformedError, "Expected the first character of a hex pair, but got \"#{char}\"")
                   end
                 when :value_hexstring_hex then
                   case char
                   when '0'..'9', 'a'..'f', 'A'..'F' then
                     state = :value_hexstring
                     value << char
-                  else raise(MalformedDnError, "Expected the second character of a hex pair, but got \"#{char}\"")
+                  else raise(MalformedError, "Expected the second character of a hex pair, but got \"#{char}\"")
                   end
                 when :value_end then
                   case char
@@ -187,14 +188,14 @@ module Gitlab
                     yield key.string.strip, rstrip_except_escaped(value.string, dn_index)
                     key = StringIO.new
                     value = StringIO.new
-                  else raise(MalformedDnError, "Expected the end of an attribute value, but got \"#{char}\"")
+                  else raise(MalformedError, "Expected the end of an attribute value, but got \"#{char}\"")
                   end
                 else raise "Fell out of state machine"
                 end
               end
 
               # Last pair
-              raise(MalformedDnError, 'DN string ended unexpectedly') unless
+              raise(MalformedError, 'DN string ended unexpectedly') unless
                 [:value, :value_normal, :value_hexstring, :value_end].include? state
 
               yield key.string.strip, rstrip_except_escaped(value.string, @dn.length)
@@ -290,7 +291,7 @@ module Gitlab
             unless identity.save
               Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\". Skipping."
             end
-          rescue Gitlab::LDAP::MalformedDnError, Gitlab::LDAP::UnsupportedDnFormatError => e
+          rescue Gitlab::LDAP::DN::FormatError => e
             Rails.logger.info "Unable to normalize \"#{identity.extern_uid}\" due to \"#{e.message}\". Skipping."
           end
         end
