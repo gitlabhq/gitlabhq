@@ -1073,6 +1073,15 @@ class User < ActiveRecord::Base
     super
   end
 
+  # Get the membership for an object without loading the source of the membership
+  #
+  # This loads the entire `members` relation of the user, used on `current_user`
+  def membership_for_object(object)
+    members.sort('access_level_asc').detect do |member|
+      object.is_a?(member.source_type.constantize) && member.source_id == object.id
+    end
+  end
+
   protected
 
   # override, from Devise::Validatable

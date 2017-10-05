@@ -34,7 +34,7 @@ describe GroupChildEntity do
   end
 
   describe 'for a project' do
-    set(:object) do
+    let(:object) do
       create(:project, :with_avatar,
              description: 'Awesomeness')
     end
@@ -55,7 +55,7 @@ describe GroupChildEntity do
   end
 
   describe 'for a group', :nested_groups do
-    set(:object) do
+    let(:object) do
       create(:group, :nested, :with_avatar,
              description: 'Awesomeness')
     end

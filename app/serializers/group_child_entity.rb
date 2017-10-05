@@ -40,9 +40,7 @@ class GroupChildEntity < Grape::Entity
   end
 
   def permission
-    return unless request&.current_user
-
-    request.current_user.members.find_by(source: object)&.human_access
+    membership&.human_access
   end
 
   # Project only attributes
@@ -55,11 +53,11 @@ class GroupChildEntity < Grape::Entity
          unless: lambda { |_instance, _options| project? }
 
   def leave_path
-    leave_group_group_members_path(object)
+    leave_group_members_path(object)
   end
 
   def can_leave
-    if membership = object.members_and_requesters.find_by(user: request.current_user)
+    if membership
       can?(request.current_user, :destroy_group_member, membership)
     else
       false
@@ -72,5 +70,13 @@ class GroupChildEntity < Grape::Entity
 
   def number_users_with_delimiter
     number_with_delimiter(object.member_count)
+  end
+
+  private
+
+  def membership
+    return unless request.current_user
+
+    @membership ||= request.current_user.membership_for_object(object)
   end
 end
