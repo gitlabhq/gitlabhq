@@ -83,7 +83,7 @@ describe EE::User do
       expect(subject.reload.remember_created_at).to be_nil
     end
 
-    it 'does not clear remember_created_at when in a GitLab readonly instance' do
+    it 'does not clear remember_created_at when in a GitLab read-only instance' do
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect { subject.forget_me! }.not_to change(subject, :remember_created_at)
@@ -99,7 +99,7 @@ describe EE::User do
       expect(subject.reload.remember_created_at).not_to be_nil
     end
 
-    it 'does not update remember_created_at when in a Geo readonly instance' do
+    it 'does not update remember_created_at when in a Geo read-only instance' do
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect { subject.remember_me! }.not_to change(subject, :remember_created_at)

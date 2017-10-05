@@ -36,7 +36,7 @@ describe Banzai::Renderer do
           is_expected.to eq('field_html')
         end
 
-        it "skips database caching on a GitLab readonly instance" do
+        it "skips database caching on a GitLab read-only instance" do
           allow(Gitlab::Database).to receive(:read_only?).and_return(true)
           expect(object).to receive(:refresh_markdown_cache!)
 

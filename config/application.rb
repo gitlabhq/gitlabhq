@@ -174,8 +174,8 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
-    # Gitlab Readonly middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::Readonly'
+    # Gitlab Read-only middleware support
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_girl false

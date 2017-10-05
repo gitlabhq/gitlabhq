@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::Readonly do
+describe Gitlab::Middleware::ReadOnly do
   include Rack::Test::Methods
 
   RSpec::Matchers.define :be_a_redirect do
@@ -38,7 +38,7 @@ describe Gitlab::Middleware::Readonly do
 
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
-  context 'normal requests to a readonly Gitlab instance' do
+  context 'normal requests to a read-only Gitlab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     before do

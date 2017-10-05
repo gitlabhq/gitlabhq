@@ -2928,7 +2928,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_truthy
       end
 
-      it 'flags as readonly' do
+      it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
       end
 
@@ -3055,7 +3055,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_nil
       end
 
-      it 'does not flag as readonly' do
+      it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
       end
     end
