@@ -408,6 +408,18 @@ describe Project do
     end
   end
 
+  describe '#merge_method' do
+    it 'returns "ff" merge_method when ff is enabled' do
+      project = build(:project, merge_requests_ff_only_enabled: true)
+      expect(project.merge_method).to be :ff
+    end
+
+    it 'returns "merge" merge_method when ff is disabled' do
+      project = build(:project, merge_requests_ff_only_enabled: false)
+      expect(project.merge_method).to be :merge
+    end
+  end
+
   describe '#repository_storage_path' do
     let(:project) { create(:project, repository_storage: 'custom') }
 
@@ -1303,7 +1315,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1313,7 +1325,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.disk_path)
+          .with(project.repository_storage, project.disk_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1370,7 +1382,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.disk_path)
+        .with(project.repository_storage, project.disk_path)
         .and_return(true)
 
       project.ensure_repository
@@ -2790,6 +2802,17 @@ describe Project do
 
         project.latest_successful_pipeline_for('foo')
       end
+    end
+  end
+
+  describe '#check_repository_path_availability' do
+    let(:project) { build(:project) }
+
+    it 'skips gitlab-shell exists?' do
+      project.skip_disk_validation = true
+
+      expect(project.gitlab_shell).not_to receive(:exists?)
+      expect(project.check_repository_path_availability).to be_truthy
     end
   end
 

@@ -499,61 +499,53 @@ a.deploy-project-label {
   }
 }
 
-.fork-namespaces {
-  .row {
-    -webkit-flex-wrap: wrap;
-    display: -webkit-flex;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+.fork-thumbnail {
+  height: 200px;
+  width: calc((100% / 2) - #{$gl-padding * 2});
 
-    .fork-thumbnail {
-      border-radius: $border-radius-base;
-      background-color: $white-light;
-      border: 1px solid $border-white-light;
-      height: 202px;
-      margin: $gl-padding;
-      text-align: center;
-      width: 169px;
+  @media (min-width: $screen-md-min) {
+    width: calc((100% / 4) - #{$gl-padding * 2});
+  }
 
-      &:hover,
-      &.forked {
-        background-color: $row-hover;
-        border-color: $row-hover-border;
-      }
+  @media (min-width: $screen-lg-min) {
+    width: calc((100% / 5) - #{$gl-padding * 2});
+  }
 
-      .no-avatar {
-        width: 100px;
-        height: 100px;
-        background-color: $gray-light;
-        border: 1px solid $white-normal;
-        margin: 0 auto;
-        border-radius: 50%;
+  &:hover:not(.disabled),
+  &.forked {
+    background-color: $row-hover;
+    border-color: $row-hover-border;
+  }
 
-        i {
-          font-size: 100px;
-          color: $white-normal;
-        }
-      }
+  .avatar-container,
+  .identicon {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-      a {
-        display: block;
-        width: 100%;
-        height: 100%;
-        padding-top: $gl-padding;
-        color: $gl-text-color;
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: $gl-padding;
+    text-decoration: none;
 
-        .caption {
-          min-height: 30px;
-          padding: $gl-padding 0;
-        }
-      }
-
-      img {
-        border-radius: 50%;
-        max-width: 100px;
-      }
+    &.disabled {
+      opacity: .3;
+      cursor: not-allowed;
     }
+  }
+}
+
+.fork-thumbnail-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+
+  > h5 {
+    width: 100%;
   }
 }
 

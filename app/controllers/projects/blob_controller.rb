@@ -45,6 +45,8 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
+        page_title @blob.path, @ref, @project.name_with_namespace
+
         render json: BlobSerializer.new(project: @project, repository: @repository, ref: @ref, commit: @commit, params: params).represent(@blob)
       end
     end

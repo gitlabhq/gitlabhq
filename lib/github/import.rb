@@ -1,45 +1,12 @@
 require_relative 'error'
+require_relative 'import/issue'
+require_relative 'import/legacy_diff_note'
+require_relative 'import/merge_request'
+require_relative 'import/note'
 
 module Github
   class Import
     include Gitlab::ShellAdapter
-
-    class MergeRequest < ::MergeRequest
-      self.table_name = 'merge_requests'
-
-      self.reset_callbacks :create
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Issue < ::Issue
-      self.table_name = 'issues'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :create
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class Note < ::Note
-      self.table_name = 'notes'
-
-      self.reset_callbacks :save
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
-
-    class LegacyDiffNote < ::LegacyDiffNote
-      self.table_name = 'notes'
-
-      self.reset_callbacks :commit
-      self.reset_callbacks :update
-      self.reset_callbacks :validate
-    end
 
     attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
                 :options, :errors, :cached, :verbose

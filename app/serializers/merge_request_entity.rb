@@ -13,12 +13,16 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
 
+  expose :should_be_rebased?, as: :should_be_rebased
+  expose :ff_only_enabled do |merge_request|
+    merge_request.project.merge_requests_ff_only_enabled
+  end
+
   # Events
   expose :merge_event, using: EventEntity
   expose :closed_event, using: EventEntity
 
   # User entities
-  expose :author, using: UserEntity
   expose :merge_user, using: UserEntity
 
   # Diff sha's
@@ -26,7 +30,6 @@ class MergeRequestEntity < IssuableEntity
     merge_request.diff_head_sha if merge_request.diff_head_commit
   end
 
-  expose :merge_commit_sha
   expose :merge_commit_message
   expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 

@@ -95,35 +95,84 @@ describe('MRWidgetReadyToMerge', () => {
       });
     });
 
+    describe('status', () => {
+      it('defaults to success', () => {
+        vm.mr.pipeline = true;
+        expect(vm.status).toEqual('success');
+      });
+
+      it('returns failed when MR has CI but also has an unknown status', () => {
+        vm.mr.hasCI = true;
+        expect(vm.status).toEqual('failed');
+      });
+
+      it('returns default when MR has no pipeline', () => {
+        expect(vm.status).toEqual('success');
+      });
+
+      it('returns pending when pipeline is active', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineActive = true;
+        expect(vm.status).toEqual('pending');
+      });
+
+      it('returns failed when pipeline is failed', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineFailed = true;
+        expect(vm.status).toEqual('failed');
+      });
+    });
+
     describe('mergeButtonClass', () => {
       const defaultClass = 'btn btn-sm btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
 
-      it('should return default class', () => {
+      it('defaults to success class', () => {
+        expect(vm.mergeButtonClass).toEqual(defaultClass);
+      });
+
+      it('returns success class for success status', () => {
         vm.mr.pipeline = true;
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
-      it('should return failed class when MR has CI but also has an unknown status', () => {
-        vm.mr.hasCI = true;
-        expect(vm.mergeButtonClass).toEqual(failedClass);
-      });
-
-      it('should return default class when MR has no pipeline', () => {
-        expect(vm.mergeButtonClass).toEqual(defaultClass);
-      });
-
-      it('should return in action class when pipeline is active', () => {
+      it('returns info class for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
 
-      it('should return failed class when pipeline is failed', () => {
-        vm.mr.pipeline = {};
-        vm.mr.isPipelineFailed = true;
+      it('returns failed class for failed status', () => {
+        vm.mr.hasCI = true;
         expect(vm.mergeButtonClass).toEqual(failedClass);
+      });
+    });
+
+    describe('status icon', () => {
+      it('defaults to tick icon', () => {
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows tick for success status', () => {
+        vm.mr.pipeline = true;
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows tick for pending status', () => {
+        vm.mr.pipeline = {};
+        vm.mr.isPipelineActive = true;
+        expect(vm.iconClass).toEqual('success');
+      });
+
+      it('shows x for failed status', () => {
+        vm.mr.hasCI = true;
+        expect(vm.iconClass).toEqual('failed');
+      });
+
+      it('shows x for merge not allowed', () => {
+        vm.mr.hasCI = true;
+        expect(vm.iconClass).toEqual('failed');
       });
     });
 
@@ -177,39 +226,9 @@ describe('MRWidgetReadyToMerge', () => {
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
-      it('should return true when there vm instance is making request', () => {
+      it('should return true when the vm instance is making request', () => {
         vm.isMakingRequest = true;
         expect(vm.isMergeButtonDisabled).toBeTruthy();
-      });
-    });
-
-    describe('Remove source branch checkbox', () => {
-      describe('when user can merge but cannot delete branch', () => {
-        it('isRemoveSourceBranchButtonDisabled should be true', () => {
-          expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
-        });
-
-        it('should be disabled in the rendered output', () => {
-          const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
-        });
-      });
-
-      describe('when user can merge and can delete branch', () => {
-        beforeEach(() => {
-          this.customVm = createComponent({
-            mr: { canRemoveSourceBranch: true },
-          });
-        });
-
-        it('isRemoveSourceBranchButtonDisabled should be false', () => {
-          expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
-        });
-
-        it('should be enabled in rendered output', () => {
-          const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
-          expect(checkboxElement.getAttribute('disabled')).toBeNull();
-        });
       });
     });
   });
@@ -465,6 +484,56 @@ describe('MRWidgetReadyToMerge', () => {
           done();
         }, 333);
       });
+    });
+  });
+
+  describe('Remove source branch checkbox', () => {
+    describe('when user can merge but cannot delete branch', () => {
+      it('isRemoveSourceBranchButtonDisabled should be true', () => {
+        expect(vm.isRemoveSourceBranchButtonDisabled).toBe(true);
+      });
+
+      it('should be disabled in the rendered output', () => {
+        const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBe('disabled');
+      });
+    });
+
+    describe('when user can merge and can delete branch', () => {
+      beforeEach(() => {
+        this.customVm = createComponent({
+          mr: { canRemoveSourceBranch: true },
+        });
+      });
+
+      it('isRemoveSourceBranchButtonDisabled should be false', () => {
+        expect(this.customVm.isRemoveSourceBranchButtonDisabled).toBe(false);
+      });
+
+      it('should be enabled in rendered output', () => {
+        const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
+        expect(checkboxElement.getAttribute('disabled')).toBeNull();
+      });
+    });
+  });
+
+  describe('Commit message area', () => {
+    it('when using merge commits, should show "Modify commit message" button', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: false },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeNull();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+    });
+
+    it('when fast-forward merge is enabled, only show fast-forward message', () => {
+      const customVm = createComponent({
+        mr: { ffOnlyEnabled: true },
+      });
+
+      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeDefined();
+      expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
 });

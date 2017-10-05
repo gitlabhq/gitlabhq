@@ -33,11 +33,51 @@ describe('issue_comment_form component', () => {
       expect(vm.$el.querySelector('.timeline-icon .user-avatar-link').getAttribute('href')).toEqual(userDataMock.path);
     });
 
+    describe('handleSave', () => {
+      it('should request to save note when note is entered', () => {
+        vm.note = 'hello world';
+        spyOn(vm, 'saveNote').and.returnValue(new Promise(() => {}));
+        spyOn(vm, 'resizeTextarea');
+        spyOn(vm, 'stopPolling');
+
+        vm.handleSave();
+        expect(vm.isSubmitting).toEqual(true);
+        expect(vm.note).toEqual('');
+        expect(vm.saveNote).toHaveBeenCalled();
+        expect(vm.stopPolling).toHaveBeenCalled();
+        expect(vm.resizeTextarea).toHaveBeenCalled();
+      });
+
+      it('should toggle issue state when no note', () => {
+        spyOn(vm, 'toggleIssueState');
+
+        vm.handleSave();
+
+        expect(vm.toggleIssueState).toHaveBeenCalled();
+      });
+    });
+
     describe('textarea', () => {
       it('should render textarea with placeholder', () => {
         expect(
           vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
         ).toEqual('Write a comment or drag your files here...');
+      });
+
+      it('should make textarea disabled while requesting', (done) => {
+        const $submitButton = $(vm.$el.querySelector('.js-comment-submit-button'));
+        vm.note = 'hello world';
+        spyOn(vm, 'stopPolling');
+        spyOn(vm, 'saveNote').and.returnValue(new Promise(() => {}));
+
+        vm.$nextTick(() => { // Wait for vm.note change triggered. It should enable $submitButton.
+          $submitButton.trigger('click');
+
+          vm.$nextTick(() => { // Wait for vm.isSubmitting triggered. It should disable textarea.
+            expect(vm.$el.querySelector('.js-main-target-form textarea').disabled).toBeTruthy();
+            done();
+          });
+        });
       });
 
       it('should support quick actions', () => {

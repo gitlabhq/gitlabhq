@@ -34,6 +34,7 @@ class Key < ActiveRecord::Base
     value&.delete!("\n\r")
     value.strip! unless value.blank?
     write_attribute(:key, value)
+    @public_key = nil
   end
 
   def publishable_key

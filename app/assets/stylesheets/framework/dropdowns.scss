@@ -745,6 +745,10 @@
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
 
+    &.dropdown-open-top {
+      margin-bottom: $dropdown-vertical-offset;
+    }
+
     li {
       display: block;
       padding: 0 1px;
@@ -870,6 +874,13 @@
     .dropdown-menu,
     .dropdown-menu-nav {
       width: 100%;
+      min-width: 100%;
+    }
+  }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
       min-width: 100%;
     }
   }
