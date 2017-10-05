@@ -29,6 +29,7 @@ describe WaitForClusterCreationWorker do
 
           it 'sets an error message on cluster' do
             described_class.new.perform(cluster.id)
+
             expect(cluster.reload).to be_errored
           end
         end
@@ -49,6 +50,7 @@ describe WaitForClusterCreationWorker do
 
         it 'sets an error message on cluster' do
           described_class.new.perform(cluster.id)
+
           expect(cluster.reload).to be_errored
         end
       end
