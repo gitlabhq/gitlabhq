@@ -364,15 +364,16 @@ Settings.registry['path']            = Settings.absolute(Settings.registry['path
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
-Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
-Settings.pages['path']            = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
-Settings.pages['https']           = false if Settings.pages['https'].nil?
-Settings.pages['host']            ||= "example.com"
-Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
-Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
-Settings.pages['url']             ||= Settings.__send__(:build_pages_url)
-Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
-Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
+Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
+Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
+Settings.pages['https']             = false if Settings.pages['https'].nil?
+Settings.pages['host']              ||= "example.com"
+Settings.pages['port']              ||= Settings.pages.https ? 443 : 80
+Settings.pages['protocol']          ||= Settings.pages.https ? "https" : "http"
+Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
+Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
+Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 
 #
 # Geo
