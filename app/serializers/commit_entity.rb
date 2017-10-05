@@ -1,4 +1,4 @@
-class CommitEntity < API::Entities::RepoCommit
+class CommitEntity < API::Entities::Commit
   include RequestAwareEntity
 
   expose :author, using: UserEntity
