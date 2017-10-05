@@ -29,7 +29,6 @@ import BoardForm from './board_form.vue';
         loading: true,
         boards: [],
         state: Store.state,
-        milestoneTitle: 'Milestone',
       };
     },
     watch: {

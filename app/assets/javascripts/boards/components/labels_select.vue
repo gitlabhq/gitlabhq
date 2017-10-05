@@ -100,7 +100,7 @@ export default {
       >
       <div class="dropdown">
         <button
-          v-bind:data-labels="labelsPath"
+          :data-labels="labelsPath"
           class="dropdown-menu-toggle wide js-label-select js-multiselect js-extra-options js-board-config-modal"
           data-field-name="label_id[]"
           :data-show-any="true"

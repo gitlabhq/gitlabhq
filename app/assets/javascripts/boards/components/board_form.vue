@@ -1,117 +1,3 @@
-<template>
-  <popup-dialog
-    v-show="currentPage"
-    :title="title"
-    :primary-button-label="buttonText"
-    :kind="buttonKind"
-    :submit-disabled="submitDisabled"
-    @toggle="cancel"
-    @submit="submit"
-  >
-    <p v-if="isDeleteForm">
-      Are you sure you want to delete this board?
-    </p>
-    <form
-      v-else
-      class="js-board-config-modal"
-    >
-      <div
-        v-if="!readonly"
-        class="append-bottom-20"
-      >
-        <label
-          class="form-section-title label-light"
-          for="board-new-name"
-        >
-          Board name
-        </label>
-        <input
-          ref="name"
-          class="form-control"
-          type="text"
-          id="board-new-name"
-          v-model="board.name"
-          placeholder="Enter board name"
-        >
-      </div>
-      <div v-if="scopedIssueBoardFeatureEnabled">
-        <div
-          v-if="canAdminBoard"
-          class="media append-bottom-10"
-        >
-          <label class="form-section-title label-light media-body">
-            Board scope
-          </label>
-          <button
-            type="button"
-            class="btn"
-            @click="expanded = !expanded"
-            v-if="collapseScope"
-          >
-            {{ expandButtonText }}
-          </button>
-        </div>
-        <p class="text-secondary append-bottom-10">
-          Board scope affects which issues are displayed for anyone who visits this board
-        </p>
-        <div v-if="!collapseScope || expanded">
-          <div class="list-item">
-            <board-milestone-select
-              :board="board"
-              :milestone-path="milestonePath"
-              title="Milestone"
-              default-text="Any milestone"
-              :can-edit="canAdminBoard"
-            />
-          </div>
-
-          <div class="list-item">
-            <board-labels-select
-              :board="board"
-              :selected="board.labels"
-              title="Labels"
-              default-text="Any label"
-              :can-edit="canAdminBoard"
-              :labels-path="labelsPath"
-            />
-          </div>
-
-          <div class="list-item">
-            <user-select
-              any-user-text="Any assignee"
-              :board="board"
-              field-name="assignee_id"
-              label="Assignee"
-              v-model="board.assignee_id"
-              :selected="board.assignee"
-              :can-edit="canAdminBoard"
-              placeholder-text="Select assignee"
-              :project-id="projectId"
-              :group-id="groupId"
-              wrapper-class="assignee"
-            />
-          </div>
-
-          <div class="list-item">
-            <board-weight-select
-              :board="board"
-              :weights="weightsArray"
-              v-model="board.weight"
-              title="Weight"
-              default-text="Any weight"
-              :can-edit="canAdminBoard"
-            />
-          </div>
-        </div>
-      </div>
-    </form>
-    <div
-      slot="footer"
-      v-if="readonly"
-    ></div>
-  </popup-dialog>
-</template>
-
 <script>
 /* global BoardService */
 
@@ -288,3 +174,113 @@ export default Vue.extend({
   },
 });
 </script>
+
+<template>
+  <popup-dialog
+    v-show="currentPage"
+    :title="title"
+    :primary-button-label="buttonText"
+    :kind="buttonKind"
+    :submit-disabled="submitDisabled"
+    @toggle="cancel"
+    @submit="submit"
+  >
+    <p v-if="isDeleteForm">
+      Are you sure you want to delete this board?
+    </p>
+    <form
+      v-else
+      class="js-board-config-modal"
+    >
+      <div
+        v-if="!readonly"
+        class="append-bottom-20"
+      >
+        <label
+          class="form-section-title label-light"
+          for="board-new-name"
+        >
+          Board name
+        </label>
+        <input
+          ref="name"
+          class="form-control"
+          type="text"
+          id="board-new-name"
+          v-model="board.name"
+          placeholder="Enter board name"
+        >
+      </div>
+      <div v-if="scopedIssueBoardFeatureEnabled">
+        <div
+          v-if="canAdminBoard"
+          class="media append-bottom-10"
+        >
+          <label class="form-section-title label-light media-body">
+            Board scope
+          </label>
+          <button
+            type="button"
+            class="btn"
+            @click="expanded = !expanded"
+            v-if="collapseScope"
+          >
+            {{ expandButtonText }}
+          </button>
+        </div>
+        <p class="text-secondary append-bottom-10">
+          Board scope affects which issues are displayed for anyone who visits this board
+        </p>
+        <div v-if="!collapseScope || expanded">
+          <div class="list-item">
+            <board-milestone-select
+              :board="board"
+              :milestone-path="milestonePath"
+              title="Milestone"
+              :can-edit="canAdminBoard"
+            />
+          </div>
+
+          <div class="list-item">
+            <board-labels-select
+              :board="board"
+              :selected="board.labels"
+              title="Labels"
+              :can-edit="canAdminBoard"
+              :labels-path="labelsPath"
+            />
+          </div>
+
+          <div class="list-item">
+            <user-select
+              any-user-text="Any assignee"
+              :board="board"
+              field-name="assignee_id"
+              label="Assignee"
+              :selected="board.assignee"
+              :can-edit="canAdminBoard"
+              placeholder-text="Select assignee"
+              :project-id="projectId"
+              :group-id="groupId"
+              wrapper-class="assignee"
+            />
+          </div>
+
+          <div class="list-item">
+            <board-weight-select
+              :board="board"
+              :weights="weightsArray"
+              v-model="board.weight"
+              title="Weight"
+              :can-edit="canAdminBoard"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+    <div
+      slot="footer"
+      v-if="readonly"
+    ></div>
+  </popup-dialog>
+</template>

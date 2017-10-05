@@ -16,10 +16,6 @@ export default {
       type: String,
       required: true,
     },
-    defaultText: {
-      type: String,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
