@@ -1,6 +1,7 @@
 module Gcp
   class Cluster < ActiveRecord::Base
     extend Gitlab::Gcp::Model
+    include Presentable
 
     belongs_to :project, inverse_of: :cluster
     belongs_to :user

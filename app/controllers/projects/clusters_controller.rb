@@ -81,7 +81,7 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    @cluster ||= project.cluster
+    @cluster ||= project.cluster.present(current_user: current_user)
   end
 
   def create_params

@@ -100,9 +100,8 @@ describe Projects::ClustersController do
 
   describe 'POST create' do
     subject do
-      post :create, params.merge(
-                      namespace_id: project.namespace,
-                      project_id: project)
+      post :create, params.merge(namespace_id: project.namespace,
+                                 project_id: project)
     end
 
     context 'when not logged' do
@@ -117,12 +116,12 @@ describe Projects::ClustersController do
       end
 
       context 'when all required parameters are set' do
-        let(:params) do 
+        let(:params) do
           {
             cluster: {
               gcp_cluster_name: 'new-cluster',
-              gcp_project_id: '111',
-            } 
+              gcp_project_id: '111'
+            }
           }
         end
 
@@ -140,7 +139,7 @@ describe Projects::ClustersController do
       context 'when not all required parameters are set' do
         render_views
 
-        let(:params) do 
+        let(:params) do
           {
             cluster: {
               project_namespace: 'some namespace'
@@ -221,10 +220,9 @@ describe Projects::ClustersController do
     let(:params) { {} }
 
     subject do
-      put :update, params.merge(
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: cluster)
+      put :update, params.merge(namespace_id: project.namespace,
+                                project_id: project,
+                                id: cluster)
     end
 
     context 'when logged as master' do
