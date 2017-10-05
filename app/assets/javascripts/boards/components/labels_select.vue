@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     labelStyle(label) {
-      let style;
+      let style = '';
       if (label.textColor) {
         style += `color: ${label.textColor};`
       }
