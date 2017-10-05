@@ -1,5 +1,0 @@
----
-title: Fix gitlab-rake gitlab:import:repos task failing
-merge_request:
-author:
-type: fixed
