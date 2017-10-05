@@ -1,4 +1,5 @@
 require 'securerandom'
+require_relative '../sandbox/prepare'
 
 module QA
   module Scenario
@@ -12,11 +13,9 @@ module QA
           end
 
           def perform
-            Page::Main::Menu.act { go_to_groups }
-            Page::Dashboard::Groups.act do
-              prepare_sandbox
-              prepare_test_namespace
-            end
+            Scenario::Gitlab::Sandbox::Prepare.perform
+
+            Page::Dashboard::Groups.act { prepare_test_namespace }
             Page::Group::Show.act { go_to_new_project }
 
             Page::Project::New.perform do |page|
