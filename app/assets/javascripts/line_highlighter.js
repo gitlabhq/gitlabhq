@@ -56,7 +56,7 @@ LineHighlighter.prototype.bindEvents = function() {
 
 LineHighlighter.prototype.highlightHash = function(newHash) {
   let range;
-  if (newHash) this._hash = newHash;
+  if (newHash && typeof newHash === 'string') this._hash = newHash;
 
   this.clearHighlight();
 

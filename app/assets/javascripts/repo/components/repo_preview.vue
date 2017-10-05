@@ -28,8 +28,8 @@ export default {
         this.highlightFile();
       });
     },
-    activeLine(e) {
-      this.lineHighlighter.highlightHash('#L' + Store.activeLine);
+    activeLine() {
+      this.lineHighlighter.highlightHash(`#L${Store.activeLine}`);
     },
   },
 };
