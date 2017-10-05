@@ -120,7 +120,7 @@ describe EE::Gitlab::LDAP::Group do
 
         expect(group.member_dns).not_to include('cn=ldap_group1,ou=groups,dc=example,dc=com')
         expect(group.member_dns).not_to include('uid=foo,ou=users,dc=other,dc=com')
-        expect(group.member_dns).to include('uid=bar,ou=users,dc=example , dc=com')
+        expect(group.member_dns).to include('uid=bar,ou=users,dc=example,dc=com')
       end
 
       it 'logs an error when the LDAP base is invalid' do
@@ -133,7 +133,7 @@ describe EE::Gitlab::LDAP::Group do
         stub_ldap_adapter_nested_groups(group2_entry.dn, [], adapter)
 
         expect(Rails.logger)
-          .to receive(:error).with("Configured LDAP `base` is invalid: 'invalid,dc=example,dc=com'")
+          .to receive(:error).with(/Configured LDAP `base` is invalid: 'invalid,dc=example,dc=com'/)
         # Users in the top-level group always get added - they're not filtered
         # through the nested groups shenanigans.
         expect(group.member_dns).to match_array(
@@ -158,9 +158,34 @@ describe EE::Gitlab::LDAP::Group do
         stub_ldap_adapter_nested_groups(group3_entry.dn, [], adapter)
 
         expect(Rails.logger)
+          .to receive(:info).with(/Returning original DN/)
+        expect(Rails.logger)
           .to receive(:warn).with(/Received invalid member/)
         expect(group.member_dns).not_to include('invalid,ou=user,ou=groups,dc=example,dc=com')
       end
+    end
+
+    it 'removes extraneous spaces from DNs' do
+      group_entry_page1 = ldap_group_entry_with_member_range(
+        [' uid =  user1   ,  ou = users,dc=example,dc=com'],
+        range_start: '0',
+        range_end: '0'
+      )
+      group_entry_page2 = ldap_group_entry_with_member_range(
+        [' uid =user2,  ou = users, dc  = example, dc=com  '],
+        range_start: '1',
+        range_end: '*'
+      )
+      group = described_class.new(group_entry_page1, adapter)
+      stub_ldap_adapter_group_members_in_range(group_entry_page2, adapter, range_start: '1')
+      stub_ldap_adapter_nested_groups(group.dn, [], adapter)
+
+      expect(group.member_dns).to match_array(
+        %w(
+          uid=user1,ou=users,dc=example,dc=com
+          uid=user2,ou=users,dc=example,dc=com
+        )
+      )
     end
   end
 end

@@ -69,10 +69,9 @@ module EE
           def ensure_full_dns!(dns)
             dns.map! do |dn|
               begin
-                parsed_dn = Net::LDAP::DN.new(dn).to_a
-              rescue RuntimeError => e
-                # Net::LDAP raises a generic RuntimeError. Bad library! Bad!
-                logger.error { "Found malformed DN: '#{dn}'. Skipping. #{e.message}" }
+                parsed_dn = ::Gitlab::LDAP::DN.new(dn).to_a
+              rescue ::Gitlab::LDAP::DN::FormatError => e
+                logger.error { "Found malformed DN: '#{dn}'. Skipping. Error: \"#{e.message}\"" }
                 next
               end
 
@@ -81,6 +80,9 @@ module EE
                 # or at least the probability is higher.
                 if parsed_dn.count > 2
                   dn
+                elsif parsed_dn.count == 0
+                  logger.warn { "Found null DN. Skipping." }
+                  nil
                 elsif parsed_dn[0] == 'uid'
                   dn_for_uid(parsed_dn[1])
                 else
