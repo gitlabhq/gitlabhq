@@ -26,7 +26,8 @@ class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
     return if gpg_key.nil?
     return if gpg_key.subkeys.any?
 
-    create_subkeys(gpg_key) && update_signatures(gpg_key)
+    create_subkeys(gpg_key)
+    update_signatures(gpg_key)
   end
 
   private
@@ -45,6 +46,8 @@ class Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys
   end
 
   def update_signatures(gpg_key)
+    return unless gpg_key.subkeys.exists?
+
     InvalidGpgSignatureUpdateWorker.perform_async(gpg_key.id)
   end
 end
