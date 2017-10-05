@@ -52,6 +52,12 @@ class Projects::RunnersController < Projects::ApplicationController
     redirect_to project_settings_ci_cd_path(@project)
   end
 
+  def toggle_group_runners
+    project.toggle!(:group_runners_enabled)
+
+    redirect_to project_settings_ci_cd_path(@project)
+  end
+
   protected
 
   def set_runner
