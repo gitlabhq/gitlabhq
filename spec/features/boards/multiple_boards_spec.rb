@@ -143,6 +143,16 @@ describe 'Multiple Issue Boards', :js do
 
         expect(page).to have_selector('.board', count: 2)
       end
+
+      it 'maintains sidebar state over board switch' do
+        assert_boards_nav_active
+
+        find('.boards-switcher').click
+        wait_for_requests
+        click_link board2.name
+
+        assert_boards_nav_active
+      end
     end
 
     context 'unauthorized user' do
@@ -194,5 +204,9 @@ describe 'Multiple Issue Boards', :js do
 
       expect(page).to have_content('Some of your boards are hidden, activate a license to see them again.')
     end
+  end
+
+  def assert_boards_nav_active
+    expect(find('.nav-sidebar .active .active')).to have_selector('a', text: 'Boards')
   end
 end

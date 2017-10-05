@@ -3,7 +3,7 @@
 
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 - if @group.feature_available?(:group_issue_boards)
-  - issues_sub_menu_items.push('boards#index')
+  - issues_sub_menu_items.push('boards#index', 'boards#show')
 
 .nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
@@ -64,7 +64,7 @@
                 List
 
           - if @group.feature_available?(:group_issue_boards)
-            = nav_link(path: 'boards#index') do
+            = nav_link(path: ['boards#index', 'boards#show']) do
               = link_to group_boards_path(@group), title: 'Boards' do
                 %span
                   Boards
