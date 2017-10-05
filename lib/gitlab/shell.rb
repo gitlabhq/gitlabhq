@@ -271,6 +271,8 @@ module Gitlab
           FileUtils.mv(full_path(storage, old_name), full_path(storage, new_name))
         end
       end
+    rescue GRPC::InvalidArgument
+      false
     end
 
     def url_to_repo(path)
