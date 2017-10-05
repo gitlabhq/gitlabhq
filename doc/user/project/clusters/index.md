@@ -5,8 +5,7 @@
 CAUTION: **Warning:**
 The Cluster integration is currently in **Beta**.
 
-Connect your project to Google Container Engine (GKE) in a few steps
-without the need to provide any credentials for your Kubernetes cluster.
+Connect your project to Google Container Engine (GKE) in a few steps.
 
 With a cluster associated to your project, you can use Review Apps, deploy your
 applications, run your pipelines, and much more in an easy way.
