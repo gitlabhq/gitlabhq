@@ -248,7 +248,7 @@ describe MergeRequests::Conflicts::ResolveService do
 
       it 'raises a MissingFiles error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(described_class::MissingFiles)
+          .to raise_error(Gitlab::Conflict::FileCollection::MissingFiles)
       end
     end
   end
