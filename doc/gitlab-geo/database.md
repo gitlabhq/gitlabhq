@@ -207,37 +207,11 @@ the clocks must be synchronized to within 60 seconds of each other.
    This can easily be done via any NTP-compatible daemon. For example,
    here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
 
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
     geo_postgresql['enable'] = true
     ```
-
-1. Create `database_geo.yml` with the information of your secondary PostgreSQL
-   database.  Note that GitLab will set up another database instance separate
-   from the primary, since this is where the secondary will track its internal
-   state:
-
-    ```
-    sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
-    ```
-
-1. Edit the content of `database_geo.yml` in `production:` like the example below:
-
-   ```yaml
-   #
-   # PRODUCTION
-   #
-   production:
-     adapter: postgresql
-     encoding: unicode
-     database: gitlabhq_geo_production
-     pool: 10
-     username: gitlab_geo
-     # password:
-     host: /var/opt/gitlab/geo-postgresql
-   ```
 
 1. Set up the Geo tracking database:
 
