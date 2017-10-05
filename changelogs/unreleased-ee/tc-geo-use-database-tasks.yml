@@ -1,5 +1,0 @@
----
-title: Rewrite Geo database rake tasks so they operate on the correct database
-merge_request: 3019
-author:
-type: fixed

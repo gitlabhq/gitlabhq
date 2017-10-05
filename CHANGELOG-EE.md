@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.3 (2017-10-05)
+
+- [FIXED] Rewrite Geo database rake tasks so they operate on the correct database. !3052
+- [FIXED] Show group tab if member lock is enabled.
+- [FIXED] File uploaders do not perform hard check, only soft check.
+- [FIXED] Only show Turn on Service Desk button when user has permissions.
+- [FIXED] Fix EE delta size check handling with annotated tags.
+
 ## 10.0.2 (2017-09-27)
 
 - [FIXED] Send valid project path as name for Jira dev panel.
