@@ -46,18 +46,6 @@ describe GroupDescendantsFinder do
         expect(finder.execute).to contain_exactly(subgroup, project)
       end
 
-      it 'includes the preloaded counts for groups' do
-        create(:group, parent: subgroup)
-        create(:project, namespace: subgroup)
-        subgroup.add_developer(create(:user))
-
-        found_group = finder.execute.detect { |child| child.is_a?(Group) }
-
-        expect(found_group.preloaded_project_count).to eq(1)
-        expect(found_group.preloaded_subgroup_count).to eq(1)
-        expect(found_group.preloaded_member_count).to eq(1)
-      end
-
       it 'does not include subgroups the user does not have access to' do
         subgroup.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 

@@ -3,30 +3,6 @@ class GroupDescendantsFinder
 
   attr_reader :current_user, :parent_group, :params
 
-  PROJECT_COUNT_SQL = <<~PROJECTCOUNT.freeze
-                     (SELECT COUNT(*) AS preloaded_project_count
-                      FROM projects
-                      WHERE projects.namespace_id = namespaces.id
-                      AND projects.archived IS NOT true)
-                     PROJECTCOUNT
-  SUBGROUP_COUNT_SQL = <<~SUBGROUPCOUNT.freeze
-                     (SELECT COUNT(*) AS preloaded_subgroup_count
-                      FROM namespaces children
-                      WHERE children.parent_id = namespaces.id)
-                     SUBGROUPCOUNT
-  MEMBER_COUNT_SQL = <<~MEMBERCOUNT.freeze
-                     (SELECT COUNT(*) AS preloaded_member_count
-                     FROM members
-                     WHERE members.source_type = 'Namespace'
-                     AND members.source_id = namespaces.id
-                     AND members.requested_at IS NULL)
-                     MEMBERCOUNT
-
-  GROUP_SELECTS = ['namespaces.*',
-                   PROJECT_COUNT_SQL,
-                   SUBGROUP_COUNT_SQL,
-                   MEMBER_COUNT_SQL].freeze
-
   def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
@@ -60,7 +36,7 @@ class GroupDescendantsFinder
   end
 
   def collections
-    [subgroups.with_route.select(GROUP_SELECTS), projects]
+    [subgroups.with_selects_for_list, projects]
   end
 
   def paginator
@@ -113,7 +89,7 @@ class GroupDescendantsFinder
     projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
     groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
     ancestors_for_groups(groups_to_load_ancestors_of)
-      .with_route.select(GROUP_SELECTS)
+      .with_selects_for_list
   end
 
   def subgroups

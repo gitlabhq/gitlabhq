@@ -54,31 +54,6 @@ class GroupChildEntity < Grape::Entity
          :number_users_with_delimiter, :project_count, :subgroup_count, :can_leave,
          unless: lambda { |_instance, _options| project? }
 
-  def children_finder
-    @children_finder ||= GroupDescendantsFinder.new(current_user: request.current_user,
-                                                    parent_group: object)
-  end
-
-  def children_count
-    @children_count ||= project_count + subgroup_count
-  end
-
-  def project_count
-    @project_count ||= if object.respond_to?(:preloaded_project_count)
-                         object.preloaded_project_count
-                       else
-                         children_finder.project_count
-                       end
-  end
-
-  def subgroup_count
-    @subgroup_count ||= if object.respond_to?(:preloaded_subgroup_count)
-                          object.preloaded_subgroup_count
-                        else
-                          children_finder.subgroup_count
-                        end
-  end
-
   def leave_path
     leave_group_group_members_path(object)
   end
@@ -92,15 +67,10 @@ class GroupChildEntity < Grape::Entity
   end
 
   def number_projects_with_delimiter
-    number_with_delimiter(project_count)
+    number_with_delimiter(object.project_count)
   end
 
   def number_users_with_delimiter
-    member_count = if object.respond_to?(:preloaded_member_count)
-                     object.preloaded_member_count
-                   else
-                     object.users.count
-                   end
-    number_with_delimiter(member_count)
+    number_with_delimiter(object.member_count)
   end
 end
