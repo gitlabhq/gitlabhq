@@ -5,6 +5,7 @@ module GoogleApi
     class Client < GoogleApi::Auth
       DEFAULT_MACHINE_TYPE = 'n1-standard-1'.freeze
       SCOPE = 'https://www.googleapis.com/auth/cloud-platform'.freeze
+      LEAST_TOKEN_LIFE_TIME = 10.minutes
 
       class << self
         def session_key_for_token
@@ -25,9 +26,7 @@ module GoogleApi
         return false unless expires_at
 
         # Making sure that the token will have been still alive during the cluster creation.
-        unless DateTime.strptime(expires_at, '%s').to_time > Time.now + 10.minutes
-          return false
-        end
+        return false if token_life_time(expires_at) < LEAST_TOKEN_LIFE_TIME
 
         true
       end
@@ -67,6 +66,12 @@ module GoogleApi
       def parse_operation_id(self_link)
         m = self_link.match(%r{projects/.*/zones/.*/operations/(.*)})
         m[1] if m
+      end
+
+      private
+
+      def token_life_time(expires_at)
+        DateTime.strptime(expires_at, '%s').to_time.utc - Time.now.utc
       end
     end
   end

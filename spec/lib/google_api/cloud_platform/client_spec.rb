@@ -7,7 +7,7 @@ describe GoogleApi::CloudPlatform::Client do
   describe '#validate_token' do
     subject { client.validate_token(expires_at) }
 
-    let(:expires_at) { 1.hour.since.strftime('%s') }
+    let(:expires_at) { 1.hour.since.utc.strftime('%s') }
 
     context 'when token is nil' do
       let(:token) { nil }
@@ -26,7 +26,7 @@ describe GoogleApi::CloudPlatform::Client do
     end
 
     context 'when expires in 10 minutes' do
-      let(:expires_at) { 5.minutes.since.strftime('%s') }
+      let(:expires_at) { 5.minutes.since.utc.strftime('%s') }
 
       it { is_expected.to be_falsy }
     end

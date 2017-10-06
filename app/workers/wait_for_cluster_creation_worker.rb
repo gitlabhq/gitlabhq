@@ -11,7 +11,7 @@ class WaitForClusterCreationWorker
       Ci::FetchGcpOperationService.new.execute(cluster) do |operation|
         case operation.status
         when 'RUNNING'
-          if TIMEOUT < Time.zone.now - operation.start_time.to_time
+          if TIMEOUT < Time.now.utc - operation.start_time.to_time.utc
             return cluster.make_errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
           end
 
