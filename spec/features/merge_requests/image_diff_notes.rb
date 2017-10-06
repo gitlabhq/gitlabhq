@@ -17,7 +17,7 @@ feature 'image diff notes', js: true do
     allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_path).and_return('/apple-touch-icon.png')
   end
 
-  context 'create commit diff notes', focus: true do
+  context 'create commit diff notes' do
     commit_id = '2f63565e7aac07bcdadb654e253078b727143ec4'
 
     describe 'create a new diff note' do
@@ -128,7 +128,7 @@ feature 'image diff notes', js: true do
           create_image_diff_note
         end
 
-        it 'shows indicator badge on image diff'do
+        it 'shows indicator badge on image diff' do
           indicator = find('.js-image-badge', match: :first)
 
           expect(indicator).to have_content('1')

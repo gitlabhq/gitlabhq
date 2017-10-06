@@ -377,7 +377,7 @@ describe Gitlab::Diff::PositionTracer do
               it "returns the new position" do
                 expect_new_position(
                   new_path: old_position.new_path,
-                  new_line: old_position.formatter.new_line
+                  new_line: old_position.new_line
                 )
               end
             end
@@ -401,7 +401,7 @@ describe Gitlab::Diff::PositionTracer do
                 it "returns the new position" do
                   expect_new_position(
                     new_path: old_position.new_path,
-                    new_line: old_position.formatter.new_line
+                    new_line: old_position.new_line
                   )
                 end
               end
@@ -504,7 +504,7 @@ describe Gitlab::Diff::PositionTracer do
               it "returns the new position" do
                 expect_new_position(
                   new_path: old_position.new_path,
-                  new_line: old_position.formatter.new_line
+                  new_line: old_position.new_line
                 )
               end
             end
@@ -529,7 +529,7 @@ describe Gitlab::Diff::PositionTracer do
                 it "returns the new position" do
                   expect_new_position(
                     new_path: old_position.new_path,
-                    new_line: old_position.formatter.new_line
+                    new_line: old_position.new_line
                   )
                 end
               end
@@ -661,8 +661,8 @@ describe Gitlab::Diff::PositionTracer do
                   expect_new_position(
                     old_path: file_name,
                     new_path: new_file_name,
-                    old_line: old_position.formatter.new_line,
-                    new_line: old_position.formatter.new_line
+                    old_line: old_position.new_line,
+                    new_line: old_position.new_line
                   )
                 end
               end
@@ -1012,7 +1012,7 @@ describe Gitlab::Diff::PositionTracer do
                 expect_new_position(
                   new_path: old_position.new_path,
                   old_line: nil,
-                  new_line: old_position.formatter.new_line
+                  new_line: old_position.new_line
                 )
               end
             end
@@ -1037,7 +1037,7 @@ describe Gitlab::Diff::PositionTracer do
                   expect_new_position(
                     new_path: old_position.new_path,
                     old_line: nil,
-                    new_line: old_position.formatter.new_line
+                    new_line: old_position.new_line
                   )
                 end
               end
@@ -1144,7 +1144,7 @@ describe Gitlab::Diff::PositionTracer do
                 expect_new_position(
                   new_path: old_position.new_path,
                   old_line: nil,
-                  new_line: old_position.formatter.new_line
+                  new_line: old_position.new_line
                 )
               end
             end
@@ -1169,7 +1169,7 @@ describe Gitlab::Diff::PositionTracer do
                   expect_new_position(
                     new_path: old_position.new_path,
                     old_line: nil,
-                    new_line: old_position.formatter.new_line
+                    new_line: old_position.new_line
                   )
                 end
               end
@@ -1251,7 +1251,7 @@ describe Gitlab::Diff::PositionTracer do
                   old_path: old_position.old_path,
                   new_path: old_position.new_path,
                   old_line: nil,
-                  new_line: old_position.formatter.new_line
+                  new_line: old_position.new_line
                 )
               end
             end
@@ -1362,7 +1362,7 @@ describe Gitlab::Diff::PositionTracer do
                 expect_new_position(
                   old_path: old_position.old_path,
                   new_path: old_position.new_path,
-                  old_line: old_position.formatter.old_line,
+                  old_line: old_position.old_line,
                   new_line: nil
                 )
               end

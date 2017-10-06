@@ -21,7 +21,7 @@ describe Gitlab::Diff::Formatters::TextFormatter do
     let(:attrs) { complete }
   end
 
-  # Especific text formatter examples
+  # Specific text formatter examples
   let!(:formatter) { described_class.new(attrs) }
 
   describe '#line_age' do

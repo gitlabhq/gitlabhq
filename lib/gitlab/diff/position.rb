@@ -10,6 +10,8 @@ module Gitlab
                :base_sha,
                :start_sha,
                :head_sha,
+               :old_line,
+               :new_line,
                :position_type, to: :formatter
 
       # A position can belong to a text line or to an image coordinate
