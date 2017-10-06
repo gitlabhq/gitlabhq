@@ -44,7 +44,8 @@ export default {
     },
     selected: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     wrapperClass: {
       type: String,
@@ -62,25 +63,24 @@ export default {
     },
   },
   watch: {
-    selected: {
-      handler() {
-        this.initSelect();
-      },
-      deep: true,
+    selected() {
+      this.initSelect();
     },
   },
   methods: {
     initSelect() {
-      new UsersSelect(null, this.$refs.dropdown, {
-        handleClick: this.selectUser,
+      this.$nextTick(() => {
+        new UsersSelect(null, this.$refs.dropdown, {
+          handleClick: this.selectUser,
+        });
       });
     },
     selectUser(user, isMarking) {
-      debugger
-      if (user.id || isMarking) {
+      if (isMarking) {
         gl.issueBoards.BoardsStore.boardConfig.assignee = user;
       } else {
-        gl.issueBoards.BoardsStore.boardConfig.assignee = {};
+        // correctly select "unassigned" in Assignee dropdown
+        gl.issueBoards.BoardsStore.boardConfig.assignee = { id: undefined };
       }
     },
   },
@@ -141,12 +141,12 @@ export default {
         <button
           class="dropdown-menu-toggle wide"
           ref="dropdown"
-          data-current-user="true"
+          :data-field-name="fieldName"
           :data-dropdown-title="placeholderText"
           :data-any-user="anyUserText"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="board.assignee.id"
+          :data-selected="selected.id"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"

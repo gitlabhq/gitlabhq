@@ -377,9 +377,9 @@ function UsersSelect(currentUser, els, options = {}) {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         inputMeta: $dropdown.data('input-meta'),
-        clicked: function(clickEvent) {
-          const { $el, e, isMarking } = clickEvent;
-          const user = clickEvent.selectedObj;
+        clicked: function(options) {
+          const { $el, e, isMarking } = options;
+          const user = options.selectedObj;
 
           if ($dropdown.hasClass('js-multiselect')) {
             const isActive = $el.hasClass('is-active');
