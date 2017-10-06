@@ -2,7 +2,7 @@
   margin-top: $header-height;
 }
 
-header {
+.navbar-gitlab {
   @include new-style-dropdown;
 
   &.navbar-empty {
@@ -508,7 +508,7 @@ header {
 }
 
 @media (max-width: $screen-xs-max) {
-  header .container-fluid {
+  .navbar-gitlab .container-fluid {
     font-size: 18px;
 
     .navbar-nav {
@@ -567,6 +567,6 @@ header {
   border: 1px solid $avatar-border;
 }
 
-.with-performance-bar header.navbar-gitlab {
+.with-performance-bar .navbar-gitlab {
   top: $performance-bar-height;
 }
