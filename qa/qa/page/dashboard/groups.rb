@@ -15,23 +15,23 @@ module QA
         end
 
         def has_test_namespace?
-          filter_by_name(Runtime::Namespace.name)
+          filter_by_name(namespace.name)
 
-          page.has_link?(Runtime::Namespace.name)
+          page.has_link?(namespace.name)
         end
 
         def has_sandbox?
-          filter_by_name(Runtime::Namespace.sandbox_name)
+          filter_by_name(namespace.sandbox_name)
 
-          page.has_link?(Runtime::Namespace.sandbox_name)
+          page.has_link?(namespace.sandbox_name)
         end
 
         def go_to_test_namespace
-          click_link Runtime::Namespace.name
+          click_link namespace.name
         end
 
         def go_to_sandbox
-          click_link Runtime::Namespace.sandbox_name
+          click_link namespace.sandbox_name
         end
 
         def create_group(group_name, group_description)
@@ -49,12 +49,17 @@ module QA
         end
 
         def prepare_test_namespace
-          return click_link(Runtime::Namespace.name) if has_test_namespace?
+          if has_test_namespace?
+            go_to_test_namespace
+          else
+            create_group(namespace.name, "QA test run at #{namespace.time}")
+          end
+        end
 
-          create_group(
-            Runtime::Namespace.name,
-            "QA test run at #{Runtime::Namespace.time}"
-          )
+        private
+
+        def namespace
+          Runtime::Namespace
         end
       end
     end
