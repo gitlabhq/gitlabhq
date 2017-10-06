@@ -6,6 +6,7 @@ import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../eventhub';
 
 const ANY_WEIGHT = 'Any Weight';
+const NO_WEIGHT = 'No Weight';
 
 export default {
   props: {
@@ -47,11 +48,19 @@ export default {
       return 'bold';
     },
     valueText() {
-      return this.value || ANY_WEIGHT;
+      if (this.value > 0) return this.value;
+      if (this.value == 0) return NO_WEIGHT;
+      return ANY_WEIGHT;
     }
   },
   methods: {
     selectWeight(weight) {
+      if (weight === ANY_WEIGHT) {
+        weight = -1;
+      }
+      if (weight === NO_WEIGHT) {
+        weight = 0;
+      }
       this.$set(this.board, 'weight', weight);
     },
   },

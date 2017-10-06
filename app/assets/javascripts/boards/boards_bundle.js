@@ -68,8 +68,9 @@ $(() => {
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
+      milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
-      weight: $boardApp.dataset.boardWeight,
+      weight: parseInt($boardApp.dataset.boardWeight, 10),
       assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
       labels: JSON.parse($boardApp.dataset.labels || []),
       defaultAvatar: $boardApp.dataset.defaultAvatar,
@@ -87,14 +88,24 @@ $(() => {
         Store.filter.path = [querystring].concat(
           Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
         ).join('&');
-        this.cantEdit.push({
-          name: tokenName,
-          value,
-        });
+        this.cantEdit.push(tokenName);
       };
 
-      updateFilterPath('milestone_title', this.milestoneTitle, 'milestone');
-      updateFilterPath('weight', this.weight, 'weight');
+      if (this.milestoneId !== -1) {
+        let milestoneTitle = this.milestoneTitle;
+        if (this.milestoneId === 0) {
+          milestoneTitle = 'No+Milestone';
+        }
+        updateFilterPath('milestone_title', milestoneTitle, 'milestone');
+      }
+
+      let weight = this.weight;
+      if (weight !== -1) {
+        if (weight === 0) {
+          weight = 'No+Weight';
+        }
+        updateFilterPath('weight', weight, 'weight');
+      }
       updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
 
       const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');

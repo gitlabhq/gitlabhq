@@ -2,9 +2,9 @@
 /* global BoardService, MilestoneSelect */
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import extraMilestones from '../mixins/extra_milestones';
 
 const ANY_MILESTONE = 'Any Milestone';
+const NO_MILESTONE = 'No Milestone';
 
 export default {
   props: {
@@ -31,20 +31,32 @@ export default {
   },
   computed: {
     milestoneTitle() {
+      if (this.noMilestone) return NO_MILESTONE;
       return this.board.milestone ? this.board.milestone.title : ANY_MILESTONE;
     },
+    noMilestone() {
+      return this.milestoneId === 0;
+    },
     milestoneId() {
-      return this.board.milestone ? this.board.milestone.id : '';
+      return this.board.milestone_id;
     },
     milestoneTitleClass() {
       return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary': 'bold';
     },
     selected() {
+      if (this.noMilestone) return NO_MILESTONE;
       return this.board.milestone ? this.board.milestone.name : '';
     }
   },
   methods: {
     selectMilestone(milestone) {
+      // swap the IDs of 'Any' and 'No' milestone to what backend requires
+      if (milestone.title === ANY_MILESTONE) {
+        milestone.id = -1;
+      } else if (milestone.title === NO_MILESTONE) {
+        milestone.id = 0;
+      }
+      this.$set(this.board, 'milestone_id', milestone.id);
       this.$set(this.board, 'milestone', milestone);
     },
   },
