@@ -9,7 +9,7 @@
   .col-sm-4
     = render 'sidebar'
   .col-sm-8
-    %h4.prepend-top-0
+    %label.append-bottom-10{ for: 'enable-cluster-integration' }
       = s_('ClusterIntegration|Enable cluster integration')
     %p
       - if @cluster.enabled?
@@ -22,8 +22,8 @@
 
     = form_for [@project.namespace.becomes(Namespace), @project, @cluster] do |field|
       = form_errors(@cluster)
-      .form-group
-        %label.toggle-wrapper
+      .form-group.append-bottom-20
+        %label.append-bottom-10
           = field.hidden_field :enabled, { class: 'js-toggle-input'}
 
           %button{ type: 'button',
@@ -34,34 +34,33 @@
 
         - if can?(current_user, :update_cluster, @cluster)
           .form-group
-            = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'
+            = field.submit s_('ClusterIntegration|Save'), class: 'btn btn-success'
 
     - if can?(current_user, :admin_cluster, @cluster)
-      %label
+      %label.append-bottom-10{ for: 'google-container-engine' }
         = s_('ClusterIntegration|Google Container Engine')
       %p
         - link_gke = link_to(s_('ClusterIntegration|Google Container Engine'), @cluster.gke_cluster_url, target: '_blank', rel: 'noopener noreferrer')
         = s_('ClusterIntegration|Manage your cluster by visiting %{link_gke}').html_safe % { link_gke: link_gke }
 
-      .hidden.js-cluster-error.alert.alert-danger{ role: 'alert' }
+      .hidden.js-cluster-error.alert.alert-danger.alert-block{ role: 'alert' }
         = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine')
         %p.js-error-reason
 
-      .hidden.js-cluster-creating.alert.alert-info{ role: 'alert' }
+      .hidden.js-cluster-creating.alert.alert-info.alert-block{ role: 'alert' }
         = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
 
-      .hidden.js-cluster-success.alert.alert-info{ role: 'alert' }
+      .hidden.js-cluster-success.alert.alert-success.alert-block{ role: 'alert' }
         = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine')
 
-    .form_group
-      %label{ for: 'cluter_name' }
+    .form_group.append-bottom-20
+      %label.append-bottom-10{ for: 'cluter-name' }
         = s_('ClusterIntegration|Cluster name')
       .input-group
         %input.form-control.cluster-name{ value: @cluster.gcp_cluster_name, disabled: true }
         %span.input-group-addon.clipboard-addon
           = clipboard_button(text: @cluster.gcp_cluster_name, title: s_('ClusterIntegration|Copy cluster name'))
 
-    %br
     - if can?(current_user, :admin_cluster, @cluster)
       .well.form_group
         %label.text-danger
