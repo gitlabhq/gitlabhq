@@ -402,9 +402,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
                 }));
               } else {
                 let labels = gl.issueBoards.BoardsStore.boardConfig.labels;
-                labels = labels.filter(function (selectedLabel) {
-                  return selectedLabel.id !== label.id;
-                });
+                labels = labels.filter(selected => selected.id !== label.id);
                 gl.issueBoards.BoardsStore.boardConfig.labels = labels;
               }
             }

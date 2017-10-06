@@ -390,12 +390,3 @@ ul.indent-list {
     text-align: center;
   }
 }
-
-.list-item {
-  padding: $gl-padding 0;
-
-  // add a border between all items, but not at the start or end
-  + .list-item {
-    border-top: solid 1px $border-color;
-  }
-}

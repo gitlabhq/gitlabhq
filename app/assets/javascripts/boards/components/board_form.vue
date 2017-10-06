@@ -190,7 +190,7 @@ export default Vue.extend({
     </p>
     <form
       v-else
-      class="js-board-config-modal"
+      class="js-board-config-modal board-config-modal"
     >
       <div
         v-if="!readonly"
@@ -232,49 +232,40 @@ export default Vue.extend({
           Board scope affects which issues are displayed for anyone who visits this board
         </p>
         <div v-if="!collapseScope || expanded">
-          <div class="list-item">
-            <board-milestone-select
-              :board="board"
-              :milestone-path="milestonePath"
-              title="Milestone"
-              :can-edit="canAdminBoard"
-            />
-          </div>
+          <board-milestone-select
+            :board="board"
+            :milestone-path="milestonePath"
+            title="Milestone"
+            :can-edit="canAdminBoard"
+          />
 
-          <div class="list-item">
-            <board-labels-select
-              :board="board"
-              :selected="board.labels"
-              title="Labels"
-              :can-edit="canAdminBoard"
-              :labels-path="labelsPath"
-            />
-          </div>
+          <board-labels-select
+            :board="board"
+            :selected="board.labels"
+            title="Labels"
+            :can-edit="canAdminBoard"
+            :labels-path="labelsPath"
+          />
 
-          <div class="list-item">
-            <user-select
-              any-user-text="Any assignee"
-              :board="board"
-              field-name="assignee_id"
-              label="Assignee"
-              :selected="board.assignee"
-              :can-edit="canAdminBoard"
-              placeholder-text="Select assignee"
-              :project-id="projectId"
-              :group-id="groupId"
-              wrapper-class="assignee"
-            />
-          </div>
+          <user-select
+            any-user-text="Any assignee"
+            :board="board"
+            field-name="assignee_id"
+            label="Assignee"
+            :selected="board.assignee"
+            :can-edit="canAdminBoard"
+            placeholder-text="Select assignee"
+            :project-id="projectId"
+            :group-id="groupId"
+            wrapper-class="assignee"
+          />
 
-          <div class="list-item">
-            <board-weight-select
-              :board="board"
-              :weights="weightsArray"
-              v-model="board.weight"
-              title="Weight"
-              :can-edit="canAdminBoard"
-            />
-          </div>
+          <board-weight-select
+            :board="board"
+            :weights="weightsArray"
+            v-model="board.weight"
+            :can-edit="canAdminBoard"
+          />
         </div>
       </div>
     </form>

@@ -18,10 +18,6 @@ export default {
       type: [Number, String],
       required: false,
     },
-    title: {
-      type: String,
-      required: true,
-    },
     canEdit: {
       type: Boolean,
       required: false,
@@ -77,7 +73,7 @@ export default {
 <template>
   <div class="block weight">
     <div class="title append-bottom-10">
-      {{ title }}
+      Weight
       <a
         v-if="canEdit"
         class="edit-link pull-right"
