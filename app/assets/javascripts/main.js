@@ -124,7 +124,6 @@ import './preview_markdown';
 import './project';
 import './project_avatar';
 import './project_find_file';
-import './project_fork';
 import './project_import';
 import './project_label_subscription';
 import './project_new';

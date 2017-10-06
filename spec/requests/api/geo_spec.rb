@@ -2,21 +2,21 @@ require 'spec_helper'
 
 describe API::Geo do
   include ApiHelpers
+  include ::EE::GeoHelpers
 
-  let(:admin) { create(:admin) }
-  let(:user) { create(:user) }
-  let!(:primary_node) { create(:geo_node, :primary) }
-  let!(:secondary_node) { create(:geo_node) }
+  set(:admin) { create(:admin) }
+  set(:user) { create(:user) }
+  set(:primary_node) { create(:geo_node, :primary) }
+  set(:secondary_node) { create(:geo_node) }
   let(:geo_token_header) do
     { 'X-Gitlab-Token' => secondary_node.system_hook.token }
   end
 
   before do
-    allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
+    stub_current_geo_node(secondary_node)
   end
 
   describe 'GET /geo/transfers/attachment/1' do
-    let!(:secondary_node) { create(:geo_node) }
     let(:note) { create(:note, :with_attachment) }
     let(:upload) { Upload.find_by(model: note, uploader: 'AttachmentUploader') }
     let(:transfer) { Gitlab::Geo::FileTransfer.new(:attachment, upload) }
@@ -52,7 +52,6 @@ describe API::Geo do
   end
 
   describe 'GET /geo/transfers/avatar/1' do
-    let!(:secondary_node) { create(:geo_node) }
     let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
     let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
     let(:transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
@@ -88,7 +87,6 @@ describe API::Geo do
   end
 
   describe 'GET /geo/transfers/file/1' do
-    let!(:secondary_node) { create(:geo_node) }
     let(:project) { create(:project) }
     let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
     let(:transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
@@ -125,7 +123,6 @@ describe API::Geo do
   end
 
   describe 'GET /geo/transfers/lfs/1' do
-    let!(:secondary_node) { create(:geo_node) }
     let(:lfs_object) { create(:lfs_object, :with_file) }
     let(:req_header) do
       transfer = Gitlab::Geo::LfsTransfer.new(lfs_object)
@@ -161,13 +158,8 @@ describe API::Geo do
     end
   end
 
-  describe 'GET /geo/status' do
-    let!(:secondary_node) { create(:geo_node) }
+  describe 'GET /geo/status', :postgresql do
     let(:request) { Gitlab::Geo::BaseRequest.new }
-
-    before do
-      skip("Not using PostgreSQL") unless Gitlab::Database.postgresql?
-    end
 
     it 'responds with 401 with invalid auth header' do
       get api('/geo/status'), nil, Authorization: 'Test'
@@ -185,7 +177,7 @@ describe API::Geo do
 
     context 'when requesting secondary node with valid auth header' do
       before do
-        allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
+        stub_current_geo_node(secondary_node)
         allow(request).to receive(:requesting_node) { primary_node }
       end
 
@@ -199,7 +191,7 @@ describe API::Geo do
 
     context 'when requesting primary node with valid auth header' do
       before do
-        allow(Gitlab::Geo).to receive(:current_node) { primary_node }
+        stub_current_geo_node(primary_node)
         allow(request).to receive(:requesting_node) { secondary_node }
       end
 

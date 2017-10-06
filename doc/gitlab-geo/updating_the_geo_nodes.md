@@ -14,6 +14,57 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
+## Upgrading to GitLab 10.1
+
+[Hashed storage](../administration/repository_storage_types.md) was introduced
+in GitLab 10.0, and a [migration path](../administration/raketasks/storage.md)
+for existing repositories was added in GitLab 10.1.
+
+After upgrading to GitLab 10.1, we recommend that you
+[enable hashed storage for all new projects](#step-5-enabling-hashed-storage-from-gitlab-100),
+then [migrate existing projects to hashed storage](../administration/raketasks/storage.md).
+This will significantly reduce the amount of synchronization required between
+nodes in the event of project or group renames.
+
+## Upgrading to GitLab 10.0
+
+Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
+the database](ssh.md) to avoid having to maintain consistency of the
+`authorized_keys` file for SSH access. Failing to do this will prevent users
+from being able to clone via SSH.
+
+Note that in older versions of Geo, attachments downloaded on the secondary
+nodes would be saved to the wrong directory. We recommend that you do the
+following to clean this up.
+
+On the SECONDARY Geo nodes, run as root:
+
+```sh
+mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
+mkdir /var/opt/gitlab/gitlab-rails/working
+chmod 700 /var/opt/gitlab/gitlab-rails/working
+chown git:git /var/opt/gitlab/gitlab-rails/working
+```
+
+You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
+
+## Upgrading from GitLab 9.3 or older
+
+If you started running Geo on GitLab 9.3 or older, we recommend that you
+resync your secondary PostgreSQL databases to use replication slots. If you
+started using Geo with GitLab 9.4 or 10.x, no further action should be
+required because replication slots are used by default. However, if you
+started with GitLab 9.3 and upgraded later, you should still follow the
+instructions below.
+
+When in doubt, it does not hurt to do a resync. The easiest way to do this in
+Omnibus is the following:
+
+  1. Install GitLab on the primary server
+  1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
+  1. Install GitLab on the secondary server.
+  1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
+
 ## Special update notes for 9.0.x
 
 > **IMPORTANT**:

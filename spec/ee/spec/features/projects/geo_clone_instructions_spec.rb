@@ -9,7 +9,6 @@ feature 'Geo clone instructions', :js do
   background do
     primary = create(:geo_node, :primary, schema: 'https', host: 'primary.domain.com', port: 443)
     primary.update_attribute(:clone_url_prefix, 'git@primary.domain.com:')
-    create(:geo_node, :current)
     allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
 
     project.team << [developer, :developer]

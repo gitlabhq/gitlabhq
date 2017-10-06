@@ -1,4 +1,12 @@
 .form-group
+  = f.check_box :reject_unsigned_commits, class: "pull-left", disabled: !can_change_reject_unsigned_commits?(f.object)
+  .prepend-left-20
+    = f.label :reject_unsigned_commits, class: "label-light append-bottom-0" do
+      Reject unsigned commits
+    %p.light.append-bottom-0
+      = reject_unsigned_commits_description(f.object)
+
+.form-group
   = f.check_box :deny_delete_tag, class: "pull-left"
   .prepend-left-20
     = f.label :deny_delete_tag, class: "label-light append-bottom-0" do

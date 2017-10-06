@@ -1,13 +1,16 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::HealthCheck, :postgresql do
-  let!(:secondary) { create(:geo_node, :current) }
+  set(:secondary) { create(:geo_node) }
 
   subject { described_class }
 
+  before do
+    allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
+  end
+
   describe '.perform_checks' do
     it 'returns a string if database is not fully migrated' do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(described_class).to receive(:geo_database_configured?).and_return(true)
       allow(described_class).to receive(:database_secondary?).and_return(true)
       allow(described_class).to receive(:get_database_version).and_return('20170101')
@@ -27,7 +30,6 @@ describe Gitlab::Geo::HealthCheck, :postgresql do
     end
 
     it 'returns an error when database is not configured for streaming replication' do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive(:configured?) { true }
       allow(Gitlab::Database).to receive(:postgresql?) { true }
       allow(described_class).to receive(:database_secondary?) { false }
@@ -36,7 +38,6 @@ describe Gitlab::Geo::HealthCheck, :postgresql do
     end
 
     it 'returns an error when streaming replication is not working' do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive(:configured?) { true }
       allow(Gitlab::Database).to receive(:postgresql?) { true }
       allow(described_class).to receive(:database_secondary?) { false }

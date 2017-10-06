@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Geo::NodeUpdateService do
   let(:group) { create(:group) }
-  let!(:primary) { create(:geo_node, :primary, :current) }
+  let!(:primary) { create(:geo_node, :primary) }
   let(:geo_node) { create(:geo_node) }
   let(:geo_node_with_restrictions) { create(:geo_node, namespace_ids: [group.id]) }
 

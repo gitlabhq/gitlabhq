@@ -1,5 +1,0 @@
----
-title: Fix EE delta size check handling with annotated tags
-merge_request:
-author:
-type: fixed

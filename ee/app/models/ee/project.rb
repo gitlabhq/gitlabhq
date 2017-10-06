@@ -337,34 +337,6 @@ module EE
       @path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
     end
 
-    def merge_method
-      if self.merge_requests_ff_only_enabled
-        :ff
-      elsif self.merge_requests_rebase_enabled
-        :rebase_merge
-      else
-        :merge
-      end
-    end
-
-    def merge_method=(method)
-      case method.to_s
-      when "ff"
-        self.merge_requests_ff_only_enabled = true
-        self.merge_requests_rebase_enabled = true
-      when "rebase_merge"
-        self.merge_requests_ff_only_enabled = false
-        self.merge_requests_rebase_enabled = true
-      when "merge"
-        self.merge_requests_ff_only_enabled = false
-        self.merge_requests_rebase_enabled = false
-      end
-    end
-
-    def ff_merge_must_be_possible?
-      self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
-    end
-
     def import_url_updated?
       # check if import_url has been updated and it's not just the first assignment
       import_url_changed? && changes['import_url'].first
@@ -394,7 +366,7 @@ module EE
       end
 
       url = ::Gitlab::UrlSanitizer.new(value)
-      creds = url.credentials.slice(:user) if url.credentials[:user].present?
+      creds = url.credentials.slice(:user)
 
       write_attribute(:import_url, url.sanitized_url)
       create_or_update_import_data(credentials: creds)
@@ -458,7 +430,7 @@ module EE
     alias_method :merge_requests_rebase_enabled?, :merge_requests_rebase_enabled
 
     def merge_requests_ff_only_enabled
-      super && feature_available?(:fast_forward_merge)
+      super
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 

@@ -189,6 +189,28 @@ module Gitlab
         end
       end
 
+      def has_local_branches?
+        gitaly_migrate(:has_local_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.has_local_branches?
+          else
+            has_local_branches_rugged?
+          end
+        end
+      end
+
+      def has_local_branches_rugged?
+        rugged.branches.each(:local).any? do |ref|
+          begin
+            ref.name && ref.target # ensures the branch is valid
+
+            true
+          rescue Rugged::ReferenceError
+            false
+          end
+        end
+      end
+
       # Returns the number of valid tags
       def tag_count
         gitaly_migrate(:tag_names) do |is_enabled|
@@ -634,13 +656,13 @@ module Gitlab
       end
 
       def add_branch(branch_name, user:, target:)
-        target_object = Ref.dereference_object(lookup(target))
-        raise InvalidRef.new("target not found: #{target}") unless target_object
-
-        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
-        find_branch(branch_name)
-      rescue Rugged::ReferenceError => ex
-        raise InvalidRef, ex
+        gitaly_migrate(:operation_user_create_branch) do |is_enabled|
+          if is_enabled
+            gitaly_add_branch(branch_name, user, target)
+          else
+            rugged_add_branch(branch_name, user, target)
+          end
+        end
       end
 
       def add_tag(tag_name, user:, target:, message: nil)
@@ -1034,11 +1056,13 @@ module Gitlab
       # This method return true if repository contains some content visible in project page.
       #
       def has_visible_content?
-        branch_count > 0
+        return @has_visible_content if defined?(@has_visible_content)
+
+        @has_visible_content = has_local_branches?
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
 
       def gitaly_operations_client
@@ -1055,6 +1079,10 @@ module Gitlab
 
       def gitaly_repository_client
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
+      end
+
+      def gitaly_operation_client
+        @gitaly_operation_client ||= Gitlab::GitalyClient::OperationService.new(self)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
@@ -1447,6 +1475,22 @@ module Gitlab
         File.open(info_attributes_path, "wb") do |file|
           file.write(gitattributes_content)
         end
+      end
+
+      def gitaly_add_branch(branch_name, user, target)
+        gitaly_operation_client.user_create_branch(branch_name, user, target)
+      rescue GRPC::FailedPrecondition => ex
+        raise InvalidRef, ex
+      end
+
+      def rugged_add_branch(branch_name, user, target)
+        target_object = Ref.dereference_object(lookup(target))
+        raise InvalidRef.new("target not found: #{target}") unless target_object
+
+        OperationService.new(user, self).add_branch(branch_name, target_object.oid)
+        find_branch(branch_name)
+      rescue Rugged::ReferenceError
+        raise InvalidRef, ex
       end
     end
   end

@@ -242,12 +242,20 @@ describe Ci::Pipeline, :mailer do
 
     describe '#stage_seeds' do
       let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { script: 'rake' } })
+        build(:ci_pipeline, config: { rspec: { script: 'rake' } })
       end
 
       it 'returns preseeded stage seeds object' do
         expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
         expect(pipeline.stage_seeds.count).to eq 1
+      end
+    end
+
+    describe '#seeds_size' do
+      let(:pipeline) { build(:ci_pipeline_with_one_job) }
+
+      it 'returns number of jobs in stage seeds' do
+        expect(pipeline.seeds_size).to eq 1
       end
     end
 

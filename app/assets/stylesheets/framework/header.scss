@@ -109,8 +109,7 @@ header {
 
       .user-counter {
         svg {
-          height: 16px;
-          width: 23px;
+          margin-right: 3px;
         }
       }
 
@@ -133,16 +132,16 @@ header {
   }
 
   &.navbar-gitlab-new {
-    .fa-times {
+    .close-icon {
       display: none;
     }
 
     .menu-expanded {
-      .fa-ellipsis-v {
+      .more-icon {
         display: none;
       }
 
-      .fa-times {
+      .close-icon {
         display: block;
       }
     }

@@ -1,7 +1,11 @@
 module Gitlab
   module Geo
     class Transfer
+      include LogHelpers
+
       attr_reader :file_type, :file_id, :filename, :request_data
+
+      TEMP_PREFIX = 'tmp_'.freeze
 
       def initialize(file_type, file_id, filename, request_data)
         @file_type = file_type
@@ -50,33 +54,60 @@ module Gitlab
         true
       end
 
-      def log_transfer_error(message)
-        Rails.logger.error("#{self.class.name}: #{message}")
-      end
-
       # Use HTTParty for now but switch to curb if performance becomes
       # an issue
       def download_file(url, req_headers)
         file_size = -1
+        temp_file = open_temp_file(filename)
+
+        return unless temp_file
 
         begin
-          File.open(filename, "wb") do |file|
-            response = HTTParty.get(url, headers: req_headers, stream_body: true) do |fragment|
-              file.write(fragment)
-            end
-
-            if response.success?
-              file_size = File.stat(filename).size
-              Rails.logger.info("GitLab Geo: Successfully downloaded #{filename} (#{file_size} bytes)")
-            else
-              log_transfer_error("Unsuccessful download: #{response.code} #{response.msg}")
-            end
+          response = HTTParty.get(url, headers: req_headers, stream_body: true) do |fragment|
+            temp_file.write(fragment)
           end
+
+          temp_file.flush
+
+          unless response.success?
+            log_error("Unsuccessful download", response_code: response.code, response_msg: response.msg)
+            return file_size
+          end
+
+          if File.directory?(filename)
+            log_error("Destination file is a directory", filename: filename)
+            return file_size
+          end
+
+          FileUtils.mv(temp_file.path, filename)
+
+          file_size = File.stat(filename).size
+          log_info("Successful downloaded", filename: filename, file_size_bytes: file_size)
         rescue StandardError, HTTParty::Error => e
-          log_transfer_error("Error downloading file: #{e}")
+          log_error("Error downloading file", error: e)
+        ensure
+          temp_file.close
+          temp_file.unlink
         end
 
         file_size
+      end
+
+      def default_permissions
+        0666 - File.umask
+      end
+
+      def open_temp_file(target_filename)
+        begin
+          # Make sure the file is in the same directory to prevent moves across filesystems
+          pathname = Pathname.new(target_filename)
+          temp = Tempfile.new(TEMP_PREFIX + pathname.basename.to_s, pathname.dirname.to_s)
+          temp.chmod(default_permissions)
+          temp.binmode
+          temp
+        rescue StandardError => e
+          log_error("Error creating temporary file", error: e)
+        end
       end
     end
   end
