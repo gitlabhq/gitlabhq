@@ -101,7 +101,7 @@
   }
 }
 
-.confidential-issue-warning {
+.issuable-note-warning {
   color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default $border-radius-default 0 0;
@@ -110,28 +110,52 @@
   padding: 3px 12px;
   margin: auto;
   align-items: center;
+
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+  }
 }
 
-.confidential-value {
+.disabled-comment .issuable-note-warning {
+  border: none;
+  border-radius: $label-border-radius;
+  padding-top: $gl-vert-padding;
+  padding-bottom: $gl-vert-padding;
+
+  .icon svg {
+    position: relative;
+    top: 2px;
+    margin-right: $btn-xs-side-margin;
+    width: $gl-font-size;
+    height: $gl-font-size;
+    fill: $orange-600;
+  }
+}
+
+.sidebar-item-value {
   .fa {
     background-color: inherit;
   }
 }
 
-.confidential-warning-message {
+.sidebar-item-warning-message {
   line-height: 1.5;
   padding: 16px;
 
-  .confidential-warning-message-actions {
+  .text {
+    color: $text-color;
+  }
+
+  .sidebar-item-warning-message-actions {
     display: flex;
 
-    button {
+    .btn {
       flex-grow: 1;
     }
   }
 }
 
-.confidential-issue-warning + .md-area {
+.issuable-note-warning + .md-area {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }

@@ -18,7 +18,8 @@ class Diff {
       }
     });
 
-    FilesCommentButton.init($diffFile);
+    const tab = document.getElementById('diffs');
+    if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== '')) FilesCommentButton.init($diffFile);
 
     const firstFile = $('.files').first().get(0);
     const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');

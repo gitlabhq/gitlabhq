@@ -83,7 +83,7 @@
       #pipelines.pipelines.tab-pane
         - if @pipelines.any?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
-      #diffs.diffs.tab-pane
+      #diffs.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked? } }
         -# This tab is always loaded via AJAX
 
     .mr-loading-status

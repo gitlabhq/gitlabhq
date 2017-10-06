@@ -2,7 +2,7 @@
 
 require 'gitlab/current_settings'
 
-if Rails.env.production?
+def configure_sentry
   # allow it to fail: it may do so when create_from_defaults is executed before migrations are actually done
   begin
     sentry_enabled = Gitlab::CurrentSettings.current_application_settings.sentry_enabled
@@ -23,3 +23,5 @@ if Rails.env.production?
     end
   end
 end
+
+configure_sentry if Rails.env.production?

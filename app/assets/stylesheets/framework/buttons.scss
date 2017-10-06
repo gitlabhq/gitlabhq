@@ -403,7 +403,11 @@
   background: transparent;
   border: 0;
 
+  &:hover,
+  &:active,
   &:focus {
     outline: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

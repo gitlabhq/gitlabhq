@@ -2,17 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do
-    let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
-    let!(:project) { create :project, :repository, path: 'sample-project' }
+    let(:signature)       { [GpgHelpers::User1.signed_commit_signature, GpgHelpers::User1.signed_commit_base_data] }
+    let(:committer_email) { GpgHelpers::User1.emails.first }
+    let!(:commit_sha)     { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
+    let!(:project)        { create :project, :repository, path: 'sample-project' }
     let!(:raw_commit) do
       raw_commit = double(
         :raw_commit,
-        signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ],
+        signature: signature,
         sha: commit_sha,
-        committer_email: GpgHelpers::User1.emails.first
+        committer_email: committer_email
       )
 
       allow(raw_commit).to receive :save!
@@ -29,12 +28,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
 
       allow(Rugged::Commit).to receive(:extract_signature)
         .with(Rugged::Repository, commit_sha)
-        .and_return(
-          [
-            GpgHelpers::User1.signed_commit_signature,
-            GpgHelpers::User1.signed_commit_base_data
-          ]
-        )
+        .and_return(signature)
     end
 
     context 'gpg signature did have an associated gpg key which was removed later' do
@@ -180,6 +174,35 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
           verification_status: 'unverified_key'
+        )
+      end
+    end
+
+    context 'gpg signature did not have an associated gpg subkey' do
+      let(:signature)       { [GpgHelpers::User3.signed_commit_signature, GpgHelpers::User3.signed_commit_base_data] }
+      let(:committer_email) { GpgHelpers::User3.emails.first }
+      let!(:user)           { create :user, email: GpgHelpers::User3.emails.first }
+
+      let!(:invalid_gpg_signature) do
+        create :gpg_signature,
+          project: project,
+          commit_sha: commit_sha,
+          gpg_key: nil,
+          gpg_key_primary_keyid: GpgHelpers::User3.subkey_fingerprints.last[24..-1],
+          verification_status: 'unknown_key'
+      end
+
+      it 'updates the signature to being valid when the missing gpg key is added' do
+        # InvalidGpgSignatureUpdater is called by the after_create hook
+        gpg_key = create(:gpg_key, key: GpgHelpers::User3.public_key, user: user)
+        subkey = gpg_key.subkeys.last
+
+        expect(invalid_gpg_signature.reload).to have_attributes(
+          project: project,
+          commit_sha: commit_sha,
+          gpg_key_subkey_id: subkey.id,
+          gpg_key_primary_keyid: subkey.keyid,
+          verification_status: 'verified'
         )
       end
     end
