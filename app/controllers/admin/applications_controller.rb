@@ -19,7 +19,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params)
+    @application = Applications::CreateService.new(current_user, application_params.merge(ip_address: request.remote_ip)).execute
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
@@ -51,6 +51,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes).merge(ip_address: request.remote_ip)
+    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes)
   end
 end

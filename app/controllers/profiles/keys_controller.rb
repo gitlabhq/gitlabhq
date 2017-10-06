@@ -12,7 +12,7 @@ class Profiles::KeysController < Profiles::ApplicationController
   end
 
   def create
-    @key = Keys::CreateService.new(current_user, key_params).execute
+    @key = Keys::CreateService.new(current_user, key_params.merge(ip_address: request.remote_ip)).execute
 
     if @key.persisted?
       redirect_to profile_key_path(@key)
@@ -54,6 +54,6 @@ class Profiles::KeysController < Profiles::ApplicationController
   private
 
   def key_params
-    params.require(:key).permit(:title, :key).merge(ip_address: request.remote_ip)
+    params.require(:key).permit(:title, :key)
   end
 end

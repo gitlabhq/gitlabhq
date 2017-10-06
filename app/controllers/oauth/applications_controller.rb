@@ -16,7 +16,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params)
+    @application = Applications::CreateService.new(current_user, create_application_params).execute
 
     if @application.persited?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
@@ -55,8 +55,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     render "errors/not_found", layout: "errors", status: 404
   end
 
-  def application_params
-    super.tap do |params|
+  def create_application_params
+    application_params.tap do |params|
       params[:doorkeeper_application][:owner] = current_user
       params[:ip_address] = request.remote_ip
     end
