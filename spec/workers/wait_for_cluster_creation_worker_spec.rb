@@ -24,7 +24,7 @@ describe WaitForClusterCreationWorker do
 
         context 'when operation timeout' do
           before do
-            allow(operation).to receive(:start_time).and_return(30.minutes.ago)
+            allow(operation).to receive(:start_time).and_return(30.minutes.ago.utc)
           end
 
           it 'sets an error message on cluster' do
