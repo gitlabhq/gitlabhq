@@ -254,7 +254,9 @@ const RepoHelper = {
 
     RepoHelper.key = RepoHelper.genKey();
 
-    history.pushState({ key: RepoHelper.key }, '', url);
+    if (document.location.pathname !== url) {
+      history.pushState({ key: RepoHelper.key }, '', url);
+    }
 
     if (title) {
       document.title = title;
