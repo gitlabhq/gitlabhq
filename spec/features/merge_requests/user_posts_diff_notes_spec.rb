@@ -228,6 +228,8 @@ feature 'Merge requests > User posts diff notes', :js do
 
     click_button 'Comment'
 
+    wait_for_requests
+
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)
   end
 
@@ -257,8 +259,6 @@ feature 'Merge requests > User posts diff notes', :js do
 
   def assert_comment_persistence(line_holder, asset_form_reset:)
     notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
-
-    sleep 3
 
     expect(notes_holder_saved[:class]).not_to include(notes_holder_input_class)
     expect(notes_holder_saved).to have_content test_note_comment
