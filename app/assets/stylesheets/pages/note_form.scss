@@ -110,6 +110,10 @@
   padding: 3px 12px;
   margin: auto;
   align-items: center;
+
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+  }
 }
 
 .disabled-comment .issuable-note-warning {
