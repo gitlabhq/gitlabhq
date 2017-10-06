@@ -81,7 +81,10 @@ RSpec.configure do |config|
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = 4
-    config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
+    config.reporter.register_listener(
+      RspecFlaky::Listener.new,
+      :example_passed,
+      :dump_summary)
   end
 
   config.before(:suite) do

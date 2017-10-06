@@ -29,15 +29,17 @@ describe('RepoFile', () => {
     }).$mount();
   }
 
-  beforeEach(() => {
-    spyOn(repoFile.mixins[0].methods, 'timeFormated').and.returnValue(updated);
-  });
-
   it('renders link, icon, name and last commit details', () => {
-    const vm = createComponent({
-      file,
-      activeFile,
+    const RepoFile = Vue.extend(repoFile);
+    const vm = new RepoFile({
+      propsData: {
+        file,
+        activeFile,
+      },
     });
+    spyOn(vm, 'timeFormated').and.returnValue(updated);
+    vm.$mount();
+
     const name = vm.$el.querySelector('.repo-file-name');
     const fileIcon = vm.$el.querySelector('.file-icon');
 

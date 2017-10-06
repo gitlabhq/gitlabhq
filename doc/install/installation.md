@@ -133,9 +133,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.3.tar.gz
-    echo '1014ee699071aa2ddd501907d18cbe15399c997d  ruby-2.3.3.tar.gz' | shasum -c - && tar xzf ruby-2.3.3.tar.gz
-    cd ruby-2.3.3
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.5.tar.gz
+    echo '3247e217d6745c27ef23bdc77b6abdb4b57a118f  ruby-2.3.5.tar.gz' | shasum -c - && tar xzf ruby-2.3.5.tar.gz
+    cd ruby-2.3.5
     ./configure --disable-install-rdoc
     make
     sudo make install

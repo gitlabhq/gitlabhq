@@ -1444,6 +1444,51 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#rm_branch' do
+    shared_examples "user deleting a branch" do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw }
+      let(:user) { create(:user) }
+      let(:branch_name) { "to-be-deleted-soon" }
+
+      before do
+        project.team << [user, :developer]
+        repository.create_branch(branch_name)
+      end
+
+      it "removes the branch from the repo" do
+        repository.rm_branch(branch_name, user: user)
+
+        expect(repository.rugged.branches[branch_name]).to be_nil
+      end
+    end
+
+    context "when Gitaly user_delete_branch is enabled" do
+      it_behaves_like "user deleting a branch"
+    end
+
+    context "when Gitaly user_delete_branch is disabled", skip_gitaly_mock: true do
+      it_behaves_like "user deleting a branch"
+    end
+  end
+
+  describe '#write_ref' do
+    context 'validations' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:ref_path, :ref) do
+        'foo bar' | '123'
+        'foobar'  | "12\x003"
+      end
+
+      with_them do
+        it 'raises ArgumentError' do
+          expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged

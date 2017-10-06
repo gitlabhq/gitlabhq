@@ -9,7 +9,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def index
     @sort = params[:sort].presence || sort_value_recently_updated
-    @branches = BranchesFinder.new(@repository, params).execute
+    @branches = BranchesFinder.new(@repository, params.merge(sort: @sort)).execute
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     respond_to do |format|

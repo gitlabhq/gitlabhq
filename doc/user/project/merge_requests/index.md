@@ -3,6 +3,8 @@
 Merge requests allow you to exchange changes you made to source code and
 collaborate with other people on the same project.
 
+![Merge request view](img/merge_request.png)
+
 ## Overview
 
 A Merge Request (**MR**) is the basis of GitLab as a code collaboration

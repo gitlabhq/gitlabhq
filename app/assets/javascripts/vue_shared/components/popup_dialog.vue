@@ -7,7 +7,7 @@ export default {
       type: String,
       required: true,
     },
-    body: {
+    text: {
       type: String,
       required: true,
     },
@@ -63,7 +63,9 @@ export default {
         <h4 class="modal-title">{{this.title}}</h4>
       </div>
       <div class="modal-body">
-        <p>{{this.body}}</p>
+        <slot name="body" :text="text">
+          <p>{{text}}</p>
+        </slot>
       </div>
       <div class="modal-footer">
         <button

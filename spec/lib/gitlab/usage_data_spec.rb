@@ -60,6 +60,7 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
+        gcp_clusters
         in_review_folder
         groups
         issues

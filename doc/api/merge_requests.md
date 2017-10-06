@@ -121,6 +121,15 @@ GET /projects/:id/merge_requests?labels=bug,reproduced
 GET /projects/:id/merge_requests?my_reaction_emoji=star
 ```
 
+`project_id` represents the ID of the project where the MR resides.
+`project_id` will always equal `target_project_id`.
+
+In the case of a merge request from the same project,
+`source_project_id`, `target_project_id` and `project_id`
+will be the same. In the case of a merge request from a fork,
+`target_project_id` and `project_id` will be the same and
+`source_project_id` will be the fork project's ID.
+
 Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |
@@ -192,6 +201,7 @@ Parameters:
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
+    "discussion_locked": false,
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -267,6 +277,7 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -378,6 +389,7 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -471,6 +483,7 @@ POST /projects/:id/merge_requests
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -500,6 +513,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `labels`               | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`         | integer | no       | The ID of a milestone                                                           |
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
+| `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 
 Must include at least one non-required attribute from above.
 
@@ -554,6 +568,7 @@ Must include at least one non-required attribute from above.
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -658,6 +673,7 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -734,6 +750,7 @@ Parameters:
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1028,7 +1045,8 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/francisca"
+      "web_url": "https://gitlab.example.com/francisca",
+      "discussion_locked": false
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",

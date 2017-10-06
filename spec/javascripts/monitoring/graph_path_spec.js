@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import GraphPath from '~/monitoring/components/graph_path.vue';
+import GraphPath from '~/monitoring/components/graph/path.vue';
 import createTimeSeries from '~/monitoring/utils/multiple_time_series';
 import { singleRowMetricsMultipleSeries, convertDatesMultipleSeries } from './mock_data';
 

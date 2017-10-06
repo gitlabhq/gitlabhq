@@ -19,6 +19,10 @@
         type: Number,
         required: true,
       },
+      graphWidth: {
+        type: Number,
+        required: true,
+      },
     },
 
     computed: {
@@ -46,6 +50,14 @@
 
       transformDeploymentGroup(deployment) {
         return `translate(${Math.floor(deployment.xPos) + 1}, 20)`;
+      },
+
+      positionFlag(deployment) {
+        let xPosition = 3;
+        if (deployment.xPos > (this.graphWidth - 200)) {
+          xPosition = -97;
+        }
+        return xPosition;
       },
     },
   };
@@ -77,7 +89,7 @@
       <svg
         v-if="deployment.showDeploymentFlag"
         class="js-deploy-info-box"
-        x="3"
+        :x="positionFlag(deployment)"
         y="0"
         width="92"
         height="60">

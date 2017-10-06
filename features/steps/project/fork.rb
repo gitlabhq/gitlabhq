@@ -26,7 +26,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I fork to my namespace' do
-    page.within '.fork-namespaces' do
+    page.within '.fork-thumbnail-container' do
       click_link current_user.name
     end
   end

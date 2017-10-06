@@ -73,6 +73,7 @@ export default class MergeRequestStore {
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
     this.hasSHAChanged = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
+    this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
 
     // Cherry-pick and Revert actions related

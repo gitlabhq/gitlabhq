@@ -609,14 +609,14 @@ describe 'Issues', :js do
 
       visit project_issue_path(project, issue)
 
-      expect(page).to have_css('.confidential-issue-warning')
-      expect(page).to have_css('.is-confidential')
-      expect(page).not_to have_css('.is-not-confidential')
+      expect(page).to have_css('.issuable-note-warning')
+      expect(find('.issuable-sidebar-item.confidentiality')).to have_css('.is-active')
+      expect(find('.issuable-sidebar-item.confidentiality')).not_to have_css('.not-active')
 
       find('.confidential-edit').click
-      expect(page).to have_css('.confidential-warning-message')
+      expect(page).to have_css('.sidebar-item-warning-message')
 
-      within('.confidential-warning-message') do
+      within('.sidebar-item-warning-message') do
         find('.btn-close').click
       end
 
@@ -624,7 +624,7 @@ describe 'Issues', :js do
 
       visit project_issue_path(project, issue)
 
-      expect(page).not_to have_css('.is-confidential')
+      expect(page).not_to have_css('.is-active')
     end
   end
 end
