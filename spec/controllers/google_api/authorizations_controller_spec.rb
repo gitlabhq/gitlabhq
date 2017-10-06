@@ -24,20 +24,19 @@ describe GoogleApi::AuthorizationsController do
         .to eq(expires_at)
     end
 
-    context 'when second redirection url key is stored in state' do
+    context 'when redirect uri key is stored in state' do
       set(:project) { create(:project) }
-      let(:second_redirect_uri) { project_clusters_url(project).to_s }
+      let(:redirect_uri) { project_clusters_url(project).to_s }
 
       before do
-        GoogleApi::CloudPlatform::Client
-          .session_key_for_second_redirect_uri.tap do |key, secure|
-          @state = secure
-          session[key] = second_redirect_uri
+        @state = GoogleApi::CloudPlatform::Client
+          .new_session_key_for_redirect_uri do |key|
+          session[key] = redirect_uri
         end
       end
 
       it 'redirects to the URL stored in state param' do
-        expect(subject).to redirect_to(second_redirect_uri)
+        expect(subject).to redirect_to(redirect_uri)
       end
     end
 

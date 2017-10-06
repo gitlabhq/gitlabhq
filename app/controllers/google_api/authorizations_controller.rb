@@ -9,16 +9,21 @@ module GoogleApi
       session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] =
         expires_at.to_s
 
-      key, _ = GoogleApi::CloudPlatform::Client
-        .session_key_for_second_redirect_uri(secure: params[:state])
+      state_redirect_uri = redirect_uri_from_session_key(params[:state])
 
-      second_redirect_uri = session[key]
-
-      if second_redirect_uri.present?
-        redirect_to second_redirect_uri
+      if state_redirect_uri
+        redirect_to state_redirect_uri
       else
         redirect_to root_path
       end
+    end
+
+    private
+
+    def redirect_uri_from_session_key(state)
+      key = GoogleApi::CloudPlatform::Client
+        .session_key_for_redirect_uri(params[:state])
+      session[key] if key
     end
   end
 end

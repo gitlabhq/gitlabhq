@@ -69,14 +69,14 @@ feature 'Clusters', :js do
       end
 
       it 'user sees an cluster details page' do
-        expect(page).to have_button('Save changes')
+        expect(page).to have_button('Save')
         expect(page.find(:css, '.cluster-name').value).to eq(cluster.gcp_cluster_name)
       end
 
       context 'when user disables the cluster' do
         before do
           page.find(:css, '.js-toggle-cluster').click
-          click_button 'Save changes'
+          click_button 'Save'
         end
 
         it 'user sees the succeccful message' do
