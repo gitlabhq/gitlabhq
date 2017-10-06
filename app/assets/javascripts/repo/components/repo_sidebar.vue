@@ -18,22 +18,40 @@ export default {
   },
 
   created() {
-    this.addPopEventListener();
+    window.addEventListener('popstate', this.checkHistory);
+  },
+  destroyed() {
+    window.removeEventListener('popstate', this.checkHistory);
   },
 
   data: () => Store,
 
   methods: {
-    addPopEventListener() {
-      window.addEventListener('popstate', () => {
-        if (location.href.indexOf('#') > -1) return;
-        this.linkClicked({
+    checkHistory() {
+      let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
+      if (!selectedFile) {
+        // Maybe it is not in the current tree but in the opened tabs
+        selectedFile = Helper.getFileFromPath(location.pathname);
+      }
+
+      let lineNumber = null;
+      if (location.hash.indexOf('#L') > -1) lineNumber = Number(location.hash.substr(2));
+
+      if (selectedFile) {
+        if (selectedFile.url !== this.activeFile.url) {
+          this.fileClicked(selectedFile, lineNumber);
+        } else {
+          Store.setActiveLine(lineNumber);
+        }
+      } else {
+        // Not opened at all lets open new tab
+        this.fileClicked({
           url: location.href,
-        });
-      });
+        }, lineNumber);
+      }
     },
 
-    fileClicked(clickedFile) {
+    fileClicked(clickedFile, lineNumber) {
       let file = clickedFile;
       if (file.loading) return;
       file.loading = true;
@@ -41,17 +59,20 @@ export default {
       if (file.type === 'tree' && file.opened) {
         file = Store.removeChildFilesOfTree(file);
         file.loading = false;
+        Store.setActiveLine(lineNumber);
       } else {
         const openFile = Helper.getFileFromPath(file.url);
         if (openFile) {
           file.loading = false;
           Store.setActiveFiles(openFile);
+          Store.setActiveLine(lineNumber);
         } else {
           Service.url = file.url;
           Helper.getContent(file)
             .then(() => {
               file.loading = false;
               Helper.scrollTabsRight();
+              Store.setActiveLine(lineNumber);
             })
             .catch(Helper.loadingError);
         }

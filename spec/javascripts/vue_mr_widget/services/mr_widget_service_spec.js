@@ -31,6 +31,7 @@ describe('MRWidgetService', () => {
   });
 
   it('should have methods defined', () => {
+    window.history.pushState({}, null, '/');
     const service = new MRWidgetService(mr);
 
     expect(service.merge()).toBeDefined();

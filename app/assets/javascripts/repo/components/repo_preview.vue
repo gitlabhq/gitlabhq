@@ -14,6 +14,11 @@ export default {
     highlightFile() {
       $(this.$el).find('.file-content').syntaxHighlight();
     },
+    highlightLine() {
+      if (Store.activeLine > -1) {
+        this.lineHighlighter.highlightHash(`#L${Store.activeLine}`);
+      }
+    },
   },
   mounted() {
     this.highlightFile();
@@ -26,7 +31,11 @@ export default {
     html() {
       this.$nextTick(() => {
         this.highlightFile();
+        this.highlightLine();
       });
+    },
+    activeLine() {
+      this.highlightLine();
     },
   },
 };

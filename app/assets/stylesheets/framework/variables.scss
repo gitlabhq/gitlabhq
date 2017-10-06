@@ -203,6 +203,11 @@ $code_font_size: 12px;
 $code_line_height: 1.6;
 
 /*
+ * Tooltips
+ */
+$tooltip-font-size: 12px;
+
+/*
  * Padding
  */
 $gl-padding: 16px;
@@ -700,3 +705,9 @@ Project Templates Icons
 $rails: #c00;
 $node: #353535;
 $java: #70ad51;
+
+/*
+Issuable warning
+*/
+$issuable-warning-size: 24px;
+$issuable-warning-icon-margin: 4px;

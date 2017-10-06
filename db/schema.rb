@@ -580,6 +580,35 @@ ActiveRecord::Schema.define(version: 20171005130944) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "gcp_clusters", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id"
+    t.integer "service_id"
+    t.integer "status"
+    t.integer "gcp_cluster_size", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.boolean "enabled", default: true
+    t.text "status_reason"
+    t.string "project_namespace"
+    t.string "endpoint"
+    t.text "ca_cert"
+    t.text "encrypted_kubernetes_token"
+    t.string "encrypted_kubernetes_token_iv"
+    t.string "username"
+    t.text "encrypted_password"
+    t.string "encrypted_password_iv"
+    t.string "gcp_project_id", null: false
+    t.string "gcp_cluster_zone", null: false
+    t.string "gcp_cluster_name", null: false
+    t.string "gcp_machine_type"
+    t.string "gcp_operation_id"
+    t.text "encrypted_gcp_token"
+    t.string "encrypted_gcp_token_iv"
+  end
+
+  add_index "gcp_clusters", ["project_id"], name: "index_gcp_clusters_on_project_id", unique: true, using: :btree
+
   create_table "gpg_key_subkeys", force: :cascade do |t|
     t.integer "gpg_key_id", null: false
     t.binary "keyid"
@@ -677,6 +706,7 @@ ActiveRecord::Schema.define(version: 20171005130944) do
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
+    t.boolean "discussion_locked"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -900,6 +930,7 @@ ActiveRecord::Schema.define(version: 20171005130944) do
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
     t.string "merge_jid"
+    t.boolean "discussion_locked"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1739,6 +1770,9 @@ ActiveRecord::Schema.define(version: 20171005130944) do
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
+  add_foreign_key "gcp_clusters", "services", on_delete: :nullify
+  add_foreign_key "gcp_clusters", "users", on_delete: :nullify
   add_foreign_key "gpg_key_subkeys", "gpg_keys", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
