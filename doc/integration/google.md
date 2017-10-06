@@ -8,7 +8,7 @@ with Google. Google will generate a client ID and secret key for you to use.
 In Google's side:
 
 1. Navigate to the [cloud resource manager](https://console.cloud.google.com/cloud-resource-manager) page
-1. Select "Create Project"
+1. Select **Create Project**
 1. Provide the project information:
     - **Project name** - "GitLab" works just fine here.
     - **Project ID** - Must be unique to all Google Developer registered applications.
@@ -17,24 +17,25 @@ In Google's side:
 1. Refresh the page and you should see your new project in the list
 1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard)
 1. Select the previously created project form the upper left corner
-1. Click on the project and select "Google Cloud APIs" in the overview
-1. Select "Credentials" in the left menu
-1. Select "Create New Client ID"
+1. Select **Credentials** from the sidebar
+1. Select **OAuth consent screen** and fill the form with the required information
+1. In the **Credentials** tab, select **Create credentials > OAuth client ID**
 1. Fill in the required information
     - **Application type** - Choose "Web Application"
+    - **Name** - Use the default one or provide your own
     - **Authorized JavaScript origins** -This isn't really used by GitLab but go
       ahead and put `https://gitlab.example.com`
     - **Authorized redirect URIs** - Enter your domain name followed by the
-      callback URIs:
+      callback URIs one at a time:
 
         ```
         https://gitlab.example.com/users/auth/google_oauth2/callback
         https://gitlab.example.com/google_api/auth/callback
         ```
 
-1. Under the heading "Client ID for web application" you should see a Client ID
-   and Client secret. Note them down or keep this page open as you will need them
-   later.
+1. You should now be able to see a Client ID and Client secret. Note them down
+   or keep this page open as you will need them later.
+1. From the **Dashboard** select **ENABLE APIS AND SERVICES > Google Cloud APIs > Container Engine API > Enable**
 
 On your GitLab server:
 
