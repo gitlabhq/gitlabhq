@@ -2282,4 +2282,49 @@ describe User do
       end
     end
   end
+
+  describe '#confirm_deletion_with_password?' do
+    where(
+      password_automatically_set: [true, false],
+      ldap_user: [true, false],
+      password_authentication_disabled: [true, false]
+    )
+
+    with_them do
+      let!(:user) { create(:user, password_automatically_set: password_automatically_set) }
+      let!(:identity) { create(:identity, user: user) if ldap_user }
+
+      # Only confirm deletion with password if all inputs are false
+      let(:expected) { !(password_automatically_set || ldap_user || password_authentication_disabled) }
+
+      before do
+        stub_application_setting(password_authentication_enabled: !password_authentication_disabled)
+      end
+
+      it 'returns false unless all inputs are true' do
+        expect(user.confirm_deletion_with_password?).to eq(expected)
+      end
+    end
+  end
+
+  describe '#delete_async' do
+    let(:user) { create(:user) }
+    let(:deleted_by) { create(:user) }
+
+    it 'blocks the user then schedules them for deletion if a hard delete is specified' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, hard_delete: true)
+
+      user.delete_async(deleted_by: deleted_by, params: { hard_delete: true })
+
+      expect(user).to be_blocked
+    end
+
+    it 'schedules user for deletion without blocking them' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(deleted_by.id, user.id, {})
+
+      user.delete_async(deleted_by: deleted_by)
+
+      expect(user).not_to be_blocked
+    end
+  end
 end
