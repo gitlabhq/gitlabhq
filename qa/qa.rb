@@ -34,6 +34,10 @@ module QA
       module Project
         autoload :Create, 'qa/scenario/gitlab/project/create'
       end
+
+      module Sandbox
+        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
+      end
     end
   end
 

@@ -1,5 +1,4 @@
 require 'securerandom'
-require_relative '../sandbox/prepare'
 
 module QA
   module Scenario
