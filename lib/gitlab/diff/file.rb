@@ -49,7 +49,7 @@ module Gitlab
       def line_code(line)
         return if line.meta?
 
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+        Gitlab::Git::DiffLineCode.generate(file_path, line.new_pos, line.old_pos)
       end
 
       def line_for_line_code(code)

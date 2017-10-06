@@ -105,7 +105,7 @@ describe DiffNote do
 
   describe "#line_code" do
     it "returns the correct line code" do
-      line_code = Gitlab::Diff::LineCode.generate(position.file_path, position.formatter.new_line, 15)
+      line_code = Gitlab::Git::DiffLineCode.generate(position.file_path, position.formatter.new_line, 15)
 
       expect(subject.line_code).to eq(line_code)
     end
