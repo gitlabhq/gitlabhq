@@ -257,6 +257,30 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
+      context 'when a new assignee added' do
+        subject { update_issue(assignees: issue.assignees + [user2]) }
+
+        it 'creates only 1 new todo' do
+          expect { subject }.to change { Todo.count }.by(1)
+        end
+
+        it 'creates a todo for new assignee' do
+          subject
+
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq(1)
+        end
+      end
+
       context 'when the milestone change' do
         it 'marks todos as done' do
           update_issue(milestone: create(:milestone))
