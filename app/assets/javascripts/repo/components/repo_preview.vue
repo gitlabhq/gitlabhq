@@ -18,7 +18,7 @@ export default {
       if (Store.activeLine > -1) {
         this.lineHighlighter.highlightHash(`#L${Store.activeLine}`);
       }
-    }
+    },
   },
   mounted() {
     this.highlightFile();
