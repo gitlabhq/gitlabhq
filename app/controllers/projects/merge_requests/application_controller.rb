@@ -36,6 +36,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :target_project_id,
       :task_num,
       :title,
+      :discussion_locked,
 
       label_ids: []
     ]

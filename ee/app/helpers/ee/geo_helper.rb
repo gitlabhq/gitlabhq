@@ -1,5 +1,9 @@
 module EE
   module GeoHelper
+    def node_namespaces_options(namespaces)
+      namespaces.map { |g| { id: g.id, text: g.full_name } }
+    end
+
     def node_selected_namespaces_to_replicate(node)
       node.namespaces.map(&:human_name).sort.join(', ')
     end

@@ -5,27 +5,25 @@
   margin-right: auto;
 }
 
-.is-confidential {
+.issuable-warning-icon {
   color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default;
   padding: 5px;
-  margin: 0 3px 0 -4px;
+  margin: 0 $btn-side-margin 0 0;
+  width: $issuable-warning-size;
+  height: $issuable-warning-size;
+  text-align: center;
 }
 
-.is-not-confidential {
+.sidebar-item-icon {
   border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
-}
 
-.confidentiality {
-  .is-not-confidential {
-    margin: auto;
-  }
-
-  .is-confidential {
-    margin: auto;
+  &.is-active {
+    color: $orange-600;
+    background-color: $orange-50;
   }
 }
 

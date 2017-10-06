@@ -17,7 +17,8 @@ class Diff {
       }
     });
 
-    FilesCommentButton.init($diffFile);
+    const tab = document.getElementById('diffs');
+    if (!tab || (tab && tab.dataset && tab.dataset.isLocked !== '')) FilesCommentButton.init($diffFile);
 
     $diffFile.each((index, file) => new gl.ImageFile(file));
 

@@ -302,6 +302,40 @@ describe API::Notes do
         expect(private_issue.notes.reload).to be_empty
       end
     end
+
+    context 'when the merge request discussion is locked' do
+      before do
+        merge_request.update_attribute(:discussion_locked, true)
+      end
+
+      context 'when a user is a team member' do
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", user), body: 'Hi!' }
+
+        it 'returns 200 status' do
+          subject
+
+          expect(response).to have_http_status(201)
+        end
+
+        it 'creates a new note' do
+          expect { subject }.to change { Note.count }.by(1)
+        end
+      end
+
+      context 'when a user is not a team member' do
+        subject { post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes", private_user), body: 'Hi!' }
+
+        it 'returns 403 status' do
+          subject
+
+          expect(response).to have_http_status(403)
+        end
+
+        it 'does not create a new note' do
+          expect { subject }.not_to change { Note.count }
+        end
+      end
+    end
   end
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do

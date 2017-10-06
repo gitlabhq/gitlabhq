@@ -280,6 +280,7 @@ class Projects::IssuesController < Projects::ApplicationController
       state_event
       task_num
       lock_version
+      discussion_locked
     ] + [{ label_ids: [], assignee_ids: [] }]
   end
 

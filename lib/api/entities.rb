@@ -398,6 +398,7 @@ module API
       expose :due_date
       expose :confidential
       expose :weight, if: ->(issue, _) { issue.supports_weight? }
+      expose :discussion_locked
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -504,6 +505,7 @@ module API
       expose :merge_commit_sha
       expose :user_notes_count
       expose :approvals_before_merge
+      expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
 
