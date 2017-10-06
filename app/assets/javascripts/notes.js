@@ -1518,8 +1518,9 @@ export default class Notes {
 
           if (isNewDiffComment) {
             // Add image badge, avatar badge and toggle discussion badge for new image diffs
-            if ($diffFile.length > 0) {
-              const { x_axis, y_axis, width, height } = JSON.parse($form.find('#note_position').val());
+            const notePosition = $form.find('#note_position').val();
+            if ($diffFile.length > 0 && notePosition.length > 0) {
+              const { x_axis, y_axis, width, height } = JSON.parse(notePosition);
               const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
                 detail: {
                   x: x_axis,
