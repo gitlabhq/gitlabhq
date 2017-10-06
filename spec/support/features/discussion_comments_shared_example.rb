@@ -72,11 +72,7 @@ shared_examples 'discussion comments' do |resource_name|
       expect(page).not_to have_selector menu_selector
 
       find(toggle_selector).click
-
-      # test theory
-      expect(page).to have_selector menu_selector
-
-      find('body').click
+      find('body').trigger click
 
       expect(page).not_to have_selector menu_selector
     end
