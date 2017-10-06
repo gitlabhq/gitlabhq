@@ -26,7 +26,7 @@ describe GoogleApi::AuthorizationsController do
 
     context 'when second redirection url key is stored in state' do
       set(:project) { create(:project) }
-      let(:second_redirect_uri) { namespace_project_clusters_url(project.namespace, project).to_s } # TODO: revrt
+      let(:second_redirect_uri) { project_clusters_url(project).to_s }
 
       before do
         GoogleApi::CloudPlatform::Client
