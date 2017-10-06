@@ -12,10 +12,6 @@ module Gitlab
         completion == 100
       end
 
-      def status
-        @status
-      end
-
       def loading?
         @status == :loading
       end

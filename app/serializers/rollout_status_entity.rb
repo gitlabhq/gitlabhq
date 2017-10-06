@@ -5,7 +5,5 @@ class RolloutStatusEntity < Grape::Entity
 
   expose :instances, if: -> (rollout_status, _) { rollout_status.found? }
   expose :completion, if: -> (rollout_status, _) { rollout_status.found? }
-  expose :is_completed, if: -> (rollout_status, _) { rollout_status.found? } do |rollout_status|
-    rollout_status.complete?
-  end
+  expose :complete?, as: :is_completed, if: -> (rollout_status, _) { rollout_status.found? }
 end

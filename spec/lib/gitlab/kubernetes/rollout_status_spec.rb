@@ -118,8 +118,8 @@ describe Gitlab::Kubernetes::RolloutStatus do
     end
   end
 
-  describe '.loading_rollout' do
-    subject { described_class.loading_rollout }
+  describe '.loading' do
+    subject { described_class.loading }
 
     it { is_expected.to be_loading }
   end

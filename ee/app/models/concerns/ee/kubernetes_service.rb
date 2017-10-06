@@ -20,8 +20,8 @@ module EE
       super
 
       Gitlab::EtagCaching::Store.new.tap do |store|
-        store.touch(Gitlab::Routing.url_helpers.project_environments_path(
-          project, format: :json))
+        store.touch(
+          Gitlab::Routing.url_helpers.project_environments_path(project, format: :json))
       end
     end
 
