@@ -45,6 +45,7 @@ describe RspecFlaky::Listener, :aggregate_failures do
     # Stub these env variables otherwise specs don't behave the same on the CI
     stub_env('CI_PROJECT_URL', nil)
     stub_env('CI_JOB_ID', nil)
+    stub_env('SUITE_FLAKY_RSPEC_REPORT_PATH', nil)
   end
 
   describe '#initialize' do
