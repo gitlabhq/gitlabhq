@@ -1,0 +1,45 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "status"
+    ],
+    "properties": {
+        "status": {
+            "type": "string"
+        },
+        "completion": {
+            "type": "integer"
+        },
+        "is_completed": {
+            "type": "boolean"
+        },
+        "instances": {
+            "type": "array",
+            "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                    "status",
+                    "tooltip",
+                    "track",
+                    "stable"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "tooltip": {
+                        "type": "string"
+                    },
+                    "track": {
+                        "type": "string"
+                    },
+                    "stable": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        }
+    }
+}

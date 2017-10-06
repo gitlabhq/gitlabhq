@@ -1,0 +1,20 @@
+{
+    "type": "object",
+    "required": [
+        "name",
+        "size",
+        "latest"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "size": {
+            "type": "integer"
+        },
+        "latest": {
+            "$ref": "environment.json"
+        }
+    }
+}

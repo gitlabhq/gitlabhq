@@ -1,11 +1,12 @@
 module EE
   module KubernetesService
     def rollout_status(environment)
-      with_reactive_cache do |data|
+      result = with_reactive_cache do |data|
         specs = filter_by_label(data[:deployments], app: environment.slug)
 
         ::Gitlab::Kubernetes::RolloutStatus.from_specs(*specs)
       end
+      result || ::Gitlab::Kubernetes::RolloutStatus.loading
     end
 
     def calculate_reactive_cache
@@ -13,6 +14,15 @@ module EE
       result[:deployments] = read_deployments if result
 
       result
+    end
+
+    def reactive_cache_updated
+      super
+
+      ::Gitlab::EtagCaching::Store.new.tap do |store|
+        store.touch(
+          ::Gitlab::Routing.url_helpers.project_environments_path(project, format: :json))
+      end
     end
 
     def read_deployments
