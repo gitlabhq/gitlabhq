@@ -63,14 +63,9 @@ export default {
     },
   },
   watch: {
-    board: {
-      handler() {
-        this.$nextTick(() => {
-          new UsersSelect();
-        });
-      },
-      deep: true,
-    }
+    selected() {
+      new UsersSelect();
+    },
   },
   mounted() {
     this.$nextTick(() => {

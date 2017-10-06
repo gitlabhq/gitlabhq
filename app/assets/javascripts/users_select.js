@@ -443,8 +443,7 @@ function UsersSelect(currentUser, els) {
           if ($el.closest('.add-issues-modal').length) {
             gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
           } else if ($el.closest('.js-board-config-modal').length) {
-            gl.issueBoards.BoardsStore.boardConfig.assignee = user;
-            gl.issueBoards.BoardsStore.boardConfig.assignee_id = user.id;
+            gl.issueBoards.BoardsStore.boardConfig.assignee = isMarking ? user : {};
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
           } else if ($dropdown.hasClass('js-filter-submit')) {

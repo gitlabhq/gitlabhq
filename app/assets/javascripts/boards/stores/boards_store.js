@@ -55,14 +55,14 @@ gl.issueBoards.BoardsStore = {
     this.state.currentPage = page;
   },
   updateBoardConfig(board = {}) {
+    this.boardConfig.id = board.id;
     this.boardConfig.name = board.name;
     this.boardConfig.milestone = board.milestone;
     this.boardConfig.milestone_id = board.milestone_id;
-    this.boardConfig.id = board.id;
     this.boardConfig.weight = board.weight;
     this.boardConfig.labels = board.labels || [];
     this.boardConfig.assignee_id = board.assignee_id;
-    Vue.set(this.boardConfig, 'assignee', board.assignee);
+    this.boardConfig.assignee = board.assignee || {};
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
