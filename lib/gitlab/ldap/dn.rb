@@ -48,26 +48,6 @@ module Gitlab
         end
       end
 
-      def initialize_array(args)
-        buffer = StringIO.new
-
-        args.each_with_index do |arg, index|
-          if index.even? # key
-            buffer << "," if index > 0
-            buffer << arg
-          else # value
-            buffer << "="
-            buffer << self.class.escape(arg)
-          end
-        end
-
-        @dn = buffer.string
-      end
-
-      def initialize_string(arg)
-        @dn = arg.to_s
-      end
-
       ##
       # Parse a DN into key value pairs using ASN from
       # http://tools.ietf.org/html/rfc2253 section 3.
@@ -279,6 +259,28 @@ module Gitlab
       def self.escape(string)
         escaped = string.gsub(ESCAPE_RE) { |char| "\\" + char }
         escaped.gsub(HEX_ESCAPE_RE) { |char| HEX_ESCAPES[char] }
+      end
+
+      private
+
+      def initialize_array(args)
+        buffer = StringIO.new
+
+        args.each_with_index do |arg, index|
+          if index.even? # key
+            buffer << "," if index > 0
+            buffer << arg
+          else # value
+            buffer << "="
+            buffer << self.class.escape(arg)
+          end
+        end
+
+        @dn = buffer.string
+      end
+
+      def initialize_string(arg)
+        @dn = arg.to_s
       end
 
       ##
