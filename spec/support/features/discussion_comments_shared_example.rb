@@ -74,6 +74,9 @@ shared_examples 'discussion comments' do |resource_name|
       find(toggle_selector).click
       find('body').click
 
+      # Test theory
+      sleep 3
+
       expect(page).not_to have_selector menu_selector
     end
 
