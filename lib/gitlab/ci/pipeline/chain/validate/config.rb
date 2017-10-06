@@ -13,7 +13,7 @@ module Gitlab
                 end
 
                 if @command.save_incompleted && @pipeline.has_yaml_errors?
-                  @pipeline.drop
+                  @pipeline.drop!(:config_error)
                 end
 
                 return error(@pipeline.yaml_errors)
