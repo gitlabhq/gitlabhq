@@ -5,6 +5,12 @@ RSpec.describe 'Dashboard Group' do
     sign_in(create(:user))
   end
 
+  it 'defaults sort dropdown to last created' do
+    visit dashboard_groups_path
+
+    expect(page).to have_button('Last created')
+  end
+
   it 'creates new group', js: true do
     visit dashboard_groups_path
     find('.btn-new').trigger('click')
