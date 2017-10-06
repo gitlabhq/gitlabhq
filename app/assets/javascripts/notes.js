@@ -1482,7 +1482,7 @@ export default class Notes {
         // Submission successful! remove placeholder
         $notesContainer.find(`#${noteUniqueId}`).remove();
 
-        let $diffFile = $form.closest('.diff-file');
+        const $diffFile = $form.closest('.diff-file');
         if ($diffFile.length > 0) {
           const blurEvent = new CustomEvent('blur.imageDiff', {
             detail: e,

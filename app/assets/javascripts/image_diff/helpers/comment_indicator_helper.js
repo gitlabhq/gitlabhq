@@ -30,7 +30,7 @@ export function removeCommentIndicator(imageFrameEl) {
     commentIndicatorEl.remove();
   }
 
-  return Object.assign(meta, {
+  return Object.assign({}, meta, {
     removed: willRemove,
   });
 }

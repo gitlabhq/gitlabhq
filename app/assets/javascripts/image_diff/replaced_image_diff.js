@@ -70,21 +70,23 @@ export default class ReplacedImageDiff extends ImageDiff {
     // Image_file.js has a fade animation of 200ms for loading the view
     // Need to wait an additional 250ms for the images to be displayed
     // on window in order to re-normalize their dimensions
-    setTimeout(() => {
-      // Generate badge coordinates on new view
-      this.renderBadges();
+    setTimeout(this.renderNewView.bind(this, indicator), 250);
+  }
 
-      // Re-render indicator in new view
-      if (indicator.removed) {
-        const normalizedIndicator = imageDiffHelper
-          .resizeCoordinatesToImageElement(this.imageEl, {
-            x: indicator.x,
-            y: indicator.y,
-            width: indicator.image.width,
-            height: indicator.image.height,
-          });
-        imageDiffHelper.showCommentIndicator(this.imageFrameEl, normalizedIndicator);
-      }
-    }, 250);
+  renderNewView(indicator) {
+    // Generate badge coordinates on new view
+    this.renderBadges();
+
+    // Re-render indicator in new view
+    if (indicator.removed) {
+      const normalizedIndicator = imageDiffHelper
+        .resizeCoordinatesToImageElement(this.imageEl, {
+          x: indicator.x,
+          y: indicator.y,
+          width: indicator.image.width,
+          height: indicator.image.height,
+        });
+      imageDiffHelper.showCommentIndicator(this.imageFrameEl, normalizedIndicator);
+    }
   }
 }
