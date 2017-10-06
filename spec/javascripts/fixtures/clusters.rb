@@ -11,7 +11,7 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
   render_views
 
   before(:all) do
-    clean_frontend_fixtures('branches/')
+    clean_frontend_fixtures('clusters/')
   end
 
   before do
