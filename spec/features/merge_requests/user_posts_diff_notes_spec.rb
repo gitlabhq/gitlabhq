@@ -196,7 +196,6 @@ feature 'Merge requests > User posts diff notes', :js do
     before do
       merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
-      wait_for_requests
     end
 
     context 'with a new line' do
@@ -228,7 +227,6 @@ feature 'Merge requests > User posts diff notes', :js do
     write_comment_on_line(line_holder, diff_side)
 
     click_button 'Comment'
-    wait_for_requests
 
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)
   end
@@ -259,6 +257,8 @@ feature 'Merge requests > User posts diff notes', :js do
 
   def assert_comment_persistence(line_holder, asset_form_reset:)
     notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
+
+    sleep 3
 
     expect(notes_holder_saved[:class]).not_to include(notes_holder_input_class)
     expect(notes_holder_saved).to have_content test_note_comment
