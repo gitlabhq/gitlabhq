@@ -89,9 +89,9 @@ module Github
       url = "/repos/#{repo}/labels"
 
       while url
-        response = Github::Client.new(options).get(url)
+        body, url = request(url)
 
-        response.body.each do |raw|
+        while raw = body.shift
           begin
             representation = Github::Representation::Label.new(raw)
 
@@ -104,8 +104,6 @@ module Github
             error(:label, representation.url, e.message)
           end
         end
-
-        url = response.rels[:next]
       end
     end
 
@@ -113,9 +111,9 @@ module Github
       url = "/repos/#{repo}/milestones"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all)
+        body, url = request(url, state: :all)
 
-        response.body.each do |raw|
+        while raw = body.shift
           begin
             milestone = Github::Representation::Milestone.new(raw)
             next if project.milestones.where(iid: milestone.iid).exists?
@@ -133,8 +131,6 @@ module Github
             error(:milestone, milestone.url, e.message)
           end
         end
-
-        url = response.rels[:next]
       end
     end
 
@@ -142,9 +138,9 @@ module Github
       url = "/repos/#{repo}/pulls"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
+        body, url = request(url, state: :all, sort: :created, direction: :asc)
 
-        response.body.each do |raw|
+        while raw = body.shift
           pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
           merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
           next unless merge_request.new_record? && pull_request.valid?
@@ -185,8 +181,6 @@ module Github
             error(:pull_request, pull_request.url, e.message)
           end
         end
-
-        url = response.rels[:next]
       end
     end
 
@@ -194,11 +188,11 @@ module Github
       url = "/repos/#{repo}/issues"
 
       while url
-        response = Github::Client.new(options).get(url, state: :all, sort: :created, direction: :asc)
+        body, url = request(url, state: :all, sort: :created, direction: :asc)
 
-        response.body.each { |raw| populate_issue(raw) }
-
-        url = response.rels[:next]
+        while raw = body.shift
+          populate_issue(raw)
+        end
       end
     end
 
@@ -256,10 +250,10 @@ module Github
 
     def fetch_comments(noteable, type, url, klass = Note)
       while url
-        comments = Github::Client.new(options).get(url)
+        body, url = request(url)
 
         ActiveRecord::Base.no_touching do
-          comments.body.each do |raw|
+          while raw = body.shift
             begin
               representation  = Github::Representation::Comment.new(raw, options)
               author_id       = user_id(representation.author, project.creator_id)
@@ -279,8 +273,6 @@ module Github
             end
           end
         end
-
-        url = comments.rels[:next]
       end
     end
 
@@ -288,9 +280,9 @@ module Github
       url = "/repos/#{repo}/releases"
 
       while url
-        response = Github::Client.new(options).get(url)
+        body, url = request(url)
 
-        response.body.each do |raw|
+        while raw = body.shift
           representation = Github::Representation::Release.new(raw)
           next unless representation.valid?
 
@@ -306,8 +298,6 @@ module Github
             error(:release, representation.url, e.message)
           end
         end
-
-        url = response.rels[:next]
       end
     end
 
@@ -371,6 +361,16 @@ module Github
 
     def error(type, url, message)
       errors << { type: type, url: Gitlab::UrlSanitizer.sanitize(url), error: message }
+    end
+
+    def request(url, args)
+      response = github_client.get(url, args)
+
+      [response.body, response.rels[:next]]
+    end
+
+    def github_client
+      @github_client ||= Github::Client.new(options)
     end
   end
 end
