@@ -31,11 +31,11 @@
         },
         "last_deployment": {
             "oneOf": [
-                { 
+                {
                     "$ref": "deployment.json"
                 },
-                {    
-                    "type": ["null"] 
+                {
+                    "type": ["null"]
                 }
             ]
         },
