@@ -46,6 +46,7 @@ shared_examples 'discussion comments' do |resource_name|
       find("#{form_selector} .note-textarea").send_keys('a')
 
       find(toggle_selector).click
+      sleep 1
     end
 
     it 'has a "Comment" item (selected by default) and "Start discussion" item' do
