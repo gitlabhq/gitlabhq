@@ -1092,6 +1092,10 @@ module Gitlab
         popen(args, @path).last.zero?
       end
 
+      def blob_at(sha, path)
+        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
