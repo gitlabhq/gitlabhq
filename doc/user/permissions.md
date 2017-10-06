@@ -71,6 +71,7 @@ The following table depicts the various user permission levels in a project.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
+| Delete issues                         |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | Remove pages                          |         |            |             |          | ✓      |
