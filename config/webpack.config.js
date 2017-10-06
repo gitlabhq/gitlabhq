@@ -26,6 +26,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    account:              './profile/account/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
