@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-02 15:48-0400\n"
-"PO-Revision-Date: 2017-10-02 15:48-0400\n"
+"POT-Creation-Date: 2017-10-04 17:48+0100\n"
+"PO-Revision-Date: 2017-10-04 17:48+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -382,6 +382,9 @@ msgstr ""
 msgid "Cherry-pick this merge request"
 msgstr ""
 
+msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -710,6 +713,12 @@ msgid "GPG Keys"
 msgstr ""
 
 msgid "Geo Nodes"
+msgstr ""
+
+msgid "Geo|Groups to replicate"
+msgstr ""
+
+msgid "Geo|Select groups to replicate."
 msgstr ""
 
 msgid "Git storage health information has been reset"
@@ -1193,6 +1202,21 @@ msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectNetworkGraph|Graph"
+msgstr ""
+
+msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr ""
+
+msgid "ProjectSettings|Only signed commits can be pushed to this repository."
+msgstr ""
+
+msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
+msgstr ""
+
+msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
+msgstr ""
+
+msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
 msgid "ProjectsDropdown|Frequently visited"

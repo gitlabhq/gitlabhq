@@ -14,9 +14,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def create
-    @node = GeoNode.new(geo_node_params)
-
-    if @node.save
+    if Geo::NodeCreateService.new(geo_node_params).execute
       redirect_to admin_geo_nodes_path, notice: 'Node was successfully created.'
     else
       @nodes = GeoNode.all
@@ -26,9 +24,9 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def update
     if Geo::NodeUpdateService.new(@node, geo_node_params).execute
-      redirect_to admin_geo_nodes_path, notice: 'Geo Node was successfully updated.'
+      redirect_to admin_geo_nodes_path, notice: 'Node was successfully updated.'
     else
-      render 'edit'
+      render :edit
     end
   end
 
@@ -79,7 +77,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   private
 
   def geo_node_params
-    params.require(:geo_node).permit(:url, :primary, namespace_ids: [], geo_node_key_attributes: [:key])
+    params.require(:geo_node).permit(:url, :primary, :namespace_ids, geo_node_key_attributes: [:key])
   end
 
   def check_license
