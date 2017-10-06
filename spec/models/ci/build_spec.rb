@@ -322,24 +322,13 @@ describe Ci::Build do
   end
 
   describe '#parse_trace_sections!' do
-    context "when the build trace has sections markers," do
-      before do
-        build.trace.set(File.read(expand_fixture_path('trace/trace_with_sections')))
-      end
+    it 'calls ExtractSectionsFromBuildTraceService' do
+      expect(Ci::ExtractSectionsFromBuildTraceService)
+          .to receive(:new).with(project, build.user).once.and_call_original
+      expect_any_instance_of(Ci::ExtractSectionsFromBuildTraceService)
+        .to receive(:execute).with(build).once
 
-      it "saves the correct extracted sections" do
-        expect(build.trace_sections).to be_empty
-        expect(build.parse_trace_sections!).to be(true)
-        expect(build.trace_sections).not_to be_empty
-      end
-
-      it "fails if trace_sections isn't empty" do
-        expect(build.parse_trace_sections!).to be(true)
-        expect(build.trace_sections).not_to be_empty
-
-        expect(build.parse_trace_sections!).to be(false)
-        expect(build.trace_sections).not_to be_empty
-      end
+      build.parse_trace_sections!
     end
   end
 

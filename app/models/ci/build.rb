@@ -267,24 +267,7 @@ module Ci
     end
 
     def parse_trace_sections!
-      return false unless trace_sections.empty?
-
-      sections = trace.extract_sections.map do |attr|
-        name = attr.delete(:name)
-        name_record = begin
-                        project.build_trace_section_names.find_or_create_by!(name: name)
-                      rescue ActiveRecord::RecordInvalid
-                        project.build_trace_section_names.find_by!(name: name)
-                      end
-
-        attr.merge(
-          build_id: self.id,
-          project_id: self.project_id,
-          section_name_id: name_record.id)
-      end
-
-      Gitlab::Database.bulk_insert(Ci::BuildTraceSection.table_name, sections)
-      true
+      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
 
     def trace
