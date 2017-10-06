@@ -40,7 +40,6 @@ import './commit/file';
 import './commit/image_file';
 
 // lib/utils
-import './lib/utils/bootstrap_linked_tabs';
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
@@ -111,7 +110,6 @@ import './merge_request';
 import './merge_request_tabs';
 import './milestone';
 import './milestone_select';
-import './mini_pipeline_graph_dropdown';
 import './namespace_select';
 import './new_branch_form';
 import './new_commit_form';
@@ -119,7 +117,6 @@ import './notes';
 import './notifications_dropdown';
 import './notifications_form';
 import './pager';
-import './pipelines';
 import './preview_markdown';
 import './project';
 import './project_avatar';
