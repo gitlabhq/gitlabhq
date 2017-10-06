@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004121444) do
+ActiveRecord::Schema.define(version: 20171006091000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -215,11 +215,11 @@ ActiveRecord::Schema.define(version: 20171004121444) do
   add_index "ci_build_trace_section_names", ["project_id", "name"], name: "index_ci_build_trace_section_names_on_project_id_and_name", unique: true, using: :btree
 
   create_table "ci_build_trace_sections", force: :cascade do |t|
+    t.integer "project_id", null: false
     t.datetime_with_timezone "date_start", null: false
     t.datetime_with_timezone "date_end", null: false
     t.integer "byte_start", limit: 8, null: false
     t.integer "byte_end", limit: 8, null: false
-    t.integer "project_id", null: false
     t.integer "build_id", null: false
     t.integer "section_name_id", null: false
   end
