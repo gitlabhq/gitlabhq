@@ -3,7 +3,9 @@ module Gitlab
     module Stage
       class Seed
         attr_reader :pipeline
+
         delegate :project, to: :pipeline
+        delegate :size, to: :@jobs
 
         def initialize(pipeline, stage, jobs)
           @pipeline = pipeline

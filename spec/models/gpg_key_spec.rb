@@ -3,6 +3,7 @@ require 'rails_helper'
 describe GpgKey do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:subkeys) }
   end
 
   describe "validation" do
@@ -36,6 +37,14 @@ describe GpgKey do
         gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
         gpg_key.valid?
         expect(gpg_key.primary_keyid).to eq GpgHelpers::User1.primary_keyid
+      end
+    end
+
+    describe 'generate_subkeys' do
+      it 'extracts the subkeys from the gpg key' do
+        gpg_key = create(:gpg_key, key: GpgHelpers::User1.public_key_with_extra_signing_key)
+
+        expect(gpg_key.subkeys.count).to eq(2)
       end
     end
   end
@@ -181,6 +190,30 @@ describe GpgKey do
       )
 
       expect(unrelated_gpg_key.destroyed?).to be false
+    end
+
+    it 'deletes all the associated subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+
+      expect(gpg_key.subkeys).to be_present
+
+      gpg_key.revoke
+
+      expect(gpg_key.subkeys(true)).to be_blank
+    end
+
+    it 'invalidates all signatures associated to the subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+      gpg_key_subkey = gpg_key.subkeys.last
+      gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: gpg_key_subkey
+
+      gpg_key.revoke
+
+      expect(gpg_signature.reload).to have_attributes(
+        verification_status: 'unknown_key',
+        gpg_key: nil,
+        gpg_key_subkey: nil
+      )
     end
   end
 end
