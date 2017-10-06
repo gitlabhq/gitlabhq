@@ -290,6 +290,12 @@ module Gitlab
       def method_missing(method, *args, &block)
         @dn.send(method, *args, &block)
       end
+
+      ##
+      # Redefined to be consistent with redefined `method_missing` behavior
+      def respond_to?(sym, include_private = false)
+        @dn.respond_to?(sym, include_private)
+      end
     end
   end
 end
