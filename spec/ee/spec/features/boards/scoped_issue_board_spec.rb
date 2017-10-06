@@ -1,213 +1,405 @@
 require 'rails_helper'
 
 describe 'Scoped issue boards', :js do
+  include FilteredSearchHelpers
+
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :public, namespace: group) }
+  let(:project_2) { create(:project, :public, namespace: group) }
+  let!(:project_label) { create(:label, project: project, name: 'Planning') }
+  let!(:group_label) { create(:group_label, group: group, name: 'Group Label') }
   let!(:milestone) { create(:milestone, project: project) }
-  let!(:issue) { create(:closed_issue, project: project) }
-  let!(:issue_with_milestone) { create(:closed_issue, project: project, milestone: milestone) }
-  let!(:label) { create(:label, project: project) }
-  let!(:issue_with_label) { create(:labeled_issue, :closed, project: project, labels: [label]) }
-  let!(:issue_with_assignee) { create(:closed_issue, project: project, assignees: [user]) }
-  let!(:issue_with_weight) { create(:labeled_issue, :closed, project: project, weight: 5) }
+  let!(:board) { create(:board, project: project, name: 'Project board') }
+  let!(:group_board) { create(:board, group: group, name: 'Group board') }
+  let!(:filtered_board) { create(:board, project: project_2, name: 'Filtered board', milestone: milestone, assignee: user, weight: 2) }
+  let!(:issue) { create(:issue, project: project) }
+  let!(:issue_milestone) { create(:closed_issue, project: project, milestone: milestone) }
+  let!(:assigned_issue) { create(:issue, project: project, assignees: [user]) }
+
+  let(:edit_board) { find('.btn', text: 'Edit board') }
+  let(:view_scope) { find('.btn', text: 'View scope') }
+  let(:board_title) { find('.boards-selector-wrapper .dropdown-menu-toggle') }
 
   before do
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
-
-    project.team << [user, :master]
-
-    sign_in(user)
+    stub_licensed_features(multiple_issue_boards: true)
+    stub_licensed_features(group_issue_boards: true)
+    stub_licensed_features(scoped_issue_boards: true)
   end
 
-  context 'with the feature enabled' do
+  context 'user with edit permissions' do
     before do
-      stub_licensed_features(scoped_issue_board: true)
+      project.add_master(user)
+      group.add_master(user)
+
+      login_as(user)
+
+      visit project_boards_path(project)
+      wait_for_requests
     end
 
     context 'new board' do
-      before do
-        visit project_boards_path(project)
+      context 'milestone' do
+        it 'creates board filtering by milestone' do
+          create_board_milestone(milestone.title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(milestone.title)
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        it 'creates board to filtering by Any Milestone' do
+          create_board_milestone('Any Milestone')
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content("")
+          expect(page).to have_selector('.card', count: 3)
+        end
       end
 
-      it 'creates board with milestone' do
-        create_board_with_milestone
+      context 'labels' do
+        let!(:label_1) { create(:label, project: project, name: 'Label 1') }
+        let!(:label_2) { create(:label, project: project, name: 'Label 2') }
+        let!(:issue) { create(:labeled_issue, project: project, labels: [label_1]) }
+        let!(:issue_2) { create(:labeled_issue, project: project, labels: [label_2]) }
+        let!(:issue_3) { create(:labeled_issue, project: project, labels: [label_1, label_2]) }
 
-        expect(find('.tokens-container')).to have_content(milestone.title)
-        wait_for_requests
-        find('.card', match: :first)
+        it 'creates board filtering by one label' do
+          create_board_label(label_1.title)
 
-        expect(all('.board').last).to have_selector('.card', count: 1)
-      end
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_1.title)
+          expect(page).to have_selector('.card', count: 2)
+        end
 
-      it 'creates board with labels' do
-        create_board_with_labels
+        it 'creates board filtering by multiple labels' do
+          create_board_label([label_1.title, label_2.title])
 
-        expect(find('.tokens-container')).to have_content(label.title)
-        wait_for_requests
-        find('.card', match: :first)
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_1.title)
+          expect(find('.tokens-container')).to have_content(label_2.title)
+          expect(page).to have_selector('.card', count: 1)
+        end
 
-        expect(all('.board').last).to have_selector('.card', count: 1)
-      end
-
-      it 'creates board with assignee' do
-        create_board_with_assignee
-
-        expect(find('.tokens-container')).to have_content(user.name)
-        wait_for_requests
-        find('.card', match: :first)
-
-        expect(all('.board').last).to have_selector('.card', count: 1)
-      end
-
-      it 'creates board with weight' do
-        create_board_with_weight
-
-        expect(find('.tokens-container')).to have_content(issue_with_weight.weight)
-        wait_for_requests
-        find('.card', match: :first)
-
-        expect(all('.board').last).to have_selector('.card', count: 1)
-      end
-    end
-
-    xcontext 'update board' do
-      let!(:milestone_two) { create(:milestone, project: project) }
-      let!(:board) { create(:board, project: project, milestone: milestone) }
-
-      before do
-        visit project_boards_path(project)
-      end
-
-      it 'defaults milestone filter' do
-        page.within '#js-multiple-boards-switcher' do
-          find('.dropdown-menu-toggle').click
-
+        xit 'only shows group labels in list on group boards' do
+          visit group_boards_path(group)
           wait_for_requests
 
-          click_link board.name
-        end
+          expect(page).to have_css('#js-multiple-boards-switcher')
+          page.within '#js-multiple-boards-switcher' do
+            find('.dropdown-menu-toggle').click
+            click_link 'Create new board'
+          end
 
-        expect(find('.tokens-container')).to have_content(milestone.title)
-
-        find('.card', match: :first)
-
-        expect(all('.board').last).to have_selector('.card', count: 1)
-      end
-
-      it 'sets board to any milestone' do
-        update_board_milestone('Any Milestone')
-
-        expect(page).not_to have_css('.js-visual-token')
-        expect(find('.tokens-container')).not_to have_content(milestone.title)
-
-        find('.card', match: :first)
-
-        expect(page).to have_selector('.board', count: 3)
-        expect(all('.board').last).to have_selector('.card', count: 2)
-      end
-
-      it 'sets board to upcoming milestone' do
-        update_board_milestone('Upcoming')
-
-        expect(find('.tokens-container')).not_to have_content(milestone.title)
-
-        find('.board', match: :first)
-
-        expect(all('.board')[1]).to have_selector('.card', count: 0)
-      end
-
-      it 'does not allow milestone in filter to be editted' do
-        find('.filtered-search').native.send_keys(:backspace)
-
-        page.within('.tokens-container') do
-          expect(page).to have_selector('.value')
+          page.within('.labels') do
+            click_link 'Edit'
+            page.within('.dropdown') do
+              expect(page).to have_content(group_label.title)
+              expect(page).not_to have_content(project_label.title)
+            end
+          end
         end
       end
 
-      it 'does not render milestone in hint dropdown' do
-        find('.filtered-search').click
+      context 'assignee' do
+        it 'creates board filtering by assignee' do
+          create_board_assignee(user.name)
 
-        page.within('#js-dropdown-hint') do
-          expect(page).not_to have_button('Milestone')
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(user.name)
+          expect(page).to have_selector('.card', count: 1)
+
+          # Does not display assignee in search hint
+          filtered_search.click
+
+          page.within('#js-dropdown-hint') do
+            expect(page).to have_content('label')
+            expect(page).not_to have_content('assignee')
+          end
+        end
+
+        it 'creates board filtering by "Any assignee"' do
+          create_board_assignee('Any assignee')
+
+          expect(page).not_to have_css('.js-visual-token')
+          expect(page).to have_selector('.card', count: 3)
+        end
+      end
+
+      context 'weight' do
+        let!(:issue_weight_1) { create(:issue, project: project, weight: 1) }
+
+        it 'creates board filtering by weight' do
+          create_board_weight(1)
+
+          expect(page).to have_selector('.card', count: 1)
+          expect(find('.card-title').text).to have_content(issue_weight_1.title)
+
+          # Does not display assignee in search hint
+          filtered_search.click
+
+          page.within('#js-dropdown-hint') do
+            expect(page).to have_content('label')
+            expect(page).not_to have_content('weight')
+          end
+        end
+
+        it 'creates board filtering by "Any weight"' do
+          create_board_weight('Any Weight')
+
+          expect(page).to have_selector('.card', count: 4)
         end
       end
     end
 
-    xcontext 'removing issue from board' do
-      let(:label) { create(:label, project: project) }
-      let!(:issue) { create(:labeled_issue, project: project, labels: [label], milestone: milestone) }
-      let!(:board) { create(:board, project: project, milestone: milestone) }
-      let!(:list) { create(:list, board: board, label: label, position: 0) }
+    context 'edit board' do
+      let!(:milestone_two) { create(:milestone, project: project) }
 
-      before do
-        visit project_boards_path(project)
+      it 'edits board name' do
+        edit_board.click
+
+        page.within('.popup-dialog') do
+          fill_in 'board-new-name', with: 'Testing'
+
+          click_button 'Save'
+        end
+
+        expect(board_title).to have_content('Testing')
+        expect(board.reload.name).to eq('Testing')
       end
 
+      it 'prefills fields' do
+        visit project_boards_path(project_2)
+
+        edit_board.click
+
+        expect(find('.milestone .value')).to have_content(milestone.title)
+        expect(find('.assignee .value')).to have_content(user.name)
+        expect(find('.weight .value')).to have_content(2)
+      end
+
+      context 'milestone' do
+        it 'sets board milestone' do
+          update_board_milestone(milestone.title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(milestone.title)
+
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        it 'sets board to any milestone' do
+          update_board_milestone('Any Milestone')
+
+          expect(page).not_to have_css('.js-visual-token')
+          expect(find('.tokens-container')).not_to have_content(milestone.title)
+
+          find('.card', match: :first)
+
+          expect(page).to have_selector('.board', count: 3)
+          expect(all('.board').first).to have_selector('.card', count: 2)
+          expect(all('.board').last).to have_selector('.card', count: 1)
+        end
+
+        it 'sets board to upcoming milestone' do
+          update_board_milestone('Upcoming')
+
+          expect(find('.tokens-container')).not_to have_content(milestone.title)
+
+          find('.board', match: :first)
+
+          expect(all('.board')[1]).to have_selector('.card', count: 0)
+        end
+
+        it 'does not display milestone in search hint' do
+          update_board_milestone(milestone.title)
+          filtered_search.click
+
+          page.within('#js-dropdown-hint') do
+            expect(page).to have_content('label')
+            expect(page).not_to have_content('milestone')
+          end
+        end
+      end
+
+      context 'labels' do
+        let!(:label_1) { create(:label, project: project, name: 'Label 1') }
+        let!(:label_2) { create(:label, project: project, name: 'Label 2') }
+        let!(:issue) { create(:labeled_issue, project: project, labels: [label_1]) }
+        let!(:issue_2) { create(:labeled_issue, project: project, labels: [label_2]) }
+        let!(:issue_3) { create(:labeled_issue, project: project, labels: [label_1, label_2]) }
+
+        it 'adds label to board' do
+          label_title = issue.labels.first.title
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_title)
+
+          expect(page).to have_selector('.card', count: 2)
+        end
+
+        it 'adds multiple labels to board' do
+          label_title = issue.labels.first.title
+          label_2_title = issue_2.labels.first.title
+
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+          update_board_label(label_2_title)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(label_title)
+          expect(find('.tokens-container')).to have_content(label_2_title)
+
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        it 'can filter by additional labels' do
+          label_title = issue.labels.first.title
+          label_2_title = issue_2.labels.first.title
+
+          visit project_boards_path(project)
+
+          update_board_label(label_title)
+
+          input_filtered_search("label:~#{label_2_title}")
+
+          expect(page).to have_selector('.card', count: 0)
+        end
+
+        context 'group board' do
+          it 'only shows group labels in list' do
+            visit group_boards_path(group)
+            edit_board.click
+
+            page.within(".labels") do
+              click_link 'Edit'
+              page.within('.dropdown') do
+                expect(page).to have_content(group_label.title)
+                expect(page).not_to have_content(project_label.title)
+              end
+            end
+          end
+        end
+      end
+
+      context 'assignee' do
+        it 'sets board assignee' do
+          update_board_assignee(user.name)
+
+          expect(page).to have_css('.js-visual-token')
+          expect(find('.tokens-container')).to have_content(user.name)
+
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        it 'sets board to Any assignee' do
+          update_board_assignee('Any assignee')
+
+          expect(page).not_to have_css('.js-visual-token')
+          expect(page).to have_selector('.card', count: 3)
+        end
+
+        it 'does not display assignee in search hint' do
+          update_board_assignee(user.name)
+          filtered_search.click
+
+          page.within('#js-dropdown-hint') do
+            expect(page).to have_content('label')
+            expect(page).not_to have_content('assignee')
+          end
+        end
+      end
+
+      context 'weight' do
+        let!(:issue_weight_1) { create(:issue, project: project, weight: 1) }
+
+        it 'sets board weight' do
+          update_board_weight(1)
+
+          expect(page).to have_selector('.card', count: 1)
+          expect(find('.card-title').text).to have_content(issue_weight_1.title)
+        end
+
+        it 'sets board to Any weight' do
+          update_board_weight('Any weight')
+
+          expect(page).to have_selector('.card', count: 4)
+        end
+
+        it 'does not display weight in search hint' do
+          update_board_weight(1)
+          filtered_search.click
+
+          page.within('#js-dropdown-hint') do
+            expect(page).to have_content('label')
+            expect(page).not_to have_content('weight')
+          end
+        end
+      end
+    end
+
+    context 'add issue' do
+      it 'adds assignee' do
+        visit boards_path(filtered_board)
+
+
+
+      end
+    end
+
+    context 'remove issue' do
+      let!(:issue) { create(:labeled_issue, project: project, labels: [project_label], milestone: milestone, assignees: [user]) }
+      let!(:list) { create(:list, board: board, label: project_label, position: 0) }
+
       it 'removes issues milestone when removing from the board' do
+        visit project_boards_path(project)
         wait_for_requests
 
-        first('.card .card-number').click
+        find(".card[data-issue-id='#{issue.id}']").click
 
-        click_button('Remove from board')
+        click_button 'Remove from board'
         wait_for_requests
 
         expect(issue.reload.milestone).to be_nil
-      end
-    end
-
-    xcontext 'new issues' do
-      let(:label) { create(:label, project: project) }
-      let!(:list1) { create(:list, board: board, label: label, position: 0) }
-      let!(:board) { create(:board, project: project, milestone: milestone) }
-      let!(:issue) { create(:issue, project: project) }
-
-      before do
-        visit project_boards_path(project)
-      end
-
-      it 'creates new issue with boards milestone' do
-        wait_for_requests
-
-        page.within(first('.board')) do
-          find('.btn-default').click
-
-          find('.form-control').set('testing new issue with milestone')
-
-          click_button('Submit issue')
-
-          wait_for_requests
-
-          click_link('testing new issue with milestone')
-        end
-
-        expect(page).to have_content(milestone.title)
-      end
-
-      it 'updates issue with milestone from add issues modal' do
-        wait_for_requests
-
-        click_button 'Add issues'
-
-        page.within('.add-issues-modal') do
-          card = find('.card', :first)
-          expect(page).to have_selector('.card', count: 1)
-
-          card.click
-
-          click_button 'Add 1 issue'
-        end
-
-        click_link(issue.title)
-
-        expect(page).to have_content(milestone.title)
+        expect(issue.reload.assignees).to be_empty
       end
     end
   end
 
-  xcontext 'with the feature disabled' do
+  context 'user without edit permissions' do
     before do
-      stub_licensed_features(issue_board_milestone: false)
       visit project_boards_path(project)
+      wait_for_requests
+    end
+
+    it 'can view board scope' do
+      view_scope.click
+
+      page.within('.popup-dialog') do
+        expect(find('.modal-header')).to have_content('Board scope')
+        expect(page).not_to have_content('Board name')
+        expect(page).not_to have_link('Edit')
+        expect(page).not_to have_button('Edit')
+        expect(page).not_to have_button('Save')
+        expect(page).not_to have_button('Cancel')
+      end
+    end
+  end
+
+  context 'with scoped_issue_boards feature disabled' do
+    before do
+      stub_licensed_features(scoped_issue_boards: false)
+
+      project.team << [user, :master]
+      login_as(user)
+
+      visit project_boards_path(project)
+      wait_for_requests
     end
 
     it "doesn't show the input when creating a board" do
@@ -217,83 +409,88 @@ describe 'Scoped issue boards', :js do
         click_link 'Create new board'
 
         # To make sure the form is shown
-        expect(page).to have_selector('#board-new-name')
+        expect(page).to have_field('board-new-name')
 
-        expect(page).not_to have_button('Milestone')
+        expect(page).not_to have_button('Toggle')
       end
     end
 
-    it "doesn't show the option to edit the milestone" do
-      page.within '#js-multiple-boards-switcher' do
-        find('.dropdown-menu-toggle').click
-
-        # To make sure the dropdown is open
-        expect(page).to have_link('Edit board name')
-
-        expect(page).not_to have_link('Edit board milestone')
-      end
+    it "doesn't show the button to edit scope" do
+      expect(page).not_to have_button('View Scope')
     end
   end
 
-  def create_board_with_milestone
-    creating_new_board do
-      find('.edit-link', match: :first).trigger('click')
-      find('a', text: milestone.title).trigger('click')
-
-      click_button 'Create'
-    end
+  # Create board helper methods
+  #
+  def create_board_milestone(milestone_title)
+    create_board_scope('milestone', milestone_title)
   end
 
-  def create_board_with_labels
-    creating_new_board do
-      page.all('.edit-link')[1].trigger('click')
-      find('a', text: label.title).trigger('click')
-
-      click_button 'Create'
-    end
+  def create_board_label(label_title)
+    create_board_scope('labels', label_title)
   end
 
-  def create_board_with_assignee
-    creating_new_board do
-      page.all('.edit-link')[2].trigger('click')
-      find('a', text: user.name).trigger('click')
-
-      click_button 'Create'
-    end
+  def create_board_weight(weight)
+    create_board_scope('weight', weight)
   end
 
-  def create_board_with_weight
-    creating_new_board do
-      page.all('.edit-link')[3].trigger('click')
-      find('a', text: issue_with_weight.weight).trigger('click')
-
-      click_button 'Create'
-    end
+  def create_board_assignee(assignee_name)
+    create_board_scope('assignee', assignee_name)
   end
 
-  def creating_new_board
-    page.within '#js-multiple-boards-switcher' do
-      find('.dropdown-menu-toggle').click
-
-      click_link 'Create new board'
-
-      find('#board-new-name').set 'test'
-
-      click_button 'Expand'
-
-      yield
-    end
-  end
-
+  # Update board helper methods
+  #
   def update_board_milestone(milestone_title)
+    update_board_scope('milestone', milestone_title)
+  end
+
+  def update_board_label(label_title)
+    update_board_scope('labels', label_title)
+  end
+
+  def update_board_assignee(assignee_name)
+    update_board_scope('assignee', assignee_name)
+  end
+
+  def update_board_weight(weight)
+    update_board_scope('weight', weight)
+  end
+
+  def create_board_scope(filter, value)
     page.within '#js-multiple-boards-switcher' do
       find('.dropdown-menu-toggle').click
-
-      click_link 'Edit board milestone'
-
-      click_link milestone_title
-
-      click_button 'Save'
     end
+
+    click_link 'Create new board'
+
+    find('#board-new-name').set 'test'
+
+    click_button 'Expand'
+
+    page.within(".#{filter}") do
+      click_link 'Edit'
+      if value.is_a?(Array)
+        value.each { |value| click_link value }
+      else
+        click_link value
+      end
+    end
+
+    click_button 'Create'
+    expect(page).to have_selector('.board-list-loading')
+    expect(page).not_to have_selector('.board-list-loading')
+  end
+
+  def update_board_scope(filter, value)
+    edit_board.click
+
+    page.within(".#{filter}") do
+      click_link 'Edit'
+      click_link value
+    end
+
+    click_button 'Save'
+    expect(page).to have_selector('.board-list-loading')
+    expect(page).not_to have_selector('.board-list-loading')
   end
 end

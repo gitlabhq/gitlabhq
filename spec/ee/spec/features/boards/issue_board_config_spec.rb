@@ -181,7 +181,7 @@ describe 'issue board config', :js do
         end
 
         it 'can filter by additional labels' do
-          label_title = issue.labels.first.title
+
           label_2_title = issue_2.labels.first.title
 
           visit project_boards_path(project)
@@ -268,9 +268,6 @@ describe 'issue board config', :js do
     context 'add issue' do
       it 'adds assignee' do
         visit boards_path(filtered_board)
-
-
-
       end
     end
 

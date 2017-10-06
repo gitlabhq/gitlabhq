@@ -82,13 +82,12 @@ $(() => {
       },
     },
     created () {
-      const updateFilterPath = (key, value, tokenName) => {
+      const updateFilterPath = (key, value) => {
         if (!value) return;
         const querystring = `${key}=${value}`;
         Store.filter.path = [querystring].concat(
           Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
         ).join('&');
-        this.cantEdit.push(tokenName);
       };
 
       if (this.milestoneId !== -1) {
@@ -96,7 +95,8 @@ $(() => {
         if (this.milestoneId === 0) {
           milestoneTitle = 'No+Milestone';
         }
-        updateFilterPath('milestone_title', milestoneTitle, 'milestone');
+        updateFilterPath('milestone_title', milestoneTitle);
+        this.cantEdit.push('milestone');
       }
 
       let weight = this.weight;
@@ -104,9 +104,13 @@ $(() => {
         if (weight === 0) {
           weight = 'No+Weight';
         }
-        updateFilterPath('weight', weight, 'weight');
+        updateFilterPath('weight', weight);
+        this.cantEdit.push('weight');
       }
-      updateFilterPath('assignee_username', this.assigneeUsername, 'assignee');
+      updateFilterPath('assignee_username', this.assigneeUsername);
+      if (this.assigneeUsername) {
+        this.cantEdit.push('assignee');
+      }
 
       const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
       this.labels.forEach((label) => {

@@ -45,6 +45,7 @@ export default class FilteredSearchBoards extends gl.FilteredSearchManager {
 
   canEdit(tokenName, tokenValue) {
     if (this.cantEdit.includes(tokenName)) return false;
-    return this.cantEditWithValue.findIndex(t => t.name === tokenName && t.value === tokenValue) === -1;
+    return this.cantEditWithValue.findIndex(token => token.name === tokenName &&
+      token.value === tokenValue) === -1;
   }
 }
