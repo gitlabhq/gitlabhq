@@ -52,10 +52,12 @@ export default {
         project_id: this.selectedProject.id,
       });
 
-      if (board) {
+      if (board.assignee) {
         issue.assignees = [board.assignee];
-        issue.labels = _.sortBy(_.uniq([...labels, ...board.labels], label => label.id),
-                                'title');
+      }
+
+      if (board.labels.length > 0) {
+        issue.labels = _.uniq([...labels, ...board.labels], label => label.id);
       }
 
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
