@@ -191,9 +191,9 @@
 
             - if project_nav_tab? :clusters
               = nav_link(controller: :clusters) do
-                = link_to project_clusters_path(@project), title: 'Clusters', class: 'shortcuts-clusters' do
+                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
                   %span
-                    Clusters
+                    Cluster
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
