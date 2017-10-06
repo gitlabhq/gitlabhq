@@ -2,7 +2,7 @@ module Geo
   class FileService
     attr_reader :object_type, :object_db_id
 
-    DEFAULT_OBJECT_TYPES = %w[attachment avatar file].freeze
+    DEFAULT_OBJECT_TYPES = %w[attachment avatar file personal_file].freeze
     DEFAULT_SERVICE_TYPE = 'file'.freeze
 
     def initialize(object_type, object_db_id)

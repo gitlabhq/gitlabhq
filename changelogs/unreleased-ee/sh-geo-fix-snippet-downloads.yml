@@ -1,0 +1,5 @@
+---
+title: Fix personal snippets not downloading in Geo secondaries
+merge_request:
+author:
+type: fixed
