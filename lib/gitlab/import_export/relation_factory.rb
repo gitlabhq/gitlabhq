@@ -56,22 +56,21 @@ module Gitlab
       private
 
       def setup_models
-        if @relation_name == :notes
-          set_note_author
-
-          # attachment is deprecated and note uploads are handled by Markdown uploader
-          @relation_hash['attachment'] = nil
+        case @relation_name
+        when :merge_request_diff             then setup_st_diff_commits
+        when :merge_request_diff_files       then setup_diff
+        when :notes                          then setup_note
+        when :project_label, :project_labels then setup_label
+        when :milestone, :milestones         then setup_milestone
+        else
+          @relation_hash['project_id'] = @project.id
         end
 
         update_user_references
         update_project_references
 
-        handle_group_label if group_label?
         reset_tokens!
         remove_encrypted_attributes!
-
-        set_st_diff_commits if @relation_name == :merge_request_diff
-        set_diff if @relation_name == :merge_request_diff_files
       end
 
       def update_user_references
@@ -80,6 +79,12 @@ module Gitlab
             @relation_hash[reference] = @members_mapper.map[@relation_hash[reference]]
           end
         end
+      end
+
+      def setup_note
+        set_note_author
+        # attachment is deprecated and note uploads are handled by Markdown uploader
+        @relation_hash['attachment'] = nil
       end
 
       # Sets the author for a note. If the user importing the project
@@ -134,17 +139,23 @@ module Gitlab
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
-      def group_label?
-        @relation_hash['type'] == 'GroupLabel'
-      end
+      def setup_label
+        return unless @relation_hash['type'] == 'GroupLabel'
 
-      def handle_group_label
         # If there's no group, move the label to a project label
         if @relation_hash['group_id']
           @relation_hash['project_id'] = nil
           @relation_name = :group_label
         else
           @relation_hash['type'] = 'ProjectLabel'
+        end
+      end
+
+      def setup_milestone
+        if @relation_hash['group_id']
+          @relation_hash['group_id'] = @project.group.id
+        else
+          @relation_hash['project_id'] = @project.id
         end
       end
 
@@ -196,14 +207,14 @@ module Gitlab
                                                                                relation_class: relation_class)
       end
 
-      def set_st_diff_commits
+      def setup_st_diff_commits
         @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
 
         HashUtil.deep_symbolize_array!(@relation_hash['st_diffs'])
         HashUtil.deep_symbolize_array_with_date!(@relation_hash['st_commits'])
       end
 
-      def set_diff
+      def setup_diff
         @relation_hash['diff'] = @relation_hash.delete('utf8_diff')
       end
 
@@ -248,8 +259,7 @@ module Gitlab
       end
 
       def find_or_create_object!
-        # TODO: Trying to find how I can correctly use the correct id depending on the object's type
-        finder_attributes = if @relation_type == :group_label
+        finder_attributes = if @relation_name == :group_label
                               %w[title group_id]
                             elsif parsed_relation_hash['project_id']
                               %w[title project_id]
