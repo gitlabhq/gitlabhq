@@ -41,7 +41,7 @@
         return !this.isLoading && this.isEmpty;
       },
       instanceTitle() {
-        return n__('Instance', 'Instances', this.deployBoardData.instances);
+        return n__('Instance', 'Instances', this.deployBoardData.instances.length);
       },
       projectName() {
         return '<projectname>';

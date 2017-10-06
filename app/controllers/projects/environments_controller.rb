@@ -7,7 +7,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
-  before_action :refresh_rollout_status, only: [:index]
+  before_action :expire_etag_cache, only: [:index]
 
   def index
     @environments = project.environments
@@ -148,8 +148,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     Gitlab::Workhorse.verify_api_request!(request.headers)
   end
 
-  def refresh_rollout_status
-    environment.rollout_status
+  def expire_etag_cache
+    return if request.format.json?
+
+    # this forces to reload json content
+    Gitlab::EtagCaching::Store.new.tap do |store|
+      store.touch(project_environments_path(project, format: :json))
+    end
   end
 
   def environment_params
