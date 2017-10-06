@@ -15,7 +15,9 @@ gl.issueBoards.BoardsStore = {
     path: '',
   },
   state: {
-    currentBoard: {},
+    currentBoard: {
+      labels: [],
+    },
     currentPage: '',
     reload: false,
   },
