@@ -20,6 +20,18 @@ feature 'Profile > GPG Keys' do
       expect(page).to have_content('bette.cartwright@example.net Unverified')
       expect(page).to have_content(GpgHelpers::User2.fingerprint)
     end
+
+    scenario 'with multiple subkeys' do
+      fill_in('Key', with: GpgHelpers::User3.public_key)
+      click_button('Add key')
+
+      expect(page).to have_content('john.doe@example.com Unverified')
+      expect(page).to have_content(GpgHelpers::User3.fingerprint)
+
+      GpgHelpers::User3.subkey_fingerprints.each do |fingerprint|
+        expect(page).to have_content(fingerprint)
+      end
+    end
   end
 
   scenario 'User sees their key' do

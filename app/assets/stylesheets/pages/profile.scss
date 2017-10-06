@@ -108,6 +108,15 @@
   }
 }
 
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: none;
+  }
+}
+
 .key-list-item {
   .key-list-item-info {
     @media (min-width: $screen-sm-min) {
