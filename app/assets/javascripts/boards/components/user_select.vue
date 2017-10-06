@@ -44,8 +44,7 @@ export default {
     },
     selected: {
       type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
     wrapperClass: {
       type: String,
@@ -63,14 +62,30 @@ export default {
     },
   },
   watch: {
-    selected() {
-      new UsersSelect();
+    selected: {
+      handler() {
+        this.initSelect();
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    initSelect() {
+      new UsersSelect(null, this.$refs.dropdown, {
+        handleClick: this.selectUser,
+      });
+    },
+    selectUser(user, isMarking) {
+      debugger
+      if (user.id || isMarking) {
+        gl.issueBoards.BoardsStore.boardConfig.assignee = user;
+      } else {
+        gl.issueBoards.BoardsStore.boardConfig.assignee = {};
+      }
     },
   },
   mounted() {
-    this.$nextTick(() => {
-      new UsersSelect();
-    });
+    this.initSelect();
   },
 };
 </script>
@@ -124,15 +139,14 @@ export default {
     >
       <div class="dropdown">
         <button
-          class="dropdown-menu-toggle wide js-user-search js-author-search js-save-user-data js-board-config-modal"
+          class="dropdown-menu-toggle wide"
           ref="dropdown"
-          :data-field-name="fieldName"
           data-current-user="true"
           :data-dropdown-title="placeholderText"
           :data-any-user="anyUserText"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="selected.id"
+          :data-selected="board.assignee.id"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"
