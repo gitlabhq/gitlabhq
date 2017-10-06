@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::FileDownloadDispatchWorker do
+describe Geo::FileDownloadDispatchWorker, :postgresql do
   include ::EE::GeoHelpers
 
   set(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
