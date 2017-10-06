@@ -5,6 +5,7 @@ class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = false
+  MIGRATION = 'CreateGpgKeySubkeysFromGpgKeys'
 
   class GpgKey < ActiveRecord::Base
     self.table_name = 'gpg_keys'
@@ -15,7 +16,7 @@ class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
   def up
     GpgKey.select(:id).each_batch do |gpg_keys|
       jobs = gpg_keys.pluck(:id).map do |id|
-        ['CreateGpgKeySubkeysFromGpgKeys', [id]]
+        [MIGRATION, [id]]
       end
 
       BackgroundMigrationWorker.perform_bulk(jobs)

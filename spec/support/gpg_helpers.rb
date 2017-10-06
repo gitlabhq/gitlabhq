@@ -441,4 +441,77 @@ module GpgHelpers
       ['john.doe@example.com']
     end
   end
+
+  # GPG Key containing just the main key
+  module User4
+    extend self
+
+    def public_key
+      <<~KEY.strip
+        -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+        mQENBFnWcesBCAC6Y8FXl9ZJ9HPa6dIYcgQrvjIQcwoQCUEsaXNRpc+206RPCIXK
+        aIYr0nTD8GeovMuUONXTj+DdueQU2GAAqHHOqvDDVXqRrW3xfWnSwix7sTuhG1Ew
+        PLHYmjLENqaTsdyliEo3N8VWy2k0QRbC3R6xvop4Ooa87D5vcATIl0gYFtSiHIL+
+        TervYvTG9Eq1qSLZHbe2x4IzeqX2luikPKokL7j8FTZaCmC5MezIUur1ulfyYY/j
+        SkST/1aUFc5QXJJSZA0MYJWZX6x7Y3l7yl0dkHqmK8OTuo8RPWd3ybEiuvRsOL8K
+        GAv/PmVJRGDAf7GGbwXXsE9MiZ5GzVPxHnexABEBAAG0G0pvaG4gRG9lIDxqb2hu
+        QGV4YW1wbGUuY29tPokBTgQTAQgAOBYhBAh0izYM0lwuzJnVlAcBbPnhOj+bBQJZ
+        1nHrAhsDBQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEAcBbPnhOj+bkywH/i4w
+        OwpDxoTjUQlPlqGAGuzvWaPzSJndawgmMTr68oRsD+wlQmQQTR5eqxCpUIyV4aYb
+        D697RYzoqbT4mlU49ymzfKSAxFe88r1XQWdm81DcofHVPmw2GBrIqaX3Du4Z7xkI
+        Q9/S43orwknh5FoVwU8Nau7qBuv9vbw2apSkuA1oBj3spQ8hqwLavACyQ+fQloAT
+        hSDNqPiCZj6L0dwM1HYiqVoN3Q7qjgzzeBzlXzljJoWblhxllvMK20bVoa7H+uR2
+        lczFHfsX8VTIMjyTGP7R3oHN91DEahlQybVVNLmNSDKZM2P/0d28BRUmWxQJ4Ws3
+        J4hOWDKnLMed3VOIWzM=
+        =xVuW
+        -----END PGP PUBLIC KEY BLOCK-----
+      KEY
+    end
+
+    def secret_key
+      <<~KEY.strip
+        -----BEGIN PGP PRIVATE KEY BLOCK-----
+
+        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
+        =/37z
+        -----END PGP PRIVATE KEY BLOCK-----
+      KEY
+    end
+
+    def primary_keyid
+      fingerprint[-16..-1]
+    end
+
+    def fingerprint
+      '08748B360CD25C2ECC99D59407016CF9E13A3F9B'
+    end
+  end
 end
