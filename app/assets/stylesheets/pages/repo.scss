@@ -68,10 +68,10 @@
   }
 
   .panel-right {
+    @include editor-height(0);
     display: flex;
     flex-direction: column;
     width: 80%;
-    @include editor-height(0);
 
     .monaco-editor.vs {
       .current-line {
@@ -278,8 +278,8 @@
   }
 
   #sidebar {
-    flex: 1;
     @include editor-height(0);
+    flex: 1;
 
     &.sidebar-mini {
       width: 20%;
