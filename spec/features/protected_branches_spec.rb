@@ -60,6 +60,23 @@ feature 'Protected Branches', :js do
         expect(page).to have_content('No branches to show')
       end
     end
+
+    describe "Saved defaults" do
+      it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
+        visit project_protected_branches_path(project)
+        find(".js-allowed-to-merge").trigger('click')
+        click_link 'No one'
+        find(".js-allowed-to-push").trigger('click')
+        click_link 'Developers + Masters'
+        visit project_protected_branches_path(project)
+        page.within(".js-allowed-to-merge") do
+          expect(page.find(".dropdown-toggle-text")).to have_content("No one")
+        end
+        page.within(".js-allowed-to-push") do
+          expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
+        end
+      end
+    end
   end
 
   context 'logged in as admin' do
@@ -149,23 +166,5 @@ feature 'Protected Branches', :js do
     find(".js-protected-branch-select").trigger('click')
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
-  end
-
-  describe "saved defaults" do
-    it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
-      visit project_protected_branches_path(project)
-      set_protected_branch_name('some-branch')
-      find(".js-allowed-to-merge").trigger('click')
-      click_link 'No one'
-      find(".js-allowed-to-push").trigger('click')
-      click_link 'Developers + Masters'
-      visit project_protected_branches_path(project)
-      page.within(".js-allowed-to-merge") do
-        expect(page.find(".dropdown-toggle-text")).to have_content("No one")
-      end
-      page.within(".js-allowed-to-push") do
-        expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
-      end
-    end
   end
 end
