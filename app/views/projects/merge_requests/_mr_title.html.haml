@@ -15,6 +15,8 @@
       = icon('angle-double-left')
 
     .issuable-meta
+      - if @merge_request.discussion_locked?
+        = icon('lock', class: 'issuable-warning-icon')
       = issuable_meta(@merge_request, @project, "Merge request")
 
   .issuable-actions.js-issuable-actions

@@ -368,6 +368,7 @@ module API
       end
       expose :due_date
       expose :confidential
+      expose :discussion_locked
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -464,6 +465,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
+      expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
 

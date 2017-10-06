@@ -43,6 +43,10 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_time_spent(issuable, issuable.project, current_user)
   end
 
+  def create_discussion_lock_note(issuable)
+    SystemNoteService.discussion_lock(issuable, current_user)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -57,6 +61,7 @@ class IssuableBaseService < BaseService
       params.delete(:due_date)
       params.delete(:canonical_issue_id)
       params.delete(:project)
+      params.delete(:discussion_locked)
     end
 
     filter_assignee(issuable)
@@ -236,6 +241,7 @@ class IssuableBaseService < BaseService
           handle_common_system_notes(issuable, old_labels: old_labels)
         end
 
+        change_discussion_lock(issuable)
         handle_changes(
           issuable,
           old_labels: old_labels,
@@ -291,6 +297,12 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
+    end
+  end
+
+  def change_discussion_lock(issuable)
+    if issuable.previous_changes.include?('discussion_locked')
+      create_discussion_lock_note(issuable)
     end
   end
 
