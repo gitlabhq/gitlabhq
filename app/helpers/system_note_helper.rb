@@ -23,7 +23,9 @@ module SystemNoteHelper
     'approved' => 'approval',
     'unapproved' => 'unapproval',
     'relate' => 'link',
-    'unrelate' => 'unlink'
+    'unrelate' => 'unlink',
+    'locked' => 'lock',
+    'unlocked' => 'lock-open'
   }.freeze
 
   def system_note_icon_name(note)

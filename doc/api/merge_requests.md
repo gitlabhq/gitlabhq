@@ -194,6 +194,7 @@ Parameters:
     "force_remove_source_branch": false,
     "squash": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
+    "discussion_locked": false,
     "time_stats": {
       "time_estimate": 0,
       "total_time_spent": 0,
@@ -271,6 +272,7 @@ Parameters:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -384,6 +386,7 @@ Parameters:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -490,6 +493,7 @@ order for it to take effect:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -520,8 +524,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `milestone_id`         | integer | no       | The ID of a milestone                                                           |
 | `remove_source_branch` | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `squash` | boolean| no | Squash commits into a single commit when merging |
-
-Must include at least one non-required attribute from above.
+| `discussion_locked`    | boolean | no       | Flag indicating if the merge request's discussion is locked. If the discussion is locked only project members can add, edit or resolve comments. |
 
 Must include at least one non-required attribute from above.
 
@@ -578,6 +581,7 @@ Must include at least one non-required attribute from above.
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -684,6 +688,7 @@ Parameters:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -888,6 +893,7 @@ Parameters:
   "force_remove_source_branch": false,
   "squash": false,
   "web_url": "http://example.com/example/example/merge_requests/1",
+  "discussion_locked": false,
   "time_stats": {
     "time_estimate": 0,
     "total_time_spent": 0,
@@ -1183,7 +1189,8 @@ Example response:
       "id": 14,
       "state": "active",
       "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
-      "web_url": "https://gitlab.example.com/francisca"
+      "web_url": "https://gitlab.example.com/francisca",
+      "discussion_locked": false
     },
     "assignee": {
       "name": "Dr. Gabrielle Strosin",
