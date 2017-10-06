@@ -59,6 +59,7 @@ module QA
     end
 
     module Group
+      autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
     end
 
