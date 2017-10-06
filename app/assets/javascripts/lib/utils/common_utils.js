@@ -1,5 +1,5 @@
 
-export const getPagePath = (index = 0) => $('body').data('page').split(':')[index];
+export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
