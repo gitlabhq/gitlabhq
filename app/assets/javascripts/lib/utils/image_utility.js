@@ -1,3 +1,5 @@
 /* eslint-disable import/prefer-default-export */
 
-export const isImageLoaded = element => element.complete && element.naturalHeight !== 0;
+export function isImageLoaded(element) {
+  return element.complete && element.naturalHeight !== 0;
+}

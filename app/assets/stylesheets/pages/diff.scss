@@ -750,7 +750,8 @@
   }
 }
 
-.frame .badge {
+.frame .badge,
+.frame .image-comment-badge {
   // Center align badges on the frame
   transform: translate3d(-50%, -50%, 0);
 }

@@ -3,13 +3,10 @@ import ImageBadge from './image_badge';
 import { isImageLoaded } from '../lib/utils/image_utility';
 
 export default class ImageDiff {
-  constructor(el, {
-    canCreateNote = false,
-    renderCommentBadge = false,
-  }) {
+  constructor(el, options) {
     this.el = el;
-    this.canCreateNote = canCreateNote;
-    this.renderCommentBadge = renderCommentBadge;
+    this.canCreateNote = !!(options && options.canCreateNote);
+    this.renderCommentBadge = !!(options && options.renderCommentBadge);
     this.$noteContainer = $('.note-container', this.el);
     this.imageBadges = [];
   }
@@ -23,7 +20,7 @@ export default class ImageDiff {
 
   bindEvents() {
     this.imageClickedWrapper = this.imageClicked.bind(this);
-    this.imageBlurredWrapper = this.imageBlurred.bind(this);
+    this.imageBlurredWrapper = imageDiffHelper.removeCommentIndicator.bind(null, this.imageFrameEl);
     this.addBadgeWrapper = this.addBadge.bind(this);
     this.removeBadgeWrapper = this.removeBadge.bind(this);
     this.renderBadgesWrapper = this.renderBadges.bind(this);
@@ -56,34 +53,31 @@ export default class ImageDiff {
     imageDiffHelper.showCommentIndicator(this.imageFrameEl, selection.browser);
   }
 
-  imageBlurred() {
-    return imageDiffHelper.removeCommentIndicator(this.imageFrameEl);
-  }
-
   renderBadges() {
     const discussionsEls = this.el.querySelectorAll('.note-container .discussion-notes .notes');
+    [...discussionsEls].forEach(this.renderBadge.bind(this));
+  }
 
-    [...discussionsEls].forEach((discussionEl, index) => {
-      const imageBadge = imageDiffHelper
-        .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
+  renderBadge(discussionEl, index) {
+    const imageBadge = imageDiffHelper
+      .generateBadgeFromDiscussionDOM(this.imageFrameEl, discussionEl);
 
-      this.imageBadges.push(imageBadge);
+    this.imageBadges.push(imageBadge);
 
-      const options = {
-        coordinate: imageBadge.browser,
-        noteId: imageBadge.noteId,
-      };
+    const options = {
+      coordinate: imageBadge.browser,
+      noteId: imageBadge.noteId,
+    };
 
-      if (this.renderCommentBadge) {
-        imageDiffHelper.addImageCommentBadge(this.imageFrameEl, options);
-      } else {
-        const numberBadgeOptions = Object.assign(options, {
-          badgeText: index + 1,
-        });
+    if (this.renderCommentBadge) {
+      imageDiffHelper.addImageCommentBadge(this.imageFrameEl, options);
+    } else {
+      const numberBadgeOptions = Object.assign({}, options, {
+        badgeText: index + 1,
+      });
 
-        imageDiffHelper.addImageBadge(this.imageFrameEl, numberBadgeOptions);
-      }
-    });
+      imageDiffHelper.addImageBadge(this.imageFrameEl, numberBadgeOptions);
+    }
   }
 
   addBadge(event) {

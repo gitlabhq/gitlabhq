@@ -1,6 +1,7 @@
 import ImageBadge from '../image_badge';
 import ImageDiff from '../image_diff';
 import ReplacedImageDiff from '../replaced_image_diff';
+import '../../commit/image_file';
 
 export function resizeCoordinatesToImageElement(imageEl, meta) {
   const { x, y, width, height } = meta;
@@ -76,21 +77,24 @@ export function getTargetSelection(event) {
   };
 }
 
-export function initImageDiff(file, canCreateNote, renderCommentBadge) {
+export function initImageDiff(fileEl, canCreateNote, renderCommentBadge) {
   const options = {
     canCreateNote,
     renderCommentBadge,
   };
+  let diff;
 
   // ImageFile needs to be invoked before initImageDiff so that badges
   // can mount to the correct location
-  new gl.ImageFile(file); // eslint-disable-line no-new
+  new gl.ImageFile(fileEl); // eslint-disable-line no-new
 
-  if (file.querySelector('.diff-file .js-single-image')) {
-    const imageDiff = new ImageDiff(file, options);
-    imageDiff.init();
-  } else if (file.querySelector('.diff-file .js-replaced-image')) {
-    const replacedImageDiff = new ReplacedImageDiff(file, options);
-    replacedImageDiff.init();
+  if (fileEl.querySelector('.diff-file .js-single-image')) {
+    diff = new ImageDiff(fileEl, options);
+    diff.init();
+  } else if (fileEl.querySelector('.diff-file .js-replaced-image')) {
+    diff = new ReplacedImageDiff(fileEl, options);
+    diff.init();
   }
+
+  return diff;
 }
