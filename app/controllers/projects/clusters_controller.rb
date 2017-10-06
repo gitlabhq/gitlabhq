@@ -16,9 +16,13 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def login
     begin
-      @authorize_url = GoogleApi::CloudPlatform::Client.new(
-        nil, callback_google_api_auth_url,
-        state: namespace_project_clusters_url.to_s).authorize_url
+      GoogleApi::CloudPlatform::Client.session_key_for_second_redirect_uri.tap do |key, secure|
+        session[key] = namespace_project_clusters_url.to_s
+
+        @authorize_url = GoogleApi::CloudPlatform::Client.new(
+          nil, callback_google_api_auth_url,
+          state: secure).authorize_url
+      end
     rescue GoogleApi::Auth::ConfigMissingError
       # no-op
     end

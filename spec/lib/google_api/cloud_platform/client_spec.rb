@@ -4,6 +4,29 @@ describe GoogleApi::CloudPlatform::Client do
   let(:token) { 'token' }
   let(:client) { described_class.new(token, nil) }
 
+  describe '.session_key_for_second_redirect_uri' do
+    subject { described_class.session_key_for_second_redirect_uri(secure: secure) }
+
+    context 'when pass a postfix' do
+      let(:secure) { SecureRandom.hex }
+
+      it 'creates a required session key' do
+        key, _ = described_class.session_key_for_second_redirect_uri(secure: secure)
+        expect(key).to eq("cloud_platform_second_redirect_uri_#{secure}")
+      end
+    end
+
+    context 'when pass a postfix' do
+      let(:secure) { nil }
+
+      it 'creates a new session key' do
+        key, secure = described_class.session_key_for_second_redirect_uri
+        expect(key).to include('cloud_platform_second_redirect_uri_')
+        expect(secure).not_to be_nil
+      end
+    end
+  end
+
   describe '#validate_token' do
     subject { client.validate_token(expires_at) }
 
