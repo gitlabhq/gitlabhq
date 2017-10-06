@@ -40,7 +40,7 @@ describe('Issue Warning Component', () => {
       });
 
       expect(vm.$el.querySelector('i')).toBeFalsy();
-      expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual('This issue is confidential and locked. People without permission will never get a notification and not be able to comment.');
+      expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual('This issue is confidential and locked. People without permission will never get a notification and won\'t be able to comment.');
     });
   });
 });

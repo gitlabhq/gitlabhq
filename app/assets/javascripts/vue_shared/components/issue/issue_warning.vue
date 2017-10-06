@@ -39,7 +39,7 @@
 
     <span v-if="isLockedAndConfidential">
       {{ __('This issue is confidential and locked.') }}
-      {{ __('People without permission will never get a notification and not be able to comment.') }}
+      {{ __('People without permission will never get a notification and won\'t be able to comment.') }}
     </span>
 
     <span v-else-if="isConfidential">

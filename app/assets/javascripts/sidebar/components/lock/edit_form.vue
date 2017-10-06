@@ -48,7 +48,7 @@ export default {
         Lock this {{ issuableDisplayName(issuableType) }}?
         Only
         <strong>project members</strong>
-        will be able to comment
+        will be able to comment.
       </p>
 
       <edit-form-buttons
