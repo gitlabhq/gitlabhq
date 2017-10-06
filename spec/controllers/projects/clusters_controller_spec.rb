@@ -190,7 +190,7 @@ describe Projects::ClustersController do
         subject
 
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Save changes")
+        expect(response.body).to include("Save")
       end
 
       it "allows remove integration" do

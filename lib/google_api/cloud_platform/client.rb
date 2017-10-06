@@ -16,9 +16,14 @@ module GoogleApi
           :cloud_platform_expires_at
         end
 
-        def session_key_for_second_redirect_uri(secure: nil)
-          secure = SecureRandom.hex unless secure
-          return "cloud_platform_second_redirect_uri_#{secure}", secure
+        def new_session_key_for_redirect_uri
+          SecureRandom.hex.tap do |state|
+            yield session_key_for_redirect_uri(state)
+          end
+        end
+
+        def session_key_for_redirect_uri(state)
+          "cloud_platform_second_redirect_uri_#{state}"
         end
       end
 
