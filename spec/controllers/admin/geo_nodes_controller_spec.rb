@@ -105,8 +105,10 @@ describe Admin::GeoNodesController, :postgresql do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
       end
 
-      it 'creates the node' do
-        expect { go }.to change { GeoNode.count }.by(1)
+      it 'delegates the create of the Geo node to Geo::NodeCreateService' do
+        expect_any_instance_of(Geo::NodeCreateService).to receive(:execute).once.and_call_original
+
+        go
       end
     end
   end

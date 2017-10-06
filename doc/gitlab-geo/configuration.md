@@ -281,7 +281,7 @@ Point your users to the [after setup steps](after_setup.md).
 ## Selective replication
 
 With GitLab 9.5, GitLab Geo now supports the first iteration of selective
-replication, which allows admins to choose which namespaces should be
+replication, which allows admins to choose which groups should be
 replicated by secondary nodes.
 
 It is important to notice that selective replication:
@@ -291,7 +291,7 @@ It is important to notice that selective replication:
 relies on PostgreSQL replication, all project metadata gets replicated to
 secondary nodes, but repositories that have not been selected will be empty.
 1. Secondary nodes won't pull repositories that do not belong to the selected
-namespaces to be replicated.
+groups to be replicated.
 
 ## Adding another secondary Geo node
 
