@@ -37,26 +37,6 @@ module Gitlab
               end
             end
 
-            def initialize_array(args)
-              buffer = StringIO.new
-
-              args.each_with_index do |arg, index|
-                if index.even? # key
-                  buffer << "," if index > 0
-                  buffer << arg
-                else # value
-                  buffer << "="
-                  buffer << self.class.escape(arg)
-                end
-              end
-
-              @dn = buffer.string
-            end
-
-            def initialize_string(arg)
-              @dn = arg.to_s
-            end
-
             ##
             # Parse a DN into key value pairs using ASN from
             # http://tools.ietf.org/html/rfc2253 section 3.
@@ -270,12 +250,40 @@ module Gitlab
               escaped.gsub(HEX_ESCAPE_RE) { |char| HEX_ESCAPES[char] }
             end
 
+            private
+
+            def initialize_array(args)
+              buffer = StringIO.new
+
+              args.each_with_index do |arg, index|
+                if index.even? # key
+                  buffer << "," if index > 0
+                  buffer << arg
+                else # value
+                  buffer << "="
+                  buffer << self.class.escape(arg)
+                end
+              end
+
+              @dn = buffer.string
+            end
+
+            def initialize_string(arg)
+              @dn = arg.to_s
+            end
+
             ##
             # Proxy all other requests to the string object, because a DN is mainly
             # used within the library as a string
             # rubocop:disable GitlabSecurity/PublicSend
             def method_missing(method, *args, &block)
               @dn.send(method, *args, &block)
+            end
+
+            ##
+            # Redefined to be consistent with redefined `method_missing` behavior
+            def respond_to?(sym, include_private = false)
+              @dn.respond_to?(sym, include_private)
             end
           end
         end
