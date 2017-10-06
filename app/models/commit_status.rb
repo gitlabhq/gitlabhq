@@ -192,12 +192,20 @@ class CommitStatus < ActiveRecord::Base
   private
 
   def ensure_pipeline_stage!
-    attributes = { name: stage, pipeline: pipeline, project: project }
-
-    Ci::Stage.create!(attributes).tap do |stage|
+    (find_stage || create_stage!).tap do |stage|
       self.stage_id = stage.id
 
       yield stage
     end
+  end
+
+  def find_stage
+    pipeline.stages.find_by(name: stage)
+  end
+
+  def create_stage!
+    Ci::Stage.create!(name: stage,
+                      pipeline: pipeline,
+                      project: project)
   end
 end

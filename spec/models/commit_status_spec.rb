@@ -499,6 +499,29 @@ describe CommitStatus do
       end
     end
 
+    context 'when commit status does not have stage but it exists' do
+      let!(:stage) do
+        create(:ci_stage_entity, project: project,
+                                 pipeline: pipeline,
+                                 name: 'test')
+      end
+
+      let(:commit_status) do
+        create(:commit_status, project: project,
+                               pipeline: pipeline,
+                               name: 'rspec',
+                               stage: 'test',
+                               status: :success)
+      end
+
+      it 'uses existing stage' do
+        expect { commit_status }.not_to change { Ci::Stage.count }
+
+        expect(commit_status.stage_id).to eq stage.id
+        expect(stage.reload.status).to eq commit_status.status
+      end
+    end
+
     context 'when commit status is being imported' do
       let(:commit_status) do
         create(:commit_status, name: 'rspec', stage: 'test', importing: true)
