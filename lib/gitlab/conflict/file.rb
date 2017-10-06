@@ -163,7 +163,7 @@ module Gitlab
       end
 
       def line_code(line)
-        Gitlab::Diff::LineCode.generate(our_path, line.new_pos, line.old_pos)
+        Gitlab::Git::DiffLineCode.generate(our_path, line.new_pos, line.old_pos)
       end
 
       def create_match_line(line)

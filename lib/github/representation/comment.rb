@@ -23,7 +23,7 @@ module Github
       private
 
       def generate_line_code(line)
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+        Gitlab::Git::DiffLineCode.generate(file_path, line.new_pos, line.old_pos)
       end
 
       def on_diff?
