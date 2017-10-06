@@ -11,8 +11,6 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
-  # = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
-  # = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
   def group_icon(group, options = {})
     img_path = group_icon_url(group, options)
     image_tag img_path, options
