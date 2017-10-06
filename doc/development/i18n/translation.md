@@ -16,7 +16,7 @@ GitLab is being translated into many languages.
 
 1. Select the language you would like to contribute translations to by clicking the flag
 1. You will see a list of files and folders.
-  Click `gitlab.pot` top open the translation editor.
+  Click `gitlab.pot` to open the translation editor.
 
 ### Translation Editor
 
@@ -31,7 +31,7 @@ The online translation editor is the easiest way to contribute translations.
   If the string to be translated is not clear, you can 'Request Context'
 
 A glossary of common terms is available in the right panel by clicking Terms.
-Comments can be added to discuss a translation with the community
+Comments can be added to discuss a translation with the community.
 
 Remember to **Save** each translation.
 
@@ -58,4 +58,3 @@ suitable level of formality.
 
 To propose additions to the glossary please
 [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues).
-

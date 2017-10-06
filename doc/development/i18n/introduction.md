@@ -1,6 +1,6 @@
 # Translate GitLab to your language
 
-The text in GitLab's user interface is in English by default.
+The text in GitLab's user interface is in American English by default.
 Each string can be translated to other languages.
 As each string is translated, it is added to the languages translation file,
 and will be available in future releases of GitLab.
@@ -17,9 +17,9 @@ Translating strings will help complete and improve each language.
 
 Before a string can be translated, it must be externalized.
 This is the process where English strings in the GitLab source code are wrapped in a function that
-retrieves the translated string for the users language.
+retrieves the translated string for the user's language.
 
-As new features are added and existing features are updated the surrounding strings are being
+As new features are added and existing features are updated, the surrounding strings are being
 externalized, however, there are many parts of GitLab that still need more work to externalize all
 strings.
 
@@ -67,7 +67,7 @@ Requests to become a proof reader will be considered on the merits of previous t
 - Spanish
 - Ukrainian
 
-If you would like to be added as a proof reader, please [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues) and add the `internationalization` label.
+If you would like to be added as a proof reader, please [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues).
 
 ### Release
 
