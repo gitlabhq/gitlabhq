@@ -3,7 +3,7 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
-  import GraphPath from './graph_path.vue';
+  import GraphPath from './graph/path.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
@@ -65,7 +65,7 @@
     },
 
     computed: {
-      outterViewBox() {
+      outerViewBox() {
         return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
       },
 
@@ -141,17 +141,19 @@
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.graphData.queries[0],
-        this.graphWidth,
-        this.graphHeight,
-        this.graphHeightOffset);
+        this.timeSeries = createTimeSeries(
+          this.graphData.queries[0],
+          this.graphWidth,
+          this.graphHeight,
+          this.graphHeightOffset,
+        );
 
         if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
         const axisXScale = d3.time.scale()
-          .range([0, this.graphWidth]);
+          .range([0, this.graphWidth - 70]);
         const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
 
@@ -211,7 +213,7 @@
       class="prometheus-svg-container"
       :style="paddingBottomRootSvg">
       <svg
-        :viewBox="outterViewBox"
+        :viewBox="outerViewBox"
         ref="baseSvg">
         <g
           class="x-axis"
