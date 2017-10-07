@@ -195,7 +195,13 @@ class ProjectWiki
     @project.touch(:last_activity_at, :last_repository_updated_at)
   end
 
+  # EE only
+
   def update_elastic_index
     index_blobs if current_application_settings.elasticsearch_indexing?
+  end
+
+  def path_to_repo
+    @path_to_repo ||= File.join(project.repository_storage_path, "#{disk_path}.git")
   end
 end
