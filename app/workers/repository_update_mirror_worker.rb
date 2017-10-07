@@ -4,6 +4,7 @@ class RepositoryUpdateMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
   include DedicatedSidekiqQueue
+  include ProjectStartImport
 
   LEASE_KEY = 'repository_update_mirror_worker_start_scheduler'.freeze
   LEASE_TIMEOUT = 2.seconds
@@ -45,7 +46,7 @@ class RepositoryUpdateMirrorWorker
   end
 
   def start_mirror(project)
-    if project.import_start
+    if start(project)
       Rails.logger.info("Mirror update for #{project.full_path} started. Waiting duration: #{project.mirror_waiting_duration}")
       Gitlab::Metrics.add_event_with_values(
         :mirrors_running,

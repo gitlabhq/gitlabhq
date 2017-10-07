@@ -1,6 +1,6 @@
 module Gitlab
   module Middleware
-    class ReadonlyGeo
+    class ReadOnly
       DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
       APPLICATION_JSON = 'application/json'.freeze
       API_VERSIONS = (3..4)
@@ -13,9 +13,9 @@ module Gitlab
       def call(env)
         @env = env
 
-        if disallowed_request? && Gitlab::Geo.secondary?
-          Rails.logger.debug('GitLab Geo: preventing possible non readonly operation')
-          error_message = 'You cannot do writing operations on a secondary GitLab Geo instance'
+        if disallowed_request? && Gitlab::Database.read_only?
+          Rails.logger.debug('GitLab ReadOnly: preventing possible non read-only operation')
+          error_message = 'You cannot do writing operations on a read-only GitLab instance'
 
           if json_request?
             return [403, { 'Content-Type' => 'application/json' }, [{ 'message' => error_message }.to_json]]

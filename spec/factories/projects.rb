@@ -174,7 +174,7 @@ FactoryGirl.define do
       end
     end
 
-    trait :readonly do
+    trait :read_only do
       repository_read_only true
     end
 

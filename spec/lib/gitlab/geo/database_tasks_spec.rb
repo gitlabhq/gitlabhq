@@ -65,7 +65,9 @@ describe Gitlab::Geo::DatabaseTasks do
   describe described_class::Migrate do
     describe '.up' do
       it 'requires ENV["VERSION"] to be set' do
-        expect { subject.up }.to raise_error(String)
+        stub_env('VERSION', nil)
+
+        expect { subject.up }.to raise_error(/VERSION is required/)
       end
 
       it 'calls ActiveRecord::Migrator.run' do
@@ -78,7 +80,9 @@ describe Gitlab::Geo::DatabaseTasks do
 
     describe '.down' do
       it 'requires ENV["VERSION"] to be set' do
-        expect { subject.down }.to raise_error(String)
+        stub_env('VERSION', nil)
+
+        expect { subject.down }.to raise_error(/VERSION is required/)
       end
 
       it 'calls ActiveRecord::Migrator.run' do
