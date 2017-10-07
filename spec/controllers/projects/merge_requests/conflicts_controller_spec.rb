@@ -17,8 +17,8 @@ describe Projects::MergeRequests::ConflictsController do
   describe 'GET show' do
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow(Gitlab::Git::ConflictParser).to receive(:parse)
+          .and_raise(Gitlab::Git::ConflictParser::UnmergeableFile)
 
         get :show,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -109,8 +109,8 @@ describe Projects::MergeRequests::ConflictsController do
 
     context 'when the conflicts cannot be resolved in the UI' do
       before do
-        allow_any_instance_of(Gitlab::Conflict::Parser)
-          .to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+        allow(Gitlab::Git::ConflictParser).to receive(:parse)
+          .and_raise(Gitlab::Git::ConflictParser::UnmergeableFile)
 
         conflict_for_path('files/ruby/regex.rb')
       end
