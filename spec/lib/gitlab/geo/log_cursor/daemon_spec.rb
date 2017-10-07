@@ -4,7 +4,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   include ::EE::GeoHelpers
 
   describe '#run!' do
-    set(:geo_node) { create(:geo_node) }
+    set(:geo_node) { create(:geo_node, :primary) }
 
     before do
       stub_current_geo_node(geo_node)
@@ -30,7 +30,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
     end
 
     context 'when replaying a repository created event' do
-      let(:repository_created_event) { create(:geo_repository_created_event) }
+      let(:project) { create(:project) }
+      let(:repository_created_event) { create(:geo_repository_created_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_created_event: repository_created_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
@@ -47,7 +48,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
         registry = Geo::ProjectRegistry.last
 
-        expect(registry).to have_attributes(resync_repository: true, resync_wiki: true)
+        expect(registry).to have_attributes(project_id: project.id, resync_repository: true, resync_wiki: true)
       end
 
       it 'sets resync_wiki to false if wiki_path is nil' do
@@ -57,14 +58,22 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
         registry = Geo::ProjectRegistry.last
 
-        expect(registry).to have_attributes(resync_repository: true, resync_wiki: false)
+        expect(registry).to have_attributes(project_id: project.id, resync_repository: true, resync_wiki: false)
+      end
+
+      it 'performs Geo::ProjectSyncWorker' do
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project.id, anything).once
+
+        subject.run!
       end
     end
 
     context 'when replaying a repository updated event' do
-      let(:event_log) { create(:geo_event_log, :updated_event) }
+      let(:project) { create(:project) }
+      let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
+      let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
-      let(:repository_updated_event) { event_log.repository_updated_event }
 
       before do
         allow(subject).to receive(:exit?).and_return(false, true)
@@ -90,6 +99,13 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         subject.run!
 
         expect(registry.reload.resync_wiki).to be true
+      end
+
+      it 'performs Geo::ProjectSyncWorker' do
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project.id, anything).once
+
+        subject.run!
       end
     end
 
@@ -155,6 +171,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
       before do
         allow(subject).to receive(:exit?).and_return(false, true)
+        allow(Geo::ProjectSyncWorker).to receive(:perform_async)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do
