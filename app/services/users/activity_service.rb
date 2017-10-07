@@ -14,7 +14,7 @@ module Users
     private
 
     def record_activity
-      Gitlab::UserActivities.record(@author.id)
+      Gitlab::UserActivities.record(@author.id) if Gitlab::Database.read_write?
 
       Rails.logger.debug("Recorded activity: #{@activity} for User ID: #{@author.id} (username: #{@author.username})")
     end

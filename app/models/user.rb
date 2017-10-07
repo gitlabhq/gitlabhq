@@ -459,6 +459,14 @@ class User < ActiveRecord::Base
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
+  def remember_me!
+    super if ::Gitlab::Database.read_write?
+  end
+
+  def forget_me!
+    super if ::Gitlab::Database.read_write?
+  end
+
   def disable_two_factor!
     transaction do
       update_attributes(
