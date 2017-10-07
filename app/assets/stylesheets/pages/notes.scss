@@ -650,29 +650,12 @@ ul.notes {
 }
 
 .add-diff-note {
+  @include btn-comment-icon;
   opacity: 0;
   margin-top: -2px;
-  border-radius: 50%;
-  background: $white-light;
-  padding: 1px 5px;
-  font-size: 12px;
-  color: $blue-500;
   margin-left: -55px;
   position: absolute;
   z-index: 10;
-  width: 23px;
-  height: 23px;
-  border: 1px solid $blue-500;
-
-  &:hover {
-    background: $blue-500;
-    border-color: $blue-600;
-    color: $white-light;
-  }
-
-  &:active {
-    outline: 0;
-  }
 }
 
 .discussion-body,

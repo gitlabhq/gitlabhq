@@ -323,6 +323,7 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
+$diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
@@ -712,3 +713,9 @@ Issuable warning
 */
 $issuable-warning-size: 24px;
 $issuable-warning-icon-margin: 4px;
+
+/*
+Image Commenting cursor
+*/
+$image-comment-cursor-left-offset: 12;
+$image-comment-cursor-top-offset: 30;

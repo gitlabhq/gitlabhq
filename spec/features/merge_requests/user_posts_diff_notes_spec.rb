@@ -227,6 +227,7 @@ feature 'Merge requests > User posts diff notes', :js do
     write_comment_on_line(line_holder, diff_side)
 
     click_button 'Comment'
+
     wait_for_requests
 
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)

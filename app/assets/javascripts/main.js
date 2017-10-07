@@ -35,8 +35,6 @@ import './shortcuts_network';
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
 
-// commit
-import './commit/file';
 import './commit/image_file';
 
 // lib/utils
@@ -70,7 +68,6 @@ import './build';
 import './build_artifacts';
 import './build_variables';
 import './ci_lint_editor';
-import './commit';
 import './commits';
 import './compare';
 import './compare_autocomplete';
