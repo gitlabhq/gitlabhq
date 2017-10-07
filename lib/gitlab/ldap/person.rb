@@ -40,6 +40,26 @@ module Gitlab
         ]
       end
 
+      def self.normalize_dn(dn)
+        ::Gitlab::LDAP::DN.new(dn).to_normalized_s
+      rescue ::Gitlab::LDAP::DN::FormatError => e
+        Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}")
+
+        dn
+      end
+
+      # Returns the UID in a normalized form.
+      #
+      # 1. Excess spaces are stripped
+      # 2. The string is downcased (for case-insensitivity)
+      def self.normalize_uid(uid)
+        ::Gitlab::LDAP::DN.normalize_value(uid)
+      rescue ::Gitlab::LDAP::DN::FormatError => e
+        Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
+
+        uid
+      end
+
       def initialize(entry, provider)
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
@@ -62,7 +82,9 @@ module Gitlab
         attribute_value(:email)
       end
 
-      delegate :dn, to: :entry
+      def dn
+        self.class.normalize_dn(entry.dn)
+      end
 
       private
 
