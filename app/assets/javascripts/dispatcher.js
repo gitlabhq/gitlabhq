@@ -7,7 +7,6 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
 /* global CommitsList */
 /* global NewBranchForm */
 /* global NotificationsForm */
@@ -316,7 +315,6 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
