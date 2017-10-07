@@ -20,7 +20,7 @@ describe Projects::HashedStorageMigrationService do
         expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.wiki.git")).to be_truthy
       end
 
-      it 'updates project to be hashed and not readonly' do
+      it 'updates project to be hashed and not read-only' do
         service.execute
 
         expect(project.hashed_storage?).to be_truthy

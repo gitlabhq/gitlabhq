@@ -78,19 +78,20 @@ to see if there are changes since the last time the log was checked
 and will handle repository updates, deletes, changes & renames.
 
 
-## Readonly
+## Read-only
 
 All **Secondary** nodes are read-only.
 
-We have a Rails Middleware that filters any potentially writing operations
-and prevent user from trying to update the database and getting a 500 error
-(see `Gitlab::Middleware::ReadonlyGeo`).
+The general principle of a [read-only database](verifying_database_capabilities.md#read-only-database)
+applies to all Geo secondary nodes. So `Gitlab::Database.read_only?`
+will always return `true` on a secondary node.
 
-Database will already be read-only in a replicated setup, so we don't need to
-take any extra step for that.
+When some write actions are not allowed, because the node is a
+secondary, consider the `Gitlab::Database.read_only?` or `Gitlab::Database.read_write?`
+guard, instead of `Gitlab::Geo.secondary?`.
 
-We do use our feature toggle `.secondary?` to coordinate Git operations and do
-the correct authorization (denying writing on any secondary node).
+Database itself will already be read-only in a replicated setup, so we
+don't need to take any extra step for that.
 
 ## File Transfers
 
