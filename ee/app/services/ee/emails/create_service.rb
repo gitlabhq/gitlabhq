@@ -3,7 +3,7 @@ module EE
     module CreateService
       include ::EE::Emails::BaseService
 
-      def execute
+      def execute(*args, &blk)
         super.tap do |email|
           log_audit_event(action: :create) if email.persisted?
         end
