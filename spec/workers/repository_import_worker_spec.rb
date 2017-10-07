@@ -6,6 +6,23 @@ describe RepositoryImportWorker do
   subject { described_class.new }
 
   describe '#perform' do
+    context 'when worker was reset without cleanup' do
+      let(:jid) { '12345678' }
+      let(:started_project) { create(:project, :import_started, import_jid: jid) }
+
+      it 'imports the project successfully' do
+        allow(subject).to receive(:jid).and_return(jid)
+
+        expect_any_instance_of(Projects::ImportService).to receive(:execute)
+          .and_return({ status: :ok })
+
+        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
+        expect_any_instance_of(Project).to receive(:import_finish)
+
+        subject.perform(project.id)
+      end
+    end
+
     context 'when the import was successful' do
       it 'imports a project' do
         expect_any_instance_of(Projects::ImportService).to receive(:execute)

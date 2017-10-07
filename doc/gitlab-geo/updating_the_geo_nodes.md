@@ -48,6 +48,13 @@ chown git:git /var/opt/gitlab/gitlab-rails/working
 
 You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
 
+Once this is done, we advise restarting GitLab on the secondary nodes for the
+new working directory to be used:
+
+```
+sudo gitlab-ctl restart
+```
+
 ## Upgrading from GitLab 9.3 or older
 
 If you started running Geo on GitLab 9.3 or older, we recommend that you

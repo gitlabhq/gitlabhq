@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::ReadonlyGeo do
+describe Gitlab::Middleware::ReadOnly do
   include Rack::Test::Methods
 
   RSpec::Matchers.define :be_a_redirect do
@@ -38,11 +38,11 @@ describe Gitlab::Middleware::ReadonlyGeo do
 
   let(:request) { Rack::MockRequest.new(rack_stack) }
 
-  context 'normal requests to a secondary Gitlab Geo' do
+  context 'normal requests to a read-only Gitlab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     before do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
     it 'expects PATCH requests to be disallowed' do
@@ -98,13 +98,6 @@ describe Gitlab::Middleware::ReadonlyGeo do
         expect(subject).not_to disallow_request
       end
 
-      it 'expects a GET status request to be allowed' do
-        response = request.get("/api/#{API::API.version}/geo/status")
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
       it 'expects a POST LFS request to batch URL to be allowed' do
         response = request.post('/root/rouge.git/info/lfs/objects/batch')
 
@@ -114,12 +107,12 @@ describe Gitlab::Middleware::ReadonlyGeo do
     end
   end
 
-  context 'json requests to a secondary Geo node' do
+  context 'json requests to a read-only GitLab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'application/json' }, ['OK']] } }
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
 
     before do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
     end
 
     it 'expects PATCH requests to be disallowed' do

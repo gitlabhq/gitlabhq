@@ -58,7 +58,7 @@ module Gitlab
         return false unless access_token
 
         api = OAuth2::AccessToken.from_hash(oauth_client, access_token: access_token)
-        api.get('/api/v3/user').parsed
+        api.get('/api/v4/user').parsed
       end
 
       private

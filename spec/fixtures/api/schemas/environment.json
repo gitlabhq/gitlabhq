@@ -1,0 +1,67 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "id",
+        "name",
+        "state",
+        "last_deployment",
+        "environment_path",
+        "created_at",
+        "updated_at"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "name": {
+            "type": "string"
+        },
+        "state": {
+            "type": "string"
+        },
+        "external_url": {
+            "type": "string"
+        },
+        "environment_type": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "last_deployment": {
+            "oneOf": [
+                {
+                    "$ref": "deployment.json"
+                },
+                {
+                    "type": ["null"]
+                }
+            ]
+        },
+        "stop_action?": {
+            "type": "boolean"
+        },
+        "rollout_status": {
+            "$ref": "rollout_status.json"
+        },
+        "environment_path": {
+            "type": "string"
+        },
+        "stop_path": {
+            "type": "string"
+        },
+        "terminal_path": {
+            "type": "string"
+        },
+        "folder_path": {
+            "type": "string"
+        },
+        "created_at": {
+            "type": "date"
+        },
+        "updated_at": {
+            "type": "date"
+        }
+    }
+}

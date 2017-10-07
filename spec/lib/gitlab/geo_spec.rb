@@ -110,7 +110,7 @@ describe Gitlab::Geo do
     end
   end
 
-  describe 'readonly?' do
+  describe 'secondary?' do
     context 'when current node is secondary' do
       it 'returns true' do
         stub_current_geo_node(secondary_node)

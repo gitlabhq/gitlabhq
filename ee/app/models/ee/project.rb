@@ -273,14 +273,6 @@ module EE
         .order(order % quoted_values) # `order` cannot escape for us!
     end
 
-    def cache_has_external_issue_tracker
-      super unless ::Gitlab::Geo.secondary?
-    end
-
-    def cache_has_external_wiki
-      super unless ::Gitlab::Geo.secondary?
-    end
-
     def execute_hooks(data, hooks_scope = :push_hooks)
       super
 

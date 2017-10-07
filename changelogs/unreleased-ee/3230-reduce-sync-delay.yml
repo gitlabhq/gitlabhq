@@ -1,0 +1,6 @@
+---
+title: Schedule repository synchronization when processing events on a Geo secondary
+  node
+merge_request: 2838
+author:
+type: changed

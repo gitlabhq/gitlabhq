@@ -7,11 +7,29 @@ describe RolloutStatusEntity do
     described_class.new(rollout_status, request: double)
   end
 
-  let(:rollout_status) { ::Gitlab::Kubernetes::RolloutStatus.from_specs(kube_deployment) }
   subject { entity.as_json }
 
-  it { is_expected.to have_key(:instances) }
-  it { is_expected.to have_key(:completion) }
-  it { is_expected.to have_key(:is_completed) }
-  it { is_expected.to have_key(:valid) }
+  context 'when kube deployment is valid' do
+    let(:rollout_status) { kube_deployment_rollout_status }
+
+    it "exposes status" do
+      is_expected.to include(:status)
+    end
+
+    it "exposes deployment data" do
+      is_expected.to include(:instances, :completion, :is_completed)
+    end
+  end
+
+  context 'when kube deployment is empty' do
+    let(:rollout_status) { empty_deployment_rollout_status }
+
+    it "exposes status" do
+      is_expected.to include(:status)
+    end
+
+    it "does not expose deployment data" do
+      is_expected.not_to include(:instances, :completion, :is_completed)
+    end
+  end
 end
