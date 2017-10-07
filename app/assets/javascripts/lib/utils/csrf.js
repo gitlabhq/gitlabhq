@@ -14,6 +14,9 @@ If you need to compose a headers object, use the spread operator:
     someOtherHeader: '12345',
   }
 ```
+
+see also http://guides.rubyonrails.org/security.html#cross-site-request-forgery-csrf
+and https://github.com/rails/jquery-rails/blob/v4.3.1/vendor/assets/javascripts/jquery_ujs.js#L59-L62
  */
 
 const csrf = {
@@ -53,4 +56,3 @@ if ($.rails) {
 }
 
 export default csrf;
-

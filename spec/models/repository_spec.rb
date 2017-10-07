@@ -634,6 +634,10 @@ describe Repository do
   end
 
   describe '#fetch_ref' do
+    # Setting the var here, sidesteps the stub that makes gitaly raise an error
+    # before the actual test call
+    set(:broken_repository) { create(:project, :broken_storage).repository }
+
     describe 'when storage is broken', broken_storage: true  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do

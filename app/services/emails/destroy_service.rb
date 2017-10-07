@@ -1,7 +1,7 @@
 module Emails
   class DestroyService < ::Emails::BaseService
-    def execute
-      update_secondary_emails! if Email.find_by_email!(@email).destroy
+    def execute(email)
+      email.destroy && update_secondary_emails!
     end
 
     private

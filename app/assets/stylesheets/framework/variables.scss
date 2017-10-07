@@ -1,6 +1,7 @@
 /*
  * Layout
  */
+$grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
@@ -203,6 +204,11 @@ $code_font_size: 12px;
 $code_line_height: 1.6;
 
 /*
+ * Tooltips
+ */
+$tooltip-font-size: 12px;
+
+/*
  * Padding
  */
 $gl-padding: 16px;
@@ -262,7 +268,8 @@ $well-pre-bg: #eee;
 $well-pre-color: #555;
 $loading-color: #555;
 $update-author-color: #999;
-$user-mention-color: #2fa0bb;
+$user-mention-bg: rgba($blue-500, 0.044);
+$user-mention-bg-hover: rgba($blue-500, 0.15);
 $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
@@ -316,6 +323,7 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
+$diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
@@ -699,3 +707,15 @@ Project Templates Icons
 $rails: #c00;
 $node: #353535;
 $java: #70ad51;
+
+/*
+Issuable warning
+*/
+$issuable-warning-size: 24px;
+$issuable-warning-icon-margin: 4px;
+
+/*
+Image Commenting cursor
+*/
+$image-comment-cursor-left-offset: 12;
+$image-comment-cursor-top-offset: 30;

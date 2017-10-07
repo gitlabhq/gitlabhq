@@ -56,12 +56,16 @@ export default function createTimeSeries(queryData, graphWidth, graphHeight, gra
     timeSeriesScaleX.ticks(d3.time.minute, 60);
     timeSeriesScaleY.domain([0, maxValueFromSeries.maxValue]);
 
+    const defined = d => !isNaN(d.value) && d.value != null;
+
     const lineFunction = d3.svg.line()
+      .defined(defined)
       .interpolate('linear')
       .x(d => timeSeriesScaleX(d.time))
       .y(d => timeSeriesScaleY(d.value));
 
     const areaFunction = d3.svg.area()
+      .defined(defined)
       .interpolate('linear')
       .x(d => timeSeriesScaleX(d.time))
       .y0(graphHeight - graphHeightOffset)

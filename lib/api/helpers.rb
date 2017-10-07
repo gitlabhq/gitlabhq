@@ -287,7 +287,7 @@ module API
       if sentry_enabled? && report_exception?(exception)
         define_params_for_grape_middleware
         sentry_context
-        Raven.capture_exception(exception)
+        Raven.capture_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60

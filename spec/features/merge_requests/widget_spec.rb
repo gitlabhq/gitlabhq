@@ -3,10 +3,13 @@ require 'rails_helper'
 describe 'Merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
+  let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
+    project_only_mwps.add_master(user)
     sign_in(user)
   end
 
@@ -157,6 +160,20 @@ describe 'Merge request', :js do
       wait_for_requests
 
       expect(page).to have_text('Could not connect to the CI server. Please check your settings and try again')
+    end
+  end
+
+  context 'view merge request in project with only-mwps setting enabled but no CI is setup' do
+    before do
+      visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
+    end
+
+    it 'should be allowed to merge' do
+      # Wait for the `ci_status` and `merge_check` requests
+      wait_for_requests
+
+      expect(page).to have_selector('.accept-merge-request')
+      expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
   end
 

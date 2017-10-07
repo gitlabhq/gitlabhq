@@ -54,12 +54,14 @@ LineHighlighter.prototype.bindEvents = function() {
   $fileHolder.on('highlight:line', this.highlightHash);
 };
 
-LineHighlighter.prototype.highlightHash = function() {
-  var range;
+LineHighlighter.prototype.highlightHash = function(newHash) {
+  let range;
+  if (newHash && typeof newHash === 'string') this._hash = newHash;
+
+  this.clearHighlight();
 
   if (this._hash !== '') {
     range = this.hashToRange(this._hash);
-
     if (range[0]) {
       this.highlightRange(range);
       const lineSelector = `#L${range[0]}`;

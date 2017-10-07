@@ -52,7 +52,7 @@ module API
           detailed_desc = 'This feature was introduced in GitLab 8.7.'
           detailed_desc << DEPRECATION_MESSAGE unless status == :ok
           detail detailed_desc
-          success ::API::Entities::RepoLicense
+          success ::API::Entities::License
         end
         params do
           optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
@@ -61,7 +61,7 @@ module API
           options = {
             featured: declared(params)[:popular].present? ? true : nil
           }
-          present Licensee::License.all(options), with: ::API::Entities::RepoLicense
+          present Licensee::License.all(options), with: ::API::Entities::License
         end
       end
 
@@ -70,7 +70,7 @@ module API
           detailed_desc = 'This feature was introduced in GitLab 8.7.'
           detailed_desc << DEPRECATION_MESSAGE unless status == :ok
           detail detailed_desc
-          success ::API::Entities::RepoLicense
+          success ::API::Entities::License
         end
         params do
           requires :name, type: String, desc: 'The name of the template'
@@ -80,7 +80,7 @@ module API
 
           template = parsed_license_template
 
-          present template, with: ::API::Entities::RepoLicense
+          present template, with: ::API::Entities::License
         end
       end
 

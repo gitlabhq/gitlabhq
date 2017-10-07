@@ -13,6 +13,8 @@ import {
   isMetaClick,
 } from './lib/utils/common_utils';
 
+import initDiscussionTab from './image_diff/init_discussion_tab';
+
 /* eslint-disable max-len */
 // MergeRequestTabs
 //
@@ -154,6 +156,8 @@ import {
         }
         this.resetViewContainer();
         this.destroyPipelinesView();
+
+        initDiscussionTab();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);

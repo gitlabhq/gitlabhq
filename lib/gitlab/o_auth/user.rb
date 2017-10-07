@@ -64,6 +64,8 @@ module Gitlab
       protected
 
       def add_or_update_user_identities
+        return unless gl_user
+
         # find_or_initialize_by doesn't update `gl_user.identities`, and isn't autosaved.
         identity = gl_user.identities.find { |identity| identity.provider == auth_hash.provider }
 

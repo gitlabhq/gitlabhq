@@ -4,6 +4,7 @@ import sprintf from './sprintf';
 const langAttribute = document.querySelector('html').getAttribute('lang');
 const lang = (langAttribute || 'en').replace(/-/g, '_');
 const locale = new Jed(window.translations || {});
+delete window.translations;
 
 /**
   Translates `text`
