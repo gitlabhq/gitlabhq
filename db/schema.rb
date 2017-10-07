@@ -591,6 +591,22 @@ ActiveRecord::Schema.define(version: 20171006091000) do
 
   add_index "features", ["key"], name: "index_features_on_key", unique: true, using: :btree
 
+  create_table "fork_network_members", force: :cascade do |t|
+    t.integer "fork_network_id", null: false
+    t.integer "project_id", null: false
+    t.integer "forked_from_project_id"
+  end
+
+  add_index "fork_network_members", ["fork_network_id"], name: "index_fork_network_members_on_fork_network_id", using: :btree
+  add_index "fork_network_members", ["project_id"], name: "index_fork_network_members_on_project_id", unique: true, using: :btree
+
+  create_table "fork_networks", force: :cascade do |t|
+    t.integer "root_project_id"
+    t.string "deleted_root_project_name"
+  end
+
+  add_index "fork_networks", ["root_project_id"], name: "index_fork_networks_on_root_project_id", unique: true, using: :btree
+
   create_table "forked_project_links", force: :cascade do |t|
     t.integer "forked_to_project_id", null: false
     t.integer "forked_from_project_id", null: false
@@ -1793,6 +1809,10 @@ ActiveRecord::Schema.define(version: 20171006091000) do
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
+  add_foreign_key "fork_network_members", "fork_networks", on_delete: :cascade
+  add_foreign_key "fork_network_members", "projects", column: "forked_from_project_id", name: "fk_b01280dae4", on_delete: :nullify
+  add_foreign_key "fork_network_members", "projects", on_delete: :cascade
+  add_foreign_key "fork_networks", "projects", column: "root_project_id", name: "fk_e7b436b2b5", on_delete: :nullify
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
   add_foreign_key "gcp_clusters", "services", on_delete: :nullify

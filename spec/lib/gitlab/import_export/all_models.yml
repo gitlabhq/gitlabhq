@@ -272,6 +272,9 @@ project:
 - uploads
 - members_and_requesters
 - build_trace_section_names
+- root_of_fork_network
+- fork_network_member
+- fork_network
 award_emoji:
 - awardable
 - user
