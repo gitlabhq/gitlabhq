@@ -142,7 +142,7 @@ describe 'User creates files' do
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
 
-        fork = user.fork_of(project2)
+        fork = user.fork_of(project2.reload)
 
         expect(current_path).to eq(project_new_merge_request_path(fork))
         expect(page).to have_content('New commit message')

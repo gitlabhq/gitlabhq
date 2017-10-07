@@ -707,15 +707,7 @@ class User < ActiveRecord::Base
   end
 
   def fork_of(project)
-    links = ForkedProjectLink.where(
-      forked_from_project_id: project,
-      forked_to_project_id: personal_projects.unscope(:order)
-    )
-    if links.any?
-      links.first.forked_to_project
-    else
-      nil
-    end
+    namespace.find_fork_of(project)
   end
 
   def ldap_user?

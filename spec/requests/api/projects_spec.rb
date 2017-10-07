@@ -64,9 +64,12 @@ describe API::Projects do
           create(:project, :public)
         end
 
+        # TODO: We're currently querying to detect if a project is a fork
+        # in 2 ways. Lower this back to 8 when `ForkedProjectLink` relation is
+        # removed
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control).with_threshold(8)
+        end.not_to exceed_query_limit(control).with_threshold(9)
       end
     end
 
