@@ -912,14 +912,6 @@ class Repository
     end
   end
 
-  def resolve_conflicts(user, branch_name, params)
-    with_branch(user, branch_name) do
-      committer = user_to_committer(user)
-
-      create_commit(params.merge(author: committer, committer: committer))
-    end
-  end
-
   def merged_to_root_ref?(branch_name)
     branch_commit = commit(branch_name)
     root_ref_commit = commit(root_ref)
