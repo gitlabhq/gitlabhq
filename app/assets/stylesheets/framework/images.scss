@@ -28,6 +28,7 @@
 
 svg {
   &.s8 { @include svg-size(8px); }
+  &.s12 { @include svg-size(12px); }
   &.s16 { @include svg-size(16px); }
   &.s18 { @include svg-size(18px); }
   &.s24 { @include svg-size(24px); }

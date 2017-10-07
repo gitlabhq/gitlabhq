@@ -115,8 +115,7 @@
   @return $unfoldedTransition;
 }
 
-.btn,
-.global-dropdown-toggle {
+.btn {
   @include transition(background-color, border-color, color, box-shadow);
 }
 

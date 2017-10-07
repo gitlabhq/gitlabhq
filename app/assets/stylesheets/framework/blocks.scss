@@ -207,6 +207,16 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+
+    .nav-links {
+      justify-content: center;
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
+    }
   }
 
   .group-info {
