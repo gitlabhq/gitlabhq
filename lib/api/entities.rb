@@ -865,7 +865,7 @@ module API
       end
     end
 
-    class License < Grape::Entity
+    class GitlabLicense < Grape::Entity
       expose :starts_at, :expires_at, :licensee, :add_ons
 
       expose :user_limit do |license, options|
