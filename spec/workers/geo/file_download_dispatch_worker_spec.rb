@@ -57,7 +57,7 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
 
     # Test the case where we have:
     #
-    # 1. A total of 8 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
+    # 1. A total of 10 files in the queue, and we can load a maximimum of 5 and send 2 at a time.
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
       stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
@@ -67,15 +67,17 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
       create_list(:lfs_object, 2, :with_file)
       create_list(:user, 2, avatar: avatar)
       create_list(:note, 2, :with_attachment)
+      create_list(:upload, 2, :personal_snippet)
       create(:appearance, logo: avatar, header_logo: avatar)
 
-      expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(8).times.and_call_original
-      # For 8 downloads, we expect three database reloads:
+      expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(10).times.and_call_original
+      # For 10 downloads, we expect four database reloads:
       # 1. Load the first batch of 5.
-      # 2. 4 get sent out, 1 remains. This triggers another reload, which loads in the remaining 4.
+      # 2. 4 get sent out, 1 remains. This triggers another reload, which loads in the next 5.
+      # 3. Those 4 get sent out, and 1 remains.
       # 3. Since the second reload filled the pipe with 4, we need to do a final reload to ensure
       #    zero are left.
-      expect(subject).to receive(:load_pending_resources).exactly(3).times.and_call_original
+      expect(subject).to receive(:load_pending_resources).exactly(4).times.and_call_original
 
       Sidekiq::Testing.inline! do
         subject.perform

@@ -75,6 +75,21 @@ describe Geo::FileDownloadService do
       end
     end
 
+    context 'with a snippet' do
+      let(:upload) { create(:upload, :personal_snippet) }
+
+      subject { described_class.new(:personal_file, upload.id) }
+
+      it 'downloads the file' do
+        allow_any_instance_of(Gitlab::ExclusiveLease)
+          .to receive(:try_obtain).and_return(true)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
+          .to receive(:download_from_primary).and_return(100)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      end
+    end
+
     context 'with file upload' do
       let(:project) { create(:project) }
       let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }

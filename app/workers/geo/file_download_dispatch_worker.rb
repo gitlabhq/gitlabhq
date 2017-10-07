@@ -16,7 +16,7 @@ module Geo
     end
 
     def find_object_ids
-      downloaded_ids = find_downloaded_ids([:attachment, :avatar, :file])
+      downloaded_ids = find_downloaded_ids(Geo::FileService::DEFAULT_OBJECT_TYPES)
 
       unsynched_downloads = filter_downloaded_ids(
         current_node.uploads, downloaded_ids, Upload.table_name)
@@ -25,7 +25,7 @@ module Geo
         .order(created_at: :desc)
         .limit(db_retrieve_batch_size)
         .pluck(:id, :uploader)
-        .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
+        .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').underscore] }
     end
 
     def find_lfs_object_ids
