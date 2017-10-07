@@ -749,7 +749,7 @@
       margin-bottom: $dropdown-vertical-offset;
     }
 
-    li {
+    li:not(.dropdown-bold-header) {
       display: block;
       padding: 0 1px;
 

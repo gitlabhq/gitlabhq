@@ -5,22 +5,6 @@
 .navbar-gitlab {
   @include new-style-dropdown;
 
-  &.navbar-empty {
-    height: $header-height;
-    background: $white-light;
-    border-bottom: 1px solid $white-normal;
-
-    .center-logo {
-      margin: 8px 0;
-      text-align: center;
-
-      .tanuki-logo,
-      img {
-        height: 36px;
-      }
-    }
-  }
-
   &.navbar-gitlab {
     padding: 0 16px;
     z-index: 1000;
@@ -550,7 +534,7 @@
     color: $gl-text-color;
     left: auto;
 
-    .current-user {
+    li.current-user {
       padding: 5px 18px;
 
       .user-name {
@@ -569,4 +553,20 @@
 
 .with-performance-bar .navbar-gitlab {
   top: $performance-bar-height;
+}
+
+.navbar-empty {
+  height: $header-height;
+  background: $white-light;
+  border-bottom: 1px solid $white-normal;
+
+  .center-logo {
+    margin: 8px 0;
+    text-align: center;
+
+    .tanuki-logo,
+    img {
+      height: 36px;
+    }
+  }
 }
