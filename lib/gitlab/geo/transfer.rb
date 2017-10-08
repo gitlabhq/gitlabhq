@@ -70,7 +70,7 @@ module Gitlab
           temp_file.flush
 
           unless response.success?
-            log_error("Unsuccessful download", response_code: response.code, response_msg: response.msg)
+            log_error("Unsuccessful download", filename: filename, response_code: response.code, response_msg: response.msg)
             return file_size
           end
 
@@ -84,7 +84,7 @@ module Gitlab
           file_size = File.stat(filename).size
           log_info("Successful downloaded", filename: filename, file_size_bytes: file_size)
         rescue StandardError, HTTParty::Error => e
-          log_error("Error downloading file", error: e)
+          log_error("Error downloading file", error: e, filename: filename)
         ensure
           temp_file.close
           temp_file.unlink
@@ -101,12 +101,13 @@ module Gitlab
         begin
           # Make sure the file is in the same directory to prevent moves across filesystems
           pathname = Pathname.new(target_filename)
-          temp = Tempfile.new(TEMP_PREFIX + pathname.basename.to_s, pathname.dirname.to_s)
+          temp = Tempfile.new(TEMP_PREFIX, pathname.dirname.to_s)
           temp.chmod(default_permissions)
           temp.binmode
           temp
         rescue StandardError => e
           log_error("Error creating temporary file", error: e)
+          nil
         end
       end
     end
