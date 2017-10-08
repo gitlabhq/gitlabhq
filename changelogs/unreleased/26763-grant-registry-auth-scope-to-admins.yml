@@ -1,0 +1,5 @@
+---
+title: Issue JWT token with registry:catalog:* scope when requested by GitLab admin
+merge_request:
+author:
+type: added

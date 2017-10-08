@@ -58,6 +58,11 @@ module Auth
       actions = actions.split(',')
       path = ContainerRegistry::Path.new(name)
 
+      if type == 'registry' && name == 'catalog' && current_user && current_user.admin?
+        return { type: type, name: name, actions: ['*'] }
+      end
+
+
       return unless type == 'repository'
 
       process_repository_access(type, path, actions)
