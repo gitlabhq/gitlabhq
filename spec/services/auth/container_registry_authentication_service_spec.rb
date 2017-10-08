@@ -42,13 +42,12 @@ describe Auth::ContainerRegistryAuthenticationService do
       end
     end
   end
-  
+
   shared_examples 'a browsable' do
     let(:access) do
       [{ 'type' => 'registry',
          'name' => 'catalog',
-         'actions' => ['*']
-        }]
+         'actions' => ['*'] }]
     end
 
     it_behaves_like 'a valid token'
@@ -140,7 +139,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'not a container repository factory'
       end
     end
-    
+
     context 'for private project' do
       let(:project) { create(:project) }
 
@@ -521,7 +520,6 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     it_behaves_like 'a browsable'
-
   end
 
   context 'unauthorized' do
@@ -578,6 +576,5 @@ describe Auth::ContainerRegistryAuthenticationService do
       it_behaves_like 'a forbidden'
       it_behaves_like 'not a container repository factory'
     end
-
   end
 end
