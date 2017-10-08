@@ -14,12 +14,27 @@ class AddGroupIdToMilestones < ActiveRecord::Migration
     # with null values.
     execute "DELETE from milestones WHERE project_id IS NULL"
 
-    # Drop foreign key explicitly for MySQL.
-    if Gitlab::Database.mysql?
-      remove_foreign_key(:milestones, column: :group_id) if foreign_key_exists?(:milestones, column: :group_id)
-    end
-
+    remove_foreign_key_for_mysql(:groups)
     remove_column :milestones, :group_id
+
+    remove_foreign_key_for_mysql(:projects)
     change_column :milestones, :project_id, :integer, null: false
+    add_foreign_key_for_mysql(:projects)
+  end
+
+  private
+
+  # Create the foreign key explicitly for MySQL.
+  def add_foreign_key_for_mysql(target)
+    if Gitlab::Database.mysql? && !foreign_key_exists?(:milestones, target)
+      add_foreign_key :milestones, target, on_delete: :cascade
+    end
+  end
+
+  # Drop the foreign key explicitly for MySQL.
+  def remove_foreign_key_for_mysql(target)
+    if Gitlab::Database.mysql? && foreign_key_exists?(:milestones, target)
+      remove_foreign_key :milestones, target
+    end
   end
 end
