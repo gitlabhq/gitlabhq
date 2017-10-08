@@ -62,6 +62,14 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     expect(base2_membership).not_to be_nil
   end
 
+  it 'skips links that had their source project deleted' do
+    forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: create(:project).id)
+
+    migration.perform(5, 8)
+
+    expect(fork_networks.find_by(root_project_id: 99999)).to be_nil
+  end
+
   it 'schedules a job for inserting memberships for forks-of-forks' do
     delay = Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange::RESCHEDULE_DELAY
 
