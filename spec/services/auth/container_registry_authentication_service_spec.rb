@@ -140,9 +140,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'not a container repository factory'
       end
     end
-
-
-
+    
     context 'for private project' do
       let(:project) { create(:project) }
 

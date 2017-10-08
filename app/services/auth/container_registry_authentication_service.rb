@@ -62,7 +62,6 @@ module Auth
         return { type: type, name: name, actions: ['*'] }
       end
 
-
       return unless type == 'repository'
 
       process_repository_access(type, path, actions)
