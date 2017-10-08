@@ -1,4 +1,4 @@
-class AddProjectIdToSubscriptions < ActiveRecord::Migration
+class AddProjectIdToSubscriptions < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

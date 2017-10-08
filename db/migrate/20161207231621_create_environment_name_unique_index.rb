@@ -1,5 +1,5 @@
 # rubocop:disable RemoveIndex
-class CreateEnvironmentNameUniqueIndex < ActiveRecord::Migration
+class CreateEnvironmentNameUniqueIndex < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

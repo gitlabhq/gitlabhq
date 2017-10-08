@@ -1,6 +1,6 @@
 # This is the counterpart of RequeuePendingDeleteProjects and cleans all
 # projects with `pending_delete = true` and that do not have a namespace.
-class CleanupNamespacelessPendingDeleteProjects < ActiveRecord::Migration
+class CleanupNamespacelessPendingDeleteProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

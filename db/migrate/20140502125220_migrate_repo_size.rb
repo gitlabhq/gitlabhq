@@ -1,5 +1,5 @@
 # rubocop:disable all
-class MigrateRepoSize < ActiveRecord::Migration
+class MigrateRepoSize < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

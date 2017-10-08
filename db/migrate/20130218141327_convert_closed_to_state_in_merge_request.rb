@@ -1,5 +1,5 @@
 # rubocop:disable all
-class ConvertClosedToStateInMergeRequest < ActiveRecord::Migration
+class ConvertClosedToStateInMergeRequest < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def up

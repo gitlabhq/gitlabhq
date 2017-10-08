@@ -1,4 +1,4 @@
-class AddNotificationSettingColumns < ActiveRecord::Migration
+class AddNotificationSettingColumns < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

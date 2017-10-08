@@ -1,4 +1,4 @@
-class AddOwnerIdForeignKey < ActiveRecord::Migration
+class AddOwnerIdForeignKey < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

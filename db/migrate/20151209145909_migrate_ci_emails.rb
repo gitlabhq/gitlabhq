@@ -1,5 +1,5 @@
 # rubocop:disable all
-class MigrateCiEmails < ActiveRecord::Migration
+class MigrateCiEmails < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def up

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddCiTags < ActiveRecord::Migration
+class AddCiTags < ActiveRecord::Migration[4.2]
   def change
     create_table "ci_taggings", force: true do |t|
       t.integer  "tag_id"

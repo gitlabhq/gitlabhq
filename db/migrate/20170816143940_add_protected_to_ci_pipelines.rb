@@ -1,4 +1,4 @@
-class AddProtectedToCiPipelines < ActiveRecord::Migration
+class AddProtectedToCiPipelines < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

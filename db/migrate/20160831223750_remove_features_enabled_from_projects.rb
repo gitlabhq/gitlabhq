@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/AddColumnWithDefaultToLargeTable
-class RemoveFeaturesEnabledFromProjects < ActiveRecord::Migration
+class RemoveFeaturesEnabledFromProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 

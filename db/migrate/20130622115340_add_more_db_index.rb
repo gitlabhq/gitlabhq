@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddMoreDbIndex < ActiveRecord::Migration
+class AddMoreDbIndex < ActiveRecord::Migration[4.2]
   def change
     add_index :deploy_keys_projects, :project_id
     add_index :web_hooks, :project_id

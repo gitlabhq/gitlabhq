@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddCiCommitIndexes < ActiveRecord::Migration
+class AddCiCommitIndexes < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def change

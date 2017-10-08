@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateAppearancesCe < ActiveRecord::Migration
+class CreateAppearancesCe < ActiveRecord::Migration[4.2]
   def change
     unless table_exists?(:appearances)
       create_table :appearances do |t|

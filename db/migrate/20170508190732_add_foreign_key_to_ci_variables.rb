@@ -1,4 +1,4 @@
-class AddForeignKeyToCiVariables < ActiveRecord::Migration
+class AddForeignKeyToCiVariables < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

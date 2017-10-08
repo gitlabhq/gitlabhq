@@ -1,5 +1,5 @@
 # rubocop:disable Migration/AddColumnWithDefaultToLargeTable
-class AddTwoFactorColumnsToUsers < ActiveRecord::Migration
+class AddTwoFactorColumnsToUsers < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

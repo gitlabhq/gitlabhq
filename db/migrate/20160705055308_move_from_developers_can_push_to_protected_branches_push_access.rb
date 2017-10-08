@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class MoveFromDevelopersCanPushToProtectedBranchesPushAccess < ActiveRecord::Migration
+class MoveFromDevelopersCanPushToProtectedBranchesPushAccess < ActiveRecord::Migration[4.2]
   DOWNTIME = true
   DOWNTIME_REASON = <<-HEREDOC
     We're creating a `push_access_level` for each `protected_branch`. If a user creates a `protected_branch` while this

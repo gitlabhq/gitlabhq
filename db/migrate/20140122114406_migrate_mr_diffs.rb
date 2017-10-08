@@ -1,5 +1,5 @@
 # rubocop:disable all
-class MigrateMrDiffs < ActiveRecord::Migration
+class MigrateMrDiffs < ActiveRecord::Migration[4.2]
   def self.up
     execute "INSERT INTO merge_request_diffs ( merge_request_id, st_commits, st_diffs ) SELECT id, st_commits, st_diffs FROM merge_requests"
   end

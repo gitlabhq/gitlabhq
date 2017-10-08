@@ -1,4 +1,4 @@
-class AddIndexForHeadPipelineMergeRequest < ActiveRecord::Migration
+class AddIndexForHeadPipelineMergeRequest < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,4 +1,4 @@
-class AddGroupIdToMilestones < ActiveRecord::Migration
+class AddGroupIdToMilestones < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

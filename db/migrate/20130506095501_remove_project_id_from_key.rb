@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveProjectIdFromKey < ActiveRecord::Migration
+class RemoveProjectIdFromKey < ActiveRecord::Migration[4.2]
   def up
     puts 'Migrate deploy keys: '
     Key.where('project_id IS NOT NULL').update_all(type: 'DeployKey')

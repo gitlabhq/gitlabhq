@@ -1,4 +1,4 @@
-class AddImportJidToProjects < ActiveRecord::Migration
+class AddImportJidToProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

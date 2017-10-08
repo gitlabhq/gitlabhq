@@ -1,4 +1,4 @@
-class GenerateProjectFeatureForProjects < ActiveRecord::Migration
+class GenerateProjectFeatureForProjects < ActiveRecord::Migration[4.2]
   DOWNTIME = true
 
   DOWNTIME_REASON = <<-HEREDOC

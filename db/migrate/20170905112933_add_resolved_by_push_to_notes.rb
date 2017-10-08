@@ -1,4 +1,4 @@
-class AddResolvedByPushToNotes < ActiveRecord::Migration
+class AddResolvedByPushToNotes < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

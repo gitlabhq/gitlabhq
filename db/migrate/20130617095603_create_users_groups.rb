@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateUsersGroups < ActiveRecord::Migration
+class CreateUsersGroups < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

@@ -1,4 +1,4 @@
-class MigrateUsersNotificationLevel < ActiveRecord::Migration
+class MigrateUsersNotificationLevel < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   # Migrates only users who changed their default notification level :participating

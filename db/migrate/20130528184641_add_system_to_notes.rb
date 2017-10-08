@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddSystemToNotes < ActiveRecord::Migration
+class AddSystemToNotes < ActiveRecord::Migration[4.2]
   class Note < ActiveRecord::Base
   end
 

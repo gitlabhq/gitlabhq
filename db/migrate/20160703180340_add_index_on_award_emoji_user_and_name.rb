@@ -1,7 +1,7 @@
 # rubocop:disable all
 # Migration type: online without errors
 
-class AddIndexOnAwardEmojiUserAndName < ActiveRecord::Migration
+class AddIndexOnAwardEmojiUserAndName < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 

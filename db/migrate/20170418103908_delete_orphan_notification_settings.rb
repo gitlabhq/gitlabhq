@@ -1,4 +1,4 @@
-class DeleteOrphanNotificationSettings < ActiveRecord::Migration
+class DeleteOrphanNotificationSettings < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

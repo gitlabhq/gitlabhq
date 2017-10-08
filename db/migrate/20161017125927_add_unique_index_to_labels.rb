@@ -1,5 +1,5 @@
 # rubocop:disable RemoveIndex
-class AddUniqueIndexToLabels < ActiveRecord::Migration
+class AddUniqueIndexToLabels < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

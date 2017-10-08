@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateMergeRequestDiffs < ActiveRecord::Migration
+class CreateMergeRequestDiffs < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

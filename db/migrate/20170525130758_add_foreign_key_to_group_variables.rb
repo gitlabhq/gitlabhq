@@ -1,4 +1,4 @@
-class AddForeignKeyToGroupVariables < ActiveRecord::Migration
+class AddForeignKeyToGroupVariables < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class ConvertClosedToStateInMilestone < ActiveRecord::Migration
+class ConvertClosedToStateInMilestone < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def up

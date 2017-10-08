@@ -1,4 +1,4 @@
-class CreateMergeRequestDiffCommits < ActiveRecord::Migration
+class CreateMergeRequestDiffCommits < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

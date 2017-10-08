@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateForkedProjectLinks < ActiveRecord::Migration
+class CreateForkedProjectLinks < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

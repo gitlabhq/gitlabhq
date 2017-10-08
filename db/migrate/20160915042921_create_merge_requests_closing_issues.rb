@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/Timestamps
-class CreateMergeRequestsClosingIssues < ActiveRecord::Migration
+class CreateMergeRequestsClosingIssues < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.

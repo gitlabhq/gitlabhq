@@ -1,5 +1,5 @@
 # rubocop:disable RemoveIndex
-class AddUniqueIndexToKeysFingerprint < ActiveRecord::Migration
+class AddUniqueIndexToKeysFingerprint < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

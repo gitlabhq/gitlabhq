@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddCiTables < ActiveRecord::Migration
+class AddCiTables < ActiveRecord::Migration[4.2]
   def change
     create_table "ci_application_settings", force: true do |t|
       t.boolean  "all_broken_builds"

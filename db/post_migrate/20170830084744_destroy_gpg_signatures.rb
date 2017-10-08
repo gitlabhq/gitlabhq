@@ -1,4 +1,4 @@
-class DestroyGpgSignatures < ActiveRecord::Migration
+class DestroyGpgSignatures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

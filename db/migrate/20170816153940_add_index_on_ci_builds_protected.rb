@@ -1,4 +1,4 @@
-class AddIndexOnCiBuildsProtected < ActiveRecord::Migration
+class AddIndexOnCiBuildsProtected < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -3,7 +3,7 @@
 # Sets default_visibility_level to value on settings if not restricted
 # If value is restricted takes higher visibility level allowed
 
-class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration
+class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration[4.2]
   def up
     add_column :application_settings, :default_group_visibility, :integer
     # Unfortunately, this can't be a `default`, since we don't want the configuration specific

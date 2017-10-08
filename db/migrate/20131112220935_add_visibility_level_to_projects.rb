@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddVisibilityLevelToProjects < ActiveRecord::Migration
+class AddVisibilityLevelToProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def self.up

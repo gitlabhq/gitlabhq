@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveClosedFromMilestone < ActiveRecord::Migration
+class RemoveClosedFromMilestone < ActiveRecord::Migration[4.2]
   def up
     remove_column :milestones, :closed
   end

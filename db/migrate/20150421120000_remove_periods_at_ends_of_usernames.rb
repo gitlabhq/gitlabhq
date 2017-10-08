@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
+class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration[4.2]
   include Gitlab::ShellAdapter
 
   class Namespace < ActiveRecord::Base
@@ -71,7 +71,7 @@ class RemovePeriodsAtEndsOfUsernames < ActiveRecord::Migration
         begin
           gitlab_shell.rm_satellites(path_was)
           # We cannot send update instructions since models and mailers
-          # can't safely be used from migrations as they may be written for 
+          # can't safely be used from migrations as they may be written for
           # later versions of the database.
           # send_update_instructions
         rescue

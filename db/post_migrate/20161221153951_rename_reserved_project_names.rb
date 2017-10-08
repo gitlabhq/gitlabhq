@@ -1,6 +1,6 @@
 require 'thread'
 
-class RenameReservedProjectNames < ActiveRecord::Migration
+class RenameReservedProjectNames < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   include Gitlab::ShellAdapter
 

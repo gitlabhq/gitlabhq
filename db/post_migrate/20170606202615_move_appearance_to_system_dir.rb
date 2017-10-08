@@ -1,4 +1,4 @@
-class MoveAppearanceToSystemDir < ActiveRecord::Migration
+class MoveAppearanceToSystemDir < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 

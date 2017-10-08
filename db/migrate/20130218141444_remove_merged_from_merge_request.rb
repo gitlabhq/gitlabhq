@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveMergedFromMergeRequest < ActiveRecord::Migration
+class RemoveMergedFromMergeRequest < ActiveRecord::Migration[4.2]
   def up
     remove_column :merge_requests, :merged
   end

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class ConvertBlockedToState < ActiveRecord::Migration
+class ConvertBlockedToState < ActiveRecord::Migration[4.2]
   def up
     User.transaction do
       User.where(blocked: true).update_all(state: :blocked)

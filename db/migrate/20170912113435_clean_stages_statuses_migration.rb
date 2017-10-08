@@ -1,4 +1,4 @@
-class CleanStagesStatusesMigration < ActiveRecord::Migration
+class CleanStagesStatusesMigration < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

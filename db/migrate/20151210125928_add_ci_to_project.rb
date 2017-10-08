@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddCiToProject < ActiveRecord::Migration
+class AddCiToProject < ActiveRecord::Migration[4.2]
   def change
     add_column :projects, :ci_id, :integer
     add_column :projects, :builds_enabled, :boolean, default: true, null: false

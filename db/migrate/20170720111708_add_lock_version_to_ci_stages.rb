@@ -1,4 +1,4 @@
-class AddLockVersionToCiStages < ActiveRecord::Migration
+class AddLockVersionToCiStages < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
