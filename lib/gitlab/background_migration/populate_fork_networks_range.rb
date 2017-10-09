@@ -20,6 +20,11 @@ module Gitlab
             FROM fork_networks
             WHERE forked_project_links.forked_from_project_id = fork_networks.root_project_id
           )
+          AND EXISTS (
+            SELECT true
+            FROM projects
+            WHERE projects.id = forked_project_links.forked_from_project_id
+          )
           AND forked_project_links.id BETWEEN #{start_id} AND #{end_id}
         INSERT_NETWORKS
 
