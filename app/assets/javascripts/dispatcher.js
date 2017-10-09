@@ -7,12 +7,6 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-<<<<<<< HEAD
-/* global Commit */
-/* global CommitsList */
-/* global NewCommitForm */
-=======
->>>>>>> ce-com/master
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
@@ -590,7 +584,11 @@ import initGroupAnalytics from './init_group_analytics';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
-<<<<<<< HEAD
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
         case 'admin:licenses:new':
           const $licenseFile = $('.license-file');
           const $licenseKey = $('.license-key');
@@ -608,14 +606,6 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
-
-=======
-        case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters')
-            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch(() => {});
-          break;
->>>>>>> ce-com/master
       }
       switch (path[0]) {
         case 'sessions':
