@@ -270,7 +270,7 @@
     color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
-    padding: 0 16px;
+    padding: 8px 16px;
   }
 
   &.capitalize-header .dropdown-header {
@@ -285,7 +285,7 @@
 
   .separator + .dropdown-header,
   .separator + .dropdown-bold-header {
-    padding-top: 2px;
+    padding-top: 10px;
   }
 
   .unclickable {
@@ -754,10 +754,6 @@
 
       &:hover {
         background-color: transparent;
-      }
-
-      &.dropdown-header {
-        padding: 8px 16px;
       }
 
       &.droplab-item-active button {
