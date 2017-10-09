@@ -64,9 +64,9 @@
 - [Hash Indexes](hash_indexes.md)
 - [Swapping Tables](swapping_tables.md)
 
-## i18n
+## Internationalization (i18n)
 
-- [Introduction](i18n/introduction.md)
+- [Introduction](i18n/index.md)
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
 
