@@ -261,9 +261,10 @@
   }
 
   li {
+    display: block;
     text-align: left;
     list-style: none;
-    padding: 0 10px;
+    padding: 0 1px;
 
     a,
     button,
@@ -338,7 +339,6 @@
   }
 
   .dropdown-menu li {
-    padding: $gl-btn-padding;
     cursor: pointer;
 
     &.droplab-item-active button {
@@ -355,12 +355,6 @@
       &.btn .fa:not(:last-child) {
         margin-left: 5px;
       }
-    }
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
     }
 
     &.droplab-item-selected i {
@@ -764,15 +758,6 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
-
-    li {
-      display: block;
-      padding: 0 1px;
-
-      &:hover {
-        background-color: transparent;
-      }
-    }
 
     &.dropdown-menu-selectable {
       li {
