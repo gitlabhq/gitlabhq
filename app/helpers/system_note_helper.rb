@@ -20,13 +20,10 @@ module SystemNoteHelper
     'moved' => 'arrow-right',
     'outdated' => 'pencil',
     'duplicate' => 'issue-duplicate',
-<<<<<<< HEAD
     'approved' => 'approval',
     'unapproved' => 'unapproval',
     'relate' => 'link',
     'unrelate' => 'unlink',
-=======
->>>>>>> ce-com/master
     'locked' => 'lock',
     'unlocked' => 'lock-open'
   }.freeze
