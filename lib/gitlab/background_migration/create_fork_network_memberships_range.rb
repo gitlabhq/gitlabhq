@@ -46,6 +46,14 @@ module Gitlab
             FROM fork_network_members
             WHERE fork_network_members.project_id = forked_project_links.forked_to_project_id
           )
+<<<<<<< HEAD
+=======
+          AND EXISTS (
+            SELECT true
+            FROM projects
+            WHERE forked_project_links.forked_from_project_id = projects.id
+          )
+>>>>>>> ce-com/master
           AND forked_project_links.id BETWEEN #{start_id} AND #{end_id}
         MISSING_MEMBERS
 

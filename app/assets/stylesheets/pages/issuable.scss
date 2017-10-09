@@ -14,6 +14,13 @@
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
+<<<<<<< HEAD
+=======
+
+  &:first-of-type {
+    margin-right: $issuable-warning-icon-margin;
+  }
+>>>>>>> ce-com/master
 }
 
 .sidebar-item-icon {
@@ -218,7 +225,7 @@
 
 .right-sidebar {
   position: absolute;
-  top: $new-navbar-height;
+  top: $header-height;
   bottom: 0;
   right: 0;
   transition: width $right-sidebar-transition-duration;
@@ -483,10 +490,10 @@
 }
 
 .with-performance-bar .right-sidebar {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$new-navbar-height} - #{$performance-bar-height});
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
 }
 

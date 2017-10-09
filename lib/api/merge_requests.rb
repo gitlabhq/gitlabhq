@@ -234,11 +234,14 @@ module API
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
         optional :discussion_locked, type: Boolean, desc: 'Whether the MR discussion is locked'
+<<<<<<< HEAD
 
         # EE
         at_least_one_of_ee = [
           :squash
         ]
+=======
+>>>>>>> ce-com/master
 
         use :optional_params
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))

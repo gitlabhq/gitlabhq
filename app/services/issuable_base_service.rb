@@ -49,6 +49,10 @@ class IssuableBaseService < BaseService
     SystemNoteService.discussion_lock(issuable, current_user)
   end
 
+  def create_discussion_lock_note(issuable)
+    SystemNoteService.discussion_lock(issuable, current_user)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 

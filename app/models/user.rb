@@ -681,6 +681,10 @@ class User < ActiveRecord::Base
     Ability.allowed?(self, action, subject)
   end
 
+  def confirm_deletion_with_password?
+    !password_automatically_set? && allow_password_authentication?
+  end
+
   def first_name
     name.split.first unless name.blank?
   end

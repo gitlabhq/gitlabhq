@@ -196,6 +196,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_pages
     enable :read_pages
     enable :update_pages
+    enable :read_cluster
+    enable :create_cluster
   end
 
   rule { can?(:public_user_access) }.policy do

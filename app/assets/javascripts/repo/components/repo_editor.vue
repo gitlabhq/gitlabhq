@@ -63,12 +63,7 @@ const RepoEditor = {
       const lineNumber = e.target.position.lineNumber;
       if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
-        Store.activeLine = lineNumber;
-
-        Helper.monacoInstance.setPosition({
-          lineNumber: this.activeLine,
-          column: 1,
-        });
+        Store.setActiveLine(lineNumber);
       }
     },
   },
@@ -99,6 +94,15 @@ const RepoEditor = {
     blobRaw() {
       if (Helper.monacoInstance && !this.isTree) {
         this.setupEditor();
+      }
+    },
+
+    activeLine() {
+      if (Helper.monacoInstance) {
+        Helper.monacoInstance.setPosition({
+          lineNumber: this.activeLine,
+          column: 1,
+        });
       }
     },
   },

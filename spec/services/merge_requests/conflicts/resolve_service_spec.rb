@@ -6,7 +6,15 @@ describe MergeRequests::Conflicts::ResolveService do
   let(:project) { create(:project, :public, :repository) }
 
   let(:forked_project) do
+<<<<<<< HEAD
     fork_project_with_submodules(project, user)
+=======
+    forked_project = fork_project(project, user)
+    TestEnv.copy_repo(forked_project,
+                      bare_repo: TestEnv.forked_repo_path_bare,
+                      refs: TestEnv::FORKED_BRANCH_SHA)
+    forked_project
+>>>>>>> ce-com/master
   end
 
   let(:merge_request) do

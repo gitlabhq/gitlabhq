@@ -110,6 +110,10 @@
   padding: 3px 12px;
   margin: auto;
   align-items: center;
+
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+  }
 }
 
 .disabled-comment .issuable-note-warning {
@@ -128,6 +132,25 @@
   }
 }
 
+<<<<<<< HEAD
+.disabled-comment .issuable-note-warning {
+  border: none;
+  border-radius: $label-border-radius;
+  padding-top: $gl-vert-padding;
+  padding-bottom: $gl-vert-padding;
+
+  .icon svg {
+    position: relative;
+    top: 2px;
+    margin-right: $btn-xs-side-margin;
+    width: $gl-font-size;
+    height: $gl-font-size;
+    fill: $orange-600;
+  }
+}
+
+=======
+>>>>>>> ce-com/master
 .sidebar-item-value {
   .fa {
     background-color: inherit;
@@ -157,8 +180,11 @@
 }
 
 .discussion-form {
-  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-form-container {
+  padding: $gl-padding-top $gl-padding $gl-padding;
 }
 
 .discussion-notes .disabled-comment {

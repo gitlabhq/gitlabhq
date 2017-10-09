@@ -24,7 +24,7 @@ $new-sidebar-collapsed-width: 50px;
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: calc(100% - #{$new-navbar-height});
+    height: calc(100% - #{$header-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -87,7 +87,7 @@ $new-sidebar-collapsed-width: 50px;
   z-index: 400;
   width: $new-sidebar-width;
   transition: left $sidebar-transition-duration;
-  top: $new-navbar-height;
+  top: $header-height;
   bottom: 0;
   left: 0;
   background-color: $gray-normal;
@@ -197,7 +197,7 @@ $new-sidebar-collapsed-width: 50px;
 }
 
 .with-performance-bar .nav-sidebar {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 }
 
 .sidebar-sub-level-items {
@@ -495,7 +495,7 @@ $new-sidebar-collapsed-width: 50px;
 // Make issue boards full-height now that sub-nav is gone
 
 .boards-list {
-  height: calc(100vh - #{$new-navbar-height});
+  height: calc(100vh - #{$header-height});
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
@@ -506,5 +506,5 @@ $new-sidebar-collapsed-width: 50px;
 }
 
 .with-performance-bar .boards-list {
-  height: calc(100vh - #{$new-navbar-height} - #{$performance-bar-height});
+  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
 }

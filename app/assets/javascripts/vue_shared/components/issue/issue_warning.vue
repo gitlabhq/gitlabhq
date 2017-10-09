@@ -32,7 +32,11 @@
   <div class="issuable-note-warning">
     <i
       aria-hidden="true"
+<<<<<<< HEAD
       class="fa"
+=======
+      class="fa icon"
+>>>>>>> ce-com/master
       :class="iconClass"
       v-if="!isLockedAndConfidential"
     ></i>

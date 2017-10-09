@@ -412,6 +412,7 @@ class MergeRequest < ActiveRecord::Base
     return true unless source_project
 
     !source_project.in_fork_network_of?(target_project)
+<<<<<<< HEAD
   end
 
   def validate_approvals_before_merge
@@ -428,6 +429,8 @@ class MergeRequest < ActiveRecord::Base
       errors.add :validate_approvals_before_merge,
                  'Number of approvals must be greater than those on target project'
     end
+=======
+>>>>>>> ce-com/master
   end
 
   def reopenable?

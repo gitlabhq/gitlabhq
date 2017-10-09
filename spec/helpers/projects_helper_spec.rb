@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
+  describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
 
     it "includes the route" do

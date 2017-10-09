@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../vue_shared/translate';
+import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';
 import stagePlanComponent from './components/stage_plan_component.vue';
 import stageComponent from './components/stage_component.vue';
@@ -44,6 +45,7 @@ $(() => {
       },
     },
     components: {
+      banner,
       'stage-issue-component': stageComponent,
       'stage-plan-component': stagePlanComponent,
       'stage-code-component': stageCodeComponent,

@@ -6,6 +6,7 @@ describe ForkedProjectLink, "add link on fork" do
   let(:project_from) { create(:project, :repository) }
   let(:project_to) { fork_project(project_from, user) }
   let(:user) { create(:user) }
+<<<<<<< HEAD
 
   def fork_project(from_project, user)
     shell = double('gitlab_shell', fork_repository: true)
@@ -15,6 +16,8 @@ describe ForkedProjectLink, "add link on fork" do
 
     service.execute
   end
+=======
+>>>>>>> ce-com/master
 
   before do
     project_from.add_reporter(user)

@@ -281,7 +281,7 @@ describe 'Issues', :js do
       visit namespace_project_issues_path(user.namespace, project1)
     end
 
-    it 'changes incoming email address token', js: true do
+    it 'changes incoming email address token', :js do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
       find('.incoming-email-token-reset').trigger('click')
@@ -297,7 +297,7 @@ describe 'Issues', :js do
     end
   end
 
-  describe 'update labels from issue#show', js: true do
+  describe 'update labels from issue#show', :js do
     let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
     let!(:label) { create(:label, project: project) }
 
@@ -320,7 +320,7 @@ describe 'Issues', :js do
     let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
     context 'by authorized user' do
-      it 'allows user to select unassigned', js: true do
+      it 'allows user to select unassigned', :js do
         visit project_issue_path(project, issue)
 
         page.within('.assignee') do
@@ -338,7 +338,7 @@ describe 'Issues', :js do
         expect(issue.reload.assignees).to be_empty
       end
 
-      it 'allows user to select an assignee', js: true do
+      it 'allows user to select an assignee', :js do
         issue2 = create(:issue, project: project, author: user)
         visit project_issue_path(project, issue2)
 
@@ -359,7 +359,7 @@ describe 'Issues', :js do
         end
       end
 
-      it 'allows user to unselect themselves', js: true do
+      it 'allows user to unselect themselves', :js do
         issue2 = create(:issue, project: project, author: user)
         visit project_issue_path(project, issue2)
 
@@ -392,7 +392,7 @@ describe 'Issues', :js do
         project.team << [[guest], :guest]
       end
 
-      it 'shows assignee text', js: true do
+      it 'shows assignee text', :js do
         sign_out(:user)
         sign_in(guest)
 
@@ -428,7 +428,7 @@ describe 'Issues', :js do
     let!(:milestone) { create(:milestone, project: project) }
 
     context 'by authorized user' do
-      it 'allows user to select unassigned', js: true do
+      it 'allows user to select unassigned', :js do
         visit project_issue_path(project, issue)
 
         page.within('.milestone') do
@@ -446,7 +446,7 @@ describe 'Issues', :js do
         expect(issue.reload.milestone).to be_nil
       end
 
-      it 'allows user to de-select milestone', js: true do
+      it 'allows user to de-select milestone', :js do
         visit project_issue_path(project, issue)
 
         page.within('.milestone') do
@@ -476,7 +476,7 @@ describe 'Issues', :js do
         issue.save
       end
 
-      it 'shows milestone text', js: true do
+      it 'shows milestone text', :js do
         sign_out(:user)
         sign_in(guest)
 
@@ -509,7 +509,7 @@ describe 'Issues', :js do
       end
     end
 
-    context 'dropzone upload file', js: true do
+    context 'dropzone upload file', :js do
       before do
         visit new_project_issue_path(project)
       end
@@ -580,7 +580,7 @@ describe 'Issues', :js do
   end
 
   describe 'due date' do
-    context 'update due on issue#show', js: true do
+    context 'update due on issue#show', :js do
       let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
 
       before do
@@ -624,8 +624,8 @@ describe 'Issues', :js do
     end
   end
 
-  describe 'title issue#show', js: true do
-    it 'updates the title', js: true do
+  describe 'title issue#show', :js do
+    it 'updates the title', :js do
       issue = create(:issue, author: user, assignees: [user], project: project, title: 'new title')
 
       visit project_issue_path(project, issue)
@@ -639,7 +639,7 @@ describe 'Issues', :js do
     end
   end
 
-  describe 'confidential issue#show', js: true do
+  describe 'confidential issue#show', :js do
     it 'shows confidential sibebar information as confidential and can be turned off' do
       issue = create(:issue, :confidential, project: project)
 

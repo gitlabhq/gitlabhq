@@ -29,8 +29,11 @@ variables:
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
+<<<<<<< HEAD
   # This hack is needed to make ES not that memory hungry
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+=======
+>>>>>>> ce-com/master
 
 before_script:
   - bundle --version
@@ -277,6 +280,7 @@ flaky-examples-check:
     NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   stage: post-test
   allow_failure: yes
+  retry: 0
   only:
     - branches
   except:
@@ -436,6 +440,7 @@ ee_compat_check:
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   allow_failure: yes
+  retry: 0
   cache:
     key: "ee_compat_check_repo"
     paths:

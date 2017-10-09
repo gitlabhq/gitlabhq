@@ -7,9 +7,12 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
+<<<<<<< HEAD
 /* global Commit */
 /* global CommitsList */
 /* global NewCommitForm */
+=======
+>>>>>>> ce-com/master
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
@@ -40,6 +43,7 @@
 /* global AdminEmailSelect */
 /* global ShortcutsWiki */
 
+import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
@@ -81,7 +85,9 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -265,7 +271,7 @@ import initGroupAnalytics from './init_group_analytics';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -345,7 +351,6 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -585,6 +590,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
+<<<<<<< HEAD
         case 'admin:licenses:new':
           const $licenseFile = $('.license-file');
           const $licenseKey = $('.license-key');
@@ -603,6 +609,13 @@ import initGroupAnalytics from './init_group_analytics';
           initGroupAnalytics();
           break;
 
+=======
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
+>>>>>>> ce-com/master
       }
       switch (path[0]) {
         case 'sessions':
@@ -635,7 +648,7 @@ import initGroupAnalytics from './init_group_analytics';
                   new Labels();
               }
             case 'abuse_reports':
-              new gl.AbuseReports();
+              new AbuseReports();
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));

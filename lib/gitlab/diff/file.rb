@@ -27,16 +27,23 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(line)
+      def position(position_marker, position_type: :text)
         return unless diff_refs
 
-        Position.new(
+        data = {
+          diff_refs: diff_refs,
+          position_type: position_type.to_s,
           old_path: old_path,
-          new_path: new_path,
-          old_line: line.old_line,
-          new_line: line.new_line,
-          diff_refs: diff_refs
-        )
+          new_path: new_path
+        }
+
+        if position_type == :text
+          data.merge!(text_position_properties(position_marker))
+        else
+          data.merge!(image_position_properties(position_marker))
+        end
+
+        Position.new(data)
       end
 
       def line_code(line)
@@ -227,6 +234,14 @@ module Gitlab
       end
 
       private
+
+      def text_position_properties(line)
+        { old_line: line.old_line, new_line: line.new_line }
+      end
+
+      def image_position_properties(image_point)
+        image_point.to_h
+      end
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id

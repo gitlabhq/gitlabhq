@@ -241,7 +241,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
     end
   end
 
-  describe '#revert_renames', redis: true do
+  describe '#revert_renames', :redis do
     it 'renames the routes back to the previous values' do
       project = create(:project, :repository, path: 'a-project', namespace: namespace)
       subject.rename_namespace(namespace)

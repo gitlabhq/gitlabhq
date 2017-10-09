@@ -44,7 +44,7 @@ describe('Graph', () => {
         .not.toEqual(-1);
     });
 
-    it('outterViewBox gets a width and height property based on the DOM size of the element', () => {
+    it('outerViewBox gets a width and height property based on the DOM size of the element', () => {
       const component = createComponent({
         graphData: convertedMetrics[1],
         classType: 'col-md-6',
@@ -52,8 +52,8 @@ describe('Graph', () => {
         deploymentData,
       });
 
-      const viewBoxArray = component.outterViewBox.split(' ');
-      expect(typeof component.outterViewBox).toEqual('string');
+      const viewBoxArray = component.outerViewBox.split(' ');
+      expect(typeof component.outerViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.graphWidth.toString());
       expect(viewBoxArray[3]).toEqual(component.graphHeight.toString());
     });

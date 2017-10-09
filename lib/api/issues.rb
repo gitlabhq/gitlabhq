@@ -49,10 +49,13 @@ module API
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
+<<<<<<< HEAD
       end
 
       params :issue_params_ee do
         optional :weight, type: Integer, values: 0..9, desc: 'The weight of the issue'
+=======
+>>>>>>> ce-com/master
       end
 
       params :issue_params do
@@ -199,9 +202,14 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
+<<<<<<< HEAD
         at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
                         :labels, :created_at, :due_date, :confidential, :state_event,
                         :weight, :discussion_locked
+=======
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
+                        :labels, :created_at, :due_date, :confidential, :state_event
+>>>>>>> ce-com/master
       end
       put ':id/issues/:issue_iid' do
         issue = user_project.issues.find_by!(iid: params.delete(:issue_iid))

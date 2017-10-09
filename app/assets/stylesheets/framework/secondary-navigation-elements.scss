@@ -1,12 +1,11 @@
-
-
+// For tabbed navigation links, scrolling tabs, etc. For all top/main navigation,
+// please check nav.scss
 .nav-links {
   display: flex;
   padding: 0;
   margin: 0;
   list-style: none;
   height: auto;
-  border-bottom: 1px solid $border-color;
 
   li {
     display: flex;
@@ -24,7 +23,6 @@
       &:active,
       &:focus {
         text-decoration: none;
-        border-bottom: 2px solid $gray-darkest;
         color: $black;
 
         .badge {
@@ -34,41 +32,11 @@
     }
 
     &.active a {
-      border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: $gl-font-weight-bold;
 
       .badge {
         color: $black;
-      }
-    }
-  }
-
-  &.sub-nav {
-    text-align: center;
-    background-color: $gray-normal;
-
-    .container-fluid {
-      background-color: $gray-normal;
-      margin-bottom: 0;
-      display: flex;
-    }
-
-    li {
-      &.active a {
-        border-bottom: none;
-        color: $link-underline-blue;
-      }
-
-      a {
-        margin: 0;
-        padding: 11px 10px 9px;
-
-        &:hover,
-        &:active,
-        &:focus {
-          border-color: transparent;
-        }
       }
     }
   }
@@ -88,17 +56,6 @@
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-xs-max) {
       width: 100%;
-    }
-  }
-
-  .nav-search {
-    display: inline-block;
-    width: 100%;
-    padding: 11px 0;
-
-    /* Small devices (phones, tablets, 768px and lower) */
-    @media (min-width: $screen-sm-min) {
-      width: 50%;
     }
   }
 
@@ -147,12 +104,6 @@
       &:last-child {
         margin-right: 0;
         float: right;
-      }
-    }
-
-    &.nav-controls-new-nav {
-      > .dropdown {
-        margin-right: 0;
       }
     }
 
@@ -275,236 +226,8 @@
   pre {
     width: 100%;
   }
-}
 
-.project-item-select-holder.btn-group {
-  display: flex;
-  max-width: 350px;
-  overflow: hidden;
-  float: right;
-
-  .new-project-item-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .new-project-item-select-button {
-    width: 32px;
-  }
-}
-
-.empty-state .project-item-select-holder.btn-group {
-  float: none;
-  display: inline-block;
-
-  .btn {
-    // overrides styles applied to plain `.empty-state .btn`
-    margin: 10px 0;
-    max-width: 300px;
-    width: auto;
-
-    @media(max-width: $screen-xs-max) {
-      max-width: 250px;
-    }
-
-  }
-}
-
-.new-project-item-select-button .fa-caret-down {
-  margin-left: 2px;
-}
-
-.layout-nav {
-  width: 100%;
-  background: $gray-light;
-  border-bottom: 1px solid $border-color;
-  transition: padding $sidebar-transition-duration;
-  text-align: center;
-  margin-top: $new-navbar-height;
-
-  .container-fluid {
-    position: relative;
-
-    .nav-control {
-      @media (max-width: $screen-sm-max) {
-        margin-right: 2px;
-      }
-    }
-  }
-
-  .controls {
-    float: right;
-    padding: 7px 0 0;
-
-    i {
-      color: $layout-link-gray;
-    }
-
-    .fa-rss,
-    .fa-cog {
-      font-size: 16px;
-    }
-
-    .fa-caret-down {
-      margin-left: 5px;
-      color: $gl-text-color-secondary;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 7px;
-      right: 15px;
-      z-index: 300;
-
-      li.active {
-        font-weight: $gl-font-weight-bold;
-      }
-    }
-  }
-
-  .nav-links {
-    border-bottom: none;
-    height: 51px;
-
-    @media (min-width: $screen-sm-min) {
-      justify-content: center;
-    }
-
-    li {
-      a {
-        padding-top: 10px;
-      }
-    }
-  }
-}
-
-.with-performance-bar .layout-nav {
-  margin-top: $header-height + $performance-bar-height;
-}
-
-.scrolling-tabs-container {
-  position: relative;
-
-  .merge-request-tabs-container & {
-    overflow: hidden;
-  }
-
-  .nav-links {
-    @include scrolling-links();
-  }
-
-  .fade-right {
-    @include fade(left, $gray-light);
-    right: -5px;
-
-    .fa {
-      right: -7px;
-    }
-  }
-
-  .fade-left {
-    @include fade(right, $gray-light);
-    left: -5px;
-    text-align: center;
-
-    .fa {
-      left: -7px;
-    }
-  }
-
-  &.sub-nav-scroll {
-
-    .fade-right {
-      @include fade(left, $gray-normal);
-      right: 0;
-
-      .fa {
-        right: -23px;
-      }
-    }
-
-    .fade-left {
-      @include fade(right, $gray-normal);
-      left: 0;
-
-      .fa {
-        left: 10px;
-      }
-    }
-  }
-}
-
-.nav-block {
-  position: relative;
-
-  .nav-links {
-    @include scrolling-links();
-
-    .fade-right {
-      @include fade(left, $white-light);
-      right: -5px;
-
-      .fa {
-        right: -7px;
-      }
-    }
-
-    .fade-left {
-      @include fade(right, $white-light);
-      left: -5px;
-
-      .fa {
-        left: -7px;
-      }
-    }
-  }
-}
-
-.page-with-layout-nav {
-  .right-sidebar {
-    top: ($header-height + 1) * 2;
-  }
-
-  &.page-with-sub-nav {
-    .right-sidebar {
-      top: ($header-height + 1) * 3;
-
-      &.affix {
-        top: $header-height;
-      }
-    }
-  }
-}
-
-.with-performance-bar .page-with-layout-nav {
-  .right-sidebar {
-    top: ($header-height + 1) * 2 + $performance-bar-height;
-  }
-
-  &.page-with-sub-nav {
-    .right-sidebar {
-      top: ($header-height + 1) * 3 + $performance-bar-height;
-
-      &.affix {
-        top: $header-height + $performance-bar-height;
-      }
-    }
-  }
-}
-
-.nav-block {
-  &.activities {
-    border-bottom: 1px solid $border-color;
-
-    .nav-links {
-      border-bottom: none;
-    }
-  }
-}
-
-@media (max-width: $screen-xs-max) {
-  .top-area {
+  @media (max-width: $screen-xs-max) {
     flex-flow: row wrap;
 
     .nav-controls {
@@ -536,6 +259,37 @@
       .controls-item-full {
         flex: 1 1 100%;
       }
+    }
+  }
+}
+
+.scrolling-tabs-container {
+  position: relative;
+
+  .merge-request-tabs-container & {
+    overflow: hidden;
+  }
+
+  .nav-links {
+    @include scrolling-links();
+  }
+
+  .fade-right {
+    @include fade(left, $gray-light);
+    right: -5px;
+
+    .fa {
+      right: -7px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, $gray-light);
+    left: -5px;
+    text-align: center;
+
+    .fa {
+      left: -7px;
     }
   }
 }
@@ -575,4 +329,75 @@
       top: 11px;
     }
   }
+}
+
+.nav-block {
+  position: relative;
+
+  .nav-links {
+    @include scrolling-links();
+
+    .fade-right {
+      @include fade(left, $white-light);
+      right: -5px;
+
+      .fa {
+        right: -7px;
+      }
+    }
+
+    .fade-left {
+      @include fade(right, $white-light);
+      left: -5px;
+
+      .fa {
+        left: -7px;
+      }
+    }
+  }
+
+  &.activities {
+    border-bottom: 1px solid $border-color;
+
+    .nav-links {
+      border-bottom: none;
+    }
+  }
+}
+
+.project-item-select-holder.btn-group {
+  display: flex;
+  max-width: 350px;
+  overflow: hidden;
+  float: right;
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.empty-state .project-item-select-holder.btn-group {
+  float: none;
+  display: inline-block;
+
+  .btn {
+    // overrides styles applied to plain `.empty-state .btn`
+    margin: 10px 0;
+    max-width: 300px;
+    width: auto;
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 250px;
+    }
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Internationalization for GitLab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10669) in GitLab 9.2.
@@ -305,3 +306,6 @@ Let's suppose you want to add translations for a new language, let's say French.
     git add locale/fr/ app/assets/javascripts/locale/fr/
     git commit -m "Add French translations for Cycle Analytics page"
     ```
+=======
+This document was moved to [a new location](i18n/index.md).
+>>>>>>> ce-com/master
