@@ -51,9 +51,8 @@ describe('RepoFileButtons', () => {
     expect(vm.$el.querySelector('.js-viewer-buttons')).toEqual(null);
   });
 
-  it('renders Display Source and Display Rendered buttons', (done) => {
-    const vm = createComponent();
-
+  it('renders Display Source and Display Rendered buttons', () => {
+    RepoStore.editMode = false;
     RepoStore.activeFile.previewMode = 'rich';
     RepoStore.activeFile.rich_viewer = {
       switcher_title: 'rich viewer',
@@ -64,20 +63,18 @@ describe('RepoFileButtons', () => {
       switcher_icon: 'simple-icon',
     };
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.js-viewer-buttons')).toBeDefined();
-      const simpleViewerBtn = vm.$el.querySelector('.js-btn-simple-view');
-      const richViewerBtn = vm.$el.querySelector('.js-btn-rich-view');
+    const vm = createComponent();
+    expect(vm.$el.querySelector('.js-viewer-buttons')).toBeDefined();
+    const simpleViewerBtn = vm.$el.querySelector('.js-btn-simple-view');
+    const richViewerBtn = vm.$el.querySelector('.js-btn-rich-view');
 
-      expect(simpleViewerBtn.querySelector('i').classList.contains('fa-simple-icon')).toBeTruthy();
-      expect(simpleViewerBtn.getAttribute('data-original-title')).toEqual('Display simple viewer');
+    expect(simpleViewerBtn.querySelector('i').classList.contains('fa-simple-icon')).toBeTruthy();
+    expect(simpleViewerBtn.getAttribute('data-original-title')).toEqual('Display simple viewer');
 
-      expect(richViewerBtn.querySelector('i').classList.contains('fa-rich-icon')).toBeTruthy();
-      expect(richViewerBtn.classList.contains('active')).toBeTruthy();
+    expect(richViewerBtn.querySelector('i').classList.contains('fa-rich-icon')).toBeTruthy();
+    expect(richViewerBtn.classList.contains('active')).toBeTruthy();
 
-      expect(richViewerBtn.getAttribute('data-original-title')).toEqual('Display rich viewer');
-      done();
-    });
+    expect(richViewerBtn.getAttribute('data-original-title')).toEqual('Display rich viewer');
   });
 
   describe('toggleViewer', () => {
