@@ -185,7 +185,6 @@ describe 'Scoped issue boards', :js do
 
           expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(milestone.title)
-
           expect(page).to have_selector('.card', count: 1)
         end
 
@@ -340,15 +339,6 @@ describe 'Scoped issue boards', :js do
             expect(page).not_to have_content('weight')
           end
         end
-      end
-    end
-
-    context 'add issue' do
-      it 'adds assignee' do
-        visit boards_path(filtered_board)
-
-
-
       end
     end
 
