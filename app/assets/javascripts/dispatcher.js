@@ -78,6 +78,7 @@ import initChangesDropdown from './init_changes_dropdown';
 import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
+import U2FAuthenticate from './u2f/authenticate';
 
 (function() {
   var Dispatcher;
@@ -535,14 +536,16 @@ import AjaxLoadingSpinner from './ajax_loading_spinner';
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
-          gl.u2fAuthenticate = new gl.U2FAuthenticate(
+          const u2fAuthenticate = new U2FAuthenticate(
             $('#js-authenticate-u2f'),
             '#js-login-u2f-form',
             gon.u2f,
             document.querySelector('#js-login-2fa-device'),
             document.querySelector('.js-2fa-form'),
           );
-          gl.u2fAuthenticate.start();
+          u2fAuthenticate.start();
+          // needed in rspec
+          gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
           new Admin();
           switch (path[1]) {
