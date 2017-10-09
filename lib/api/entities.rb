@@ -397,10 +397,7 @@ module API
       end
       expose :due_date
       expose :confidential
-<<<<<<< HEAD
       expose :weight, if: ->(issue, _) { issue.supports_weight? }
-=======
->>>>>>> ce-com/master
       expose :discussion_locked
 
       expose :web_url do |issue, options|
@@ -507,10 +504,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
-<<<<<<< HEAD
       expose :approvals_before_merge
-=======
->>>>>>> ce-com/master
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
