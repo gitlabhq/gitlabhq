@@ -480,7 +480,7 @@
 .dropdown-menu-align-right {
   left: auto;
   right: 0;
-  margin-top: -5px;
+  margin-top: 2px;
 }
 
 .dropdown-menu-selectable {
@@ -757,9 +757,7 @@
 
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
-  #{$selector}.dropdown-menu-align-right {
-    margin-top: 2px;
-  }
+
 }
 
 @media (max-width: $screen-xs-max) {
