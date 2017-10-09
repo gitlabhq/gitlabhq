@@ -6,11 +6,8 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::OptimisticLocking
-<<<<<<< HEAD
 
     prepend ::EE::Ci::Pipeline
-=======
->>>>>>> ce-com/master
 
     belongs_to :project
     belongs_to :user
@@ -78,11 +75,7 @@ module Ci
     enum failure_reason: {
       unknown_failure: 0,
       config_error: 1
-<<<<<<< HEAD
     }.merge(EE_FAILURE_REASONS)
-=======
-    }
->>>>>>> ce-com/master
 
     state_machine :status, initial: :created do
       event :enqueue do
