@@ -100,7 +100,7 @@ class GeoNodeStatus
 
   def lfs_objects_synced_count
     @lfs_objects_synced_count ||= begin
-      relation = Geo::FileRegistry.where(file_type: :lfs)
+      relation = Geo::FileRegistry.synced.where(file_type: :lfs)
 
       if Gitlab::Geo.current_node.restricted_project_ids
         relation = relation.where(file_id: lfs_objects.pluck(:id))
@@ -129,7 +129,7 @@ class GeoNodeStatus
   def attachments_synced_count
     @attachments_synced_count ||= begin
       upload_ids = attachments.pluck(:id)
-      synced_ids = Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
+      synced_ids = Geo::FileRegistry.synced.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
 
       (synced_ids & upload_ids).length
     end
