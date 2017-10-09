@@ -1,7 +1,4 @@
-require 'uri'
-
 module GroupsHelper
-  include Gitlab::CurrentSettings
 
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
@@ -22,12 +19,7 @@ module GroupsHelper
     end
 
     if group.avatar_url
-      if group.private?
-        options[:use_original_source] = true
-        group.avatar_url(use_asset_path: false)
-      else
-        group.avatar_url
-      end
+      group.avatar_url
     else # No Avatar Icon
       ActionController::Base.helpers.image_path('no_group_avatar.png')
     end
@@ -107,11 +99,7 @@ module GroupsHelper
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
         if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-          if group.private?
-            group_icon(group, class: "avatar-tile", width: 15, height: 15, use_original_source: true)
-          else
-            group_icon(group, class: "avatar-tile", width: 15, height: 15)
-          end
+          group_icon(group, class: "avatar-tile", width: 15, height: 15)
         else
           ""
         end

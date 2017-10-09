@@ -1,7 +1,7 @@
 module Avatarable
   extend ActiveSupport::Concern
 
-  def avatar_path(only_path: true, use_asset_path: true)
+  def avatar_path(only_path: true)
     return unless self[:avatar].present?
 
     # If only_path is true then use the relative path of avatar.
@@ -11,7 +11,7 @@ module Avatarable
 
     # If asset_host is set then it is expected that assets are handled by a standalone host.
     # That means we do not want to get GitLab's relative_url_root option anymore.
-    host = (asset_host.present? && use_asset_path) ? asset_host : gitlab_host
+    host = (asset_host.present? && (!respond_to?(:public?) || public?)) ? asset_host : gitlab_host
 
     [host, avatar.url].join
   end

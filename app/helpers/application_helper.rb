@@ -41,7 +41,7 @@ module ApplicationHelper
       end
 
     if project.avatar_url
-      image_tag project.avatar_url(use_asset_path: project.public?), options
+      image_tag project.avatar_url, options
     else # generated icon
       project_identicon(project, options)
     end
