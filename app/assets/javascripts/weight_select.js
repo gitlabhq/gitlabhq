@@ -16,9 +16,10 @@
         abilityName = $dropdown.data('ability-name');
         $loading = $block.find('.block-loading').fadeOut();
         const fieldName = options.fieldName || $dropdown.data("field-name");
+        const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 
         if (Object.keys(options).includes('selected')) {
-          $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`).val(options.selected);
+          inputField.val(options.selected);
         }
 
         updateWeight = function(selected) {
@@ -68,14 +69,14 @@
 
             if (options.handleClick) {
               e.preventDefault();
-              selected = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`).val();
+              selected = inputField.val();
               options.handleClick(selected);
             } else if ($(dropdown).is(".js-filter-submit")) {
               return $(dropdown).parents('form').submit();
             } else if ($dropdown.is('.js-issuable-form-weight')) {
               e.preventDefault();
             } else {
-              selected = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`).val();
+              selected = inputField.val();
               return updateWeight(selected);
             }
           }
