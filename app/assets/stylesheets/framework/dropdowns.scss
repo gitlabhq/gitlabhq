@@ -143,6 +143,16 @@
   }
 }
 
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
+
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
+}
+
 @mixin dropdown-link {
   display: block;
   position: relative;
@@ -159,9 +169,11 @@
   }
 
   &:hover,
+  &:active,
   &:focus,
   &.is-focused {
-    background-color: $dropdown-link-hover-bg;
+    @include dropdown-item-hover;
+
     text-decoration: none;
 
     .badge {
@@ -239,6 +251,12 @@
     text-align: left;
     list-style: none;
     padding: 0 10px;
+
+    a,
+    button,
+    .menu-item {
+      @include dropdown-link;
+    }
   }
 
   .divider {
@@ -258,10 +276,6 @@
     margin-top: 8px;
     margin-bottom: 8px;
     background-color: $dropdown-divider-color;
-  }
-
-  a {
-    @include dropdown-link;
   }
 
   .dropdown-menu-empty-item a {
@@ -314,6 +328,10 @@
     padding: $gl-btn-padding;
     cursor: pointer;
 
+    &.droplab-item-active button {
+      @include dropdown-item-hover;
+    }
+
     > a,
     > button {
       display: flex;
@@ -321,16 +339,8 @@
       padding: 0;
       border-radius: 0;
       text-overflow: inherit;
-      background-color: inherit;
-      color: inherit;
       border: inherit;
       text-align: left;
-
-      &:hover,
-      &:focus {
-        background-color: inherit;
-        color: inherit;
-      }
 
       &.btn .fa:not(:last-child) {
         margin-left: 5px;
@@ -744,11 +754,6 @@
   }
 }
 
-@mixin dropdown-item-hover {
-  background-color: $dropdown-item-hover-bg;
-  color: $gl-text-color;
-}
-
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
@@ -761,10 +766,6 @@
 
       &:hover {
         background-color: transparent;
-      }
-
-      &.droplab-item-active button {
-        @include dropdown-item-hover;
       }
 
       a,
@@ -786,23 +787,6 @@
           .dropdown-menu-user-username {
             display: block;
           }
-        }
-
-        &.is-focused,
-        &:hover,
-        &:active,
-        &:focus {
-          @include dropdown-item-hover;
-
-          background-color: $dropdown-item-hover-bg;
-          color: $gl-text-color;
-        }
-      }
-
-      &.dropdown-menu-empty-item a {
-        &:hover,
-        &:focus {
-          background-color: transparent;
         }
       }
     }
