@@ -1,7 +1,6 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
 /* global List */
 import _ from 'underscore';
-import Vue from 'vue';
 import Cookies from 'js-cookie';
 import boardsStoreEE from 'ee/boards/stores/boards_store_ee';
 import { getUrlParamsArray } from '../../lib/utils/common_utils';
@@ -24,16 +23,6 @@ gl.issueBoards.BoardsStore = {
   detail: {
     issue: {},
   },
-  boardConfig: {
-    id: false,
-    name: '',
-    labels: [],
-    milestone_id: undefined,
-    milestone: {},
-    assignee: {},
-    assignee_id: '',
-    weight: null,
-  },
   moving: {
     issue: {},
     list: {}
@@ -55,14 +44,6 @@ gl.issueBoards.BoardsStore = {
   showPage(page) {
     this.state.reload = false;
     this.state.currentPage = page;
-  },
-  updateBoardConfig(board = {}) {
-    this.boardConfig.id = board.id;
-    this.boardConfig.name = board.name;
-    this.boardConfig.milestone = board.milestone;
-    this.boardConfig.labels = board.labels || [];
-    this.boardConfig.assignee = board.assignee || {};
-    this.boardConfig.weight = board.weight;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

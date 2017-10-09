@@ -11,6 +11,24 @@ class BoardsStoreEE {
     this.store.removePromotionState = () => {
       this.removePromotion();
     };
+    this.store.boardConfig = {
+      id: false,
+      name: '',
+      labels: [],
+      milestone: {},
+      assignee: {},
+      weight: null,
+    };
+    this.store.updateBoardConfig = this.updateBoardConfig;
+  }
+
+  updateBoardConfig(board = {}) {
+    this.boardConfig.id = board.id;
+    this.boardConfig.name = board.name;
+    this.boardConfig.milestone = board.milestone;
+    this.boardConfig.labels = board.labels || [];
+    this.boardConfig.assignee = board.assignee || {};
+    this.boardConfig.weight = board.weight;
   }
 
   shouldAddPromotionState() {
