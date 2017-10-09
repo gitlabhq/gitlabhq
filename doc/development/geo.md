@@ -1,11 +1,16 @@
 # GitLab Geo
 
 Geo feature requires that we orchestrate a lot of components together.
-For the Database we need to setup replication, writing operations that stores
-data directly to disk replicates asynchronously by sending Webhook requests
-from **Primary** to **Secondary** nodes, and _assets_ are to be replicated in
-a future release using either a shared filesystem architecture or an object
-store setup with geographical replication.
+For the Database we need to setup a streaming replication. Any operation on disk
+is logged in an events table, that will leverage the database replication itself
+from **Primary** to **Secondary** nodes. These events are processed by the 
+**Geo Log Cursor** daemon (on the Secondary) and asynchronous jobs takes care of
+the changes.
+
+To keep track on the state of the replication, **Secondary** nodes includes an
+additional PostgreSQL database, that includes metadata from all the tracked
+repositories and assets. This additional database is required because we can't
+do any writing operation on the replicated database.
 
 
 ## Primary and Secondary
@@ -37,11 +42,17 @@ if Gitlab::Geo.secondary?
 end
 ```
 
-`.primary?` and `.secondary?` are not mutually excludable, so you should never
+`.primary?` and `.secondary?` are not mutually exclusive, so you should never
 take for granted that when one of them returns `false`, other will be true.
 
 Both methods check if Geo is `.enabled?`, so there is a "third" state where
 both will return false (when Geo is not enabled).
+
+There is also an additional gotcha when dealing with `initializers` or with
+things that happen during initialization time. We use in a few places the
+`Gitlab::Geo.geo_database_configured?` to check if node has the additional
+database which only happens in the secondary node, so we can overcome some
+racing conditions that could happen during bootstrapping of a new node.
 
 
 ## Enablement
@@ -50,8 +61,13 @@ We consider Geo feature enabled when the user has a valid license with the
 feature included, and they have at least one node defined at the Geo Nodes
 screen.
 
+See `Gitlab::Geo.enabled?` and `Gitlab::Geo.license_allows?`.
+
 
 ## Communication
+
+The communication channel has changed since first iteration, you can check here
+historic decisions and why we moved to new implementations.
 
 ### Custom code (GitLab 8.6 and earlier)
 
@@ -66,9 +82,10 @@ improvements made to this communication layer.
 
 There is a specific **internal** endpoint in our api code (Grape),
 that receives all requests from this System Hooks:
-`/api/v3/geo/receive_events`.
+`/api/{v3,v4}/geo/receive_events`.
 
 We switch and filter from each event by the `event_name` field.
+
 
 ### Geo Log Cursor (GitLab 10.0 and up)
 
@@ -76,6 +93,13 @@ Since GitLab 10.0, **System Webhooks** are no longer used, and Geo Log
 Cursor is used instead. The Log Cursor traverses the `Geo::EventLog`
 to see if there are changes since the last time the log was checked
 and will handle repository updates, deletes, changes & renames.
+
+The table is within the replicated database. This has two advantages over the
+old method: 
+
+1. Replication is synchronous and we preserve the order of events
+2. Replication of the events happen at the same time as the changes in the 
+   database
 
 
 ## Read-only
@@ -93,6 +117,7 @@ guard, instead of `Gitlab::Geo.secondary?`.
 Database itself will already be read-only in a replicated setup, so we
 don't need to take any extra step for that.
 
+
 ## File Transfers
 
 Secondary Geo Nodes need to transfer files, such as LFS objects, attachments, avatars,
@@ -101,6 +126,7 @@ that records which objects it needs to transfer.
 
 Files are copied via HTTP(s) and initiated via the
 `/api/v4/geo/transfers/:type/:id` endpoint.
+
 
 ### Authentication
 
@@ -128,9 +154,13 @@ include the SHA256 of the file. An example JWT payload looks like:
 ```
 
 If the data checks out, then the Geo primary sends data via the
-[XSendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+[X-Sendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
 feature, which allows nginx to handle the file transfer without tying up Rails
 or Workhorse.
+
+Please note that JWT requires synchronized clocks between involved machines, 
+otherwise it may fail with an encryption error.
+
 
 ## Geo Tracking Database
 
@@ -150,3 +180,13 @@ To migrate the tracking database, run:
 ```
 bundle exec rake geo:db:migrate
 ```
+
+In 10.1 we are introducing PostgreSQL FDW to bridge this database with the 
+replicated one, so we can perform queries joining tables from both instances.
+
+This is useful for the Geo Log Cursor and improves the performance of some
+synchronization operations.
+
+While FDW is available in older versions of Postgres, we needed to bump the
+minimum required version to 9.6 as this includes many performance improvements
+to the FDW implementation. 
