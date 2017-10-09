@@ -31,9 +31,9 @@ As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRe
 ## GitLab Profiler
 
 
-The goal of [gitlab-profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is
-to help understand why specific URLs may be slow and provide hard data that can
-help reduce load times.
+[Gitlab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) was built to
+help developers understand why specific URLs of their application may be slow
+and to provide hard data that can help reduce load times.
 
 For GitLab.com, you can find the latest results here:
 <http://redash.gitlab.com/dashboard/gitlab-profiler-statistics>
