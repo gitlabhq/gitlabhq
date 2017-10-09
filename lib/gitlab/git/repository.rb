@@ -1082,6 +1082,12 @@ module Gitlab
         @has_visible_content = has_local_branches?
       end
 
+      def fetch(remote = 'origin')
+        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
+
+        popen(args, @path).last.zero?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
