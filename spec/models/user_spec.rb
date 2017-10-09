@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
   include Gitlab::CurrentSettings
+  include ProjectForksHelper
 
   describe 'modules' do
     subject { described_class }
@@ -1431,7 +1432,7 @@ describe User do
   describe "#contributed_projects" do
     subject { create(:user) }
     let!(:project1) { create(:project) }
-    let!(:project2) { create(:project, forked_from_project: project3) }
+    let!(:project2) { fork_project(project3) }
     let!(:project3) { create(:project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
     let!(:push_event) { create(:push_event, project: project1, author: subject) }
@@ -1452,6 +1453,23 @@ describe User do
 
     it "doesn't include IDs for unrelated projects" do
       expect(subject.contributed_projects).not_to include(project2)
+    end
+  end
+
+  describe '#fork_of' do
+    let(:user) { create(:user) }
+
+    it "returns a user's fork of a project" do
+      project = create(:project, :public)
+      user_fork = fork_project(project, user, namespace: user.namespace)
+
+      expect(user.fork_of(project)).to eq(user_fork)
+    end
+
+    it 'returns nil if the project does not have a fork network' do
+      project = create(:project)
+
+      expect(user.fork_of(project)).to be_nil
     end
   end
 
@@ -1507,7 +1525,7 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects', truncate: true do
+  describe '#authorized_projects', :truncate do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1859,7 +1877,7 @@ describe User do
     end
   end
 
-  describe '#refresh_authorized_projects', clean_gitlab_redis_shared_state: true do
+  describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
     let(:project1) { create(:project) }
     let(:project2) { create(:project) }
     let(:user) { create(:user) }

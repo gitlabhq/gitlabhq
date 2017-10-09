@@ -17,7 +17,7 @@ feature 'Dashboard Todos' do
     end
   end
 
-  context 'User has a todo', js: true do
+  context 'User has a todo', :js do
     before do
       create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
       sign_in(user)
@@ -177,7 +177,7 @@ feature 'Dashboard Todos' do
     end
   end
 
-  context 'User has done todos', js: true do
+  context 'User has done todos', :js do
     before do
       create(:todo, :mentioned, :done, user: user, project: project, target: issue, author: author)
       sign_in(user)
@@ -249,7 +249,7 @@ feature 'Dashboard Todos' do
       expect(page).to have_selector('.gl-pagination .page', count: 2)
     end
 
-    describe 'mark all as done', js: true do
+    describe 'mark all as done', :js do
       before do
         visit dashboard_todos_path
         find('.js-todos-mark-all').click
@@ -267,7 +267,7 @@ feature 'Dashboard Todos' do
       end
     end
 
-    describe 'undo mark all as done', js: true do
+    describe 'undo mark all as done', :js do
       before do
         visit dashboard_todos_path
       end

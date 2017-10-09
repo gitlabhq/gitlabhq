@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', js: true do
+feature 'Import/Export - project import integration test', :js do
   include Select2Helper
 
   let(:user) { create(:user) }

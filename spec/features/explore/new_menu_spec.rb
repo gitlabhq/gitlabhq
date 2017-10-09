@@ -128,12 +128,6 @@ feature 'Top Plus Menu', :js do
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
 
-    scenario 'public project has no New Issue Button' do
-      visit project_path(public_project)
-
-      hasnot_topmenuitem("New issue")
-    end
-
     scenario 'public project has no New merge request menu item' do
       visit project_path(public_project)
 

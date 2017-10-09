@@ -156,7 +156,7 @@ describe Gitlab::Shell do
         it_behaves_like '#add_repository'
       end
 
-      context 'without gitaly', skip_gitaly_mock: true do
+      context 'without gitaly', :skip_gitaly_mock do
         it_behaves_like '#add_repository'
       end
     end
@@ -333,7 +333,7 @@ describe Gitlab::Shell do
       end
     end
 
-    describe '#fetch_remote local', skip_gitaly_mock: true do
+    describe '#fetch_remote local', :skip_gitaly_mock do
       it_should_behave_like 'fetch_remote', false
     end
 

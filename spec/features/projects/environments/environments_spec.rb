@@ -145,7 +145,7 @@ feature 'Environments page', :js do
           expect(page).to have_content(action.name.humanize)
         end
 
-        it 'allows to play a manual action', js: true do
+        it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
           find('.js-dropdown-play-icon-container').click

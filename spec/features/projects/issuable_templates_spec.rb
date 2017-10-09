@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-feature 'issuable templates', js: true do
+feature 'issuable templates', :js do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
@@ -116,15 +118,13 @@ feature 'issuable templates', js: true do
   context 'user creates a merge request from a forked project using templates' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:fork_user) { create(:user) }
-    let(:fork_project) { create(:project, :public, :repository) }
-    let(:merge_request) { create(:merge_request, :with_diffs, source_project: fork_project, target_project: project) }
+    let(:forked_project) { fork_project(project, fork_user) }
+    let(:merge_request) { create(:merge_request, :with_diffs, source_project: forked_project, target_project: project) }
 
     background do
       sign_out(:user)
 
       project.team << [fork_user, :developer]
-      fork_project.team << [fork_user, :master]
-      create(:forked_project_link, forked_to_project: fork_project, forked_from_project: project)
 
       sign_in(fork_user)
 

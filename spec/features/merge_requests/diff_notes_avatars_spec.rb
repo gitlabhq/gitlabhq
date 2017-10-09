@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff note avatars', js: true do
+feature 'Diff note avatars', :js do
   include CookieHelper
   include NoteInteractionHelpers
 

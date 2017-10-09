@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'User edits files' do
+  include ProjectForksHelper
   let(:project) { create(:project, :repository, name: 'Shop') }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
@@ -17,7 +18,7 @@ describe 'User edits files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'inserts a content of a file', js: true do
+    it 'inserts a content of a file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -34,7 +35,7 @@ describe 'User edits files' do
       expect(page).not_to have_link('edit')
     end
 
-    it 'commits an edited file', js: true do
+    it 'commits an edited file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -50,7 +51,7 @@ describe 'User edits files' do
       expect(page).to have_content('*.rbca')
     end
 
-    it 'commits an edited file to a new branch', js: true do
+    it 'commits an edited file to a new branch', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -68,7 +69,7 @@ describe 'User edits files' do
       expect(page).to have_content('*.rbca')
     end
 
-    it 'shows the diff of an edited file', js: true do
+    it 'shows the diff of an edited file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -86,7 +87,7 @@ describe 'User edits files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'inserts a content of a file in a forked project', js: true do
+    it 'inserts a content of a file in a forked project', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -107,7 +108,7 @@ describe 'User edits files' do
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
     end
 
-    it 'commits an edited file in a forked project', js: true do
+    it 'commits an edited file in a forked project', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -122,13 +123,42 @@ describe 'User edits files' do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
 
       wait_for_requests
 
       expect(page).to have_content('New commit message')
+    end
+
+    context 'when the user already had a fork of the project', :js do
+      let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
+      before do
+        visit(project2_tree_path_root_ref)
+      end
+
+      it 'links to the forked project for editing' do
+        click_link('.gitignore')
+        find('.js-edit-blob').click
+
+        expect(page).not_to have_link('Fork')
+        expect(page).not_to have_button('Cancel')
+
+        execute_script("ace.edit('editor').setValue('*.rbca')")
+        fill_in(:commit_message, with: 'Another commit', visible: true)
+        click_button('Commit changes')
+
+        fork = user.fork_of(project2)
+
+        expect(current_path).to eq(project_new_merge_request_path(fork))
+
+        wait_for_requests
+
+        expect(page).to have_content('Another commit')
+        expect(page).to have_content("From #{forked_project.full_path}")
+        expect(page).to have_content("into #{project2.full_path}")
+      end
     end
   end
 end

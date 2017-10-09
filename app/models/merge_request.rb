@@ -179,6 +179,10 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  def hook_attrs
+    Gitlab::HookData::MergeRequestBuilder.new(self).build
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
@@ -403,7 +407,7 @@ class MergeRequest < ActiveRecord::Base
     return false unless for_fork?
     return true unless source_project
 
-    !source_project.forked_from?(target_project)
+    !source_project.in_fork_network_of?(target_project)
   end
 
   def reopenable?
@@ -477,7 +481,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -585,24 +589,6 @@ class MergeRequest < ActiveRecord::Base
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
 
     !discussions_to_be_resolved?
-  end
-
-  def hook_attrs
-    attrs = {
-      source: source_project.try(:hook_attrs),
-      target: target_project.hook_attrs,
-      last_commit: nil,
-      work_in_progress: work_in_progress?,
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate
-    }
-
-    if diff_head_commit
-      attrs[:last_commit] = diff_head_commit.hook_attrs
-    end
-
-    attributes.merge!(attrs)
   end
 
   def for_fork?

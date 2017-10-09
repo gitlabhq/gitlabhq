@@ -1,4 +1,4 @@
-RSpec.shared_examples 'project hook data with deprecateds' do |project_key: :project|
+shared_examples 'project hook data with deprecateds' do |project_key: :project|
   it 'contains project data' do
     expect(data[project_key][:name]).to eq(project.name)
     expect(data[project_key][:description]).to eq(project.description)
@@ -17,7 +17,7 @@ RSpec.shared_examples 'project hook data with deprecateds' do |project_key: :pro
   end
 end
 
-RSpec.shared_examples 'project hook data' do |project_key: :project|
+shared_examples 'project hook data' do |project_key: :project|
   it 'contains project data' do
     expect(data[project_key][:name]).to eq(project.name)
     expect(data[project_key][:description]).to eq(project.description)
@@ -32,7 +32,7 @@ RSpec.shared_examples 'project hook data' do |project_key: :project|
   end
 end
 
-RSpec.shared_examples 'deprecated repository hook data' do |project_key: :project|
+shared_examples 'deprecated repository hook data' do
   it 'contains deprecated repository data' do
     expect(data[:repository][:name]).to eq(project.name)
     expect(data[:repository][:description]).to eq(project.description)

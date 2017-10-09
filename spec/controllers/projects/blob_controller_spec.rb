@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Projects::BlobController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
 
   describe "GET show" do
@@ -226,9 +228,8 @@ describe Projects::BlobController do
     end
 
     context 'when user has forked project' do
-      let(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
-      let!(:forked_project) { forked_project_link.forked_to_project }
-      let(:guest) { forked_project.owner }
+      let!(:forked_project) { fork_project(project, guest, namespace: guest.namespace, repository: true) }
+      let(:guest) { create(:user) }
 
       before do
         sign_in(guest)

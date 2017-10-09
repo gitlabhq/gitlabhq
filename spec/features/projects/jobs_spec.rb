@@ -299,7 +299,7 @@ feature 'Jobs' do
       end
 
       shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', js: true do
+        it 'shows variable key and value after click', :js do
           expect(page).to have_css('.reveal-variables')
           expect(page).not_to have_css('.js-build-variable')
           expect(page).not_to have_css('.js-build-value')

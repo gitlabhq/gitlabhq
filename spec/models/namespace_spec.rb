@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Namespace do
+  include ProjectForksHelper
+
   let!(:namespace) { create(:namespace) }
 
   describe 'associations' do
@@ -518,6 +520,27 @@ describe Namespace do
           end
         end
       end
+    end
+  end
+
+  describe '#has_forks_of?' do
+    let(:project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
+
+    before do
+      # Reset the fork network relation
+      project.reload
+    end
+
+    it 'knows if there is a direct fork in the namespace' do
+      expect(namespace.find_fork_of(project)).to eq(forked_project)
+    end
+
+    it 'knows when there is as fork-of-fork in the namespace' do
+      other_namespace = create(:namespace)
+      other_fork = fork_project(forked_project, other_namespace.owner, namespace: other_namespace)
+
+      expect(other_namespace.find_fork_of(project)).to eq(other_fork)
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users', js: true do
+feature 'Users', :js do
   let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
 
   scenario 'GET /users/sign_in creates a new user account' do

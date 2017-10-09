@@ -5,7 +5,7 @@
 @mixin gitlab-theme($color-100, $color-200, $color-500, $color-700, $color-800, $color-900, $color-alternate) {
   // Header
 
-  header.navbar-gitlab-new {
+  .navbar-gitlab {
     background-color: $color-900;
 
     .navbar-collapse {
@@ -200,9 +200,9 @@ body {
   &.ui_light {
     @include gitlab-theme($theme-gray-900, $theme-gray-700, $theme-gray-800, $theme-gray-700, $theme-gray-700, $theme-gray-100, $theme-gray-700);
 
-    header.navbar-gitlab-new {
+    .navbar-gitlab {
       background-color: $theme-gray-100;
-      box-shadow: 0 2px 0 0 $border-color;
+      box-shadow: 0 1px 0 0 $border-color;
 
       .logo-text svg {
         fill: $theme-gray-900;

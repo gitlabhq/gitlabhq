@@ -12,7 +12,7 @@ describe 'Issue Sidebar on Mobile' do
     sign_in(user)
   end
 
-  context 'mobile sidebar on merge requests', js: true do
+  context 'mobile sidebar on merge requests', :js do
     before do
       visit project_merge_request_path(merge_request.project, merge_request)
     end
@@ -20,7 +20,7 @@ describe 'Issue Sidebar on Mobile' do
     it_behaves_like "issue sidebar stays collapsed on mobile"
   end
 
-  context 'mobile sidebar on issues', js: true do
+  context 'mobile sidebar on issues', :js do
     before do
       visit project_issue_path(project, issue)
     end

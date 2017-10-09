@@ -80,7 +80,7 @@ feature 'Dashboard Projects' do
     end
   end
 
-  describe 'with a pipeline', clean_gitlab_redis_shared_state: true do
+  describe 'with a pipeline', :clean_gitlab_redis_shared_state do
     let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do

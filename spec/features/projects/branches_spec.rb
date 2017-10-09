@@ -46,7 +46,7 @@ describe 'Branches' do
     end
 
     describe 'Find branches' do
-      it 'shows filtered branches', js: true do
+      it 'shows filtered branches', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -58,7 +58,7 @@ describe 'Branches' do
     end
 
     describe 'Delete unprotected branch' do
-      it 'removes branch after confirmation', js: true do
+      it 'removes branch after confirmation', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'

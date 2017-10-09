@@ -60,6 +60,8 @@ class GpgSignature < ActiveRecord::Base
   end
 
   def gpg_commit
+    return unless commit
+
     Gitlab::Gpg::Commit.new(commit)
   end
 end

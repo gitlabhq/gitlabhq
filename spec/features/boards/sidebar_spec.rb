@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards', js: true do
+describe 'Issue Boards', :js do
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
   let(:project)      { create(:project, :public) }

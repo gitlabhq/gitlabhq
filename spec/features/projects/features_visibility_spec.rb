@@ -6,7 +6,7 @@ describe 'Edit Project Settings' do
   let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
-  describe 'project features visibility selectors', js: true do
+  describe 'project features visibility selectors', :js do
     before do
       project.team << [member, :master]
       sign_in(member)
@@ -163,7 +163,7 @@ describe 'Edit Project Settings' do
     end
   end
 
-  describe 'repository visibility', js: true do
+  describe 'repository visibility', :js do
     before do
       project.team << [member, :master]
       sign_in(member)

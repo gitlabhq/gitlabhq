@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Git LFS API and storage' do
   include WorkhorseHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
@@ -824,6 +825,34 @@ describe 'Git LFS API and storage' do
     end
   end
 
+  describe 'when handling lfs batch request on a read-only GitLab instance' do
+    let(:authorization) { authorize_user }
+    let(:project) { create(:project) }
+    let(:path) { "#{project.http_url_to_repo}/info/lfs/objects/batch" }
+    let(:body) do
+      { 'objects' => [{ 'oid' => sample_oid, 'size' => sample_size }] }
+    end
+
+    before do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+      project.team << [user, :master]
+      enable_lfs
+    end
+
+    it 'responds with a 200 message on download' do
+      post_lfs_json path, body.merge('operation' => 'download'), headers
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'responds with a 403 message on upload' do
+      post_lfs_json path, body.merge('operation' => 'upload'), headers
+
+      expect(response).to have_gitlab_http_status(403)
+      expect(json_response).to include('message' => 'You cannot write to this read-only GitLab instance.')
+    end
+  end
+
   describe 'when pushing a lfs object' do
     before do
       enable_lfs
@@ -1171,11 +1200,6 @@ describe 'Git LFS API and storage' do
 
   def authorize_user_key
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
-  end
-
-  def fork_project(project, user, object = nil)
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(project, user, {}).execute
   end
 
   def post_lfs_json(url, body = nil, headers = nil)

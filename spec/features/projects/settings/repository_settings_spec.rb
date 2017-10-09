@@ -23,7 +23,7 @@ feature 'Repository settings' do
   context 'for master' do
     given(:role) { :master }
 
-    context 'Deploy Keys', js: true do
+    context 'Deploy Keys', :js do
       let(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }
       let(:new_ssh_key) { attributes_for(:key)[:key] }

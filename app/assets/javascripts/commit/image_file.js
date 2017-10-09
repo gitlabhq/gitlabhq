@@ -1,4 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, max-len */
+import 'vendor/jquery.waitforimages';
+
 (function() {
   gl.ImageFile = (function() {
     var prepareFrames;
@@ -17,15 +19,10 @@
 
             // Load two-up view after images are loaded
             // so that we can display the correct width and height information
-            const images = $('.two-up.view img', _this.file);
-            let loadedCount = 0;
+            const $images = $('.two-up.view img', _this.file);
 
-            images.on('load', () => {
-              loadedCount += 1;
-
-              if (loadedCount === images.length) {
-                _this.initView('two-up');
-              }
+            $images.waitForImages(function() {
+              _this.initView('two-up');
             });
           });
         };

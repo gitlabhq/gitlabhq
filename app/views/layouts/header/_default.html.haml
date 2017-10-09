@@ -1,4 +1,4 @@
-%header.navbar.navbar-gitlab.navbar-gitlab-new
+%header.navbar.navbar-gitlab
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
@@ -73,7 +73,7 @@
 
       %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
-        = sprite_icon('more', size: 16, css_class: 'more-icon js-navbar-toggle-right')
-        = sprite_icon('close', size: 16, css_class: 'close-icon js-navbar-toggle-left')
+        = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
+        = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
 = render 'shared/outdated_browser'
