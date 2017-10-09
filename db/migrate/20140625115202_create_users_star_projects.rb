@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateUsersStarProjects < ActiveRecord::Migration
+class CreateUsersStarProjects < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

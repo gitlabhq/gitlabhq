@@ -1,4 +1,4 @@
-class MigrateProjectStatistics < ActiveRecord::Migration
+class MigrateProjectStatistics < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

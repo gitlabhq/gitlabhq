@@ -1,5 +1,5 @@
 # rubocop:disable all
-class LimitsToMysql < ActiveRecord::Migration
+class LimitsToMysql < ActiveRecord::Migration[4.2]
   def up
     return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/
 

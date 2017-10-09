@@ -1,5 +1,5 @@
 # rubocop:disable all
-class InitSchema < ActiveRecord::Migration
+class InitSchema < ActiveRecord::Migration[4.2]
   def up
 
     create_table "events", force: true do |t|

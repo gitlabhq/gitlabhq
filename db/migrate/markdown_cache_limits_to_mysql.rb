@@ -1,4 +1,4 @@
-class MarkdownCacheLimitsToMysql < ActiveRecord::Migration
+class MarkdownCacheLimitsToMysql < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

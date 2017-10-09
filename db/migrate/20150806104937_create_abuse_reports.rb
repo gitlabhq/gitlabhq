@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateAbuseReports < ActiveRecord::Migration
+class CreateAbuseReports < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

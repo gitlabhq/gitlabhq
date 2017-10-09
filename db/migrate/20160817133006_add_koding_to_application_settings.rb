@@ -1,5 +1,5 @@
 # rubocop:disable Migration/SaferBooleanColumn
-class AddKodingToApplicationSettings < ActiveRecord::Migration
+class AddKodingToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

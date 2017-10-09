@@ -1,4 +1,4 @@
-class AddHasExternalWikiToProjects < ActiveRecord::Migration
+class AddHasExternalWikiToProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

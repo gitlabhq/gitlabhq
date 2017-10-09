@@ -1,4 +1,4 @@
-class ChangeArtifactsSizeColumn < ActiveRecord::Migration
+class ChangeArtifactsSizeColumn < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

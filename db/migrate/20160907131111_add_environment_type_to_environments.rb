@@ -1,4 +1,4 @@
-class AddEnvironmentTypeToEnvironments < ActiveRecord::Migration
+class AddEnvironmentTypeToEnvironments < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -1,4 +1,4 @@
-class ChangeSlackServiceToSlackNotificationService < ActiveRecord::Migration
+class ChangeSlackServiceToSlackNotificationService < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

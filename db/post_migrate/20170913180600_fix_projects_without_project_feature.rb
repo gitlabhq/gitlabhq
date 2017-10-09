@@ -1,4 +1,4 @@
-class FixProjectsWithoutProjectFeature < ActiveRecord::Migration
+class FixProjectsWithoutProjectFeature < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

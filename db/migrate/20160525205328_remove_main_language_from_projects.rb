@@ -2,7 +2,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class RemoveMainLanguageFromProjects < ActiveRecord::Migration
+class RemoveMainLanguageFromProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"

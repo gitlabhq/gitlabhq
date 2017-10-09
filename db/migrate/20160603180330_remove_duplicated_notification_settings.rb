@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveDuplicatedNotificationSettings < ActiveRecord::Migration
+class RemoveDuplicatedNotificationSettings < ActiveRecord::Migration[4.2]
   def up
     duplicates = exec_query(%Q{
       SELECT user_id, source_type, source_id

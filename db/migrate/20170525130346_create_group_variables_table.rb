@@ -1,4 +1,4 @@
-class CreateGroupVariablesTable < ActiveRecord::Migration
+class CreateGroupVariablesTable < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

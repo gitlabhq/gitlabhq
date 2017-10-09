@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AllowMergesForForks < ActiveRecord::Migration
+class AllowMergesForForks < ActiveRecord::Migration[4.2]
   def self.up
     add_column :merge_requests, :target_project_id, :integer, :null => true
     execute "UPDATE #{table_name} SET target_project_id = project_id"

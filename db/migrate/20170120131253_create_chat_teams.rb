@@ -1,5 +1,5 @@
 # rubocop:disable Migration/Timestamps
-class CreateChatTeams < ActiveRecord::Migration
+class CreateChatTeams < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

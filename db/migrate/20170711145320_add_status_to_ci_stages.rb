@@ -1,4 +1,4 @@
-class AddStatusToCiStages < ActiveRecord::Migration
+class AddStatusToCiStages < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

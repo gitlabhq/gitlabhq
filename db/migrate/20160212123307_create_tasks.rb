@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateTasks < ActiveRecord::Migration
+class CreateTasks < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

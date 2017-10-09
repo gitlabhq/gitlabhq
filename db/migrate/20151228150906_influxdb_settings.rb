@@ -1,5 +1,5 @@
 # rubocop:disable all
-class InfluxdbSettings < ActiveRecord::Migration
+class InfluxdbSettings < ActiveRecord::Migration[4.2]
   def change
     add_column :application_settings, :metrics_enabled, :boolean, default: false
 

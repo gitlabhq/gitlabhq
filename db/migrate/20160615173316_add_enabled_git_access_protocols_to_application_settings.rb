@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 # rubocop:disable all
 
-class AddEnabledGitAccessProtocolsToApplicationSettings < ActiveRecord::Migration
+class AddEnabledGitAccessProtocolsToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

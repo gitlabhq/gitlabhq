@@ -1,4 +1,4 @@
-class RemoveLockedAtColumnFromMergeRequests < ActiveRecord::Migration
+class RemoveLockedAtColumnFromMergeRequests < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

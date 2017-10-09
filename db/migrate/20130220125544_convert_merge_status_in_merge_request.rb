@@ -1,5 +1,5 @@
 # rubocop:disable all
-class ConvertMergeStatusInMergeRequest < ActiveRecord::Migration
+class ConvertMergeStatusInMergeRequest < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE #{table_name} SET new_merge_status = 'unchecked' WHERE merge_status = 1"
     execute "UPDATE #{table_name} SET new_merge_status = 'can_be_merged' WHERE merge_status = 2"

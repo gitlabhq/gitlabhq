@@ -1,4 +1,4 @@
-class AddColumnDeleteErrorToProjects < ActiveRecord::Migration
+class AddColumnDeleteErrorToProjects < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateEmails < ActiveRecord::Migration
+class CreateEmails < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

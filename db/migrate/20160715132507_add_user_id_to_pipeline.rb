@@ -1,4 +1,4 @@
-class AddUserIdToPipeline < ActiveRecord::Migration
+class AddUserIdToPipeline < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def change

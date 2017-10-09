@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/Timestamps
-class AddProtectedBranchesMergeAccess < ActiveRecord::Migration
+class AddProtectedBranchesMergeAccess < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

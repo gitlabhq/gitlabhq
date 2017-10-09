@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddAuditEvent < ActiveRecord::Migration
+class AddAuditEvent < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

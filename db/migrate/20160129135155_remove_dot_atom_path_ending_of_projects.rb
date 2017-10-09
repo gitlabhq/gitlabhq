@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
+class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration[4.2]
   include Gitlab::ShellAdapter
 
   class ProjectPath

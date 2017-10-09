@@ -1,4 +1,4 @@
-class DefaultRequestAccessProjects < ActiveRecord::Migration
+class DefaultRequestAccessProjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   DOWNTIME = false
 

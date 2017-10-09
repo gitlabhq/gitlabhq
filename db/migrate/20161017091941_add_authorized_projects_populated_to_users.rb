@@ -1,4 +1,4 @@
-class AddAuthorizedProjectsPopulatedToUsers < ActiveRecord::Migration
+class AddAuthorizedProjectsPopulatedToUsers < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

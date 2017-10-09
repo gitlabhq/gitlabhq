@@ -1,5 +1,5 @@
 # rubocop:disable all
-class FixTodos < ActiveRecord::Migration
+class FixTodos < ActiveRecord::Migration[4.2]
  def up
     execute <<-SQL
       DELETE FROM todos

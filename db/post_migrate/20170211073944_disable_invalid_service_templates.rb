@@ -1,4 +1,4 @@
-class DisableInvalidServiceTemplates < ActiveRecord::Migration
+class DisableInvalidServiceTemplates < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   class Service < ActiveRecord::Base

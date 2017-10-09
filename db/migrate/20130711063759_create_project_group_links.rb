@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateProjectGroupLinks < ActiveRecord::Migration
+class CreateProjectGroupLinks < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

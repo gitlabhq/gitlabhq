@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable RemoveIndex
-class RemoveUniqNameIndexFromNamespace < ActiveRecord::Migration
+class RemoveUniqNameIndexFromNamespace < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!

@@ -1,4 +1,4 @@
-class AddEstimateToIssuablesCe < ActiveRecord::Migration
+class AddEstimateToIssuablesCe < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

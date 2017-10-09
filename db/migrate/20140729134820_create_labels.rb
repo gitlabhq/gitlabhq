@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateLabels < ActiveRecord::Migration
+class CreateLabels < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
