@@ -41,14 +41,10 @@ export default {
   },
   methods: {
     labelStyle(label) {
-      let style = '';
-      if (label.textColor) {
-        style += `color: ${label.textColor};`
-      }
-      if (label.color) {
-        style += `background-color: ${label.color};`
-      }
-      return style;
+      return {
+        color: label.textColor,
+        backgroundColor: label.color,
+      };
     },
   },
 };

@@ -46,14 +46,17 @@ export default {
   },
   methods: {
     selectMilestone(milestone) {
+      let id = milestone.id;
       // swap the IDs of 'Any' and 'No' milestone to what backend requires
       if (milestone.title === ANY_MILESTONE) {
-        milestone.id = -1;
+        id = -1;
       } else if (milestone.title === NO_MILESTONE) {
-        milestone.id = 0;
+        id = 0;
       }
-      this.$set(this.board, 'milestone_id', milestone.id);
-      this.$set(this.board, 'milestone', milestone);
+      this.board.milestone = {
+        ...milestone,
+        id,
+      };
     },
   },
   mounted() {
