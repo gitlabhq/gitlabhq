@@ -118,11 +118,20 @@ class Project < ActiveRecord::Base
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
 
+  # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+  # TODO: replace these relations with the fork network versions
+
+  has_one :root_of_fork_network,
+          foreign_key: 'root_project_id',
+          inverse_of: :root_project,
+          class_name: 'ForkNetwork'
+  has_one :fork_network_member
+  has_one :fork_network, through: :fork_network_member
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -165,6 +174,7 @@ class Project < ActiveRecord::Base
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
+  has_one :cluster, class_name: 'Gcp::Cluster', inverse_of: :project
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -179,6 +189,7 @@ class Project < ActiveRecord::Base
   # bulk that doesn't involve loading the rows into memory. As a result we're
   # still using `dependent: :destroy` here.
   has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :build_trace_section_names, class_name: 'Ci::BuildTraceSectionName'
   has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
@@ -813,7 +824,7 @@ class Project < ActiveRecord::Base
   end
 
   def cache_has_external_issue_tracker
-    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
+    update_column(:has_external_issue_tracker, services.external_issue_trackers.any?) if Gitlab::Database.read_write?
   end
 
   def has_wiki?
@@ -833,7 +844,7 @@ class Project < ActiveRecord::Base
   end
 
   def cache_has_external_wiki
-    update_column(:has_external_wiki, services.external_wikis.any?)
+    update_column(:has_external_wiki, services.external_wikis.any?) if Gitlab::Database.read_write?
   end
 
   def find_or_initialize_services(exceptions: [])
@@ -998,6 +1009,11 @@ class Project < ActiveRecord::Base
   end
 
   def forked?
+    return true if fork_network && fork_network.root_project != self
+
+    # TODO: Use only the above conditional using the `fork_network`
+    # This is the old conditional that looks at the `forked_project_link`, we
+    # fall back to this while we're migrating the new models
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
@@ -1117,8 +1133,19 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def forked_from?(project)
-    forked? && project == forked_from_project
+  def forked_from?(other_project)
+    forked? && forked_from_project == other_project
+  end
+
+  def in_fork_network_of?(other_project)
+    # TODO: Remove this in a next release when all fork_networks are populated
+    # This makes sure all MergeRequests remain valid while the projects don't
+    # have a fork_network yet.
+    return true if forked_from?(other_project)
+
+    return false if fork_network.nil? || other_project.fork_network.nil?
+
+    fork_network == other_project.fork_network
   end
 
   def origin_merge_requests

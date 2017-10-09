@@ -7,8 +7,6 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
-/* global CommitsList */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
@@ -36,6 +34,7 @@
 /* global Sidebar */
 /* global ShortcutsWiki */
 
+import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
@@ -76,7 +75,9 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 (function() {
   var Dispatcher;
@@ -238,7 +239,7 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -316,7 +317,6 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -525,6 +525,11 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
       }
       switch (path[0]) {
         case 'sessions':
@@ -557,7 +562,7 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
                   new Labels();
               }
             case 'abuse_reports':
-              new gl.AbuseReports();
+              new AbuseReports();
               break;
           }
           break;

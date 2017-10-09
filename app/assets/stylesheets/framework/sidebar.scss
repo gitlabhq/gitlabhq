@@ -78,16 +78,16 @@
 
 .right-sidebar {
   border-left: 1px solid $border-color;
-  height: calc(100% - #{$new-navbar-height});
+  height: calc(100% - #{$header-height});
 
   &.affix {
     position: fixed;
-    top: $new-navbar-height;
+    top: $header-height;
   }
 }
 
 .with-performance-bar .right-sidebar.affix {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 }
 
 @mixin maintain-sidebar-dimensions {

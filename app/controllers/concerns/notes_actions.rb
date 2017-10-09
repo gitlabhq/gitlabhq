@@ -96,7 +96,8 @@ module NotesActions
           id: note.id,
           discussion_id: note.discussion_id(noteable),
           html: note_html(note),
-          note: note.note
+          note: note.note,
+          on_image: note.try(:on_image?)
         )
 
         discussion = note.to_discussion(noteable)
@@ -122,7 +123,9 @@ module NotesActions
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
-    if params[:view] == 'parallel'
+    on_image = discussion.on_image?
+
+    if params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"
       locals =
         if params[:line_type] == 'old'
@@ -132,7 +135,9 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      locals = { discussions: [discussion] }
+      @fresh_discussion = true
+
+      locals = { discussions: [discussion], on_image: on_image }
     end
 
     render_to_string(

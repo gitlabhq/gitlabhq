@@ -57,6 +57,7 @@ describe Project do
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:active_runners) }
@@ -76,6 +77,7 @@ describe Project do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_one(:cluster) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -690,6 +692,44 @@ describe Project do
       expect do
         project.cache_has_external_issue_tracker
       end.to change { project.has_external_issue_tracker}.to(false)
+    end
+
+    it 'does not cache data when in a read-only GitLab instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect do
+        project.cache_has_external_issue_tracker
+      end.not_to change { project.has_external_issue_tracker }
+    end
+  end
+
+  describe '#cache_has_external_wiki' do
+    let(:project) { create(:project, has_external_wiki: nil) }
+
+    it 'stores true if there is any external_wikis' do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(true)
+    end
+
+    it 'stores false if there is no external_wikis' do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki}.to(false)
+    end
+
+    it 'does not cache data when in a read-only GitLab instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect do
+        project.cache_has_external_wiki
+      end.not_to change { project.has_external_wiki }
     end
   end
 
@@ -1816,6 +1856,59 @@ describe Project do
     end
   end
 
+  context 'forks' do
+    include ProjectForksHelper
+
+    let(:project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(project) }
+
+    describe '#fork_network' do
+      it 'includes a fork of the project' do
+        expect(project.fork_network.projects).to include(forked_project)
+      end
+
+      it 'includes a fork of a fork' do
+        other_fork = fork_project(forked_project)
+
+        expect(project.fork_network.projects).to include(other_fork)
+      end
+
+      it 'includes sibling forks' do
+        other_fork = fork_project(project)
+
+        expect(forked_project.fork_network.projects).to include(other_fork)
+      end
+
+      it 'includes the base project' do
+        expect(forked_project.fork_network.projects).to include(project.reload)
+      end
+    end
+
+    describe '#in_fork_network_of?' do
+      it 'is true for a real fork' do
+        expect(forked_project.in_fork_network_of?(project)).to be_truthy
+      end
+
+      it 'is true for a fork of a fork', :postgresql do
+        other_fork = fork_project(forked_project)
+
+        expect(other_fork.in_fork_network_of?(project)).to be_truthy
+      end
+
+      it 'is true for sibling forks' do
+        sibling = fork_project(project)
+
+        expect(sibling.in_fork_network_of?(forked_project)).to be_truthy
+      end
+
+      it 'is false when another project is given' do
+        other_project = build_stubbed(:project)
+
+        expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
+      end
+    end
+  end
+
   describe '#pushes_since_gc' do
     let(:project) { create(:project) }
 
@@ -2445,7 +2538,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_truthy
       end
 
-      it 'flags as readonly' do
+      it 'flags as read-only' do
         expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
       end
 
@@ -2572,7 +2665,7 @@ describe Project do
         expect(project.migrate_to_hashed_storage!).to be_nil
       end
 
-      it 'does not flag as readonly' do
+      it 'does not flag as read-only' do
         expect { project.migrate_to_hashed_storage! }.not_to change { project.repository_read_only }
       end
     end

@@ -256,7 +256,7 @@ describe 'Merge request', :js do
     end
   end
 
-  context 'user can merge into source project but cannot push to fork', js: true do
+  context 'user can merge into source project but cannot push to fork', :js do
     let(:fork_project) { create(:project, :public, :repository) }
     let(:user2) { create(:user) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User previews markdown changes', js: true do
+feature 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:wiki_content) do

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
+  include ProjectForksHelper
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -76,13 +78,7 @@ describe Projects::UpdateService, '#execute' do
 
   describe 'when updating project that has forks' do
     let(:project) { create(:project, :internal) }
-    let(:forked_project) { create(:forked_project_with_submodules, :internal) }
-
-    before do
-      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id,
-                                               forked_from_project_id: project.id)
-      forked_project.save
-    end
+    let(:forked_project) { fork_project(project) }
 
     it 'updates forks visibility level when parent set to more restrictive' do
       opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }

@@ -270,6 +270,7 @@ flaky-examples-check:
     NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   stage: post-test
   allow_failure: yes
+  retry: 0
   only:
     - branches
   except:
@@ -429,6 +430,7 @@ ee_compat_check:
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   allow_failure: yes
+  retry: 0
   cache:
     key: "ee_compat_check_repo"
     paths:

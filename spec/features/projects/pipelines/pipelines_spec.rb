@@ -453,7 +453,7 @@ describe 'Pipelines', :js do
         visit new_project_pipeline_path(project)
       end
 
-      context 'for valid commit', js: true do
+      context 'for valid commit', :js do
         before do
           click_button project.default_branch
 
@@ -501,7 +501,7 @@ describe 'Pipelines', :js do
       end
 
       describe 'find pipelines' do
-        it 'shows filtered pipelines', js: true do
+        it 'shows filtered pipelines', :js do
           click_button project.default_branch
 
           page.within '.dropdown-menu' do

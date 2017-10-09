@@ -403,7 +403,7 @@ class MergeRequest < ActiveRecord::Base
     return false unless for_fork?
     return true unless source_project
 
-    !source_project.forked_from?(target_project)
+    !source_project.in_fork_network_of?(target_project)
   end
 
   def reopenable?
@@ -477,7 +477,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)

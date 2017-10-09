@@ -214,12 +214,14 @@ module API
           :remove_source_branch,
           :state_event,
           :target_branch,
-          :title
+          :title,
+          :discussion_locked
         ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+        optional :discussion_locked, type: Boolean, desc: 'Whether the MR discussion is locked'
 
         use :optional_params
         at_least_one_of(*at_least_one_of_ce)

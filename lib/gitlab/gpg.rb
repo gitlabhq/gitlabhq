@@ -34,6 +34,21 @@ module Gitlab
       end
     end
 
+    def subkeys_from_key(key)
+      using_tmp_keychain do
+        fingerprints = CurrentKeyChain.fingerprints_from_key(key)
+        raw_keys     = GPGME::Key.find(:public, fingerprints)
+
+        raw_keys.each_with_object({}) do |raw_key, grouped_subkeys|
+          primary_subkey_id = raw_key.primary_subkey.keyid
+
+          grouped_subkeys[primary_subkey_id] = raw_key.subkeys[1..-1].map do |s|
+            { keyid: s.keyid, fingerprint: s.fingerprint }
+          end
+        end
+      end
+    end
+
     def user_infos_from_key(key)
       using_tmp_keychain do
         fingerprints = CurrentKeyChain.fingerprints_from_key(key)

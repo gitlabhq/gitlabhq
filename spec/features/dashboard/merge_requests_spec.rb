@@ -3,12 +3,13 @@ require 'spec_helper'
 feature 'Dashboard Merge Requests' do
   include FilterItemSelectHelper
   include SortingHelper
+  include ProjectForksHelper
 
   let(:current_user) { create :user }
   let(:project) { create(:project) }
 
   let(:public_project) { create(:project, :public, :repository) }
-  let(:forked_project) { Projects::ForkService.new(public_project, current_user).execute }
+  let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
     project.add_master(current_user)
@@ -23,7 +24,7 @@ feature 'Dashboard Merge Requests' do
       visit merge_requests_dashboard_path
     end
 
-    it 'shows projects only with merge requests feature enabled', js: true do
+    it 'shows projects only with merge requests feature enabled', :js do
       find('.new-project-item-select-button').trigger('click')
 
       page.within('.select2-results') do
@@ -88,7 +89,7 @@ feature 'Dashboard Merge Requests' do
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows authored merge requests', js: true do
+    it 'shows authored merge requests', :js do
       filter_item_select('Any Assignee', '.js-assignee-search')
       filter_item_select(current_user.to_reference, '.js-author-search')
 
@@ -100,7 +101,7 @@ feature 'Dashboard Merge Requests' do
       expect(page).not_to have_content(other_merge_request.title)
     end
 
-    it 'shows all merge requests', js: true do
+    it 'shows all merge requests', :js do
       filter_item_select('Any Assignee', '.js-assignee-search')
       filter_item_select('Any Author', '.js-author-search')
 
