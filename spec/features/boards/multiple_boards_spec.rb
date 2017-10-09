@@ -72,16 +72,12 @@ describe 'Multiple Issue Boards', :js do
 
         page.within('.dropdown-menu') do
           click_link 'Delete board'
-
-          page.within('.dropdown-title') do
-            expect(page).to have_content('Delete board')
-          end
-
-          click_link 'Delete'
         end
 
-        click_button board2.name
+        expect(page).to have_content('Are you sure you want to delete this board?')
+        click_button 'Delete'
 
+        click_button board2.name
         page.within('.dropdown-menu') do
           expect(page).not_to have_content(board.name)
           expect(page).to have_content(board2.name)
