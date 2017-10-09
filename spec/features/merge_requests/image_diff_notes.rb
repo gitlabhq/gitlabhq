@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'image diff notes', js: true do
+feature 'image diff notes', :js do
   include NoteInteractionHelpers
 
   let(:user) { create(:user) }

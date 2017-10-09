@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'issuable templates', js: true do
+feature 'issuable templates', :js do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
