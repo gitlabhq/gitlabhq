@@ -1,5 +1,4 @@
 module GroupsHelper
-
   def can_change_group_visibility_level?(group)
     can?(current_user, :change_visibility_level, group)
   end

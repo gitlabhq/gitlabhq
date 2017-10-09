@@ -844,7 +844,7 @@ describe Project do
     let(:project) { create(:project) }
 
     context 'when avatar file is uploaded' do
-      let(:project) { create(:project, :with_avatar) }
+      let(:project) { create(:project, :public, :with_avatar) }
       let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
