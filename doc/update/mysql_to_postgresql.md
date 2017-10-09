@@ -44,19 +44,11 @@ Here's what you'll need to have installed:
     sudo gitlab-ctl reconfigure
     ```
 
-<<<<<<< HEAD
-1. Start Unicorn and PostgreSQL so that we could prepare the schema:
-
-    ``` bash
-    sudo gitlab-ctl start unicorn
-    sudo gitlab-ctl start posgresql
-=======
 1. Start Unicorn and PostgreSQL so that we can prepare the schema:
 
     ``` bash
     sudo gitlab-ctl start unicorn
     sudo gitlab-ctl start postgresql
->>>>>>> ce-com/master
     ```
 
 1. Run the following commands to prepare the schema:
@@ -65,7 +57,6 @@ Here's what you'll need to have installed:
     sudo gitlab-rake db:create db:migrate
     ```
 
-<<<<<<< HEAD
 1. Stop Unicorn in case it's interfering the next step:
 
     ``` bash
@@ -325,6 +316,5 @@ If you experience 500 errors after the migration, try to clear the cache:
 ``` bash
 sudo gitlab-rake cache:clear
 ```
->>>>>>> ce-com/master
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
