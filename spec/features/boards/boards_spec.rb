@@ -560,6 +560,9 @@ describe 'Issue Boards', :js do
   end
 
   def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+    # ensure there is enough horizontal space for four boards
+    page.current_window.resize_to(2000, 800)
+
     drag_to(selector: selector,
             scrollable: '#board-app',
             list_from_index: list_from_index,
