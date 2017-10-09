@@ -108,7 +108,7 @@ feature 'Diff note avatars', :js do
         expect(page).to have_selector('.notes_holder', visible: false)
 
         page.within find_line(position.line_code(project.repository)) do
-          first('img.js-diff-comment-avatar').send_keys(:return)
+          first('img.js-diff-comment-avatar').click
         end
 
         expect(page).to have_selector('.notes_holder')
