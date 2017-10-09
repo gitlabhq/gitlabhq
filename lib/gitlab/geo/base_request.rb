@@ -9,6 +9,7 @@ module Gitlab
         @request_data = request_data
       end
 
+      # Raises GeoNodeNotFoundError if current node is not a Geo node
       def headers
         {
           'Authorization' => geo_auth_token(request_data)
@@ -19,7 +20,7 @@ module Gitlab
 
       def geo_auth_token(message)
         geo_node = requesting_node
-        return unless geo_node
+        raise GeoNodeNotFoundError unless geo_node
 
         payload = { data: message.to_json, iat: Time.now.to_i }
         token = JWT.encode(payload, geo_node.secret_access_key, 'HS256')

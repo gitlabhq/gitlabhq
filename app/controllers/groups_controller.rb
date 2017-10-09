@@ -10,7 +10,7 @@ class GroupsController < Groups::ApplicationController
 
   # Authorize
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
-  before_action :authorize_create_group!, only: [:new, :create]
+  before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
   before_action :group_merge_requests, only: [:merge_requests]
@@ -25,14 +25,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
-    @group = Group.new
-
-    if params[:parent_id].present?
-      parent = Group.find_by(id: params[:parent_id])
-      if can?(current_user, :create_subgroup, parent)
-        @group.parent = parent
-      end
-    end
+    @group = Group.new(params.permit(:parent_id))
   end
 
   def create
@@ -128,9 +121,14 @@ class GroupsController < Groups::ApplicationController
   end
 
   def authorize_create_group!
-    unless can?(current_user, :create_group)
-      return render_404
-    end
+    allowed = if params[:parent_id].present?
+                parent = Group.find_by(id: params[:parent_id])
+                can?(current_user, :create_subgroup, parent)
+              else
+                can?(current_user, :create_group)
+              end
+
+    render_404 unless allowed
   end
 
   def determine_layout

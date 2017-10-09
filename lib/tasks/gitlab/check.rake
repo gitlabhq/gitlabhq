@@ -312,132 +312,23 @@ namespace :gitlab do
     desc "GitLab | Check the configuration of Reply by email"
     task check: :environment  do
       warn_user_is_not_gitlab
-      start_checking "Reply by email"
 
       if Gitlab.config.incoming_email.enabled
-        check_imap_authentication
+        checks = [
+          SystemCheck::IncomingEmail::ImapAuthenticationCheck
+        ]
 
         if Rails.env.production?
-          check_initd_configured_correctly
-          check_mail_room_running
+          checks << SystemCheck::IncomingEmail::InitdConfiguredCheck
+          checks << SystemCheck::IncomingEmail::MailRoomRunningCheck
         else
-          check_foreman_configured_correctly
+          checks << SystemCheck::IncomingEmail::ForemanConfiguredCheck
         end
+
+        SystemCheck.run('Reply by email', checks)
       else
         puts 'Reply by email is disabled in config/gitlab.yml'
       end
-
-      finished_checking "Reply by email"
-    end
-
-    # Checks
-    ########################
-
-    def check_initd_configured_correctly
-      return if omnibus_gitlab?
-
-      print "Init.d configured correctly? ... "
-
-      path = "/etc/default/gitlab"
-
-      if File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Enable mail_room in the init.d configuration."
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_foreman_configured_correctly
-      print "Foreman configured correctly? ... "
-
-      path = Rails.root.join("Procfile")
-
-      if File.exist?(path) && File.read(path) =~ /^mail_room:/
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Enable mail_room in your Procfile."
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_mail_room_running
-      return if omnibus_gitlab?
-
-      print "MailRoom running? ... "
-
-      path = "/etc/default/gitlab"
-
-      unless File.exist?(path) && File.read(path).include?("mail_room_enabled=true")
-        puts "can't check because of previous errors".color(:magenta)
-        return
-      end
-
-      if mail_room_running?
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          sudo_gitlab("RAILS_ENV=production bin/mail_room start")
-        )
-        for_more_information(
-          see_installation_guide_section("Install Init Script"),
-          "see log/mail_room.log for possible errors"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_imap_authentication
-      print "IMAP server credentials are correct? ... "
-
-      config_path = Rails.root.join('config', 'mail_room.yml').to_s
-      erb = ERB.new(File.read(config_path))
-      erb.filename = config_path
-      config_file = YAML.load(erb.result)
-
-      config = config_file[:mailboxes].first
-
-      if config
-        begin
-          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
-          imap.starttls if config[:start_tls]
-          imap.login(config[:email], config[:password])
-          connected = true
-        rescue
-          connected = false
-        end
-      end
-
-      if connected
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "Check that the information in config/gitlab.yml is correct"
-        )
-        for_more_information(
-          "doc/administration/reply_by_email.md"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def mail_room_running?
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
-      ps_ux.include?("mail_room")
     end
   end
 
@@ -510,6 +401,35 @@ namespace :gitlab do
     end
   end
 
+  namespace :orphans do
+    desc 'Gitlab | Check for orphaned namespaces and repositories'
+    task check: :environment do
+      warn_user_is_not_gitlab
+      checks = [
+        SystemCheck::Orphans::NamespaceCheck,
+        SystemCheck::Orphans::RepositoryCheck
+      ]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned namespaces in the repositories path'
+    task check_namespaces: :environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::NamespaceCheck]
+
+      SystemCheck.run('Orphans', checks)
+    end
+
+    desc 'GitLab | Check for orphaned repositories in the repositories path'
+    task check_repositories: :environment do
+      warn_user_is_not_gitlab
+      checks = [SystemCheck::Orphans::RepositoryCheck]
+
+      SystemCheck.run('Orphans', checks)
+    end
+  end
+
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
@@ -541,7 +461,8 @@ namespace :gitlab do
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
         SystemCheck::Geo::HttpConnectionCheck,
-        SystemCheck::Geo::ClocksSynchronizationCheck
+        SystemCheck::Geo::ClocksSynchronizationCheck,
+        SystemCheck::App::GitUserDefaultSSHConfigCheck
       ]
 
       SystemCheck.run('Geo', checks)

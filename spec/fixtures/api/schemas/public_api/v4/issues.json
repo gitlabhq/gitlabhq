@@ -9,6 +9,8 @@
       "title": { "type": "string" },
       "description": { "type": ["string", "null"] },
       "state": { "type": "string" },
+      "discussion_locked": { "type": ["boolean", "null"] },
+      "closed_at": { "type": "date" },
       "created_at": { "type": "date" },
       "updated_at": { "type": "date" },
       "labels": {

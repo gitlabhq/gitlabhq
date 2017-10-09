@@ -10,7 +10,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def show
     @environment = @merge_request.environments_for(current_user).last
 
-    render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37431
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
+    end
   end
 
   def diff_for_path
@@ -27,7 +30,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
         @merge_request.merge_request_diff
       end
 
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff.order_id_desc
     @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
 
     if params[:start_sha].present?

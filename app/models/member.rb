@@ -127,19 +127,10 @@ class Member < ActiveRecord::Base
       find_by(invite_token: invite_token)
     end
 
-    def add_user(source, user, access_level, current_user: nil, expires_at: nil, ldap: false)
-      user = retrieve_user(user)
+    def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
+      # `user` can be either a User object, User ID or an email to be invited
+      member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
-
-      # `user` can be either a User object or an email to be invited
-      member =
-        if user.is_a?(User)
-          source.members.find_by(user_id: user.id) ||
-            source.requesters.find_by(user_id: user.id) ||
-            source.members.build(user_id: user.id)
-        else
-          source.members.build(invite_email: user)
-        end
 
       return member unless can_update_member?(current_user, member)
 
@@ -168,17 +159,15 @@ class Member < ActiveRecord::Base
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
       return [] unless users.present?
 
-      # Collect all user ids into separate array
-      # so we can use single sql query to get user objects
-      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
-      users = users - user_ids + User.where(id: user_ids)
+      emails, users, existing_members = parse_users_list(source, users)
 
       self.transaction do
-        users.map do |user|
+        (emails + users).map! do |user|
           add_user(
             source,
             user,
             access_level,
+            existing_members: existing_members,
             current_user: current_user,
             expires_at: expires_at
           )
@@ -192,12 +181,51 @@ class Member < ActiveRecord::Base
 
     private
 
+    def parse_users_list(source, list)
+      emails, user_ids, users = [], [], []
+      existing_members = {}
+
+      list.each do |item|
+        case item
+        when User
+          users << item
+        when Integer
+          user_ids << item
+        when /\A\d+\Z/
+          user_ids << item.to_i
+        when Devise.email_regexp
+          emails << item
+        end
+      end
+
+      if user_ids.present?
+        users.concat(User.where(id: user_ids))
+        existing_members = source.members_and_requesters.where(user_id: user_ids).index_by(&:user_id)
+      end
+
+      [emails, users, existing_members]
+    end
+
     # This method is used to find users that have been entered into the "Add members" field.
     # These can be the User objects directly, their IDs, their emails, or new emails to be invited.
     def retrieve_user(user)
       return user if user.is_a?(User)
 
       User.find_by(id: user) || User.find_by(email: user) || user
+    end
+
+    def retrieve_member(source, user, existing_members)
+      user = retrieve_user(user)
+
+      if user.is_a?(User)
+        if existing_members
+          existing_members[user.id] || source.members.build(user_id: user.id)
+        else
+          source.members_and_requesters.find_or_initialize_by(user_id: user.id)
+        end
+      else
+        source.members.build(invite_email: user)
+      end
     end
 
     def retrieve_access_level(access_level)

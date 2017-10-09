@@ -13,7 +13,7 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository commits' do
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -46,11 +46,11 @@ module API
 
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-        present paginate(paginated_commits), with: Entities::RepoCommit
+        present paginate(paginated_commits), with: Entities::Commit
       end
 
       desc 'Commit multiple file changes as one commit' do
-        success Entities::RepoCommitDetail
+        success Entities::CommitDetail
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
@@ -72,14 +72,14 @@ module API
 
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
-          present commit_detail, with: Entities::RepoCommitDetail
+          present commit_detail, with: Entities::CommitDetail
         else
           render_api_error!(result[:message], 400)
         end
       end
 
       desc 'Get a specific commit of a project' do
-        success Entities::RepoCommitDetail
+        success Entities::CommitDetail
         failure [[404, 'Commit Not Found']]
       end
       params do
@@ -90,7 +90,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        present commit, with: Entities::RepoCommitDetail
+        present commit, with: Entities::CommitDetail
       end
 
       desc 'Get the diff for a specific commit of a project' do
@@ -104,7 +104,7 @@ module API
 
         not_found! 'Commit' unless commit
 
-        commit.raw_diffs.to_a
+        present commit.raw_diffs.to_a, with: Entities::Diff
       end
 
       desc "Get a commit's comments" do
@@ -126,7 +126,7 @@ module API
 
       desc 'Cherry pick commit into a branch' do
         detail 'This feature was introduced in GitLab 8.15'
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
@@ -151,7 +151,7 @@ module API
 
         if result[:status] == :success
           branch = user_project.repository.find_branch(params[:branch])
-          present user_project.repository.commit(branch.dereferenced_target), with: Entities::RepoCommit
+          present user_project.repository.commit(branch.dereferenced_target), with: Entities::Commit
         else
           render_api_error!(result[:message], 400)
         end

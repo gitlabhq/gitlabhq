@@ -30,7 +30,6 @@ module Ci
 
     validates :coverage, numericality: true, allow_blank: true
     validates :ref, presence: true
-    validates :protected, inclusion: { in: [true, false], unless: :importing? }, on: :create
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
@@ -222,6 +221,7 @@ module Ci
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
@@ -232,6 +232,10 @@ module Ci
       variables += persisted_environment_variables if environment
 
       variables
+    end
+
+    def features
+      { trace_sections: true }
     end
 
     def merge_request
@@ -457,14 +461,18 @@ module Ci
       return unless trace
 
       trace = trace.dup
-      Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Ci::MaskSecret.mask!(trace, token)
+      Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Gitlab::Ci::MaskSecret.mask!(trace, token)
       trace
     end
 
     def has_codeclimate_json?
       options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
         artifacts_metadata?
+    end
+
+    def serializable_hash(options = {})
+      super(options).merge(when: read_attribute(:when))
     end
 
     private

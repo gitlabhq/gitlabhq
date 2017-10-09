@@ -39,10 +39,8 @@ export default class MergeRequestStore {
     }
 
     this.updatedAt = data.updated_at;
-    this.mergedAt = MergeRequestStore.getEventDate(data.merge_event);
-    this.closedAt = MergeRequestStore.getEventDate(data.closed_event);
-    this.mergedBy = MergeRequestStore.getAuthorObject(data.merge_event);
-    this.closedBy = MergeRequestStore.getAuthorObject(data.closed_event);
+    this.mergedEvent = MergeRequestStore.getEventObject(data.merge_event);
+    this.closedEvent = MergeRequestStore.getEventObject(data.closed_event);
     this.setToMWPSBy = MergeRequestStore.getAuthorObject({ author: data.merge_user || {} });
     this.mergeUserId = data.merge_user_id;
     this.currentUserId = gon.current_user_id;
@@ -59,6 +57,8 @@ export default class MergeRequestStore {
     this.onlyAllowMergeIfPipelineSucceeds = data.only_allow_merge_if_pipeline_succeeds || false;
     this.mergeWhenPipelineSucceeds = data.merge_when_pipeline_succeeds || false;
     this.mergePath = data.merge_path;
+    this.ffOnlyEnabled = data.ff_only_enabled;
+    this.shouldBeRebased = !!data.should_be_rebased;
     this.statusPath = data.status_path;
     this.emailPatchesPath = data.email_patches_path;
     this.plainDiffPath = data.plain_diff_path;
@@ -87,7 +87,9 @@ export default class MergeRequestStore {
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
-    this.isPipelineFailed = this.ciStatus ? (this.ciStatus === 'failed' || this.ciStatus === 'canceled') : false;
+    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
+    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
@@ -118,6 +120,14 @@ export default class MergeRequestStore {
     }
   }
 
+  static getEventObject(event) {
+    return {
+      author: MergeRequestStore.getAuthorObject(event),
+      updatedAt: gl.utils.formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
+      formattedUpdatedAt: MergeRequestStore.getEventDate(event),
+    };
+  }
+
   static getAuthorObject(event) {
     if (!event) {
       return {};
@@ -131,6 +141,14 @@ export default class MergeRequestStore {
     };
   }
 
+  static getEventUpdatedAtDate(event) {
+    if (!event) {
+      return '';
+    }
+
+    return event.updated_at;
+  }
+
   static getEventDate(event) {
     const timeagoInstance = new Timeago();
 
@@ -138,6 +156,6 @@ export default class MergeRequestStore {
       return '';
     }
 
-    return timeagoInstance.format(event.updated_at);
+    return timeagoInstance.format(MergeRequestStore.getEventUpdatedAtDate(event));
   }
 }

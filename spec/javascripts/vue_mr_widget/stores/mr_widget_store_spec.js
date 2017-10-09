@@ -18,38 +18,45 @@ describe('MergeRequestStore', () => {
       store.setData({ ...mockData, work_in_progress: !mockData.work_in_progress });
       expect(store.hasSHAChanged).toBe(false);
     });
-  });
 
-  describe('setCodeclimateHeadMetrics', () => {
-    it('should set defaults', () => {
-      expect(store.codeclimate).toEqual(mockData.codeclimate);
-      expect(store.codeclimateMetrics).toEqual({
-        headIssues: [],
-        baseIssues: [],
-        newIssues: [],
-        resolvedIssues: [],
+    describe('isPipelinePassing', () => {
+      it('is true when the CI status is `success`', () => {
+        store.setData({ ...mockData, ci_status: 'success' });
+        expect(store.isPipelinePassing).toBe(true);
+      });
+
+      it('is true when the CI status is `success_with_warnings`', () => {
+        store.setData({ ...mockData, ci_status: 'success_with_warnings' });
+        expect(store.isPipelinePassing).toBe(true);
+      });
+
+      it('is false when the CI status is `failed`', () => {
+        store.setData({ ...mockData, ci_status: 'failed' });
+        expect(store.isPipelinePassing).toBe(false);
+      });
+
+      it('is false when the CI status is anything except `success`', () => {
+        store.setData({ ...mockData, ci_status: 'foobarbaz' });
+        expect(store.isPipelinePassing).toBe(false);
       });
     });
 
-    it('should set the provided head metrics', () => {
-      store.setCodeclimateHeadMetrics(headIssues);
-      expect(store.codeclimateMetrics.headIssues).toEqual(headIssues);
-    });
-  });
+    describe('isPipelineSkipped', () => {
+      it('should set isPipelineSkipped=true when the CI status is `skipped`', () => {
+        store.setData({ ...mockData, ci_status: 'skipped' });
+        expect(store.isPipelineSkipped).toBe(true);
+      });
 
-  describe('setCodeclimateBaseMetrics', () => {
-    it('should set the provided base metrics', () => {
-      store.setCodeclimateBaseMetrics(baseIssues);
-
-      expect(store.codeclimateMetrics.baseIssues).toEqual(baseIssues);
+      it('should set isPipelineSkipped=false when the CI status is anything except `skipped`', () => {
+        store.setData({ ...mockData, ci_status: 'foobarbaz' });
+        expect(store.isPipelineSkipped).toBe(false);
+      });
     });
   });
 
   describe('compareCodeclimateMetrics', () => {
     beforeEach(() => {
-      store.setCodeclimateHeadMetrics(headIssues);
-      store.setCodeclimateBaseMetrics(baseIssues);
-      store.compareCodeclimateMetrics();
+      store.compareCodeclimateMetrics(headIssues, baseIssues);
     });
 
     it('should return the new issues', () => {

@@ -5,6 +5,8 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
+    UnauthorizedError = Class.new(StandardError)
+
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
@@ -58,6 +60,12 @@ module API
       @project ||= find_project!(params[:id])
     end
 
+    def wiki_page
+      page = user_project.wiki.find_page(params[:slug])
+
+      page || not_found!('Wiki Page')
+    end
+
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
@@ -94,7 +102,7 @@ module API
     end
 
     def find_group(id)
-      if id =~ /^\d+$/
+      if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
       else
         Group.find_by_full_path(id)
@@ -148,8 +156,12 @@ module API
       merge_request
     end
 
+    def find_build!(id)
+      user_project.builds.find(id.to_i)
+    end
+
     def authenticate!
-      unauthorized! unless current_user && can?(initial_current_user, :access_api)
+      unauthorized! unless current_user
     end
 
     def authenticate_non_get!
@@ -178,6 +190,14 @@ module API
 
     def authorize_admin_project
       authorize! :admin_project, user_project
+    end
+
+    def authorize_read_builds!
+      authorize! :read_build, user_project
+    end
+
+    def authorize_update_builds!
+      authorize! :update_build, user_project
     end
 
     def require_gitlab_workhorse!
@@ -230,7 +250,7 @@ module API
 
     def bad_request!(attribute)
       message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given"
+      message << "\"" + attribute.to_s + "\" not given" if attribute
       render_api_error!(message.join(' '), 400)
     end
 
@@ -404,18 +424,25 @@ module API
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
-      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= find_user_from_warden
-        @initial_current_user ||= find_user_by_job_token
-
-        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-          @initial_current_user = nil
-        end
-
-        @initial_current_user
+      begin
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
+      rescue APIGuard::UnauthorizedError, UnauthorizedError
+        unauthorized!
       end
+    end
+
+    def find_current_user
+      user =
+        find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
+        doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
+        find_user_from_warden ||
+        find_user_by_job_token
+
+      return nil unless user
+
+      raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+
+      user
     end
 
     def sudo!
@@ -462,10 +489,16 @@ module API
       header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     end
 
-    # The Grape Error Middleware only has access to env but no params. We workaround this by
-    # defining a method that returns the right value.
+    def send_artifacts_entry(build, entry)
+      header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+    end
+
+    # The Grape Error Middleware only has access to `env` but not `params` nor
+    # `request`. We workaround this by defining methods that returns the right
+    # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
     # We could get a Grape or a standard Ruby exception. We should only report anything that

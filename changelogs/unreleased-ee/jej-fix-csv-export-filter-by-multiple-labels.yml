@@ -1,0 +1,5 @@
+---
+title: Fix CSV export when filtering issues by multiple labels
+merge_request: 2852
+author:
+type: fixed

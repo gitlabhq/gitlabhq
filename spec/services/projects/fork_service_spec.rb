@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ForkService do
+  include ProjectForksHelper
   let(:gitlab_shell) { Gitlab::Shell.new }
 
   describe 'fork by user' do
@@ -33,7 +34,7 @@ describe Projects::ForkService do
       end
 
       describe "successfully creates project in the user namespace" do
-        let(:to_project) { fork_project(@from_project, @to_user) }
+        let(:to_project) { fork_project(@from_project, @to_user, namespace: @to_user.namespace) }
 
         it { expect(to_project).to be_persisted }
         it { expect(to_project.errors).to be_empty }
@@ -60,13 +61,40 @@ describe Projects::ForkService do
 
           expect(@from_project.forks_count).to eq(1)
         end
+
+        it 'creates a fork network with the new project and the root project set' do
+          to_project
+          fork_network = @from_project.reload.fork_network
+
+          expect(fork_network).not_to be_nil
+          expect(fork_network.root_project).to eq(@from_project)
+          expect(fork_network.projects).to contain_exactly(@from_project, to_project)
+        end
+      end
+
+      context 'creating a fork of a fork' do
+        let(:from_forked_project) { fork_project(@from_project, @to_user) }
+        let(:other_namespace) do
+          group = create(:group)
+          group.add_owner(@to_user)
+          group
+        end
+        let(:to_project) { fork_project(from_forked_project, @to_user, namespace: other_namespace) }
+
+        it 'sets the root of the network to the root project' do
+          expect(to_project.fork_network.root_project).to eq(@from_project)
+        end
+
+        it 'sets the forked_from_project on the membership' do
+          expect(to_project.fork_network_member.forked_from_project).to eq(from_forked_project)
+        end
       end
     end
 
     context 'project already exists' do
       it "fails due to validation, not transaction failure" do
         @existing_project = create(:project, :repository, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
-        @to_project = fork_project(@from_project, @to_user)
+        @to_project = fork_project(@from_project, @to_user, namespace: @to_namespace)
         expect(@existing_project).to be_persisted
 
         expect(@to_project).not_to be_persisted
@@ -76,10 +104,11 @@ describe Projects::ForkService do
     end
 
     context 'repository already exists' do
-      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
       before do
-        gitlab_shell.add_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+        gitlab_shell.add_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
       end
 
       after do
@@ -87,7 +116,7 @@ describe Projects::ForkService do
       end
 
       it 'does not allow creation' do
-        to_project = fork_project(@from_project, @to_user)
+        to_project = fork_project(@from_project, @to_user, namespace: @to_user.namespace)
 
         expect(to_project).not_to be_persisted
         expect(to_project.errors.messages).to have_key(:base)
@@ -180,10 +209,5 @@ describe Projects::ForkService do
         expect(to_project.errors[:path]).to eq(['has already been taken'])
       end
     end
-  end
-
-  def fork_project(from_project, user, params = {})
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(from_project, user, params).execute
   end
 end

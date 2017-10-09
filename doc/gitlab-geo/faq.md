@@ -25,12 +25,12 @@ primary node.
 ## How long does it take to have a commit replicated to a secondary node?
 
 All replication operations are asynchronous and are queued to be dispatched in
-a batched request every 10 seconds. Besides that, it depends on a lot of other
+a batched request every 10 minutes. Besides that, it depends on a lot of other
 factors including the amount of traffic, how big your commit is, the
 connectivity between your nodes, your hardware, etc.
 
-## What happens if the SSH server runs at a different port?
+## What if the SSH server runs at a different port?
 
 We send the clone url from the primary server to any secondaries, so it
-doesn't matter. If primary is running on port `2200` clone url will reflect
+doesn't matter. If primary is running on port `2200`, clone url will reflect
 that.

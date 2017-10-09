@@ -46,15 +46,6 @@
   }
 }
 
-@mixin btn-svg {
-  svg {
-    height: 15px;
-    width: 15px;
-    position: relative;
-    top: 2px;
-  }
-}
-
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
   border-color: $border-light;
@@ -132,7 +123,6 @@
 .btn {
   @include btn-default;
   @include btn-white;
-  @include btn-svg;
 
   color: $gl-text-color;
 
@@ -140,7 +130,6 @@
     outline: 0;
   }
 
-  &.btn-small,
   &.btn-sm {
     padding: 4px 10px;
     font-size: 13px;
@@ -234,6 +223,13 @@
     .fa-caret-down {
       margin-left: 3px;
     }
+  }
+
+  svg {
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: 2px;
   }
 
   svg,
@@ -389,7 +385,11 @@
   background: transparent;
   border: 0;
 
+  &:hover,
+  &:active,
   &:focus {
     outline: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

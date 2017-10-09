@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import repoFile from '~/repo/components/repo_file.vue';
+import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoFile', () => {
   const updated = 'updated';
@@ -12,7 +13,12 @@ describe('RepoFile', () => {
     level: 10,
   };
   const activeFile = {
+    pageTitle: 'pageTitle',
     url: 'url',
+  };
+  const otherFile = {
+    html: '<p class="file-content">html</p>',
+    pageTitle: 'otherpageTitle',
   };
 
   function createComponent(propsData) {
@@ -58,6 +64,12 @@ describe('RepoFile', () => {
 
     expect(vm.$el.innerHTML).toBeTruthy();
     expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
+  });
+
+  it('sets the document title correctly', () => {
+    RepoStore.setActiveFiles(otherFile);
+
+    expect(document.title.trim()).toEqual(otherFile.pageTitle);
   });
 
   it('renders a spinner if the file is loading', () => {

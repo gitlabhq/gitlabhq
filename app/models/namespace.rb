@@ -140,7 +140,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    project.fork_network.find_forks_in(projects).first
   end
 
   def lfs_enabled?
@@ -244,6 +246,13 @@ class Namespace < ActiveRecord::Base
   end
 
   def force_share_with_group_lock_on_descendants
-    descendants.update_all(share_with_group_lock: true)
+    return unless Group.supports_nested_groups?
+
+    # We can't use `descendants.update_all` since Rails will throw away the WITH
+    # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
+    # different table aliases, hence we're just using WHERE IN. Since we have a
+    # maximum of 20 nested groups this should be fine.
+    Namespace.where(id: descendants.select(:id))
+      .update_all(share_with_group_lock: true)
   end
 end

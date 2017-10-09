@@ -22,13 +22,24 @@ GitLab uses its own keyring to verify the GPG signature. It does not access any
 public key server.
 
 In order to have a commit verified on GitLab the corresponding public key needs
-to be uploaded to GitLab. For a signature to be verified two prerequisites need
+to be uploaded to GitLab. For a signature to be verified three conditions need
 to be met:
 
 1. The public key needs to be added your GitLab account
-1. One of the emails in the GPG key matches your **primary** email
+1. One of the emails in the GPG key matches a **verified** email address you use in GitLab
+1. The committer's email matches the verified email from the gpg key
 
 ## Generating a GPG key
+
+>**Notes:**
+- If your Operating System has `gpg2` installed, replace `gpg` with `gpg2` in
+  the following commands.
+- If Git is using `gpg` and you get errors like `secret key not available` or
+  `gpg: signing failed: secret key not available`, run the following command to
+  change to `gpg2`:
+    ```
+    git config --global gpg.program gpg2
+    ```
 
 If you don't already have a GPG key, the following steps will help you get
 started:
@@ -83,7 +94,7 @@ started:
     ```
 
 1. Enter you real name, the email address to be associated with this key (should
-   match the primary email address you use in GitLab) and an optional comment
+   match a verified email address you use in GitLab) and an optional comment
    (press <kbd>Enter</kbd> to skip):
 
     ```
@@ -102,25 +113,25 @@ started:
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format LONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.
 
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
-   `0x30F2B65B9246B6CA`:
+   `30F2B65B9246B6CA`:
 
     ```
-    sec   rsa4096/0x30F2B65B9246B6CA 2017-08-18 [SC]
+    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
           D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
     uid                   [ultimate] Mr. Robot <mr@robot.sh>
-    ssb   rsa4096/0xB7ABC0813E4028C0 2017-08-18 [E]
+    ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
     ```
 
 1. Export the public key of that ID (replace your key ID from the previous step):
 
     ```
-    gpg --armor --export 0x30F2B65B9246B6CA
+    gpg --armor --export 30F2B65B9246B6CA
     ```
 
 1. Finally, copy the public key and [add it in your profile settings](#adding-a-gpg-key-to-your-account)
@@ -156,28 +167,28 @@ key to use.
 1. Use the following command to list the private GPG key you just created:
 
     ```
-    gpg --list-secret-keys mr@robot.sh
+    gpg --list-secret-keys --keyid-format LONG mr@robot.sh
     ```
 
     Replace `mr@robot.sh` with the email address you entered above.
 
 1. Copy the GPG key ID that starts with `sec`. In the following example, that's
-   `0x30F2B65B9246B6CA`:
+   `30F2B65B9246B6CA`:
 
     ```
-    sec   rsa4096/0x30F2B65B9246B6CA 2017-08-18 [SC]
+    sec   rsa4096/30F2B65B9246B6CA 2017-08-18 [SC]
           D5E4F29F3275DC0CDA8FFC8730F2B65B9246B6CA
     uid                   [ultimate] Mr. Robot <mr@robot.sh>
-    ssb   rsa4096/0xB7ABC0813E4028C0 2017-08-18 [E]
+    ssb   rsa4096/B7ABC0813E4028C0 2017-08-18 [E]
     ```
 
 1. Tell Git to use that key to sign the commits:
 
     ```
-    git config --global user.signingkey 0x30F2B65B9246B6CA
+    git config --global user.signingkey 30F2B65B9246B6CA
     ```
 
-    Replace `0x30F2B65B9246B6CA` with your GPG key ID.
+    Replace `30F2B65B9246B6CA` with your GPG key ID.
 
 ## Signing commits
 

@@ -46,6 +46,15 @@ module API
         ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
       end
 
+      def redis_ping
+        result = Gitlab::Redis::SharedState.with { |redis| redis.ping }
+
+        result == 'PONG'
+      rescue => e
+        Rails.logger.warn("GitLab: An unexpected error occurred in pinging to Redis: #{e}")
+        false
+      end
+
       private
 
       def set_project

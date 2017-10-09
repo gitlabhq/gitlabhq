@@ -1,4 +1,4 @@
-import '~/lib/utils/common_utils';
+import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 /**
  * Environments Store.
  *
@@ -30,7 +30,7 @@ export default class EnvironmentsStore {
    * If the `size` is bigger than 1, it means it should be rendered as a folder.
    * In those cases we add `isFolder` key in order to render it properly.
    *
-   * Top level environments - when the size is 1 - with `rollout_status_path`
+   * Top level environments - when the size is 1 - with `rollout_status`
    * can render a deploy board. We add `isDeployBoardVisible` and `deployBoardData`
    * keys to those environments.
    * The first key will let's us know if we should or not render the deploy board.
@@ -65,13 +65,15 @@ export default class EnvironmentsStore {
         filtered = Object.assign(filtered, env);
       }
 
-      if (filtered.size === 1 && filtered.rollout_status_path) {
+      if (filtered.size === 1 && filtered.rollout_status) {
         filtered = Object.assign({}, filtered, {
           hasDeployBoard: true,
-          isDeployBoardVisible: oldEnvironmentState.isDeployBoardVisible || false,
-          deployBoardData: oldEnvironmentState.deployBoardData || {},
-          isLoadingDeployBoard: oldEnvironmentState.isLoadingDeployBoard || false,
-          hasErrorDeployBoard: oldEnvironmentState.hasErrorDeployBoard || false,
+          isDeployBoardVisible: oldEnvironmentState.isDeployBoardVisible === false ?
+            oldEnvironmentState.isDeployBoardVisible :
+            true,
+          deployBoardData: filtered.rollout_status.status === 'found' ? filtered.rollout_status : {},
+          isLoadingDeployBoard: filtered.rollout_status.status === 'loading',
+          isEmptyDeployBoard: filtered.rollout_status.status === 'not_found',
         });
       }
       return filtered;
@@ -97,8 +99,8 @@ export default class EnvironmentsStore {
    * @return {Object}
    */
   setPagination(pagination = {}) {
-    const normalizedHeaders = gl.utils.normalizeHeaders(pagination);
-    const paginationInformation = gl.utils.parseIntPagination(normalizedHeaders);
+    const normalizedHeaders = normalizeHeaders(pagination);
+    const paginationInformation = parseIntPagination(normalizedHeaders);
 
     this.state.paginationInformation = paginationInformation;
     return paginationInformation;

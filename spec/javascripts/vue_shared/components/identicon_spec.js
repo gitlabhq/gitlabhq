@@ -1,25 +1,30 @@
 import Vue from 'vue';
 import identiconComponent from '~/vue_shared/components/identicon.vue';
 
-const createComponent = () => {
+const createComponent = (sizeClass) => {
   const Component = Vue.extend(identiconComponent);
 
   return new Component({
     propsData: {
       entityId: 1,
       entityName: 'entity-name',
+      sizeClass,
     },
   }).$mount();
 };
 
 describe('IdenticonComponent', () => {
-  let vm;
-
-  beforeEach(() => {
-    vm = createComponent();
-  });
-
   describe('computed', () => {
+    let vm;
+
+    beforeEach(() => {
+      vm = createComponent();
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
     describe('identiconStyles', () => {
       it('should return styles attribute value with `background-color` property', () => {
         vm.entityId = 4;
@@ -48,9 +53,20 @@ describe('IdenticonComponent', () => {
 
   describe('template', () => {
     it('should render identicon', () => {
+      const vm = createComponent();
+
       expect(vm.$el.nodeName).toBe('DIV');
       expect(vm.$el.classList.contains('identicon')).toBeTruthy();
+      expect(vm.$el.classList.contains('s40')).toBeTruthy();
       expect(vm.$el.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
+      vm.$destroy();
+    });
+
+    it('should render identicon with provided sizing class', () => {
+      const vm = createComponent('s32');
+
+      expect(vm.$el.classList.contains('s32')).toBeTruthy();
+      vm.$destroy();
     });
   });
 });

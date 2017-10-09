@@ -112,10 +112,10 @@ module SharedIssuable
     edit_issuable
   end
 
-  step 'I sort the list by "Oldest updated"' do
+  step 'I sort the list by "Last updated"' do
     find('button.dropdown-toggle').click
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link "Oldest updated"
+      click_link "Last updated"
     end
   end
 
@@ -127,16 +127,16 @@ module SharedIssuable
     end
   end
 
-  step 'I sort the list by "Most popular"' do
+  step 'I sort the list by "Popularity"' do
     find('button.dropdown-toggle').click
 
     page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
-      click_link 'Most popular'
+      click_link 'Popularity'
     end
   end
 
-  step 'The list should be sorted by "Oldest updated"' do
-    expect(find('.issues-filters')).to have_content('Oldest updated')
+  step 'The list should be sorted by "Last updated"' do
+    expect(find('.issues-filters')).to have_content('Last updated')
   end
 
   step 'I click link "Next" in the sidebar' do

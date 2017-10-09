@@ -84,7 +84,6 @@ describe NotificationService, :mailer do
       let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
-      it { should_email(key.user) }
 
       describe 'never emails the ghost user' do
         let(:key_options) { { user: User.ghost } }
@@ -102,18 +101,6 @@ describe NotificationService, :mailer do
 
       it 'sends email to key owner' do
         expect { notification.new_gpg_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
-    end
-  end
-
-  describe 'Email' do
-    describe '#new_email' do
-      let!(:email) { create(:email) }
-
-      it { expect(notification.new_email(email)).to be_truthy }
-
-      it 'sends email to email owner' do
-        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -1279,7 +1266,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        group_member = group.members.first
+        group_member = group.members.last
 
         expect do
           notification.decline_group_invite(group_member)
@@ -1327,7 +1314,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        project_member = project.members.first
+        project_member = project.members.last
 
         expect do
           notification.decline_project_invite(project_member)

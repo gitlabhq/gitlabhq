@@ -1,16 +1,23 @@
 module Gitlab
   module Git
     class OperationService
-      attr_reader :committer, :repository
+      include Gitlab::Git::Popen
 
-      def initialize(committer, new_repository)
-        committer = Gitlab::Git::Committer.from_user(committer) if committer.is_a?(User)
-        @committer = committer
+      WithBranchResult = Struct.new(:newrev, :repo_created, :branch_created) do
+        alias_method :repo_created?, :repo_created
+        alias_method :branch_created?, :branch_created
+      end
+
+      attr_reader :user, :repository
+
+      def initialize(user, new_repository)
+        if user
+          user = Gitlab::Git::User.from_gitlab(user) unless user.respond_to?(:gl_id)
+          @user = user
+        end
 
         # Refactoring aid
-        unless new_repository.is_a?(Gitlab::Git::Repository)
-          raise "expected a Gitlab::Git::Repository, got #{new_repository}"
-        end
+        Gitlab::Git.check_namespace!(new_repository)
 
         @repository = new_repository
       end
@@ -84,6 +91,11 @@ module Gitlab
         end
       end
 
+      def update_branch(branch_name, newrev, oldrev)
+        ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+        update_ref_in_hooks(ref, newrev, oldrev)
+      end
+
       private
 
       # Returns [newrev, should_run_after_create, should_run_after_create_branch]
@@ -105,7 +117,7 @@ module Gitlab
         ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
         update_ref_in_hooks(ref, newrev, oldrev)
 
-        [newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev)]
+        WithBranchResult.new(newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev))
       end
 
       def find_oldrev_from_branch(newrev, branch)
@@ -128,7 +140,7 @@ module Gitlab
 
       def with_hooks(ref, newrev, oldrev)
         Gitlab::Git::HooksService.new.execute(
-          committer,
+          user,
           repository,
           oldrev,
           newrev,
@@ -145,13 +157,15 @@ module Gitlab
         # (and have!) accidentally reset the ref to an earlier state, clobbering
         # commits. See also https://github.com/libgit2/libgit2/issues/1534.
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        _, status = Gitlab::Popen.popen(
+
+        output, status = popen(
           command,
           repository.path) do |stdin|
           stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
         end
 
         unless status.zero?
+          Gitlab::GitLogger.error("'git update-ref' in #{repository.path}: #{output}")
           raise Gitlab::Git::CommitError.new(
             "Could not update branch #{Gitlab::Git.branch_name(ref)}." \
             " Please refresh and try again.")

@@ -50,6 +50,25 @@ feature 'Dashboard Projects' do
     end
   end
 
+  context 'when on Your projects tab' do
+    it 'shows all projects by default' do
+      visit dashboard_projects_path
+
+      expect(page).to have_content(project.name)
+    end
+
+    it 'shows personal projects on personal projects tab', :js do
+      project3 = create(:project, namespace: user.namespace)
+
+      visit dashboard_projects_path
+
+      click_link 'Personal'
+
+      expect(page).not_to have_content(project.name)
+      expect(page).to have_content(project3.name)
+    end
+  end
+
   context 'when on Starred projects tab' do
     it 'shows only starred projects' do
       user.toggle_star(project2)
@@ -83,26 +102,14 @@ feature 'Dashboard Projects' do
     end
   end
 
-  context 'last push widget' do
-    let(:push_event_data) do
-      {
-        before: Gitlab::Git::BLANK_SHA,
-        after: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
-        ref: 'refs/heads/feature',
-        user_id: user.id,
-        user_name: user.name,
-        repository: {
-          name: project.name,
-          url: 'localhost/rubinius',
-          description: '',
-          homepage: 'localhost/rubinius',
-          private: true
-        }
-      }
-    end
-    let!(:push_event) { create(:event, :pushed, data: push_event_data, project: project, author: user) }
-
+  context 'last push widget', :use_clean_rails_memory_store_caching do
     before do
+      event = create(:push_event, project: project, author: user)
+
+      create(:push_event_payload, event: event, ref: 'feature', action: :created)
+
+      Users::LastPushEventService.new(user).cache_last_push_event(event)
+
       visit dashboard_projects_path
     end
 

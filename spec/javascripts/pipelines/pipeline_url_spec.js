@@ -16,6 +16,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -30,6 +31,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -50,6 +52,7 @@ describe('Pipeline Url Component', () => {
           path: '/',
         },
       },
+      autoDevopsHelpPath: 'foo',
     };
 
     const component = new PipelineUrlComponent({
@@ -73,6 +76,7 @@ describe('Pipeline Url Component', () => {
           path: 'foo',
           flags: {},
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
@@ -91,11 +95,53 @@ describe('Pipeline Url Component', () => {
             stuck: true,
           },
         },
+        autoDevopsHelpPath: 'foo',
       },
     }).$mount();
 
     expect(component.$el.querySelector('.js-pipeline-url-latest').textContent).toContain('latest');
     expect(component.$el.querySelector('.js-pipeline-url-yaml').textContent).toContain('yaml invalid');
     expect(component.$el.querySelector('.js-pipeline-url-stuck').textContent).toContain('stuck');
+  });
+
+  it('should render a badge for autodevops', () => {
+    const component = new PipelineUrlComponent({
+      propsData: {
+        pipeline: {
+          id: 1,
+          path: 'foo',
+          flags: {
+            latest: true,
+            yaml_errors: true,
+            stuck: true,
+            auto_devops: true,
+          },
+        },
+        autoDevopsHelpPath: 'foo',
+      },
+    }).$mount();
+
+    expect(
+      component.$el.querySelector('.js-pipeline-url-autodevops').textContent.trim(),
+    ).toEqual('Auto DevOps');
+  });
+
+  it('should render error badge when pipeline has a failure reason set', () => {
+    const component = new PipelineUrlComponent({
+      propsData: {
+        pipeline: {
+          id: 1,
+          path: 'foo',
+          flags: {
+            failure_reason: true,
+          },
+          failure_reason: 'some reason',
+        },
+        autoDevopsHelpPath: 'foo',
+      },
+    }).$mount();
+
+    expect(component.$el.querySelector('.js-pipeline-url-failure').textContent).toContain('error');
+    expect(component.$el.querySelector('.js-pipeline-url-failure').getAttribute('data-original-title')).toContain('some reason');
   });
 });

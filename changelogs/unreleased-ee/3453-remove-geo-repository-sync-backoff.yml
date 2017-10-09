@@ -1,0 +1,5 @@
+---
+title: Remove the backoff delay from Geo repository sync
+merge_request: 3009
+author:
+type: changed

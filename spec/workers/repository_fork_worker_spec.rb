@@ -12,6 +12,28 @@ describe RepositoryForkWorker do
   end
 
   describe "#perform" do
+    describe 'when a worker was reset without cleanup' do
+      let(:jid) { '12345678' }
+      let(:started_project) { create(:project, :repository, :import_started) }
+
+      it 'creates a new repository from a fork' do
+        allow(subject).to receive(:jid).and_return(jid)
+
+        expect(shell).to receive(:fork_repository).with(
+          '/test/path',
+          project.full_path,
+          project.repository_storage_path,
+          fork_project.namespace.full_path
+        ).and_return(true)
+
+        subject.perform(
+          project.id,
+          '/test/path',
+          project.full_path,
+          fork_project.namespace.full_path)
+      end
+    end
+
     it "creates a new repository from a fork" do
       expect(shell).to receive(:fork_repository).with(
         '/test/path',

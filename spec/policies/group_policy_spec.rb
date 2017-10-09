@@ -12,10 +12,11 @@ describe GroupPolicy do
 
   let(:reporter_permissions) { [:admin_label] }
 
+  let(:developer_permissions) { [:admin_milestones] }
+
   let(:master_permissions) do
     [
-      :create_projects,
-      :admin_milestones
+      :create_projects
     ]
   end
 
@@ -25,8 +26,8 @@ describe GroupPolicy do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
-      :create_subgroup
-    ]
+      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+    ].compact
   end
 
   before do
@@ -53,6 +54,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -64,6 +66,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -75,6 +78,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -86,6 +90,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -97,6 +102,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -110,6 +116,7 @@ describe GroupPolicy do
 
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_allowed(*owner_permissions)
     end
@@ -123,6 +130,7 @@ describe GroupPolicy do
 
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_allowed(*owner_permissions)
     end
@@ -181,6 +189,7 @@ describe GroupPolicy do
       it do
         expect_disallowed(:read_group)
         expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -192,6 +201,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -203,6 +213,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -214,6 +225,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -225,6 +237,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -238,6 +251,7 @@ describe GroupPolicy do
 
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
       end
@@ -251,6 +265,96 @@ describe GroupPolicy do
         is_expected.to be_disallowed(*master_permissions)
         is_expected.to be_disallowed(*owner_permissions)
       end
+    end
+  end
+
+  describe 'change_share_with_group_lock' do
+    context 'when the current_user owns the group' do
+      let(:current_user) { owner }
+
+      context 'when the group share_with_group_lock is enabled' do
+        let(:group) { create(:group, share_with_group_lock: true, parent: parent) }
+
+        context 'when the parent group share_with_group_lock is enabled' do
+          context 'when the group has a grandparent' do
+            let(:parent) { create(:group, share_with_group_lock: true, parent: grandparent) }
+
+            context 'when the grandparent share_with_group_lock is enabled' do
+              let(:grandparent) { create(:group, share_with_group_lock: true) }
+
+              context 'when the current_user owns the parent' do
+                before do
+                  parent.add_owner(current_user)
+                end
+
+                context 'when the current_user owns the grandparent' do
+                  before do
+                    grandparent.add_owner(current_user)
+                  end
+
+                  it { expect_allowed(:change_share_with_group_lock) }
+                end
+
+                context 'when the current_user does not own the grandparent' do
+                  it { expect_disallowed(:change_share_with_group_lock) }
+                end
+              end
+
+              context 'when the current_user does not own the parent' do
+                it { expect_disallowed(:change_share_with_group_lock) }
+              end
+            end
+
+            context 'when the grandparent share_with_group_lock is disabled' do
+              let(:grandparent) { create(:group) }
+
+              context 'when the current_user owns the parent' do
+                before do
+                  parent.add_owner(current_user)
+                end
+
+                it { expect_allowed(:change_share_with_group_lock) }
+              end
+
+              context 'when the current_user does not own the parent' do
+                it { expect_disallowed(:change_share_with_group_lock) }
+              end
+            end
+          end
+
+          context 'when the group does not have a grandparent' do
+            let(:parent) { create(:group, share_with_group_lock: true) }
+
+            context 'when the current_user owns the parent' do
+              before do
+                parent.add_owner(current_user)
+              end
+
+              it { expect_allowed(:change_share_with_group_lock) }
+            end
+
+            context 'when the current_user does not own the parent' do
+              it { expect_disallowed(:change_share_with_group_lock) }
+            end
+          end
+        end
+
+        context 'when the parent group share_with_group_lock is disabled' do
+          let(:parent) { create(:group) }
+
+          it { expect_allowed(:change_share_with_group_lock) }
+        end
+      end
+
+      context 'when the group share_with_group_lock is disabled' do
+        it { expect_allowed(:change_share_with_group_lock) }
+      end
+    end
+
+    context 'when the current_user does not own the group' do
+      let(:current_user) { create(:user) }
+
+      it { expect_disallowed(:change_share_with_group_lock) }
     end
   end
 

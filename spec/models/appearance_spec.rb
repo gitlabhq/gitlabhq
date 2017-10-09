@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Appearance do
+describe Appearance do
   subject { build(:appearance) }
 
   it { is_expected.to be_valid }

@@ -366,10 +366,13 @@
 }
 
 .prometheus-state {
-  margin-top: 10px;
+  max-width: 430px;
+  margin: 10px auto;
+  text-align: center;
 
-  .state-button-section {
-    margin-top: 10px;
+  .state-svg {
+    max-width: 80vw;
+    margin: 0 auto;
   }
 }
 
@@ -384,6 +387,26 @@
 
 .prometheus-panel {
   margin-top: 20px;
+}
+
+.prometheus-graph-group {
+  display: flex;
+  flex-wrap: wrap;
+  padding: $gl-padding / 2;
+}
+
+.prometheus-graph {
+  flex: 1 0 auto;
+  min-width: 450px;
+  padding: $gl-padding / 2;
+
+  h5 {
+    font-size: 16px;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    min-width: 100%;
+  }
 }
 
 .prometheus-svg-container {
@@ -454,11 +477,5 @@
     .tick > text {
       font-size: 8px;
     }
-  }
-}
-
-.prometheus-row {
-  h5 {
-    font-size: 16px;
   }
 }

@@ -54,16 +54,19 @@ class Projects::RefsController < Projects::ApplicationController
 
     show_path_locks = @project.feature_available?(:file_locks) && @project.path_locks.any?
 
-    @logs = contents[@offset, @limit].to_a.map do |content|
-      file = @path ? File.join(@path, content.name) : content.name
-      last_commit = @repo.last_commit_for_path(@commit.id, file)
-      path_lock = show_path_locks && @project.find_path_lock(file)
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
+    @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
+      contents[@offset, @limit].to_a.map do |content|
+        file = @path ? File.join(@path, content.name) : content.name
+        last_commit = @repo.last_commit_for_path(@commit.id, file)
+        path_lock = show_path_locks && @project.find_path_lock(file)
 
-      {
-        file_name: content.name,
-        commit: last_commit,
-        lock_label: path_lock && text_label_for_lock(path_lock, file)
-      }
+        {
+          file_name: content.name,
+          commit: last_commit,
+          lock_label: path_lock && text_label_for_lock(path_lock, file)
+        }
+      end
     end
 
     offset = @offset + @limit

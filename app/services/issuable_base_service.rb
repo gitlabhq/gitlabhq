@@ -45,6 +45,10 @@ class IssuableBaseService < BaseService
     SystemNoteService.change_time_spent(issuable, issuable.project, issuable.time_spent_user)
   end
 
+  def create_discussion_lock_note(issuable)
+    SystemNoteService.discussion_lock(issuable, current_user)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -59,6 +63,7 @@ class IssuableBaseService < BaseService
       params.delete(:due_date)
       params.delete(:canonical_issue_id)
       params.delete(:project)
+      params.delete(:discussion_locked)
     end
 
     filter_assignee(issuable)
@@ -184,6 +189,7 @@ class IssuableBaseService < BaseService
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
+      issuable.update_project_counter_caches
     end
 
     issuable
@@ -195,8 +201,6 @@ class IssuableBaseService < BaseService
 
   def after_create(issuable)
     # To be overridden by subclasses
-
-    issuable.update_project_counter_caches
   end
 
   def before_update(issuable)
@@ -205,8 +209,6 @@ class IssuableBaseService < BaseService
 
   def after_update(issuable)
     # To be overridden by subclasses
-
-    issuable.update_project_counter_caches
   end
 
   def update(issuable)
@@ -231,12 +233,17 @@ class IssuableBaseService < BaseService
 
       before_update(issuable)
 
+      # We have to perform this check before saving the issuable as Rails resets
+      # the changed fields upon calling #save.
+      update_project_counters = issuable.update_project_counter_caches?
+
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
           handle_common_system_notes(issuable, old_labels: old_labels)
         end
 
+        change_discussion_lock(issuable)
         handle_changes(
           issuable,
           old_labels: old_labels,
@@ -251,6 +258,8 @@ class IssuableBaseService < BaseService
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
         execute_hooks(issuable, 'update')
+
+        issuable.update_project_counter_caches if update_project_counters
       end
     end
 
@@ -290,6 +299,12 @@ class IssuableBaseService < BaseService
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
       todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
+    end
+  end
+
+  def change_discussion_lock(issuable)
+    if issuable.previous_changes.include?('discussion_locked')
+      create_discussion_lock_note(issuable)
     end
   end
 

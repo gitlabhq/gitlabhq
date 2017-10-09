@@ -1,111 +1,164 @@
+require 'gitlab/geo'
+require 'gitlab/geo/database_tasks'
+
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
   namespace :db do |ns|
-    %i(drop create setup migrate rollback seed version reset).each do |task_name|
-      task task_name do
-        Rake::Task["db:#{task_name}"].invoke
-      end
+    desc 'Drops the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
+    task :drop do
+      Gitlab::Geo::DatabaseTasks.drop_current
     end
 
-    namespace :schema do
-      %i(load dump).each do |task_name|
-        task task_name do
-          Rake::Task["db:schema:#{task_name}"].invoke
-        end
-      end
+    desc 'Creates the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
+    task :create do
+      Gitlab::Geo::DatabaseTasks.create_current
     end
 
-    namespace :migrate do
-      %i(up down redo).each do |task_name|
-        task task_name do
-          Rake::Task["db:migrate:#{task_name}"].invoke
-        end
-      end
+    desc 'Create the Geo tracking database, load the schema, and initialize with the seed data.'
+    task setup: ['geo:db:schema:load', 'geo:db:seed']
+
+    desc 'Migrate the Geo tracking database (options: VERSION=x, VERBOSE=false, SCOPE=blog).'
+    task migrate: [:environment] do
+      Gitlab::Geo::DatabaseTasks.migrate
+
+      ns['_dump'].invoke
     end
 
-    namespace :test do
-      task :prepare do
-        Rake::Task['db:test:prepare'].invoke
-      end
+    desc 'Rolls the schema back to the previous version (specify steps w/ STEP=n).'
+    task rollback: [:environment] do
+      Gitlab::Geo::DatabaseTasks.rollback
+
+      ns['_dump'].invoke
     end
 
-    # append and prepend proper tasks to all the tasks defined above
-    ns.tasks.each do |task|
-      task.enhance ['geo:config:check', 'geo:config:set'] do
-        Rake::Task['geo:config:restore'].invoke
+    desc 'Retrieves the current schema version number.'
+    task version: [:environment] do
+      puts "Current version: #{Gitlab::Geo::DatabaseTasks.version}"
+    end
 
-        # Reenable the tasks, otherwise the following tasks are run only once
-        # per invocation of `rake`!
-        Rake::Task['geo:config:check'].reenable
-        Rake::Task['geo:config:set'].reenable
-        Rake::Task['geo:config:restore'].reenable
-      end
+    desc 'Drops and recreates the database from db/geo/schema.rb for the current environment and loads the seeds.'
+    task reset: [:environment] do
+      ns['drop'].invoke
+      ns['create'].invoke
+      ns['setup'].invoke
+    end
+
+    desc 'Load the seed data from db/geo/seeds.rb'
+    task seed: [:environment] do
+      ns['abort_if_pending_migrations'].invoke
+
+      Gitlab::Geo::DatabaseTasks.load_seed
     end
 
     desc 'Display database encryption key'
     task show_encryption_key: :environment do
       puts Rails.application.secrets.db_key_base
     end
-  end
 
-  namespace :config do
-    task :check do
-      unless File.exist?(Rails.root.join('config/database_geo.yml'))
-        abort('You should run these tasks only when GitLab Geo is enabled.')
+    # IMPORTANT: This task won't dump the schema if ActiveRecord::Base.dump_schema_after_migration is set to false
+    task :_dump do
+      if Gitlab::Geo::DatabaseTasks.dump_schema_after_migration?
+        ns["schema:dump"].invoke
+      end
+      # Allow this task to be called as many times as required. An example is the
+      # migrate:redo task, which calls other two internally that depend on this one.
+      ns['_dump'].reenable
+    end
+
+    # desc "Raises an error if there are pending migrations"
+    task abort_if_pending_migrations: [:environment] do
+      pending_migrations = Gitlab::Geo::DatabaseTasks.pending_migrations
+
+      if pending_migrations.any?
+        puts "You have #{pending_migrations.size} pending #{pending_migrations.size > 1 ? 'migrations:' : 'migration:'}"
+        pending_migrations.each do |pending_migration|
+          puts '  %4d %s' % [pending_migration.version, pending_migration.name]
+        end
+        abort %{Run `rake geo:db:migrate` to update your database then try again.}
       end
     end
 
-    task :set do
-      # save current configuration
-      @previous_config = {
-        config: Rails.application.config.dup,
-        schema: ENV['SCHEMA']
-      }
+    namespace :schema do
+      desc 'Load a schema.rb file into the database'
+      task load: [:environment] do
+        Gitlab::Geo::DatabaseTasks.load_schema_current(:ruby, ENV['SCHEMA'])
+      end
 
-      # set config variables for geo database
-      ENV['SCHEMA'] = 'db/geo/schema.rb'
-      Rails.application.config.paths['db'] = ['db/geo']
-      Rails.application.config.paths['db/migrate'] = ['db/geo/migrate']
-      Rails.application.config.paths['db/seeds.rb'] = ['db/geo/seeds.rb']
-      Rails.application.config.paths['config/database'] = ['config/database_geo.yml']
+      desc 'Create a db/geo/schema.rb file that is portable against any DB supported by AR'
+      task dump: [:environment] do
+        Gitlab::Geo::DatabaseTasks::Schema.dump
+
+        ns['schema:dump'].reenable
+      end
     end
 
-    task :restore do
-      # restore config variables to previous values
-      ENV['SCHEMA'] = @previous_config[:schema]
-      Rails.application.config = @previous_config[:config]
+    namespace :migrate do
+      desc 'Runs the "up" for a given migration VERSION.'
+      task up: [:environment] do
+        Gitlab::Geo::DatabaseTasks::Migrate.up
+
+        ns['_dump'].invoke
+      end
+
+      desc 'Runs the "down" for a given migration VERSION.'
+      task down: [:environment] do
+        Gitlab::Geo::DatabaseTasks::Migrate.down
+
+        ns['_dump'].invoke
+      end
+
+      desc 'Rollbacks the database one migration and re migrate up (options: STEP=x, VERSION=x).'
+      task redo: [:environment] do
+        if ENV['VERSION']
+          ns['migrate:down'].invoke
+          ns['migrate:up'].invoke
+        else
+          ns['rollback'].invoke
+          ns['migrate'].invoke
+        end
+      end
+
+      desc 'Display status of migrations'
+      task status: [:environment] do
+        Gitlab::Geo::DatabaseTasks::Migrate.status
+      end
+    end
+
+    namespace :test do
+      desc 'Check for pending migrations and load the test schema'
+      task prepare: [:environment] do
+        ns['test:load'].invoke
+      end
+
+      # desc "Recreate the test database from the current schema"
+      task load: [:environment, 'geo:db:test:purge'] do
+        Gitlab::Geo::DatabaseTasks::Test.load
+      end
+
+      # desc "Empty the test database"
+      task purge: [:environment] do
+        Gitlab::Geo::DatabaseTasks::Test.purge
+      end
     end
   end
 
   desc 'Make this node the Geo primary'
-  task :set_primary_node, [:ssh_key_filename] => :environment do |_, args|
-    filename = args[:ssh_key_filename]
+  task set_primary_node: :environment do
     abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
-    abort 'You must specify a filename of an SSH public key' unless filename.present?
     abort 'GitLab Geo primary node already present' if Gitlab::Geo.primary_node.present?
 
-    public_key = load_ssh_public_key(filename)
-
-    abort "Invalid SSH public key in #{filename}, aborting" unless public_key
-
-    set_primary_geo_node(public_key)
+    set_primary_geo_node
   end
 
-  def load_ssh_public_key(filename)
-    File.open(filename).read
-  rescue => e
-    puts "Error opening #{filename}: #{e}".color(:red)
-    nil
-  end
-
-  def set_primary_geo_node(public_key)
-    params = { schema: Gitlab.config.gitlab.protocol,
-               host: Gitlab.config.gitlab.host,
-               port: Gitlab.config.gitlab.port,
-               relative_url_root: Gitlab.config.gitlab.relative_url_root,
-               primary: true,
-               geo_node_key_attributes: { key: public_key } }
+  def set_primary_geo_node
+    params = {
+      schema: Gitlab.config.gitlab.protocol,
+      host: Gitlab.config.gitlab.host,
+      port: Gitlab.config.gitlab.port,
+      relative_url_root: Gitlab.config.gitlab.relative_url_root,
+      primary: true
+    }
 
     node = GeoNode.new(params)
     puts "Saving primary GeoNode with URL #{node.url}".color(:green)

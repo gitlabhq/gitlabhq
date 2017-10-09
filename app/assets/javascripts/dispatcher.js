@@ -15,7 +15,6 @@
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
 /* global Search */
@@ -56,7 +55,6 @@ import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
-import GeoNodeForm from './geo/geo_node_form';
 import GeoNodes from './geo_nodes';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -83,6 +81,7 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -112,7 +111,7 @@ import initGroupAnalytics from './init_group_analytics';
 
       $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        const enableGFM = convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
           emojis: true,
           members: enableGFM,
@@ -186,6 +185,9 @@ import initGroupAnalytics from './init_group_analytics';
           if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
+          }
+          if (page === 'projects:merge_requests:index') {
+            new UserCallout({ setCalloutPerProject: true });
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
@@ -375,13 +377,14 @@ import initGroupAnalytics from './init_group_analytics';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+          new UserCallout({ setCalloutPerProject: true });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new gl.Activities();
 
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
 
           initGeoInfoModal();
@@ -392,14 +395,17 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UserCallout('js-service-desk-callout');
-          new UserCallout('js-mr-approval-callout');
+          new UserCallout({ className: 'js-service-desk-callout' });
+          new UserCallout({ className: 'js-mr-approval-callout' });
           break;
         case 'projects:imports:show':
           new ProjectImport();
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
+          break;
+        case 'projects:pipelines:index':
+          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -466,8 +472,9 @@ import initGroupAnalytics from './init_group_analytics';
             );
           }
 
+          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
-            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+            ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
           break;
         case 'projects:find_file:show':
@@ -515,7 +522,9 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          new ProjectFork();
+          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+            .then(fork => fork.default())
+            .catch(() => {});
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();
@@ -593,6 +602,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
+
       }
       switch (path[0]) {
         case 'sessions':
@@ -629,7 +639,9 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));
-              new GeoNodeForm($('.js-geo-node-form'));
+              import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
+                .then(geoNodeForm => geoNodeForm.default($('.js-geo-node-form')))
+                .catch(() => {});
               break;
           }
           break;

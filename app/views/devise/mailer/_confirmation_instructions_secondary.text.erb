@@ -1,0 +1,7 @@
+<%= @resource.user.name %>, you've added an additional email!
+
+Use the link below to confirm your email address (<%= @resource.email %>)
+
+<%= confirmation_url(@resource, confirmation_token: @token) %>
+
+If this email was added in error, you can remove it here: <%= profile_emails_url %>

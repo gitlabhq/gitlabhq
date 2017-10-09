@@ -97,7 +97,7 @@ export default {
     postAction(endpoint) {
       this.service.postAction(endpoint)
         .then(() => eventHub.$emit('refreshPipelines'))
-        .catch(() => new Flash('An error occured while making the request.'));
+        .catch(() => new Flash('An error occurred while making the request.'));
     },
   },
 };

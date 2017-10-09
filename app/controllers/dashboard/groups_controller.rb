@@ -1,5 +1,7 @@
 class Dashboard::GroupsController < Dashboard::ApplicationController
   def index
+    @sort = params[:sort] || 'id_desc'
+
     @groups =
       if params[:parent_id] && Group.supports_nested_groups?
         parent = Group.find_by(id: params[:parent_id])
@@ -15,7 +17,7 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
 
     @groups = @groups.search(params[:filter_groups]) if params[:filter_groups].present?
     @groups = @groups.includes(:route)
-    @groups = @groups.sort(@sort = params[:sort])
+    @groups = @groups.sort(@sort)
     @groups = @groups.page(params[:page])
 
     respond_to do |format|

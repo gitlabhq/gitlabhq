@@ -6,7 +6,7 @@
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter, :provider, :user, :ldap_user, :ldap_identity
+      attr_reader :provider, :user, :ldap_identity
 
       def self.open(user, &block)
         Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
@@ -20,7 +20,7 @@ module Gitlab
           # permissions to keep things clean
           if access.allowed?
             access.update_user
-            Users::UpdateService.new(user, last_credential_check_at: Time.now).execute
+            Users::UpdateService.new(user, user: user, last_credential_check_at: Time.now).execute
 
             true
           else
@@ -32,8 +32,8 @@ module Gitlab
       def initialize(user, adapter = nil)
         @adapter = adapter
         @user = user
-        @provider = adapter&.provider || user.ldap_identity.provider
-        @ldap_identity = user.identities.find_by(provider: @provider)
+        @ldap_identity = user.ldap_identity
+        @provider = adapter&.provider || @ldap_identity&.provider
       end
 
       def allowed?
@@ -67,10 +67,12 @@ module Gitlab
       end
 
       def find_ldap_user
+        return unless provider
+
         found_user = Gitlab::LDAP::Person.find_by_dn(ldap_identity.extern_uid, adapter)
         return found_user if found_user
 
-        if user.external_email? && [nil, provider].include?(user.email_provider)
+        if ldap_identity
           Gitlab::LDAP::Person.find_by_email(user.email, adapter)
         end
       end
@@ -82,10 +84,17 @@ module Gitlab
       def block_user(user, reason)
         user.ldap_block
 
-        Gitlab::AppLogger.info(
-          "LDAP account \"#{ldap_identity.extern_uid}\" #{reason}, " \
-          "blocking Gitlab user \"#{user.name}\" (#{user.email})"
-        )
+        if provider
+          Gitlab::AppLogger.info(
+            "LDAP account \"#{ldap_identity.extern_uid}\" #{reason}, " \
+            "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+          )
+        else
+          Gitlab::AppLogger.info(
+            "Account is not provided by LDAP, " \
+            "blocking Gitlab user \"#{user.name}\" (#{user.email})"
+          )
+        end
       end
 
       def unblock_user(user, reason)
@@ -163,8 +172,9 @@ module Gitlab
 
         return false if user.email == ldap_email
 
-        user.skip_reconfirmation!
-        user.update(email: ldap_email)
+        Users::UpdateService.new(user, user: user, email: ldap_email).execute do |user|
+          user.skip_reconfirmation!
+        end
       end
 
       def update_identity

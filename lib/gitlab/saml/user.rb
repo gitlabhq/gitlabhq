@@ -10,50 +10,19 @@ module Gitlab
         super('SAML')
       end
 
-      def gl_user
-        if auto_link_ldap_user?
-          @user ||= find_or_create_ldap_user
+      def find_user
+        user = find_by_uid_and_provider
+
+        user ||= find_by_email if auto_link_saml_user?
+        user ||= find_or_build_ldap_user if auto_link_ldap_user?
+        user ||= build_new_user if signup_enabled?
+
+        if user
+          user.external = !(auth_hash.groups & Gitlab::Saml::Config.external_groups).empty? if external_users_enabled?
+          user.admin = !(auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty? if admin_groups_enabled?
         end
 
-        @user ||= find_by_uid_and_provider
-
-        if auto_link_saml_user?
-          @user ||= find_by_email
-        end
-
-        if signup_enabled?
-          @user ||= build_new_user
-        end
-
-        if external_users_enabled? && @user
-          # Check if there is overlap between the user's groups and the external groups
-          # setting then set user as external or internal.
-          @user.external =
-            if (auth_hash.groups & Gitlab::Saml::Config.external_groups).empty?
-              false
-            else
-              true
-            end
-        end
-
-        if admin_groups_enabled? && @user
-          @user.admin =
-            if (auth_hash.groups & Gitlab::Saml::Config.admin_groups).empty?
-              false
-            else
-              true
-            end
-        end
-
-        @user
-      end
-
-      def find_by_email
-        if auth_hash.has_email?
-          user = ::User.find_by(email: auth_hash.email.downcase)
-          user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider) if user
-          user
-        end
+        user
       end
 
       def changed?

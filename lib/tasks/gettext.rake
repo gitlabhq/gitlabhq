@@ -1,11 +1,10 @@
 require "gettext_i18n_rails/tasks"
-require 'simple_po_parser'
 
 namespace :gettext do
   # Customize list of translatable files
   # See: https://github.com/grosser/gettext_i18n_rails#customizing-list-of-translatable-files
   def files_to_translate
-    folders = %W(app lib config #{locale_path}).join(',')
+    folders = %W(ee app lib config #{locale_path}).join(',')
     exts = %w(rb erb haml slim rhtml js jsx vue handlebars hbs mustache).join(',')
 
     Dir.glob(
@@ -23,6 +22,8 @@ namespace :gettext do
 
   desc 'Lint all po files in `locale/'
   task lint: :environment do
+    require 'simple_po_parser'
+
     FastGettext.silence_errors
     files = Dir.glob(Rails.root.join('locale/*/gitlab.po'))
 

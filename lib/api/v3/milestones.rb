@@ -34,6 +34,7 @@ module API
           milestones = user_project.milestones
           milestones = filter_milestones_state(milestones, params[:state])
           milestones = filter_by_iid(milestones, params[:iid]) if params[:iid].present?
+          milestones = milestones.order_id_desc
 
           present paginate(milestones), with: ::API::Entities::Milestone
         end

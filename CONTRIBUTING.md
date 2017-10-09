@@ -5,7 +5,7 @@ By submitting code as an individual you agree to the
 By submitting code as an entity you agree to the
 [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
-_This notice should stay as the first item in the CONTRIBUTING.MD file._
+_This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
 
@@ -21,7 +21,7 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 - [Workflow labels](#workflow-labels)
   - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
   - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
+  - [Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)](#team-labels-ci-discussion-edge-platform-etc)
   - [Priority labels (~Deliverable and ~Stretch)](#priority-labels-deliverable-and-stretch)
   - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
 - [Implement design & UI elements](#implement-design--ui-elements)
@@ -50,7 +50,7 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is efficient for everyone.
 
-Looking for something to work on? Look for the label [Accepting Merge Requests](#i-want-to-contribute).
+Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
 
 GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
 source edition, and GitLab Enterprise Edition (EE) which is our commercial
@@ -102,7 +102,7 @@ the remaining issues on the GitHub issue tracker.
 ## I want to contribute!
 
 If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and weight < 5][accepting-mrs-weight].
+look for [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight].
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
 
@@ -116,7 +116,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~CI, ~Discussion, ~Edge, ~Platform, etc.
+- Team: ~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.
 - Priority: ~Deliverable, ~Stretch
 
 All labels, their meaning and priority are defined on the
@@ -158,13 +158,13 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~CI, ~Discussion, ~Edge, ~Platform, etc.)
+### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Build, ~CI, ~Discussion, ~Documentation, ~Edge,
+The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
 ~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
 
 The descriptions on the [labels page][labels-page] explain what falls under the
@@ -210,19 +210,29 @@ We add the ~"Accepting Merge Requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
 solve in the ~"Next Patch Release")
-- Small ~"feature proposal" that do not need ~UX / ~"Product work", or for which
-the ~UX / ~"Product work" is already done
+- Small ~"feature proposal"
 - Small ~"technical debt" issues
 
 After adding the ~"Accepting Merge Requests" label, we try to estimate the
 [weight](#issue-weight) of the issue. We use issue weight to let contributors
 know how difficult the issue is. Additionally:
 
-- We advertise [~"Accepting Merge Requests" issues with weight < 5][up-for-grabs]
+- We advertise ["Accepting Merge Requests" issues with weight < 5][up-for-grabs]
   as suitable for people that have never contributed to GitLab before on the
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
-  look for [~"Accepting Merge Requests" issues with a weight of 1][firt-timers]
+  look for ["Accepting Merge Requests" issues with a weight of 1][firt-timers]
+
+If you've decided that you would like to work on an issue, please @-mention
+the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
+as soon as possible. The product manager will then pull in appropriate GitLab team
+members to further discuss scope, design, and technical considerations. This will
+ensure that that your contribution is aligned with the GitLab product and minimize
+any rework and delay in getting it merged into master.
+
+GitLab team members who apply the ~"Accepting Merge Requests" label to an issue
+should update the issue description with a responsible product manager, inviting
+any potential community contributor to @-mention per above.
 
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests&scope=all&sort=weight_asc&state=opened
 [firt-timers]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=Accepting+Merge+Requests&scope=all&sort=upvotes_desc&state=opened&weight=1
@@ -287,7 +297,10 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it can be helpful to create a mockup first.
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should 
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may 
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself. 
+
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
@@ -422,7 +435,7 @@ request is as follows:
 
 1. Fork the project into your personal space on GitLab.com
 1. Create a feature branch, branch away from `master`
-1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
+1. Write [tests](https://docs.gitlab.com/ee/development/rake_tasks.html#run-tests) and code
 1. [Generate a changelog entry with `bin/changelog`][changelog]
 1. If you are writing documentation, make sure to follow the
    [documentation styleguide][doc-styleguide]

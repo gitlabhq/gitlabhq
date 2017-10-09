@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe GeoNodeStatus do
-  let!(:geo_node) { create(:geo_node, :current) }
-  let(:group)      { create(:group) }
-  let!(:project_1) { create(:project, group: group) }
-  let!(:project_2) { create(:project, group: group) }
-  let!(:project_3) { create(:project) }
-  let!(:project_4) { create(:project) }
+  set(:geo_node)  { create(:geo_node, :primary) }
+  set(:group)     { create(:group) }
+  set(:project_1) { create(:project, group: group) }
+  set(:project_2) { create(:project, group: group) }
+  set(:project_3) { create(:project) }
+  set(:project_4) { create(:project) }
 
   subject { described_class.new }
 
@@ -99,10 +99,17 @@ describe GeoNodeStatus do
   end
 
   describe '#db_replication_lag' do
-    it 'returns the set replication lag' do
+    it 'returns the set replication lag if secondary' do
+      allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
       allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(1000)
 
       expect(subject.db_replication_lag).to eq(1000)
+    end
+
+    it "doesn't attempt to set replication lag if primary" do
+      expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag)
+
+      expect(subject.db_replication_lag).to eq(nil)
     end
   end
 
@@ -191,10 +198,18 @@ describe GeoNodeStatus do
       expect(subject.cursor_last_event_date).to be_nil
     end
 
-    it 'returns the latest event ID' do
+    it 'returns the latest event ID if secondary' do
+      allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
       event = create(:geo_event_log_state)
 
       expect(subject.cursor_last_event_id).to eq(event.event_id)
+    end
+
+    it "doesn't attempt to retrieve cursor if primary" do
+      create(:geo_event_log_state)
+
+      expect(subject.cursor_last_event_date).to eq(nil)
+      expect(subject.cursor_last_event_id).to eq(nil)
     end
   end
 

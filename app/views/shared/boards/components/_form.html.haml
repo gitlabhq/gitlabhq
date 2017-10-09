@@ -1,5 +1,5 @@
 .board-selector-page-two
-  %form{ "@submit.prevent" => "submit" }
+  %form{ "v-on:submit.prevent" => "submit" }
     .dropdown-content
       %input{ type: "hidden",
         id: "board-milestone",
@@ -16,7 +16,7 @@
           %label.label-light{ for: "board-milestone" }
             Board milestone
           %button.dropdown-menu-toggle.wide{ type: "button",
-            "@click.stop.prevent" => "loadMilestones($event)" }
+            "v-on:click.stop.prevent" => "loadMilestones($event)" }
             {{ milestoneToggleText }}
             = icon("chevron-down")
           .dropdown-menu.dropdown-menu-selectable{ "v-if" => "milestoneDropdownOpen",
@@ -26,13 +26,13 @@
                 %li{ "v-for" => "milestone in extraMilestones" }
                   %a{ href: "#",
                     ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                    "@click.stop.prevent" => "selectMilestone(milestone)" }
+                    "v-on:click.stop.prevent" => "selectMilestone(milestone)" }
                     {{ milestone.title }}
                 %li.divider
                 %li{ "v-for" => "milestone in milestones" }
                   %a{ href: "#",
                     ":class" => "{ 'is-active': milestone.id === board.milestone_id }",
-                    "@click.stop.prevent" => "selectMilestone(milestone)" }
+                    "v-on:click.stop.prevent" => "selectMilestone(milestone)" }
                     {{ milestone.title }}
             = dropdown_loading
           %span
@@ -47,5 +47,5 @@
         "ref" => "'submit-btn'" }
         {{ buttonText }}
       %button.btn.btn-default.pull-right{ type: "button",
-        "@click.stop.prevent" => "cancel" }
+        "v-on:click.stop.prevent" => "cancel" }
         Cancel

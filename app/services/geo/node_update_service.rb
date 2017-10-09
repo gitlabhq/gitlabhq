@@ -6,6 +6,7 @@ module Geo
       @geo_node = geo_node
       @old_namespace_ids = geo_node.namespace_ids
       @params = params.slice(:url, :primary, :namespace_ids)
+      @params[:namespace_ids] = @params[:namespace_ids].to_s.split(',')
     end
 
     def execute
@@ -15,7 +16,7 @@ module Geo
         Geo::RepositoriesChangedEventStore.new(geo_node).create
       end
 
-      geo_node
+      true
     end
 
     private

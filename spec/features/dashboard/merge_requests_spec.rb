@@ -3,12 +3,13 @@ require 'spec_helper'
 feature 'Dashboard Merge Requests' do
   include FilterItemSelectHelper
   include SortingHelper
+  include ProjectForksHelper
 
   let(:current_user) { create :user }
   let(:project) { create(:project) }
 
   let(:public_project) { create(:project, :public, :repository) }
-  let(:forked_project) { Projects::ForkService.new(public_project, current_user).execute }
+  let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
     project.add_master(current_user)
@@ -112,19 +113,19 @@ feature 'Dashboard Merge Requests' do
     end
 
     it 'shows sorted merge requests' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
 
       visit merge_requests_dashboard_path(assignee_id: current_user.id)
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
 
     it 'keeps sorting merge requests after visiting Projects MR page' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
 
       visit project_merge_requests_path(project)
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
   end
 end

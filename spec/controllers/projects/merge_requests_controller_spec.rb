@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -94,18 +96,6 @@ describe Projects::MergeRequestsController do
           go(format: :json)
 
           expect(response).to match_response_schema('entities/merge_request')
-        end
-      end
-
-      context 'number of queries', :request_store do
-        it 'verifies number of queries' do
-          # pre-create objects
-          merge_request
-
-          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
-
-          expect(recorded.count).to be_within(5).of(30)
-          expect(recorded.cached_count).to eq(0)
         end
       end
     end
@@ -216,14 +206,11 @@ describe Projects::MergeRequestsController do
 
     context 'there is no source project' do
       let(:project)       { create(:project, :repository) }
-      let(:fork_project)  { create(:forked_project_with_submodules) }
-      let(:merge_request) { create(:merge_request, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+      let(:forked_project)  { fork_project_with_submodules(project) }
+      let!(:merge_request) { create(:merge_request, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
       before do
-        fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        fork_project.save
-        merge_request.reload
-        fork_project.destroy
+        forked_project.destroy
       end
 
       it 'closes MR without errors' do
@@ -612,21 +599,16 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { create(:project, :repository) }
+      let!(:forked)       { fork_project(project, user, repository: true) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
       let(:admin)         { create(:admin) }
 
       let(:merge_request) do
-        create(:forked_project_link, forked_to_project: forked,
-                                     forked_from_project: project)
-
         create(:merge_request, source_project: forked, target_project: project)
       end
 
       before do
-        forked.team << [user, :master]
-
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
@@ -659,7 +641,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
       end
     end
 

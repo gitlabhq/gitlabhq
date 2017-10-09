@@ -225,6 +225,19 @@ describe Projects::DestroyService do
     end
   end
 
+  context 'as the root of a fork network' do
+    let!(:fork_network) { create(:fork_network, root_project: project) }
+
+    it 'updates the fork network with the project name' do
+      destroy_project(project, user)
+
+      fork_network.reload
+
+      expect(fork_network.deleted_root_project_name).to eq(project.full_name)
+      expect(fork_network.root_project).to be_nil
+    end
+  end
+
   def destroy_project(project, user, params = {})
     if async
       Projects::DestroyService.new(project, user, params).async_execute

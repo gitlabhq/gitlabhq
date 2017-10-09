@@ -3,18 +3,44 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      after_action :log_failed_login, only: :new, if: :failed_login?
+      before_action :gitlab_geo_login, only: [:new]
+      before_action :gitlab_geo_logout, only: [:destroy]
     end
 
     private
 
+    def gitlab_geo_login
+      return unless ::Gitlab::Geo.secondary?
+      return if signed_in?
+
+      oauth = ::Gitlab::Geo::OauthSession.new
+
+      # share full url with primary node by oauth state
+      user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
+      oauth.return_to = stored_redirect_uri || user_return_to
+
+      redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
+    end
+
+    def gitlab_geo_logout
+      return unless ::Gitlab::Geo.secondary?
+
+      oauth = ::Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
+      @geo_logout_state = oauth.generate_logout_state
+    end
+
     def log_failed_login
       ::AuditEventService.new(request.filtered_parameters['user']['login'], nil, ip_address: request.remote_ip)
           .for_failed_login.unauth_security_event
+
+      super
     end
 
-    def failed_login?
-      env['warden.options'] && env['warden.options'][:action] == 'unauthenticated'
+    def redirect_allowed_to?(uri)
+      raise NotImplementedError unless defined?(super)
+
+      # Redirect is not only allowed to current host, but also to other Geo nodes
+      super || ::Gitlab::Geo.geo_node?(host: uri.host, port: uri.port)
     end
   end
 end

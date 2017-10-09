@@ -10,7 +10,67 @@ all you need to do is update GitLab itself:
 
 1. Log into each node (primary and secondaries)
 1. [Update GitLab][update]
-1. Test primary and secondary nodes, and check version in each.
+1. [Update tracking database on secondary node](#update-tracking-database-on-secondary-node) when
+   the tracking database is enabled.
+1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
+
+## Upgrading to GitLab 10.1
+
+[Hashed storage](../administration/repository_storage_types.md) was introduced
+in GitLab 10.0, and a [migration path](../administration/raketasks/storage.md)
+for existing repositories was added in GitLab 10.1.
+
+After upgrading to GitLab 10.1, we recommend that you
+[enable hashed storage for all new projects](#step-5-enabling-hashed-storage-from-gitlab-100),
+then [migrate existing projects to hashed storage](../administration/raketasks/storage.md).
+This will significantly reduce the amount of synchronization required between
+nodes in the event of project or group renames.
+
+## Upgrading to GitLab 10.0
+
+Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
+the database](ssh.md) to avoid having to maintain consistency of the
+`authorized_keys` file for SSH access. Failing to do this will prevent users
+from being able to clone via SSH.
+
+Note that in older versions of Geo, attachments downloaded on the secondary
+nodes would be saved to the wrong directory. We recommend that you do the
+following to clean this up.
+
+On the SECONDARY Geo nodes, run as root:
+
+```sh
+mv /var/opt/gitlab/gitlab-rails/working /var/opt/gitlab/gitlab-rails/working.old
+mkdir /var/opt/gitlab/gitlab-rails/working
+chmod 700 /var/opt/gitlab/gitlab-rails/working
+chown git:git /var/opt/gitlab/gitlab-rails/working
+```
+
+You may delete `/var/opt/gitlab/gitlab-rails/working.old` any time.
+
+Once this is done, we advise restarting GitLab on the secondary nodes for the
+new working directory to be used:
+
+```
+sudo gitlab-ctl restart
+```
+
+## Upgrading from GitLab 9.3 or older
+
+If you started running Geo on GitLab 9.3 or older, we recommend that you
+resync your secondary PostgreSQL databases to use replication slots. If you
+started using Geo with GitLab 9.4 or 10.x, no further action should be
+required because replication slots are used by default. However, if you
+started with GitLab 9.3 and upgraded later, you should still follow the
+instructions below.
+
+When in doubt, it does not hurt to do a resync. The easiest way to do this in
+Omnibus is the following:
+
+  1. Install GitLab on the primary server
+  1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
+  1. Install GitLab on the secondary server.
+  1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
 
 ## Special update notes for 9.0.x
 
@@ -149,68 +209,18 @@ everything is working correctly:
 1. Test the data replication by pushing code to the primary and see if it
    is received by the secondaries
 
-## Enable tracking database
+## Update tracking database on secondary node
 
-NOTE: This step is required only if you want to enable the new Disaster
-Recovery feature in Alpha shipped in GitLab 9.0.
+After updating a secondary node, you might need to run migrations on
+the tracking database. The tracking database was added in GitLab 9.1,
+and it is required since 10.0.
 
-Geo secondary nodes now can keep track of replication status and recover
-automatically from some replication issues. To get this feature enabled,
-you need to activate the Tracking Database.
-
-> **IMPORTANT:** For this feature to work correctly, all nodes must be
-with their clocks synchronized. It is not required for all nodes to be set to
-the same time zone, but when the respective times are converted to UTC time,
-the clocks must be synchronized to within 60 seconds of each other.
-
-1. Setup clock synchronization service in your Linux distro.
-   This can easily be done via any NTP-compatible daemon. For example,
-   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-    ```
-    geo_postgresql['enable'] = true
-    ```
-
-1. Create `database_geo.yml` with the information of your secondary PostgreSQL
-   database.  Note that GitLab will set up another database instance separate
-   from the primary, since this is where the secondary will track its internal
-   state:
-
-    ```
-    sudo cp /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml.postgresql /opt/gitlab/embedded/service/gitlab-rails/config/database_geo.yml
-    ```
-
-1. Edit the content of `database_geo.yml` in `production:` like the example below:
-    
-   ```yaml
-   #
-   # PRODUCTION
-   #
-   production:
-     adapter: postgresql
-     encoding: unicode
-     database: gitlabhq_geo_production
-     pool: 10
-     username: gitlab_geo
-     # password:
-     host: /var/opt/gitlab/geo-postgresql
-     port: 5431
-    
-   ```
-
-1. Reconfigure GitLab:
-
-    ```
-    sudo gitlab-ctl start
-    sudo gitlab-ctl reconfigure
-    ```
-
-1. Set up the Geo tracking database:
+1. Run database migrations on tracking database
 
     ```
     sudo gitlab-rake geo:db:migrate
     ```
+
+1. Repeat this step for every secondary node
 
 [update]: ../update/README.md

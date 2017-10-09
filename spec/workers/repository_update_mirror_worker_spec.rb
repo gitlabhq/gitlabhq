@@ -2,10 +2,12 @@ require 'rails_helper'
 
 describe RepositoryUpdateMirrorWorker do
   describe '#perform' do
+    let(:jid) { '12345678' }
     let!(:project) { create(:project, :mirror, :import_scheduled) }
 
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+      allow(subject).to receive(:jid).and_return(jid)
     end
 
     it 'sets status as finished when update mirror service executes successfully' do
@@ -36,16 +38,22 @@ describe RepositoryUpdateMirrorWorker do
       expect(project.reload.import_status).to eq('failed')
     end
 
+    context 'when worker was reset without cleanup' do
+      let(:started_project) { create(:project, :mirror, :import_started, import_jid: jid) }
+
+      it 'sets status as finished when update mirror service executes successfully' do
+        expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
+
+        expect { subject.perform(started_project.id) }.to change { started_project.reload.import_status }.to('finished')
+      end
+    end
+
     context 'reschedule mirrors' do
       before do
         allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
       end
 
       context 'when we obtain the lease' do
-        before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
-        end
-
         it 'performs UpdateAllMirrorsWorker when reschedule_immediately? returns true' do
           allow(Gitlab::Mirror).to receive(:reschedule_immediately?).and_return(true)
 

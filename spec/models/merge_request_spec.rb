@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe MergeRequest do
   include RepoHelpers
+  include ProjectForksHelper
 
   subject { create(:merge_request) }
 
@@ -45,6 +46,19 @@ describe MergeRequest do
       it "is valid with merge user" do
         subject.merge_when_pipeline_succeeds = true
         subject.merge_user = build(:user)
+
+        expect(subject).to be_valid
+      end
+    end
+
+    context 'for forks' do
+      let(:project) { create(:project) }
+      let(:fork1) { fork_project(project) }
+      let(:fork2) { fork_project(project) }
+
+      it 'allows merge requests for sibling-forks' do
+        subject.source_project = fork1
+        subject.target_project = fork2
 
         expect(subject).to be_valid
       end
@@ -881,7 +895,7 @@ describe MergeRequest do
 
   describe '#diverged_commits_count' do
     let(:project)      { create(:project, :repository) }
-    let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+    let(:forked_project) { fork_project(project, nil, repository: true) }
 
     context 'when the target branch does not exist anymore' do
       subject { create(:merge_request, source_project: project, target_project: project) }
@@ -909,7 +923,7 @@ describe MergeRequest do
     end
 
     context 'diverged on fork' do
-      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
+      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: forked_project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
         expect(subject.diverged_commits_count).to eq(29)
@@ -917,7 +931,7 @@ describe MergeRequest do
     end
 
     context 'rebased on fork' do
-      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: fork_project, target_project: project) }
+      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: forked_project, target_project: project) }
 
       it 'counts commits that are on target branch but not on source branch' do
         expect(subject.diverged_commits_count).to eq(0)
@@ -996,6 +1010,49 @@ describe MergeRequest do
         allow(subject).to receive(:source_project).and_return(nil)
 
         expect(subject.head_pipeline).to be_nil
+      end
+    end
+  end
+
+  describe '#has_ci?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    context 'has ci' do
+      it 'returns true if MR has head_pipeline_id and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { double }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+
+      it 'returns true if MR has any pipeline and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive(:all_pipelines) { [double] }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+
+      it 'returns true if MR has CI service and commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { double }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:has_no_commits?) { false }
+        allow(merge_request).to receive(:all_pipelines) { [] }
+
+        expect(merge_request.has_ci?).to be(true)
+      end
+    end
+
+    context 'has no ci' do
+      it 'returns false if MR has no CI service nor pipeline, and no commits' do
+        allow(merge_request).to receive_message_chain(:source_project, :ci_service) { nil }
+        allow(merge_request).to receive(:head_pipeline_id) { nil }
+        allow(merge_request).to receive(:all_pipelines) { [] }
+        allow(merge_request).to receive(:has_no_commits?) { true }
+
+        expect(merge_request.has_ci?).to be(false)
       end
     end
   end
@@ -1443,11 +1500,7 @@ describe MergeRequest do
     end
 
     context 'with environments on source project' do
-      let(:source_project) do
-        create(:project, :repository) do |fork_project|
-          fork_project.create_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        end
-      end
+      let(:source_project) { fork_project(project, nil, repository: true) }
 
       let(:merge_request) do
         create(:merge_request,
@@ -1491,7 +1544,6 @@ describe MergeRequest do
 
   describe "#reload_diff" do
     let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
-
     let(:commit) { subject.project.commit(sample_commit.id) }
 
     it "does not change existing merge request diff" do
@@ -1509,9 +1561,19 @@ describe MergeRequest do
       subject.reload_diff
     end
 
-    it "updates diff discussion positions" do
-      old_diff_refs = subject.diff_refs
+    it "calls update_diff_discussion_positions" do
+      expect(subject).to receive(:update_diff_discussion_positions)
 
+      subject.reload_diff
+    end
+  end
+
+  describe '#update_diff_discussion_positions' do
+    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
+    let(:commit) { subject.project.commit(sample_commit.id) }
+    let(:old_diff_refs) { subject.diff_refs }
+
+    before do
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
       allow(subject).to receive(:create_merge_request_diff) do
         subject.merge_request_diffs.create(
@@ -1522,7 +1584,9 @@ describe MergeRequest do
 
         subject.merge_request_diff(true)
       end
+    end
 
+    it "updates diff discussion positions" do
       expect(Discussions::UpdateDiffPositionService).to receive(:new).with(
         subject.project,
         subject.author,
@@ -1534,7 +1598,26 @@ describe MergeRequest do
       expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
       expect_any_instance_of(DiffNote).to receive(:save).once
 
-      subject.reload_diff(subject.author)
+      subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                               new_diff_refs: commit.diff_refs,
+                                               current_user: subject.author)
+    end
+
+    context 'when resolve_outdated_diff_discussions is set' do
+      before do
+        discussion
+
+        subject.project.update!(resolve_outdated_diff_discussions: true)
+      end
+
+      it 'calls MergeRequests::ResolvedDiscussionNotificationService' do
+        expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService)
+          .to receive(:execute).with(subject)
+
+        subject.update_diff_discussion_positions(old_diff_refs: old_diff_refs,
+                                                 new_diff_refs: commit.diff_refs,
+                                                 current_user: subject.author)
+      end
     end
   end
 
@@ -1779,14 +1862,14 @@ describe MergeRequest do
 
   describe "#source_project_missing?" do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:forked_project) { fork_project(project) }
     let(:user)         { create(:user) }
-    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the fork exists" do
       let(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1800,9 +1883,9 @@ describe MergeRequest do
     end
 
     context "when the fork does not exist" do
-      let(:merge_request) do
+      let!(:merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1825,14 +1908,14 @@ describe MergeRequest do
 
   describe "#closed_without_fork?" do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:forked_project) { fork_project(project) }
     let(:user)         { create(:user) }
-    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(forked_project, user) }
 
     context "when the merge request is closed" do
       let(:closed_merge_request) do
         create(:closed_merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1851,7 +1934,7 @@ describe MergeRequest do
     context "when the merge request is open" do
       let(:open_merge_request) do
         create(:merge_request,
-          source_project: fork_project,
+          source_project: forked_project,
           target_project: project)
       end
 
@@ -1870,24 +1953,24 @@ describe MergeRequest do
       end
 
       context 'forked project' do
-        let(:project)      { create(:project) }
+        let(:project)      { create(:project, :public) }
         let(:user)         { create(:user) }
-        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
+        let(:forked_project) { fork_project(project, user) }
 
         let!(:merge_request) do
           create(:closed_merge_request,
-            source_project: fork_project,
+            source_project: forked_project,
             target_project: project)
         end
 
         it 'returns false if unforked' do
-          Projects::UnlinkForkService.new(fork_project, user).execute
+          Projects::UnlinkForkService.new(forked_project, user).execute
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end
 
         it 'returns false if the source project is deleted' do
-          Projects::DestroyService.new(fork_project, user).execute
+          Projects::DestroyService.new(forked_project, user).execute
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end

@@ -31,7 +31,7 @@ var config = {
     boards:               './boards/boards_bundle.js',
     burndown_chart:       './burndown_chart/index.js',
     common:               './commons/index.js',
-    common_vue:           ['vue', './vue_shared/common_vue.js'],
+    common_vue:           './vue_shared/vue_resource_interceptor.js',
     common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
@@ -46,12 +46,14 @@ var config = {
     group:                './group.js',
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    help:                 './help/help.js',
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',
+    ldap_group_links:     './groups/ldap_group_links.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -75,6 +77,7 @@ var config = {
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
+    registry_list:        './registry/index.js',
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -127,10 +130,6 @@ var config = {
         options: {
           name: '[name].[hash].[ext]',
         }
-      },
-      {
-        test: /locale\/\w+\/(.*)\.js$/,
-        loader: 'exports-loader?locales',
       },
       {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
@@ -208,6 +207,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'registry_list',
         'repo',
         'schedule_form',
         'schedules_index',
@@ -232,7 +232,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'webpack_runtime'],
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // enable scope hoisting

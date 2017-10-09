@@ -744,11 +744,10 @@ describe Gitlab::GitAccess do
       run_permission_checks(admin: matrix)
     end
 
-    context "when in a secondary gitlab geo node" do
+    context "when in a read-only GitLab instance" do
       before do
         create(:protected_branch, name: 'feature', project: project)
-        allow(Gitlab::Geo).to receive(:enabled?) { true }
-        allow(Gitlab::Geo).to receive(:secondary?) { true }
+        allow(Gitlab::Database).to receive(:read_only?) { true }
       end
 
       # Only check admin; if an admin can't do it, other roles can't either
@@ -944,7 +943,7 @@ describe Gitlab::GitAccess do
   end
 
   context 'when the repository is read only' do
-    let(:project) { create(:project, :repository, :read_only_repository) }
+    let(:project) { create(:project, :repository, :read_only) }
 
     it 'denies push access' do
       project.add_master(user)

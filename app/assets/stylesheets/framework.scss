@@ -18,6 +18,7 @@
 @import "framework/flash";
 @import "framework/forms";
 @import "framework/gfm";
+@import "framework/gitlab-theme";
 @import "framework/header";
 @import "framework/highlight";
 @import "framework/issue_box";
@@ -30,10 +31,12 @@
 @import "framework/modal";
 @import "framework/media_object";
 @import "framework/nav";
+@import "framework/new-nav";
 @import "framework/pagination";
 @import "framework/panels";
 @import "framework/selects";
 @import "framework/sidebar";
+@import "framework/new-sidebar";
 @import "framework/tables";
 @import "framework/notes";
 @import "framework/timeline";
@@ -51,4 +54,3 @@
 @import "framework/snippets";
 @import "framework/memory_graph";
 @import "framework/responsive-tables";
-@import "framework/feature_highlight";

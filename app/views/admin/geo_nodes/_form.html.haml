@@ -12,8 +12,9 @@
   .col-sm-10
     = form.text_field :url, class: 'form-control'
 
+
 = form.fields_for :geo_node_key, geo_node.geo_node_key, include_id: !disable_key_edit do |fg|
-  .form-group
+  .form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
     = fg.label :key, 'Public Key', class: 'control-label'
     .col-sm-10
       = fg.text_area :key, class: 'form-control thin_area', rows: 5, disabled: disable_key_edit
@@ -22,9 +23,9 @@
           Paste the ssh public key used by the node you are adding. Read more about it
           = link_to 'here', help_page_path('gitlab-geo/configuration.html', anchor: 'step-5-enabling-the-secondary-gitlab-node')
 
-.form-group.js-namespaces{ class: ('hidden' unless geo_node.new_record? || geo_node.secondary?) }
-  = form.label :namespace_ids, 'Namespaces to replicate', class: 'control-label'
+.form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
+  = form.label :namespace_ids, s_('Geo|Groups to replicate'), class: 'control-label'
   .col-sm-10
-    = form.select :namespace_ids, namespaces_options(geo_node.namespace_ids), { include_hidden: true }, multiple: true, class: 'select2 select-wide', data: { field: 'namespace_ids' }
+    = hidden_field_tag "#{form.object_name}[namespace_ids]", geo_node.namespace_ids.join(","), class: 'js-geo-node-namespaces', data: { selected: node_namespaces_options(geo_node.namespaces).to_json }
     .help-block
-      Choose which namespaces you wish to replicate to this secondary node. Leave blank to replicate all.
+      #{ s_("Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all.") }

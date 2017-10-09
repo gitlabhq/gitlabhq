@@ -362,6 +362,8 @@ describe API::Runner do
                'policy' => 'pull-push' }]
           end
 
+          let(:expected_features) { { 'trace_sections' => true } }
+
           it 'picks a job' do
             request_job info: { platform: :darwin }
 
@@ -381,6 +383,7 @@ describe API::Runner do
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
+            expect(json_response['features']).to eq(expected_features)
           end
 
           context 'when job is made for tag' do

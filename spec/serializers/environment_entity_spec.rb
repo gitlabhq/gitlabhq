@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe EnvironmentEntity do
+  include KubernetesHelpers
+
   let(:user) { create(:user) }
   let(:environment) { create(:environment) }
 
@@ -20,6 +22,10 @@ describe EnvironmentEntity do
 
   it 'exposes core elements of environment' do
     expect(subject).to include(:id, :name, :state, :environment_path)
+  end
+
+  it 'exposes folder path' do
+    expect(subject).to include(:folder_path)
   end
 
   context 'metrics disabled' do
@@ -46,12 +52,11 @@ describe EnvironmentEntity do
     before do
       stub_licensed_features(deploy_board: true)
       allow(environment).to receive(:deployment_service_ready?).and_return(true)
+      allow(environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
     end
 
-    it 'exposes rollout_status_path' do
-      expected = '/' + [environment.project.full_path, 'environments', environment.id, 'status.json'].join('/')
-
-      expect(subject[:rollout_status_path]).to eq(expected)
+    it 'exposes rollout_status' do
+      expect(subject).to include(:rollout_status)
     end
   end
 
@@ -61,7 +66,7 @@ describe EnvironmentEntity do
       allow(environment).to receive(:deployment_service_ready?).and_return(true)
     end
 
-    it 'does not expose rollout_status_path' do
+    it 'does not expose rollout_status' do
       expect(subject[:rollout_status_path]).to be_blank
     end
   end

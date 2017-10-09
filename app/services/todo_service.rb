@@ -43,8 +43,8 @@ class TodoService
   #
   #  * create a pending todo for new assignee if issue is assigned
   #
-  def reassigned_issue(issue, current_user)
-    create_assignment_todo(issue, current_user)
+  def reassigned_issue(issue, current_user, old_assignees = [])
+    create_assignment_todo(issue, current_user, old_assignees)
   end
 
   # When create a merge request we should:
@@ -267,10 +267,11 @@ class TodoService
     create_mention_todos(project, target, author, note, skip_users)
   end
 
-  def create_assignment_todo(issuable, author)
+  def create_assignment_todo(issuable, author, old_assignees = [])
     if issuable.assignees.any?
+      assignees = issuable.assignees - old_assignees
       attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
-      create_todos(issuable.assignees, attributes)
+      create_todos(assignees, attributes)
     end
   end
 

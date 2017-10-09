@@ -7,10 +7,10 @@ module EE
       class AccessLevels < Hash
         def set(dns, to:)
           dns.each do |dn|
-            current = self[dn.downcase]
+            current = self[dn]
 
             # Keep the higher of the access values.
-            self[dn.downcase] = to if current.nil? || to > current
+            self[dn] = to if current.nil? || to > current
           end
         end
       end

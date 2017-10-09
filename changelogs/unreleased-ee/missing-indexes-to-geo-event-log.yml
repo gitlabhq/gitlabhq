@@ -1,5 +1,0 @@
----
-title: Add missing indexes to geo_event_log table
-merge_request: 2836
-author:
-type: other

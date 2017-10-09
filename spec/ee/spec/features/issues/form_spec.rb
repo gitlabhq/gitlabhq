@@ -119,7 +119,7 @@ describe 'New/edit issue', :js do
       end
       expect(find('a', text: 'Assign to me')).to be_visible
 
-      click_link 'Assign to me'
+      find('a', text: 'Assign to me').trigger('click')
       assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
 
       expect(assignee_ids[0].value).to match(user2.id.to_s)
@@ -208,54 +208,6 @@ describe 'New/edit issue', :js do
 
       expect(page.all('.dropdown-menu-user a.is-active')[0].first(:xpath, '..')['data-user-id']).to eq(user.id.to_s)
       expect(page.all('.dropdown-menu-user a.is-active')[1].first(:xpath, '..')['data-user-id']).to eq(user2.id.to_s)
-    end
-  end
-
-  context 'edit issue' do
-    before do
-      visit edit_project_issue_path(project, issue)
-    end
-
-    it 'allows user to update issue' do
-      expect(find('input[name="issue[assignee_ids][]"]', visible: false).value).to match(user.id.to_s)
-      expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
-      expect(find('a', text: 'Assign to me', visible: false)).not_to be_visible
-
-      page.within '.js-user-search' do
-        expect(page).to have_content user.name
-      end
-
-      page.within '.js-milestone-select' do
-        expect(page).to have_content milestone.title
-      end
-
-      click_button 'Labels'
-      page.within '.dropdown-menu-labels' do
-        click_link label.title
-        click_link label2.title
-      end
-      page.within '.js-label-select' do
-        expect(page).to have_content label.title
-      end
-      expect(page.all('input[name="issue[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
-      expect(page.all('input[name="issue[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
-
-      click_button 'Save changes'
-
-      page.within '.issuable-sidebar' do
-        page.within '.assignee' do
-          expect(page).to have_content user.name
-        end
-
-        page.within '.milestone' do
-          expect(page).to have_content milestone.title
-        end
-
-        page.within '.labels' do
-          expect(page).to have_content label.title
-          expect(page).to have_content label2.title
-        end
-      end
     end
   end
 

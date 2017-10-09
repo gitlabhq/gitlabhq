@@ -26,12 +26,11 @@ Issue:
 - service_desk_reply_to
 - last_edited_at
 - last_edited_by_id
+- discussion_locked
 Event:
 - id
 - target_type
 - target_id
-- title
-- data
 - project_id
 - created_at
 - updated_at
@@ -66,6 +65,7 @@ Note:
 - change_position
 - resolved_at
 - resolved_by_id
+- resolved_by_push
 - discussion_id
 - original_discussion_id
 LabelLink:
@@ -173,6 +173,7 @@ MergeRequest:
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
+- discussion_locked
 MergeRequestDiff:
 - id
 - state
@@ -228,6 +229,8 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
+- config_source
+- failure_reason
 - protected
 Ci::Stage:
 - id
@@ -404,6 +407,7 @@ Project:
 - public_builds
 - last_repository_check_failed
 - last_repository_check_at
+- collapse_outdated_diff_comments
 - container_registry_enabled
 - only_allow_merge_if_pipeline_succeeds
 - has_external_issue_tracker
@@ -412,6 +416,7 @@ Project:
 - only_allow_merge_if_all_discussions_are_resolved
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
+- resolve_outdated_diff_discussions
 - build_allow_git_fetch
 - merge_requests_template
 - merge_requests_rebase_enabled
@@ -426,6 +431,8 @@ Project:
 - last_repository_updated_at
 - ci_config_path
 - delete_error
+- merge_requests_ff_only_enabled
+- merge_requests_rebase_enabled
 Author:
 - name
 ProjectFeature:
@@ -483,5 +490,12 @@ Timelog:
 - merge_request_id
 - issue_id
 - user_id
+- created_at
+- updated_at
+ProjectAutoDevops:
+- id
+- enabled
+- domain
+- project_id
 - created_at
 - updated_at

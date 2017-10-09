@@ -1,6 +1,6 @@
 module Ci
   class Runner < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
@@ -175,7 +175,7 @@ module Ci
     end
 
     def assignable_for?(project)
-      !locked? || projects.exists?(id: project.id)
+      is_shared? || projects.exists?(id: project.id)
     end
 
     def accepting_tags?(build)

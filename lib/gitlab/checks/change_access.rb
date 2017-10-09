@@ -14,7 +14,8 @@ module Gitlab
         change_existing_tags: 'You are not allowed to change existing tags on this project.',
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
-        create_protected_tag: 'You are not allowed to create this tag as it is protected.'
+        create_protected_tag: 'You are not allowed to create this tag as it is protected.',
+        push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'"
       }.freeze
 
       # protocol is currently used only in EE
@@ -81,7 +82,7 @@ module Gitlab
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_master_delete_protected_branch]
         end
 
-        unless protocol == 'web'
+        unless updated_from_web?
           raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_web_delete_protected_branch]
         end
       end
@@ -121,6 +122,10 @@ module Gitlab
 
       private
 
+      def updated_from_web?
+        protocol == 'web'
+      end
+
       def tag_exists?
         project.repository.tag_exists?(@tag_name)
       end
@@ -152,27 +157,41 @@ module Gitlab
             raise GitAccess::UnauthorizedError, 'You cannot delete a tag'
           end
         else
-          commit_validation = push_rule.try(:commit_validation?)
+          unless branch_name_allowed_by_push_rule?(push_rule)
+            message = ERROR_MESSAGES[:push_rule_branch_name] % { branch_name_regex: push_rule.branch_name_regex }
+            raise GitAccess::UnauthorizedError.new(message)
+          end
 
+          commit_validation = push_rule.try(:commit_validation?)
           # if newrev is blank, the branch was deleted
           return if deletion? || !(commit_validation || validate_path_locks?)
 
-          commits.each do |commit|
-            if commit_validation
-              error = check_commit(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error if error
-            end
+          # n+1: https://gitlab.com/gitlab-org/gitlab-ee/issues/3593
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            commits.each do |commit|
+              if commit_validation
+                error = check_commit(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error if error
+              end
 
-            if error = check_commit_diff(commit, push_rule)
-              raise GitAccess::UnauthorizedError, error
+              if error = check_commit_diff(commit, push_rule)
+                raise GitAccess::UnauthorizedError, error
+              end
             end
           end
         end
       end
 
+      def branch_name_allowed_by_push_rule?(push_rule)
+        return true unless push_rule
+        return true if @branch_name.blank?
+
+        push_rule.branch_name_allowed?(@branch_name)
+      end
+
       def tag_deletion_denied_by_push_rule?(push_rule)
         push_rule.try(:deny_delete_tag) &&
-          protocol != 'web' &&
+          !updated_from_web? &&
           deletion? &&
           tag_exists?
       end
@@ -185,16 +204,16 @@ module Gitlab
           return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
         end
 
-        if @branch_name && !push_rule.branch_name_allowed?(@branch_name)
-          return "Branch name does not follow the pattern '#{push_rule.branch_name_regex}'"
-        end
-
         unless push_rule.author_email_allowed?(commit.committer_email)
           return "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
         end
 
         unless push_rule.author_email_allowed?(commit.author_email)
           return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
+        end
+
+        if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
+          return "Commit must be signed with a GPG key"
         end
 
         # Check whether author is a GitLab member

@@ -9,6 +9,7 @@ describe Group do
     it { is_expected.to have_many(:users).through(:group_members) }
     it { is_expected.to have_many(:owners).through(:group_members) }
     it { is_expected.to have_many(:requesters).dependent(:destroy) }
+    it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
@@ -25,22 +26,8 @@ describe Group do
         group.add_developer(developer)
       end
 
-      describe '#members' do
-        it 'includes members and exclude requesters' do
-          member_user_ids = group.members.pluck(:user_id)
-
-          expect(member_user_ids).to include(developer.id)
-          expect(member_user_ids).not_to include(requester.id)
-        end
-      end
-
-      describe '#requesters' do
-        it 'does not include requesters' do
-          requester_user_ids = group.requesters.pluck(:user_id)
-
-          expect(requester_user_ids).to include(requester.id)
-          expect(requester_user_ids).not_to include(developer.id)
-        end
+      it_behaves_like 'members and requesters associations' do
+        let(:namespace) { group }
       end
     end
   end

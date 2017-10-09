@@ -1,0 +1,5 @@
+---
+title: Show errors when rebase onto target branch fails in the UI
+merge_request:
+author:
+type: fixed

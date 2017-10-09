@@ -1,7 +1,7 @@
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
-import RebaseState from './components/states/mr_widget_rebase';
+import RebaseState from './components/states/mr_widget_rebase.vue';
 import WidgetCodeQuality from './components/mr_widget_code_quality.vue';
 
 export default {

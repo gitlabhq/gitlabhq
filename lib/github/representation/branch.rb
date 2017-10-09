@@ -7,10 +7,14 @@ module Github
         raw.dig('user', 'login') || 'unknown'
       end
 
-      def repo
-        return @repo if defined?(@repo)
+      def repo?
+        raw['repo'].present?
+      end
 
-        @repo = Github::Representation::Repo.new(raw['repo']) if raw['repo'].present?
+      def repo
+        return unless repo?
+
+        @repo ||= Github::Representation::Repo.new(raw['repo'])
       end
 
       def ref
@@ -25,10 +29,6 @@ module Github
         Commit.truncate_sha(sha)
       end
 
-      def exists?
-        @exists ||= branch_exists? && commit_exists?
-      end
-
       def valid?
         sha.present? && ref.present?
       end
@@ -41,19 +41,11 @@ module Github
 
       def remove!(name)
         repository.delete_branch(name)
-      rescue Rugged::ReferenceError => e
+      rescue Gitlab::Git::Repository::DeleteBranchError => e
         Rails.logger.error("#{self.class.name}: Could not remove branch #{name}: #{e}")
       end
 
       private
-
-      def branch_exists?
-        repository.branch_exists?(ref)
-      end
-
-      def commit_exists?
-        repository.branch_names_contains(sha).include?(ref)
-      end
 
       def repository
         @repository ||= options.fetch(:repository)

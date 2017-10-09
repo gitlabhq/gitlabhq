@@ -231,7 +231,7 @@ describe NotesHelper do
     end
   end
 
-  describe '#form_resurces' do
+  describe '#form_resources' do
     it 'returns note for personal snippet' do
       @snippet = create(:personal_snippet)
       @note = create(:note_on_personal_snippet)
@@ -264,6 +264,24 @@ describe NotesHelper do
 
     it 'returns the noteable url with an anchor to the note' do
       expect(noteable_note_url(note)).to match("/#{project.namespace.path}/#{project.path}/issues/#{issue.iid}##{dom_id(note)}")
+    end
+  end
+
+  describe '#discussion_resolved_intro' do
+    context 'when the discussion was resolved by a push' do
+      let(:discussion) { double(:discussion, resolved_by_push?: true) }
+
+      it 'returns "Automatically resolved"' do
+        expect(discussion_resolved_intro(discussion)).to eq('Automatically resolved')
+      end
+    end
+
+    context 'when the discussion was not resolved by a push' do
+      let(:discussion) { double(:discussion, resolved_by_push?: false) }
+
+      it 'returns "Resolved"' do
+        expect(discussion_resolved_intro(discussion)).to eq('Resolved')
+      end
     end
   end
 end

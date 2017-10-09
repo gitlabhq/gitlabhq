@@ -6,6 +6,7 @@
 #
 module Issuable
   extend ActiveSupport::Concern
+  include Gitlab::SQL::Pattern
   include CacheMarkdownField
   include Participable
   include Mentionable
@@ -121,7 +122,9 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      where(arel_table[:title].matches("%#{query}%"))
+      title = to_fuzzy_arel(:title, query)
+
+      where(title)
     end
 
     # Searches for records with a matching title or description.
@@ -132,23 +135,25 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      t = arel_table
-      pattern = "%#{query}%"
+      title = to_fuzzy_arel(:title, query)
+      description = to_fuzzy_arel(:description, query)
 
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+      where(title&.or(description))
     end
 
     def sort(method, excluded_labels: [])
-      sorted = case method.to_s
-               when 'milestone_due_asc' then order_milestone_due_asc
-               when 'milestone_due_desc' then order_milestone_due_desc
-               when 'downvotes_desc' then order_downvotes_desc
-               when 'upvotes_desc' then order_upvotes_desc
-               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
-               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-               else
-                 order_by(method)
-               end
+      sorted =
+        case method.to_s
+        when 'downvotes_desc'     then order_downvotes_desc
+        when 'label_priority'     then order_labels_priority(excluded_labels: excluded_labels)
+        when 'milestone'          then order_milestone_due_asc
+        when 'milestone_due_asc'  then order_milestone_due_asc
+        when 'milestone_due_desc' then order_milestone_due_desc
+        when 'popularity'         then order_upvotes_desc
+        when 'priority'           then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'upvotes_desc'       then order_upvotes_desc
+        else order_by(method)
+        end
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
@@ -205,9 +210,12 @@ module Issuable
 
     def labels_hash
       issue_labels = Hash.new { |h, k| h[k] = [] }
-      eager_load(:labels).pluck(:id, 'labels.title').each do |issue_id, label|
+
+      relation = unscoped.where(id: self.select(:id)).eager_load(:labels)
+      relation.pluck(:id, 'labels.title').each do |issue_id, label|
         issue_labels[issue_id] << label
       end
+
       issue_labels
     end
 
@@ -218,7 +226,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if %w(milestone_due_desc milestone_due_asc).include?(sort)
+      if %w(milestone_due_desc milestone_due_asc milestone).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]

@@ -2,6 +2,260 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.3 (2017-10-05)
+
+- [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
+- [FIXED] Fix CSRF validation issue when closing/opening merge requests from the UI. !14555
+- [FIXED] Kubernetes integration: ensure v1.8.0 compatibility. !14635
+- [FIXED] Fixes data parameter not being sent in ajax request for jobs log.
+- [FIXED] Improves UX of autodevops popover to match gpg one.
+- [FIXED] Fixed commenting on side-by-side commit diff.
+- [FIXED] Make sure API responds with 401 when invalid authentication info is provided.
+- [FIXED] Fix merge request counter updates after merge.
+- [FIXED] Fix gitlab-rake gitlab:import:repos task failing.
+- [FIXED] Fix pushes to an empty repository not invalidating has_visible_content? cache.
+- [FIXED] Ensure all refs are restored on a restore from backup.
+- [FIXED] Gitaly RepositoryExists remains opt-in for all method calls.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+- [FIXED] Adjust MRs being stuck on "process of being merged" for more than 2 hours.
+
+## 10.0.2 (2017-09-27)
+
+- [FIXED] Notes will not show an empty bubble when the author isn't a member. !14450
+- [FIXED] Some checks in `rake gitlab:check` were failling with 'undefined method `run_command`'. !14469
+- [FIXED] Make locked setting of Runner to not affect jobs scheduling. !14483
+- [FIXED] Re-allow `name` attribute on user-provided anchor HTML.
+
+## 10.0.1 (2017-09-23)
+
+- [FIXED] Fix duplicate key errors in PostDeployMigrateUserExternalMailData migration.
+
+## 10.0.0 (2017-09-22)
+
+- [SECURITY] Upgrade brace-expansion NPM package due to security issue. !13665 (Markus Koller)
+- [REMOVED] Remove CI API v1.
+- [FIXED] Ensure correct visibility level options shown on all Project, Group, and Snippets forms. !13442
+- [FIXED] Fix the /projects/:id/repository/files/:file_path/raw endpoint to handle dots in the file_path. !13512 (mahcsig)
+- [FIXED] Merge request reference in merge commit changed to full reference. !13518 (haseebeqx)
+- [FIXED] Removes Sortable default scope. !13558
+- [FIXED] Wiki table of contents are now properly nested to reflect header level. !13650 (Akihiro Nakashima)
+- [FIXED] Improve bare project import: Allow subgroups, take default visibility level into account. !13670
+- [FIXED] Fix group and project search for anonymous users. !13745
+- [FIXED] Fix searching for files by path. !13798
+- [FIXED] Fix division by zero error in blame age mapping. !13803 (Jeff Stubler)
+- [FIXED] Fix incorrect date/time formatting on prometheus graphs. !13865
+- [FIXED] Changes the password change workflow for admins. !13901
+- [FIXED] API: Respect default group visibility when creating a group. !13903 (Robert Schilling)
+- [FIXED] Unescape HTML characters in Wiki title. !13942 (Jacopo Beschi @jacopo-beschi)
+- [FIXED] Make blob viewer for rich contents wider for mobile. !14011 (Takuya Noguchi)
+- [FIXED] Fix typo in the API Deploy Keys documentation page. !14014 (Vitaliy @blackst0ne Klachkov)
+- [FIXED] Hide admin link from default search results for non-admins. !14015
+- [FIXED] Fix problems sanitizing URLs with empty passwords. !14083
+- [FIXED] Fix stray OR in New Project page. !14096 (Robin Bobbitt)
+- [FIXED] Fix a wrong `X-Gitlab-Event` header when testing webhooks. !14108
+- [FIXED] Fix the diff file header from being html escaped for renamed files. !14121
+- [FIXED] Image attachments are properly displayed in notification emails again. !14161
+- [FIXED] Fixes the 500 errors caused by a race condition in GPG's tmp directory handling. !14194 (Alexis Reigel)
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix Pipeline Triggers to show triggered label and predefined variables (e.g. CI_PIPELINE_TRIGGERED). !14244
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- [FIXED] Fix errors when moving issue with reference to a group milestone. !14294
+- [FIXED] Fix the "resolve discussion in a new issue" button. !14357
+- [FIXED] File uploaders do not perform hard check, only soft check.
+- [FIXED] Add to_project_id parameter to Move Issue via API example.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fixed add diff note button not showing after deleting a comment.
+- [FIXED] Fix broken svg in jobs dropdown for success status.
+- [FIXED] Fix buttons with different height in merge request widget.
+- [FIXED] Removes disabled state from dashboard project button.
+- [FIXED] Better align fallback image emojis.
+- [FIXED] Remove focus styles from dropdown empty links.
+- [FIXED] Fix inconsistent spacing for edit buttons on issues and merge request page.
+- [FIXED] Fix edit merge request and issues button inconsistent letter casing.
+- [FIXED] Improve Import/Export memory usage.
+- [FIXED] Fix Import/Export issue to do with fork merge requests.
+- [FIXED] Fix invite by email address duplication.
+- [FIXED] Adds tooltip to the branch name and improves performance.
+- [FIXED] Disable GitLab Project Import Button if source disabled.
+- [FIXED] Migrate issues authored by deleted user to the Ghost user.
+- [FIXED] Fix new navigation wrapping and causing height to grow.
+- [FIXED] Normalize styles for empty state combo button.
+- [FIXED] Fix external link to Composer website.
+- [FIXED] Prevents jobs dropdown from closing in pipeline graph.
+- [FIXED] Include the `is_admin` field in the `GET /users/:id` API when current user is an admin.
+- [FIXED] Fix breadcrumbs container in issue boards.
+- [FIXED] Fix project feature being deleted when updating project with invalid visibility level.
+- [FIXED] Truncate milestone title if sidebar is collapsed.
+- [FIXED] Prevents rendering empty badges when request fails.
+- [FIXED] Fixes margins on the top buttons of the pipeline table.
+- [FIXED] Bump jira-ruby gem to 1.4.1 to fix issues with HTTP proxies.
+- [FIXED] Eliminate N+1 queries in loading discussions.json endpoint.
+- [FIXED] Eliminate N+1 queries referencing issues.
+- [FIXED] Remove unnecessary loading of discussions in `IssuesController#show`.
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Do not show the Auto DevOps banner when the project has a .gitlab-ci.yml on master.
+- [FIXED] Reword job to pipeline to reflect what the graphs are really about.
+- [FIXED] Sort templates in the dropdown.
+- [FIXED] Fix Auto DevOps banner to be shown on empty projects.
+- [FIXED] Resolve Image onion skin + swipe does not work anymore.
+- [FIXED] Fix mini graph pipeline breakin in merge request view.
+- [FIXED] Fixed merge request changes bar jumping.
+- [FIXED] Improve migrations using triggers.
+- [FIXED] Fix ConvDev Index nav item and Monitoring submenu regression.
+- [FIXED] disabling notifications globally now properly turns off group/project added
+  emails !13325
+- [DEPRECATED] Deprecate custom SSH client configuration for the git user. !13930
+- [CHANGED] allow all users to delete their account. !13636 (Jacopo Beschi @jacopo-beschi)
+- [CHANGED] Use full path of project's avatar in webhooks. !13649 (Vitaliy @blackst0ne Klachkov)
+- [CHANGED] Add filtered search to group merge requests dashboard. !13688 (Hiroyuki Sato)
+- [CHANGED] Fire hooks asynchronously when creating a new job to improve performance. !13734
+- [CHANGED] Improve performance for AutocompleteController#users.json. !13754 (Hiroyuki Sato)
+- [CHANGED] Update the GPG verification semantics: A GPG signature must additionally match the committer in order to be verified. !13771 (Alexis Reigel)
+- [CHANGED] Support a multi-word fuzzy seach issues/merge requests on search bar. !13780 (Hiroyuki Sato)
+- [CHANGED] Default LDAP config "verify_certificates" to true for security. !13915
+- [CHANGED] "Share with group lock" now applies to subgroups, but owner can override setting on subgroups. !13944
+- [CHANGED] Make Gitaly PostUploadPack mandatory. !13953
+- [CHANGED] Remove project select dropdown from breadcrumb. !14010
+- [CHANGED] Redesign project feature permissions settings. !14062
+- [CHANGED] Document version Group Milestones API introduced.
+- [CHANGED] Finish migration to the new events setup.
+- [CHANGED] restyling of OAuth authorization confirmation. (Jacopo Beschi @jacopo-beschi)
+- [CHANGED] Added support for specific labels and colors.
+- [CHANGED] Move "Move issue" controls to right-sidebar.
+- [CHANGED] Remove pages settings when not available.
+- [CHANGED] Allow all AutoDevOps banners to be turned off.
+- [CHANGED] Update Rails project template to use Postgresql by default.
+- [CHANGED] Added support the multiple time series for prometheus monitoring.
+- [ADDED] API: Respect the "If-Unmodified-Since" header when delting a resource. !9621 (Robert Schilling)
+- [ADDED] Protected runners. !13194
+- [ADDED] Add support for copying permalink to notes via more actions dropdown. !13299
+- [ADDED] Add API support for wiki pages. !13372 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Add a `Last 7 days` option for Cycle Analytics view. !13443 (Mehdi Lahmam (@mehlah))
+- [ADDED] inherits milestone and labels when a merge request is created from issue. !13461 (haseebeqx)
+- [ADDED] Add 'from commit' information to cherry-picked commits. !13475 (Saverio Miroddi)
+- [ADDED] Add an option to list only archived projects. !13492 (Mehdi Lahmam (@mehlah))
+- [ADDED] Extend API: Pipeline Schedule Variable. !13653
+- [ADDED] Add settings for minimum SSH key strength and allowed key type. !13712 (Cory Hinshaw)
+- [ADDED] Add div id to the readme in the project overview. !13735 (Riccardo Padovani @rpadovani)
+- [ADDED] Add CI/CD job predefined variables with user name and login. !13824
+- [ADDED] API: Add GPG key management. !13828 (Robert Schilling)
+- [ADDED] Add CI/CD active kubernetes job policy. !13849
+- [ADDED] Add dropdown to Projects nav item. !13866
+- [ADDED] Allow users and administrator to configure Auto-DevOps. !13923
+- [ADDED] Implement `failure_reason` on `ci_builds`. !13937
+- [ADDED] Add branch existence check to the APIv4 branches via HEAD request. !13979 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Add quick submission on user settings page. !14007 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Add my_reaction_emoji param to /issues and /merge_requests API. !14016 (Hiroyuki Sato)
+- [ADDED] Make it possible to download a single job artifact file using the API. !14027
+- [ADDED] Add repository toggle for automatically resolving outdated diff discussions. !14053 (AshleyDumaine)
+- [ADDED] Scripts to detect orphaned repositories. !14204
+- [ADDED] Created callout for auto devops.
+- [ADDED] Add option in preferences to change navigation theme color.
+- [ADDED] Add JSON logger in `log/api_json.log` for Grape API endpoints.
+- [ADDED] Add CI_PIPELINE_SOURCE variable on CI Jobs.
+- [ADDED] Changed message and title on the 404 page. (Branka Martinovic)
+- [ADDED] Handle if Auto DevOps domain is not set in project settings.
+- [ADDED] Add collapsable sections for Pipeline Settings.
+- [OTHER] Add badge for dependency status. !13588 (Markus Koller)
+- [OTHER] Migration to remove pending delete projects with non-existing namespace. !13598
+- [OTHER] Bump rouge to v2.2.0. !13633
+- [OTHER] Fix repository equality check and avoid fetching ref if the commit is already available. This affects merge request creation performance. !13685
+- [OTHER] Replace 'source/search_code.feature' spinach test with an rspec analog. !13697 (blackst0ne)
+- [OTHER] Remove unwanted refs after importing a project. !13766
+- [OTHER] Never wait for sidekiq jobs when creating projects. !13775
+- [OTHER] Gitaly feature toggles are on by default in development. !13802
+- [OTHER] Remove `is_` prefix from predicate method names. !13810 (Maxim Rydkin)
+- [OTHER] Update 'Using Docker images' documentation. !13848
+- [OTHER] Update gpg documentation with gpg2. !13851 (M M Arif)
+- [OTHER] Replace 'project/star.feature' spinach test with an rspec analog. !13855 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace 'project/user_lookup.feature' spinach test with an rspec analog. !13863 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Bump rouge to v2.2.1. !13887
+- [OTHER] Add documentation for PlantUML in reStructuredText. !13900 (Markus Koller)
+- [OTHER] Decrease ABC threshold to 55.25. !13904 (Maxim Rydkin)
+- [OTHER] Decrease Cyclomatic Complexity threshold to 14. !13972 (Maxim Rydkin)
+- [OTHER] Update documentation for confidential issue. !14117
+- [OTHER] Remove redundant WHERE from event queries.
+- [OTHER] Memoize the latest builds of a pipeline on a project's homepage.
+- [OTHER] Re-use issue/MR counts for the pagination system.
+- [OTHER] Memoize pipelines for project download buttons.
+- [OTHER] Reorganize indexes for the "deployments" table.
+- [OTHER] Improves markdown rendering performance for commit lists.
+- [OTHER] Only update the sidebar count caches when needed.
+- [OTHER] Improves performance of vue code by using vue files and moving svg out of data function in pipeline schedule callout.
+- [OTHER] Rework how recent push events are retrieved.
+- [OTHER] Restyle dropdown menus to make them look consistent.
+- [OTHER] Upgrade grape to 1.0.
+- [OTHER] Add usage data for Auto DevOps.
+- [OTHER] Cache the number of open issues and merge requests.
+- [OTHER] Constrain environment deployments to project IDs.
+- [OTHER] Eager load namespace owners for project dashboards.
+- [OTHER] Add description template examples to documentation.
+- [OTHER] Disallow NULL values for environments.project_id.
+- Add my reaction filter to search bar. !12962 (Hiroyuki Sato)
+- Generalize profile updates from providers. !12968 (Alexandros Keramidas)
+- Validate PO-files in static analysis. !13000
+- First-time contributor badge. !13143 (Micaël Bergeron <micaelbergeron@gmail.com>)
+- Add option to disable project export on instance. !13211 (Robin Bobbitt)
+- Hashed Storage support for Repositories (EXPERIMENTAL). !13246
+- Added tests for commits API unauthenticated user and public/private project. !13287 (Jacopo Beschi @jacopo-beschi)
+- Fix CI_PROJECT_PATH_SLUG slugify. !13350 (Ivan Chernov)
+- Add checks for branch existence before changing HEAD. !13359 (Vitaliy @blackst0ne Klachkov)
+- Fix the alignment of line numbers to lines of code in code viewer. !13403 (Trevor Flynn)
+- Allow users to move issues to other projects using a / command. !13436 (Manolis Mavrofidis)
+- Bumps omniauth-ldap gem version to 2.0.4. !13465
+- Implement the Gitaly RefService::RefExists endpoint. !13528 (Andrew Newdigate)
+- Changed all font-weight values to 400 and 600 and introduced 2 variables to manage them.
+- Simplify checking if objects exist code in new issaubles workers.
+- Present enqueued merge jobs as Merging as well.
+- Don't escape html entities in InlineDiffMarkdownMarker.
+- Move ConvDev Index location to after Cohorts.
+- Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
+- [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fixed fork button being disabled for users who can fork to a group.
+
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
+
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+
+## 9.5.5 (2017-09-18)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [FIXED] Fix division by zero error in blame age mapping. !13803 (Jeff Stubler)
+- [FIXED] Fix problems sanitizing URLs with empty passwords. !14083
+- [FIXED] Fix a wrong `X-Gitlab-Event` header when testing webhooks. !14108
+- [FIXED] Fixes the 500 errors caused by a race condition in GPG's tmp directory handling. !14194 (Alexis Reigel)
+- [FIXED] Fix Pipeline Triggers to show triggered label and predefined variables (e.g. CI_PIPELINE_TRIGGERED). !14244
+- [FIXED] Fix project feature being deleted when updating project with invalid visibility level.
+- [FIXED] Fix new navigation wrapping and causing height to grow.
+- [FIXED] Fix buttons with different height in merge request widget.
+- [FIXED] Normalize styles for empty state combo button.
+- [FIXED] Fix broken svg in jobs dropdown for success status.
+- [FIXED] Improve migrations using triggers.
+- [FIXED] Disable GitLab Project Import Button if source disabled.
+- [CHANGED] Update the GPG verification semantics: A GPG signature must additionally match the committer in order to be verified. !13771 (Alexis Reigel)
+- [OTHER] Fix repository equality check and avoid fetching ref if the commit is already available. This affects merge request creation performance. !13685
+- [OTHER] Update documentation for confidential issue. !14117
+
+## 9.5.4 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Fixes race condition in project uploads.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Disallow the `name` attribute on all user-provided markup.
+
 ## 9.5.3 (2017-09-03)
 
 - [SECURITY] Filter additional secrets from Rails logs.
@@ -202,6 +456,18 @@ entry.
 - Skip oAuth authorization for trusted applications.
 - Use a specialized class for querying events to improve performance.
 - Update build badges to be pipeline badges and display passing instead of success.
+
+## 9.4.6 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Remove hidden symlinks from project import files.
+- Fixes race condition in project uploads.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
 
 ## 9.4.5 (2017-08-14)
 
@@ -452,6 +718,24 @@ entry.
 - Defer project destroys within a namespace in Groups::DestroyService#async_execute.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
+
+## 9.3.11 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Improve support for external issue references. !12485
+- Use uploads/system directory for personal snippets.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+- Fix XSS issue in go-get handling.
+- Remove hidden symlinks from project import files.
+- Fix an infinite loop when handling user-supplied regular expressions.
+- Fixes race condition in project uploads.
+- Fixes race condition in project uploads.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Disallow the `name` attribute on all user-provided markup.
+- Renders 404 if given project is not readable by the user on Todos dashboard.
 
 ## 9.3.10 (2017-08-09)
 

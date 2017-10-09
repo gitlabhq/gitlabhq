@@ -15,7 +15,7 @@ describe 'Issue Boards', js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
+    page.driver.set_cookie('sidebar_collapsed', 'true')
 
     sign_in(user)
   end
@@ -75,15 +75,15 @@ describe 'Issue Boards', js: true do
     let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
     let!(:confidential_issue) { create(:labeled_issue, :confidential, project: project, author: user, labels: [planning], relative_position: 9) }
-    let!(:issue1) { create(:labeled_issue, project: project, assignees: [user], labels: [planning], relative_position: 8) }
-    let!(:issue2) { create(:labeled_issue, project: project, author: user2, labels: [planning], relative_position: 7) }
-    let!(:issue3) { create(:labeled_issue, project: project, labels: [planning], relative_position: 6) }
-    let!(:issue4) { create(:labeled_issue, project: project, labels: [planning], relative_position: 5) }
-    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone, relative_position: 4) }
-    let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development], relative_position: 3) }
-    let!(:issue7) { create(:labeled_issue, project: project, labels: [development], relative_position: 2) }
-    let!(:issue8) { create(:closed_issue, project: project) }
-    let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
+    let!(:issue1) { create(:labeled_issue, project: project, title: 'aaa', description: '111', assignees: [user], labels: [planning], relative_position: 8) }
+    let!(:issue2) { create(:labeled_issue, project: project, title: 'bbb', description: '222', author: user2, labels: [planning], relative_position: 7) }
+    let!(:issue3) { create(:labeled_issue, project: project, title: 'ccc', description: '333', labels: [planning], relative_position: 6) }
+    let!(:issue4) { create(:labeled_issue, project: project, title: 'ddd', description: '444', labels: [planning], relative_position: 5) }
+    let!(:issue5) { create(:labeled_issue, project: project, title: 'eee', description: '555', labels: [planning], milestone: milestone, relative_position: 4) }
+    let!(:issue6) { create(:labeled_issue, project: project, title: 'fff', description: '666', labels: [planning, development], relative_position: 3) }
+    let!(:issue7) { create(:labeled_issue, project: project, title: 'ggg', description: '777', labels: [development], relative_position: 2) }
+    let!(:issue8) { create(:closed_issue, project: project, title: 'hhh', description: '888') }
+    let!(:issue9) { create(:labeled_issue, project: project, title: 'iii', description: '999', labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
       visit project_boards_path(project)

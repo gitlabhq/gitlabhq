@@ -30,6 +30,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+  it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
 
   describe '#source' do
     context 'when creating new pipeline' do
@@ -241,12 +242,20 @@ describe Ci::Pipeline, :mailer do
 
     describe '#stage_seeds' do
       let(:pipeline) do
-        create(:ci_pipeline, config: { rspec: { script: 'rake' } })
+        build(:ci_pipeline, config: { rspec: { script: 'rake' } })
       end
 
       it 'returns preseeded stage seeds object' do
         expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
         expect(pipeline.stage_seeds.count).to eq 1
+      end
+    end
+
+    describe '#seeds_size' do
+      let(:pipeline) { build(:ci_pipeline_with_one_job) }
+
+      it 'returns number of jobs in stage seeds' do
+        expect(pipeline.seeds_size).to eq 1
       end
     end
 
@@ -803,14 +812,118 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#set_config_source' do
+    context 'on object initialisation' do
+      context 'when pipelines does not contain needed data' do
+        let(:pipeline) do
+          Ci::Pipeline.new
+        end
+
+        it 'defines source to be unknown' do
+          expect(pipeline).to be_unknown_source
+        end
+      end
+
+      context 'when pipeline contains all needed data' do
+        let(:pipeline) do
+          Ci::Pipeline.new(
+            project: project,
+            sha: '1234',
+            ref: 'master',
+            source: :push)
+        end
+
+        context 'when the repository has a config file' do
+          before do
+            allow(project.repository).to receive(:gitlab_ci_yml_for)
+              .and_return('config')
+          end
+
+          it 'defines source to be from repository' do
+            expect(pipeline).to be_repository_source
+          end
+
+          context 'when loading an object' do
+            let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
+
+            it 'does not redefine the source' do
+              # force to overwrite the source
+              pipeline.unknown_source!
+
+              expect(new_pipeline).to be_unknown_source
+            end
+          end
+        end
+
+        context 'when the repository does not have a config file' do
+          let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
+
+          context 'auto devops enabled' do
+            before do
+              stub_application_setting(auto_devops_enabled: true)
+              allow(project).to receive(:ci_config_path) { 'custom' }
+            end
+
+            it 'defines source to be auto devops' do
+              subject
+
+              expect(pipeline).to be_auto_devops_source
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#ci_yaml_file' do
-    it 'reports error if the file is not found' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+    let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-      pipeline.ci_yaml_file
+    context 'the source is unknown' do
+      before do
+        pipeline.unknown_source!
+      end
 
-      expect(pipeline.yaml_errors)
-        .to eq('Failed to load CI/CD config file at custom')
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+
+      it 'sets yaml errors if not found' do
+        expect(pipeline.ci_yaml_file).to be_nil
+        expect(pipeline.yaml_errors)
+            .to start_with('Failed to load CI/CD config file')
+      end
+    end
+
+    context 'the source is the repository' do
+      before do
+        pipeline.repository_source!
+      end
+
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
+
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+    end
+
+    context 'when the source is auto_devops_source' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+        pipeline.auto_devops_source!
+      end
+
+      it 'finds the implied config' do
+        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
     end
   end
 
@@ -1337,6 +1450,26 @@ describe Ci::Pipeline, :mailer do
       end
 
       it_behaves_like 'not sending any notification'
+    end
+  end
+
+  describe '#latest_builds_with_artifacts' do
+    let!(:pipeline) { create(:ci_pipeline, :success) }
+
+    let!(:build) do
+      create(:ci_build, :success, :artifacts, pipeline: pipeline)
+    end
+
+    it 'returns the latest builds' do
+      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    end
+
+    it 'memoizes the returned relation' do
+      query_count = ActiveRecord::QueryRecorder
+        .new { 2.times { pipeline.latest_builds_with_artifacts.to_a } }
+        .count
+
+      expect(query_count).to eq(1)
     end
   end
 

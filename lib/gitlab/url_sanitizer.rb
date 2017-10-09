@@ -1,7 +1,9 @@
 module Gitlab
   class UrlSanitizer
+    ALLOWED_SCHEMES = %w[http https ssh git].freeze
+
     def self.sanitize(content)
-      regexp = URI::Parser.new.make_regexp(%w(http https ssh git))
+      regexp = URI::Parser.new.make_regexp(ALLOWED_SCHEMES)
 
       content.gsub(regexp) { |url| new(url).masked_url }
     rescue Addressable::URI::InvalidURIError
@@ -11,14 +13,18 @@ module Gitlab
     def self.valid?(url)
       return false unless url.present?
 
-      Addressable::URI.parse(url.strip)
+      uri = Addressable::URI.parse(url.strip)
 
-      true
+      ALLOWED_SCHEMES.include?(uri.scheme)
     rescue Addressable::URI::InvalidURIError
       false
     end
 
     def initialize(url, credentials: nil)
+      %i[user password].each do |symbol|
+        credentials[symbol] = credentials[symbol].presence if credentials&.key?(symbol)
+      end
+
       @credentials = credentials
       @url = parse_url(url)
     end
@@ -29,13 +35,13 @@ module Gitlab
 
     def masked_url
       url = @url.dup
-      url.password = "*****" if url.password
-      url.user = "*****" if url.user
+      url.password = "*****" if url.password.present?
+      url.user = "*****" if url.user.present?
       url.to_s
     end
 
     def credentials
-      @credentials ||= { user: @url.user, password: @url.password }
+      @credentials ||= { user: @url.user.presence, password: @url.password.presence }
     end
 
     def full_url
@@ -45,28 +51,30 @@ module Gitlab
     private
 
     def parse_url(url)
-      url             = url.strip
-      match           = url.match(%r{\A(?:ssh|http(?:s?))\://(?:(.+)(?:@))?(.+)})
+      url             = url.to_s.strip
+      match           = url.match(%r{\A(?:git|ssh|http(?:s?))\://(?:(.+)(?:@))?(.+)})
       raw_credentials = match[1] if match
 
       if raw_credentials.present?
         url.sub!("#{raw_credentials}@", '')
 
         user, password = raw_credentials.split(':')
-        @credentials ||= { user: user, password: password }
+        @credentials ||= { user: user.presence, password: password.presence }
       end
 
       url = Addressable::URI.parse(url)
-      url.user = user
-      url.password = password
+      url.password = password if password.present?
+      url.user = user if user.present?
       url
     end
 
     def generate_full_url
       return @url unless valid_credentials?
       @full_url = @url.dup
-      @full_url.user = credentials[:user]
-      @full_url.password = credentials[:password]
+
+      @full_url.password = credentials[:password] if credentials[:password].present?
+      @full_url.user = credentials[:user] if credentials[:user].present?
+
       @full_url
     end
 

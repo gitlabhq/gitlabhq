@@ -137,7 +137,7 @@ module CommitsHelper
 
     text =
       if options[:avatar]
-        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        content_tag(:span, person_name, class: "commit-#{options[:source]}-name")
       else
         person_name
       end
@@ -148,9 +148,9 @@ module CommitsHelper
     }
 
     if user.nil?
-      mail_to(source_email, text.html_safe, options)
+      mail_to(source_email, text, options)
     else
-      link_to(text.html_safe, user_path(user), options)
+      link_to(text, user_path(user), options)
     end
   end
 
@@ -176,13 +176,15 @@ module CommitsHelper
     end
   end
 
-  def view_file_button(commit_sha, diff_new_path, project)
+  def view_file_button(commit_sha, diff_new_path, project, replaced: false)
+    title = replaced ? _('View replaced file @ ') : _('View file @ ')
+
     link_to(
       project_blob_path(project,
                                   tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file'
     ) do
-      raw('View file @ ') + content_tag(:span, Commit.truncate_sha(commit_sha),
+      raw(title) + content_tag(:span, Commit.truncate_sha(commit_sha),
                                        class: 'commit-sha')
     end
   end

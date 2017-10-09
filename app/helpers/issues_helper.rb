@@ -58,7 +58,7 @@ module IssuesHelper
   end
 
   def project_options(issuable, current_user, ability: :read_project)
-    projects = current_user.authorized_projects
+    projects = current_user.authorized_projects.order_id_desc
     projects = projects.select do |project|
       current_user.can?(ability, project)
     end

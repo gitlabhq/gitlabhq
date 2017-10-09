@@ -137,22 +137,13 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-#### Multiple Issue Boards (EES/EEP)
-
-Multiple Issue Boards enables you to create more than one Issue Board per project.
-It's great for large projects with more than one team or in situations where a
-repository is used to host the code of multiple products.
-
-_[Multiple Issue Boards](../issue_board.md#multiple-issue-boards)
-are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
-
 ### Export Issues to CSV (EES/EEP)
 
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
 
-## Related Issues (EES/SSP)
+## Related Issues (EES/EEP)
 
 Related Issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups

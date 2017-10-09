@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-06 06:20-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:43-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -31,23 +31,26 @@ msgstr[2] "%s добавленные коммиты были исключены 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} коммичено %{commit_timeago}"
 
-msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr "%{number_of_failures} из %{maximum_failures} возможных попыток. Вы можете попытаться еще раз."
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
-msgstr ""
+msgstr "%{number_of_failures} из %{maximum_failures} возможных неудачных попыток. GitLab заблокирует доступ на %{number_of_seconds} секунд."
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
-msgstr ""
+msgstr "%{number_of_failures} из %{maximum_failures} возможных неудачных попыток. GitLab не будет автоматически повторять попытку. Сбросьте информацию хранилища после устранения проблемы."
 
 msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%{storage_name}: неудачная попытка доступа к хранилищу на хосте:"
+msgstr[1] "%{storage_name}: %{failed_attempts} - неудачные попытки доступа к хранилищу:"
+msgstr[2] "%{storage_name}: %{failed_attempts} - неудачные попытки доступа к хранилищу:"
 
 msgid "(checkout the %{link} for information on how to install it)."
-msgstr ""
+msgstr "(перейдите по ссылке %{link} для получения информации об установке)."
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -55,23 +58,26 @@ msgstr[0] "1 конвейер"
 msgstr[1] "%d конвейеры"
 msgstr[2] "%d конвейеры"
 
+msgid "1st contribution!"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "Графики относительно непрерывной интеграции"
 
 msgid "About auto deploy"
-msgstr "Автоматическое развертывание"
+msgstr "Об автоматическом развёртывании"
 
 msgid "Abuse Reports"
-msgstr ""
+msgstr "Отчёты о Жалобах"
 
 msgid "Access Tokens"
-msgstr ""
+msgstr "Токены Доступа"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
-msgstr ""
+msgstr "Доступ к вышедшим из строя хранилищам временно отключен для возможности монтирования в целях восстановления. Сбросьте информацию о хранилищах после устранения проблемы, чтобы разрешить доступ."
 
 msgid "Account"
-msgstr ""
+msgstr "Учетная запись"
 
 msgid "Active"
 msgstr "Активный"
@@ -95,13 +101,13 @@ msgid "Add new directory"
 msgstr "Добавить каталог"
 
 msgid "All"
-msgstr ""
+msgstr "Все"
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
-msgstr ""
+msgstr "Приложения"
 
 msgid "Archived project! Repository is read-only"
 msgstr "Архивный проект! Репозиторий доступен только для чтения"
@@ -113,18 +119,42 @@ msgid "Are you sure you want to discard your changes?"
 msgstr "Вы уверены, что Вы хотите отменить Ваши изменения?"
 
 msgid "Are you sure you want to reset registration token?"
-msgstr ""
+msgstr "Вы уверены, что Вы хотите сбросить этот ключ регистрации?"
 
 msgid "Are you sure you want to reset the health check token?"
-msgstr ""
+msgstr "Вы уверены, что Вы хотите сбросить этот ключ проверки работоспособности?"
 
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Приложить файл через drag &amp; drop или %{upload_link}"
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -181,6 +211,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "Ветка"
@@ -199,6 +232,90 @@ msgstr "Переключить ветку"
 msgid "Branches"
 msgstr "Ветки"
 
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
+msgstr ""
+
 msgid "Browse Directory"
 msgstr "Обзор"
 
@@ -215,7 +332,7 @@ msgid "ByAuthor|by"
 msgstr "по автору"
 
 msgid "CI / CD"
-msgstr ""
+msgstr "CI / CD"
 
 msgid "CI configuration"
 msgstr "Настройка CI"
@@ -245,7 +362,7 @@ msgid "Charts"
 msgstr "Диаграммы"
 
 msgid "Chat"
-msgstr ""
+msgstr "Чат"
 
 msgid "Cherry-pick this commit"
 msgstr "Подобрать в этом коммите"
@@ -342,9 +459,6 @@ msgstr "Фиксировано"
 
 msgid "Compare"
 msgstr "Сравнить"
-
-msgid "Container Registry"
-msgstr ""
 
 msgid "Contribution guide"
 msgstr "Руководство участника"
@@ -443,13 +557,13 @@ msgstr[1] "Размещение"
 msgstr[2] "Размещение"
 
 msgid "Deploy Keys"
-msgstr ""
+msgstr "Ключи Развертывания"
 
 msgid "Description"
 msgstr "Описание"
 
 msgid "Details"
-msgstr ""
+msgstr "Подробная информация"
 
 msgid "Directory name"
 msgstr "Каталог"
@@ -494,25 +608,28 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr "Изменить расписание конвейера %{id}"
 
 msgid "Emails"
+msgstr "Email-адреса"
+
+msgid "Enable in settings"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
-msgstr ""
+msgstr "Фильтр по всему"
 
 msgid "EventFilterBy|Filter by comments"
-msgstr ""
+msgstr "Фильтр по комментарию"
 
 msgid "EventFilterBy|Filter by issue events"
-msgstr ""
+msgstr "Фильтр по событиям обсуждений"
 
 msgid "EventFilterBy|Filter by merge events"
-msgstr ""
+msgstr "Фильтр по событиям слияний"
 
 msgid "EventFilterBy|Filter by push events"
-msgstr ""
+msgstr "Фильтр по событиям отправки"
 
 msgid "EventFilterBy|Filter by team"
-msgstr ""
+msgstr "Фильтр по команде"
 
 msgid "Every day (at 4:00am)"
 msgstr "Ежедневно (в 4:00)"
@@ -522,6 +639,9 @@ msgstr "Ежемесячно (каждое 1-е число в 4:00)"
 
 msgid "Every week (Sundays at 4:00am)"
 msgstr "Еженедельно (по воскресениями в 4:00)"
+
+msgid "Explore projects"
+msgstr ""
 
 msgid "Failed to change the owner"
 msgstr "Не удалось изменить владельца"
@@ -563,13 +683,13 @@ msgid "From merge request merge until deploy to production"
 msgstr "От запроса на слияние до развертывания в рабочей среде"
 
 msgid "GPG Keys"
-msgstr ""
+msgstr "GPG Ключи"
 
 msgid "Geo Nodes"
 msgstr ""
 
 msgid "Git storage health information has been reset"
-msgstr ""
+msgstr "Информация о стабильности Git хранилища была сброшена"
 
 msgid "GitLab Runner section"
 msgstr "Секция Gitlab Runner"
@@ -580,32 +700,47 @@ msgstr "Перейти к вашему форку"
 msgid "GoToYourFork|Fork"
 msgstr "Форк"
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
-msgstr ""
+msgstr "Проверка работоспособности"
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
-msgstr ""
+msgstr "Информация о работоспособности может быть получена из следующих точек подключения. Доступна более подробная информация"
 
 msgid "HealthCheck|Access token is"
-msgstr ""
+msgstr "Ключ доступа - "
 
 msgid "HealthCheck|Healthy"
-msgstr ""
+msgstr "Стабильно"
 
 msgid "HealthCheck|No Health Problems Detected"
-msgstr ""
+msgstr "Проблем работоспособности не обнаружено"
 
 msgid "HealthCheck|Unhealthy"
-msgstr ""
-
-msgid "Home"
-msgstr "Главная"
-
-msgid "Hooks"
-msgstr ""
+msgstr "Нестабильный"
 
 msgid "Housekeeping successfully started"
 msgstr "Очистка успешно запущена"
@@ -623,9 +758,12 @@ msgid "Introducing Cycle Analytics"
 msgstr "Внедрение Цикла Аналитик"
 
 msgid "Issue events"
-msgstr ""
+msgstr "События задачи"
 
 msgid "Issues"
+msgstr "Задачи"
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -635,7 +773,7 @@ msgid "LFSStatus|Enabled"
 msgstr "Включено"
 
 msgid "Labels"
-msgstr ""
+msgstr "Метки"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
@@ -653,10 +791,10 @@ msgid "Last commit"
 msgstr "Последний коммит"
 
 msgid "LastPushEvent|You pushed to"
-msgstr ""
+msgstr "Вы отправили в"
 
 msgid "LastPushEvent|at"
-msgstr ""
+msgstr "в"
 
 msgid "Learn more in the"
 msgstr "Узнайте больше в"
@@ -686,25 +824,28 @@ msgid "Median"
 msgstr "Среднее"
 
 msgid "Members"
-msgstr ""
+msgstr "Участники"
 
 msgid "Merge Requests"
-msgstr ""
+msgstr "Запросы на Слияние"
 
 msgid "Merge events"
+msgstr "События слияний"
+
+msgid "Merge request"
 msgstr ""
 
 msgid "Messages"
-msgstr ""
+msgstr "Сообщения"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "добавить ключ SSH"
 
 msgid "Monitoring"
-msgstr ""
+msgstr "Мониторинг"
 
 msgid "More information is available|here"
-msgstr ""
+msgstr "Больше информации доступно|тут"
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -806,7 +947,7 @@ msgid "NotificationLevel|Watch"
 msgstr "Отслеживать"
 
 msgid "Notifications"
-msgstr ""
+msgstr "Уведомления"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Фильтр"
@@ -818,13 +959,25 @@ msgid "Options"
 msgstr "Настройки"
 
 msgid "Overview"
-msgstr ""
+msgstr "Обзор"
 
 msgid "Owner"
 msgstr "Владелец"
 
-msgid "Password"
+msgid "Pagination|Last »"
 msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
+msgid "Password"
+msgstr "Пароль"
 
 msgid "Pipeline"
 msgstr "Конвейер"
@@ -905,13 +1058,13 @@ msgid "Pipelines charts"
 msgstr "Диаграмма конвейера"
 
 msgid "Pipelines for last month"
-msgstr ""
+msgstr "Конвеер за последний месяц"
 
 msgid "Pipelines for last week"
-msgstr ""
+msgstr "Конвеер за последнюю неделю"
 
 msgid "Pipelines for last year"
-msgstr ""
+msgstr "Конвееры за последний год"
 
 msgid "Pipeline|all"
 msgstr "все"
@@ -926,12 +1079,9 @@ msgid "Pipeline|with stages"
 msgstr "со стадиями"
 
 msgid "Preferences"
-msgstr ""
+msgstr "Предпочтения"
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -950,7 +1100,7 @@ msgid "Project access must be granted explicitly to each user."
 msgstr "Доступ к проекту должен предоставляться явно каждому пользователю."
 
 msgid "Project details"
-msgstr ""
+msgstr "Детали проекта"
 
 msgid "Project export could not be deleted."
 msgstr "Невозможно удалить экспорт проекта."
@@ -964,14 +1114,8 @@ msgstr "Истек срок действия ссылки на проект. С�
 msgid "Project export started. A download link will be sent by email."
 msgstr "Начат экспорт проекта. Ссылка для скачивания будет отправлена по электронной почте."
 
-msgid "Project home"
-msgstr "Домашняя страница"
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
+msgstr "Подписаться"
 
 msgid "ProjectFeature|Disabled"
 msgstr "Отключено"
@@ -994,23 +1138,47 @@ msgstr "Этап"
 msgid "ProjectNetworkGraph|Graph"
 msgstr "Граф"
 
+msgid "ProjectsDropdown|Frequently visited"
+msgstr ""
+
+msgid "ProjectsDropdown|Loading projects"
+msgstr "Загрузка проектов"
+
+msgid "ProjectsDropdown|Projects you visit often will appear here"
+msgstr "Проекты, которые вы часто посещаете, будут отображаться здесь"
+
+msgid "ProjectsDropdown|Search your projects"
+msgstr "Поиск по вашим проектам"
+
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr "К сожалению, по вашему запросу проекты не найдены"
+
+msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr "Эта функциональность требует поддержки localStorage в вашем браузере"
+
 msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
-msgstr ""
+msgstr "События отправки"
 
 msgid "Read more"
 msgstr "Подробнее"
 
 msgid "Readme"
-msgstr ""
+msgstr "Инструкция"
 
 msgid "RefSwitcher|Branches"
 msgstr "Ветки"
 
 msgid "RefSwitcher|Tags"
 msgstr "Теги"
+
+msgid "Registry"
+msgstr ""
 
 msgid "Related Commits"
 msgstr "Связанные коммиты"
@@ -1037,19 +1205,19 @@ msgid "Remove project"
 msgstr "Удалить проект"
 
 msgid "Repository"
-msgstr ""
+msgstr "Репозиторий"
 
 msgid "Request Access"
 msgstr "Запрос доступа"
 
 msgid "Reset git storage health information"
-msgstr ""
+msgstr "Сбросить информацию о работоспособности репозитория git"
 
 msgid "Reset health check access token"
-msgstr ""
+msgstr "Сбросить ключ доступа проверки работоспособности"
 
 msgid "Reset runners registration token"
-msgstr ""
+msgstr "Сбросить ключ регистрации Gitlab Runners"
 
 msgid "Revert this commit"
 msgstr "Отменить это изменение"
@@ -1058,13 +1226,16 @@ msgid "Revert this merge request"
 msgstr "Отменить этот запрос на слияние"
 
 msgid "SSH Keys"
-msgstr ""
+msgstr "SSH Ключи"
 
 msgid "Save pipeline schedule"
 msgstr "Сохранить расписание конвейра"
 
 msgid "Schedule a new pipeline"
 msgstr "Расписание нового конвейера"
+
+msgid "Schedules"
+msgstr ""
 
 msgid "Scheduling Pipelines"
 msgstr "Планирование конвейеров"
@@ -1079,13 +1250,13 @@ msgid "Select a timezone"
 msgstr "Выбор временной зоны"
 
 msgid "Select existing branch"
-msgstr ""
+msgstr "Выбрать существующую ветвь"
 
 msgid "Select target branch"
 msgstr "Выбор целевой ветки"
 
 msgid "Service Templates"
-msgstr ""
+msgstr "Шаблоны Служб"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "Установите пароль в своем аккаунте, чтобы отправлять или получать код через %{protocol}."
@@ -1103,6 +1274,12 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr "установить пароль"
 
 msgid "Settings"
+msgstr "Настройки"
+
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
 msgstr ""
 
 msgid "Showing %d event"
@@ -1112,28 +1289,130 @@ msgstr[1] "Показано %d событий"
 msgstr[2] "Показано %d событий"
 
 msgid "Snippets"
+msgstr "Сниппеты"
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
 msgstr "Исходный код"
 
 msgid "Spam Logs"
-msgstr ""
+msgstr "Спам Логи"
 
 msgid "Specify the following URL during the Runner setup:"
-msgstr ""
+msgstr "Укажите следующий URL во время настройки Gitlab Runner:"
 
 msgid "StarProject|Star"
 msgstr "Отметить"
+
+msgid "Starred projects"
+msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Начать %{new_merge_request} с этих изменений"
 
 msgid "Start the Runner!"
-msgstr ""
+msgstr "Запустить GitLab Runner!"
 
 msgid "Switch branch/tag"
 msgstr "Переключить ветка/тег"
+
+msgid "System Hooks"
+msgstr ""
 
 msgid "Tag"
 msgid_plural "Tags"
@@ -1148,7 +1427,7 @@ msgid "Target Branch"
 msgstr "Ветка"
 
 msgid "Team"
-msgstr ""
+msgstr "Команда"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "На этапе написания кода показывает время первого коммита до создания запроса на слияние. Данные автоматически добавятся после того, как вы создать свой первый запрос на слияние."
@@ -1199,6 +1478,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr "Среднее значение в ряду. Пример: между 3, 5, 9, среднее 5, между 3, 5, 7, 8, среднее (5+7)/2 = 6."
 
 msgid "There are problems accessing Git storage: "
+msgstr "Проблемы с доступом к Git хранилищу: "
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1373,13 +1655,19 @@ msgid "UploadLink|click to upload"
 msgstr "кликните для загрузки"
 
 msgid "Use the following registration token during setup:"
-msgstr ""
+msgstr "Используйте следующий токен регистрации в процессе установки:"
 
 msgid "Use your global notification setting"
 msgstr "Используются глобальный настройки уведомлений"
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
 msgstr "Просмотреть открытый запрос на слияние"
+
+msgid "View replaced file @ "
+msgstr ""
 
 msgid "VisibilityLevel|Internal"
 msgstr "Ограниченный"
@@ -1400,7 +1688,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "Информация по этапу отсутствует."
 
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 msgid "Withdraw Access Request"
 msgstr "Отменить запрос доступа"
@@ -1452,6 +1740,12 @@ msgstr "Вы не сможете получать и отправлять код
 
 msgid "Your name"
 msgstr "Ваше имя"
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
+msgstr ""
 
 msgid "day"
 msgid_plural "days"

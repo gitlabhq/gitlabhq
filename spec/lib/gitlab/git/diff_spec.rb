@@ -31,36 +31,6 @@ EOT
                                           [".gitmodules"]).patches.first
   end
 
-  describe 'size limit feature toggles' do
-    context 'when the feature gitlab_git_diff_size_limit_increase is enabled' do
-      before do
-        stub_feature_flags(gitlab_git_diff_size_limit_increase: true)
-      end
-
-      it 'returns 200 KB for size_limit' do
-        expect(described_class.size_limit).to eq(200.kilobytes)
-      end
-
-      it 'returns 100 KB for collapse_limit' do
-        expect(described_class.collapse_limit).to eq(100.kilobytes)
-      end
-    end
-
-    context 'when the feature gitlab_git_diff_size_limit_increase is disabled' do
-      before do
-        stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
-      end
-
-      it 'returns 100 KB for size_limit' do
-        expect(described_class.size_limit).to eq(100.kilobytes)
-      end
-
-      it 'returns 10 KB for collapse_limit' do
-        expect(described_class.collapse_limit).to eq(10.kilobytes)
-      end
-    end
-  end
-
   describe '.new' do
     context 'using a Hash' do
       context 'with a small diff' do
@@ -77,7 +47,7 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          diff = described_class.new(diff: 'a' * (described_class.size_limit + 1))
+          diff = described_class.new(diff: 'a' * 204800)
 
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
@@ -115,8 +85,8 @@ EOT
           # The patch total size is 200, with lines between 21 and 54.
           # This is a quick-and-dirty way to test this. Ideally, a new patch is
           # added to the test repo with a size that falls between the real limits.
-          allow(Gitlab::Git::Diff).to receive(:size_limit).and_return(150)
-          allow(Gitlab::Git::Diff).to receive(:collapse_limit).and_return(100)
+          stub_const("#{described_class}::SIZE_LIMIT", 150)
+          stub_const("#{described_class}::COLLAPSE_LIMIT", 100)
         end
 
         it 'prunes the diff as a large diff instead of as a collapsed diff' do
@@ -273,6 +243,25 @@ EOT
     end
   end
 
+  describe '#json_safe_diff' do
+    let(:project) { create(:project, :repository) }
+
+    it 'fake binary message when it detects binary' do
+      # Rugged will not detect this as binary, but we can fake it
+      diff_message = "Binary files files/images/icn-time-tracking.pdf and files/images/icn-time-tracking.pdf differ\n"
+      binary_diff = described_class.between(project.repository, 'add-pdf-text-binary', 'add-pdf-text-binary^').first
+
+      expect(binary_diff.diff).not_to be_empty
+      expect(binary_diff.json_safe_diff).to eq(diff_message)
+    end
+
+    it 'leave non-binary diffs as-is' do
+      diff = described_class.new(@rugged_diff)
+
+      expect(diff.json_safe_diff).to eq(diff.diff)
+    end
+  end
+
   describe '#submodule?' do
     before do
       commit = repository.lookup('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
@@ -337,7 +326,7 @@ EOT
 
   describe '#collapsed?' do
     it 'returns true for a diff that is quite large' do
-      diff = described_class.new({ diff: 'a' * (described_class.collapse_limit + 1) }, expanded: false)
+      diff = described_class.new({ diff: 'a' * 20480 }, expanded: false)
 
       expect(diff).to be_collapsed
     end

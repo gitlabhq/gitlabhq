@@ -45,6 +45,7 @@ module Gitlab
       #{config.root}/ee/app/models/concerns
       #{config.root}/ee/app/policies
       #{config.root}/ee/app/serializers
+      #{config.root}/ee/app/presenters
       #{config.root}/ee/app/services
       #{config.root}/ee/app/workers
     ])
@@ -71,7 +72,7 @@ module Gitlab
     # Configure sensitive parameters which will be filtered from the log file.
     #
     # Parameters filtered:
-    # - Any parameter ending with `_token`
+    # - Any parameter ending with `token`
     # - Any parameter containing `password`
     # - Any parameter containing `secret`
     # - Two-factor tokens (:otp_attempt)
@@ -81,7 +82,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
-    config.filter_parameters += [/_token$/, /password/, /secret/]
+    config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
       encrypted_key
@@ -125,8 +126,7 @@ module Gitlab
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
-    config.assets.precompile << "new_nav.css"
-    config.assets.precompile << "new_sidebar.css"
+    config.assets.precompile << "locale/**/app.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -175,8 +175,8 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
-    # Gitlab Geo Middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadonlyGeo'
+    # Gitlab Read-only middleware support
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_girl false

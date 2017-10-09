@@ -24,7 +24,7 @@ module MergeRequests
           log_error("`#{command.join(' ')}` failed:")
         end
 
-        log_error(output)
+        log_error(output, save_message_on_model: true)
 
         raise GitCommandError
       end
@@ -40,8 +40,10 @@ module MergeRequests
       @target_project ||= merge_request.target_project
     end
 
-    def log_error(message)
+    def log_error(message, save_message_on_model: false)
       Gitlab::GitLogger.error("#{self.class.name} error (#{merge_request.to_reference(full: true)}): #{message}")
+
+      merge_request.update(merge_error: message) if save_message_on_model
     end
 
     def clean_dir

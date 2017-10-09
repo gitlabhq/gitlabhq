@@ -23,12 +23,10 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initRebase(data) {
-    this.shouldBeRebased = !!data.should_be_rebased;
     this.canPushToSourceBranch = data.can_push_to_source_branch;
     this.rebaseInProgress = data.rebase_in_progress;
     this.approvalsLeft = !data.approved;
     this.rebasePath = data.rebase_path;
-    this.ffOnlyEnabled = data.ff_only_enabled;
   }
 
   initGeo(data) {
@@ -53,24 +51,12 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   initCodeclimate(data) {
     this.codeclimate = data.codeclimate;
     this.codeclimateMetrics = {
-      headIssues: [],
-      baseIssues: [],
       newIssues: [],
       resolvedIssues: [],
     };
   }
 
-  setCodeclimateHeadMetrics(data) {
-    this.codeclimateMetrics.headIssues = data;
-  }
-
-  setCodeclimateBaseMetrics(data) {
-    this.codeclimateMetrics.baseIssues = data;
-  }
-
-  compareCodeclimateMetrics() {
-    const { headIssues, baseIssues } = this.codeclimateMetrics;
-
+  compareCodeclimateMetrics(headIssues, baseIssues) {
     this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
     this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
   }

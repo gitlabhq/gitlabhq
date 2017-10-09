@@ -1,12 +1,18 @@
 require 'spec_helper'
 
 describe MergeRequestsFinder do
+  include ProjectForksHelper
+
   let(:user)  { create :user }
   let(:user2) { create :user }
 
-  let(:project1) { create(:project) }
-  let(:project2) { create(:project, forked_from_project: project1) }
-  let(:project3) { create(:project, :archived, forked_from_project: project1) }
+  let(:project1) { create(:project, :public) }
+  let(:project2) { fork_project(project1, user) }
+  let(:project3) do
+    p = fork_project(project1, user)
+    p.update!(archived: true)
+    p
+  end
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1, state: 'closed') }
@@ -112,6 +118,20 @@ describe MergeRequestsFinder do
 
         expect(merge_requests).to contain_exactly(old_merge_request)
       end
+    end
+  end
+
+  describe '#row_count', :request_store do
+    it 'returns the number of rows for the default state' do
+      finder = described_class.new(user)
+
+      expect(finder.row_count).to eq(3)
+    end
+
+    it 'returns the number of rows for a given state' do
+      finder = described_class.new(user, state: 'closed')
+
+      expect(finder.row_count).to eq(1)
     end
   end
 end

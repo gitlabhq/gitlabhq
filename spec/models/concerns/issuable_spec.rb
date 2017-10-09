@@ -66,55 +66,75 @@ describe Issuable do
   end
 
   describe ".search" do
-    let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
+    let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
 
-    it 'returns notes with a matching title' do
+    it 'returns issues with a matching title' do
       expect(issuable_class.search(searchable_issue.title))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
+    it 'returns issues with a partially matching title' do
       expect(issuable_class.search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
+    it 'returns issues with a matching title regardless of the casing' do
       expect(issuable_class.search(searchable_issue.title.upcase))
         .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.search('searchable issue')).to eq([searchable_issue])
+    end
+
+    it 'returns all issues with a query shorter than 3 chars' do
+      expect(issuable_class.search('zz')).to eq(issuable_class.all)
     end
   end
 
   describe ".full_search" do
     let!(:searchable_issue) do
-      create(:issue, title: "Searchable issue", description: 'kittens')
+      create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
 
-    it 'returns notes with a matching title' do
+    it 'returns issues with a matching title' do
       expect(issuable_class.full_search(searchable_issue.title))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching title' do
+    it 'returns issues with a partially matching title' do
       expect(issuable_class.full_search('able')).to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching title regardless of the casing' do
+    it 'returns issues with a matching title regardless of the casing' do
       expect(issuable_class.full_search(searchable_issue.title.upcase))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description' do
+    it 'returns issues with a fuzzy matching title' do
+      expect(issuable_class.full_search('searchable issue')).to eq([searchable_issue])
+    end
+
+    it 'returns issues with a matching description' do
       expect(issuable_class.full_search(searchable_issue.description))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a partially matching description' do
+    it 'returns issues with a partially matching description' do
       expect(issuable_class.full_search(searchable_issue.description))
         .to eq([searchable_issue])
     end
 
-    it 'returns notes with a matching description regardless of the casing' do
+    it 'returns issues with a matching description regardless of the casing' do
       expect(issuable_class.full_search(searchable_issue.description.upcase))
         .to eq([searchable_issue])
+    end
+
+    it 'returns issues with a fuzzy matching description' do
+      expect(issuable_class.full_search('many kittens')).to eq([searchable_issue])
+    end
+
+    it 'returns all issues with a query shorter than 3 chars' do
+      expect(issuable_class.search('zz')).to eq(issuable_class.all)
     end
   end
 
@@ -328,11 +348,18 @@ describe Issuable do
 
   describe '.labels_hash' do
     let(:feature_label) { create(:label, title: 'Feature') }
-    let!(:issues) { create_list(:labeled_issue, 3, labels: [feature_label]) }
+    let(:second_label) { create(:label, title: 'Second Label') }
+    let!(:issues) { create_list(:labeled_issue, 3, labels: [feature_label, second_label]) }
+    let(:issue_id) { issues.first.id }
 
     it 'maps issue ids to labels titles' do
-      issue_id = issues.first.id
-      expect(Issue.labels_hash[issue_id]).to eq ['Feature']
+      expect(Issue.labels_hash[issue_id]).to include('Feature')
+    end
+
+    it 'works on relations filtered by multiple labels' do
+      relation = Issue.with_label(['Feature', 'Second Label'])
+
+      expect(relation.labels_hash[issue_id]).to include('Feature', 'Second Label')
     end
   end
 

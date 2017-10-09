@@ -8,8 +8,8 @@ describe 'Issue Boards add issue modal', :js do
   let!(:label) { create(:label, project: project) }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
   let!(:list2) { create(:list, board: board, label: label, position: 1) }
-  let!(:issue) { create(:issue, project: project) }
-  let!(:issue2) { create(:issue, project: project) }
+  let!(:issue) { create(:issue, project: project, title: 'abc', description: 'def') }
+  let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
     project.team << [user, :master]

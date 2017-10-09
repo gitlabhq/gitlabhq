@@ -239,6 +239,35 @@ describe Gitlab::Checks::ChangeAccess do
         end
       end
 
+      context 'branch name rules' do
+        let(:push_rule) { create(:push_rule, branch_name_regex: '^(w*)$') }
+        let(:ref) { 'refs/heads/a-branch-that-is-not-allowed' }
+
+        it_behaves_like 'check ignored when push rule unlicensed'
+
+        it 'rejects the branch that is not allowed' do
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+        end
+
+        context 'when the ref is not a branch ref' do
+          let(:ref) { 'a/ref/thats/not/abranch' }
+
+          it 'allows the creation' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'when no commits are present' do
+          before do
+            allow(project.repository).to receive(:new_commits) { [] }
+          end
+
+          it 'rejects the branch that is not allowed' do
+            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+          end
+        end
+      end
+
       context 'existing member rules' do
         let(:push_rule) { create(:push_rule, member_check: true) }
 
@@ -329,6 +358,73 @@ describe Gitlab::Checks::ChangeAccess do
 
         it 'returns an error if file exceeds the maximum file size' do
           expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
+        end
+      end
+
+      context 'GPG sign rules' do
+        let(:push_rule) { create(:push_rule, reject_unsigned_commits: true) }
+
+        it_behaves_like 'check ignored when push rule unlicensed'
+
+        context 'when it is only enabled in Global settings' do
+          before do
+            project.push_rule.update_column(:reject_unsigned_commits, nil)
+            create(:push_rule_sample, reject_unsigned_commits: true)
+          end
+
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'returns an error' do
+              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+            end
+          end
+        end
+
+        context 'when enabled in Project' do
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'returns an error' do
+              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+            end
+
+            context 'but the change is made in the web application' do
+              let(:protocol) { 'web' }
+
+              it 'does not return an error' do
+                expect { subject }.not_to raise_error
+              end
+            end
+          end
+
+          context 'and commit is signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(true)
+            end
+
+            it 'does not return an error' do
+              expect { subject }.not_to raise_error
+            end
+          end
+        end
+
+        context 'when disabled in Project' do
+          let(:push_rule) { create(:push_rule, reject_unsigned_commits: false) }
+
+          context 'and commit is not signed' do
+            before do
+              allow_any_instance_of(Commit).to receive(:has_signature?).and_return(false)
+            end
+
+            it 'does not return an error' do
+              expect { subject }.not_to raise_error
+            end
+          end
         end
       end
     end

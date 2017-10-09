@@ -32,20 +32,38 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :commit_is_ancestor, request).value
       end
 
-      def diff_from_parent(commit, options = {})
-        request_params = commit_diff_request_params(commit, options)
-        request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
-        request_params[:enforce_limits] = options.fetch(:limits, true)
-        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
-        request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
+      def diff(from, to, options = {})
+        from_id = case from
+                  when NilClass
+                    EMPTY_TREE_ID
+                  when Rugged::Commit
+                    from.oid
+                  else
+                    from
+                  end
 
-        request = Gitaly::CommitDiffRequest.new(request_params)
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
-        GitalyClient::DiffStitcher.new(response)
+        to_id = case to
+                when NilClass
+                  EMPTY_TREE_ID
+                when Rugged::Commit
+                  to.oid
+                else
+                  to
+                end
+
+        request_params = diff_between_commits_request_params(from_id, to_id, options)
+
+        call_commit_diff(request_params, options)
+      end
+
+      def diff_from_parent(commit, options = {})
+        request_params = diff_from_parent_request_params(commit, options)
+
+        call_commit_diff(request_params, options)
       end
 
       def commit_deltas(commit)
-        request = Gitaly::CommitDeltaRequest.new(commit_diff_request_params(commit))
+        request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
 
         response.flat_map { |msg| msg.deltas }
@@ -88,14 +106,14 @@ module Gitlab
 
         response.flat_map do |message|
           message.entries.map do |gitaly_tree_entry|
-            entry_path = gitaly_tree_entry.path.dup
             Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               root_id: gitaly_tree_entry.root_oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_s(8),
-              name: File.basename(entry_path),
-              path: entry_path,
+              name: File.basename(gitaly_tree_entry.path),
+              path: GitalyClient.encode(gitaly_tree_entry.path),
+              flat_path: GitalyClient.encode(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
           end
@@ -204,16 +222,59 @@ module Gitlab
         response.sum(&:data)
       end
 
+      def commit_stats(revision)
+        request = Gitaly::CommitStatsRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request)
+      end
+
+      def find_commits(options)
+        request = Gitaly::FindCommitsRequest.new(
+          repository:   @gitaly_repo,
+          limit:        options[:limit],
+          offset:       options[:offset],
+          follow:       options[:follow],
+          skip_merges:  options[:skip_merges],
+          disable_walk: options[:disable_walk]
+        )
+        request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
+        request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
+        request.revision = GitalyClient.encode(options[:ref]) if options[:ref]
+
+        request.paths = GitalyClient.encode_repeated(Array(options[:path])) if options[:path].present?
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request)
+
+        consume_commits_response(response)
+      end
+
       private
 
-      def commit_diff_request_params(commit, options = {})
+      def call_commit_diff(request_params, options = {})
+        request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
+        request_params[:enforce_limits] = options.fetch(:limits, true)
+        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
+        request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
+
+        request = Gitaly::CommitDiffRequest.new(request_params)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
+        GitalyClient::DiffStitcher.new(response)
+      end
+
+      def diff_from_parent_request_params(commit, options = {})
         parent_id = commit.parent_ids.first || EMPTY_TREE_ID
 
+        diff_between_commits_request_params(parent_id, commit.id, options)
+      end
+
+      def diff_between_commits_request_params(from_id, to_id, options)
         {
           repository: @gitaly_repo,
-          left_commit_id: parent_id,
-          right_commit_id: commit.id,
-          paths: options.fetch(:paths, [])
+          left_commit_id: from_id,
+          right_commit_id: to_id,
+          paths: options.fetch(:paths, []).compact.map { |path| GitalyClient.encode(path) }
         }
       end
 

@@ -63,7 +63,7 @@ Copy/paste can sometimes cause problems.
 
 > **Note:** The `method` value `ssl` corresponds to 'Simple TLS' in the LDAP
   library. `tls` corresponds to StartTLS, not to be confused with regular TLS.
-  Normally, if you specify `ssl` is will be on port 636 while `tls` (StartTLS)
+  Normally, if you specify `ssl` it will be on port 636, while `tls` (StartTLS)
   would be on port 389. `plain` also operates on port 389.
 
 **Omnibus configuration**
@@ -278,7 +278,7 @@ production:
 ```
 
 Tip: If you want to limit access to the nested members of an Active Directory
-group you can use the following syntax:
+group, you can use the following syntax:
 
 ```
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
@@ -294,7 +294,7 @@ omniauth-ldap.
 
 ### Escaping special characters
 
-If the `user_filter` DN contains a special characters. For example a comma
+If the `user_filter` DN contains special characters. For example, a comma:
 
 ```
 OU=GitLab, Inc,DC=gitlab,DC=com
@@ -302,7 +302,7 @@ OU=GitLab, Inc,DC=gitlab,DC=com
 
 This character needs to be escaped as documented in [RFC 4515](https://tools.ietf.org/search/rfc4515).
 
-Due to the way the string is parsed the special character needs to be convered
+Due to the way the string is parsed, the special character needs to be converted
 to hex and `\\5C\\` (`5C` = `\` in hex) added before it.
 As an example the above DN would look like
 
@@ -395,13 +395,12 @@ your installation compares before proceeding.
 
 There are two encryption methods, `simple_tls` and `start_tls`.
 
-For either encryption method, if setting `validate_certificates: false`, TLS
+For either encryption method, if setting `verify_certificates: false`, TLS
 encryption is established with the LDAP server before any LDAP-protocol data is
 exchanged but no validation of the LDAP server's SSL certificate is performed.
 
->**Note**: Before GitLab 9.5, `validate_certificates: false` is the default if
+>**Note**: Before GitLab 9.5, `verify_certificates: false` is the default if
 unspecified.
->>>>>>> upstream/master
 
 ## Limitations
 

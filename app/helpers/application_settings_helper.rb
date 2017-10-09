@@ -116,6 +116,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :auto_devops_enabled,
       :clientside_sentry_dsn,
       :clientside_sentry_enabled,
       :container_registry_token_expire_delay,

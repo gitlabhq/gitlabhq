@@ -96,7 +96,7 @@ services:
 - tutum/wordpress:latest
 ```
 
-If you don't [specify a service alias](#available-settings-for-services-entry),
+If you don't [specify a service alias](#available-settings-for-services),
 when the job is run, `tutum/wordpress` will be started and you will have
 access to it from your build container under two hostnames to choose from:
 

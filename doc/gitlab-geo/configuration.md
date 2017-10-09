@@ -33,8 +33,9 @@ can be summed up to:
 
 1. Configure the primary node
 1. Replicate some required configurations between the primary and the secondaries
-1. Start GitLab in the secondary node's machine
+1. Configure a second, tracking database on each secondary
 1. Configure every secondary node in the primary's Admin screen
+1. Start GitLab on the secondary node's machine
 
 ### Prerequisites
 
@@ -49,6 +50,9 @@ first two steps of the [Setup instructions](README.md#setup-instructions):
 1. Your nodes must have an NTP service running to synchronize the clocks.
    You can use different timezones, but the hour relative to UTC can't be more
    than 60 seconds off from each node.
+1. You have set up another PostgreSQL database that can store writes for the secondary.
+   Note that this MUST be on another instance, since the primary replicated database
+   is read-only.
 
 Some of the following steps require to configure the primary and secondary
 nodes almost at the same time. For your convenience make sure you have SSH
@@ -62,15 +66,13 @@ logins opened on all nodes as we will be moving back and forth.
     sudo -i
     ```
 
-1. Added in GitLab 9.1: Execute the command below to define the node as primary Geo node:
+1. Execute the command below to define the node as primary Geo node:
 
     ```
     gitlab-ctl set-geo-primary-node
     ```
 
-    This command will use your defined `external_url` in `gitlab.rb` and pre-generated SSH key pairs.
-
-    Read more in [additional info for SSH key pairs](#additional-information-for-the-ssh-key-pairs).
+    This command will use your defined `external_url` in `gitlab.rb`
 
 ### Step 2. Updating the `known_hosts` file of the secondary nodes
 
@@ -108,7 +110,7 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Added in GitLab 9.1: Execute the command below to display current encryption key and copy it:
+1. Execute the command below to display the current encryption key and copy it:
 
      ```
      gitlab-rake geo:db:show_encryption_key
@@ -136,21 +138,38 @@ sensitive data in the database. Any secondary node must have the
 
 ### Step 4. Regenerating the authorized keys in the secondary node
 
+> **IMPORTANT:** Since GitLab 10.0 `~/.ssh/authorized_keys` no longer
+> can be used, and this step is deprecated. Instead, follow the
+> instructions on [configuring SSH authorization via database lookups](../administration/operations/speed_up_ssh.html)
+> (for both primary AND secondary nodes).
+
 Regenerate the keys for `~/.ssh/authorized_keys`
 (HTTPS clone will still work without this extra step).
 
-On the **secondary** node where the database is [already replicated](./database.md),
-run:
+1. On the **secondary** node where the database is [already replicated](./database.md),
+   run:
 
-```
-# For Omnibus installations
-gitlab-rake gitlab:shell:setup
-```
+     ```
+     # For Omnibus installations
+     gitlab-rake gitlab:shell:setup
+     ```
 
 This will enable `git` operations to authorize against your existing users.
 New users and SSH keys updated after this step, will be replicated automatically.
 
-### Step 5. Enabling the secondary GitLab node
+### Step 5. Enabling hashed storage (from GitLab 10.0)
+
+1. Visit the **primary** node's **Admin Area ➔ Settings**
+   (`/admin/application_settings`) in your browser
+1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
+
+    ![](img/hashed-storage.png)
+
+Using hashed storage significantly improves Geo replication - project and group
+renames no longer require synchronization between nodes - so we recommend it is
+used for all GitLab Geo installations.
+
+### Step 6. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -187,12 +206,12 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 6. Replicating the repositories data
+### Step 7. Replicating the repositories data
 
-Lastly, getting a new secondary Geo node up and running, will also require the
+Getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.
 
-With GitLab **9.0** the syncing process starts automatically from the
+With GitLab 9.0 the syncing process starts automatically from the
 secondary node after the **Add Node** button is pressed.
 
 Currently, this is what is synced:
@@ -214,7 +233,7 @@ repository shards you must duplicate the same configuration on the secondary.
 
 Disabling a secondary node stops the syncing process.
 
-With GitLab **8.14** this process is started manually from the primary node.
+With GitLab 8.14 this process is started manually from the primary node.
 You can start the syncing process by clicking the "Backfill all repositories"
 button on `Admin > Geo Nodes` screen.
 
@@ -261,8 +280,8 @@ Point your users to the [after setup steps](after_setup.md).
 
 ## Selective replication
 
-With GitLab **9.5**, GitLab Geo now supports the first iteration of selective
-replication, which allows admins to choose which namespaces should be
+With GitLab 9.5, GitLab Geo now supports the first iteration of selective
+replication, which allows admins to choose which groups should be
 replicated by secondary nodes.
 
 It is important to notice that selective replication:
@@ -272,52 +291,28 @@ It is important to notice that selective replication:
 relies on PostgreSQL replication, all project metadata gets replicated to
 secondary nodes, but repositories that have not been selected will be empty.
 1. Secondary nodes won't pull repositories that do not belong to the selected
-namespaces to be replicated.
+groups to be replicated.
 
 ## Adding another secondary Geo node
 
 To add another Geo node in an already Geo configured infrastructure, just follow
-[the steps starting form step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
+[the steps starting from step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
 Just omit the first step that sets up the primary node.
 
 ## Additional information for the SSH key pairs
 
-When adding a new Geo node, you must provide an SSH public key of the user that
-your GitLab instance runs on (unless changed, should be the user `git`). This
-user will act as a "normal user" who fetches from the primary Geo node.
+When adding a new **secondary** Geo node, you must provide an SSH public key for
+the system user that your GitLab instance runs as (unless changed, should be the
+user `git`). This user will act as a "normal user" who fetches from the primary
+Geo node.
 
-If for any reason you generate the key using a different name from the default
-`id_rsa`, or you want to generate an extra key only for the repository
-synchronization feature, you can do so, but you have to create/modify your
-`~/.ssh/config` (for the `git` user).
-
-This is an example on how to change the default key for all remote hosts:
-
-```bash
-Host *                              # Match all remote hosts
-  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
-```
-
-This is how to change it for an specific host:
-
-```bash
-Host example.com                    # The FQDN of the primary Geo node
-  HostName example.com              # The FQDN of the primary Geo node
-  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
-```
+Omnibus automatically generates `~git/.ssh/id_rsa` and `~git/.ssh/id_rsa.pub`
+files on secondary Geo nodes. Primaries do not need these files, and you should
+not create them manually.
 
 ### Upgrading Geo
 
-To avoid having to maintain consistency of the `authorized_keys` file for SSH access,
-we encourage all **Geo** users to
-[switch to SSH key lookups via the database](ssh.md).
-This will be necessary once Geo system hooks are removed.
-
-We highly recommend using replication slots. The easiest way to do this in Omnibus is the following:
-  1. Install GitLab on the primary server
-  1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
-  1. Install GitLab on the secondary server.
-  1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
+See the [updating the Geo nodes document](updating_the_geo_nodes.md).
 
 ## Troubleshooting
 

@@ -21,17 +21,18 @@ The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
-| Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
-| Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
+| Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
+| Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
-| See a list of jobs                    | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| See a job   log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| Download and browse job artifacts     | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
-| View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
-| Download project                      |         | ✓          | ✓           | ✓        | ✓      |
+| Lock comments                         |         |            |             | ✓        | ✓      |
+| See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
+| Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
@@ -73,8 +74,8 @@ The following table depicts the various user permission levels in a project.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
-| Force push to protected branches [^3] |         |            |             |          |        |
-| Remove protected branches [^3]        |         |            |             |          |        |
+| Force push to protected branches [^4] |         |            |             |          |        |
+| Remove protected branches [^4]        |         |            |             |          |        |
 | Remove pages                          |         |            |             |          | ✓      |
 
 ## Project features permissions
@@ -235,13 +236,13 @@ users:
 | Run CI job                                  |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from current project   |                 | ✓           | ✓        | ✓      |
 | Clone source and LFS from public projects   |                 | ✓           | ✓        | ✓      |
-| Clone source and LFS from internal projects |                 | ✓ [^4]      | ✓ [^4]   | ✓      |
-| Clone source and LFS from private projects  |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
+| Clone source and LFS from internal projects |                 | ✓ [^5]      | ✓ [^5]   | ✓      |
+| Clone source and LFS from private projects  |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
 | Push source and LFS                         |                 |             |          |        |
 | Pull container images from current project  |                 | ✓           | ✓        | ✓      |
 | Pull container images from public projects  |                 | ✓           | ✓        | ✓      |
-| Pull container images from internal projects|                 | ✓ [^4]      | ✓ [^4]   | ✓      |
-| Pull container images from private projects |                 | ✓ [^5]      | ✓ [^5]   | ✓ [^5] |
+| Pull container images from internal projects|                 | ✓ [^5]      | ✓ [^5]   | ✓      |
+| Pull container images from private projects |                 | ✓ [^6]      | ✓ [^6]   | ✓ [^6] |
 | Push container images to current project    |                 | ✓           | ✓        | ✓      |
 | Push container images to other projects     |                 |             |          |        |
 
@@ -249,6 +250,14 @@ users:
 
 GitLab 8.12 has a completely redesigned job permissions system. To learn more,
 read through the documentation on the [new CI/CD permissions model](project/new_ci_build_permissions_model.md#new-ci-job-permissions-model).
+
+## Running pipelines on protected branches
+
+The permission to merge or push to protected branches is used to define if a user can
+run CI/CD pipelines and execute actions on jobs that are related to those branches.
+
+See [Security on protected branches](../ci/pipelines.md#security-on-protected-branches)
+for details about the pipelines security model.
 
 ## LDAP users permissions
 
@@ -263,13 +272,12 @@ with the permissions described on the documentation on [auditor users permission
 Auditor users are available in [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
 only.
 
-----
-
-[^1]: Guest users can only view the confidential issues they created themselves
-[^2]: If **Public pipelines** is enabled in **Project Settings > Pipelines**
-[^3]: Not allowed for Guest, Reporter, Developer, Master, or Owner
-[^4]: Only if user is not external one.
-[^5]: Only if user is a member of the project.
+[^1]: On public and internal projects,  all users are able to perform this action.
+[^2]: Guest users can only view the confidential issues they created themselves
+[^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
+[^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
+[^5]: Only if user is not external one.
+[^6]: Only if user is a member of the project.
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998

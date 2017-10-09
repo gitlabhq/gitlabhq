@@ -14,7 +14,7 @@ export default {
     <div class="panel-heading">
       <h4>{{name}}</h4>
     </div>
-    <div class="panel-body">
+    <div class="panel-body prometheus-graph-group">
       <slot />
     </div>
   </div>

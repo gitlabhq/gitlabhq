@@ -197,28 +197,15 @@ month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
 
+A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+just like any other issue, to help GitLab team members focus on issues that are
+relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
+
 ## Release retrospective and kickoff
 
-### Retrospective
-
-After each release, we have a retrospective call where we discuss what went well,
-what went wrong, and what we can improve for the next release. The
-[retrospective notes] are public and you are invited to comment on them.
-If you're interested, you can even join the
-[retrospective call][retro-kickoff-call], on the first working day after the
-22nd at 6pm CET / 9am PST.
-
-### Kickoff
-
-Before working on the next release, we have a
-kickoff call to explain what we expect to ship in the next release. The
-[kickoff notes] are public and you are invited to comment on them.
-If you're interested, you can even join the [kickoff call][retro-kickoff-call],
-on the first working day after the 7th at 6pm CET / 9am PST..
-
-[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
-[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
-[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
+- [Retrospective](https://about.gitlab.com/handbook/engineering/workflow/#retrospective)
+- [Kickoff](https://about.gitlab.com/handbook/engineering/workflow/#kickoff)
 
 ## Copy & paste responses
 

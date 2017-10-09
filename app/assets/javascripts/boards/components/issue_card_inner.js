@@ -111,7 +111,6 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     },
     showLabel(label) {
       if (!label.id) return false;
-      if (this.groupId && label.type === 'ProjectLabel') return false;
       return true;
     },
     filterByLabel(label, e) {

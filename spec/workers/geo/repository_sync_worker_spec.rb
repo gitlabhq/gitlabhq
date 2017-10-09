@@ -1,13 +1,19 @@
 require 'spec_helper'
 
-describe Geo::RepositorySyncWorker do
-  let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
-  let!(:secondary) { create(:geo_node, :current) }
-  let(:synced_group) { create(:group) }
-  let!(:project_in_synced_group) { create(:project, group: synced_group) }
-  let!(:unsynced_project) { create(:project) }
+describe Geo::RepositorySyncWorker, :postgresql do
+  include ::EE::GeoHelpers
+
+  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  set(:secondary) { create(:geo_node) }
+  set(:synced_group) { create(:group) }
+  set(:project_in_synced_group) { create(:project, group: synced_group) }
+  set(:unsynced_project) { create(:project) }
 
   subject { described_class.new }
+
+  before do
+    stub_current_geo_node(secondary)
+  end
 
   describe '#perform' do
     before do
@@ -16,7 +22,7 @@ describe Geo::RepositorySyncWorker do
     end
 
     it 'performs Geo::ProjectSyncWorker for each project' do
-      expect(Geo::ProjectSyncWorker).to receive(:perform_in).twice.and_return(spy)
+      expect(Geo::ProjectSyncWorker).to receive(:perform_async).twice.and_return(spy)
 
       subject.perform
     end
@@ -25,7 +31,7 @@ describe Geo::RepositorySyncWorker do
       create(:geo_project_registry, :sync_failed, project: project_in_synced_group)
       create(:geo_project_registry, :synced, project: unsynced_project)
 
-      expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
+      expect(Geo::ProjectSyncWorker).to receive(:perform_async).once.and_return(spy)
 
       subject.perform
     end
@@ -35,7 +41,7 @@ describe Geo::RepositorySyncWorker do
       create(:geo_project_registry, :synced, project: unsynced_project)
       create(:geo_project_registry, :synced, :wiki_dirty)
 
-      expect(Geo::ProjectSyncWorker).to receive(:perform_in).twice.and_return(spy)
+      expect(Geo::ProjectSyncWorker).to receive(:perform_async).twice.and_return(spy)
 
       subject.perform
     end
@@ -43,7 +49,7 @@ describe Geo::RepositorySyncWorker do
     it 'does not perform Geo::ProjectSyncWorker when no geo database is configured' do
       allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
 
-      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform
     end
@@ -51,7 +57,7 @@ describe Geo::RepositorySyncWorker do
     it 'does not perform Geo::ProjectSyncWorker when not running on a secondary' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 
-      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform
     end
@@ -59,7 +65,7 @@ describe Geo::RepositorySyncWorker do
     it 'does not perform Geo::ProjectSyncWorker when node is disabled' do
       allow_any_instance_of(GeoNode).to receive(:enabled?) { false }
 
-      expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
+      expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform
     end
@@ -70,8 +76,8 @@ describe Geo::RepositorySyncWorker do
       end
 
       it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected namespaces to replicate' do
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
-          .with(300, project_in_synced_group.id, within(1.minute).of(Time.now))
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project_in_synced_group.id, within(1.minute).of(Time.now))
           .once
           .and_return(spy)
 
@@ -82,8 +88,8 @@ describe Geo::RepositorySyncWorker do
         create(:geo_project_registry, :synced, :repository_dirty, project: project_in_synced_group)
         create(:geo_project_registry, :synced, :repository_dirty, project: unsynced_project)
 
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
-          .with(300, project_in_synced_group.id, within(1.minute).of(Time.now))
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async)
+          .with(project_in_synced_group.id, within(1.minute).of(Time.now))
           .once
           .and_return(spy)
 
@@ -105,8 +111,8 @@ describe Geo::RepositorySyncWorker do
       it 'tries to sync every project' do
         project_list.each do |project|
           expect(Geo::ProjectSyncWorker)
-            .to receive(:perform_in)
-              .with(anything, project.id, anything)
+            .to receive(:perform_async)
+              .with(project.id, anything)
               .at_least(:once)
               .and_call_original
         end
@@ -114,6 +120,33 @@ describe Geo::RepositorySyncWorker do
         3.times do
           Sidekiq::Testing.inline! { subject.perform }
         end
+      end
+    end
+
+    context 'unhealthy shards' do
+      it 'skips backfill for repositories on unhealthy shards' do
+        unhealthy = create(:project, group: synced_group, repository_storage: 'broken')
+
+        # Make the shard unhealthy
+        FileUtils.rm_rf(unhealthy.repository_storage_path)
+
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy.id, anything)
+
+        Sidekiq::Testing.inline! { subject.perform }
+      end
+
+      it 'skips backfill for projects on missing shards' do
+        missing = create(:project, group: synced_group)
+        missing.update_column(:repository_storage, 'unknown')
+
+        # hide the 'broken' storage for this spec
+        stub_storage_settings({})
+
+        expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing.id, anything)
+
+        Sidekiq::Testing.inline! { subject.perform }
       end
     end
   end

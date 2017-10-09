@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Git LFS API and storage' do
   include WorkhorseHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
@@ -877,8 +878,7 @@ describe 'Git LFS API and storage' do
     end
   end
 
-  describe 'when handling lfs batch request on a secondary Geo node' do
-    let!(:primary) { create(:geo_node, :primary) }
+  describe 'when handling lfs batch request on a read-only GitLab instance' do
     let(:authorization) { authorize_user }
     let(:project) { create(:project) }
     let(:path) { "#{project.http_url_to_repo}/info/lfs/objects/batch" }
@@ -887,7 +887,7 @@ describe 'Git LFS API and storage' do
     end
 
     before do
-      allow(Gitlab::Geo).to receive(:secondary?) { true }
+      allow(Gitlab::Database).to receive(:read_only?) { true }
       project.team << [user, :master]
       enable_lfs
     end
@@ -902,7 +902,7 @@ describe 'Git LFS API and storage' do
       post_lfs_json path, body.merge('operation' => 'upload'), headers
 
       expect(response).to have_gitlab_http_status(403)
-      expect(json_response).to include('message' => "You cannot write to a secondary GitLab Geo instance. Please use #{project.http_url_to_repo} instead.")
+      expect(json_response).to include('message' => 'You cannot write to this read-only GitLab instance.')
     end
   end
 
@@ -1302,11 +1302,6 @@ describe 'Git LFS API and storage' do
 
   def authorize_user_key
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
-  end
-
-  def fork_project(project, user, object = nil)
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
-    Projects::ForkService.new(project, user, {}).execute
   end
 
   def post_lfs_json(url, body = nil, headers = nil)

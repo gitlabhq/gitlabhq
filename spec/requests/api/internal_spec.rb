@@ -5,13 +5,26 @@ describe API::Internal do
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
+  let(:gl_repository) { "project-#{project.id}" }
+  let(:reference_counter) { double('ReferenceCounter') }
 
   describe "GET /internal/check" do
     it do
+      expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
+
       get api("/internal/check"), secret_token: secret_token
 
       expect(response).to have_http_status(200)
       expect(json_response['api_version']).to eq(API::API.version)
+      expect(json_response['redis']).to be(true)
+    end
+
+    it 'returns false for field `redis` when redis is unavailable' do
+      expect_any_instance_of(Redis).to receive(:ping).and_raise(Errno::ENOENT)
+
+      get api("/internal/check"), secret_token: secret_token
+
+      expect(json_response['redis']).to be(false)
     end
   end
 
@@ -709,9 +722,7 @@ describe API::Internal do
   # end
 
   describe 'POST /internal/post_receive' do
-    let(:gl_repository) { "project-#{project.id}" }
     let(:identifier) { 'key-123' }
-    let(:reference_counter) { double('ReferenceCounter') }
 
     let(:valid_params) do
       {
@@ -794,6 +805,22 @@ describe API::Internal do
         expect(response).to have_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
       end
+    end
+  end
+
+  describe 'POST /internal/pre_receive' do
+    let(:valid_params) do
+      { gl_repository: gl_repository, secret_token: secret_token }
+    end
+
+    it 'decreases the reference counter and returns the result' do
+      expect(Gitlab::ReferenceCounter).to receive(:new).with(gl_repository)
+        .and_return(reference_counter)
+      expect(reference_counter).to receive(:increase).and_return(true)
+
+      post api("/internal/pre_receive"), valid_params
+
+      expect(json_response['reference_counter_increased']).to be(true)
     end
   end
 

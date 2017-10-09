@@ -1,7 +1,7 @@
 class Geo::ProjectRegistry < Geo::BaseRegistry
   belongs_to :project
 
-  validates :project, presence: true
+  validates :project, presence: true, uniqueness: true
 
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
 

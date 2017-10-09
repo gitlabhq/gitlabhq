@@ -23,7 +23,7 @@ module SystemCheck
     #
     # @param [BaseCheck] check class
     def <<(check)
-      raise ArgumentError unless check < BaseCheck
+      raise ArgumentError unless check.is_a?(Class) && check < BaseCheck
       @checks << check
     end
 
@@ -48,7 +48,7 @@ module SystemCheck
 
       # When implements skip method, we run it first, and if true, skip the check
       if check.can_skip? && check.skip?
-        $stdout.puts check_klass.skip_reason.color(:magenta)
+        $stdout.puts check.skip_reason.try(:color, :magenta) || check_klass.skip_reason.color(:magenta)
         return
       end
 

@@ -31,7 +31,7 @@ module API
       end
 
       class Event < Grape::Entity
-        expose :title, :project_id, :action_name
+        expose :project_id, :action_name
         expose :target_id, :target_type, :author_id
         expose :target_title
         expose :created_at
@@ -64,6 +64,7 @@ module API
         expose :owner, using: ::API::Entities::UserBasic, unless: ->(project, options) { project.group }
         expose :name, :name_with_namespace
         expose :path, :path_with_namespace
+        expose :resolve_outdated_diff_discussions
         expose :container_registry_enabled
 
         # Expose old field names with the new permissions methods to keep API compatible
@@ -234,7 +235,7 @@ module API
         expose :created_at, :started_at, :finished_at
         expose :user, with: ::API::Entities::User
         expose :artifacts_file, using: ::API::Entities::JobArtifactFile, if: -> (build, opts) { build.artifacts? }
-        expose :commit, with: ::API::Entities::RepoCommit
+        expose :commit, with: ::API::Entities::Commit
         expose :runner, with: ::API::Entities::Runner
         expose :pipeline, with: ::API::Entities::PipelineBasic
       end
@@ -251,7 +252,7 @@ module API
       end
 
       class MergeRequestChanges < MergeRequest
-        expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
+        expose :diffs, as: :changes, using: ::API::Entities::Diff do |compare, _|
           compare.raw_diffs(limits: false).to_a
         end
       end

@@ -150,27 +150,30 @@ script:
 
 ## Secret variables
 
->**Notes:**
-- This feature requires GitLab Runner 0.4.0 or higher.
-- Group-level secret variables added in GitLab 9.4.
-- Be aware that secret variables are not masked, and their values can be shown
-  in the job logs if explicitly asked to do so. If your project is public or
-  internal, you can set the pipelines private from your project's Pipelines
-  settings. Follow the discussion in issue [#13784][ce-13784] for masking the
-  secret variables.
+NOTE: **Note:**
+Group-level secret variables were added in GitLab 9.4.
 
-GitLab CI allows you to define per-project or per-group **secret variables**
-that are set in the build environment. The secret variables are stored out of
-the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
-making them available in the build environment. It's the recommended method to
-use for storing things like passwords, secret keys and credentials.
+CAUTION: **Important:**
+Be aware that secret variables are not masked, and their values can be shown
+in the job logs if explicitly asked to do so. If your project is public or
+internal, you can set the pipelines private from your [project's Pipelines
+settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
+Follow the discussion in issue [#13784][ce-13784] for masking the secret variables.
+
+GitLab CI allows you to define per-project or per-group secret variables
+that are set in the pipeline environment. The secret variables are stored out of
+the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available during a pipeline run. It's the recommended method to
+use for storing things like passwords, SSH keys and credentials.
 
 Project-level secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 
 Likewise, group-level secret variables can be added by going to your group's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 Any variables of [subgroups] will be inherited recursively.
+
+![Secret variables](img/secret_variables.png)
 
 Once you set them, they will be available for all subsequent pipelines. You can also
 [protect your variables](#protected-secret-variables).
@@ -186,8 +189,8 @@ protected, it would only be securely passed to pipelines running on the
 protected variables.
 
 Protected variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
-**Secret variables**, and check *Protected*.
+**Settings > CI/CD**, then finding the section called
+**Secret variables**, and check "Protected".
 
 Once you set them, they will be available for all subsequent pipelines.
 
@@ -221,7 +224,7 @@ are set in the build environment. These variables are only defined for
 the project services that you are using to learn which variables they define.
 
 An example project service that defines deployment variables is
-[Kubernetes Service](../../user/project/integrations/kubernetes.md).
+[Kubernetes Service](../../user/project/integrations/kubernetes.md#deployment-variables).
 
 ## Debug tracing
 
@@ -458,8 +461,8 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
-[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
 [ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md

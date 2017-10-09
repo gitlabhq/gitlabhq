@@ -137,11 +137,10 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Bitbucket::Connection)
   instrumentation.instrument_instance_methods(Github::Client)
 
+  instrumentation.instrument_instance_methods(Geo::RepositorySyncWorker)
+
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
-
-  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/34509
-  instrumentation.instrument_method(MarkupHelper, :link_to_gfm)
 
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)

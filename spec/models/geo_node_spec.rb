@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe GeoNode, type: :model do
-  subject(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: false) }
-  subject(:new_primary_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: true) }
-  subject(:empty_node) { described_class.new }
-  subject(:primary_node) { create(:geo_node, :primary) }
-  subject(:node) { create(:geo_node) }
+  include ::EE::GeoHelpers
+
+  let(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
+  let(:new_primary_node) { create(:geo_node, :primary, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
+  let(:empty_node) { described_class.new }
+  let(:primary_node) { create(:geo_node, :primary) }
+  let(:node) { create(:geo_node) }
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
   let(:url_helpers) { Gitlab::Routing.url_helpers }
@@ -19,9 +21,12 @@ describe GeoNode, type: :model do
     it { is_expected.to have_many(:namespaces).through(:geo_node_namespace_links) }
   end
 
-  context 'default values' do
-    subject { described_class.new }
+  context 'validations' do
+    it { expect(new_node).to validate_presence_of(:geo_node_key) }
+    it { expect(new_primary_node).not_to validate_presence_of(:geo_node_key) }
+  end
 
+  context 'default values' do
     let(:gitlab_host) { 'gitlabhost' }
 
     before do
@@ -29,35 +34,38 @@ describe GeoNode, type: :model do
     end
 
     it 'defines a default schema' do
-      expect(subject.schema).to eq('http')
+      expect(empty_node.schema).to eq('http')
     end
 
     it 'defines a default host' do
-      expect(subject.host).to eq(gitlab_host)
+      expect(empty_node.host).to eq(gitlab_host)
     end
 
     it 'defines a default port' do
-      expect(subject.port).to eq(80)
+      expect(empty_node.port).to eq(80)
     end
 
     it 'defines a default relative_url_root' do
-      expect(subject.relative_url_root).to eq('')
+      expect(empty_node.relative_url_root).to eq('')
     end
 
     it 'defines a default primary flag' do
-      expect(subject.primary).to eq(false)
+      expect(empty_node.primary).to eq(false)
     end
   end
 
   context 'prevent locking yourself out' do
-    subject do
-      GeoNode.new(host: Gitlab.config.gitlab.host,
-                  port: Gitlab.config.gitlab.port,
-                  relative_url_root: Gitlab.config.gitlab.relative_url_root)
-    end
-
     it 'does not accept adding a non primary node with same details as current_node' do
-      expect(subject).not_to be_valid
+      node = GeoNode.new(
+        host: Gitlab.config.gitlab.host,
+        port: Gitlab.config.gitlab.port,
+        relative_url_root: Gitlab.config.gitlab.relative_url_root,
+        geo_node_key: build(:geo_node_key)
+      )
+
+      expect(node).not_to be_valid
+      expect(node.errors.full_messages.count).to eq(1)
+      expect(node.errors[:base].first).to match('locking yourself out')
     end
   end
 
@@ -100,7 +108,7 @@ describe GeoNode, type: :model do
     let(:new_node) { FactoryGirl.build(:geo_node) }
 
     it 'expires cache when saved' do
-      expect(new_node).to receive(:expire_cache!)
+      expect(new_node).to receive(:expire_cache!).at_least(:once)
 
       new_node.save!
     end
@@ -116,13 +124,13 @@ describe GeoNode, type: :model do
     subject { described_class.new }
 
     it 'returns true when node is the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { subject }
+      stub_current_geo_node(subject)
 
       expect(subject.current?).to eq true
     end
 
     it 'returns false when node is not the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { double }
+      stub_current_geo_node(double)
 
       expect(subject.current?).to eq false
     end
@@ -312,6 +320,36 @@ describe GeoNode, type: :model do
         node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
 
         expect(node.restricted_project_ids).to match_array([project_1.id, project_2.id, project_3.id])
+      end
+    end
+  end
+
+  describe '#geo_node_key' do
+    context 'primary node' do
+      it 'cannot be set' do
+        node = new_primary_node
+
+        expect(node.geo_node_key).to be_nil
+
+        node.geo_node_key = build(:geo_node_key)
+        expect(node).to be_valid
+
+        node.save!
+
+        expect(node.geo_node_key(true)).to be_nil
+      end
+    end
+
+    context 'secondary node' do
+      it 'is automatically set' do
+        node = build(:geo_node, url: 'http://example.com/')
+
+        expect(node.geo_node_key).to be_present
+        expect(node.geo_node_key.title).not_to include('example.com')
+
+        node.save!
+
+        expect(node.geo_node_key.title).to eq('Geo node: http://example.com/')
       end
     end
   end

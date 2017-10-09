@@ -411,7 +411,7 @@ class MergeRequest < ActiveRecord::Base
     return false unless for_fork?
     return true unless source_project
 
-    !source_project.forked_from?(target_project)
+    !source_project.in_fork_network_of?(target_project)
   end
 
   def validate_approvals_before_merge
@@ -439,8 +439,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    merge_request_diffs.create
-    reload_merge_request_diff
+    fetch_ref
+
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      merge_request_diffs.create
+      reload_merge_request_diff
+    end
   end
 
   def reload_merge_request_diff
@@ -483,6 +488,7 @@ class MergeRequest < ActiveRecord::Base
     return unless open?
 
     old_diff_refs = self.diff_refs
+
     create_merge_request_diff
     MergeRequests::MergeRequestDiffCacheService.new.execute(self)
     new_diff_refs = self.diff_refs
@@ -495,7 +501,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked? && !Gitlab::Geo.secondary?
+    return unless unchecked? && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -546,6 +552,14 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def ff_merge_possible?
+    project.repository.ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    project.ff_merge_must_be_possible? && !ff_merge_possible?
+  end
+
   def can_cancel_merge_when_pipeline_succeeds?(current_user)
     can_be_merged_by?(current_user) || self.author == current_user
   end
@@ -574,14 +588,20 @@ class MergeRequest < ActiveRecord::Base
     commits_for_notes_limit = 100
     commit_ids = commit_shas.take(commits_for_notes_limit)
 
-    Note.where(
-      "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
-      "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
-      mr_id: id,
-      commit_ids: commit_ids,
-      target_project_id: target_project_id,
-      source_project_id: source_project_id
-    )
+    commit_notes = Note
+      .except(:order)
+      .where(project_id: [source_project_id, target_project_id])
+      .where(noteable_type: 'Commit', commit_id: commit_ids)
+
+    # We're using a UNION ALL here since this results in better performance
+    # compared to using OR statements. We're using UNION ALL since the queries
+    # used won't produce any duplicates (e.g. a note for a commit can't also be
+    # a note for an MR).
+    union = Gitlab::SQL::Union
+      .new([notes, commit_notes], remove_duplicates: false)
+      .to_sql
+
+    Note.from("(#{union}) #{Note.table_name}")
   end
 
   alias_method :discussion_notes, :related_notes
@@ -756,10 +776,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_ci?
-    has_ci_integration = source_project.try(:ci_service)
-    uses_gitlab_ci = all_pipelines.any?
+    return false if has_no_commits?
 
-    (has_ci_integration || uses_gitlab_ci) && commits.any?
+    !!(head_pipeline_id || all_pipelines.any? || source_project&.ci_service)
   end
 
   def branch_missing?
@@ -943,6 +962,12 @@ class MergeRequest < ActiveRecord::Base
     active_diff_discussions.each do |discussion|
       service.execute(discussion)
     end
+
+    if project.resolve_outdated_diff_discussions?
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project, current_user)
+        .execute(self)
+    end
   end
 
   def keep_around_commit
@@ -978,8 +1003,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def update_project_counter_caches
-    return unless update_project_counter_caches?
-
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 

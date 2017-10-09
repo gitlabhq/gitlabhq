@@ -207,162 +207,6 @@ describe Projects::IssuesController do
     end
   end
 
-  describe 'PUT #update' do
-    before do
-      sign_in(user)
-      project.team << [user, :developer]
-    end
-
-    it_behaves_like 'update invalid issuable', Issue
-
-    context 'changing the assignee' do
-      it 'limits the attributes exposed on the assignee' do
-        assignee = create(:user)
-        project.add_developer(assignee)
-
-        put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: issue.iid,
-          issue: { assignee_ids: [assignee.id] },
-          format: :json
-        body = JSON.parse(response.body)
-
-        expect(body['assignees'].first.keys)
-          .to match_array(%w(id name username avatar_url state web_url))
-      end
-    end
-
-    context 'Akismet is enabled' do
-      let(:project) { create(:project_empty_repo, :public) }
-
-      before do
-        stub_application_setting(recaptcha_enabled: true)
-        allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
-      end
-
-      context 'when an issue is not identified as spam' do
-        before do
-          allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
-        end
-
-        it 'normally updates the issue' do
-          expect { update_issue(title: 'Foo') }.to change { issue.reload.title }.to('Foo')
-        end
-      end
-
-      context 'when an issue is identified as spam' do
-        before do
-          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
-        end
-
-        context 'when captcha is not verified' do
-          def update_spam_issue
-            update_issue(title: 'Spam Title', description: 'Spam lives here')
-          end
-
-          before do
-            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-          end
-
-          it 'rejects an issue recognized as a spam' do
-            expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
-            expect { update_spam_issue }.not_to change { issue.reload.title }
-          end
-
-          it 'rejects an issue recognized as a spam when recaptcha disabled' do
-            stub_application_setting(recaptcha_enabled: false)
-
-            expect { update_spam_issue }.not_to change { issue.reload.title }
-          end
-
-          it 'creates a spam log' do
-            update_spam_issue
-
-            spam_logs = SpamLog.all
-
-            expect(spam_logs.count).to eq(1)
-            expect(spam_logs.first.title).to eq('Spam Title')
-            expect(spam_logs.first.recaptcha_verified).to be_falsey
-          end
-
-          context 'as HTML' do
-            it 'renders verify template' do
-              update_spam_issue
-
-              expect(response).to render_template(:verify)
-            end
-          end
-
-          context 'as JSON' do
-            before do
-              update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
-            end
-
-            it 'renders json errors' do
-              expect(json_response)
-                .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
-            end
-
-            it 'returns 422 status' do
-              expect(response).to have_http_status(422)
-            end
-          end
-        end
-
-        context 'when captcha is verified' do
-          let(:spammy_title) { 'Whatever' }
-          let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
-
-          def update_verified_issue
-            update_issue({ title: spammy_title },
-                         { spam_log_id: spam_logs.last.id,
-                           recaptcha_verification: true })
-          end
-
-          before do
-            allow_any_instance_of(described_class).to receive(:verify_recaptcha)
-              .and_return(true)
-          end
-
-          it 'redirect to issue page' do
-            update_verified_issue
-
-            expect(response)
-              .to redirect_to(project_issue_path(project, issue))
-          end
-
-          it 'accepts an issue after recaptcha is verified' do
-            expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
-          end
-
-          it 'marks spam log as recaptcha_verified' do
-            expect { update_verified_issue }.to change { SpamLog.last.recaptcha_verified }.from(false).to(true)
-          end
-
-          it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
-            spam_log = create(:spam_log)
-
-            expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }
-              .not_to change { SpamLog.last.recaptcha_verified }
-          end
-        end
-      end
-
-      def update_issue(issue_params = {}, additional_params = {})
-        params = {
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: issue.iid,
-          issue: issue_params
-        }.merge(additional_params)
-
-        put :update, params
-      end
-    end
-  end
-
   describe 'POST #move' do
     before do
       sign_in(user)
@@ -533,6 +377,146 @@ describe Projects::IssuesController do
       end
     end
 
+    describe 'PUT #update' do
+      def update_issue(issue_params: {}, additional_params: {}, id: nil)
+        id ||= issue.iid
+        params = {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id,
+          issue: { title: 'New title' }.merge(issue_params),
+          format: :json
+        }.merge(additional_params)
+
+        put :update, params
+      end
+
+      def go(id:)
+        update_issue(id: id)
+      end
+
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
+      it_behaves_like 'restricted action', success: 200
+      it_behaves_like 'update invalid issuable', Issue
+
+      context 'changing the assignee' do
+        it 'limits the attributes exposed on the assignee' do
+          assignee = create(:user)
+          project.add_developer(assignee)
+
+          update_issue(issue_params: { assignee_ids: [assignee.id] })
+
+          body = JSON.parse(response.body)
+
+          expect(body['assignees'].first.keys)
+            .to match_array(%w(id name username avatar_url state web_url))
+        end
+      end
+
+      context 'Akismet is enabled' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          stub_application_setting(recaptcha_enabled: true)
+          allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+        end
+
+        context 'when an issue is not identified as spam' do
+          before do
+            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
+          end
+
+          it 'normally updates the issue' do
+            expect { update_issue(issue_params: { title: 'Foo' }) }.to change { issue.reload.title }.to('Foo')
+          end
+        end
+
+        context 'when an issue is identified as spam' do
+          before do
+            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+          end
+
+          context 'when captcha is not verified' do
+            before do
+              allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            end
+
+            it 'rejects an issue recognized as a spam' do
+              expect { update_issue }.not_to change { issue.reload.title }
+            end
+
+            it 'rejects an issue recognized as a spam when recaptcha disabled' do
+              stub_application_setting(recaptcha_enabled: false)
+
+              expect { update_issue }.not_to change { issue.reload.title }
+            end
+
+            it 'creates a spam log' do
+              update_issue(issue_params: { title: 'Spam title' })
+
+              spam_logs = SpamLog.all
+
+              expect(spam_logs.count).to eq(1)
+              expect(spam_logs.first.title).to eq('Spam title')
+              expect(spam_logs.first.recaptcha_verified).to be_falsey
+            end
+
+            it 'renders json errors' do
+              update_issue
+
+              expect(json_response)
+                .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+            end
+
+            it 'returns 422 status' do
+              update_issue
+
+              expect(response).to have_http_status(422)
+            end
+          end
+
+          context 'when captcha is verified' do
+            let(:spammy_title) { 'Whatever' }
+            let!(:spam_logs) { create_list(:spam_log, 2, user: user, title: spammy_title) }
+
+            def update_verified_issue
+              update_issue(
+                issue_params: { title: spammy_title },
+                additional_params: { spam_log_id: spam_logs.last.id, recaptcha_verification: true })
+            end
+
+            before do
+              allow_any_instance_of(described_class).to receive(:verify_recaptcha)
+                .and_return(true)
+            end
+
+            it 'returns 200 status' do
+              expect(response).to have_http_status(200)
+            end
+
+            it 'accepts an issue after recaptcha is verified' do
+              expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
+            end
+
+            it 'marks spam log as recaptcha_verified' do
+              expect { update_verified_issue }.to change { SpamLog.last.recaptcha_verified }.from(false).to(true)
+            end
+
+            it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
+              spam_log = create(:spam_log)
+
+              expect { update_issue(issue_params: { spam_log_id: spam_log.id, recaptcha_verification: true }) }
+                .not_to change { SpamLog.last.recaptcha_verified }
+            end
+          end
+        end
+      end
+    end
+
     describe 'GET #show' do
       it_behaves_like 'restricted action', success: 200
 
@@ -571,29 +555,6 @@ describe Projects::IssuesController do
 
           expect(response).to have_http_status(200)
         end
-      end
-    end
-
-    describe 'GET #edit' do
-      it_behaves_like 'restricted action', success: 200
-
-      def go(id:)
-        get :edit,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id
-      end
-    end
-
-    describe 'PUT #update' do
-      it_behaves_like 'restricted action', success: 302
-
-      def go(id:)
-        put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: id,
-          issue: { title: 'New title' }
       end
     end
   end
@@ -899,6 +860,38 @@ describe Projects::IssuesController do
       get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
       expect(JSON.parse(response.body).first.keys).to match_array(%w[id reply_id expanded notes individual_note])
+    end
+
+    context 'with cross-reference system note', :request_store do
+      let(:new_issue) { create(:issue) }
+      let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+
+      before do
+        create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+      end
+
+      it 'filters notes that the user should not see' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        expect(JSON.parse(response.body).count).to eq(1)
+      end
+
+      it 'does not result in N+1 queries' do
+        # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        RequestStore.clear!
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+        end.count
+
+        RequestStore.clear!
+
+        create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+
+        expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
+      end
     end
   end
 end

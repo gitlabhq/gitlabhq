@@ -8,7 +8,7 @@ from source, follow the
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the secondary Geo node. Do not login or set up anything else in the
    secondary node for the moment.
-1. **Setup the database replication (`primary (read-write) <-> secondary (read-only)` topology).**
+1. **Setup the database replication topology:** `primary (read-write) <-> secondary (read-only)`
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. [Follow the after setup steps](after_setup.md).
 
@@ -24,14 +24,14 @@ in your testing/production environment.
 ## PostgreSQL replication
 
 The GitLab primary node where the write operations happen will connect to
-`primary` database server, and the secondary ones which are read-only will
-connect to `secondary` database servers (which are read-only too).
+primary database server, and the secondary ones which are read-only will
+connect to secondary database servers (which are read-only too).
 
 >**Note:**
-In many databases documentation you will see `primary` being references as `master`
-and `secondary` as either `slave` or `standby` server (read-only).
+In many databases documentation you will see "primary" being referenced as "master"
+and "secondary" as either "slave" or "standby" server (read-only).
 
-New for GitLab 9.4: We recommend using [PostgreSQL replication
+Since GitLab 9.4: We recommend using [PostgreSQL replication
 slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
@@ -40,17 +40,17 @@ recover. See below for more details.
 
 The following guide assumes that:
 
-- You are using PostgreSQL 9.2 or later which includes the
+- You are using PostgreSQL 9.6 or later which includes the
   [`pg_basebackup` tool][pgback]. If you are using Omnibus it includes the required
   PostgreSQL version for Geo.
 - You have a primary server already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and you
-  have a new secondary server set up on the same OS and PostgreSQL version. If
-  you are using Omnibus, make sure the GitLab version is the same on all nodes.
+  have a new secondary server set up on the same OS and PostgreSQL version. Also
+  make sure the GitLab version is the same on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`. Note that the primary and secondary servers
-  MUST be able to communicate over these addresses. These IP addresses can either
-  be public or private.
+  **must** be able to communicate over these addresses (using HTTPS & SSH).
+  These IP addresses can either be public or private.
 
 ### Step 1. Configure the primary server
 
@@ -145,7 +145,10 @@ The following guide assumes that:
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port 5432 on the primary node.
-1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab][] for the DB listen changes to take effect.
+   This will fail and is expected.
+1. You will need to manually restart postgres `gitlab-ctl restart postgresql` until [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797) gets fixed.
+1. You should now reconfigure again, and it should complete cleanly.
 1. New for 9.4: Restart your primary PostgreSQL server to ensure the replication slot changes
    take effect (`sudo gitlab-ctl restart postgresql` for Omnibus-provided PostgreSQL).
 1. Now that the PostgreSQL server is set up to accept remote connections, run
@@ -177,11 +180,43 @@ The following guide assumes that:
     \q
     ```
 
-1. Added in GitLab 9.1: Edit `/etc/gitlab/gitlab.rb` and add the following:
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
     ```ruby
     geo_secondary_role['enable'] = true
+    ```
+
+1. Optional since GitLab 9.1, and required for GitLab 10.0 or higher:
+   [Enable tracking database on the secondary server](#enable-tracking-database-on-the-secondary-server)
+
+1. Otherwise, continue to [initiate the replication process](#step-3-initiate-the-replication-process).
+
+#### Enable tracking database on the secondary server
+
+Geo secondary nodes use a tracking database to keep track of replication status and recover
+automatically from some replication issues.
+
+It is added in GitLab 9.1, and since GitLab 10.0 it is required.
+
+> **IMPORTANT:** For this feature to work correctly, all nodes must be
+with their clocks synchronized. It is not required for all nodes to be set to
+the same time zone, but when the respective times are converted to UTC time,
+the clocks must be synchronized to within 60 seconds of each other.
+
+1. Setup clock synchronization service in your Linux distro.
+   This can easily be done via any NTP-compatible daemon. For example,
+   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+    ```ruby
     geo_postgresql['enable'] = true
+    ```
+
+1. Set up the Geo tracking database:
+
+    ```
+    sudo gitlab-rake geo:db:migrate
     ```
 
 1. [Reconfigure GitLab][] for the changes to take effect.

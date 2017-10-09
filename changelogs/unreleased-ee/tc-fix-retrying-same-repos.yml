@@ -1,5 +1,0 @@
----
-title: Fix Geo::RepositorySyncWorker so attempts to sync all projects if some are failing
-merge_request: 2796
-author:
-type: fixed

@@ -16,9 +16,11 @@ class PipelineEntity < Grape::Entity
   expose :flags do
     expose :latest?, as: :latest
     expose :stuck?, as: :stuck
+    expose :auto_devops_source?, as: :auto_devops
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
+    expose :failure_reason?, as: :failure_reason
   end
 
   expose :details do
@@ -43,6 +45,11 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity
+  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
+
+  expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? } do |pipeline|
+    pipeline.present.failure_reason
+  end
 
   expose :retry_path, if: -> (*) { can_retry? }  do |pipeline|
     retry_project_pipeline_path(pipeline.project, pipeline)
@@ -51,8 +58,6 @@ class PipelineEntity < Grape::Entity
   expose :cancel_path, if: -> (*) { can_cancel? } do |pipeline|
     cancel_project_pipeline_path(pipeline.project, pipeline)
   end
-
-  expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   private
 

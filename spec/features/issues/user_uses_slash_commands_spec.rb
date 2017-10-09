@@ -235,7 +235,7 @@ feature 'Issues > User uses quick actions', js: true do
     describe 'move the issue to another project' do
       let(:issue) { create(:issue, project: project) }
 
-      context 'when the project is valid', js: true do
+      context 'when the project is valid' do
         let(:target_project) { create(:project, :public) }
 
         before do
@@ -256,7 +256,7 @@ feature 'Issues > User uses quick actions', js: true do
         end
       end
 
-      context 'when the project is valid but the user not authorized', js: true do
+      context 'when the project is valid but the user not authorized' do
         let(:project_unauthorized) {create(:project, :public)}
 
         before do
@@ -272,7 +272,7 @@ feature 'Issues > User uses quick actions', js: true do
         end
       end
 
-      context 'when the project is invalid', js: true do
+      context 'when the project is invalid' do
         before do
           sign_in(user)
           visit project_issue_path(project, issue)
@@ -286,7 +286,7 @@ feature 'Issues > User uses quick actions', js: true do
         end
       end
 
-      context 'when the user issues multiple commands', js: true do
+      context 'when the user issues multiple commands' do
         let(:target_project) { create(:project, :public) }
         let(:milestone) { create(:milestone, title: '1.0', project: project) }
         let(:target_milestone) { create(:milestone, title: '1.0', project: target_project) }

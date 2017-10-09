@@ -18,6 +18,7 @@ module API
           optional :builds_enabled, type: Boolean, desc: 'Flag indication if builds are enabled'
           optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
           optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
+          optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
           optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
           optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
           optional :public, type: Boolean, desc: 'Create a public project. The same as visibility_level = 20.'
@@ -123,7 +124,7 @@ module API
         get do
           authenticate!
 
-          present_projects current_user.authorized_projects,
+          present_projects current_user.authorized_projects.order_id_desc,
             with: ::API::V3::Entities::ProjectWithAccess
         end
 
@@ -300,9 +301,9 @@ module API
           use :optional_params
           at_least_one_of :name, :description, :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, :builds_enabled, :snippets_enabled,
-            :shared_runners_enabled, :container_registry_enabled,
-            :lfs_enabled, :public, :visibility_level, :public_builds,
-            :request_access_enabled, :only_allow_merge_if_build_succeeds,
+            :shared_runners_enabled, :resolve_outdated_diff_discussions,
+            :container_registry_enabled, :lfs_enabled, :public, :visibility_level,
+            :public_builds, :request_access_enabled, :only_allow_merge_if_build_succeeds,
             :only_allow_merge_if_all_discussions_are_resolved, :path,
             :default_branch,
             ## EE-specific

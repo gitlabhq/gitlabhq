@@ -31,6 +31,12 @@ module API
         protocol = params[:protocol]
 
         actor.update_last_used_at if actor.is_a?(Key)
+        user =
+          if actor.is_a?(Key)
+            actor.user
+          else
+            actor
+          end
 
         access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
         access_checker = access_checker_klass
@@ -47,6 +53,7 @@ module API
         {
           status: true,
           gl_repository: gl_repository,
+          gl_username: user&.username,
           repository_path: repository_path,
           gitaly: gitaly_payload(params[:action]),
           geo_node: actor.is_a?(GeoNodeKey)
@@ -101,7 +108,8 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION
+          gitlab_rev: Gitlab::REVISION,
+          redis: redis_ping
         }
       end
 
@@ -148,11 +156,19 @@ module API
 
         codes = nil
 
-        ::Users::UpdateService.new(user).execute! do |user|
+        ::Users::UpdateService.new(current_user, user: user).execute! do |user|
           codes = user.generate_otp_backup_codes!
         end
 
         { success: true, recovery_codes: codes }
+      end
+
+      post '/pre_receive' do
+        status 200
+
+        reference_counter_increased = Gitlab::ReferenceCounter.new(params[:gl_repository]).increase
+
+        { reference_counter_increased: reference_counter_increased }
       end
 
       post "/notify_post_receive" do

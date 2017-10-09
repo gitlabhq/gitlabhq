@@ -14,6 +14,7 @@ following locations:
 - [Project-level Variables](project_level_variables.md)
 - [Group-level Variables](group_level_variables.md)
 - [Commits](commits.md)
+- [Custom Attributes](custom_attributes.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
 - [Environments](environments.md)
@@ -59,19 +60,11 @@ following locations:
 - [Validate CI configuration](lint.md)
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
+- [Wikis](wikis.md)
 
 ## Road to GraphQL
 
-Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
-controller-specific endpoints. GraphQL has a number of benefits:
-
-1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
-
-It will co-exist with the current v4 REST API. If we have a v5 API, this should
-be a compatibility layer on top of GraphQL.
+We have changed our plans to move to GraphQL. After reviewing the GraphQL license, anything related to the Facebook BSD plus patent license will not be allowed at GitLab.
 
 ## Basic usage
 
@@ -247,8 +240,8 @@ The following table gives an overview of how the API functions generally behave.
 | ------------ | ----------- |
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
-| `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
+| `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON. |
+| `DELETE` | Returns `204 No Content` if the resuource was deleted successfully. |
 
 The following table shows the possible return codes for API requests.
 

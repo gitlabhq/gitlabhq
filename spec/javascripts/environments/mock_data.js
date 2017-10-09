@@ -12,7 +12,7 @@ export const environmentsList = [
     stop_path: '/root/review-app/environments/7/stop',
     created_at: '2017-01-31T10:53:46.894Z',
     updated_at: '2017-01-31T10:53:46.894Z',
-    rollout_status_path: '/path',
+    rollout_status: {},
   },
   {
     folderName: 'build',
@@ -28,7 +28,7 @@ export const environmentsList = [
     stop_path: '/root/review-app/environments/12/stop',
     created_at: '2017-02-01T19:42:18.400Z',
     updated_at: '2017-02-01T19:42:18.400Z',
-    rollout_status_path: '/path',
+    rollout_status: {},
   },
 ];
 
@@ -48,7 +48,7 @@ export const serverData = [
       stop_path: '/root/review-app/environments/7/stop',
       created_at: '2017-01-31T10:53:46.894Z',
       updated_at: '2017-01-31T10:53:46.894Z',
-      rollout_status_path: '/path',
+      rollout_status: {},
     },
   },
   {
@@ -100,7 +100,7 @@ export const environment = {
   stop_path: '/root/review-app/environments/7/stop',
   created_at: '2017-01-31T10:53:46.894Z',
   updated_at: '2017-01-31T10:53:46.894Z',
-  rollout_status_path: '/path',
+  rollout_status: {},
 };
 
 export const deployBoardMockData = {
@@ -136,15 +136,7 @@ export const deployBoardMockData = {
   abort_url: 'url',
   rollback_url: 'url',
   completion: 100,
-  valid: true,
-};
-
-export const invalidDeployBoardMockData = {
-  instances: [],
-  abort_url: 'url',
-  rollback_url: 'url',
-  completion: 100,
-  valid: false,
+  status: 'found',
 };
 
 export const folder = {
