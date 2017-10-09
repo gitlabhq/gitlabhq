@@ -37,13 +37,6 @@
     directives: {
       tooltip,
     },
-
-    computed: {
-      actionIconSvg() {
-        alert('LA');
-        return getActionIcon(this.actionIcon);
-      },
-    },
   };
 </script>
 <template>
@@ -56,8 +49,7 @@
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
     aria-label="Job's action">
-    {{actionIcon}}
     <icon
-      name="retry"/>
+      :name="actionIcon"/>
   </a>
 </template>

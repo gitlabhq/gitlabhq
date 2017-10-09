@@ -40,7 +40,7 @@
       },
       fullCssClass() {
         let classString = '' || this.cssClass;
-        // if (this.size) classString += `s${this.size}`
+        if (this.size) classString += `s${this.size}`
         return classString;
       },
     },

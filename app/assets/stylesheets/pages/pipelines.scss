@@ -734,6 +734,15 @@ button.mini-pipeline-graph-dropdown-toggle {
       &:focus svg {
         fill: $gl-text-color;
       }
+
+      &.icon-action-retry,
+      &.icon-action-play {
+        svg {
+          width: calc($ci-action-icon-size-6);
+          height: calc($ci-action-icon-size-6);
+          left: 8px;
+        }
+      }
     }
 
     // link to the build

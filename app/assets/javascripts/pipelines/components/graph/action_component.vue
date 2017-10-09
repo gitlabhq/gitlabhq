@@ -1,6 +1,5 @@
 <script>
-  import getActionIcon from '../../../vue_shared/ci_action_icons';
-  import tooltip from '../../../vue_shared/directives/tooltip';
+    import tooltip from '../../../vue_shared/directives/tooltip';
   import icon from '../../../vue_shared/components/icon.vue';
 
   /**
@@ -39,12 +38,8 @@
     },
 
     computed: {
-      actionIconSvg() {
-        return getActionIcon(this.actionIcon);
-      },
-
       cssClass() {
-        return `js-${gl.text.dasherize(this.actionIcon)}`;
+        return `${gl.text.dasherize(this.actionIcon)} js-${gl.text.dasherize(this.actionIcon)}`;
       },
     },
   };
@@ -59,7 +54,6 @@
     :class="cssClass"
     data-container="body">
     <icon
-      name="stop"
-      size="16"/>
+      :name="actionIcon"/>
   </a>
 </template>
