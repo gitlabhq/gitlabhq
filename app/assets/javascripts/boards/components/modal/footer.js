@@ -38,7 +38,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
         add_label_ids: [list.label.id, ...boardLabelIds],
         milestone_id: currentBoard.milestone_id,
         assignee_ids: [currentBoard.assignee_id],
-        weight: currentBoard.weight
+        weight: currentBoard.weight,
       }).catch(() => {
         new Flash('Failed to update issues, please try again.', 'alert');
 

@@ -42,7 +42,6 @@ export default {
 
       this.error = false;
 
-      const board = Store.state.currentBoard;
       const labels = this.list.label ? [this.list.label] : [];
       const issue = new ListIssue({
         title: this.title,
@@ -51,14 +50,6 @@ export default {
         assignees: [],
         project_id: this.selectedProject.id,
       });
-
-      if (board.assignee) {
-        issue.assignees = [board.assignee];
-      }
-
-      if (board.labels.length > 0) {
-        issue.labels = _.uniq([...labels, ...board.labels], label => label.id);
-      }
 
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
