@@ -136,7 +136,7 @@ describe 'Issue Boards', :js do
 
     it 'allows user to delete board' do
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
@@ -151,7 +151,7 @@ describe 'Issue Boards', :js do
       find('.dropdown-menu-close').click
 
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
