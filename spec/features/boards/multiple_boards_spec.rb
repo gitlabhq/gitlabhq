@@ -51,17 +51,15 @@ describe 'Multiple Issue Boards', :js do
         end
       end
 
-      it 'creates new board' do
+      it 'creates new board without detailed configuration' do
         click_button board.name
 
         page.within('.dropdown-menu') do
           click_link 'Create new board'
-
-          fill_in 'board-new-name', with: 'This is a new board'
-
-          click_button 'Create'
         end
 
+        fill_in 'board-new-name', with: 'This is a new board'
+        click_button 'Create board'
         wait_for_requests
 
         expect(page).to have_button('This is a new board')
