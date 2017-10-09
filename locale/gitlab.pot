@@ -848,9 +848,6 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
-msgid "Last Update"
-msgstr ""
-
 msgid "Last commit"
 msgstr ""
 
@@ -858,6 +855,9 @@ msgid "Last edited %{date}"
 msgstr ""
 
 msgid "Last edited by %{name}"
+msgstr ""
+
+msgid "Last update"
 msgstr ""
 
 msgid "Last updated"

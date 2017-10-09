@@ -3,7 +3,7 @@ module EE
     module DestroyService
       include ::EE::Emails::BaseService
 
-      def execute
+      def execute(*args, &blk)
         super.tap do
           log_audit_event(action: :destroy)
         end

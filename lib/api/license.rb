@@ -4,16 +4,16 @@ module API
 
     resource :license do
       desc 'Get information on the currently active license' do
-        success Entities::License
+        success Entities::GitlabLicense
       end
       get do
         license = ::License.current
 
-        present license, with: Entities::License
+        present license, with: Entities::GitlabLicense
       end
 
       desc 'Add a new license' do
-        success Entities::License
+        success Entities::GitlabLicense
       end
       params do
         requires :license, type: String, desc: 'The license text'
@@ -21,7 +21,7 @@ module API
       post do
         license = ::License.new(data: params[:license])
         if license.save
-          present license, with: Entities::License
+          present license, with: Entities::GitlabLicense
         else
           render_api_error!(license.errors.full_messages.first, 400)
         end

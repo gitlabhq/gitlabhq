@@ -142,7 +142,8 @@ describe ProjectsController do
     end
 
     context 'when the storage is not available', broken_storage: true do
-      let(:project) { create(:project, :broken_storage) }
+      set(:project) { create(:project, :broken_storage) }
+
       before do
         project.add_developer(user)
         sign_in(user)

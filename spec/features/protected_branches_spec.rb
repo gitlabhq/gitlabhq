@@ -62,6 +62,32 @@ feature 'Protected Branches', :js do
         expect(page).to have_content('No branches to show')
       end
     end
+
+    describe "Saved defaults" do
+      it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
+        visit project_protected_branches_path(project)
+        set_protected_branch_name('some-branch')
+        form = '.js-new-protected-branch'
+
+        within form do
+          find(".js-allowed-to-merge").trigger('click')
+          click_link 'No one'
+          find(".js-allowed-to-push").trigger('click')
+          click_link 'Developers + Masters'
+        end
+
+        visit project_protected_branches_path(project)
+
+        within form do
+          page.within(".js-allowed-to-merge") do
+            expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
+          end
+          page.within(".js-allowed-to-push") do
+            expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
+          end
+        end
+      end
+    end
   end
 
   context 'logged in as admin' do
@@ -84,7 +110,7 @@ feature 'Protected Branches', :js do
 
       it "displays the last commit on the matching branch if it exists" do
         commit = create(:commit, project: project)
-        project.repository.add_branch(user, 'some-branch', commit.id)
+        project.repository.add_branch(admin, 'some-branch', commit.id)
 
         visit project_protected_branches_path(project)
         set_protected_branch_name('some-branch')
@@ -120,8 +146,8 @@ feature 'Protected Branches', :js do
       end
 
       it "displays the number of matching branches" do
-        project.repository.add_branch(user, 'production-stable', 'master')
-        project.repository.add_branch(user, 'staging-stable', 'master')
+        project.repository.add_branch(admin, 'production-stable', 'master')
+        project.repository.add_branch(admin, 'staging-stable', 'master')
 
         visit project_protected_branches_path(project)
         set_protected_branch_name('*-stable')
@@ -133,9 +159,9 @@ feature 'Protected Branches', :js do
       end
 
       it "displays all the branches matching the wildcard" do
-        project.repository.add_branch(user, 'production-stable', 'master')
-        project.repository.add_branch(user, 'staging-stable', 'master')
-        project.repository.add_branch(user, 'development', 'master')
+        project.repository.add_branch(admin, 'production-stable', 'master')
+        project.repository.add_branch(admin, 'staging-stable', 'master')
+        project.repository.add_branch(admin, 'development', 'master')
 
         visit project_protected_branches_path(project)
         set_protected_branch_name('*-stable')

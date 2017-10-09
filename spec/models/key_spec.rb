@@ -155,5 +155,15 @@ describe Key, :mailer do
     it 'strips white spaces' do
       expect(described_class.new(key: " #{valid_key} ").key).to eq(valid_key)
     end
+
+    it 'invalidates the public_key attribute' do
+      key = build(:key)
+
+      original = key.public_key
+      key.key = valid_key
+
+      expect(original.key_text).not_to be_nil
+      expect(key.public_key.key_text).to eq(valid_key)
+    end
   end
 end

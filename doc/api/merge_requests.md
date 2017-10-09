@@ -121,6 +121,15 @@ GET /projects/:id/merge_requests?labels=bug,reproduced
 GET /projects/:id/merge_requests?my_reaction_emoji=star
 ```
 
+`project_id` represents the ID of the project where the MR resides.
+`project_id` will always equal `target_project_id`.
+
+In the case of a merge request from the same project,
+`source_project_id`, `target_project_id` and `project_id`
+will be the same. In the case of a merge request from a fork,
+`target_project_id` and `project_id` will be the same and
+`source_project_id` will be the fork project's ID.
+
 Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |

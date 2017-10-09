@@ -25,7 +25,8 @@ class Diff {
     if (!isBound) {
       $(document)
         .on('click', '.js-unfold', this.handleClickUnfold.bind(this))
-        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this));
+        .on('click', '.diff-line-num a', this.handleClickLineNum.bind(this))
+        .on('mousedown', 'td.line_content.parallel', this.handleParallelLineDown.bind(this));
       isBound = true;
     }
 
@@ -99,6 +100,18 @@ class Diff {
       window.location.hash = hash;
     }
     this.highlightSelectedLine();
+  }
+
+  handleParallelLineDown(e) {
+    const line = $(e.currentTarget);
+    const table = line.closest('table');
+
+    table.removeClass('left-side-selected right-side-selected');
+
+    const lineClass = ['left-side', 'right-side'].filter(name => line.hasClass(name))[0];
+    if (lineClass) {
+      table.addClass(`${lineClass}-selected`);
+    }
   }
 
   diffViewType() {

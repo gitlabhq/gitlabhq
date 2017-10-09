@@ -85,10 +85,19 @@ class ApplicationController < ActionController::Base
     super
     payload[:remote_ip] = request.remote_ip
 
-    if current_user.present?
-      payload[:user_id] = current_user.id
-      payload[:username] = current_user.username
+    logged_user = auth_user
+
+    if logged_user.present?
+      payload[:user_id] = logged_user.try(:id)
+      payload[:username] = logged_user.try(:username)
     end
+  end
+
+  # Controllers such as GitHttpController may use alternative methods
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  def auth_user
+    return current_user if current_user.present?
+    return try(:authenticated_user)
   end
 
   # This filter handles both private tokens and personal access tokens

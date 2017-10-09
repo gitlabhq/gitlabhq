@@ -42,3 +42,11 @@ Learn how to [export a project](import_export.md#importing-the-project) in GitLa
 ### Advanced settings
 
 Here you can run housekeeping, archive, rename, transfer, or remove a project.
+
+#### Archiving a project
+
+>**Note:** Only Project Owners and Admin users have the permission to archive a project
+
+It's possible to mark a project as archived via the Project Settings. An archived project will be hidden by default in the project listings.
+
+An archived project can be fully restored and will therefore retain it's repository and all associated resources whilst in an archived state.

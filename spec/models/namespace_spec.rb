@@ -154,22 +154,24 @@ describe Namespace do
   end
 
   describe '#move_dir' do
+    let(:namespace) { create(:namespace) }
+    let!(:project) { create(:project_empty_repo, namespace: namespace) }
+
     before do
-      @namespace = create :namespace
-      @project = create(:project_empty_repo, namespace: @namespace)
-      allow(@namespace).to receive(:path_changed?).and_return(true)
+      allow(namespace).to receive(:path_changed?).and_return(true)
     end
 
     it "raises error when directory exists" do
-      expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
+      expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 
     it "moves dir if path changed" do
-      new_path = @namespace.full_path + "_new"
-      allow(@namespace).to receive(:full_path_was).and_return(@namespace.full_path)
-      allow(@namespace).to receive(:full_path).and_return(new_path)
-      expect(@namespace).to receive(:remove_exports!)
-      expect(@namespace.move_dir).to be_truthy
+      new_path = namespace.full_path + "_new"
+
+      allow(namespace).to receive(:full_path_was).and_return(namespace.full_path)
+      allow(namespace).to receive(:full_path).and_return(new_path)
+      expect(namespace).to receive(:remove_exports!)
+      expect(namespace.move_dir).to be_truthy
     end
 
     context "when any project has container images" do
@@ -179,14 +181,14 @@ describe Namespace do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags(repository: :any, tags: ['tag'])
 
-        create(:project, namespace: @namespace, container_repositories: [container_repository])
+        create(:project, namespace: namespace, container_repositories: [container_repository])
 
-        allow(@namespace).to receive(:path_was).and_return(@namespace.path)
-        allow(@namespace).to receive(:path).and_return('new_path')
+        allow(namespace).to receive(:path_was).and_return(namespace.path)
+        allow(namespace).to receive(:path).and_return('new_path')
       end
 
       it 'raises an error about not movable project' do
-        expect { @namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+        expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
       end
     end
 

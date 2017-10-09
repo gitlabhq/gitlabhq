@@ -32,6 +32,14 @@ prometheus_listen_addr = "localhost:9236"
 Changes to `/home/git/gitaly/config.toml` are applied when you run `service
 gitlab restart`.
 
+## Client-side GRPC logs
+
+Gitaly uses the [gRPC](https://grpc.io/) RPC framework. The Ruby gRPC
+client has its own log file which may contain useful information when
+you are seeing Gitaly errors. You can control the log level of the
+gRPC client with the `GRPC_LOG_LEVEL` environment variable. The
+default level is `WARN`.
+
 ## Running Gitaly on its own server
 
 > This is an optional way to deploy Gitaly which can benefit GitLab

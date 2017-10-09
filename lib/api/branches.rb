@@ -13,7 +13,7 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository branches' do
-        success Entities::RepoBranch
+        success Entities::Branch
       end
       params do
         use :pagination
@@ -23,13 +23,13 @@ module API
 
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          present paginate(branches), with: Entities::RepoBranch, project: user_project
+          present paginate(branches), with: Entities::Branch, project: user_project
         end
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         desc 'Get a single branch' do
-          success Entities::RepoBranch
+          success Entities::Branch
         end
         params do
           requires :branch, type: String, desc: 'The name of the branch'
@@ -41,7 +41,7 @@ module API
           branch = user_project.repository.find_branch(params[:branch])
           not_found!('Branch') unless branch
 
-          present branch, with: Entities::RepoBranch, project: user_project
+          present branch, with: Entities::Branch, project: user_project
         end
       end
 
@@ -50,7 +50,7 @@ module API
       # in `gitlab-org/gitlab-ce!5081`. The API interface has not been changed (to maintain compatibility),
       # but it works with the changed data model to infer `developers_can_merge` and `developers_can_push`.
       desc 'Protect a single branch' do
-        success Entities::RepoBranch
+        success Entities::Branch
       end
       params do
         requires :branch, type: String, desc: 'The name of the branch'
@@ -80,7 +80,7 @@ module API
                            end
 
         if protected_branch.valid?
-          present branch, with: Entities::RepoBranch, project: user_project
+          present branch, with: Entities::Branch, project: user_project
         else
           render_api_error!(protected_branch.errors.full_messages, 422)
         end
@@ -88,7 +88,7 @@ module API
 
       # Note: This API will be deprecated in favor of the protected branches API.
       desc 'Unprotect a single branch' do
-        success Entities::RepoBranch
+        success Entities::Branch
       end
       params do
         requires :branch, type: String, desc: 'The name of the branch'
@@ -101,11 +101,11 @@ module API
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
         protected_branch&.destroy
 
-        present branch, with: Entities::RepoBranch, project: user_project
+        present branch, with: Entities::Branch, project: user_project
       end
 
       desc 'Create branch' do
-        success Entities::RepoBranch
+        success Entities::Branch
       end
       params do
         requires :branch, type: String, desc: 'The name of the branch'
@@ -119,7 +119,7 @@ module API
 
         if result[:status] == :success
           present result[:branch],
-                  with: Entities::RepoBranch,
+                  with: Entities::Branch,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

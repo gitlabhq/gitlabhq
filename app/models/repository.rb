@@ -848,6 +848,15 @@ class Repository
     end
   end
 
+  def merge(user, source_sha, merge_request, message)
+    with_cache_hooks do
+      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
+        merge_request.update(in_progress_merge_commit_sha: commit_id)
+        nil # Return value does not matter.
+      end
+    end
+  end
+
   def ff_merge(user, source, target_branch, merge_request: nil)
     our_commit = rugged.branches[target_branch].target
     their_commit =
@@ -864,15 +873,6 @@ class Repository
       merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
 
       their_commit.oid
-    end
-  end
-
-  def merge(user, source_sha, merge_request, message)
-    with_cache_hooks do
-      raw_repository.merge(user, source_sha, merge_request.target_branch, message) do |commit_id|
-        merge_request.update(in_progress_merge_commit_sha: commit_id)
-        nil # Return value does not matter.
-      end
     end
   end
 
@@ -1044,7 +1044,7 @@ class Repository
   end
 
   def create_ref(ref, ref_path)
-    fetch_ref(path_to_repo, ref, ref_path)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)
