@@ -64,9 +64,11 @@
 - [Hash Indexes](hash_indexes.md)
 - [Swapping Tables](swapping_tables.md)
 
-## i18n
+## Internationalization (i18n)
 
-- [Internationalization for GitLab](i18n_guide.md)
+- [Introduction](i18n/index.md)
+- [Externalization](i18n/externalization.md)
+- [Translation](i18n/translation.md)
 
 ## Compliance
 
