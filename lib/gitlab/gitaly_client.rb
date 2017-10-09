@@ -17,7 +17,7 @@ module Gitlab
         @call_site = call_site
         @invocation_count = invocation_count
         @max_call_stack = max_call_stack
-        stacks = most_invoked_stack.join('\n') if most_invoked_stack
+        stacks = most_invoked_stack.join("\n") if most_invoked_stack
 
         msg = "GitalyClient##{call_site} called #{invocation_count} times from single request. Potential n+1?"
         msg << "\nThe following call site called into Gitaly #{max_call_stack} times:\n#{stacks}\n" if stacks
@@ -172,7 +172,7 @@ module Gitlab
 
       # Check if this call is nested within a allow_n_plus_1_calls
       # block and skip check if it is
-      return if get_call_count(:gitaly_call_count_exception_block_depth) > 0
+      # return if get_call_count(:gitaly_call_count_exception_block_depth) > 0
 
       # This is the count of calls outside of a `allow_n_plus_1_calls` block
       # It is used for enforcement but not statistics
@@ -263,7 +263,13 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      stack_string = caller.drop(1).join("\n")
+      s = caller.drop(1)
+      xx = s.find_index { |x| x.include? "allow_n_plus_1_calls" }
+      if xx then
+        stack_string = s[xx + 1]
+      else
+        stack_string = s.select{ |x| !x.include? "/gems/" }.join("\n")
+      end
 
       RequestStore.store[:stack_counter] ||= Hash.new
 
