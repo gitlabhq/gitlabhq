@@ -146,10 +146,15 @@
 @mixin dropdown-item-hover {
   background-color: $dropdown-item-hover-bg;
   color: $gl-text-color;
+  outline: 0;
 
   // make sure the text color is not overriden
   &.text-danger {
     color: $brand-danger;
+  }
+
+  .avatar {
+    border-color: $white-light;
   }
 }
 
