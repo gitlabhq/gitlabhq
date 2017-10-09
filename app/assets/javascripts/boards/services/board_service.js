@@ -46,6 +46,10 @@ class BoardService {
     return this.boards.save({}, { board });
   }
 
+  deleteBoard ({ id }) {
+    return this.boards.delete({ id });
+  }
+
   all () {
     return this.lists.get();
   }

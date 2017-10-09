@@ -15,10 +15,6 @@ const Store = gl.issueBoards.BoardsStore;
 
 export default {
   props: {
-    boardPath: {
-      type: String,
-      required: true,
-    },
     canAdminBoard: {
       type: Boolean,
       required: true,
@@ -130,7 +126,7 @@ export default {
     submit() {
       if (this.isDeleteForm) {
         this.submitDisabled = true;
-        this.$http.delete(this.boardPath)
+        gl.boardService.deleteBoard(this.currentBoard)
           .then(() => {
             gl.utils.visitUrl(Store.rootPath);
           })
@@ -153,11 +149,11 @@ export default {
       Store.state.currentPage = '';
     },
     resetFormState() {
-      if (this.currentBoard && Object.keys(this.currentBoard).length && this.isEditForm) {
-        Store.updateBoardConfig(this.currentBoard);
-      } else if (this.isNewForm) {
+      if (this.isNewForm) {
         // Clear the form when we open the "New board" modal
         Store.updateBoardConfig();
+      } else if (this.currentBoard && Object.keys(this.currentBoard).length) {
+        Store.updateBoardConfig(this.currentBoard);
       }
     },
   },
