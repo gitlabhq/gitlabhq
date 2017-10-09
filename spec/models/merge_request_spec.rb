@@ -660,27 +660,15 @@ describe MergeRequest do
     end
   end
 
-  describe "#hook_attrs" do
-    let(:attrs_hash) { subject.hook_attrs }
+  describe '#hook_attrs' do
+    it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
+      builder = double
 
-    [:source, :target].each do |key|
-      describe "#{key} key" do
-        include_examples 'project hook data', project_key: key do
-          let(:data)    { attrs_hash }
-          let(:project) { subject.send("#{key}_project") }
-        end
-      end
-    end
+      expect(Gitlab::HookData::MergeRequestBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    it "has all the required keys" do
-      expect(attrs_hash).to include(:source)
-      expect(attrs_hash).to include(:target)
-      expect(attrs_hash).to include(:last_commit)
-      expect(attrs_hash).to include(:work_in_progress)
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
+      subject.hook_attrs
     end
   end
 
