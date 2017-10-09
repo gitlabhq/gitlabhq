@@ -24,7 +24,7 @@ module ChatMessage
 
     def activity
       {
-        title: "Merge Request #{state} by #{user_name}",
+        title: "Merge Request #{state} by #{user_combined_name}",
         subtitle: "in #{project_link}",
         text: merge_request_link,
         image: user_avatar
@@ -46,7 +46,7 @@ module ChatMessage
     end
 
     def merge_request_message
-      "#{user_name} #{state} #{merge_request_link} in #{project_link}: #{title}"
+      "#{user_combined_name} #{state} #{merge_request_link} in #{project_link}: #{title}"
     end
 
     def merge_request_link
