@@ -1,12 +1,14 @@
 /*
  * Layout
  */
+$grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
 $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: .15s;
+$right-sidebar-transition-duration: .3s;
 
 /*
  * Color schema
@@ -202,6 +204,11 @@ $code_font_size: 12px;
 $code_line_height: 1.6;
 
 /*
+ * Tooltips
+ */
+$tooltip-font-size: 12px;
+
+/*
  * Padding
  */
 $gl-padding: 16px;
@@ -218,8 +225,7 @@ $gl-sidebar-padding: 22px;
 $row-hover: $blue-50;
 $row-hover-border: $blue-200;
 $progress-color: #c0392b;
-$header-height: 50px;
-$new-navbar-height: 40px;
+$header-height: 40px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
@@ -261,7 +267,8 @@ $well-pre-bg: #eee;
 $well-pre-color: #555;
 $loading-color: #555;
 $update-author-color: #999;
-$user-mention-color: #2fa0bb;
+$user-mention-bg: rgba($blue-500, 0.044);
+$user-mention-bg-hover: rgba($blue-500, 0.15);
 $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
@@ -315,6 +322,7 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
+$diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
@@ -326,6 +334,7 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
+$dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
 $dropdown-empty-row-bg: rgba(#000, .04);
@@ -697,3 +706,15 @@ Project Templates Icons
 $rails: #c00;
 $node: #353535;
 $java: #70ad51;
+
+/*
+Issuable warning
+*/
+$issuable-warning-size: 24px;
+$issuable-warning-icon-margin: 4px;
+
+/*
+Image Commenting cursor
+*/
+$image-comment-cursor-left-offset: 12;
+$image-comment-cursor-top-offset: 30;

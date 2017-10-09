@@ -74,7 +74,7 @@ describe 'User replaces files' do
 
       expect(page).to have_content('Replacement file commit message')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
 

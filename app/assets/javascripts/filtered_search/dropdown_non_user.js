@@ -17,7 +17,7 @@ class DropdownNonUser extends gl.FilteredSearchDropdown {
         preprocessing,
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },

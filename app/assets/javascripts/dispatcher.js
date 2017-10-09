@@ -7,14 +7,12 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
 /* global CommitsList */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
 /* global Search */
@@ -78,6 +76,7 @@ import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 (function() {
   var Dispatcher;
@@ -239,7 +238,7 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -317,7 +316,6 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -476,7 +474,9 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          new ProjectFork();
+          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+            .then(fork => fork.default())
+            .catch(() => {});
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();
@@ -523,6 +523,11 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
+          break;
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
           break;
       }
       switch (path[0]) {

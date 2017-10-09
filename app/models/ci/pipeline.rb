@@ -5,6 +5,7 @@ module Ci
     include Importable
     include AfterCommitQueue
     include Presentable
+    include Gitlab::OptimisticLocking
 
     belongs_to :project
     belongs_to :user
@@ -58,6 +59,11 @@ module Ci
       auto_devops_source: 2
     }
 
+    enum failure_reason: {
+      unknown_failure: 0,
+      config_error: 1
+    }
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -107,6 +113,12 @@ module Ci
 
       before_transition canceled: any - [:canceled] do |pipeline|
         pipeline.auto_canceled_by = nil
+      end
+
+      before_transition any => :failed do |pipeline, transition|
+        transition.args.first.try do |reason|
+          pipeline.failure_reason = reason
+        end
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
@@ -263,7 +275,7 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -310,6 +322,10 @@ module Ci
       return [] unless config_processor
 
       @stage_seeds ||= config_processor.stage_seeds(self)
+    end
+
+    def seeds_size
+      @seeds_size ||= stage_seeds.sum(&:size)
     end
 
     def has_kubernetes_active?
@@ -403,7 +419,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(self) do
+      retry_optimistic_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
@@ -434,7 +450,7 @@ module Ci
     def update_duration
       return unless started_at
 
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
+      self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
     def execute_hooks

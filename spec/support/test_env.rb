@@ -17,6 +17,7 @@ module TestEnv
     'feature_conflict'                   => 'bb5206f',
     'fix'                                => '48f0be4',
     'improve/awesome'                    => '5937ac0',
+    'merged-target'                      => '21751bf',
     'markdown'                           => '0ed8c6c',
     'lfs'                                => 'be93687',
     'master'                             => 'b83d6e3',
@@ -45,7 +46,8 @@ module TestEnv
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
-    'add-pdf-text-binary'                => '79faa7b'
+    'add-pdf-text-binary'                => '79faa7b',
+    'add_images_and_changes'             => '010d106'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -305,6 +307,9 @@ module TestEnv
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
+
+    # On CI, once installed, components never need update
+    return if File.exist?(install_dir) && ENV['CI']
 
     if component_needs_update?(install_dir, version)
       # Cleanup the component entirely to ensure we start fresh

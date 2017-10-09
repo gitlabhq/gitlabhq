@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-06 08:32+0200\n"
-"PO-Revision-Date: 2017-09-15 05:20-0400\n"
+"POT-Creation-Date: 2017-09-27 16:26+0200\n"
+"PO-Revision-Date: 2017-09-27 13:43-0400\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -18,15 +18,18 @@ msgstr ""
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d commit"
+msgstr[1] "%d commits"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s andere commit is weggelaten om prestatieproblemen te voorkomen."
+msgstr[1] "%s andere commits zijn weggelaten om prestatieproblemen te voorkomen."
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr ""
+
+msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
@@ -44,60 +47,63 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
-msgstr ""
+msgstr "(bekijk de %{link} voor meer info over hoe je het kan installeren)."
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1st contribution!"
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
 msgid "About auto deploy"
-msgstr ""
+msgstr "Over auto deploy"
 
 msgid "Abuse Reports"
-msgstr ""
+msgstr "Misbruik rapporten"
 
 msgid "Access Tokens"
-msgstr ""
+msgstr "Toegangstokens"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
 msgid "Account"
-msgstr ""
+msgstr "Account"
 
 msgid "Active"
-msgstr ""
+msgstr "Actief"
 
 msgid "Activity"
-msgstr ""
+msgstr "Activiteit"
 
 msgid "Add Changelog"
-msgstr ""
+msgstr "Changelog toevoegen"
 
 msgid "Add Contribution guide"
 msgstr ""
 
 msgid "Add License"
-msgstr ""
+msgstr "Licentie toevoegen"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
 msgstr ""
 
 msgid "Add new directory"
-msgstr ""
+msgstr "Nieuwe map toevoegen"
 
 msgid "All"
-msgstr ""
+msgstr "Alles"
 
-msgid "Appearances"
+msgid "Appearance"
 msgstr ""
 
 msgid "Applications"
-msgstr ""
+msgstr "Applicaties"
 
 msgid "Archived project! Repository is read-only"
 msgstr ""
@@ -117,10 +123,34 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+msgid "Artifacts"
+msgstr ""
+
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr ""
 
-msgid "Authentication log"
+msgid "Authentication Log"
+msgstr ""
+
+msgid "Auto DevOps (Beta)"
+msgstr ""
+
+msgid "Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
+msgid "Auto DevOps documentation"
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
+msgstr ""
+
+msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
+msgstr ""
+
+msgid "AutoDevOps|Learn more in the"
 msgstr ""
 
 msgid "Billing"
@@ -177,6 +207,9 @@ msgstr ""
 msgid "Billinglans|Downgrade"
 msgstr ""
 
+msgid "Board"
+msgstr ""
+
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -192,34 +225,118 @@ msgid "BranchSwitcherTitle|Switch branch"
 msgstr ""
 
 msgid "Branches"
+msgstr "Branches"
+
+msgid "Branches|Cant find HEAD commit for this branch"
+msgstr ""
+
+msgid "Branches|Compare"
+msgstr ""
+
+msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
+msgstr ""
+
+msgid "Branches|Delete branch"
+msgstr ""
+
+msgid "Branches|Delete merged branches"
+msgstr ""
+
+msgid "Branches|Delete protected branch"
+msgstr ""
+
+msgid "Branches|Delete protected branch '%{branch_name}'?"
+msgstr ""
+
+msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "Branches|Filter by branch name"
+msgstr ""
+
+msgid "Branches|Merged into %{default_branch}"
+msgstr ""
+
+msgid "Branches|New branch"
+msgstr ""
+
+msgid "Branches|No branches to show"
+msgstr ""
+
+msgid "Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "Branches|Only a project master or owner can delete a protected branch"
+msgstr ""
+
+msgid "Branches|Protected branches can be managed in %{project_settings_link}"
+msgstr ""
+
+msgid "Branches|Sort by"
+msgstr ""
+
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr ""
+
+msgid "Branches|The default branch cannot be deleted"
+msgstr ""
+
+msgid "Branches|This branch hasn’t been merged into %{default_branch}."
+msgstr ""
+
+msgid "Branches|To avoid data loss, consider merging this branch before deleting it."
+msgstr ""
+
+msgid "Branches|To confirm, type %{branch_name_confirmation}:"
+msgstr ""
+
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr ""
+
+msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
+msgstr ""
+
+msgid "Branches|diverged from upstream"
+msgstr ""
+
+msgid "Branches|merged"
+msgstr ""
+
+msgid "Branches|project settings"
+msgstr ""
+
+msgid "Branches|protected"
 msgstr ""
 
 msgid "Browse Directory"
-msgstr ""
+msgstr "Bladeren in map"
 
 msgid "Browse File"
-msgstr ""
+msgstr "Bekijk bestand"
 
 msgid "Browse Files"
-msgstr ""
+msgstr "Door bestanden bladeren"
 
 msgid "Browse files"
-msgstr ""
+msgstr "Door bestanden bladeren"
 
 msgid "ByAuthor|by"
-msgstr ""
+msgstr "door"
 
 msgid "CI / CD"
-msgstr ""
+msgstr "CI / CD"
 
 msgid "CI configuration"
-msgstr ""
+msgstr "CI Configuratie"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Annuleren"
 
 msgid "Cancel edit"
-msgstr ""
+msgstr "Bewerken annuleren"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr ""
@@ -237,25 +354,25 @@ msgid "Changelog"
 msgstr ""
 
 msgid "Charts"
-msgstr ""
+msgstr "Grafieken"
 
 msgid "Chat"
-msgstr ""
+msgstr "Chat"
 
 msgid "Cherry-pick this commit"
-msgstr ""
+msgstr "Cherry-pick deze commit"
 
 msgid "Cherry-pick this merge request"
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
-msgstr ""
+msgstr "geannuleerd"
 
 msgid "CiStatusLabel|created"
-msgstr ""
+msgstr "gemaakt"
 
 msgid "CiStatusLabel|failed"
-msgstr ""
+msgstr "mislukt"
 
 msgid "CiStatusLabel|manual action"
 msgstr ""
@@ -270,40 +387,40 @@ msgid "CiStatusLabel|pending"
 msgstr ""
 
 msgid "CiStatusLabel|skipped"
-msgstr ""
+msgstr "overgeslagen"
 
 msgid "CiStatusLabel|waiting for manual action"
 msgstr ""
 
 msgid "CiStatusText|blocked"
-msgstr ""
+msgstr "geblokkeerd"
 
 msgid "CiStatusText|canceled"
 msgstr ""
 
 msgid "CiStatusText|created"
-msgstr ""
+msgstr "gemaakt"
 
 msgid "CiStatusText|failed"
 msgstr ""
 
 msgid "CiStatusText|manual"
-msgstr ""
+msgstr "handmatig"
 
 msgid "CiStatusText|passed"
-msgstr ""
+msgstr "geslaagd"
 
 msgid "CiStatusText|pending"
 msgstr ""
 
 msgid "CiStatusText|skipped"
-msgstr ""
+msgstr "overgeslagen"
 
 msgid "CiStatus|running"
 msgstr ""
 
 msgid "Comments"
-msgstr ""
+msgstr "Opmerkingen"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -317,28 +434,25 @@ msgid "Commit message"
 msgstr ""
 
 msgid "CommitBoxTitle|Commit"
-msgstr ""
+msgstr "Commit"
 
 msgid "CommitMessage|Add %{file_name}"
-msgstr ""
+msgstr "%{file_name} toevoegen"
 
 msgid "Commits"
-msgstr ""
+msgstr "Commits"
 
 msgid "Commits feed"
 msgstr ""
 
 msgid "Commits|History"
-msgstr ""
+msgstr "Geschiedenis"
 
 msgid "Committed by"
-msgstr ""
+msgstr "Gecommit door"
 
 msgid "Compare"
-msgstr ""
-
-msgid "Container Registry"
-msgstr ""
+msgstr "Vergelijk"
 
 msgid "Contribution guide"
 msgstr ""
@@ -365,7 +479,7 @@ msgid "Create a personal access token on your account to pull or push via %{prot
 msgstr ""
 
 msgid "Create directory"
-msgstr ""
+msgstr "Maak map aan"
 
 msgid "Create empty bare repository"
 msgstr ""
@@ -489,6 +603,9 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
+msgid "Enable in settings"
+msgstr ""
+
 msgid "EventFilterBy|Filter by all"
 msgstr ""
 
@@ -514,6 +631,9 @@ msgid "Every month (on the 1st at 4:00am)"
 msgstr ""
 
 msgid "Every week (Sundays at 4:00am)"
+msgstr ""
+
+msgid "Explore projects"
 msgstr ""
 
 msgid "Failed to change the owner"
@@ -572,7 +692,28 @@ msgstr ""
 msgid "GoToYourFork|Fork"
 msgstr ""
 
-msgid "Group overview"
+msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
+msgstr ""
+
+msgid "GroupSettings|Share with group lock"
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
+msgstr ""
+
+msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
 msgid "Health Check"
@@ -591,12 +732,6 @@ msgid "HealthCheck|No Health Problems Detected"
 msgstr ""
 
 msgid "HealthCheck|Unhealthy"
-msgstr ""
-
-msgid "Home"
-msgstr ""
-
-msgid "Hooks"
 msgstr ""
 
 msgid "Housekeeping successfully started"
@@ -618,6 +753,9 @@ msgid "Issue events"
 msgstr ""
 
 msgid "Issues"
+msgstr ""
+
+msgid "Jobs"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -684,6 +822,9 @@ msgstr ""
 msgid "Merge events"
 msgstr ""
 
+msgid "Merge request"
+msgstr ""
+
 msgid "Messages"
 msgstr ""
 
@@ -698,8 +839,8 @@ msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nieuwe issue"
+msgstr[1] "Nieuwe issues"
 
 msgid "New Pipeline Schedule"
 msgstr ""
@@ -812,6 +953,18 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Pagination|Last »"
+msgstr ""
+
+msgid "Pagination|Next"
+msgstr ""
+
+msgid "Pagination|Prev"
+msgstr ""
+
+msgid "Pagination|« First"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -917,10 +1070,7 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-msgid "Profile Settings"
-msgstr ""
-
-msgid "Project"
+msgid "Profile"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -953,12 +1103,6 @@ msgstr ""
 msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
-msgid "Project home"
-msgstr ""
-
-msgid "Project overview"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -983,13 +1127,10 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
-msgid "Push Rules"
+msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
 msgid "ProjectsDropdown|Loading projects"
-msgstr ""
-
-msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|Projects you visit often will appear here"
@@ -998,10 +1139,16 @@ msgstr ""
 msgid "ProjectsDropdown|Search your projects"
 msgstr ""
 
-msgid "ProjectsDropdown|Something went wrong on our end"
+msgid "ProjectsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
@@ -1017,6 +1164,9 @@ msgid "RefSwitcher|Branches"
 msgstr ""
 
 msgid "RefSwitcher|Tags"
+msgstr ""
+
+msgid "Registry"
 msgstr ""
 
 msgid "Related Commits"
@@ -1073,6 +1223,9 @@ msgstr ""
 msgid "Schedule a new pipeline"
 msgstr ""
 
+msgid "Schedules"
+msgstr ""
+
 msgid "Scheduling Pipelines"
 msgstr ""
 
@@ -1112,12 +1265,114 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+msgid "Show parent pages"
+msgstr ""
+
+msgid "Show parent subgroups"
+msgstr ""
+
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "SortOptions|Access level, ascending"
+msgstr ""
+
+msgid "SortOptions|Access level, descending"
+msgstr ""
+
+msgid "SortOptions|Created date"
+msgstr ""
+
+msgid "SortOptions|Due date"
+msgstr ""
+
+msgid "SortOptions|Due later"
+msgstr ""
+
+msgid "SortOptions|Due soon"
+msgstr ""
+
+msgid "SortOptions|Label priority"
+msgstr ""
+
+msgid "SortOptions|Largest group"
+msgstr ""
+
+msgid "SortOptions|Largest repository"
+msgstr ""
+
+msgid "SortOptions|Last created"
+msgstr ""
+
+msgid "SortOptions|Last joined"
+msgstr ""
+
+msgid "SortOptions|Last updated"
+msgstr ""
+
+msgid "SortOptions|Least popular"
+msgstr ""
+
+msgid "SortOptions|Less weight"
+msgstr ""
+
+msgid "SortOptions|Milestone"
+msgstr ""
+
+msgid "SortOptions|Milestone due later"
+msgstr ""
+
+msgid "SortOptions|Milestone due soon"
+msgstr ""
+
+msgid "SortOptions|More weight"
+msgstr ""
+
+msgid "SortOptions|Most popular"
+msgstr ""
+
+msgid "SortOptions|Name"
+msgstr ""
+
+msgid "SortOptions|Name, ascending"
+msgstr ""
+
+msgid "SortOptions|Name, descending"
+msgstr ""
+
+msgid "SortOptions|Oldest created"
+msgstr ""
+
+msgid "SortOptions|Oldest joined"
+msgstr ""
+
+msgid "SortOptions|Oldest sign in"
+msgstr ""
+
+msgid "SortOptions|Oldest updated"
+msgstr ""
+
+msgid "SortOptions|Popularity"
+msgstr ""
+
+msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Start later"
+msgstr ""
+
+msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Weight"
 msgstr ""
 
 msgid "Source code"
@@ -1132,6 +1387,9 @@ msgstr ""
 msgid "StarProject|Star"
 msgstr ""
 
+msgid "Starred projects"
+msgstr ""
+
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
@@ -1139,6 +1397,9 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Switch branch/tag"
+msgstr ""
+
+msgid "System Hooks"
 msgstr ""
 
 msgid "Tag"
@@ -1204,6 +1465,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This is the author's first Merge Request to this project. Handle with care."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
@@ -1381,7 +1645,13 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+msgid "View file @ "
+msgstr ""
+
 msgid "View open merge request"
+msgstr ""
+
+msgid "View replaced file @ "
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -1454,6 +1724,12 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your projects"
+msgstr ""
+
+msgid "commit"
 msgstr ""
 
 msgid "day"

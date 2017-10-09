@@ -35,12 +35,9 @@ import './shortcuts_network';
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
 
-// commit
-import './commit/file';
 import './commit/image_file';
 
 // lib/utils
-import './lib/utils/bootstrap_linked_tabs';
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
@@ -60,7 +57,6 @@ import './u2f/util';
 import './abuse_reports';
 import './activities';
 import './admin';
-import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
@@ -71,14 +67,12 @@ import './build';
 import './build_artifacts';
 import './build_variables';
 import './ci_lint_editor';
-import './commit';
 import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
-import './create_label';
 import './diff';
 import './dropzone_input';
 import './due_date_select';
@@ -111,7 +105,6 @@ import './merge_request';
 import './merge_request_tabs';
 import './milestone';
 import './milestone_select';
-import './mini_pipeline_graph_dropdown';
 import './namespace_select';
 import './new_branch_form';
 import './new_commit_form';
@@ -119,12 +112,10 @@ import './notes';
 import './notifications_dropdown';
 import './notifications_form';
 import './pager';
-import './pipelines';
 import './preview_markdown';
 import './project';
 import './project_avatar';
 import './project_find_file';
-import './project_fork';
 import './project_import';
 import './project_label_subscription';
 import './project_new';
@@ -302,7 +293,10 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
+  $('.navbar-toggle').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+    gl.lazyLoader.loadCheck();
+  });
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

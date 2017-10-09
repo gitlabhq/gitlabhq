@@ -3,12 +3,13 @@ require 'spec_helper'
 feature 'Dashboard Merge Requests' do
   include FilterItemSelectHelper
   include SortingHelper
+  include ProjectForksHelper
 
   let(:current_user) { create :user }
   let(:project) { create(:project) }
 
   let(:public_project) { create(:project, :public, :repository) }
-  let(:forked_project) { Projects::ForkService.new(public_project, current_user).execute }
+  let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
     project.add_master(current_user)

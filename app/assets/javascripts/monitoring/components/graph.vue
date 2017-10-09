@@ -3,15 +3,13 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
-  import GraphPath from './graph_path.vue';
+  import GraphPath from './graph/path.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { timeScaleFormat } from '../utils/date_time_formatters';
+  import { timeScaleFormat, bisectDate } from '../utils/date_time_formatters';
   import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
-
-  const bisectDate = d3.bisector(d => d.time).left;
 
   export default {
     props: {
@@ -26,6 +24,11 @@
       deploymentData: {
         type: Array,
         required: true,
+      },
+      hoverData: {
+        type: Object,
+        required: false,
+        default: () => ({}),
       },
     },
 
@@ -52,6 +55,7 @@
         currentXCoordinate: 0,
         currentFlagPosition: 0,
         showFlag: false,
+        showFlagContent: false,
         showDeployInfo: true,
         timeSeries: [],
       };
@@ -65,7 +69,7 @@
     },
 
     computed: {
-      outterViewBox() {
+      outerViewBox() {
         return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
       },
 
@@ -122,36 +126,30 @@
         const d1 = firstTimeSeries.values[overlayIndex];
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
-        this.currentData = evalTime ? d1 : d0;
-        this.currentDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
-        this.currentXCoordinate = Math.floor(firstTimeSeries.timeSeriesScaleX(this.currentData.time));
+        const hoveredDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
+        const hoveredDate = firstTimeSeries.values[hoveredDataIndex].time;
         const currentDeployXPos = this.mouseOverDeployInfo(point.x);
 
-        if (this.currentXCoordinate > (this.graphWidth - 200)) {
-          this.currentFlagPosition = this.currentXCoordinate - 103;
-        } else {
-          this.currentFlagPosition = this.currentXCoordinate;
-        }
-
-        if (currentDeployXPos) {
-          this.showFlag = false;
-        } else {
-          this.showFlag = true;
-        }
+        eventHub.$emit('hoverChanged', {
+          hoveredDate,
+          currentDeployXPos,
+        });
       },
 
       renderAxesPaths() {
-        this.timeSeries = createTimeSeries(this.graphData.queries[0],
-        this.graphWidth,
-        this.graphHeight,
-        this.graphHeightOffset);
+        this.timeSeries = createTimeSeries(
+          this.graphData.queries[0],
+          this.graphWidth,
+          this.graphHeight,
+          this.graphHeightOffset,
+        );
 
         if (this.timeSeries.length > 3) {
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
         const axisXScale = d3.time.scale()
-          .range([0, this.graphWidth]);
+          .range([0, this.graphWidth - 70]);
         const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
 
@@ -194,6 +192,10 @@
           eventHub.$emit('toggleAspectRatio');
         }
       },
+
+      hoverData() {
+        this.positionFlag();
+      },
     },
 
     mounted() {
@@ -203,7 +205,10 @@
 </script>
 
 <template>
-  <div class="prometheus-graph">
+  <div 
+    class="prometheus-graph"
+    @mouseover="showFlagContent = true"
+    @mouseleave="showFlagContent = false">
     <h5 class="text-center graph-title">
       {{graphData.title}}
     </h5>
@@ -211,7 +216,7 @@
       class="prometheus-svg-container"
       :style="paddingBottomRootSvg">
       <svg
-        :viewBox="outterViewBox"
+        :viewBox="outerViewBox"
         ref="baseSvg">
         <g
           class="x-axis"
@@ -247,6 +252,7 @@
             <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
+              :graph-width="graphWidth"
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
             />
@@ -257,6 +263,7 @@
               :current-flag-position="currentFlagPosition"
               :graph-height="graphHeight"
               :graph-height-offset="graphHeightOffset"
+              :show-flag-content="showFlagContent"
             />
             <rect
               class="prometheus-graph-overlay"

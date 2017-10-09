@@ -1,1 +1,1 @@
-This document was moved to [development/i18n/externalization.md](i18n/externalization.md).
+This document was moved to [a new location](externalization.md).

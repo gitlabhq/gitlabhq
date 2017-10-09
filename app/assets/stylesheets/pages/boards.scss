@@ -55,6 +55,15 @@
 
 .boards-app {
   position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    transition: width $right-sidebar-transition-duration;
+    width: 100%;
+
+    &.is-compact {
+      width: calc(100% - #{$gutter_width});
+    }
+  }
 }
 
 .boards-app-loading {
@@ -78,11 +87,6 @@
     height: calc(100vh - 222px);
     // scss-lint:enable DuplicateProperty
     min-height: 475px;
-    transition: width .2s;
-
-    &.is-compact {
-      width: calc(100% - 290px);
-    }
   }
 }
 
@@ -410,16 +414,7 @@
   margin: 5px;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
 .page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
-  position: absolute;
-
-  &.right-sidebar {
-    top: 0;
-    bottom: 0;
-    height: 100%;
-  }
-
   .issuable-sidebar-header {
     position: relative;
   }
@@ -457,8 +452,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width .2s,
-                padding .2s;
+    transition: width $right-sidebar-transition-duration,
+                padding $right-sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,

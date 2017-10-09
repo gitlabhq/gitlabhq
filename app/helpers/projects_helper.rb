@@ -21,11 +21,14 @@ module ProjectsHelper
     classes = %W[avatar avatar-inline s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: classes, alt: '')
+    avatar = avatar_icon(author, opts[:size])
+    src = opts[:lazy_load] ? nil : avatar
+
+    image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false, lazy_load: false }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -290,6 +293,7 @@ module ProjectsHelper
       snippets:         :read_project_snippet,
       settings:         :admin_project,
       builds:           :read_build,
+      clusters:         :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,

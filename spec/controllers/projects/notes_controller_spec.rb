@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::NotesController do
+  include ProjectForksHelper
+
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
   let(:issue)   { create(:issue, project: project) }
@@ -120,6 +122,40 @@ describe Projects::NotesController do
         expect(note_json[:diff_discussion_html]).to be_nil
       end
     end
+
+    context 'with cross-reference system note', :request_store do
+      let(:new_issue) { create(:issue) }
+      let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+
+      before do
+        note
+        create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+      end
+
+      it 'filters notes that the user should not see' do
+        get :index, request_params
+
+        expect(parsed_response[:notes].count).to eq(1)
+        expect(note_json[:id]).to eq(note.id)
+      end
+
+      it 'does not result in N+1 queries' do
+        # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
+        get :index, request_params
+
+        RequestStore.clear!
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get :index, request_params
+        end.count
+
+        RequestStore.clear!
+
+        create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+
+        expect { get :index, request_params }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   describe 'POST create' do
@@ -176,18 +212,16 @@ describe Projects::NotesController do
     context 'when creating a commit comment from an MR fork' do
       let(:project) { create(:project, :repository) }
 
-      let(:fork_project) do
-        create(:project, :repository).tap do |fork|
-          create(:forked_project_link, forked_to_project: fork, forked_from_project: project)
-        end
+      let(:forked_project) do
+        fork_project(project, nil, repository: true)
       end
 
       let(:merge_request) do
-        create(:merge_request, source_project: fork_project, target_project: project, source_branch: 'feature', target_branch: 'master')
+        create(:merge_request, source_project: forked_project, target_project: project, source_branch: 'feature', target_branch: 'master')
       end
 
       let(:existing_comment) do
-        create(:note_on_commit, note: 'a note', project: fork_project, commit_id: merge_request.commit_shas.first)
+        create(:note_on_commit, note: 'a note', project: forked_project, commit_id: merge_request.commit_shas.first)
       end
 
       def post_create(extra_params = {})
@@ -197,7 +231,7 @@ describe Projects::NotesController do
                project_id: project,
                target_type: 'merge_request',
                target_id: merge_request.id,
-               note_project_id: fork_project.id,
+               note_project_id: forked_project.id,
                in_reply_to_discussion_id: existing_comment.discussion_id
              }.merge(extra_params)
       end
@@ -219,16 +253,66 @@ describe Projects::NotesController do
       end
 
       context 'when the user has access to the fork' do
-        let(:discussion) { fork_project.notes.find_discussion(existing_comment.discussion_id) }
+        let(:discussion) { forked_project.notes.find_discussion(existing_comment.discussion_id) }
 
         before do
-          fork_project.add_developer(user)
+          forked_project.add_developer(user)
 
           existing_comment
         end
 
         it 'creates the note' do
-          expect { post_create }.to change { fork_project.notes.count }.by(1)
+          expect { post_create }.to change { forked_project.notes.count }.by(1)
+        end
+      end
+    end
+
+    context 'when the merge request discussion is locked' do
+      before do
+        project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+        merge_request.update_attribute(:discussion_locked, true)
+      end
+
+      context 'when a noteable is not found' do
+        it 'returns 404 status' do
+          request_params[:note][:noteable_id] = 9999
+          post :create, request_params.merge(format: :json)
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when a user is a team member' do
+        it 'returns 302 status for html' do
+          post :create, request_params
+
+          expect(response).to have_http_status(302)
+        end
+
+        it 'returns 200 status for json' do
+          post :create, request_params.merge(format: :json)
+
+          expect(response).to have_http_status(200)
+        end
+
+        it 'creates a new note' do
+          expect { post :create, request_params }.to change { Note.count }.by(1)
+        end
+      end
+
+      context 'when a user is not a team member' do
+        before do
+          project.project_member(user).destroy
+        end
+
+        it 'returns 404 status' do
+          post :create, request_params
+
+          expect(response).to have_http_status(404)
+        end
+
+        it 'does not create a new note' do
+          expect { post :create, request_params }.not_to change { Note.count }
         end
       end
     end

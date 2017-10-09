@@ -34,7 +34,10 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref).freeze
+                      tag_count avatar exists? empty? root_ref has_visible_content?).freeze
+
+  # Methods that use cache_method but only memoize the value
+  MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -89,12 +92,6 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(repository_storage_path, disk_path + '.git')
     )
-  end
-
-  # we need to have this method here because it is not cached in ::Git and
-  # the method is called multiple times for every request
-  def has_visible_content?
-    branch_count > 0
   end
 
   def inspect
@@ -275,7 +272,7 @@ class Repository
   end
 
   def expire_branches_cache
-    expire_method_caches(%i(branch_names branch_count))
+    expire_method_caches(%i(branch_names branch_count has_visible_content?))
     @local_branches = nil
     @branch_exists_memo = nil
   end
@@ -346,7 +343,7 @@ class Repository
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(empty?))
+    expire_method_caches(%i(empty? has_visible_content?))
   end
 
   def lookup_cache
@@ -489,13 +486,7 @@ class Repository
   def exists?
     return false unless full_path
 
-    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
-      if enabled
-        raw_repository.exists?
-      else
-        refs_directory_exists?
-      end
-    end
+    raw_repository.exists?
   end
   cache_method :exists?
 
@@ -529,13 +520,17 @@ class Repository
   delegate :tag_names, to: :raw_repository
   cache_method :tag_names, fallback: []
 
-  delegate :branch_count, :tag_count, to: :raw_repository
+  delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
   cache_method :tag_count, fallback: 0
+  cache_method :has_visible_content?, fallback: false
 
   def avatar
-    if tree = file_on_head(:avatar)
-      tree.path
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      if tree = file_on_head(:avatar)
+        tree.path
+      end
     end
   end
   cache_method :avatar
@@ -855,6 +850,25 @@ class Repository
     end
   end
 
+  def ff_merge(user, source, target_branch, merge_request: nil)
+    our_commit = rugged.branches[target_branch].target
+    their_commit =
+      if source.is_a?(Gitlab::Git::Commit)
+        source.raw_commit
+      else
+        rugged.lookup(source)
+      end
+
+    raise 'Invalid merge target' if our_commit.nil?
+    raise 'Invalid merge source' if their_commit.nil?
+
+    with_branch(user, target_branch) do |start_commit|
+      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
+
+      their_commit.oid
+    end
+  end
+
   def revert(
     user, commit, branch_name, message,
     start_branch_name: nil, start_project: project)
@@ -975,7 +989,7 @@ class Repository
   end
 
   def create_ref(ref, ref_path)
-    fetch_ref(path_to_repo, ref, ref_path)
+    raw_repository.write_ref(ref_path, ref)
   end
 
   def ls_files(ref)
@@ -1060,12 +1074,6 @@ class Repository
     blob.data
   end
 
-  def refs_directory_exists?
-    circuit_breaker.perform do
-      File.exist?(File.join(path_to_repo, 'refs'))
-    end
-  end
-
   def cache
     # TODO: should we use UUIDs here? We could move repositories without clearing this cache
     @cache ||= RepositoryCache.new(full_path, @project.id)
@@ -1115,10 +1123,6 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
-  end
-
-  def circuit_breaker
-    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

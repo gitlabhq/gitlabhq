@@ -4,6 +4,7 @@
 import _ from 'underscore';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
+import CreateLabelDropdown from './create_label';
 
 (function() {
   this.LabelsSelect = (function() {
@@ -61,7 +62,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
         $sidebarLabelTooltip.tooltip();
 
         if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
-          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
+          new CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
         }
 
         saveLabelData = function() {

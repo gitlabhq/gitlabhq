@@ -370,7 +370,7 @@ This is recommended to reduce cron spam.
 
 ## Restore
 
-GitLab provides a simple command line interface to backup your whole installation,
+GitLab provides a simple command line interface to restore your whole installation,
 and is flexible enough to fit your needs.
 
 The [restore prerequisites section](#restore-prerequisites) includes crucial
@@ -445,6 +445,14 @@ Restoring repositories:
 Deleting tmp directories...[DONE]
 ```
 
+Next, restore `/home/git/gitlab/.secret` if necessary as mentioned above.
+
+Restart GitLab:
+
+```shell
+sudo service gitlab restart
+```
+
 ### Restore for Omnibus installations
 
 This procedure assumes that:
@@ -480,10 +488,12 @@ restore:
 sudo gitlab-rake gitlab:backup:restore BACKUP=1493107454_2017_04_25_9.1.0
 ```
 
+Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
+
 Restart and check GitLab:
 
 ```shell
-sudo gitlab-ctl start
+sudo gitlab-ctl restart
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 

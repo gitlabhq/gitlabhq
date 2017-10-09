@@ -81,6 +81,7 @@ module HasStatus
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
     scope :manual, -> { where(status: 'manual')  }
+    scope :alive, -> { where(status: [:created, :pending, :running]) }
     scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }

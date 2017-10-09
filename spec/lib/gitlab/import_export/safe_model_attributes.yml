@@ -25,6 +25,7 @@ Issue:
 - relative_position
 - last_edited_at
 - last_edited_by_id
+- discussion_locked
 Event:
 - id
 - target_type
@@ -168,6 +169,7 @@ MergeRequest:
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
+- discussion_locked
 MergeRequestDiff:
 - id
 - state
@@ -224,6 +226,7 @@ Ci::Pipeline:
 - auto_canceled_by_id
 - pipeline_schedule_id
 - config_source
+- failure_reason
 - protected
 Ci::Stage:
 - id
@@ -308,6 +311,32 @@ Ci::PipelineSchedule:
 - owner_id
 - active
 - deleted_at
+- created_at
+- updated_at
+Gcp::Cluster:
+- id
+- project_id
+- user_id
+- service_id
+- enabled
+- status
+- status_reason
+- project_namespace
+- endpoint
+- ca_cert
+- encrypted_kubernetes_token
+- encrypted_kubernetes_token_iv
+- username
+- encrypted_password
+- encrypted_password_iv
+- gcp_project_id
+- gcp_cluster_zone
+- gcp_cluster_name
+- gcp_cluster_size
+- gcp_machine_type
+- gcp_operation_id
+- encrypted_gcp_token
+- encrypted_gcp_token_iv
 - created_at
 - updated_at
 DeployKey:
@@ -412,6 +441,8 @@ Project:
 - last_repository_updated_at
 - ci_config_path
 - delete_error
+- merge_requests_ff_only_enabled
+- merge_requests_rebase_enabled
 Author:
 - name
 ProjectFeature:

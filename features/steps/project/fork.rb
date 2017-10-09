@@ -26,7 +26,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I fork to my namespace' do
-    page.within '.fork-namespaces' do
+    page.within '.fork-thumbnail-container' do
       click_link current_user.name
     end
   end
@@ -58,13 +58,13 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I should see my fork on the list' do
     page.within('.js-projects-list-holder') do
-      project = @user.fork_of(@project)
+      project = @user.fork_of(@project.reload)
       expect(page).to have_content("#{project.namespace.human_name} / #{project.name}")
     end
   end
 
   step 'I make forked repo invalid' do
-    project = @user.fork_of(@project)
+    project = @user.fork_of(@project.reload)
     project.path = 'test-crappy-path'
     project.save!
   end

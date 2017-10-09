@@ -34,7 +34,7 @@ describe 'User views a wiki page' do
     it 'shows the history of a page that has a path', :js do
       expect(current_path).to include('one/two/three-test')
 
-      click_on('Three')
+      first(:link, text: 'Three').click
       click_on('Page history')
 
       expect(current_path).to include('one/two/three-test')
@@ -48,7 +48,7 @@ describe 'User views a wiki page' do
       expect(current_path).to include('one/two/three-test')
       expect(find('.wiki-pages')).to have_content('Three')
 
-      click_on('Three')
+      first(:link, text: 'Three').click
 
       expect(find('.nav-text')).to have_content('Three')
 
@@ -83,7 +83,7 @@ describe 'User views a wiki page' do
     it 'shows a file stored in a page' do
       file = Gollum::File.new(project.wiki)
 
-      allow_any_instance_of(Gollum::Wiki).to receive(:file).with('image.jpg', 'master', true).and_return(file)
+      allow_any_instance_of(Gollum::Wiki).to receive(:file).with('image.jpg', 'master').and_return(file)
       allow_any_instance_of(Gollum::File).to receive(:mime_type).and_return('image/jpeg')
 
       expect(page).to have_xpath('//img[@data-src="image.jpg"]')

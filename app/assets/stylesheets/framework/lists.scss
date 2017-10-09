@@ -229,6 +229,10 @@ ul.content-list {
   .label-default {
     color: $gl-text-color-secondary;
   }
+
+  .avatar-cell {
+    align-self: flex-start;
+  }
 }
 
 .panel > .content-list > li {

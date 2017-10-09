@@ -162,6 +162,16 @@ describe 'Pipelines', :js do
           expect(page).to have_selector(
             %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
         end
+
+        it 'contains badge that indicates failure reason' do
+          expect(page).to have_content 'error'
+        end
+
+        it 'contains badge with tooltip which contains failure reason' do
+          expect(pipeline.failure_reason?).to eq true
+          expect(page).to have_selector(
+            %Q{span[data-original-title="#{pipeline.present.failure_reason}"]})
+        end
       end
 
       context 'with manual actions' do

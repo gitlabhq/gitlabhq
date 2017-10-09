@@ -42,6 +42,37 @@ By default, tooltips should be placed below the referring element. However, if t
 
 ---
 
+## Popovers
+
+Popovers provide additional, useful, unique information about the referring elements and can provide one or multiple actionable elements. They inform the user of additional information within the context of their original view, but without forcing the user to act upon it like a modal. Popovers are different from tooltips, which do not provide rich markup and actionable items. A popover can contain a header section with a different background color.
+
+Popovers are summoned:
+
+* Upon hover or touch on an element
+
+### Usage
+A popover should be used:
+* When you don't want to let the user lose context, but still want to provide additional useful unique information about referring elements
+* When it isn’t critical for the user to act upon the information
+* When you want to give a user a summary of extended information and the option to switch context if they want to dive in deeper.
+
+### Styling
+
+A popover can contain a header section with a different background color if that improves readability and separation of content within.
+
+![Popover usage](img/popover-placement-below.png)
+
+This example shows two sections, where each section includes an actionable element. The first section shows a summary of the content shown when clicking the "read more" link. With this information the user can decide to dive deeper or start their GitLab Enterprise Edition trial immediately.
+
+### Placement
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport or it blocks related content, the tooltip should be moved to the side or above as needed.
+
+![Tooltip placement location](img/popover-placement-above.png)
+
+In this example we let the user know more about the setting they are deciding over, without loosing context. If they want to know even more they can do so, but with the expectation of opening that content in a new view.
+
+---
+
 ## Anchor links
 
 Anchor links are used for navigational actions and lone, secondary commands (such as 'Reset filters' on the Issues List) when deemed appropriate by the UX team.
@@ -201,6 +232,25 @@ A background color can be added to this blocks. For example, items in the [issue
 Cover blocks are generally used to create a heading element for a page, such as a new project, or a user profile page. Below is a cover block (`.cover-block`) for the profile page with an avatar, name and description.
 
 ![Cover block](img/components-coverblock.png)
+
+---
+
+## Skeleton loading
+
+Skeleton loading is a way to convey to the user what kind of content is currently being loaded. It's a paradigm with which content can independently and asynchronously be loaded, while still adhering to the structure and look of the completely loaded view.
+
+### Requirements
+
+* A skeleton should represent an organism in a recognisable way
+* Atom elements within organisms (for reference see this article on [atomic design methodology](http://atomicdesign.bradfrost.com/chapter-2/)) may be represented in a maximum of 3 repetitions, if applicable.
+* Skeletons should only be presented in grayscale using the HEX colors: `#fafafa` or `#ffffff` (except for shadows)
+* Animate the grey atoms in a pulsating way to show motion, as if "loading". The pulse animation transitions colors horizontally from left to right, starting with `#f2f2f2` to `#fafafa`.
+
+![Skeleton loading animation](img/skeleton-loading.gif)
+
+### Usage
+
+Skeleton loading can replace any existing UI elements for the period in which they are loaded and should aim for maintaining a similar structure visually.
 
 ---
 

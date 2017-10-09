@@ -17,6 +17,8 @@ class PersonalAccessToken < ActiveRecord::Base
   validates :scopes, presence: true
   validate :validate_scopes
 
+  after_initialize :set_default_scopes, if: :persisted?
+
   def revoke!
     update!(revoked: true)
   end
@@ -31,5 +33,9 @@ class PersonalAccessToken < ActiveRecord::Base
     unless revoked || scopes.all? { |scope| Gitlab::Auth.available_scopes.include?(scope.to_sym) }
       errors.add :scopes, "can only contain available scopes"
     end
+  end
+
+  def set_default_scopes
+    self.scopes = Gitlab::Auth::DEFAULT_SCOPES if self.scopes.empty?
   end
 end

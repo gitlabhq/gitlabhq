@@ -3,14 +3,13 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Translate from '../vue_shared/translate';
-import limitWarningComponent from './components/limit_warning_component.vue';
+import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';
 import stagePlanComponent from './components/stage_plan_component.vue';
 import stageComponent from './components/stage_component.vue';
 import stageReviewComponent from './components/stage_review_component.vue';
 import stageStagingComponent from './components/stage_staging_component.vue';
 import stageTestComponent from './components/stage_test_component.vue';
-import totalTime from './components/total_time_component.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
 
@@ -46,6 +45,7 @@ $(() => {
       },
     },
     components: {
+      banner,
       'stage-issue-component': stageComponent,
       'stage-plan-component': stagePlanComponent,
       'stage-code-component': stageCodeComponent,
@@ -133,8 +133,4 @@ $(() => {
       },
     },
   });
-
-  // Register global components
-  Vue.component('limit-warning', limitWarningComponent);
-  Vue.component('total-time', totalTime);
 });

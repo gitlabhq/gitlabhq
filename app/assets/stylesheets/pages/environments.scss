@@ -207,10 +207,13 @@
 }
 
 .prometheus-state {
-  margin-top: 10px;
+  max-width: 430px;
+  margin: 10px auto;
+  text-align: center;
 
-  .state-button-section {
-    margin-top: 10px;
+  .state-svg {
+    max-width: 80vw;
+    margin: 0 auto;
   }
 }
 
@@ -288,8 +291,14 @@
     fill: $black;
   }
 
-  .tick > text {
-    font-size: 12px;
+  .tick {
+    > line {
+      stroke: $gray-darker;
+    }
+
+    > text {
+      font-size: 12px;
+    }
   }
 
   .text-metric-title {
