@@ -476,19 +476,24 @@
 
     &.is-indeterminate,
     &.is-active {
-      font-weight: $gl-font-weight-bold;
       color: $gl-text-color;
 
       &::before {
         position: absolute;
         left: 6px;
-        top: 50%;
+        top: 16px;
         transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+      }
+
+      &.dropdown-menu-user-link {
+        &::before {
+          top: 50%;
+        }
       }
     }
 
@@ -498,9 +503,6 @@
 
     &.is-active::before {
       content: "\f00c";
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
     }
   }
 }
@@ -798,19 +800,6 @@
           // make sure the text color is not overriden
           &.text-danger {
             color: $brand-danger;
-          }
-        }
-
-        &.is-active {
-          font-weight: inherit;
-
-          &::before {
-            top: 16px;
-          }
-
-          &.dropdown-menu-user-link::before {
-            top: 50%;
-            transform: translateY(-50%);
           }
         }
       }
