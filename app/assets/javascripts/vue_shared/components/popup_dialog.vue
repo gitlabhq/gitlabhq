@@ -11,6 +11,11 @@ export default {
       type: String,
       required: false,
     },
+    hideFooter: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     kind: {
       type: String,
       required: false,
@@ -24,7 +29,7 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
 
   computed: {
@@ -79,7 +84,7 @@ export default {
           </slot>
         </div>
         <slot name="footer">
-          <div class="modal-footer">
+          <div class="modal-footer" v-if="!hideFooter">
             <button
               type="button"
               class="btn pull-left"

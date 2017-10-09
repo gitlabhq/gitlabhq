@@ -170,6 +170,7 @@ export default {
 <template>
   <popup-dialog
     v-show="currentPage"
+    :hide-footer="readonly"
     :title="title"
     :primary-button-label="buttonText"
     :kind="buttonKind"
@@ -261,9 +262,5 @@ export default {
         </div>
       </div>
     </form>
-    <div
-      slot="footer"
-      v-if="readonly"
-    ></div>
   </popup-dialog>
 </template>
