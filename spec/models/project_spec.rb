@@ -2174,29 +2174,22 @@ describe Project do
   end
 
   describe '#change_repository_storage' do
-    let(:project) { create(:project, :repository, repository_storage: 'a') }
-    let(:read_only_project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true) }
+    let(:project) { create(:project, :repository) }
+    let(:read_only_project) { create(:project, :repository, repository_read_only: true) }
 
     before do
-      FileUtils.mkdir('tmp/tests/storage_a')
-      FileUtils.mkdir('tmp/tests/storage_b')
-
-      storages = {
-        'a' => { 'path' => 'tmp/tests/storage_a' },
-        'b' => { 'path' => 'tmp/tests/storage_b' }
-      }
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      FileUtils.mkdir('tmp/tests/extra_storage')
+      stub_storage_settings('extra' => { 'path' => 'tmp/tests/extra_storage' })
     end
 
     after do
-      FileUtils.rm_rf('tmp/tests/storage_a')
-      FileUtils.rm_rf('tmp/tests/storage_b')
+      FileUtils.rm_rf('tmp/tests/extra_storage')
     end
 
     it 'schedule the transfer of the repository to the new storage and locks the project' do
-      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'b')
+      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'extra')
 
-      project.change_repository_storage('b')
+      project.change_repository_storage('extra')
       project.save
 
       expect(project).to be_repository_read_only
@@ -2205,21 +2198,21 @@ describe Project do
     it "doesn't schedule the transfer if the repository is already read-only" do
       expect(ProjectUpdateRepositoryStorageWorker).not_to receive(:perform_async)
 
-      read_only_project.change_repository_storage('b')
+      read_only_project.change_repository_storage('extra')
       read_only_project.save
     end
 
     it "doesn't lock or schedule the transfer if the storage hasn't changed" do
       expect(ProjectUpdateRepositoryStorageWorker).not_to receive(:perform_async)
 
-      project.change_repository_storage('a')
+      project.change_repository_storage(project.repository_storage)
       project.save
 
       expect(project).not_to be_repository_read_only
     end
 
     it 'throws an error if an invalid repository storage is provided' do
-      expect { project.change_repository_storage('c') }.to raise_error
+      expect { project.change_repository_storage('unknown') }.to raise_error(ArgumentError)
     end
   end
 
