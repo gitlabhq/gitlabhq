@@ -13,6 +13,8 @@ Translating strings will help complete and improve each language.
 
 ## How to contribute
 
+There are many ways you can contribute in translating GitLab.
+
 ### Externalize strings
 
 Before a string can be translated, it must be externalized.
@@ -69,6 +71,6 @@ Requests to become a proof reader will be considered on the merits of previous t
 
 If you would like to be added as a proof reader, please [open an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues).
 
-### Release
+## Release
 
 Translations are typically included in the next major or minor release.

@@ -4,6 +4,8 @@ For managing the translation process we use [Crowdin](https://crowdin.com).
 
 ## Using Crowdin
 
+The first step is to get familiar with Crowdin.
+
 ### Sign In
 
 To contribute translations at [translate.gitlab.com](https://translate.gitlab.com)
@@ -36,6 +38,8 @@ Comments can be added to discuss a translation with the community.
 Remember to **Save** each translation.
 
 ## Translation Guidelines
+
+Be sure to check the following guidelines before you translate any strings.
 
 ### Technical terms
 

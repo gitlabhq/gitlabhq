@@ -2,22 +2,21 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10669) in GitLab 9.2.
 
-For working with internationalization (i18n) we use
-[GNU gettext](https://www.gnu.org/software/gettext/) given it's the most used
-tool for this task and we have a lot of applications that will help us to work
-with it.
+For working with internationalization (i18n),
+[GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
+used tool for this task and there are a lot of applications that will help us to
+work with it.
 
 ## Setting up GitLab Development Kit (GDK)
 
-In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce) project we must download and
-configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit), we can do it by following this [guide](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
+In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce)
+project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
 
-Once we have the GitLab project ready we can start working on the
-translation of the project.
+Once you have the GitLab project ready, you can start working on the translation.
 
 ## Tools
 
-We use a couple of gems:
+The following tools are used:
 
 1. [`gettext_i18n_rails`](https://github.com/grosser/gettext_i18n_rails): this
    gem allow us to translate content from models, views and controllers. Also
