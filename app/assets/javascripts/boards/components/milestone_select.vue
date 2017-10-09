@@ -71,13 +71,13 @@ export default {
   <div class="block milestone">
     <div class="title append-bottom-10">
       Milestone
-      <a
+      <button
         v-if="canEdit"
-        class="edit-link pull-right"
-        href="#"
+        type="button"
+        class="edit-link btn btn-blank pull-right"
       >
         Edit
-      </a>
+      </button>
     </div>
     <div
       class="value"

@@ -54,13 +54,13 @@ export default {
   <div class="block labels">
     <div class="title append-bottom-10">
       Labels
-      <a
+      <button
         v-if="canEdit"
-        class="edit-link pull-right"
-        href="#"
+        type="button"
+        class="edit-link btn btn-blank pull-right"
       >
         Edit
-      </a>
+      </button>
     </div>
     <div class="value issuable-show-labels">
       <span

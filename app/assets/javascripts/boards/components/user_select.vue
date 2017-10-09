@@ -95,13 +95,13 @@ export default {
   >
     <div class="title append-bottom-10">
       {{ label }}
-      <a
+      <button
         v-if="canEdit"
-        class="js-sidebar-dropdown-toggle edit-link pull-right"
-        href="#"
+        type="button"
+        class="edit-link btn btn-blank pull-right"
       >
         Edit
-      </a>
+      </button>
     </div>
     <div class="value">
       <div

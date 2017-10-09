@@ -74,13 +74,13 @@ export default {
   <div class="block weight">
     <div class="title append-bottom-10">
       Weight
-      <a
+      <button
         v-if="canEdit"
-        class="edit-link pull-right"
-        href="#"
+        type="button"
+        class="edit-link btn btn-blank pull-right"
       >
         Edit
-      </a>
+      </button>
     </div>
     <div
       class="value"

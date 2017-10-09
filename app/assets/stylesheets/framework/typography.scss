@@ -305,16 +305,6 @@ h6 {
   font-weight: $gl-font-weight-bold;
 }
 
-.edit-link {
-  color: $gl-text-color;
-
-  &:focus,
-  &:hover {
-    color: $gl-text-color;
-    text-decoration: none;
-  }
-}
-
 .light-header {
   font-weight: $gl-font-weight-bold;
 }
