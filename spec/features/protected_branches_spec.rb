@@ -66,10 +66,6 @@ feature 'Protected Branches', :js do
     describe "Saved defaults" do
       it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
         visit project_protected_branches_path(project)
-<<<<<<< HEAD
-        set_protected_branch_name('some-branch')
-=======
->>>>>>> ce-com/master
         form = '.js-new-protected-branch'
 
         within form do
@@ -83,17 +79,10 @@ feature 'Protected Branches', :js do
 
         within form do
           page.within(".js-allowed-to-merge") do
-<<<<<<< HEAD
             expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
           end
           page.within(".js-allowed-to-push") do
             expect(page.find(".dropdown-toggle-text")).to have_content("1 role, 0 users, 0 groups")
-=======
-            expect(page.find(".dropdown-toggle-text")).to have_content("No one")
-          end
-          page.within(".js-allowed-to-push") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Masters")
->>>>>>> ce-com/master
           end
         end
       end
