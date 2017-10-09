@@ -10,7 +10,7 @@ describe Gitlab::Conflict::File do
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:rugged_conflict) { index.conflicts.last }
   let(:raw_conflict_content) { index.merge_file('files/ruby/regex.rb')[:data] }
-  let(:raw_conflict_file) { Gitlab::Git::ConflictFile.new(repository, our_commit.oid, rugged_conflict, raw_conflict_content) }
+  let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit.oid, rugged_conflict, raw_conflict_content) }
   let(:conflict_file) { described_class.new(raw_conflict_file, merge_request: merge_request) }
 
   describe '#resolve_lines' do
@@ -54,13 +54,13 @@ describe Gitlab::Conflict::File do
       invalid_hash = section_keys.map { |key| [key, 'invalid'] }.to_h
 
       expect { conflict_file.resolve_lines({}) }
-        .to raise_error(Gitlab::Git::Merge::ResolutionError)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
 
       expect { conflict_file.resolve_lines(empty_hash) }
-        .to raise_error(Gitlab::Git::Merge::ResolutionError)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
 
       expect { conflict_file.resolve_lines(invalid_hash) }
-        .to raise_error(Gitlab::Git::Merge::ResolutionError)
+        .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
     end
   end
 

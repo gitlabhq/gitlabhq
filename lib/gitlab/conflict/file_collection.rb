@@ -1,14 +1,14 @@
 module Gitlab
   module Conflict
     class FileCollection
-      attr_reader :merge_request, :merge
+      attr_reader :merge_request, :resolver
 
       def initialize(merge_request)
         source_repo = merge_request.source_project.repository.raw
         our_commit = merge_request.source_branch_head.raw
         their_commit = merge_request.target_branch_head.raw
         target_repo = merge_request.target_project.repository.raw
-        @merge = Gitlab::Git::Merge.new(source_repo, our_commit, target_repo, their_commit)
+        @resolver = Gitlab::Git::Conflict::Resolver.new(source_repo, our_commit, target_repo, their_commit)
         @merge_request = merge_request
       end
 
@@ -18,11 +18,11 @@ module Gitlab
           target_branch: merge_request.target_branch,
           commit_message: commit_message || default_commit_message
         }
-        merge.resolve_conflicts(user, files, args)
+        resolver.resolve_conflicts(user, files, args)
       end
 
       def files
-        @files ||= merge.conflicts.map do |conflict_file|
+        @files ||= resolver.conflicts.map do |conflict_file|
           Gitlab::Conflict::File.new(conflict_file, merge_request: merge_request)
         end
       end

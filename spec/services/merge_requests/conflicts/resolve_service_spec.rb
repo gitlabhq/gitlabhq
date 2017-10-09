@@ -204,16 +204,16 @@ describe MergeRequests::Conflicts::ResolveService do
 
       it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(Gitlab::Git::Merge::ResolutionError)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
 
     context 'when the content of a file is unchanged' do
-      let(:merge) do
-        MergeRequests::Conflicts::ListService.new(merge_request).conflicts.merge
+      let(:resolver) do
+        MergeRequests::Conflicts::ListService.new(merge_request).conflicts.resolver
       end
       let(:regex_conflict) do
-        merge.conflict_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb')
+        resolver.conflict_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb')
       end
 
       let(:invalid_params) do
@@ -235,7 +235,7 @@ describe MergeRequests::Conflicts::ResolveService do
 
       it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(Gitlab::Git::Merge::ResolutionError)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
 
@@ -255,7 +255,7 @@ describe MergeRequests::Conflicts::ResolveService do
 
       it 'raises a ResolutionError error' do
         expect { service.execute(user, invalid_params) }
-          .to raise_error(Gitlab::Git::Merge::ResolutionError)
+          .to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
       end
     end
   end

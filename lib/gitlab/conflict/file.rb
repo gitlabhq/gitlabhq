@@ -6,7 +6,10 @@ module Gitlab
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_request, :raw
+      attr_reader :merge_request
+
+      # 'raw' holds the Gitlab::Git::Conflict::File that this instance wraps
+      attr_reader :raw
 
       delegate :type, :content, :their_path, :our_path, :our_mode, :our_blob, :repository, to: :raw
 
@@ -107,7 +110,7 @@ module Gitlab
       end
 
       def line_code(line)
-        Gitlab::Git::DiffLineCode.generate(our_path, line.new_pos, line.old_pos)
+        Gitlab::Git::Conflict::LineCode.generate(our_path, line.new_pos, line.old_pos)
       end
 
       def create_match_line(line)
