@@ -47,5 +47,11 @@ describe Gitlab::Geo::Transfer do
 
       expect(subject.download_from_primary).to eq(-1)
     end
+
+    it 'when Tempfile fails' do
+      expect(Tempfile).to receive(:new).and_raise(Errno::ENAMETOOLONG)
+
+      expect(subject.download_from_primary).to eq(nil)
+    end
   end
 end
