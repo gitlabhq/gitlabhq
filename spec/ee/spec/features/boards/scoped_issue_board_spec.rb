@@ -468,7 +468,7 @@ describe 'Scoped issue boards', :js do
     click_button 'Expand'
 
     page.within(".#{filter}") do
-      click_link 'Edit'
+      click_button 'Edit'
       if value.is_a?(Array)
         value.each { |value| click_link value }
       else
