@@ -153,6 +153,11 @@
   white-space: nowrap;
   overflow: hidden;
 
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
+
   &:hover,
   &:focus,
   &.is-focused {
@@ -783,11 +788,6 @@
           }
         }
 
-        // make sure the text color is not overriden
-        &.text-danger {
-          color: $brand-danger;
-        }
-
         &.is-focused,
         &:hover,
         &:active,
@@ -796,11 +796,6 @@
 
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
-
-          // make sure the text color is not overriden
-          &.text-danger {
-            color: $brand-danger;
-          }
         }
       }
 
