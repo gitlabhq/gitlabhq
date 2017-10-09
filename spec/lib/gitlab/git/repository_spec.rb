@@ -1685,6 +1685,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#fetch' do
+    let(:git_path) { Gitlab.config.git.bin_path }
+    let(:remote_name) { 'my_remote' }
+
+    subject { repository.fetch(remote_name) }
+
+    it 'fetches the remote and returns true if the command was successful' do
+      expect(repository).to receive(:popen)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .and_return(['', 0])
+
+      expect(subject).to be(true)
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged
