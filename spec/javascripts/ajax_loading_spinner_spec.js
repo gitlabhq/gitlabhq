@@ -1,6 +1,6 @@
 import 'jquery';
 import 'jquery-ujs';
-import '~/ajax_loading_spinner';
+import AjaxLoadingSpinner from '~/ajax_loading_spinner';
 
 describe('Ajax Loading Spinner', () => {
   const fixtureTemplate = 'static/ajax_loading_spinner.html.raw';
@@ -8,7 +8,7 @@ describe('Ajax Loading Spinner', () => {
 
   beforeEach(() => {
     loadFixtures(fixtureTemplate);
-    gl.AjaxLoadingSpinner.init();
+    AjaxLoadingSpinner.init();
   });
 
   it('change current icon with spinner icon and disable link while waiting ajax response', (done) => {

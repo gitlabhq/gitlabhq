@@ -76,6 +76,7 @@ import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 (function() {
   var Dispatcher;
@@ -237,7 +238,7 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
