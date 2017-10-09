@@ -197,6 +197,10 @@
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
+  &.dropdown-open-top {
+    margin-bottom: $dropdown-vertical-offset;
+  }
+
   &.dropdown-open-left {
     right: 0;
     left: auto;
@@ -745,10 +749,6 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
-
-    &.dropdown-open-top {
-      margin-bottom: $dropdown-vertical-offset;
-    }
 
     li {
       display: block;
