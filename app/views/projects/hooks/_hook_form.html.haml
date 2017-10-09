@@ -1,5 +1,6 @@
 - form_hook_ref = create_hook ? @hook : [@project.namespace.becomes(Namespace), @project, @hook]
 - form_parent_class = create_hook ? "create-webhook-form" : "edit-webhook-form"
+- submit_btn_label = create_hook ? 'Add webhook' : 'Save changes'
 - cancel_url = !@hooks.nil? && @hooks.any?? project_settings_webhooks_path(@project) : project_settings_integrations_path(@project)
 
 .container-fluid
@@ -12,10 +13,9 @@
 
   %div{ class: form_parent_class }
     = form_for @hook, as: :hook, url: polymorphic_path([@project.namespace.becomes(Namespace), @project, :hooks]) do |f|
-      = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
-      .panel-footer.container-flex-center
-        = f.submit 'Add webhook', class: 'btn btn-create'
-        - unless create_hook
-          = render 'shared/web_hooks/test_button', triggers: ProjectHook::TRIGGERS, hook: @hook
-          = link_to 'Remove', project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }
+      = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook, create_hook: create_hook }
+      .panel-footer{ class: ('container-flex-center' if create_hook) }
+        = f.submit submit_btn_label, class: 'btn btn-create'
         %a.btn.btn-default.btn-cancel{ href: create_hook ? cancel_url : project_settings_webhooks_path(@project) } Cancel
+        - unless create_hook
+          = link_to 'Remove', project_hook_path(@project, @hook), method: :delete, class: 'btn btn-remove pull-right', data: { confirm: 'Are you sure?' }

@@ -2,7 +2,10 @@
 
 .form-group
   = form.label :url, 'URL', class: 'label-light'
-  = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
+  %div{ class: ('input-group' unless create_hook) }
+    = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
+    - unless create_hook
+      = render 'shared/web_hooks/test_button', triggers: ProjectHook::TRIGGERS, hook: hook, edit_hook_form: true
 .form-group
   = form.label :token, 'Secret Token', class: 'label-light'
   = form.text_field :token, class: 'form-control', placeholder: ''

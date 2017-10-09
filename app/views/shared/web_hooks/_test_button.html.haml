@@ -1,8 +1,9 @@
 - triggers = local_assigns.fetch(:triggers)
 - button_class = local_assigns.fetch(:button_class, '')
 - hook = local_assigns.fetch(:hook)
+- edit_hook_form = local_assigns.fetch(:edit_hook_form, false)
 
-.hook-test-button.dropdown.inline
+.hook-test-button.dropdown{ class: (edit_hook_form ? 'input-group-btn' : 'inline') }
   %button.btn{ 'data-toggle' => 'dropdown', class: button_class }
     Test
     = icon('chevron-down')
