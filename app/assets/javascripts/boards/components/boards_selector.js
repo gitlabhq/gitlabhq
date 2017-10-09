@@ -11,7 +11,7 @@ import BoardForm from './board_form.vue';
 
   gl.issueBoards.BoardsSelector = Vue.extend({
     components: {
-      'board-form': BoardForm,
+      BoardForm,
     },
     props: {
       currentBoard: {

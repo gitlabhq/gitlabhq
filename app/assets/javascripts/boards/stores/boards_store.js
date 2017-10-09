@@ -46,7 +46,9 @@ gl.issueBoards.BoardsStore = {
     };
   },
   createNewListDropdownData() {
-    this.state.currentBoard = {};
+    this.state.currentBoard = {
+      labels: [],
+    };
     this.state.currentPage = '';
     this.state.reload = false;
   },

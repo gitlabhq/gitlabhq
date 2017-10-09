@@ -69,10 +69,8 @@ export default {
   },
   methods: {
     initSelect() {
-      this.$nextTick(() => {
-        new UsersSelect(null, this.$refs.dropdown, {
-          handleClick: this.selectUser,
-        });
+      new UsersSelect(null, this.$refs.dropdown, {
+        handleClick: this.selectUser,
       });
     },
     selectUser(user, isMarking) {

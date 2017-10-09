@@ -13,7 +13,7 @@ window.gl.issueBoards = window.gl.issueBoards || {};
 
 const Store = gl.issueBoards.BoardsStore;
 
-export default Vue.extend({
+export default {
   props: {
     boardPath: {
       type: String,
@@ -159,10 +159,6 @@ export default Vue.extend({
         // Clear the form when we open the "New board" modal
         Store.updateBoardConfig();
       }
-
-      if (!this.board.labels) {
-        this.board.labels = [];
-      }
     },
   },
   mounted() {
@@ -172,7 +168,7 @@ export default Vue.extend({
       this.$refs.name.focus();
     }
   },
-});
+};
 </script>
 
 <template>
