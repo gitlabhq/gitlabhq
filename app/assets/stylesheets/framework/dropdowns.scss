@@ -218,7 +218,7 @@
   min-width: 240px;
   max-width: 500px;
   margin-top: 2px;
-  margin-bottom: 2px;
+  margin-bottom: 24px;
   font-size: 14px;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
@@ -757,22 +757,8 @@
 
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown($selector: '') {
-  #{$selector}.dropdown-menu,
-  #{$selector}.dropdown-menu-nav {
-    margin-bottom: 24px;
-  }
-
   #{$selector}.dropdown-menu-align-right {
     margin-top: 2px;
-  }
-
-  .open {
-    #{$selector}.dropdown-menu,
-    #{$selector}.dropdown-menu-nav {
-      @media (max-width: $screen-xs-max) {
-        max-width: 100%;
-      }
-    }
   }
 }
 
