@@ -312,6 +312,21 @@ describe 'Issue Boards', js: true do
       expect(card).to have_selector('.label', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
+
+    it 'creates new label' do
+      click_card(card)
+
+      page.within('.labels') do
+        click_link 'Edit'
+        click_link 'Create new label'
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+        click_button 'Create'
+        wait_for_requests
+
+        expect(page).to have_link 'test label'
+      end
+    end
   end
 
   context 'subscription' do
