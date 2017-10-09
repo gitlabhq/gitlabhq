@@ -518,7 +518,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'allows user to use keyboard shortcuts' do
-      find('.boards-list').native.send_keys('i')
+      find('body').native.send_keys('i')
       expect(page).to have_content('New Issue')
     end
   end
