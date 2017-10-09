@@ -48,11 +48,7 @@ module ChatMessage
     end
 
     def merge_request_message
-<<<<<<< HEAD
-      "#{user_name} #{state_or_action_text} #{merge_request_link} in #{project_link}: #{title}"
-=======
-      "#{user_combined_name} #{state} #{merge_request_link} in #{project_link}: #{title}"
->>>>>>> ce-com/master
+      "#{user_combined_name} #{state_or_action_text} #{merge_request_link} in #{project_link}: #{title}"
     end
 
     def merge_request_link
