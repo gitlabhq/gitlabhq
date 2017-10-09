@@ -9,7 +9,7 @@ describe GroupTree do
     include GroupTree # rubocop:disable RSpec/DescribedClass
 
     def index
-      render_group_tree Group.all
+      render_group_tree GroupsFinder.new(current_user).execute
     end
   end
 
@@ -51,6 +51,17 @@ describe GroupTree do
         get :index, filter: 'filt', format: :json
 
         expect(assigns(:groups)).to contain_exactly(group, subgroup)
+      end
+
+      it 'does not include groups the user does not have access to' do
+        parent = create(:group, :private)
+        subgroup = create(:group, :private, parent: parent, name: 'filter')
+        subgroup.add_developer(user)
+        _other_subgroup = create(:group, :private, parent: parent, name: 'filte')
+
+        get :index, filter: 'filt', format: :json
+
+        expect(assigns(:groups)).to contain_exactly(parent, subgroup)
       end
     end
 

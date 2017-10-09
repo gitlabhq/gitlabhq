@@ -1,12 +1,12 @@
 module GroupTree
   def render_group_tree(groups)
-    if params[:filter].present?
-      @groups = Gitlab::GroupHierarchy.new(groups).all_groups
-      @groups = Gitlab::GroupHierarchy.new(@groups.search(params[:filter])).base_and_ancestors
-    else
-      # Only show root groups if no parent-id is given
-      @groups = groups.where(parent_id: params[:parent_id])
-    end
+    @groups = if params[:filter].present?
+                Gitlab::GroupHierarchy.new(groups.search(params[:filter]))
+                  .base_and_ancestors
+              else
+                # Only show root groups if no parent-id is given
+                groups.where(parent_id: params[:parent_id])
+              end
     @groups = @groups.with_selects_for_list
                 .sort(@sort = params[:sort])
                 .page(params[:page])
