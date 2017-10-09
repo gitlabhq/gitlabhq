@@ -484,39 +484,41 @@
 }
 
 .dropdown-menu-selectable {
-  a {
-    padding-left: 26px;
-    position: relative;
+  li {
+    a {
+      padding: 8px 40px;
+      position: relative;
 
-    &.is-indeterminate,
-    &.is-active {
-      color: $gl-text-color;
+      &.is-indeterminate,
+      &.is-active {
+        color: $gl-text-color;
 
-      &::before {
-        position: absolute;
-        left: 6px;
-        top: 16px;
-        transform: translateY(-50%);
-        font: normal normal normal 14px/1 FontAwesome;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      &.dropdown-menu-user-link {
         &::before {
-          top: 50%;
+          position: absolute;
+          left: 16px;
+          top: 16px;
+          transform: translateY(-50%);
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        &.dropdown-menu-user-link {
+          &::before {
+            top: 50%;
+          }
         }
       }
-    }
 
-    &.is-indeterminate::before {
-      content: "\f068";
-    }
+      &.is-indeterminate::before {
+        content: "\f068";
+      }
 
-    &.is-active::before {
-      content: "\f00c";
+      &.is-active::before {
+        content: "\f00c";
+      }
     }
   }
 }
@@ -758,19 +760,6 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
-
-    &.dropdown-menu-selectable {
-      li {
-        a {
-          padding: 8px 40px;
-
-          &.is-indeterminate::before,
-          &.is-active::before {
-            left: 16px;
-          }
-        }
-      }
-    }
   }
 
   #{$selector}.dropdown-menu-align-right {
