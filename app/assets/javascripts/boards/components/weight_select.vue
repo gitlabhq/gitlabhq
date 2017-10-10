@@ -51,14 +51,17 @@ export default {
   },
   methods: {
     selectWeight(weight) {
+      this.board.weight = this.weightInt(weight);
+    },
+    weightInt(weight) {
       if (weight === ANY_WEIGHT) {
-        weight = -1;
+        return -1;
       }
       if (weight === NO_WEIGHT) {
-        weight = 0;
+        return 0;
       }
-      this.$set(this.board, 'weight', weight);
-    },
+      return weight
+    }
   },
   mounted() {
     new WeightSelect(this.$refs.dropdownButton, {
@@ -121,6 +124,7 @@ export default {
                 :key="weight"
               >
                 <a
+                  :class="{'is-active': weightInt(weight) == value}"
                   :data-id="weight"
                   href="#"
                 >

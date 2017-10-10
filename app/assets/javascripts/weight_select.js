@@ -66,6 +66,7 @@
           clicked: function(glDropdownEvt) {
             const e = glDropdownEvt.e;
             let selected = glDropdownEvt.selectedObj;
+            const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 
             if (options.handleClick) {
               e.preventDefault();
