@@ -4,6 +4,7 @@
   .content-wrapper.page-with-new-nav
     .mobile-overlay
     .alert-wrapper
+      = render "layouts/header/ee_license_banner"
       = render "layouts/broadcast"
       = yield :flash_message
       - unless @hide_breadcrumbs
