@@ -704,7 +704,17 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
-      def merge(user, source_sha, target_branch, message)
+      def merge(user, source_sha, target_branch, message, &block)
+        gitaly_migrate(:operation_user_merge_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_merge_branch(user, source_sha, target_branch, message, &block)
+          else
+            rugged_merge(user, source_sha, target_branch, message, &block)
+          end
+        end
+      end
+
+      def rugged_merge(user, source_sha, target_branch, message)
         committer = Gitlab::Git.committer_hash(email: user.email, name: user.name)
 
         OperationService.new(user, self).with_branch(target_branch) do |start_commit|
