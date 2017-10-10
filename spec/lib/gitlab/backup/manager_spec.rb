@@ -172,10 +172,6 @@ describe Backup::Manager do
   end
 
   describe '#unpack' do
-    before do
-      allow(Dir).to receive(:chdir)
-    end
-
     context 'when there are no backup files in the directory' do
       before do
         allow(Dir).to receive(:glob).and_return([])
