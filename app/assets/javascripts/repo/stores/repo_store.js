@@ -1,4 +1,3 @@
-/* global Flash */
 import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
@@ -26,7 +25,7 @@ const RepoStore = {
   },
   activeFile: Helper.getDefaultActiveFile(),
   activeFileIndex: 0,
-  activeLine: 0,
+  activeLine: -1,
   activeFileLabel: 'Raw',
   files: [],
   isCommitable: false,
@@ -85,6 +84,7 @@ const RepoStore = {
 
     if (!file.loading) Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
     RepoStore.binary = file.binary;
+    RepoStore.setActiveLine(-1);
   },
 
   setFileActivity(file, openedFile, i) {
@@ -99,6 +99,10 @@ const RepoStore = {
   setActiveFile(activeFile, i) {
     RepoStore.activeFile = Object.assign({}, RepoStore.activeFile, activeFile);
     RepoStore.activeFileIndex = i;
+  },
+
+  setActiveLine(activeLine) {
+    if (!isNaN(activeLine)) RepoStore.activeLine = activeLine;
   },
 
   setActiveToRaw() {

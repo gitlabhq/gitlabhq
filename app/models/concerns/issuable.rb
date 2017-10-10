@@ -256,23 +256,22 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user)
-    hook_data = {
-      object_kind: self.class.name.underscore,
-      user: user.hook_attrs,
-      project: project.hook_attrs,
-      object_attributes: hook_attrs,
-      labels: labels.map(&:hook_attrs),
-      # DEPRECATED
-      repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
-    }
-    if self.is_a?(Issue)
-      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
-    else
-      hook_data[:assignee] = assignee.hook_attrs if assignee
+  def to_hook_data(user, old_labels: [], old_assignees: [])
+    changes = previous_changes
+
+    if old_labels != labels
+      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
     end
 
-    hook_data
+    if old_assignees != assignees
+      if self.is_a?(Issue)
+        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+      else
+        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      end
+    end
+
+    Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
   end
 
   def labels_array

@@ -24,7 +24,7 @@ describe 'Awards Emoji' do
       end
 
       # Regression test: https://gitlab.com/gitlab-org/gitlab-ce/issues/29529
-      it 'does not shows a 500 page', js: true do
+      it 'does not shows a 500 page', :js do
         expect(page).to have_text(issue.title)
       end
     end
@@ -37,37 +37,37 @@ describe 'Awards Emoji' do
         wait_for_requests
       end
 
-      it 'increments the thumbsdown emoji', js: true do
+      it 'increments the thumbsdown emoji', :js do
         find('[data-name="thumbsdown"]').click
         wait_for_requests
         expect(thumbsdown_emoji).to have_text("1")
       end
 
       context 'click the thumbsup emoji' do
-        it 'increments the thumbsup emoji', js: true do
+        it 'increments the thumbsup emoji', :js do
           find('[data-name="thumbsup"]').click
           wait_for_requests
           expect(thumbsup_emoji).to have_text("1")
         end
 
-        it 'decrements the thumbsdown emoji', js: true do
+        it 'decrements the thumbsdown emoji', :js do
           expect(thumbsdown_emoji).to have_text("0")
         end
       end
 
       context 'click the thumbsdown emoji' do
-        it 'increments the thumbsdown emoji', js: true do
+        it 'increments the thumbsdown emoji', :js do
           find('[data-name="thumbsdown"]').click
           wait_for_requests
           expect(thumbsdown_emoji).to have_text("1")
         end
 
-        it 'decrements the thumbsup emoji', js: true do
+        it 'decrements the thumbsup emoji', :js do
           expect(thumbsup_emoji).to have_text("0")
         end
       end
 
-      it 'toggles the smiley emoji on a note', js: true do
+      it 'toggles the smiley emoji on a note', :js do
         toggle_smiley_emoji(true)
 
         within('.note-body') do
@@ -82,7 +82,7 @@ describe 'Awards Emoji' do
       end
 
       context 'execute /award quick action' do
-        it 'toggles the emoji award on noteable', js: true do
+        it 'toggles the emoji award on noteable', :js do
           execute_quick_action('/award :100:')
 
           expect(find(noteable_award_counter)).to have_text("1")
@@ -95,7 +95,7 @@ describe 'Awards Emoji' do
     end
   end
 
-  context 'unauthorized user', js: true do
+  context 'unauthorized user', :js do
     before do
       visit project_issue_path(project, issue)
     end

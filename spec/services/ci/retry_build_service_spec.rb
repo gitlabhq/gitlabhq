@@ -20,7 +20,7 @@ describe Ci::RetryBuildService do
        erased_at auto_canceled_by].freeze
 
   IGNORE_ACCESSORS =
-    %i[type lock_version target_url base_tags
+    %i[type lock_version target_url base_tags trace_sections
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason].freeze

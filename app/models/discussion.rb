@@ -66,6 +66,10 @@ class Discussion
     @context_noteable = context_noteable
   end
 
+  def on_image?
+    false
+  end
+
   def ==(other)
     other.class == self.class &&
       other.context_noteable == self.context_noteable &&

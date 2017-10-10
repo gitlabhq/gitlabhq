@@ -85,7 +85,7 @@ feature 'Group' do
     end
   end
 
-  describe 'create a nested group', :nested_groups, js: true do
+  describe 'create a nested group', :nested_groups, :js do
     let(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
@@ -131,7 +131,7 @@ feature 'Group' do
     expect(page).not_to have_content('secret-group')
   end
 
-  describe 'group edit', js: true do
+  describe 'group edit', :js do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
@@ -196,7 +196,7 @@ feature 'Group' do
     end
   end
 
-  describe 'group page with nested groups', :nested_groups, js: true do
+  describe 'group page with nested groups', :nested_groups, :js do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:project) { create(:project, namespace: group) }

@@ -299,14 +299,14 @@ feature 'Jobs' do
       end
 
       shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', js: true do
-          expect(page).to have_css('.reveal-variables')
+        it 'shows variable key and value after click', :js do
+          expect(page).to have_css('.js-reveal-variables')
           expect(page).not_to have_css('.js-build-variable')
           expect(page).not_to have_css('.js-build-value')
 
           click_button 'Reveal Variables'
 
-          expect(page).not_to have_css('.reveal-variables')
+          expect(page).not_to have_css('.js-reveal-variables')
           expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
           expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
         end

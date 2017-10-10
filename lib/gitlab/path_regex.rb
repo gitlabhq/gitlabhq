@@ -33,6 +33,7 @@ module Gitlab
       explore
       favicon.ico
       files
+      google_api
       groups
       health_check
       help

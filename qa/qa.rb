@@ -31,8 +31,16 @@ module QA
     # GitLab instance scenarios.
     #
     module Gitlab
+      module Group
+        autoload :Create, 'qa/scenario/gitlab/group/create'
+      end
+
       module Project
         autoload :Create, 'qa/scenario/gitlab/project/create'
+      end
+
+      module Sandbox
+        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
       end
     end
   end
@@ -55,6 +63,7 @@ module QA
     end
 
     module Group
+      autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
     end
 

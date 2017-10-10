@@ -990,7 +990,7 @@ module Gitlab
         tmp_ref = fetch_ref(
           start_repository,
           source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          target_ref: "refs/tmp/#{SecureRandom.hex}/head"
+          target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
         yield commit(sha)
@@ -1112,6 +1112,8 @@ module Gitlab
         raise NoRepository.new(e)
       rescue GRPC::BadStatus => e
         raise CommandError.new(e)
+      rescue GRPC::InvalidArgument => e
+        raise ArgumentError.new(e)
       end
 
       private

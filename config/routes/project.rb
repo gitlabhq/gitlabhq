@@ -183,6 +183,16 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :clusters, except: [:edit] do
+        collection do
+          get :login
+        end
+
+        member do
+          get :status, format: :json
+        end
+      end
+
       resources :environments, except: [:destroy] do
         member do
           post :stop

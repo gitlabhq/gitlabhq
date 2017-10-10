@@ -1,10 +1,9 @@
 <script>
-  /* global Flash */
-
   import { mapActions, mapGetters } from 'vuex';
   import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
+  import Flash from '../../flash';
   import { glEmojiTag } from '../../emoji';
   import tooltip from '../../vue_shared/directives/tooltip';
 

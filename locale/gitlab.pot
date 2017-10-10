@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-10 16:14+0200\n"
-"PO-Revision-Date: 2017-10-10 16:14+0200\n"
+"POT-Creation-Date: 2017-10-10 17:50+0200\n"
+"PO-Revision-Date: 2017-10-10 17:50+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -378,6 +378,132 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
+msgid "Cluster"
+msgstr ""
+
+msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is disabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Copy cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Create cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Create new cluster on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Enable cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Google Cloud Platform project ID"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine project"
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgstr ""
+
+msgid "ClusterIntegration|Machine type"
+msgstr ""
+
+msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
+msgstr ""
+
+msgid "ClusterIntegration|Number of nodes"
+msgstr ""
+
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgstr ""
+
+msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgstr ""
+
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
+msgstr ""
+
+msgid "ClusterIntegration|Remove cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Remove integration"
+msgstr ""
+
+msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
+msgstr ""
+
+msgid "ClusterIntegration|Save"
+msgstr ""
+
+msgid "ClusterIntegration|See machine types"
+msgstr ""
+
+msgid "ClusterIntegration|See your projects"
+msgstr ""
+
+msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong on our end."
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Toggle Cluster"
+msgstr ""
+
+msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgstr ""
+
+msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Zone"
+msgstr ""
+
+msgid "ClusterIntegration|access to Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cluster"
+msgstr ""
+
+msgid "ClusterIntegration|help page"
+msgstr ""
+
+msgid "ClusterIntegration|meets the requirements"
+msgstr ""
+
+msgid "ClusterIntegration|properly configured"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -571,6 +697,9 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
+msgid "Dismiss Cycle Analytics introduction box"
+msgstr ""
+
 msgid "Don't show again"
 msgstr ""
 
@@ -675,6 +804,9 @@ msgstr[1] ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
+msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -697,6 +829,9 @@ msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
+msgstr ""
+
+msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -836,9 +971,6 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
-msgid "Last Update"
-msgstr ""
-
 msgid "Last commit"
 msgstr ""
 
@@ -846,6 +978,9 @@ msgid "Last edited %{date}"
 msgstr ""
 
 msgid "Last edited by %{name}"
+msgstr ""
+
+msgid "Last update"
 msgstr ""
 
 msgid "Last updated"
@@ -877,6 +1012,15 @@ msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Lock"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
 msgid "Median"
 msgstr ""
 
@@ -902,6 +1046,9 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
+msgstr ""
+
+msgid "New Cluster"
 msgstr ""
 
 msgid "New Issue"
@@ -1020,7 +1167,13 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "Only project members can comment."
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
+msgstr ""
+
+msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
@@ -1045,6 +1198,9 @@ msgid "Pagination|« First"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "People without permission will never get a notification and won\\'t be able to comment."
 msgstr ""
 
 msgid "Pipeline"
@@ -1153,6 +1309,42 @@ msgid "Private - The group and its projects can only be viewed by members."
 msgstr ""
 
 msgid "Profile"
+msgstr ""
+
+msgid "Profiles|Account scheduled for removal."
+msgstr ""
+
+msgid "Profiles|Delete Account"
+msgstr ""
+
+msgid "Profiles|Delete account"
+msgstr ""
+
+msgid "Profiles|Delete your account?"
+msgstr ""
+
+msgid "Profiles|Deleting an account has the following effects:"
+msgstr ""
+
+msgid "Profiles|Invalid password"
+msgstr ""
+
+msgid "Profiles|Invalid username"
+msgstr ""
+
+msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|You don't have access to delete this user."
+msgstr ""
+
+msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
+msgstr ""
+
+msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|your account"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -1367,6 +1559,9 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
@@ -1558,10 +1753,22 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "This is a confidential issue."
+msgstr ""
+
 msgid "This is the author's first Merge Request to this project."
 msgstr ""
 
+msgid "This issue is confidential and locked."
+msgstr ""
+
+msgid "This issue is locked."
+msgstr ""
+
 msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
+msgid "This merge request is locked."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -1716,6 +1923,12 @@ msgid "Total Time"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+msgstr ""
+
+msgid "Unlock"
+msgstr ""
+
+msgid "Unlocked"
 msgstr ""
 
 msgid "Unstar"
@@ -1880,7 +2093,13 @@ msgstr ""
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are on a read-only GitLab instance."
+msgstr ""
+
 msgid "You can only add files when you are on a branch"
+msgstr ""
+
+msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You have reached your project limit"
@@ -1913,6 +2132,9 @@ msgstr ""
 msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
 msgstr ""
 
+msgid "Your comment will not be visible to the public."
+msgstr ""
+
 msgid "Your groups"
 msgstr ""
 
@@ -1938,5 +2160,11 @@ msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "password"
+msgstr ""
+
 msgid "personal access token"
+msgstr ""
+
+msgid "username"
 msgstr ""

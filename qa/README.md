@@ -1,10 +1,10 @@
-## Integration tests for GitLab
+# GitLab QA - Integration tests for GitLab
 
 This directory contains integration tests for GitLab.
 
-It is part of [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa).
+It is part of the [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa).
 
-## What GitLab QA is?
+## What is it?
 
 GitLab QA is an integration tests suite for GitLab.
 
@@ -20,18 +20,34 @@ against any existing instance.
 ## How can I use it?
 
 You can use GitLab QA to exercise tests on any live instance! For example, the
-follow call would login to the local GitLab instance and run all specs in
+following call would login to a local [GDK] instance and run all specs in
 `qa/specs/features`:
 
 ```
-GITLAB_USERNAME='root' GITLAB_PASSWORD='5iveL!fe' bin/qa Test::Instance http://localhost
+bin/qa Test::Instance http://localhost:3000
 ```
 
-You can also supply a specific tests to run as another parameter. For example, to
+### Running specific tests
+
+You can also supply specific tests to run as another parameter. For example, to
 test the EE license specs, you can run:
 
 ```
-EE_LICENSE="<YOUR LICENSE KEY>" GITLAB_USERNAME='root' GITLAB_PASSWORD='5iveL!fe' bin/qa Test::Instance http://localhost qa/ee
+EE_LICENSE="<YOUR LICENSE KEY>" bin/qa Test::Instance http://localhost qa/ee
+```
+
+### Overriding the authenticated user
+
+Unless told otherwise, the QA tests will run as the default `root` user seeded
+by the GDK.
+
+If you need to authenticate as a different user, you can provide the
+`GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
+
+```
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance https://gitlab.example.com
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).
+
+[GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/

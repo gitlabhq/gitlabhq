@@ -10,7 +10,7 @@ describe 'Edit Project Settings' do
     sign_in(user)
   end
 
-  describe 'Project settings section', js: true do
+  describe 'Project settings section', :js do
     it 'shows errors for invalid project name' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'foo&bar'
@@ -125,7 +125,7 @@ describe 'Edit Project Settings' do
     end
   end
 
-  describe 'Transfer project section', js: true do
+  describe 'Transfer project section', :js do
     let!(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
     let!(:group) { create(:group) }
 

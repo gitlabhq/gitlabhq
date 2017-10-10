@@ -287,11 +287,11 @@ LDAP email address, and then sign into GitLab via their LDAP credentials.
 
 There are two encryption methods, `simple_tls` and `start_tls`.
 
-For either encryption method, if setting `validate_certificates: false`, TLS
+For either encryption method, if setting `verify_certificates: false`, TLS
 encryption is established with the LDAP server before any LDAP-protocol data is
 exchanged but no validation of the LDAP server's SSL certificate is performed.
 
->**Note**: Before GitLab 9.5, `validate_certificates: false` is the default if
+>**Note**: Before GitLab 9.5, `verify_certificates: false` is the default if
 unspecified.
 
 ## Limitations

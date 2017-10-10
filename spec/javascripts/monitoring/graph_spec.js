@@ -44,7 +44,7 @@ describe('Graph', () => {
         .not.toEqual(-1);
     });
 
-    it('outterViewBox gets a width and height property based on the DOM size of the element', () => {
+    it('outerViewBox gets a width and height property based on the DOM size of the element', () => {
       const component = createComponent({
         graphData: convertedMetrics[1],
         classType: 'col-md-6',
@@ -52,8 +52,8 @@ describe('Graph', () => {
         deploymentData,
       });
 
-      const viewBoxArray = component.outterViewBox.split(' ');
-      expect(typeof component.outterViewBox).toEqual('string');
+      const viewBoxArray = component.outerViewBox.split(' ');
+      expect(typeof component.outerViewBox).toEqual('string');
       expect(viewBoxArray[2]).toEqual(component.graphWidth.toString());
       expect(viewBoxArray[3]).toEqual(component.graphHeight.toString());
     });
@@ -85,5 +85,23 @@ describe('Graph', () => {
 
     expect(component.yAxisLabel).toEqual(component.graphData.y_label);
     expect(component.legendTitle).toEqual(component.graphData.queries[0].label);
+  });
+
+  it('sets the currentData object based on the hovered data index', () => {
+    const component = createComponent({
+      graphData: convertedMetrics[1],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+      graphIdentifier: 0,
+      hoverData: {
+        hoveredDate: new Date('Sun Aug 27 2017 06:11:51 GMT-0500 (CDT)'),
+        currentDeployXPos: null,
+      },
+    });
+
+    component.positionFlag();
+    expect(component.currentData).toBe(component.timeSeries[0].values[10]);
+    expect(component.currentDataIndex).toEqual(10);
   });
 });

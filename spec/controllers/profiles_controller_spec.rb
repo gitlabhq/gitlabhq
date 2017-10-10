@@ -15,6 +15,20 @@ describe ProfilesController do
       expect(user.unconfirmed_email).to eq('john@gmail.com')
     end
 
+    it "allows an email update without confirmation if existing verified email" do
+      user = create(:user)
+      create(:email, :confirmed, user: user, email: 'john@gmail.com')
+      sign_in(user)
+
+      put :update,
+          user: { email: "john@gmail.com", name: "John" }
+
+      user.reload
+
+      expect(response.status).to eq(302)
+      expect(user.unconfirmed_email).to eq nil
+    end
+
     it "ignores an email update from a user with an external email address" do
       stub_omniauth_setting(sync_profile_from_provider: ['ldap'])
       stub_omniauth_setting(sync_profile_attributes: true)

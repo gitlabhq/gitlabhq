@@ -1,3 +1,4 @@
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
@@ -36,7 +37,7 @@ class FilteredSearchManager {
       .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new window.Flash('An error occurred while parsing recent searches');
+        new Flash('An error occurred while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })

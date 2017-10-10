@@ -51,4 +51,21 @@ describe Ci::PipelinePresenter do
       end
     end
   end
+
+  context '#failure_reason' do
+    context 'when pipeline has failure reason' do
+      it 'represents a failure reason sentence' do
+        pipeline.failure_reason = :config_error
+
+        expect(presenter.failure_reason)
+          .to eq 'CI/CD YAML configuration error!'
+      end
+    end
+
+    context 'when pipeline does not have failure reason' do
+      it 'returns nil' do
+        expect(presenter.failure_reason).to be_nil
+      end
+    end
+  end
 end

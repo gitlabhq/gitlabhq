@@ -12,7 +12,7 @@ feature 'Profile > SSH Keys' do
       visit profile_keys_path
     end
 
-    scenario 'auto-populates the title', js: true do
+    scenario 'auto-populates the title', :js do
       fill_in('Key', with: attributes_for(:key).fetch(:key))
 
       expect(page).to have_field("Title", with: "dummy@gitlab.com")

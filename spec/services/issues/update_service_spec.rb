@@ -48,7 +48,8 @@ describe Issues::UpdateService, :mailer do
           assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
-          due_date: Date.tomorrow
+          due_date: Date.tomorrow,
+          discussion_locked: true
         }
       end
 
@@ -62,6 +63,7 @@ describe Issues::UpdateService, :mailer do
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
+        expect(issue.discussion_locked).to be_truthy
       end
 
       it 'refreshes the number of open issues when the issue is made confidential', :use_clean_rails_memory_store_caching do
@@ -110,6 +112,7 @@ describe Issues::UpdateService, :mailer do
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
+          expect(issue.discussion_locked).to be_falsey
         end
       end
 
@@ -147,6 +150,13 @@ describe Issues::UpdateService, :mailer do
 
           expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
+        end
+
+        it 'creates system note about discussion lock' do
+          note = find_note('locked this issue')
+
+          expect(note).not_to be_nil
+          expect(note.note).to eq 'locked this issue'
         end
       end
     end
@@ -254,6 +264,30 @@ describe Issues::UpdateService, :mailer do
           }
 
           expect(Todo.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when a new assignee added' do
+        subject { update_issue(assignees: issue.assignees + [user2]) }
+
+        it 'creates only 1 new todo' do
+          expect { subject }.to change { Todo.count }.by(1)
+        end
+
+        it 'creates a todo for new assignee' do
+          subject
+
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq(1)
         end
       end
 

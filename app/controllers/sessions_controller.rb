@@ -8,12 +8,11 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
     if: :two_factor_enabled?, only: [:create]
-  prepend_before_action :store_redirect_path, only: [:new]
-
+  prepend_before_action :store_redirect_uri, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
-  after_action :log_failed_login, only: [:new]
+  after_action :log_failed_login, only: [:new], if: :failed_login?
 
   def new
     set_minimum_password_length
@@ -46,8 +45,6 @@ class SessionsController < Devise::SessionsController
   private
 
   def log_failed_login
-    return unless failed_login?
-
     Gitlab::AppLogger.info("Failed Login: username=#{user_params[:login]} ip=#{request.remote_ip}")
   end
 
@@ -88,28 +85,36 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-  def store_redirect_path
-    redirect_path =
+  def stored_redirect_uri
+    @redirect_to ||= stored_location_for(:redirect)
+  end
+
+  def store_redirect_uri
+    redirect_uri =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.request_uri
-        else
-          request.fullpath
-        end
+        URI(request.referer)
       else
-        request.fullpath
+        URI(request.url)
       end
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless URI(redirect_path).path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
-    end
+    return true if redirect_uri.path == new_user_session_path
+
+    redirect_to = redirect_uri.to_s if redirect_allowed_to?(redirect_uri)
+
+    @redirect_to = redirect_to
+    store_location_for(:redirect, redirect_to)
+  end
+
+  # Overridden in EE
+  def redirect_allowed_to?(uri)
+    uri.host == Gitlab.config.gitlab.host &&
+      uri.port == Gitlab.config.gitlab.port
   end
 
   def two_factor_enabled?
-    find_user.try(:two_factor_enabled?)
+    find_user&.two_factor_enabled?
   end
 
   def auto_sign_in_with_provider
