@@ -46,12 +46,6 @@ import './lib/utils/url_utility';
 // behaviors
 import './behaviors/';
 
-// u2f
-import './u2f/authenticate';
-import './u2f/error';
-import './u2f/register';
-import './u2f/util';
-
 // everything else
 import './activities';
 import './admin';
