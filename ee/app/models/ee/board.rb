@@ -7,8 +7,8 @@ module EE
       belongs_to :milestone
       belongs_to :assignee, class_name: 'User'
 
-      has_many :board_filter_labels
-      has_many :labels, through: :board_filter_labels
+      has_many :board_labels
+      has_many :labels, through: :board_labels
 
       validates :name, presence: true
       validates :group, presence: true, unless: :project
