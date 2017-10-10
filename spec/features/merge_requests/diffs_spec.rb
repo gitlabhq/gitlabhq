@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-feature 'Diffs URL', js: true do
-=======
 feature 'Diffs URL', :js do
->>>>>>> ce-com/master
   include ProjectForksHelper
 
   let(:project) { create(:project, :public, :repository) }
