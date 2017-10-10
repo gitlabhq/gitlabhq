@@ -102,7 +102,7 @@ describe 'Issue Boards add issue modal', :js do
         end
 
         accept_confirm { first('.board-delete').click }
-        
+
         click_button('Add issues')
 
         wait_for_requests
