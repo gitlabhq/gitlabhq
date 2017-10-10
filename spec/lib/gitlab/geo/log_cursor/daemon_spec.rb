@@ -3,48 +3,70 @@ require 'spec_helper'
 describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
   include ::EE::GeoHelpers
 
+  set(:primary) { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
+
+  let(:options) { {} }
+  subject(:daemon) { described_class.new(options) }
+
+  around do |example|
+    Sidekiq::Testing.fake! { example.run }
+  end
+
+  before do
+    stub_current_geo_node(secondary)
+    stub_env("::#{described_class}::POOL_WAIT", 0.1)
+
+    allow(daemon).to receive(:trap_signals)
+  end
+
   describe '#run!' do
-    set(:geo_node) { create(:geo_node, :primary) }
-
-    before do
-      stub_current_geo_node(geo_node)
-    end
-
     it 'traps signals' do
-      allow(subject).to receive(:exit?) { true }
-      expect(subject).to receive(:trap_signals)
+      is_expected.to receive(:exit?).and_return(true)
+      is_expected.to receive(:trap_signals)
 
-      subject.run!
+      daemon.run!
     end
 
-    context 'when the command-line defines full_scan: true' do
-      subject { described_class.new(full_scan: true) }
+    it 'does not perform a full scan by default' do
+      is_expected.to receive(:exit?).and_return(true)
+      is_expected.not_to receive(:full_scan!)
+
+      daemon.run!
+    end
+
+    context 'the command-line defines full_scan: true' do
+      let(:options) { { full_scan: true } }
 
       it 'executes a full-scan' do
-        allow(subject).to receive(:exit?) { true }
+        is_expected.to receive(:exit?).and_return(true)
+        is_expected.to receive(:full_scan!)
 
-        expect(subject).to receive(:full_scan!)
-
-        subject.run!
+        daemon.run!
       end
     end
 
+    it 'delegates to #run_once! in a loop' do
+      is_expected.to receive(:exit?).and_return(false, false, false, true)
+      is_expected.to receive(:run_once!).twice
+
+      daemon.run!
+    end
+  end
+
+  describe '#run_once!' do
     context 'when replaying a repository created event' do
       let(:project) { create(:project) }
       let(:repository_created_event) { create(:geo_repository_created_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_created_event: repository_created_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
-      before do
-        allow(subject).to receive(:exit?).and_return(false, true)
-      end
-
       it 'creates a new project registry' do
-        expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
       it 'sets resync attributes to true' do
-        subject.run!
+        daemon.run_once!
 
         registry = Geo::ProjectRegistry.last
 
@@ -52,9 +74,9 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       end
 
       it 'sets resync_wiki to false if wiki_path is nil' do
-        repository_created_event.update_attribute(:wiki_path, nil)
+        repository_created_event.update!(wiki_path: nil)
 
-        subject.run!
+        daemon.run_once!
 
         registry = Geo::ProjectRegistry.last
 
@@ -65,7 +87,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
           .with(project.id, anything).once
 
-        subject.run!
+        daemon.run_once!
       end
     end
 
@@ -75,28 +97,24 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
-      before do
-        allow(subject).to receive(:exit?).and_return(false, true)
-      end
-
       it 'creates a new project registry if it does not exist' do
-        expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
       it 'sets resync_repository to true if event source is repository' do
-        repository_updated_event.update_attribute(:source, Geo::RepositoryUpdatedEvent::REPOSITORY)
+        repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::REPOSITORY)
         registry = create(:geo_project_registry, :synced, project: repository_updated_event.project)
 
-        subject.run!
+        daemon.run_once!
 
         expect(registry.reload.resync_repository).to be true
       end
 
       it 'sets resync_wiki to true if event source is wiki' do
-        repository_updated_event.update_attribute(:source, Geo::RepositoryUpdatedEvent::WIKI)
+        repository_updated_event.update!(source: Geo::RepositoryUpdatedEvent::WIKI)
         registry = create(:geo_project_registry, :synced, project: repository_updated_event.project)
 
-        subject.run!
+        daemon.run_once!
 
         expect(registry.reload.resync_wiki).to be true
       end
@@ -105,7 +123,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect(Geo::ProjectSyncWorker).to receive(:perform_async)
           .with(project.id, anything).once
 
-        subject.run!
+        daemon.run_once!
       end
     end
 
@@ -115,12 +133,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_deleted_event) { event_log.repository_deleted_event }
 
-      before do
-        allow(subject).to receive(:exit?).and_return(false, true)
-      end
-
       it 'does not create a new project registry' do
-        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
       it 'schedules a GeoRepositoryDestroyWorker' do
@@ -132,24 +146,19 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
           .with(project_id, project_name, full_path, project.repository_storage)
 
-        subject.run!
+        daemon.run_once!
       end
     end
 
     context 'when replaying a repositories changed event' do
-      let(:geo_node) { create(:geo_node) }
-      let(:repositories_changed_event) { create(:geo_repositories_changed_event, geo_node: geo_node) }
+      let(:repositories_changed_event) { create(:geo_repositories_changed_event, geo_node: secondary) }
       let(:event_log) { create(:geo_event_log, repositories_changed_event: repositories_changed_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
-      before do
-        allow(subject).to receive(:exit?).and_return(false, true)
-      end
-
       it 'schedules a GeoRepositoryDestroyWorker when event node is the current node' do
-        expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(within(5.minutes).of(1.hour), geo_node.id)
+        expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(within(5.minutes).of(1.hour), secondary.id)
 
-        subject.run!
+        daemon.run_once!
       end
 
       it 'does not schedule a GeoRepositoryDestroyWorker when event node is not the current node' do
@@ -157,7 +166,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
         expect(Geo::RepositoriesCleanUpWorker).not_to receive(:perform_in)
 
-        subject.run!
+        daemon.run_once!
       end
     end
 
@@ -170,36 +179,19 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
       before do
-        allow(subject).to receive(:exit?).and_return(false, true)
         allow(Geo::ProjectSyncWorker).to receive(:perform_async)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do
-        geo_node.update_attribute(:namespaces, [group_1])
+        secondary.update!(namespaces: [group_1])
 
-        expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
       it 'does not replay events for projects that do not belong to selected namespaces to replicate' do
-        geo_node.update_attribute(:namespaces, [group_2])
+        secondary.update!(namespaces: [group_2])
 
-        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
-      end
-
-      context 'when performing a full scan' do
-        subject { described_class.new(full_scan: true) }
-
-        it 'creates registries for missing projects that belong to selected namespaces' do
-          geo_node.update_attribute(:namespaces, [group_1])
-
-          expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
-        end
-
-        it 'does not create registries for missing projects that do not belong to selected namespaces' do
-          geo_node.update_attribute(:namespaces, [group_2])
-
-          expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
-        end
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
     end
 
@@ -209,12 +201,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_rename_event) { event_log.repository_renamed_event }
 
-      before do
-        allow(subject).to receive(:exit?).and_return(false, true)
-      end
-
       it 'does not create a new project registry' do
-        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
       it 'schedules a GeoRepositoryDestroyWorker' do
@@ -225,7 +213,25 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect(::GeoRepositoryMoveWorker).to receive(:perform_async)
           .with(project_id, '', old_path_with_namespace, new_path_with_namespace)
 
-        subject.run!
+        daemon.run_once!
+      end
+    end
+  end
+
+  describe '#full_scan!' do
+    let(:project) { create(:project) }
+
+    context 'with selective sync enabled' do
+      it 'creates registries for missing projects that belong to selected namespaces' do
+        secondary.update!(namespaces: [project.namespace])
+
+        expect { daemon.full_scan! }.to change(Geo::ProjectRegistry, :count).by(1)
+      end
+
+      it 'does not create registries for missing projects that do not belong to selected namespaces' do
+        secondary.update!(namespaces: [create(:group)])
+
+        expect { daemon.full_scan! }.not_to change(Geo::ProjectRegistry, :count)
       end
     end
   end
