@@ -20,7 +20,7 @@ membership syncing.
 ## Use-cases
 
 - User Sync: Once a day, GitLab will update users against LDAP
-- Group Sync: Once an hour, GitLab will update group membership 
+- Group Sync: Once an hour, GitLab will update group membership
 based on LDAP group members
 
 ## User Sync
@@ -54,8 +54,8 @@ new groups they might be added to when the user logs in. That way they don't nee
 to wait for the hourly sync to be granted access to the groups that they are in
 in LDAP.
 
-We can also add a GitLab group to sync with one or multiple LDAP groups or we can
-also add a filter. The filter must comply with the syntax defined in [RFC 2254](https://tools.ietf.org/search/rfc2254). 
+In GitLab Enterprise Edition Premium, we can also add a GitLab group to sync with one or multiple LDAP groups or we can
+also add a filter. The filter must comply with the syntax defined in [RFC 2254](https://tools.ietf.org/search/rfc2254).
 
 A group sync process will run every hour on the hour, and `group_base` must be set
 in LDAP configuration for LDAP synchronizations based on group CN to work. This allows

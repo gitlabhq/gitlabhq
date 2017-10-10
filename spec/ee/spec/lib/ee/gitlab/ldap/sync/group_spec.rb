@@ -381,6 +381,10 @@ describe EE::Gitlab::LDAP::Sync::Group do
   end
 
   context 'filter' do
+    before do
+      stub_licensed_features(ldap_group_sync_filter: true)
+    end
+
     describe '#update_permissions' do
       before do
         # Safe-check because some permissions are removed when `Group#ldap_synced?`

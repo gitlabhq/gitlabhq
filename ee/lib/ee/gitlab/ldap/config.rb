@@ -5,8 +5,8 @@ module EE
         extend ActiveSupport::Concern
 
         class_methods do
-          def enabled_extras?
-            enabled? && ::License.feature_available?(:ldap_extras)
+          def group_sync_enabled?
+            enabled? && ::License.feature_available?(:ldap_group_sync)
           end
         end
       end

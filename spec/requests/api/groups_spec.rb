@@ -700,9 +700,13 @@ describe API::Groups do
   end
 
   describe 'POST /groups/:id/ldap_sync' do
-    context 'when LDAP config enabled_extras is true' do
+    before do
+      allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+    end
+
+    context 'when the ldap_group_sync feature is available' do
       before do
-        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(true)
+        stub_licensed_features(ldap_group_sync: true)
       end
 
       context 'when authenticated as the group owner' do
@@ -772,9 +776,9 @@ describe API::Groups do
       end
     end
 
-    context 'when LDAP config enabled_extras is false' do
+    context 'when the ldap_group_sync feature is not available' do
       before do
-        allow(Gitlab::LDAP::Config).to receive(:enabled_extras?).and_return(false)
+        stub_licensed_features(ldap_group_sync: false)
       end
 
       it 'returns 404 (same as CE would)' do

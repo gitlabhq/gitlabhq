@@ -62,11 +62,11 @@
 
         = render partial: "namespaces/shared_runner_status", locals: { namespace: @group }
 
-    .panel.panel-default
-      .panel-heading Active synchronizations
-      %ul.well-list
-        - if @group.ldap_group_links.any?
-          - @group.ldap_group_links.each do |ldap_group_link|
+    - if Gitlab::LDAP::Config.group_sync_enabled? && @group.ldap_synced?
+      .panel.panel-default
+        .panel-heading Active synchronizations
+        %ul.well-list
+          - @group.ldap_group_links.select(&:active?).each do |ldap_group_link|
             %li
               %strong= ldap_group_link.cn ? "Group: #{ldap_group_link.cn}" : "Filter: #{truncate(ldap_group_link.filter, length: 40)}"
               as

@@ -27,7 +27,7 @@ module Gitlab
       def self.available_servers
         return [] unless enabled?
 
-        enabled_extras? ? servers : Array.wrap(servers.first)
+        ::License.feature_available?(:multiple_ldap_servers) ? servers : Array.wrap(servers.first)
       end
 
       def self.providers
