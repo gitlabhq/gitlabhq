@@ -126,11 +126,7 @@ feature 'Project' do
     end
   end
 
-<<<<<<< HEAD
-  describe 'removal', js: true do
-=======
   describe 'removal', :js do
->>>>>>> ce-com/master
     let(:user)    { create(:user, username: 'test', name: 'test') }
     let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 
