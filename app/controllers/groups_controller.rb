@@ -60,12 +60,14 @@ class GroupsController < Groups::ApplicationController
 
   def children
     parent = if params[:parent_id].present?
-               Group.find(params[:parent_id])
+               GroupFinder.new(current_user).execute(id: params[:parent_id])
              else
                @group
              end
-    if parent.nil? || !can?(current_user, :read_group, parent)
+
+    if parent.nil?
       render_404
+      return
     end
 
     setup_children(parent)
