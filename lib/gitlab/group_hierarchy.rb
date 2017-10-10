@@ -30,8 +30,7 @@ module Gitlab
     # reached. So all ancestors *lower* than the specified ancestor will be
     # included.
     def ancestors(upto: nil)
-      read_only(base_and_ancestors_cte(upto).apply_to(model.all))
-        .where.not(id: ancestors_base.select(:id))
+      base_and_ancestors(upto: upto).where.not(id: ancestors_base.select(:id))
     end
 
     # Returns a relation that includes the ancestors_base set of groups
