@@ -458,7 +458,7 @@ module QuickActions
       target_branch_param.strip
     end
     command :target_branch do |branch_name|
-      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+      @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
     end
 
     desc 'Move issue from one column of the board to another'

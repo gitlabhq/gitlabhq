@@ -675,13 +675,13 @@ class MergeRequest < ActiveRecord::Base
   def source_branch_exists?
     return false unless self.source_project
 
-    self.source_project.repository.branch_names.include?(self.source_branch)
+    self.source_project.repository.branch_exists?(self.source_branch)
   end
 
   def target_branch_exists?
     return false unless self.target_project
 
-    self.target_project.repository.branch_names.include?(self.target_branch)
+    self.target_project.repository.branch_exists?(self.target_branch)
   end
 
   def merge_commit_message(include_description: false)
