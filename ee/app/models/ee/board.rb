@@ -5,9 +5,14 @@ module EE
     prepended do
       belongs_to :group
       belongs_to :milestone
-      belongs_to :assignee, class_name: 'User'
 
       has_many :board_labels
+
+      # These can safely be changed to has_many when we support
+      # multiple assignees on the board configuration.
+      has_one :board_assignee
+      has_one :assignee, through: :board_assignee
+
       has_many :labels, through: :board_labels
 
       validates :name, presence: true

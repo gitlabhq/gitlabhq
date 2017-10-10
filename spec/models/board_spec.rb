@@ -4,7 +4,8 @@ describe Board do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:milestone) }
-    it { is_expected.to belong_to(:assignee).class_name('User') }
+    it { is_expected.to have_one(:board_assignee) }
+    it { is_expected.to have_one(:assignee).through(:board_assignee) }
     it { is_expected.to have_many(:board_labels) }
     it { is_expected.to have_many(:labels).through(:board_labels) }
 
