@@ -56,7 +56,6 @@ import './u2f/util';
 // everything else
 import './activities';
 import './admin';
-import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
