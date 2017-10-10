@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2017-10-06 22:39+0200\n"
 "PO-Revision-Date: 2017-10-06 22:39+0200\n"
-=======
-"POT-Creation-Date: 2017-10-06 18:33+0200\n"
-"PO-Revision-Date: 2017-10-06 18:33+0200\n"
->>>>>>> ce-com/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -455,9 +450,9 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Close"
-=======
+msgstr ""
+
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
 msgstr ""
 
@@ -579,7 +574,6 @@ msgid "ClusterIntegration|meets the requirements"
 msgstr ""
 
 msgid "ClusterIntegration|properly configured"
->>>>>>> ce-com/master
 msgstr ""
 
 msgid "Comments"
@@ -1585,9 +1579,6 @@ msgstr[1] ""
 msgid "Snippets"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
-=======
 msgid "Something went wrong on our end."
 msgstr ""
 
@@ -1595,7 +1586,9 @@ msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
->>>>>>> ce-com/master
+msgstr ""
+
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
 msgstr ""
 
 msgid "SortOptions|Access level, ascending"
@@ -2220,9 +2213,8 @@ msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
 
-<<<<<<< HEAD
 msgid "to help your contributors communicate effectively!"
-=======
+msgstr ""
+
 msgid "personal access token"
->>>>>>> ce-com/master
 msgstr ""

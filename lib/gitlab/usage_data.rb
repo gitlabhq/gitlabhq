@@ -62,11 +62,8 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: ::Environment.count,
-<<<<<<< HEAD
-            geo_nodes: GeoNode.count,
-=======
             gcp_clusters: ::Gcp::Cluster.count,
->>>>>>> ce-com/master
+            geo_nodes: GeoNode.count,
             in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,

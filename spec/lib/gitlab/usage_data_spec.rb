@@ -71,11 +71,8 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
-<<<<<<< HEAD
-        geo_nodes
-=======
         gcp_clusters
->>>>>>> ce-com/master
+        geo_nodes
         in_review_folder
         groups
         issues
