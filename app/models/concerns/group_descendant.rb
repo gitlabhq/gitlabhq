@@ -1,9 +1,20 @@
 module GroupDescendant
+  # Returns the hierarchy of a project or group in the from of a hash upto a
+  # given top.
+  #
+  # > project.hierarchy
+  # => { parent_group => { child_group => project } }
   def hierarchy(hierarchy_top = nil, preloaded = nil)
     preloaded ||= ancestors_upto(hierarchy_top)
     expand_hierarchy_for_child(self, self, hierarchy_top, preloaded)
   end
 
+  # Merges all hierarchies of the given groups or projects into an array of
+  # hashes. All ancestors need to be loaded into the given `descendants` to avoid
+  # queries down the line.
+  #
+  # > GroupDescendant.merge_hierarchy([project, child_group, child_group2, parent])
+  # => { parent => [{ child_group => project}, child_group2] }
   def self.build_hierarchy(descendants, hierarchy_top = nil)
     descendants = Array.wrap(descendants).uniq
     return [] if descendants.empty?
@@ -20,16 +31,6 @@ module GroupDescendant
   end
 
   private
-
-  def ancestors_upto(hierarchy_top = nil)
-    if self.is_a?(Group)
-      Gitlab::GroupHierarchy.new(Group.where(id: id))
-        .ancestors(upto: hierarchy_top)
-    else
-      Gitlab::GroupHierarchy.new(Group.where(id: parent_id))
-        .base_and_ancestors(upto: hierarchy_top)
-    end
-  end
 
   def expand_hierarchy_for_child(child, hierarchy, hierarchy_top, preloaded)
     parent = hierarchy_top if hierarchy_top && child.parent_id == hierarchy_top.id
