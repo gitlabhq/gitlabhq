@@ -79,8 +79,6 @@ import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './label_manager';
-import './labels';
 import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
