@@ -17,11 +17,7 @@ module GroupsHelper
       group = Group.find_by_full_path(group)
     end
 
-    if group.avatar_url
-      group.avatar_url
-    else # No Avatar Icon
-      ActionController::Base.helpers.image_path('no_group_avatar.png')
-    end
+    group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)
