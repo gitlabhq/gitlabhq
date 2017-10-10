@@ -71,7 +71,7 @@ shared_examples 'discussion comments' do |resource_name|
       expect(page).not_to have_selector menu_selector
 
       find(toggle_selector).click
-      find('body').trigger 'click'
+      find('body').click
 
       expect(page).not_to have_selector menu_selector
     end
