@@ -62,7 +62,7 @@ describe Projects::BranchesController do
         let(:branch) { "feature%2Ftest" }
         let(:ref) { "<script>alert('ref');</script>" }
         it { is_expected.to render_template('new') }
-        it { project.repository.branch_names.include?('feature/test') }
+        it { project.repository.branch_exists?('feature/test') }
       end
     end
 
