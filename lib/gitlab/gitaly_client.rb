@@ -17,10 +17,12 @@ module Gitlab
         @call_site = call_site
         @invocation_count = invocation_count
         @max_call_stack = max_call_stack
-        stacks = most_invoked_stack.join("\n") if most_invoked_stack
+
+        puts "most_invoked_stack====#{most_invoked_stack.inspect}"
+        # stacks = most_invoked_stack.join("\n") if most_invoked_stack
 
         msg = "GitalyClient##{call_site} called #{invocation_count} times from single request. Potential n+1?"
-        msg << "\nThe following call site called into Gitaly #{max_call_stack} times:\n#{stacks}\n" if stacks
+        msg << "\nThe following call site called into Gitaly #{max_call_stack} times:\n#{most_invoked_stack}\n" if most_invoked_stack
 
         super(msg)
       end
@@ -146,7 +148,7 @@ module Gitlab
 
       Gitlab::Metrics.measure(metric_name) do
         # Some migrate calls wrap other migrate calls
-        allow_n_plus_1_calls do
+        # allow_n_plus_1_calls do
           feature_stack = Thread.current[:gitaly_feature_stack] ||= []
           feature_stack.unshift(feature)
           begin
@@ -155,7 +157,7 @@ module Gitlab
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
           end
-        end
+        # end
       end
     end
 
@@ -263,13 +265,7 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      s = caller.drop(1)
-      xx = s.find_index { |x| x.include? "allow_n_plus_1_calls" }
-      if xx then
-        stack_string = s[xx + 1]
-      else
-        stack_string = s.select{ |x| !x.include? "/gems/" }.join("\n")
-      end
+      stack_string = caller.drop(1).select{ |x| !x.include? "/gems/" }.join("\n")
 
       RequestStore.store[:stack_counter] ||= Hash.new
 
@@ -299,7 +295,20 @@ module Gitlab
       max = max_call_count
       return nil if max.zero?
 
-      stack_counter.select { |_, v| v == max }.keys
+      stack_counter.select { |_, v| v == max }.keys.map do |stack|
+        stack_split = stack.split("\n")
+        exclusion_frame_index = stack_split.rindex do |frame|
+          frame.include? "allow_n_plus_1_calls"
+        end
+
+        if exclusion_frame_index then
+          exclusion_location = stack_split[exclusion_frame_index + 1]
+          return "**#{exclusion_location}**\n#{stack}"
+        else
+          return stack
+        end
+
+      end
     end
     private_class_method :max_stacks
   end
