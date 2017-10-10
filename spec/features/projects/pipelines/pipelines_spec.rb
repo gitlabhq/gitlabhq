@@ -232,7 +232,7 @@ describe 'Pipelines', :js do
 
           context 'when canceling' do
             before do
-              find('.js-pipelines-cancel-button').click
+              accept_alert { find('.js-pipelines-cancel-button').click }
             end
 
             it 'indicates that pipeline was canceled' do
