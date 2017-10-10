@@ -1,4 +1,4 @@
-import '~/lib/utils/text_utility';
+import { highCountTrim } from '~/lib/utils/text_utility';
 
 describe('text_utility', () => {
   describe('gl.text.getTextWidth', () => {
@@ -35,14 +35,14 @@ describe('text_utility', () => {
     });
   });
 
-  describe('gl.text.highCountTrim', () => {
+  describe('highCountTrim', () => {
     it('returns 99+ for count >= 100', () => {
-      expect(gl.text.highCountTrim(105)).toBe('99+');
-      expect(gl.text.highCountTrim(100)).toBe('99+');
+      expect(highCountTrim(105)).toBe('99+');
+      expect(highCountTrim(100)).toBe('99+');
     });
 
     it('returns exact number for count < 100', () => {
-      expect(gl.text.highCountTrim(45)).toBe(45);
+      expect(highCountTrim(45)).toBe(45);
     });
   });
 
