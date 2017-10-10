@@ -4,6 +4,7 @@ shared_examples 'discussion comments' do |resource_name|
   let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle" }
   let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
   let(:submit_selector) { "#{form_selector} .js-comment-submit-button" }
+  let(:submit_button) { ".js-comment-submit-button" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
 
@@ -85,17 +86,26 @@ shared_examples 'discussion comments' do |resource_name|
         find(toggle_selector).click
         find("#{menu_selector} .divider").click
       else
-        find(menu_selector).click
+        within dropdown_selector do
+          find('.dropdown-toggle').click
 
-        expect(page).to have_selector menu_selector
-        expect(find(dropdown_selector)).to have_content 'Comment'
+          expect(find('.dropdown-menu')).not_to be_nil
+          find('li[data-submit-text="Comment"]').click
+          expect(find(submit_button).value).to eq "Comment"
 
-        find("#{menu_selector} .divider").click
+          find('.dropdown-toggle').click
+          page.driver.execute_script(
+            "document.querySelector('.comment-type-dropdown .dropdown-menu .divider').click()"
+          )
 
-        expect(page).to have_selector menu_selector
+          expect(find('.dropdown-menu')).not_to be_nil
+          find('li[data-submit-text="Comment"]').click
+        end
       end
 
-      expect(find(dropdown_selector)).to have_content 'Comment'
+      within dropdown_selector do
+        expect(find(submit_button).value).to eq "Comment"
+      end
     end
 
     describe 'when selecting "Start discussion"' do
@@ -105,7 +115,9 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it 'updates the submit button text and closes the dropdown' do
-        expect(find(dropdown_selector)).to have_content 'Start discussion'
+        within dropdown_selector do
+          expect(find(submit_button).value).to eq "Start discussion"
+        end
         expect(page).not_to have_selector menu_selector
       end
 
@@ -170,7 +182,9 @@ shared_examples 'discussion comments' do |resource_name|
           end
 
           it 'updates the submit button text and closes the dropdown' do
-            expect(find(dropdown_selector)).to have_content 'Comment'
+            within dropdown_selector do
+              expect(find(submit_button).value).to eq "Comment"
+            end
             expect(page).not_to have_selector menu_selector
           end
 
@@ -218,7 +232,7 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it "should show a 'Start discussion & reopen #{resource_name}' button when 'Start discussion' is selected" do
-        find(toggle_selector).click
+        find(toggle_selector).send_keys(:return)
 
         find("#{menu_selector} li", match: :first)
         all("#{menu_selector} li").last.click
