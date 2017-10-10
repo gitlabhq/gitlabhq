@@ -85,6 +85,7 @@ export default {
       :primary-button-label="__('Leave')"
       kind="warning"
       :title="__('Are you sure?')"
+      :text="__('Are you sure you want to leave this group?')"
       :body="leaveConfirmationMessage"
       @submit="leaveGroup"
     />
