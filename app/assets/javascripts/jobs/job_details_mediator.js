@@ -5,7 +5,8 @@ import Visibility from 'visibilityjs';
 import Poll from '../lib/utils/poll';
 import JobStore from './stores/job_store';
 import JobService from './services/job_service';
-import '../build';
+import Job from '../job';
+import handleRevealVariables from '../build_variables';
 
 export default class JobMediator {
   constructor(options = {}) {
@@ -20,7 +21,8 @@ export default class JobMediator {
   }
 
   initBuildClass() {
-    this.build = new Build();
+    this.build = new Job();
+    handleRevealVariables();
   }
 
   fetchJob() {

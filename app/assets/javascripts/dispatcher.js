@@ -12,7 +12,8 @@
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global BuildArtifacts */
+import BuildArtifacts from './build_artifacts';
+import CILintEditor from './ci_lint_editor';
 /* global GroupsSelect */
 /* global Search */
 /* global Admin */
@@ -90,8 +91,8 @@ import AjaxLoadingSpinner from './ajax_loading_spinner';
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
-      page = $('body').attr('data-page');
+      var path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
+      const page = $('body').attr('data-page');
       if (!page) {
         return false;
       }
@@ -505,7 +506,7 @@ import AjaxLoadingSpinner from './ajax_loading_spinner';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new gl.CILintEditor();
+          new CILintEditor();
           break;
         case 'users:show':
           new UserCallout();
