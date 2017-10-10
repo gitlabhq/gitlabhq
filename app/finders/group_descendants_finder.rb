@@ -1,6 +1,4 @@
 class GroupDescendantsFinder
-  include Gitlab::Allowable
-
   attr_reader :current_user, :parent_group, :params
 
   def initialize(current_user: nil, parent_group:, params: {})
@@ -40,7 +38,7 @@ class GroupDescendantsFinder
   end
 
   def paginator
-    Gitlab::MultiCollectionPaginator.new(*collections, per_page: params[:per_page])
+    @paginator ||= Gitlab::MultiCollectionPaginator.new(*collections, per_page: params[:per_page])
   end
 
   def direct_child_groups
@@ -51,18 +49,21 @@ class GroupDescendantsFinder
 
   def all_visible_descendant_groups
     groups_table = Group.arel_table
-    visible_for_user = groups_table[:visibility_level]
-                         .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
-    visible_for_user = if current_user
-                         visible_projects = GroupsFinder.new(current_user).execute.as('visible')
-                         authorized = groups_table.project(1).from(visible_projects)
-                                        .where(visible_projects[:id].eq(groups_table[:id]))
-                                        .exists
-                         visible_for_user.or(authorized)
-                       end
+    visible_to_user = groups_table[:visibility_level]
+                      .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
+    if current_user
+      authorized_groups = GroupsFinder.new(current_user,
+                                           all_available: false)
+                            .execute.as('authorized')
+      authorized_to_user = groups_table.project(1).from(authorized_groups)
+                             .where(authorized_groups[:id].eq(groups_table[:id]))
+                             .exists
+      visible_to_user = visible_to_user.or(authorized_to_user)
+    end
+
     hierarchy_for_parent
       .descendants
-      .where(visible_for_user)
+      .where(visible_to_user)
   end
 
   def subgroups_matching_filter
@@ -94,7 +95,6 @@ class GroupDescendantsFinder
 
   def subgroups
     return Group.none unless Group.supports_nested_groups?
-    return Group.none unless can?(current_user, :read_group, parent_group)
 
     # When filtering subgroups, we want to find all matches withing the tree of
     # descendants to show to the user
@@ -122,8 +122,6 @@ class GroupDescendantsFinder
   end
 
   def projects
-    return Project.none unless can?(current_user, :read_group, parent_group)
-
     projects = if params[:filter]
                  projects_matching_filter
                else

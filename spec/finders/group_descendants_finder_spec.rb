@@ -39,7 +39,7 @@ describe GroupDescendantsFinder do
 
   context 'with nested groups', :nested_groups do
     let!(:project) { create(:project, namespace: group) }
-    let!(:subgroup) { create(:group, parent: group) }
+    let!(:subgroup) { create(:group, :private, parent: group) }
 
     describe '#execute' do
       it 'contains projects and subgroups' do
@@ -57,6 +57,15 @@ describe GroupDescendantsFinder do
         finder = described_class.new(current_user: other_user, parent_group: group)
 
         expect(finder.execute).to contain_exactly(public_subgroup, other_subgroup)
+      end
+
+      it 'only includes public groups when no user is given' do
+        public_subgroup = create(:group, :public, parent: group)
+        _private_subgroup = create(:group, :private, parent: group)
+
+        finder = described_class.new(current_user: nil, parent_group: group)
+
+        expect(finder.execute).to contain_exactly(public_subgroup)
       end
 
       context 'with a filter' do
@@ -86,7 +95,7 @@ describe GroupDescendantsFinder do
 
         context 'with matching children' do
           it 'includes a group that has a subgroup matching the query and its parent' do
-            matching_subgroup = create(:group, name: 'testgroup', parent: subgroup)
+            matching_subgroup = create(:group, :private, name: 'testgroup', parent: subgroup)
 
             expect(finder.execute).to contain_exactly(subgroup, matching_subgroup)
           end
