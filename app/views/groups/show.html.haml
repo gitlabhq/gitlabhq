@@ -27,7 +27,7 @@
                     = icon("check", class: "list-item-checkmark")
                   .description
                     %strong= new_project_label
-                    %span= s_("GroupsTree|Create project under this group.")
+                    %span= s_("GroupsTree|Create a project in this group.")
               %li.divider.droplap-item-ignore
               %li{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
                 .menu-item
@@ -35,7 +35,7 @@
                     = icon("check", class: "list-item-checkmark")
                   .description
                     %strong= new_subgroup_label
-                    %span= s_("GroupsTree|Create a subgroup under this group.")
+                    %span= s_("GroupsTree|Create a subgroup in this group.")
         - else
           = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
 
