@@ -32,13 +32,20 @@ module Gitlab
       self.cache_value(:geo_secondary_nodes) { GeoNode.where(primary: false) }
     end
 
-    def self.enabled?
-      GeoNode.connected? && self.cache_value(:geo_node_enabled) { GeoNode.exists? }
-    rescue => e
-      # We can't use the actual classes in rescue because we load only one of them based on database supported
-      raise e unless %w(PG::UndefinedTable Mysql2::Error).include? e.class.name
+    def self.connected?
+      Gitlab::Database.postgresql? && GeoNode.connected? && GeoNode.table_exists?
+    end
 
-      false
+    def self.enabled?
+      cache_value(:geo_node_enabled) { GeoNode.exists? }
+    end
+
+    def self.primary?
+      self.enabled? && self.current_node&.primary?
+    end
+
+    def self.secondary?
+      self.enabled? && self.current_node&.secondary?
     end
 
     def self.current_node_enabled?
@@ -62,14 +69,6 @@ module Gitlab
 
     def self.license_allows?
       ::License.feature_available?(:geo)
-    end
-
-    def self.primary?
-      self.cache_value(:geo_node_primary) { self.enabled? && self.current_node && self.current_node.primary? }
-    end
-
-    def self.secondary?
-      self.cache_value(:geo_node_secondary) { self.enabled? && self.current_node && self.current_node.secondary? }
     end
 
     def self.geo_node?(host:, port:)
