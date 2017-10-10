@@ -25,7 +25,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Lock comments                         |         |            |             | ✓        | ✓      |
+| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
