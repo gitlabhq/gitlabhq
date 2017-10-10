@@ -72,7 +72,7 @@ class GroupChildEntity < Grape::Entity
   def membership
     return unless request.current_user
 
-    @membership ||= request.current_user.membership_for_object(object)
+    @membership ||= request.current_user.members.find_by(source: object)
   end
 
   def project?
