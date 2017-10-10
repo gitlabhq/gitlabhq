@@ -173,7 +173,7 @@ module API
 
               lines.each do |line|
                 next unless line.new_pos == params[:line] && line.type == params[:line_type]
-                break opts[:line_code] = Gitlab::Git::Conflict::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
+                break opts[:line_code] = Gitlab::Git.diff_line_code(diff.new_path, line.new_pos, line.old_pos)
               end
 
               break if opts[:line_code]

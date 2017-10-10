@@ -19,8 +19,8 @@ module Gitlab
           begin
             @type = 'text'
             @lines = Gitlab::Git::Conflict::Parser.parse(content,
-                                                      our_path: our_path,
-                                                      their_path: their_path)
+                                                         our_path: our_path,
+                                                         their_path: their_path)
           rescue Gitlab::Git::Conflict::Parser::ParserError
             @type = 'text-editor'
             @lines = nil
@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def line_code(line)
-          Gitlab::Git::Conflict::LineCode.generate(our_path, line[:line_new], line[:line_old])
+          Gitlab::Git.diff_line_code(our_path, line[:line_new], line[:line_old])
         end
 
         def resolve_lines(resolution)
