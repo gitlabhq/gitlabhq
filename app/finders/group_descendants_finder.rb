@@ -99,12 +99,13 @@ class GroupDescendantsFinder
     groups.with_selects_for_list.order_by(sort)
   end
 
-  def projects_for_user
-    Project.public_or_visible_to_user(current_user).non_archived
+  def direct_child_projects
+    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params)
+      .execute
   end
 
-  def direct_child_projects
-    projects_for_user.where(namespace: parent_group)
+  def projects_for_user
+    Project.public_or_visible_to_user(current_user).non_archived
   end
 
   # Finds all projects nested under `parent_group` or any of its descendant
