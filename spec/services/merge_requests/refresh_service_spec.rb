@@ -13,11 +13,7 @@ describe MergeRequests::RefreshService do
       group = create(:group)
       group.add_owner(@user)
 
-<<<<<<< HEAD
       @project = create(:project, :repository, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
-=======
-      @project = create(:project, :repository, namespace: group)
->>>>>>> ce-com/master
       @fork_project = fork_project(@project, @user, repository: true)
 
       @merge_request = create(:merge_request,
