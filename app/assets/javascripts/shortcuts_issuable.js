@@ -40,7 +40,7 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
       return false;
     }
 
-    const quote = _.map(selected.split('\n'), val => `> ${val.trim()}\n`);
+    const quote = _.map(selected.split('\n'), val => `${(`> ${val}`).trim()}\n`);
 
     // If replyField already has some content, add a newline before our quote
     const separator = (this.$replyField.val().trim() !== '' && '\n\n') || '';
