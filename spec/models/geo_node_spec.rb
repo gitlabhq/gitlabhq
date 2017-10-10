@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe GeoNode, type: :model do
+  using RSpec::Parameterized::TableSyntax
   include ::EE::GeoHelpers
 
   let(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
@@ -29,28 +30,22 @@ describe GeoNode, type: :model do
   context 'default values' do
     let(:gitlab_host) { 'gitlabhost' }
 
-    before do
-      allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host }
+    where(:attribute, :value) do
+      :schema             | 'http'
+      :host               | 'gitlabhost'
+      :port               | 80
+      :relative_url_root  | ''
+      :primary            | false
+      :repos_max_capacity | 25
+      :files_max_capacity | 10
     end
 
-    it 'defines a default schema' do
-      expect(empty_node.schema).to eq('http')
-    end
+    with_them do
+      before do
+        allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host }
+      end
 
-    it 'defines a default host' do
-      expect(empty_node.host).to eq(gitlab_host)
-    end
-
-    it 'defines a default port' do
-      expect(empty_node.port).to eq(80)
-    end
-
-    it 'defines a default relative_url_root' do
-      expect(empty_node.relative_url_root).to eq('')
-    end
-
-    it 'defines a default primary flag' do
-      expect(empty_node.primary).to eq(false)
+      it { expect(empty_node[attribute]).to eq(value) }
     end
   end
 
