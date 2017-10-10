@@ -23,7 +23,6 @@
           - else
             - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
             = deleted_message % { project_name: fork_network.deleted_root_project_name }
-<<<<<<< HEAD
 
       - if @project.mirror?
         - import_url = @project.safe_import_url
@@ -31,8 +30,6 @@
           Mirrored from #{link_to import_url, import_url}.
           %br
           = render "shared/mirror_status"
-=======
->>>>>>> ce-com/master
 
     .project-repo-buttons
       .count-buttons
