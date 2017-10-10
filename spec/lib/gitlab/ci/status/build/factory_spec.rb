@@ -190,7 +190,7 @@ describe Gitlab::Ci::Status::Build::Factory do
 
     it 'fabricates status with correct details' do
       expect(status.text).to eq 'skipped'
-      expect(status.icon).to eq status_skipped'
+      expect(status.icon).to eq 'status_skipped'
       expect(status.favicon).to eq 'favicon_status_skipped'
       expect(status.label).to eq 'skipped'
       expect(status).to have_details
