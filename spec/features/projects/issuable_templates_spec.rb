@@ -1,10 +1,6 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-feature 'issuable templates', js: true do
-=======
 feature 'issuable templates', :js do
->>>>>>> ce-com/master
   include ProjectForksHelper
 
   let(:user) { create(:user) }
