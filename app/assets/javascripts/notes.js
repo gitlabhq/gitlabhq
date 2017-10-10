@@ -558,7 +558,7 @@ export default class Notes {
    */
   setupNoteForm(form) {
     var textarea, key;
-    new GLForm(form, this.enableGFM);
+    this.glForm = new GLForm(form, this.enableGFM);
     textarea = form.find('.js-note-text');
     key = [
       'Note',
@@ -1153,7 +1153,7 @@ export default class Notes {
     var targetId = $originalContentEl.data('target-id');
     var targetType = $originalContentEl.data('target-type');
 
-    new GLForm($editForm.find('form'), this.enableGFM);
+    this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm.find('form')
       .attr('action', postUrl)

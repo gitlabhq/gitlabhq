@@ -32,9 +32,9 @@ export default class GlFieldErrors {
     const $form = $(e.currentTarget);
 
     if (!$form.attr('novalidate')) {
-      if (!event.currentTarget.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
+      if (!e.currentTarget.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     }
   }
