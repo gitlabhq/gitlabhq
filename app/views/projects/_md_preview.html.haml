@@ -2,11 +2,7 @@
 
 - if defined?(@merge_request) && @merge_request.discussion_locked?
   .issuable-note-warning
-<<<<<<< HEAD
-    = icon('lock')
-=======
     = icon('lock', class: 'icon')
->>>>>>> ce-com/master
     %span
       = _('This merge request is locked.')
       = _('Only project members can comment.')
