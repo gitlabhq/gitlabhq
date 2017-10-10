@@ -61,7 +61,6 @@ import './abuse_reports';
 import './activities';
 import './admin';
 import './ajax_loading_spinner';
-import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
