@@ -8,7 +8,14 @@ module Boards
         params.delete(:weight)
       end
 
+      set_assignee
+
       board.update(params)
+    end
+
+    def set_assignee
+      assignee = User.find_by(id: params.delete(:assignee_id))
+      params.merge!(assignee: assignee)
     end
   end
 end

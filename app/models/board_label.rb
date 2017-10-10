@@ -1,4 +1,4 @@
-class BoardFilterLabel < ActiveRecord::Base
+class BoardLabel < ActiveRecord::Base
   belongs_to :board
   belongs_to :label
 

@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :board_filter_label do
+  factory :board_label do
     association :board
     association :label
   end
