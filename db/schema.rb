@@ -214,14 +214,14 @@ ActiveRecord::Schema.define(version: 20170926203418) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
-  create_table "board_filter_labels", force: :cascade do |t|
+  create_table "board_labels", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "label_id", null: false
   end
 
-  add_index "board_filter_labels", ["board_id", "label_id"], name: "index_board_filter_labels_on_board_id_and_label_id", unique: true, using: :btree
-  add_index "board_filter_labels", ["board_id"], name: "index_board_filter_labels_on_board_id", using: :btree
-  add_index "board_filter_labels", ["label_id"], name: "index_board_filter_labels_on_label_id", using: :btree
+  add_index "board_labels", ["board_id", "label_id"], name: "index_board_labels_on_board_id_and_label_id", unique: true, using: :btree
+  add_index "board_labels", ["board_id"], name: "index_board_labels_on_board_id", using: :btree
+  add_index "board_labels", ["label_id"], name: "index_board_labels_on_label_id", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
@@ -2059,8 +2059,8 @@ ActiveRecord::Schema.define(version: 20170926203418) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
-  add_foreign_key "board_filter_labels", "boards", name: "fk_53e44f3a07", on_delete: :cascade
-  add_foreign_key "board_filter_labels", "labels", name: "fk_91e18fdcee", on_delete: :cascade
+  add_foreign_key "board_labels", "boards", on_delete: :cascade
+  add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "boards", "users", column: "assignee_id", name: "fk_2a3450e77c", on_delete: :nullify
