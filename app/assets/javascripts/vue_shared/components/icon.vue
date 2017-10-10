@@ -36,11 +36,11 @@
 
     computed: {
       spriteHref() {
-        return `${gon.sprite_icons}#${this.name}`
+        return `${gon.sprite_icons}#${this.name}`;
       },
       fullCssClass() {
         let classString = '' || this.cssClass;
-        if (this.size) classString += `s${this.size}`
+        if (this.size) classString += `s${this.size}`;
         return classString;
       },
     },
@@ -49,6 +49,7 @@
 <template>
   <svg
     :class="fullCssClass">
-    <use v-bind="{'xlink:href':spriteHref}"/>
+    <use 
+      v-bind="{'xlink:href':spriteHref}"/>
   </svg>
 </template>

@@ -1,5 +1,5 @@
 <script>
-    import tooltip from '../../../vue_shared/directives/tooltip';
+  import tooltip from '../../../vue_shared/directives/tooltip';
   import icon from '../../../vue_shared/components/icon.vue';
 
   /**
@@ -39,7 +39,7 @@
 
     computed: {
       cssClass() {
-        return `${gl.text.dasherize(this.actionIcon)} js-${gl.text.dasherize(this.actionIcon)}`;
+        return `${gl.text.dasherize(this.actionIcon)} js-icon-${gl.text.dasherize(this.actionIcon)}`;
       },
     },
   };
