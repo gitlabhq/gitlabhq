@@ -44,12 +44,8 @@ feature 'Diffs URL', :js do
         visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
       end
 
-      it 'shows collapsed note' do
-        wait_for_requests
-
-        expect(page).to have_selector('.discussion-notes.collapsed') do |note_container|
-          expect(note_container).to have_selector(fragment, visible: false)
-        end
+      it 'shows expanded note' do
+        expect(page).to have_selector(fragment, visible: true)
       end
     end
   end
