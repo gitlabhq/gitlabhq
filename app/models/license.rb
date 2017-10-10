@@ -18,7 +18,8 @@ class License < ActiveRecord::Base
     issue_board_milestone
     issue_weights
     jenkins_integration
-    ldap_extras
+    ldap_group_sync
+    multiple_ldap_servers
     merge_request_approvers
     merge_request_rebase
     merge_request_squash
@@ -108,7 +109,8 @@ class License < ActiveRecord::Base
     elastic_search
     extended_audit_events
     geo
-    ldap_extras
+    ldap_group_sync
+    multiple_ldap_servers
     object_storage
     repository_size_limit
   ].freeze

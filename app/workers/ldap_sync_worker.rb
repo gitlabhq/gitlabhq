@@ -3,7 +3,7 @@ class LdapSyncWorker
   include CronjobQueue
 
   def perform
-    return unless Gitlab::LDAP::Config.enabled_extras?
+    return unless Gitlab::LDAP::Config.enabled? && ::License.feature_available?(:ldap_group_sync)
 
     Rails.logger.info "Performing daily LDAP sync task."
     User.ldap.find_each(batch_size: 100).each do |ldap_user|
