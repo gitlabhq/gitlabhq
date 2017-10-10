@@ -731,7 +731,6 @@ describe Gitlab::GitAccess do
       end
     end
 
-<<<<<<< HEAD
     context "when license blocks changes" do
       before do
         create(:protected_branch, name: 'feature', project: project)
@@ -745,8 +744,6 @@ describe Gitlab::GitAccess do
       run_permission_checks(admin: matrix)
     end
 
-=======
->>>>>>> ce-com/master
     context "when in a read-only GitLab instance" do
       before do
         create(:protected_branch, name: 'feature', project: project)
@@ -759,7 +756,6 @@ describe Gitlab::GitAccess do
 
       run_permission_checks(admin: matrix)
     end
-<<<<<<< HEAD
 
     describe "push_rule_check" do
       let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
@@ -912,8 +908,6 @@ describe Gitlab::GitAccess do
         end
       end
     end
-=======
->>>>>>> ce-com/master
   end
 
   describe 'build authentication abilities' do
