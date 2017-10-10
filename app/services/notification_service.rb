@@ -397,7 +397,7 @@ class NotificationService
   end
 
   def relabeled_resource_email(target, labels, current_user, method)
-    recipients = labels.flat_map { |l| l.subscribers(target.project) }
+    recipients = labels.flat_map { |l| l.subscribers(target.project) }.uniq
     recipients = notifiable_users(
       recipients, :subscription,
       target: target,
