@@ -56,15 +56,22 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
-      path = ContainerRegistry::Path.new(name)
 
-      if type == 'registry' && name == 'catalog' && current_user && current_user.admin?
-        return { type: type, name: name, actions: ['*'] }
+      case type
+      when 'registry'
+        process_registry_access(type, name, actions)
+      when 'repository'
+        path = ContainerRegistry::Path.new(name)
+        process_repository_access(type, path, actions)
       end
+    end
 
-      return unless type == 'repository'
+    def process_registry_access(type, name, actions)
+      return unless current_user&.admin?
+      return unless name == 'catalog'
+      return unless actions == ['*']
 
-      process_repository_access(type, path, actions)
+      { type: type, name: name, actions: ['*'] }
     end
 
     def process_repository_access(type, path, actions)
