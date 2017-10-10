@@ -278,10 +278,10 @@
   }
 
   #sidebar {
-    @include editor-height(0);
     flex: 1;
 
     &.sidebar-mini {
+      @include editor-height(0);
       width: 20%;
       border-right: 1px solid $white-normal;
       overflow: auto;

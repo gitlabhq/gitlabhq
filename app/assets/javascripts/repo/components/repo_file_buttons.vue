@@ -84,7 +84,7 @@ export default RepoFileButtons;
         v-tooltip
         data-container="body"
         target="_blank"
-        class="btn btn-default js-btn-simple-view"
+        class="btn js-btn-simple-view"
         rel="noopener noreferrer">
         <i
           :class="simpleViewerIconClass"
@@ -97,7 +97,7 @@ export default RepoFileButtons;
         v-tooltip
         data-container="body"
         target="_blank"
-        class="btn btn-default js-btn-rich-view"
+        class="btn js-btn-rich-view"
         rel="noopener noreferrer">
         <i
           :class="richViewerIconClass"
@@ -113,6 +113,7 @@ export default RepoFileButtons;
         :href="activeFile.raw_path"
         :title="rawDownloadButtonLabel"
         v-tooltip
+        data-container="body"
         target="_blank"
         class="btn btn-default raw"
         rel="noopener noreferrer">
