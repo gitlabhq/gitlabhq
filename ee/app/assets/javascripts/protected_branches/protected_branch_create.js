@@ -1,6 +1,5 @@
-/* global Flash */
-
 import AccessorUtilities from '~/lib/utils/accessor';
+import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import ProtectedBranchDropdown from './protected_branch_dropdown';

@@ -1,5 +1,5 @@
 <script>
-/* global Flash */
+import Flash from '../../flash';
 import Store from '../stores/repo_store';
 import RepoMixin from '../mixins/repo_mixin';
 import Service from '../services/repo_service';

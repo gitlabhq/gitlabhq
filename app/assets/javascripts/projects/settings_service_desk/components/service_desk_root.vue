@@ -1,6 +1,5 @@
 <script>
-/* global Flash */
-
+import Flash from '../../../flash';
 import serviceDeskSetting from './service_desk_setting.vue';
 import ServiceDeskStore from '../stores/service_desk_store';
 import ServiceDeskService from '../services/service_desk_service';
@@ -44,7 +43,7 @@ export default {
   methods: {
     fetchIncomingEmail() {
       if (this.flash) {
-        this.flash.destroy();
+        this.flash.innerHTML = '';
       }
 
       this.service.fetchIncomingEmail()

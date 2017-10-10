@@ -1,6 +1,5 @@
 /* eslint-disable no-new */
-/* global Flash */
-
+import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 

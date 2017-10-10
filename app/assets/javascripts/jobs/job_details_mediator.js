@@ -1,7 +1,7 @@
-/* global Flash */
 /* global Build */
 
 import Visibility from 'visibilityjs';
+import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import JobStore from './stores/job_store';
 import JobService from './services/job_service';
