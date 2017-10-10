@@ -19,6 +19,7 @@ import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
+import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
@@ -557,7 +558,7 @@ export default class Notes {
    */
   setupNoteForm(form) {
     var textarea, key;
-    new gl.GLForm(form, this.enableGFM);
+    new GLForm(form, this.enableGFM);
     textarea = form.find('.js-note-text');
     key = [
       'Note',
@@ -1152,7 +1153,7 @@ export default class Notes {
     var targetId = $originalContentEl.data('target-id');
     var targetType = $originalContentEl.data('target-type');
 
-    new gl.GLForm($editForm.find('form'), this.enableGFM);
+    new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm.find('form')
       .attr('action', postUrl)

@@ -79,6 +79,8 @@ import initChangesDropdown from './init_changes_dropdown';
 import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
+import GlFieldErrors from './gl_field_errors';
+import GLForm from './gl_form';
 import U2FAuthenticate from './u2f/authenticate';
 
 (function() {
@@ -230,7 +232,7 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
-          new gl.GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
           new gl.Diff();
@@ -247,7 +249,7 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.issue-form'), true);
+          new GLForm($('.issue-form'), true);
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -271,7 +273,7 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.merge-request-form'), true);
+          new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -280,7 +282,7 @@ import U2FAuthenticate from './u2f/authenticate';
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new gl.GLForm($('.tag-form'), true);
+          new GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:show':
@@ -290,17 +292,17 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
-          new gl.GLForm($('.snippet-form'), true);
+          new GLForm($('.snippet-form'), true);
           break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
-          new gl.GLForm($('.snippet-form'), false);
+          new GLForm($('.snippet-form'), false);
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new gl.GLForm($('.release-form'), true);
+          new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
@@ -606,7 +608,7 @@ import U2FAuthenticate from './u2f/authenticate';
               new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
-              new gl.GLForm($('.wiki-form'), true);
+              new GLForm($('.wiki-form'), true);
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
@@ -657,7 +659,7 @@ import U2FAuthenticate from './u2f/authenticate';
 
     Dispatcher.prototype.initFieldErrors = function() {
       $('.gl-show-field-errors').each((i, form) => {
-        new gl.GlFieldErrors(form);
+        new GlFieldErrors(form);
       });
     };
 
