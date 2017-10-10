@@ -815,7 +815,7 @@ import '~/notes';
       });
 
       it('shows a flash message', () => {
-        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         expect($('.flash-alert').is(':visible')).toBeTruthy();
       });
@@ -828,7 +828,7 @@ import '~/notes';
       });
 
       it('hides visible flash message', () => {
-        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         this.notes.clearFlash();
 

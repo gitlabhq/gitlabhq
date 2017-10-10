@@ -1,5 +1,5 @@
 /* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
-/* global Flash */
+import Flash from '../flash';
 import { getPagePath } from '../lib/utils/common_utils';
 
 ((global) => {
