@@ -39,6 +39,17 @@ describe GeoNodeStatus do
   end
 
   describe '#attachments_synced_count' do
+    it 'only counts successful syncs' do
+      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      uploads = Upload.all.pluck(:id)
+
+      create(:geo_file_registry, :avatar, file_id: uploads[0])
+      create(:geo_file_registry, :avatar, file_id: uploads[1])
+      create(:geo_file_registry, :avatar, file_id: uploads[2], success: false)
+
+      expect(subject.attachments_synced_count).to eq(2)
+    end
+
     it 'does not count synced files that were replaced' do
       user = create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
 
@@ -65,6 +76,21 @@ describe GeoNodeStatus do
       subject = described_class.new
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(1)
+    end
+  end
+
+  describe '#attachments_failed_count' do
+    it 'counts failed avatars, attachment, personal snippets and files' do
+      # These two should be ignored
+      create(:geo_file_registry, :lfs, success: false)
+      create(:geo_file_registry)
+
+      create(:geo_file_registry, file_type: :personal_file, success: false)
+      create(:geo_file_registry, file_type: :attachment, success: false)
+      create(:geo_file_registry, :avatar, success: false)
+      create(:geo_file_registry, success: false)
+
+      expect(subject.attachments_failed_count).to eq(4)
     end
   end
 
@@ -110,6 +136,20 @@ describe GeoNodeStatus do
       expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag)
 
       expect(subject.db_replication_lag).to eq(nil)
+    end
+  end
+
+  describe '#lfs_objects_failed' do
+    it 'counts failed LFS objects' do
+      # These four should be ignored
+      create(:geo_file_registry, success: false)
+      create(:geo_file_registry, :avatar, success: false)
+      create(:geo_file_registry, file_type: :attachment, success: false)
+      create(:geo_file_registry, :lfs)
+
+      create(:geo_file_registry, :lfs, success: false)
+
+      expect(subject.lfs_objects_failed_count).to eq(1)
     end
   end
 
@@ -218,8 +258,10 @@ describe GeoNodeStatus do
       allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(nil)
       subject.attachments_count = nil
       subject.attachments_synced_count = nil
+      subject.attachments_failed_count = nil
       subject.lfs_objects_count = nil
       subject.lfs_objects_synced_count = nil
+      subject.lfs_objects_failed_count = nil
       subject.repositories_count = nil
       subject.repositories_synced_count = nil
       subject.repositories_failed_count = nil
@@ -235,9 +277,11 @@ describe GeoNodeStatus do
       expect(subject.repositories_failed_count).to be_zero
       expect(subject.lfs_objects_count).to be_zero
       expect(subject.lfs_objects_synced_count).to be_zero
+      expect(subject.lfs_objects_failed_count).to be_zero
       expect(subject.lfs_objects_synced_in_percentage).to be_zero
       expect(subject.attachments_count).to be_zero
       expect(subject.attachments_synced_count).to be_zero
+      expect(subject.attachments_failed_count).to be_zero
       expect(subject.attachments_synced_in_percentage).to be_zero
       expect(subject.last_event_id).to be_nil
       expect(subject.last_event_date).to be_nil
