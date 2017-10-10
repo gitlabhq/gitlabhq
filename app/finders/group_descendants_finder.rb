@@ -9,7 +9,7 @@ class GroupDescendantsFinder
 
   def execute
     # The children array might be extended with the ancestors of projects when
-    # filtering. In that case, take the maximum so the aray does not get limited
+    # filtering. In that case, take the maximum so the array does not get limited
     # Otherwise, allow paginating through all results
     #
     all_required_elements = children
@@ -29,12 +29,9 @@ class GroupDescendantsFinder
     @children ||= paginator.paginate(params[:page])
   end
 
-  def collections
-    [subgroups.with_selects_for_list, projects]
-  end
-
   def paginator
-    @paginator ||= Gitlab::MultiCollectionPaginator.new(*collections, per_page: params[:per_page])
+    @paginator ||= Gitlab::MultiCollectionPaginator.new(subgroups, projects,
+                                                        per_page: params[:per_page])
   end
 
   def direct_child_groups
@@ -99,7 +96,7 @@ class GroupDescendantsFinder
              else
                direct_child_groups
              end
-    groups.order_by(sort)
+    groups.with_selects_for_list.order_by(sort)
   end
 
   def projects_for_user
@@ -110,7 +107,7 @@ class GroupDescendantsFinder
     projects_for_user.where(namespace: parent_group)
   end
 
-  # Finds all projects nested under `parent_group` or any of it's descendant
+  # Finds all projects nested under `parent_group` or any of its descendant
   # groups
   def projects_matching_filter
     projects_for_user.search(params[:filter])
