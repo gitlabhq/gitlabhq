@@ -54,11 +54,8 @@ describe 'projects/merge_requests/show.html.haml' do
     it 'closes the merge request if the source project does not exist' do
       closed_merge_request.update_attributes(state: 'open')
       forked_project.destroy
-<<<<<<< HEAD
       # Reload merge request so MergeRequest#source_project turns to `nil`
       closed_merge_request.reload
-=======
->>>>>>> ce-com/master
 
       render
 
