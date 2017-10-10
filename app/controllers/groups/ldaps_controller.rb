@@ -17,6 +17,6 @@ class Groups::LdapsController < Groups::ApplicationController
   private
 
   def check_enabled_extras!
-    render_404 unless Gitlab::LDAP::Config.enabled? && ::License.feature_available?(:ldap_group_sync)
+    render_404 unless Gitlab::LDAP::Config.group_sync_enabled?
   end
 end

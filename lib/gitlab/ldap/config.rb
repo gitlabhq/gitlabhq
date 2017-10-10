@@ -2,6 +2,8 @@
 module Gitlab
   module LDAP
     class Config
+      include ::EE::Gitlab::LDAP::Config
+
       NET_LDAP_ENCRYPTION_METHOD = {
         simple_tls: :simple_tls,
         start_tls:  :start_tls,
