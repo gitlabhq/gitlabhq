@@ -110,7 +110,7 @@ module Gitlab
       end
 
       def line_code(line)
-        Gitlab::Git::Conflict::LineCode.generate(our_path, line.new_pos, line.old_pos)
+        Gitlab::Git.diff_line_code(our_path, line.new_pos, line.old_pos)
       end
 
       def create_match_line(line)
@@ -172,17 +172,6 @@ module Gitlab
                                                      merge_request,
                                                      old_path: their_path,
                                                      new_path: our_path)
-      end
-
-      # Don't try to print merge_request.
-      def inspect
-        instance_variables = [:content, :their_path, :our_path, :our_mode, :type].map do |instance_variable|
-          value = instance_variable_get("@#{instance_variable}")
-
-          "#{instance_variable}=\"#{value}\""
-        end
-
-        "#<#{self.class} #{instance_variables.join(' ')}>"
       end
 
       private
