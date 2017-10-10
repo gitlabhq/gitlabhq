@@ -535,7 +535,6 @@ describe Namespace do
     end
   end
 
-<<<<<<< HEAD
   describe '#share_with_group_lock with subgroups', :nested_groups do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}
@@ -648,8 +647,6 @@ describe Namespace do
     end
   end
 
-=======
->>>>>>> ce-com/master
   describe '#has_forks_of?' do
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
