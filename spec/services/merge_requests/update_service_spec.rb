@@ -126,10 +126,10 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'creates system note about discussion lock' do
-        note = find_note('locked this issue')
+        note = find_note('locked this merge request')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'locked this issue'
+        expect(note.note).to eq 'locked this merge request'
       end
 
       context 'when not including source branch removal options' do
