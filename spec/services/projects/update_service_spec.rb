@@ -219,13 +219,13 @@ describe Projects::UpdateService, '#execute' do
       FileUtils.rm_rf('tmp/tests/storage_b')
     end
 
-    it 'calls the change repository storage method if the storage changed', skip_gitaly_mock: true do
+    it 'calls the change repository storage method if the storage changed', :skip_gitaly_mock do
       expect(project).to receive(:change_repository_storage).with('b')
 
       update_project(project, admin_user, opts).inspect
     end
 
-    it "doesn't call the change repository storage for non-admin users", skip_gitaly_mock: true do
+    it "doesn't call the change repository storage for non-admin users", :skip_gitaly_mock do
       expect(project).not_to receive(:change_repository_storage)
 
       update_project(project, user, opts).inspect

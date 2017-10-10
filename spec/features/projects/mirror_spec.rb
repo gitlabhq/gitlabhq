@@ -151,7 +151,7 @@ feature 'Project mirror', :js do
       end
     end
 
-    describe 'host key management', use_clean_rails_memory_store_caching: true do
+    describe 'host key management', :use_clean_rails_memory_store_caching do
       let(:key) { Gitlab::SSHPublicKey.new(SSHKeygen.generate) }
       let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 

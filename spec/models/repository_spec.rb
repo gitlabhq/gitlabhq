@@ -259,13 +259,13 @@ describe Repository do
       it_behaves_like 'finding commits by message'
     end
 
-    describe 'when storage is broken', :broken_storage  do
+    describe 'when storage is broken', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
       end
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
       end
@@ -1569,7 +1569,7 @@ describe Repository do
     end
   end
 
-  describe "Elastic search", elastic: true do
+  describe "Elastic search", :elastic do
     before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Gitlab::Elastic::Helper.create_empty_index
