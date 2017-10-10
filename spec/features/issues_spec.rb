@@ -402,7 +402,7 @@ describe 'Issues', :js do
     end
   end
 
-  describe 'update weight from issue#show', js: true do
+  describe 'update weight from issue#show', :js do
     let!(:issue) { create(:issue, project: project) }
 
     before do

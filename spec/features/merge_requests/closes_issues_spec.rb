@@ -76,7 +76,7 @@ feature 'Merge Request closing issues message', :js do
     end
   end
 
-  context 'approvals are enabled while closing issues', js: true do
+  context 'approvals are enabled while closing issues', :js do
     before do
       project.team << [user, :developer]
     end

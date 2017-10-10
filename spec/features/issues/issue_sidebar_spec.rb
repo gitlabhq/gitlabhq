@@ -165,7 +165,7 @@ feature 'Issue Sidebar' do
     end
   end
 
-  context 'updating weight', js: true do
+  context 'updating weight', :js do
     before do
       project.team << [user, :master]
       visit_issue(project, issue)

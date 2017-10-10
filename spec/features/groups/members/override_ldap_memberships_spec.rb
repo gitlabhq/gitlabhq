@@ -20,13 +20,13 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
     sign_in(owner)
   end
 
-  scenario 'override not available on project members page', js: true do
+  scenario 'override not available on project members page', :js do
     visit namespace_project_project_members_path(group, project)
 
     expect(page).not_to have_button 'Edit permissions'
   end
 
-  scenario 'owner cannot override LDAP access level', js: true do
+  scenario 'owner cannot override LDAP access level', :js do
     stub_application_setting(allow_group_owners_to_manage_ldap: false)
 
     visit group_group_members_path(group)
@@ -38,7 +38,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
     end
   end
 
-  scenario 'owner can override LDAP access level', js: true do
+  scenario 'owner can override LDAP access level', :js do
     ldap_override_message = 'John Doe is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.'
 
     visit group_group_members_path(group)

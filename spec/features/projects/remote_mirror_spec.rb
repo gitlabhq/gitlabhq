@@ -5,7 +5,7 @@ feature 'Project remote mirror', feature: true do
   let(:remote_mirror) { project.remote_mirrors.first }
   let(:user) { create(:user) }
 
-  describe 'On a project', js: true do
+  describe 'On a project', :js do
     before do
       project.team << [user, :master]
       sign_in user

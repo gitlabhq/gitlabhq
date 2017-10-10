@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project mirror', js: true do
+feature 'Project mirror', :js do
   include ReactiveCachingHelpers
 
   let(:project) { create(:project, :mirror, :import_finished, :repository, creator: user, name: 'Victorialand') }

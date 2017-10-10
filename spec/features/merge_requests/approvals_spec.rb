@@ -208,7 +208,7 @@ feature 'Merge request approvals', :js do
       sign_in(user)
     end
 
-    context 'when group is assigned to a project', js: true do
+    context 'when group is assigned to a project', :js do
       before do
         create :approver_group, group: group, target: project
         visit project_merge_request_path(project, merge_request)
@@ -227,7 +227,7 @@ feature 'Merge request approvals', :js do
       end
     end
 
-    context 'when group is assigned to a merge request', js: true do
+    context 'when group is assigned to a merge request', :js do
       before do
         create :approver_group, group: group, target: merge_request
         visit project_merge_request_path(project, merge_request)
@@ -247,7 +247,7 @@ feature 'Merge request approvals', :js do
       end
     end
 
-    context 'when CI is running but no approval given', js: true do
+    context 'when CI is running but no approval given', :js do
       before do
         create :approver_group, group: group, target: merge_request
         pipeline = create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
