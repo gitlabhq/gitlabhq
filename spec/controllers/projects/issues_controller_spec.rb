@@ -910,12 +910,6 @@ describe Projects::IssuesController do
         create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
       end
 
-      it 'filters notes that the user should not see' do
-        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-        expect(JSON.parse(response.body).count).to eq(1)
-      end
-
       it 'does not result in N+1 queries' do
         # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
