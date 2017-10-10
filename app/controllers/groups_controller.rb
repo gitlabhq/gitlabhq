@@ -45,13 +45,14 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    setup_children(@group)
-
     respond_to do |format|
-      format.html
+      format.html do
+        @has_children = GroupDescendantsFinder.new(current_user: current_user,
+                                                   parent_group: @group,
+                                                   params: params).has_children?
+      end
 
       format.atom do
-        setup_projects
         load_events
         render layout: 'xml.atom'
       end
@@ -124,20 +125,6 @@ class GroupsController < Groups::ApplicationController
                                            parent_group: parent,
                                            params: params).execute
     @children = @children.page(params[:page])
-  end
-
-  def setup_projects
-    set_non_archived_param
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
-
-    options = {}
-    options[:only_owned] = true if params[:shared] == '0'
-    options[:only_shared] = true if params[:shared] == '1'
-
-    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
-    @projects = @projects.includes(:namespace)
-    @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
   def authorize_create_group!

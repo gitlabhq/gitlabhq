@@ -19,12 +19,8 @@ class GroupDescendantsFinder
     Kaminari.paginate_array(all_required_elements, total_count: total_count)
   end
 
-  def subgroup_count
-    @subgroup_count ||= subgroups.count
-  end
-
-  def project_count
-    @project_count ||= projects.count
+  def has_children?
+    projects.any? || subgroups.any?
   end
 
   private

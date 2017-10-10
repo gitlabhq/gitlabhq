@@ -39,7 +39,7 @@
         - else
           = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
 
-  - if params[:filter].blank? && @children.empty?
+  - if params[:filter].blank? && !@has_children
     = render "shared/groups/empty_state"
   - else
     = render "children", children: @children, group: @group

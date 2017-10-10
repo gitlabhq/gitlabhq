@@ -12,6 +12,22 @@ describe GroupDescendantsFinder do
     group.add_owner(user)
   end
 
+  describe '#has_children?' do
+    it 'is true when there are projects' do
+      create(:project, namespace: group)
+
+      expect(finder.has_children?).to be_truthy
+    end
+
+    context 'when there are subgroups', :nested_groups do
+      it 'is true when there are projects' do
+        create(:group, parent: group)
+
+        expect(finder.has_children?).to be_truthy
+      end
+    end
+  end
+
   describe '#execute' do
     it 'includes projects' do
       project = create(:project, namespace: group)
