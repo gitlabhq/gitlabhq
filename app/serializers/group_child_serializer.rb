@@ -6,10 +6,10 @@ class GroupChildSerializer < BaseSerializer
   entity GroupChildEntity
 
   def expand_hierarchy(hierarchy_root = nil)
-    tap do
-      @hierarchy_root = hierarchy_root
-      @should_expand_hierarchy = true
-    end
+    @hierarchy_root = hierarchy_root
+    @should_expand_hierarchy = true
+
+    self
   end
 
   def represent(resource, opts = {}, entity_class = nil)
@@ -41,7 +41,7 @@ class GroupChildSerializer < BaseSerializer
           .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
       end
     elsif hierarchy.is_a?(Array)
-      hierarchy.map { |child| serializer.represent_hierarchy(child, opts) }.flatten
+      hierarchy.flat_map { |child| serializer.represent_hierarchy(child, opts) }
     else
       serializer.represent(hierarchy, opts)
     end
