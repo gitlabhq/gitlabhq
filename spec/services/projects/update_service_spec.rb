@@ -1,10 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
-<<<<<<< HEAD
   include StubConfiguration
-=======
->>>>>>> ce-com/master
   include ProjectForksHelper
 
   let(:gitlab_shell) { Gitlab::Shell.new }
