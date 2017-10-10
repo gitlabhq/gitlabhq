@@ -54,11 +54,7 @@ describe 'User uploads files' do
       visit(project2_tree_path_root_ref)
     end
 
-<<<<<<< HEAD
-    it 'uploads and commit a new file to a forked project', js: true do
-=======
     it 'uploads and commit a new file to a forked project', :js do
->>>>>>> ce-com/master
       find('.add-to-tree').click
       click_link('Upload file')
 
