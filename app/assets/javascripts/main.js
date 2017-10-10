@@ -21,15 +21,6 @@ window._ = _;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
-// shortcuts
-import './shortcuts';
-import './shortcuts_blob';
-import './shortcuts_dashboard_navigation';
-import './shortcuts_navigation';
-import './shortcuts_find_file';
-import './shortcuts_issuable';
-import './shortcuts_network';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';

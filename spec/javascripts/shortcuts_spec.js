@@ -1,4 +1,5 @@
-/* global Shortcuts */
+import Shortcuts from '~/shortcuts';
+
 describe('Shortcuts', () => {
   const fixtureName = 'merge_requests/diff_comment.html.raw';
   const createEvent = (type, target) => $.Event(type, {
