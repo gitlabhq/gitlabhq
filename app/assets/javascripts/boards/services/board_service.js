@@ -32,6 +32,10 @@ class BoardService {
   createBoard (board) {
     board.label_ids = (board.labels || []).map(b => b.id);
 
+    if (board.label_ids.length === 0) {
+      board.label_ids = [''];
+    }
+
     if (board.assignee) {
       board.assignee_id = board.assignee.id;
     }
