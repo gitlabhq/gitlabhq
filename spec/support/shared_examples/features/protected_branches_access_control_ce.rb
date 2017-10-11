@@ -34,7 +34,7 @@ shared_examples "protected branches > access control > CE" do
 
         within('.js-allowed-to-push-container') do
           expect(first("li")).to have_content("Roles")
-          click_on access_type_name
+          find(:link, access_type_name).click
         end
       end
 
@@ -79,7 +79,7 @@ shared_examples "protected branches > access control > CE" do
 
         within('.js-allowed-to-merge-container') do
           expect(first("li")).to have_content("Roles")
-          click_on access_type_name
+          find(:link, access_type_name).click
         end
       end
 

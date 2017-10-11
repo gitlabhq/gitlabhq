@@ -31,7 +31,7 @@ describe 'User comments on a diff', :js do
           page.within('.files > div:nth-child(3)') do
             expect(page).to have_content('Line is wrong')
 
-            find('.js-toggle-diff-comments').trigger('click')
+            find('.js-toggle-diff-comments').click
 
             expect(page).not_to have_content('Line is wrong')
           end
@@ -64,7 +64,7 @@ describe 'User comments on a diff', :js do
 
           # Hide the comment.
           page.within('.files > div:nth-child(3)') do
-            find('.js-toggle-diff-comments').trigger('click')
+            find('.js-toggle-diff-comments').click
 
             expect(page).not_to have_content('Line is wrong')
           end
@@ -77,7 +77,7 @@ describe 'User comments on a diff', :js do
 
           # Show the comment.
           page.within('.files > div:nth-child(3)') do
-            find('.js-toggle-diff-comments').trigger('click')
+            find('.js-toggle-diff-comments').click
           end
 
           # Now both the comments should be shown.
@@ -90,7 +90,9 @@ describe 'User comments on a diff', :js do
           end
 
           # Check the same comments in the side-by-side view.
-          click_link('Side-by-side')
+          page.execute_script(
+            "document.querySelector('#parallel-diff-btn').click()"
+          )
 
           wait_for_requests
 
@@ -157,7 +159,7 @@ describe 'User comments on a diff', :js do
       end
 
       page.within('.merge-request-tabs') do
-        find('.notes-tab').trigger('click')
+        find('.notes-tab').click
       end
 
       wait_for_requests
