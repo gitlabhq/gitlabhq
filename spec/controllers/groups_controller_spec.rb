@@ -418,7 +418,6 @@ describe GroupsController do
         end
       end
     end
-
   end
 
   describe 'GET #issues' do

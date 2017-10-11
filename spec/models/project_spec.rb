@@ -2199,7 +2199,6 @@ describe Project do
     it { expect(project.parent_id).to eq(project.namespace_id) }
   end
 
-
   describe '#parent_changed?' do
     let(:project) { create(:project) }
 

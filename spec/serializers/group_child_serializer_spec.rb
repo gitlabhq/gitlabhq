@@ -39,7 +39,6 @@ describe GroupChildSerializer do
         subgroup1 = create(:group, parent: parent)
         subsub_group1 = create(:group, parent: subgroup1)
         subgroup2 = create(:group, parent: parent)
-        subsub_group2 = create(:group, parent: subgroup2)
 
         json = serializer.represent([subgroup1, subsub_group1, subgroup1, subgroup2])
         subgroup1_json = json.first
