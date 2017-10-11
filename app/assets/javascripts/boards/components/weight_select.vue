@@ -3,7 +3,6 @@
 
 import '~/weight_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import eventHub from '../eventhub';
 
 const ANY_WEIGHT = 'Any Weight';
 const NO_WEIGHT = 'No Weight';
@@ -45,9 +44,9 @@ export default {
     },
     valueText() {
       if (this.value > 0) return this.value;
-      if (this.value == 0) return NO_WEIGHT;
+      if (this.value === 0) return NO_WEIGHT;
       return ANY_WEIGHT;
-    }
+    },
   },
   methods: {
     selectWeight(weight) {
@@ -61,15 +60,15 @@ export default {
         return 0;
       }
       return -1;
-    }
+    },
   },
   mounted() {
-    new WeightSelect(this.$refs.dropdownButton, {
+    this.weightDropdown = new WeightSelect(this.$refs.dropdownButton, {
       handleClick: this.selectWeight,
       selected: this.value,
       fieldName: this.fieldName,
     });
-  }
+  },
 };
 </script>
 

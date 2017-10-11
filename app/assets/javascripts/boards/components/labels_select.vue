@@ -1,8 +1,8 @@
 <script>
 /* global LabelsSelect */
+/* global ListLabel */
 
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import eventHub from '../eventhub';
 
 export default {
   props: {
@@ -32,7 +32,7 @@ export default {
     },
   },
   mounted() {
-    new LabelsSelect(this.$refs.dropdownButton, {
+    this.labelsDropdown = new LabelsSelect(this.$refs.dropdownButton, {
       handleClick: this.handleClick,
     });
   },
@@ -58,7 +58,7 @@ export default {
         labels = labels.filter(selected => selected.id !== label.id);
         this.board.labels = labels;
       }
-    }
+    },
   },
 };
 </script>
