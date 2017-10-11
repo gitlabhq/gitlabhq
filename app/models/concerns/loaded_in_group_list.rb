@@ -24,13 +24,13 @@ module LoadedInGroupList
                    MEMBER_COUNT_SQL].freeze
 
   module ClassMethods
-    def with_counts(archived = nil)
+    def with_counts(archived:)
       selects = COUNT_SELECTS.dup << project_count(archived)
       select(selects)
     end
 
-    def with_selects_for_list(archived = nil)
-      with_route.with_counts(archived)
+    def with_selects_for_list(archived: nil)
+      with_route.with_counts(archived: archived)
     end
 
     def project_count(archived)

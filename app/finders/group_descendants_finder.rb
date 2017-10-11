@@ -102,7 +102,7 @@ class GroupDescendantsFinder
     projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
     groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
     ancestors_for_groups(groups_to_load_ancestors_of)
-      .with_selects_for_list(params[:archived])
+      .with_selects_for_list(archived: params[:archived])
   end
 
   def subgroups
@@ -115,7 +115,7 @@ class GroupDescendantsFinder
              else
                direct_child_groups
              end
-    groups.with_selects_for_list(params[:archived]).order_by(sort)
+    groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
 
   def direct_child_projects

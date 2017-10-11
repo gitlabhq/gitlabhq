@@ -22,7 +22,7 @@ describe LoadedInGroupList do
         create(:project, namespace: parent, archived: true)
         create(:project, namespace: parent)
 
-        found_group = Group.with_selects_for_list('true').find_by(id: parent.id)
+        found_group = Group.with_selects_for_list(archived: 'true').find_by(id: parent.id)
 
         expect(found_group.preloaded_project_count).to eq(2)
       end
@@ -31,7 +31,7 @@ describe LoadedInGroupList do
         create_list(:project, 2, namespace: parent, archived: true)
         create(:project, namespace: parent)
 
-        found_group = Group.with_selects_for_list('only').find_by(id: parent.id)
+        found_group = Group.with_selects_for_list(archived: 'only').find_by(id: parent.id)
 
         expect(found_group.preloaded_project_count).to eq(2)
       end
