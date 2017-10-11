@@ -1,4 +1,6 @@
 class Projects::WikisController < Projects::ApplicationController
+  include PreviewMarkdown
+
   before_action :authorize_read_wiki!
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
   before_action :authorize_admin_wiki!, only: :destroy
@@ -90,17 +92,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def git_access
-  end
-
-  def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
-
-    render json: {
-      body: view_context.markdown(result[:text], pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
-      references: {
-        users: result[:users]
-      }
-    }
   end
 
   private

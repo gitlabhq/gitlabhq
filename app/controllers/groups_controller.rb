@@ -2,6 +2,7 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
   include ParamsBackwardCompatibility
+  include PreviewMarkdown
 
   respond_to :html
 
