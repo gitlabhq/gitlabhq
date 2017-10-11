@@ -61,10 +61,13 @@ scope(path: 'groups/*group_id',
 
     resources :variables, only: [:index, :show, :update, :create, :destroy]
     resources :billings, only: [:index]
+
+    ## EE-specific
+    resources :boards, only: [:index, :show, :create, :update, :destroy]
   end
 
   ## EE-specific
-  resources :boards, only: [:index, :show, :create, :update, :destroy]
+  get :boards, to: redirect('/groups/%{group_id}/-/boards')
 end
 
 scope(path: 'groups/*id',
