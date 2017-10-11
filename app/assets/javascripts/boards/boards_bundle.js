@@ -191,35 +191,39 @@ $(() => {
     },
   });
 
-  gl.boardConfigToggle = new Vue({
-    el: document.querySelector('.js-board-config'),
-    data() {
-      return {
-        canAdminList: convertPermissionToBoolean(
-          this.$options.el.dataset.canAdminList,
-        ),
-      };
-    },
-    methods: {
-      showPage: page => gl.issueBoards.BoardsStore.showPage(page),
-    },
-    computed: {
-      buttonText() {
-        return this.canAdminList ? 'Edit board' : 'View scope';
+  const configEl = document.querySelector('.js-board-config');
+
+  if (configEl) {
+    gl.boardConfigToggle = new Vue({
+      el: configEl,
+      data() {
+        return {
+          canAdminList: convertPermissionToBoolean(
+            this.$options.el.dataset.canAdminList,
+          ),
+        };
       },
-    },
-    template: `
-      <div class="prepend-left-10">
-        <button
-          class="btn btn-inverted"
-          type="button"
-          @click.prevent="showPage('edit')"
-        >
-          {{ buttonText }}
-        </button>
-      </div>
-    `,
-  });
+      methods: {
+        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
+      },
+      computed: {
+        buttonText() {
+          return this.canAdminList ? 'Edit board' : 'View scope';
+        },
+      },
+      template: `
+        <div class="prepend-left-10">
+          <button
+            class="btn btn-inverted"
+            type="button"
+            @click.prevent="showPage('edit')"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
+      `,
+    });
+  }
 
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
