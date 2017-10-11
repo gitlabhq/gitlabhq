@@ -6,33 +6,25 @@ class GroupChildEntity < Grape::Entity
          :created_at, :updated_at, :avatar_url
 
   expose :type do |instance|
-    instance.class.name.downcase
+    type
   end
 
   expose :can_edit do |instance|
     return false unless request.respond_to?(:current_user)
 
-    if project?
-      can?(request.current_user, :admin_project, instance)
-    else
-      can?(request.current_user, :admin_group, instance)
-    end
+    can?(request.current_user, "admin_#{type}", instance)
   end
 
   expose :edit_path do |instance|
-    if project?
-      edit_project_path(instance)
-    else
-      edit_group_path(instance)
-    end
+    # We know `type` will be one either `project` or `group`.
+    # The `edit_polymorphic_path` helper would try to call the path helper
+    # with a plural: `edit_groups_path(instance)` or `edit_projects_path(instance)`
+    # while our methods are `edit_group_path` or `edit_group_path`
+    public_send("edit_#{type}_path", instance) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   expose :relative_path do |instance|
-    if project?
-      project_path(instance)
-    else
-      group_path(instance)
-    end
+    polymorphic_path(instance)
   end
 
   expose :permission do |instance|
@@ -77,5 +69,9 @@ class GroupChildEntity < Grape::Entity
 
   def project?
     object.is_a?(Project)
+  end
+
+  def type
+    object.class.name.downcase
   end
 end

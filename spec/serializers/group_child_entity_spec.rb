@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe GroupChildEntity do
+  include Gitlab::Routing.url_helpers
+
   let(:user) { create(:user) }
   let(:request) { double('request') }
   let(:entity) { described_class.new(object, request: request) }
@@ -24,7 +26,6 @@ describe GroupChildEntity do
        type
        can_edit
        visibility
-       edit_path
        permission
        relative_path].each do |attribute|
       it "includes #{attribute}" do
@@ -49,6 +50,10 @@ describe GroupChildEntity do
 
     it 'includes the star count' do
       expect(json[:star_count]).to be_present
+    end
+
+    it 'has the correct edit path' do
+      expect(json[:edit_path]).to eq(edit_project_path(object))
     end
 
     it_behaves_like 'group child json'
@@ -85,6 +90,10 @@ describe GroupChildEntity do
       object.add_owner(create(:user))
 
       expect(json[:can_leave]).to be_truthy
+    end
+
+    it 'has the correct edit path' do
+      expect(json[:edit_path]).to eq(edit_group_path(object))
     end
 
     it_behaves_like 'group child json'
