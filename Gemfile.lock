@@ -1,3 +1,12 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitaly-proto.git
+  revision: 49f337efae805b3675b5000708f4258cdee29b54
+  branch: remove-exists
+  specs:
+    gitaly-proto (0.41.0)
+      google-protobuf (~> 3.1)
+      grpc (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -273,9 +282,6 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly-proto (0.41.0)
-      google-protobuf (~> 3.1)
-      grpc (~> 1.0)
     github-linguist (4.7.6)
       charlock_holmes (~> 0.7.3)
       escape_utils (~> 1.1.0)
@@ -324,7 +330,9 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
-    google-protobuf (3.4.0.2)
+    google-protobuf (3.4.1.1)
+    googleapis-common-protos-types (1.0.0)
+      google-protobuf (~> 3.0)
     googleauth (0.5.3)
       faraday (~> 0.12)
       jwt (~> 1.4)
@@ -351,8 +359,9 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
-    grpc (1.6.0)
+    grpc (1.6.6)
       google-protobuf (~> 3.1)
+      googleapis-common-protos-types (~> 1.0.0)
       googleauth (~> 0.5.1)
     haml (4.0.7)
       tilt
@@ -1027,7 +1036,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly-proto (~> 0.41.0)
+  gitaly-proto!
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.6.2)
