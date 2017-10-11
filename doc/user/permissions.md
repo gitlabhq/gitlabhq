@@ -54,7 +54,7 @@ The following table depicts the various user permission levels in a project.
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create new milestones                 |         |            |             | ✓        | ✓      |
+| Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
@@ -144,6 +144,7 @@ group.
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
 
 ### Subgroup permissions
 
