@@ -1,4 +1,4 @@
-/* global Flash */
+import Flash from '~/flash';
 import LinkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 

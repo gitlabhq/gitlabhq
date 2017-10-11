@@ -1,9 +1,8 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global Flash */
 /* global notes */
 
 import Cookies from 'js-cookie';
-import './flash';
+import Flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';

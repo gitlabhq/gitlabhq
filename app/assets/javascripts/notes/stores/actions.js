@@ -1,5 +1,5 @@
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -99,7 +99,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         eTagPoll.makeRequest();
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-        Flash('Commands applied', 'notice', $(noteData.flashContainer));
+        Flash('Commands applied', 'notice', noteData.flashContainer);
       }
 
       if (commandsChanges) {
@@ -114,8 +114,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
             .catch(() => {
               Flash(
                 'Something went wrong while adding your award. Please try again.',
-                null,
-                $(noteData.flashContainer),
+                'alert',
+                noteData.flashContainer,
               );
             });
         }
@@ -126,7 +126,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       }
 
       if (errors && errors.commands_only) {
-        Flash(errors.commands_only, 'notice', $(noteData.flashContainer));
+        Flash(errors.commands_only, 'notice', noteData.flashContainer);
       }
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 

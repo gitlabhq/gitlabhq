@@ -1,6 +1,6 @@
 <script>
-  /* global Flash */
   import { mapGetters, mapActions } from 'vuex';
+  import Flash from '../../flash';
   import store from '../stores/';
   import * as constants from '../constants';
   import issueNote from './issue_note.vue';

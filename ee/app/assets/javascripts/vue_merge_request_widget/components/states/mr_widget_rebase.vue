@@ -1,11 +1,9 @@
 <script>
-  /* global Flash */
-
   import simplePoll from '~/lib/utils/simple_poll';
   import eventHub from '~/vue_merge_request_widget/event_hub';
   import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-  import '~/flash';
+  import Flash from '~/flash';
 
   export default {
     props: {

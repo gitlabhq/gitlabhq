@@ -3,9 +3,9 @@
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../../flash';
 import eventHub from '../../sidebar/event_hub';
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';

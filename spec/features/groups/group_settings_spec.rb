@@ -19,7 +19,7 @@ feature 'Edit group settings' do
       scenario 'is able to navigate to LDAP group section' do
         visit edit_group_path(group)
 
-        expect(find('.nav-sidebar')).to have_content('LDAP Group')
+        expect(find('.nav-sidebar')).to have_content('LDAP Synchronization')
       end
 
       context 'with owners not being able to manage LDAP' do
@@ -28,7 +28,7 @@ feature 'Edit group settings' do
 
           visit edit_group_path(group)
 
-          expect(find('.nav-sidebar')).not_to have_content('LDAP Group')
+          expect(find('.nav-sidebar')).not_to have_content('LDAP Synchronization')
         end
       end
     end

@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
 
@@ -57,6 +56,7 @@ import './u2f/util';
 import './activities';
 import './admin';
 import './api';
+import './ajax_loading_spinner';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
@@ -76,7 +76,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import './flash';
+import Flash from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -178,7 +178,6 @@ $(function () {
   var $document = $(document);
   var $window = $(window);
   var $sidebarGutterToggle = $('.js-sidebar-toggle');
-  var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
 
@@ -263,13 +262,6 @@ $(function () {
   // Form submitter
   });
   gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
-  // Flash
-  if ($flash.length > 0) {
-    $flash.click(function () {
-      return $(this).fadeOut();
-    });
-    $flash.show();
-  }
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;

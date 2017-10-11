@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this, promise/catch-or-return */
 /* eslint-disable no-new */
-/* global Flash */
+import Flash from './flash';
+
 (() => {
   window.gl = window.gl || {};
 

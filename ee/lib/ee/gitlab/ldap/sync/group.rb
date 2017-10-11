@@ -74,6 +74,8 @@ module EE
             access_levels = AccessLevels.new
             # Only iterate over group links for the current provider
             group.ldap_group_links.with_provider(provider).each do |group_link|
+              next unless group_link.active?
+
               update_access_levels(access_levels, group_link)
             end
 

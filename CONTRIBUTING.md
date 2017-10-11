@@ -297,9 +297,9 @@ might be edited to make them small and simple.
 
 Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
-For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should 
-be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may 
-need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself. 
+For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
+be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
+need to ask one of the [core team] members to add the label, if you do not have permissions to do it by yourself.
 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
@@ -677,7 +677,7 @@ When your code contains more than 500 changes, any major breaking changes, or an
 [license-finder-doc]: doc/development/licensing.md
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing.md
+[testing]: doc/development/testing_guide/index.md
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.
