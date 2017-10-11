@@ -249,7 +249,21 @@ describe Notify do
         it_behaves_like 'it should show Gmail Actions View Merge request link'
         it_behaves_like "an unsubscribeable thread"
 
-<<<<<<< HEAD
+        it 'is sent as the author' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(current_user.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject and body' do
+          aggregate_failures do
+            is_expected.to have_referable_subject(merge_request, reply: true)
+            is_expected.to have_html_escaped_body_text(previous_assignee.name)
+            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
+            is_expected.to have_html_escaped_body_text(assignee.name)
+          end
+        end
+
         describe "that are new with approver" do
           before do
             create(:approver, target: merge_request)
@@ -274,25 +288,6 @@ describe Notify do
 
           it 'contains the description' do
             is_expected.to have_html_escaped_body_text merge_request.description
-          end
-        end
-
-        describe 'that are reassigned' do
-          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
-=======
-        it 'is sent as the author' do
-          sender = subject.header[:from].addrs[0]
-          expect(sender.display_name).to eq(current_user.name)
-          expect(sender.address).to eq(gitlab_sender)
-        end
->>>>>>> upstream/master
-
-        it 'has the correct subject and body' do
-          aggregate_failures do
-            is_expected.to have_referable_subject(merge_request, reply: true)
-            is_expected.to have_html_escaped_body_text(previous_assignee.name)
-            is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-            is_expected.to have_html_escaped_body_text(assignee.name)
           end
         end
       end
@@ -372,105 +367,99 @@ describe Notify do
           end
         end
       end
+
+      describe 'that are approved' do
+        let(:last_approver) { create(:user) }
+        subject { described_class.approved_merge_request_email(recipient.id, merge_request.id, last_approver.id) }
+
+        before do
+          merge_request.approvals.create(user: merge_request.assignee)
+          merge_request.approvals.create(user: last_approver)
+        end
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the last approver' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(last_approver.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject' do
+          is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
+        end
+
+        it 'contains the new status' do
+          is_expected.to have_body_text /approved/i
+        end
+
+        it 'contains a link to the merge request' do
+          is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
+        end
+
+        it 'contains the names of all of the approvers' do
+          is_expected.to have_body_text /#{merge_request.assignee.name}/
+          is_expected.to have_body_text /#{last_approver.name}/
+        end
+
+        context 'when merge request has no assignee' do
+          before do
+            merge_request.update(assignee: nil)
+          end
+
+          it 'does not show the assignee' do
+            is_expected.not_to have_body_text 'Assignee'
+          end
+        end
+      end
+
+      describe 'that are unapproved' do
+        let(:last_unapprover) { create(:user) }
+        subject { described_class.unapproved_merge_request_email(recipient.id, merge_request.id, last_unapprover.id) }
+
+        before do
+          merge_request.approvals.create(user: merge_request.assignee)
+        end
+
+        it_behaves_like 'a multiple recipients email'
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { merge_request }
+        end
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'is sent as the last unapprover' do
+          sender = subject.header[:from].addrs[0]
+          expect(sender.display_name).to eq(last_unapprover.name)
+          expect(sender.address).to eq(gitlab_sender)
+        end
+
+        it 'has the correct subject' do
+          is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
+        end
+
+        it 'contains the new status' do
+          is_expected.to have_body_text /unapproved/i
+        end
+
+        it 'contains a link to the merge request' do
+          is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
+        end
+
+        it 'contains the names of all of the approvers' do
+          is_expected.to have_body_text /#{merge_request.assignee.name}/
+        end
+      end
     end
 
-<<<<<<< HEAD
-        describe 'that are approved' do
-          let(:last_approver) { create(:user) }
-          subject { described_class.approved_merge_request_email(recipient.id, merge_request.id, last_approver.id) }
-
-          before do
-            merge_request.approvals.create(user: merge_request.assignee)
-            merge_request.approvals.create(user: last_approver)
-          end
-
-          it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-            let(:model) { merge_request }
-          end
-          it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like 'an unsubscribeable thread'
-
-          it 'is sent as the last approver' do
-            sender = subject.header[:from].addrs[0]
-            expect(sender.display_name).to eq(last_approver.name)
-            expect(sender.address).to eq(gitlab_sender)
-          end
-
-          it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
-          end
-
-          it 'contains the new status' do
-            is_expected.to have_body_text /approved/i
-          end
-
-          it 'contains a link to the merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
-          end
-
-          it 'contains the names of all of the approvers' do
-            is_expected.to have_body_text /#{merge_request.assignee.name}/
-            is_expected.to have_body_text /#{last_approver.name}/
-          end
-
-          context 'when merge request has no assignee' do
-            before do
-              merge_request.update(assignee: nil)
-            end
-
-            it 'does not show the assignee' do
-              is_expected.not_to have_body_text 'Assignee'
-            end
-          end
-        end
-
-        describe 'that are unapproved' do
-          let(:last_unapprover) { create(:user) }
-          subject { described_class.unapproved_merge_request_email(recipient.id, merge_request.id, last_unapprover.id) }
-
-          before do
-            merge_request.approvals.create(user: merge_request.assignee)
-          end
-
-          it_behaves_like 'a multiple recipients email'
-          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-            let(:model) { merge_request }
-          end
-          it_behaves_like 'it should show Gmail Actions View Merge request link'
-          it_behaves_like 'an unsubscribeable thread'
-
-          it 'is sent as the last unapprover' do
-            sender = subject.header[:from].addrs[0]
-            expect(sender.display_name).to eq(last_unapprover.name)
-            expect(sender.address).to eq(gitlab_sender)
-          end
-
-          it 'has the correct subject' do
-            is_expected.to have_subject /#{merge_request.title} \(#{merge_request.to_reference}\)/
-          end
-
-          it 'contains the new status' do
-            is_expected.to have_body_text /unapproved/i
-          end
-
-          it 'contains a link to the merge request' do
-            is_expected.to have_body_text /#{project_merge_request_path project, merge_request}/
-          end
-
-          it 'contains the names of all of the approvers' do
-            is_expected.to have_body_text /#{merge_request.assignee.name}/
-          end
-        end
-
-        describe 'that are merged' do
-          let(:merge_author) { create(:user) }
-          subject { described_class.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
-=======
     context 'for snippet notes' do
       let(:project_snippet) { create(:project_snippet, project: project) }
       let(:project_snippet_note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }
->>>>>>> upstream/master
 
       subject { described_class.note_snippet_email(project_snippet_note.author_id, project_snippet_note.id) }
 
