@@ -39,7 +39,12 @@ import '~/notes';
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:merge_requets:show');
+      $('body').attr('data-page', 'projects:merge_requets:show');
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
     });
 
     describe('task lists', function() {
