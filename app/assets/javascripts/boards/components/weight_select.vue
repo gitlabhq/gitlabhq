@@ -54,13 +54,13 @@ export default {
       this.board.weight = this.weightInt(weight);
     },
     weightInt(weight) {
-      if (weight === ANY_WEIGHT) {
-        return -1;
+      if (weight > 0) {
+        return weight;
       }
       if (weight === NO_WEIGHT) {
         return 0;
       }
-      return weight
+      return -1;
     }
   },
   mounted() {
@@ -124,7 +124,7 @@ export default {
                 :key="weight"
               >
                 <a
-                  :class="{'is-active': weightInt(weight) == value}"
+                  :class="{'is-active': weight == valueText}"
                   :data-id="weight"
                   href="#"
                 >
