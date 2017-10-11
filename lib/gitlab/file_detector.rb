@@ -12,6 +12,8 @@ module Gitlab
       contributing: /\Acontributing[^\/]*\z/i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
+      issue_template: /\A\.gitlab\/issue_templates\/[^\/]+\.md\z/,
+      merge_request_template: /\A\.gitlab\/merge_request_templates\/[^\/]+\.md\z/,
 
       # Configuration files
       gitignore: '.gitignore',

@@ -56,6 +56,14 @@ describe Gitlab::FileDetector do
       end
     end
 
+    it 'returns the type of an issue template' do
+      expect(described_class.type_of('.gitlab/issue_templates/foo.md')).to eq(:issue_template)
+    end
+
+    it 'returns the type of a merge request template' do
+      expect(described_class.type_of('.gitlab/merge_request_templates/foo.md')).to eq(:merge_request_template)
+    end
+
     it 'returns nil for an unknown file' do
       expect(described_class.type_of('foo.txt')).to be_nil
     end
