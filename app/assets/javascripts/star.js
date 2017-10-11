@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-unused-vars, one-var, no-var, one-var-declaration-per-line, prefer-arrow-callback, no-new, max-len */
-=======
->>>>>>> upstream/master
 import Flash from './flash';
 import { __, s__ } from './locale';
 

@@ -2,27 +2,6 @@
 /* global Sortable */
 
 import Flash from './flash';
-<<<<<<< HEAD
-
-((global) => {
-  class LabelManager {
-    constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {
-      this.togglePriorityButton = togglePriorityButton || $('.js-toggle-priority');
-      this.prioritizedLabels = prioritizedLabels || $('.js-prioritized-labels');
-      this.otherLabels = otherLabels || $('.js-other-labels');
-      this.errorMessage = 'Unable to update label prioritization at this time';
-      this.emptyState = document.querySelector('#js-priority-labels-empty-state');
-      this.sortable = Sortable.create(this.prioritizedLabels.get(0), {
-        filter: '.empty-message',
-        forceFallback: true,
-        fallbackClass: 'is-dragging',
-        dataIdAttr: 'data-id',
-        onUpdate: this.onPrioritySortUpdate.bind(this),
-      });
-      this.bindEvents();
-    }
-=======
->>>>>>> upstream/master
 
 export default class LabelManager {
   constructor({ togglePriorityButton, prioritizedLabels, otherLabels } = {}) {

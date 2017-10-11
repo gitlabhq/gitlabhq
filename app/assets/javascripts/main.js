@@ -49,11 +49,6 @@ import './behaviors/';
 // everything else
 import './activities';
 import './admin';
-<<<<<<< HEAD
-import './api';
-import './ajax_loading_spinner';
-=======
->>>>>>> upstream/master
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
