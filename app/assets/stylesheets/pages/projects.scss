@@ -48,7 +48,8 @@
       border: 1px solid $border-color;
     }
 
-    + .select2 a {
+    + .select2 a,
+    + .btn-default {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -549,10 +550,92 @@ a.deploy-project-label {
   }
 }
 
-.project-template,
+.project-template {
+  > .form-group {
+    margin-bottom: 0;
+  }
+
+  .template-option {
+    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
+    position: relative;
+
+    &:not(:first-child) {
+      border-top: 1px solid $border-color;
+    }
+  }
+
+  .template-title {
+    font-size: 16px;
+  }
+
+  .template-description {
+    margin: 6px 0 12px;
+  }
+
+  .template-button {
+    input {
+      position: absolute;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  svg {
+    position: absolute;
+    left: $gl-padding;
+    top: $gl-padding;
+  }
+
+  .project-fields-form {
+    display: none;
+
+    &.selected {
+      display: block;
+      padding: $gl-padding;
+    }
+  }
+
+  .template-input-group {
+    position: relative;
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+    }
+
+    .input-group-addon {
+      flex: 1;
+      text-align: left;
+      padding-left: ($gl-padding * 3);
+      background-color: $white-light;
+    }
+
+    .selected-template {
+      line-height: 20px;
+    }
+
+    .selected-icon {
+      svg {
+        display: none;
+        top: 7px;
+        height: 20px;
+        width: 20px;
+
+        &.active {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.gitlab-tab-content {
+  .import-project-pane {
+    padding-bottom: 6px;
+  }
+}
+
 .project-import {
   .form-group {
-    margin-bottom: 5px;
+    margin-bottom: 0;
   }
 
   .import-buttons {
@@ -565,10 +648,6 @@ a.deploy-project-label {
     .btn {
       padding: 8px;
       margin-right: 10px;
-    }
-
-    .blank-option {
-      min-width: 70px;
     }
 
     .btn-template-icon {
@@ -592,27 +671,11 @@ a.deploy-project-label {
       }
     }
 
-    .icon-rails path {
-      fill: $rails;
-    }
-
-    .icon-node-express path {
-      fill: $node;
-    }
-
-    .icon-java-spring path {
-      fill: $java;
-    }
-
     > div {
       margin-bottom: 10px;
       padding-left: 0;
     }
   }
-}
-
-.project-templates-buttons .btn:last-child {
-  margin-right: 0;
 }
 
 .create-project-options {
@@ -1051,6 +1114,12 @@ pre.light-well {
 .project-path {
   .form-control {
     min-width: 100px;
+  }
+
+  &.form-group {
+    @media (min-width: $screen-sm-min) {
+      margin-bottom: 0;
+    }
   }
 
   .select2-choice {

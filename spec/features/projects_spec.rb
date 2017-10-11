@@ -12,8 +12,9 @@ feature 'Project' do
       visit new_project_path
     end
 
-    it "allows creation from templates" do
-      page.choose(template.name)
+    it "allows creation from templates", :js do
+      find('#create-from-template-tab').trigger('click')
+      find("##{template.name}").trigger('click')
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
