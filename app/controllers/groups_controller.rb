@@ -59,31 +59,6 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def children
-    parent = if params[:parent_id].present?
-               GroupFinder.new(current_user).execute(id: params[:parent_id])
-             else
-               @group
-             end
-
-    if parent.nil?
-      render_404
-      return
-    end
-
-    setup_children(parent)
-
-    respond_to do |format|
-      format.json do
-        serializer = GroupChildSerializer
-                       .new(current_user: current_user)
-                       .with_pagination(request, response)
-        serializer.expand_hierarchy(parent) if params[:filter].present?
-        render json: serializer.represent(@children)
-      end
-    end
-  end
-
   def activity
     respond_to do |format|
       format.html
@@ -119,13 +94,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   protected
-
-  def setup_children(parent)
-    @children = GroupDescendantsFinder.new(current_user: current_user,
-                                           parent_group: parent,
-                                           params: params).execute
-    @children = @children.page(params[:page])
-  end
 
   def authorize_create_group!
     allowed = if params[:parent_id].present?

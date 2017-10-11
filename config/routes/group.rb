@@ -30,6 +30,8 @@ scope(path: 'groups/*group_id',
     end
 
     resources :variables, only: [:index, :show, :update, :create, :destroy]
+
+    resources :children, only: [:index]
   end
 end
 
@@ -53,9 +55,5 @@ constraints(GroupUrlConstrainer.new) do
     patch '/', action: :update
     put '/', action: :update
     delete '/', action: :destroy
-
-    scope(path: '-') do
-      get :children
-    end
   end
 end
