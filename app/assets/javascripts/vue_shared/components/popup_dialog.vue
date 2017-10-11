@@ -21,6 +21,11 @@ export default {
       required: false,
       default: 'primary',
     },
+    modalDialogClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
     primaryButtonLabel: {
       type: String,
       required: false,
@@ -59,7 +64,8 @@ export default {
     tabindex="-1"
   >
     <div
-      class="modal-dialog modal-md"
+      :class="modalDialogClass"
+      class="modal-dialog"
       role="document"
     >
       <div class="modal-content">

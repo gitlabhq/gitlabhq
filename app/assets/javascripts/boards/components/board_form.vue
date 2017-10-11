@@ -170,6 +170,7 @@ export default {
 <template>
   <popup-dialog
     v-show="currentPage"
+    modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
     :title="title"
     :primary-button-label="buttonText"
@@ -183,7 +184,7 @@ export default {
     </p>
     <form
       v-else
-      class="js-board-config-modal board-config-modal"
+      class="js-board-config-modal"
     >
       <div
         v-if="!readonly"
