@@ -33,7 +33,6 @@ module Gitlab
       explore
       favicon.ico
       files
-      google_api
       groups
       header_logo_dark.png
       header_logo_light.png

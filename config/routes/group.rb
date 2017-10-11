@@ -1,6 +1,8 @@
 require 'constraints/group_url_constrainer'
 
-resources :groups, only: [:index, :new, :create]
+resources :groups, only: [:index, :new, :create] do
+  post :preview_markdown
+end
 
 scope(path: 'groups/*group_id',
       module: :groups,

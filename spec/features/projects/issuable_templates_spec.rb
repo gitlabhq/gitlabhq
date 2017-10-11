@@ -118,7 +118,7 @@ feature 'issuable templates', :js do
   context 'user creates a merge request from a forked project using templates' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:fork_user) { create(:user) }
-    let(:forked_project) { fork_project(project, fork_user) }
+    let(:forked_project) { fork_project(project, fork_user, repository: true) }
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: forked_project, target_project: project) }
 
     background do

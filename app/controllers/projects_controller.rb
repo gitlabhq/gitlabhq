@@ -1,7 +1,11 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
+<<<<<<< HEAD
   prepend EE::ProjectsController
+=======
+  include PreviewMarkdown
+>>>>>>> upstream/master
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
@@ -259,18 +263,6 @@ class ProjectsController < Projects::ApplicationController
     end
 
     render json: options.to_json
-  end
-
-  def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
-
-    render json: {
-      body: view_context.markdown(result[:text]),
-      references: {
-        users: result[:users],
-        commands: view_context.markdown(result[:commands])
-      }
-    }
   end
 
   private

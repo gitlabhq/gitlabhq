@@ -1277,4 +1277,42 @@ describe SystemNoteService do
       it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue" }
     end
   end
+
+  describe '.discussion_lock' do
+    subject { described_class.discussion_lock(noteable, author)  }
+
+    context 'discussion unlocked' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'unlocked' }
+      end
+
+      it 'creates the note text correctly' do
+        [:issue, :merge_request].each do |type|
+          issuable = create(type)
+
+          expect(described_class.discussion_lock(issuable, author).note)
+            .to eq("unlocked this #{type.to_s.titleize.downcase}")
+        end
+      end
+    end
+
+    context 'discussion locked' do
+      before do
+        noteable.update_attribute(:discussion_locked, true)
+      end
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'locked' }
+      end
+
+      it 'creates the note text correctly' do
+        [:issue, :merge_request].each do |type|
+          issuable = create(type, discussion_locked: true)
+
+          expect(described_class.discussion_lock(issuable, author).note)
+            .to eq("locked this #{type.to_s.titleize.downcase}")
+        end
+      end
+    end
+  end
 end

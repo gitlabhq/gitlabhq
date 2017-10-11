@@ -18,6 +18,27 @@ feature 'Group milestones', :js do
       visit new_group_milestone_path(group)
     end
 
+    it 'renders description preview' do
+      form = find('.gfm-form')
+
+      form.fill_in(:milestone_description, with: '')
+
+      click_link('Preview')
+
+      preview = find('.js-md-preview')
+
+      expect(preview).to have_content('Nothing to preview.')
+
+      click_link('Write')
+
+      form.fill_in(:milestone_description, with: ':+1: Nice')
+
+      click_link('Preview')
+
+      expect(preview).to have_css('gl-emoji')
+      expect(find('#milestone_description', visible: false)).not_to be_visible
+    end
+
     it 'creates milestone with start date' do
       fill_in 'Title', with: 'testing'
       find('#milestone_start_date').click

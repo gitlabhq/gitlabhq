@@ -721,18 +721,14 @@ describe Issue do
   end
 
   describe '#hook_attrs' do
-    let(:attrs_hash) { subject.hook_attrs }
+    it 'delegates to Gitlab::HookData::IssueBuilder#build' do
+      builder = double
 
-    it 'includes time tracking attrs' do
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
-    end
+      expect(Gitlab::HookData::IssueBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    it 'includes assignee_ids and deprecated assignee_id' do
-      expect(attrs_hash).to include(:assignee_id)
-      expect(attrs_hash).to include(:assignee_ids)
+      subject.hook_attrs
     end
   end
 
