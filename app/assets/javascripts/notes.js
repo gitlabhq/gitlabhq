@@ -1257,7 +1257,7 @@ export default class Notes {
   }
 
   static checkMergeRequestStatus() {
-    if (getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests' && gl.mrWidget) {
       gl.mrWidget.checkStatus();
     }
   }
