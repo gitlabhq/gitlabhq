@@ -1,11 +1,8 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
-<<<<<<< HEAD
-  prepend EE::ProjectsController
-=======
   include PreviewMarkdown
->>>>>>> upstream/master
+  prepend EE::ProjectsController
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
