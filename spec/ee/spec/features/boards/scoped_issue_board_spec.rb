@@ -24,7 +24,6 @@ describe 'Scoped issue boards', :js do
   before do
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
     stub_licensed_features(multiple_issue_boards: true)
-    stub_licensed_features(group_issue_boards: true)
     stub_licensed_features(scoped_issue_boards: true)
   end
 
@@ -52,7 +51,6 @@ describe 'Scoped issue boards', :js do
         it 'creates board to filtering by Any Milestone' do
           create_board_milestone('Any Milestone')
 
-          expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content("")
           expect(page).to have_selector('.card', count: 3)
         end
@@ -82,7 +80,9 @@ describe 'Scoped issue boards', :js do
           expect(page).to have_selector('.card', count: 1)
         end
 
-        xit 'only shows group labels in list on group boards' do
+        it 'only shows group labels in list on group boards' do
+          stub_licensed_features(group_issue_boards: true)
+
           visit group_boards_path(group)
           wait_for_requests
 
@@ -92,8 +92,10 @@ describe 'Scoped issue boards', :js do
             click_link 'Create new board'
           end
 
+          click_button 'Expand'
+
           page.within('.labels') do
-            click_link 'Edit'
+            click_button 'Edit'
             page.within('.dropdown') do
               expect(page).to have_content(group_label.title)
               expect(page).not_to have_content(project_label.title)
@@ -183,7 +185,6 @@ describe 'Scoped issue boards', :js do
         it 'sets board milestone' do
           update_board_milestone(milestone.title)
 
-          expect(page).to have_css('.js-visual-token')
           expect(find('.tokens-container')).to have_content(milestone.title)
           expect(page).to have_selector('.card', count: 1)
         end
@@ -191,7 +192,6 @@ describe 'Scoped issue boards', :js do
         it 'sets board to any milestone' do
           update_board_milestone('Any Milestone')
 
-          expect(page).not_to have_css('.js-visual-token')
           expect(find('.tokens-container')).not_to have_content(milestone.title)
 
           find('.card', match: :first)
@@ -272,11 +272,13 @@ describe 'Scoped issue boards', :js do
 
         context 'group board' do
           it 'only shows group labels in list' do
+            stub_licensed_features(group_issue_boards: true)
+
             visit group_boards_path(group)
             edit_board.click
 
-            page.within(".labels") do
-              click_link 'Edit'
+            page.within('.labels') do
+              click_button 'Edit'
               page.within('.dropdown') do
                 expect(page).to have_content(group_label.title)
                 expect(page).not_to have_content(project_label.title)
@@ -325,7 +327,7 @@ describe 'Scoped issue boards', :js do
         end
 
         it 'sets board to Any weight' do
-          update_board_weight('Any weight')
+          update_board_weight('Any Weight')
 
           expect(page).to have_selector('.card', count: 4)
         end
@@ -347,6 +349,7 @@ describe 'Scoped issue boards', :js do
       let!(:list) { create(:list, board: board, label: project_label, position: 0) }
 
       it 'removes issues milestone when removing from the board' do
+        board.update(milestone: milestone, assignee: user)
         visit project_boards_path(project)
         wait_for_requests
 
@@ -466,6 +469,8 @@ describe 'Scoped issue boards', :js do
       end
     end
 
+    click_on_board_modal
+
     click_button 'Create'
     expect(page).to have_selector('.board-list-loading')
     expect(page).not_to have_selector('.board-list-loading')
@@ -475,12 +480,20 @@ describe 'Scoped issue boards', :js do
     edit_board.click
 
     page.within(".#{filter}") do
-      click_link 'Edit'
+      click_button 'Edit'
       click_link value
     end
+
+    click_on_board_modal
 
     click_button 'Save'
     expect(page).to have_selector('.board-list-loading')
     expect(page).not_to have_selector('.board-list-loading')
+  end
+
+  # Click on modal to make sure the dropdown is closed (e.g. label scenario)
+  #
+  def click_on_board_modal
+    find('.board-config-modal').click
   end
 end
