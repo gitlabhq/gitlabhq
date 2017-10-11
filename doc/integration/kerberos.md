@@ -287,6 +287,22 @@ Finally, it's possible that the browser or client machine lack Kerberos support
 completely. Ensure that the Kerberos libraries are installed and that you can
 authenticate to other Kerberos services.
 
+### HTTP Basic: Access denied when cloning
+
+```sh
+remote: HTTP Basic: Access denied
+fatal: Authentication failed for '<KRB5 path>'
+```
+
+If you are using Git v2.11 or newer and see the above error when cloning, you can 
+set the `http.emptyAuth` Git option to `true` to fix this:
+
+```
+git config --global http.emptyAuth true
+```
+
+See also: [Git v2.11 release notes](https://github.com/git/git/blob/master/Documentation/RelNotes/2.11.0.txt#L482-L486)
+
 ## Helpful links
 
 - <https://help.ubuntu.com/community/Kerberos>
