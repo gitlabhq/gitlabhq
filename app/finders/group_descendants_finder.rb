@@ -1,10 +1,29 @@
+# GroupDescendantsFinder
+#
+# Used to find and filter all subgroups and projects of a passed parent group
+# visible to a specified user.
+#
+# When passing a `filter` param, the search is performed over all nested levels
+# of the `parent_group`. All ancestors for a search result are loaded
+#
+# Arguments:
+#   current_user: The user for which the children should be visible
+#   parent_group: The group to find children of
+#   params:
+#     Supports all params that the `ProjectsFinder` and `GroupProjectsFinder`
+#     support.
+#
+#     filter: string - is aliased to `search` for consistency with the frontend
+#     archived: string - `only` or `true`.
+#                        `non_archived` is passed to the `ProjectFinder`s if none
+#                        was given.
 class GroupDescendantsFinder
   attr_reader :current_user, :parent_group, :params
 
   def initialize(current_user: nil, parent_group:, params: {})
     @current_user = current_user
     @parent_group = parent_group
-    @params = params.reverse_merge(non_archived: true)
+    @params = params.reverse_merge(non_archived: params[:archived].blank?)
   end
 
   def execute
@@ -83,7 +102,7 @@ class GroupDescendantsFinder
     projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
     groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
     ancestors_for_groups(groups_to_load_ancestors_of)
-      .with_selects_for_list
+      .with_selects_for_list(params[:archived])
   end
 
   def subgroups
@@ -96,7 +115,7 @@ class GroupDescendantsFinder
              else
                direct_child_groups
              end
-    groups.with_selects_for_list.order_by(sort)
+    groups.with_selects_for_list(params[:archived]).order_by(sort)
   end
 
   def direct_child_projects
@@ -104,15 +123,15 @@ class GroupDescendantsFinder
       .execute
   end
 
-  def projects_for_user
-    Project.public_or_visible_to_user(current_user).non_archived
-  end
-
   # Finds all projects nested under `parent_group` or any of its descendant
   # groups
   def projects_matching_filter
-    projects_for_user.search(params[:filter])
-      .where(namespace_id: hierarchy_for_parent.base_and_descendants.select(:id))
+    projects_nested_in_group = Project.where(namespace_id: hierarchy_for_parent.base_and_descendants.select(:id))
+    params_with_search = params.merge(search: params[:filter])
+
+    ProjectsFinder.new(params: params_with_search,
+                       current_user: current_user,
+                       project_ids_relation: projects_nested_in_group).execute
   end
 
   def projects

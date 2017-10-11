@@ -35,6 +35,28 @@ describe GroupDescendantsFinder do
       expect(finder.execute).to contain_exactly(project)
     end
 
+    context 'when archived is `true`' do
+      let(:params) { { archived: 'true' } }
+
+      it 'includes archived projects' do
+        archived_project = create(:project, namespace: group, archived: true)
+        project = create(:project, namespace: group)
+
+        expect(finder.execute).to contain_exactly(archived_project, project)
+      end
+    end
+
+    context 'when archived is `only`' do
+      let(:params) { { archived: 'only' } }
+
+      it 'includes only archived projects' do
+        archived_project = create(:project, namespace: group, archived: true)
+        _project = create(:project, namespace: group)
+
+        expect(finder.execute).to contain_exactly(archived_project)
+      end
+    end
+
     it 'does not include archived projects' do
       _archived_project = create(:project, :archived, namespace: group)
 
@@ -82,6 +104,16 @@ describe GroupDescendantsFinder do
         finder = described_class.new(current_user: nil, parent_group: group)
 
         expect(finder.execute).to contain_exactly(public_subgroup)
+      end
+
+      context 'when archived is `true`' do
+        let(:params) { { archived: 'true' } }
+
+        it 'includes archived projects in the count of subgroups' do
+          create(:project, namespace: subgroup, archived: true)
+
+          expect(finder.execute.first.preloaded_project_count).to eq(1)
+        end
       end
 
       context 'with a filter' do

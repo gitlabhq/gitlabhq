@@ -2,15 +2,14 @@ module LoadedInGroupList
   extend ActiveSupport::Concern
 
   PROJECT_COUNT_SQL = <<~PROJECTCOUNT.freeze
-                     (SELECT COUNT(*) AS preloaded_project_count
-                      FROM projects
-                      WHERE projects.namespace_id = namespaces.id
-                      AND projects.archived IS NOT true)
+                     SELECT COUNT(*) AS preloaded_project_count
+                     FROM projects
+                     WHERE projects.namespace_id = namespaces.id
                      PROJECTCOUNT
   SUBGROUP_COUNT_SQL = <<~SUBGROUPCOUNT.freeze
                      (SELECT COUNT(*) AS preloaded_subgroup_count
-                      FROM namespaces children
-                      WHERE children.parent_id = namespaces.id)
+                     FROM namespaces children
+                     WHERE children.parent_id = namespaces.id)
                      SUBGROUPCOUNT
   MEMBER_COUNT_SQL = <<~MEMBERCOUNT.freeze
                      (SELECT COUNT(*) AS preloaded_member_count
@@ -21,17 +20,28 @@ module LoadedInGroupList
                      MEMBERCOUNT
 
   COUNT_SELECTS = ['namespaces.*',
-                   PROJECT_COUNT_SQL,
                    SUBGROUP_COUNT_SQL,
                    MEMBER_COUNT_SQL].freeze
 
   module ClassMethods
-    def with_counts
-      select(COUNT_SELECTS)
+    def with_counts(archived = nil)
+      selects = COUNT_SELECTS.dup << project_count(archived)
+      select(selects)
     end
 
-    def with_selects_for_list
-      with_route.with_counts
+    def with_selects_for_list(archived = nil)
+      with_route.with_counts(archived)
+    end
+
+    def project_count(archived)
+      project_count = if archived == 'only'
+                        PROJECT_COUNT_SQL + 'AND projects.archived IS true'
+                      elsif Gitlab::Utils.to_boolean(archived)
+                        PROJECT_COUNT_SQL
+                      else
+                        PROJECT_COUNT_SQL + 'AND projects.archived IS NOT true'
+                      end
+      "(#{project_count})"
     end
   end
 
