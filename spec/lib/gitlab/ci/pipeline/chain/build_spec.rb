@@ -31,6 +31,10 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
 
   it 'fills pipeline object with data' do
     expect(pipeline.sha).not_to be_empty
+    expect(pipeline.sha).to eq project.commit.id
+    expect(pipeline.ref).to eq 'master'
+    expect(pipeline.user).to eq user
+    expect(pipeline.project).to eq project
   end
 
   it 'sets a valid config source' do
@@ -39,5 +43,9 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
 
   it 'returns a valid pipeline' do
     expect(pipeline).to be_valid
+  end
+
+  it 'does not persist a pipeline' do
+    expect(pipeline).not_to be_persisted
   end
 end
