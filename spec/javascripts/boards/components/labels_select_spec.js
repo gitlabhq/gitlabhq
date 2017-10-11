@@ -39,11 +39,10 @@ describe('LabelsSelect', () => {
     setFixtures('<div class="test-container"></div>');
 
     const deferred = new jQuery.Deferred();
-    spyOn($, 'ajax').and.returnValue(deferred);
-    deferred.resolve([
+    spyOn($, 'ajax').and.returnValue(deferred.resolve([
       label,
       label2,
-    ]);
+    ]));
 
     // eslint-disable-next-line no-new
     new IssuableContext();
@@ -64,13 +63,21 @@ describe('LabelsSelect', () => {
     Vue.nextTick(done);
   });
 
-  describe('canEdit false', () => {
-
-  });
-
   describe('canEdit', () => {
-    it('shows edit link', () => {
+    it('hides Edit button', (done) => {
+      vm.canEdit = false;
+      Vue.nextTick(() => {
+        expect(document.querySelector('.edit-link')).toBeFalsy();
+        done();
+      });
+    });
 
+    it('shows Edit button if true', (done) => {
+      vm.canEdit = true;
+      Vue.nextTick(() => {
+        expect(document.querySelector('.edit-link')).toBeTruthy();
+        done();
+      });
     });
   });
 

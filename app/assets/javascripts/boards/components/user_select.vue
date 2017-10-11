@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     initSelect() {
-      new UsersSelect(null, this.$refs.dropdown, {
+      this.userDropdown = new UsersSelect(null, this.$refs.dropdown, {
         handleClick: this.selectUser,
       });
     },

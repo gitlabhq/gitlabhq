@@ -1,7 +1,7 @@
 <script>
 /* global BoardService */
+/* global Flash */
 
-import Vue from 'vue';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
@@ -120,7 +120,7 @@ export default {
     },
     weightsArray() {
       return JSON.parse(this.weights);
-    }
+    },
   },
   methods: {
     submit() {
@@ -131,7 +131,7 @@ export default {
             gl.utils.visitUrl(Store.rootPath);
           })
           .catch(() => {
-            Flash('Failed to delete board. Please try again.')
+            Flash('Failed to delete board. Please try again.');
             this.submitDisabled = false;
           });
       } else {
@@ -141,7 +141,7 @@ export default {
             gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
           })
           .catch(() => {
-            Flash('Unable to save your changes. Please try again.')
+            Flash('Unable to save your changes. Please try again.');
           });
       }
     },

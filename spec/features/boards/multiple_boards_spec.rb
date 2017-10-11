@@ -153,10 +153,11 @@ describe 'Multiple Issue Boards', :js do
       click_button board.name
 
       page.within('.dropdown-menu') do
-        expect(page).to have_content('Edit board')
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Delete board')
       end
+
+      expect(page).to have_content('Edit board')
     end
 
     it 'shows a mention that boards are hidden when multiple boards are created' do

@@ -37,12 +37,12 @@ export default {
       return this.board.milestone_id;
     },
     milestoneTitleClass() {
-      return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary': 'bold';
+      return this.milestoneTitle === ANY_MILESTONE ? 'text-secondary' : 'bold';
     },
     selected() {
       if (this.noMilestone) return NO_MILESTONE;
       return this.board.milestone ? this.board.milestone.name : '';
-    }
+    },
   },
   methods: {
     selectMilestone(milestone) {
@@ -60,7 +60,7 @@ export default {
     },
   },
   mounted() {
-    new MilestoneSelect(null, this.$refs.dropdownButton, {
+    this.milestoneDropdown = new MilestoneSelect(null, this.$refs.dropdownButton, {
       handleClick: this.selectMilestone,
     });
   },
