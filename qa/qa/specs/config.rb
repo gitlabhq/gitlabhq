@@ -10,9 +10,11 @@ module QA
   module Specs
     class Config < Scenario::Template
       attr_writer :address
+      attr_accessor :exclusion_filter
 
       def initialize
         @address = ENV['GITLAB_URL']
+        @exclusion_filter = { mattermost: true }
       end
 
       def perform
@@ -30,6 +32,12 @@ module QA
 
           config.mock_with :rspec do |mocks|
             mocks.verify_partial_doubles = true
+          end
+
+          config.exclusion_filter = @exclusion_filter
+
+          config.define_derived_metadata(file_path: %r{/specs/features/mattermost/}) do |metadata|
+            metadata[:mattermost] = true
           end
 
           config.order = :random
