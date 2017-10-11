@@ -37,7 +37,7 @@ feature 'issue move to another project' do
       visit issue_path(issue)
     end
 
-    scenario 'moving issue to another project', js: true do
+    scenario 'moving issue to another project', :js do
       find('.js-move-issue').trigger('click')
       wait_for_requests
       all('.js-move-issue-dropdown-item')[0].click
@@ -49,7 +49,7 @@ feature 'issue move to another project' do
       expect(page.current_path).to include project_path(new_project)
     end
 
-    scenario 'searching project dropdown', js: true do
+    scenario 'searching project dropdown', :js do
       new_project_search.team << [user, :reporter]
 
       find('.js-move-issue').trigger('click')
@@ -63,7 +63,7 @@ feature 'issue move to another project' do
       end
     end
 
-    context 'user does not have permission to move the issue to a project', js: true do
+    context 'user does not have permission to move the issue to a project', :js do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
       background { another_project.team << [user, :guest] }

@@ -639,7 +639,7 @@
 }
 
 .merge-request-tabs-holder {
-  top: $new-navbar-height;
+  top: $header-height;
   z-index: 200;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
@@ -669,7 +669,7 @@
 }
 
 .with-performance-bar .merge-request-tabs-holder {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 }
 
 .merge-request-tabs {

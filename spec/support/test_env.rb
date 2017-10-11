@@ -47,7 +47,8 @@ module TestEnv
     'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
-    'add-pdf-text-binary'                => '79faa7b'
+    'add-pdf-text-binary'                => '79faa7b',
+    'add_images_and_changes'             => '010d106'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

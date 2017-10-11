@@ -29,7 +29,7 @@ describe Gitlab::Git::Tag, seed_helper: true do
     it_behaves_like 'Gitlab::Git::Repository#tags'
   end
 
-  context 'when Gitaly tags feature is disabled', skip_gitaly_mock: true do
+  context 'when Gitaly tags feature is disabled', :skip_gitaly_mock do
     it_behaves_like 'Gitlab::Git::Repository#tags'
   end
 end

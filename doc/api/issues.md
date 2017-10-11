@@ -106,14 +106,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/6",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -215,14 +214,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/1",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -325,14 +323,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/1",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -918,7 +915,7 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
     "confidential": false,
-    "weight": null
+    "weight": null,
     "discussion_locked": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",

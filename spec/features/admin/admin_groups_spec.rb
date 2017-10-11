@@ -53,7 +53,7 @@ feature 'Admin Groups' do
       expect_selected_visibility(internal)
     end
 
-    scenario 'when entered in group path, it auto filled the group name', js: true do
+    scenario 'when entered in group path, it auto filled the group name', :js do
       visit admin_groups_path
       click_link "New group"
       group_path = 'gitlab'
@@ -82,7 +82,7 @@ feature 'Admin Groups' do
       expect_selected_visibility(group.visibility_level)
     end
 
-    scenario 'edit group path does not change group name', js: true do
+    scenario 'edit group path does not change group name', :js do
       group = create(:group, :private)
 
       visit admin_group_edit_path(group)
@@ -94,7 +94,7 @@ feature 'Admin Groups' do
     end
   end
 
-  describe 'add user into a group', js: true do
+  describe 'add user into a group', :js do
     shared_context 'adds user into a group' do
       it do
         visit admin_group_path(group)
@@ -125,7 +125,7 @@ feature 'Admin Groups' do
       group.add_user(:user, Gitlab::Access::OWNER)
     end
 
-    it 'adds admin a to a group as developer', js: true do
+    it 'adds admin a to a group as developer', :js do
       visit group_group_members_path(group)
 
       page.within '.users-group-form' do
@@ -142,7 +142,7 @@ feature 'Admin Groups' do
     end
   end
 
-  describe 'admin remove himself from a group', js: true do
+  describe 'admin remove himself from a group', :js do
     it 'removes admin from the group' do
       group.add_user(current_user, Gitlab::Access::DEVELOPER)
 

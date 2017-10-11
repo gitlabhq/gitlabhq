@@ -215,7 +215,7 @@ describe Projects::MirrorsController do
     end
   end
 
-  describe '#ssh_host_keys', use_clean_rails_memory_store_caching: true do
+  describe '#ssh_host_keys', :use_clean_rails_memory_store_caching do
     let(:project) { create(:project) }
     let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 

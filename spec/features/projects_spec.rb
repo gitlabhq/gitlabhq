@@ -57,7 +57,7 @@ feature 'Project' do
     end
   end
 
-  describe 'remove forked relationship', js: true do
+  describe 'remove forked relationship', :js do
     let(:user)    { create(:user) }
     let(:project) { fork_project(create(:project, :public), user, namespace_id: user.namespace) }
 
@@ -126,7 +126,7 @@ feature 'Project' do
     end
   end
 
-  describe 'removal', js: true do
+  describe 'removal', :js do
     let(:user)    { create(:user, username: 'test', name: 'test') }
     let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 

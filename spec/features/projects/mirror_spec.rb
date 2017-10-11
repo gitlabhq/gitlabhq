@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project mirror', js: true do
+feature 'Project mirror', :js do
   include ReactiveCachingHelpers
 
   let(:project) { create(:project, :mirror, :import_finished, :repository, creator: user, name: 'Victorialand') }
@@ -151,7 +151,7 @@ feature 'Project mirror', js: true do
       end
     end
 
-    describe 'host key management', use_clean_rails_memory_store_caching: true do
+    describe 'host key management', :use_clean_rails_memory_store_caching do
       let(:key) { Gitlab::SSHPublicKey.new(SSHKeygen.generate) }
       let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 

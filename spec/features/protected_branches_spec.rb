@@ -66,7 +66,6 @@ feature 'Protected Branches', :js do
     describe "Saved defaults" do
       it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
         visit project_protected_branches_path(project)
-        set_protected_branch_name('some-branch')
         form = '.js-new-protected-branch'
 
         within form do

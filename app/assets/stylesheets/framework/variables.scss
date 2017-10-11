@@ -1,6 +1,7 @@
 /*
  * Layout
  */
+$grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
@@ -204,6 +205,11 @@ $code_font_size: 12px;
 $code_line_height: 1.6;
 
 /*
+ * Tooltips
+ */
+$tooltip-font-size: 12px;
+
+/*
  * Padding
  */
 $gl-padding: 16px;
@@ -220,8 +226,7 @@ $gl-sidebar-padding: 22px;
 $row-hover: $blue-50;
 $row-hover-border: $blue-200;
 $progress-color: #c0392b;
-$header-height: 50px;
-$new-navbar-height: 40px;
+$header-height: 40px;
 $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $limited-layout-width-sm: 790px;
@@ -324,6 +329,7 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
+$diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
 /*
  * Fonts
@@ -727,3 +733,10 @@ $java: #70ad51;
 Issuable warning
 */
 $issuable-warning-size: 24px;
+$issuable-warning-icon-margin: 4px;
+
+/*
+Image Commenting cursor
+*/
+$image-comment-cursor-left-offset: 12;
+$image-comment-cursor-top-offset: 30;

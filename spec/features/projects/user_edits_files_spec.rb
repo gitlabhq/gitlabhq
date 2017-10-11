@@ -18,7 +18,7 @@ describe 'User edits files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'inserts a content of a file', js: true do
+    it 'inserts a content of a file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -35,7 +35,7 @@ describe 'User edits files' do
       expect(page).not_to have_link('edit')
     end
 
-    it 'commits an edited file', js: true do
+    it 'commits an edited file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -51,7 +51,7 @@ describe 'User edits files' do
       expect(page).to have_content('*.rbca')
     end
 
-    it 'commits an edited file to a new branch', js: true do
+    it 'commits an edited file to a new branch', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -69,7 +69,7 @@ describe 'User edits files' do
       expect(page).to have_content('*.rbca')
     end
 
-    it 'shows the diff of an edited file', js: true do
+    it 'shows the diff of an edited file', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
@@ -87,7 +87,7 @@ describe 'User edits files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'inserts a content of a file in a forked project', js: true do
+    it 'inserts a content of a file in a forked project', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 
@@ -108,7 +108,7 @@ describe 'User edits files' do
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
     end
 
-    it 'commits an edited file in a forked project', js: true do
+    it 'commits an edited file in a forked project', :js do
       click_link('.gitignore')
       find('.js-edit-blob').click
 

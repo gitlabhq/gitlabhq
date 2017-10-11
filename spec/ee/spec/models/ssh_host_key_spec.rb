@@ -48,7 +48,7 @@ describe SshHostKey do
 
   subject(:ssh_host_key) { described_class.new(project: project, url: 'ssh://example.com:2222') }
 
-  describe '#fingerprints', use_clean_rails_memory_store_caching: true do
+  describe '#fingerprints', :use_clean_rails_memory_store_caching do
     it 'returns an array of indexed fingerprints when the cache is filled' do
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 
@@ -65,7 +65,7 @@ describe SshHostKey do
     end
   end
 
-  describe '#fingerprints', use_clean_rails_memory_store_caching: true do
+  describe '#fingerprints', :use_clean_rails_memory_store_caching do
     it 'returns an array of indexed fingerprints when the cache is filled' do
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 

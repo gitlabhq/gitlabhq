@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User uses soft wrap whilst editing file', js: true do
+feature 'User uses soft wrap whilst editing file', :js do
   before do
     user = create(:user)
     project = create(:project, :repository)

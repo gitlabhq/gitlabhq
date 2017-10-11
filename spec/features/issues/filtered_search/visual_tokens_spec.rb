@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Visual tokens', js: true do
+describe 'Visual tokens', :js do
   include FilteredSearchHelpers
   include WaitForRequests
 

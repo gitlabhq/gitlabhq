@@ -54,7 +54,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#rugged" do
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'raises a storage exception when storage is not available' do
         broken_repo = described_class.new('broken', 'a/path.git', '')
 
@@ -384,7 +384,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'when Gitaly commit_count feature is disabled', skip_gitaly_mock: true  do
+    context 'when Gitaly commit_count feature is disabled', :skip_gitaly_mock  do
       it_behaves_like 'simple commit counting'
     end
   end
@@ -418,7 +418,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'check for local branches'
     end
 
-    context 'without gitaly', skip_gitaly_mock: true do
+    context 'without gitaly', :skip_gitaly_mock do
       it_behaves_like 'check for local branches'
     end
   end
@@ -453,7 +453,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like "deleting a branch"
     end
 
-    context "when Gitaly delete_branch is disabled", skip_gitaly_mock: true do
+    context "when Gitaly delete_branch is disabled", :skip_gitaly_mock do
       it_behaves_like "deleting a branch"
     end
   end
@@ -489,7 +489,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'creating a branch'
     end
 
-    context 'when Gitaly create_branch feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly create_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'creating a branch'
     end
   end
@@ -929,7 +929,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'extended commit counting'
     end
 
-    context 'when Gitaly count_commits feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
     end
   end
@@ -996,7 +996,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'finding a branch'
     end
 
-    context 'when Gitaly find_branch feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly find_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding a branch'
 
       it 'should reload Rugged::Repository and return master' do
@@ -1238,7 +1238,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of refs'
     end
 
-    context 'when Gitaly ref_exists feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of refs'
     end
   end
@@ -1260,7 +1260,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of tags'
     end
 
-    context 'when Gitaly ref_exists_tags feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists_tags feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of tags'
     end
   end
@@ -1284,7 +1284,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of branches'
     end
 
-    context 'when Gitaly ref_exists_branches feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of branches'
     end
   end
@@ -1361,7 +1361,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it_behaves_like 'languages'
 
-    context 'with rugged', skip_gitaly_mock: true do
+    context 'with rugged', :skip_gitaly_mock do
       it_behaves_like 'languages'
     end
   end
@@ -1467,7 +1467,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like "user deleting a branch"
     end
 
-    context "when Gitaly user_delete_branch is disabled", skip_gitaly_mock: true do
+    context "when Gitaly user_delete_branch is disabled", :skip_gitaly_mock do
       it_behaves_like "user deleting a branch"
     end
   end

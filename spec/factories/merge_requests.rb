@@ -22,6 +22,11 @@ FactoryGirl.define do
     trait :with_diffs do
     end
 
+    trait :with_image_diffs do
+      source_branch "add_images_and_changes"
+      target_branch "master"
+    end
+
     trait :without_diffs do
       source_branch "improve/awesome"
       target_branch "master"

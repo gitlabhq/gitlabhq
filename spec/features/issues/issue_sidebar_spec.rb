@@ -13,7 +13,7 @@ feature 'Issue Sidebar' do
     sign_in(user)
   end
 
-  context 'assignee', js: true do
+  context 'assignee', :js do
     let(:user2) { create(:user) }
     let(:issue2) { create(:issue, project: project, author: user2) }
 
@@ -82,7 +82,7 @@ feature 'Issue Sidebar' do
       visit_issue(project, issue)
     end
 
-    context 'sidebar', js: true do
+    context 'sidebar', :js do
       it 'changes size when the screen size is smaller' do
         sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         # Resize the window
@@ -101,7 +101,7 @@ feature 'Issue Sidebar' do
       end
     end
 
-    context 'editing issue labels', js: true do
+    context 'editing issue labels', :js do
       before do
         page.within('.block.labels') do
           find('.edit-link').click
@@ -114,7 +114,7 @@ feature 'Issue Sidebar' do
         end
       end
 
-      context 'creating a new label', js: true do
+      context 'creating a new label', :js do
         before do
           page.within('.block.labels') do
             click_link 'Create new'
@@ -165,7 +165,7 @@ feature 'Issue Sidebar' do
     end
   end
 
-  context 'updating weight', js: true do
+  context 'updating weight', :js do
     before do
       project.team << [user, :master]
       visit_issue(project, issue)
