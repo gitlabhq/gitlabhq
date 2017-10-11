@@ -29,10 +29,19 @@ class Projects::PushRulesController < Projects::ApplicationController
                         branch_name_regex force_push_regex author_email_regex
                         member_check file_name_regex max_file_size prevent_secrets]
 
-    if can?(current_user, :change_reject_unsigned_commits, project)
-      allowed_fields << :reject_unsigned_commits
-    end
+    allowed_fields.concat(extra_allowed_fields)
 
     params.require(:push_rule).permit(allowed_fields)
+  end
+
+  def extra_allowed_fields
+    abilities_and_fields = {
+      change_reject_unsigned_commits: :reject_unsigned_commits,
+      change_commit_author_check: :commit_author_check
+    }
+
+    abilities_and_fields.each_with_object([]) do |(ability, field), fields|
+      fields << field if can?(current_user, ability, project)
+    end
   end
 end

@@ -1,6 +1,14 @@
 = render 'shared/push_rules/reject_unsigned_commits_setting', form: f, push_rule: f.object
 
 .form-group
+  = f.check_box :commit_author_check, class: "pull-left", disabled: !can_change_commit_author_check?(f.object)
+  .prepend-left-20
+    = f.label :commit_author_check, class: "label-light append-bottom-0" do
+      Author restriction
+    %p.light.append-bottom-0
+      = commit_author_check_description(f.object)
+
+.form-group
   = f.check_box :deny_delete_tag, class: "pull-left"
   .prepend-left-20
     = f.label :deny_delete_tag, class: "label-light append-bottom-0" do
