@@ -50,13 +50,9 @@ class CommitStatus < ActiveRecord::Base
   #
   # These are pages deployments and external statuses.
   #
-  before_create do |status|
-    next if status.stage_id.present? || importing?
-
-    ensure_pipeline_stage! do |stage|
-      status.run_after_commit do
-        StageUpdateWorker.perform_async(stage.id)
-      end
+  before_create unless: :importing? do
+    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
+      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
     end
   end
 
@@ -187,25 +183,5 @@ class CommitStatus < ActiveRecord::Base
     name.to_s.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
     end
-  end
-
-  private
-
-  def ensure_pipeline_stage!
-    (find_stage || create_stage!).tap do |stage|
-      self.stage_id = stage.id
-
-      yield stage
-    end
-  end
-
-  def find_stage
-    pipeline.stages.find_by(name: stage)
-  end
-
-  def create_stage!
-    Ci::Stage.create!(name: stage,
-                      pipeline: pipeline,
-                      project: project)
   end
 end
