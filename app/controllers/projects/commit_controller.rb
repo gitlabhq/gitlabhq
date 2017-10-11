@@ -56,8 +56,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def branches
-    @branches = @project.repository.branch_names_contains(commit.id)
-    @tags = @project.repository.tag_names_contains(commit.id)
+    @branches = @project.repository.branch_names_contains(commit.id, 1000)
+    @tags = @project.repository.tag_names_contains(commit.id, 1000)
     render layout: false
   end
 
