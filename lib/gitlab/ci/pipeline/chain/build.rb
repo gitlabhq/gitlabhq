@@ -18,6 +18,8 @@ module Gitlab
               pipeline_schedule: @command.schedule,
               protected: protected_ref?
             )
+
+            @pipeline.set_config_source
           end
 
           def break?

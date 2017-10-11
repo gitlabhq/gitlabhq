@@ -20,7 +20,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
   let(:step) { described_class.new(pipeline, command) }
 
   before do
-    stub_ci_pipeline_to_return_yaml_file
+    stub_repository_ci_yaml_file(sha: anything)
 
     step.perform!
   end
