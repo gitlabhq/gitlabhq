@@ -29,7 +29,6 @@ describe 'Scoped issue boards', :js do
 
   context 'user with edit permissions' do
     before do
-      project.add_master(user)
       group.add_master(user)
 
       login_as(user)
