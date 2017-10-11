@@ -838,6 +838,7 @@
         a {
           padding: 8px 40px;
 
+          &.is-indeterminate::before,
           &.is-active::before {
             left: 16px;
           }
