@@ -2,6 +2,18 @@ require 'constraints/group_url_constrainer'
 
 resources :groups, only: [:index, :new, :create]
 
+scope(path: 'groups/*id',
+      controller: :groups,
+      constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
+  get :edit, as: :edit_group
+  get :issues, as: :issues_group
+  get :merge_requests, as: :merge_requests_group
+  get :projects, as: :projects_group
+  get :activity, as: :activity_group
+  get :subgroups, as: :subgroups_group
+  get '/', action: :show, as: :group_canonical
+end
+
 scope(path: 'groups/*group_id',
       module: :groups,
       as: :group,
@@ -68,18 +80,6 @@ scope(path: 'groups/*group_id',
 
   ## EE-specific
   get :boards, to: redirect('/groups/%{group_id}/-/boards')
-end
-
-scope(path: 'groups/*id',
-      controller: :groups,
-      constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
-  get :edit, as: :edit_group
-  get :issues, as: :issues_group
-  get :merge_requests, as: :merge_requests_group
-  get :projects, as: :projects_group
-  get :activity, as: :activity_group
-  get :subgroups, as: :subgroups_group
-  get '/', action: :show, as: :group_canonical
 end
 
 constraints(GroupUrlConstrainer.new) do
