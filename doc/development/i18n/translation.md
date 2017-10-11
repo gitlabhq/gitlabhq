@@ -66,7 +66,7 @@ In languages which distinguish between a male and female form,
 use both or choose a neutral formulation.
 
 For example in German, the word "user" can be translated into "Benutzer" (male) or "Benutzerin" (female).
-Therefore "create a new user" would translate into "Einen neuen Benutzer/eine neue Benutzerin anlegen".
+Therefore "create a new user" would translate into "Benutzer(in) anlegen".
 
 [Diversity]: https://about.gitlab.com/handbook/values/#diversity
 
