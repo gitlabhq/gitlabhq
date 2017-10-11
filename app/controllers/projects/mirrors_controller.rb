@@ -62,7 +62,7 @@ class Projects::MirrorsController < Projects::ApplicationController
       @project.update_remote_mirrors
       flash[:notice] = "The remote repository is being updated..."
     else
-      @project.force_import_job!
+      force_import_job
       flash[:notice] = "The repository is being updated..."
     end
 
@@ -70,6 +70,14 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   private
+
+  def force_import_job
+    if @project.hard_failed?
+      @project.resume
+    else
+      @project.force_import_job!
+    end
+  end
 
   def remote_mirror
     @remote_mirror = @project.remote_mirrors.first_or_initialize

@@ -1,6 +1,4 @@
 class ProjectMirrorData < ActiveRecord::Base
-  include Gitlab::CurrentSettings
-
   BACKOFF_PERIOD = 24.seconds
   JITTER = 6.seconds
 
@@ -34,6 +32,10 @@ class ProjectMirrorData < ActiveRecord::Base
 
   def set_next_execution_to_now!
     self.update_attributes(next_execution_timestamp: Time.now)
+  end
+
+  def retry_limit_exceeded?
+    self.retry_count > Gitlab::Mirror::MAX_RETRY
   end
 
   private

@@ -85,6 +85,14 @@ FactoryGirl.define do
       import_status :failed
     end
 
+    trait :import_hard_failed do
+      import_status :hard_failed
+
+      after(:create) do |project|
+        project.mirror_data&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
+      end
+    end
+
     trait :mirror do
       mirror true
       import_url { generate(:url) }

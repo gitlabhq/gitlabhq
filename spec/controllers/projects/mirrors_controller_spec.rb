@@ -155,6 +155,20 @@ describe Projects::MirrorsController do
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
     end
+
+    context 'when mirror is hard_failed' do
+      it 'forces update and changes to failed' do
+        allow(UpdateAllMirrorsWorker).to receive(:perform_async).and_return(nil)
+
+        project = create(:project, :mirror, :import_hard_failed)
+        sign_in(project.owner)
+
+        expect_any_instance_of(Project).to receive(:import_resume).and_call_original
+        expect do
+          put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
+        end.to change { project.reload.import_status }.from('hard_failed').to('failed')
+      end
+    end
   end
 
   describe 'forcing an update on a push mirror' do

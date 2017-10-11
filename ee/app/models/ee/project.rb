@@ -40,7 +40,12 @@ module EE
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirror, -> { where(mirror: true) }
-      scope :mirrors_to_sync, ->(freeze_at) { mirror.joins(:mirror_data).without_import_status(:scheduled, :started).where("next_execution_timestamp <= ?", freeze_at) }
+
+      scope :mirrors_to_sync, ->(freeze_at) do
+        mirror.joins(:mirror_data).without_import_status(:hard_failed, :scheduled, :started)
+          .where("next_execution_timestamp <= ?", freeze_at)
+      end
+
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
       scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
@@ -100,6 +105,7 @@ module EE
 
     def scheduled_mirror?
       return false unless mirror_with_content?
+      return false if hard_failed?
       return true if import_scheduled?
 
       self.mirror_data.next_execution_timestamp <= Time.now
@@ -112,11 +118,10 @@ module EE
     def mirror_last_update_status
       return unless mirror_updated?
 
-      if self.mirror_last_update_at == self.mirror_last_successful_update_at
-        :success
-      else
-        :failed
-      end
+      return :success if self.last_mirror_update_succeeded?
+      return :failed unless self.mirror_data.retry_limit_exceeded?
+
+      :hard_failed
     end
 
     def mirror_last_update_success?
@@ -129,6 +134,10 @@ module EE
 
     def mirror_ever_updated_successfully?
       mirror_updated? && self.mirror_last_successful_update_at
+    end
+
+    def last_mirror_update_succeeded?
+      self.mirror_last_update_at == self.mirror_last_successful_update_at
     end
 
     def has_remote_mirror?
@@ -204,7 +213,10 @@ module EE
     end
 
     def force_import_job!
+      import_resume if hard_failed?
+
       self.mirror_data.set_next_execution_to_now!
+
       UpdateAllMirrorsWorker.perform_async
     end
 

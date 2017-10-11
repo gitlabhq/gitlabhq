@@ -7,10 +7,6 @@ describe ProjectMirrorData, type: :model do
     it { is_expected.to belong_to(:project) }
   end
 
-  describe 'modules' do
-    it { is_expected.to include_module(Gitlab::CurrentSettings) }
-  end
-
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
   end
@@ -23,6 +19,17 @@ describe ProjectMirrorData, type: :model do
         project.create_mirror_data
 
         expect(project.mirror_data.next_execution_timestamp).to eq(Time.now)
+      end
+    end
+  end
+
+  describe 'when update' do
+    context 'when retry limit reached' do
+      it 'marks mirror as hard failed' do
+        project = create(:project, :mirror, :import_started)
+        project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+
+        expect { project.import_fail }.to change(project, :import_status).from('started').to('hard_failed')
       end
     end
   end
