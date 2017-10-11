@@ -18,6 +18,10 @@ describe Gitlab::FileDetector do
       expect(described_class.type_of('README.md')).to eq(:readme)
     end
 
+    it 'returns nil for a README file in a directory' do
+      expect(described_class.type_of('foo/README.md')).to be_nil
+    end
+
     it 'returns the type of a changelog file' do
       %w(CHANGELOG HISTORY CHANGES NEWS).each do |file|
         expect(described_class.type_of(file)).to eq(:changelog)
