@@ -67,11 +67,7 @@ run JavaScript tests, so you can either run unit tests (e.g. test a single
 JavaScript method), or integration tests (e.g. test a component that is composed
 of multiple components).
 
-<<<<<<< HEAD
-## System tests or Feature tests
-=======
 ## System tests or feature tests
->>>>>>> upstream/master
 
 Formal definition: https://en.wikipedia.org/wiki/System_testing.
 
@@ -112,11 +108,7 @@ The reasons why we should follow these best practices are as follows:
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
-<<<<<<< HEAD
-## Black-box tests or End-to-end tests
-=======
 ## Black-box tests or end-to-end tests
->>>>>>> upstream/master
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
@@ -139,13 +131,10 @@ always in-sync with the codebase.
 [GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
 
-<<<<<<< HEAD
 ## EE-specific tests
 
 EE-specific tests follows the same organization, but under the `spec/ee` folder.
 
-=======
->>>>>>> upstream/master
 ## How to test at the correct level?
 
 As many things in life, deciding what to test at each level of testing is a
