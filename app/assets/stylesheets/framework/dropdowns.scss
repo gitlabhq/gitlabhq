@@ -760,11 +760,6 @@
   }
 }
 
-// TODO: change global style and remove mixin
-@mixin new-style-dropdown($selector: '') {
-
-}
-
 @media (max-width: $screen-xs-max) {
   .navbar-gitlab {
     li.header-projects,
@@ -790,9 +785,6 @@
     }
   }
 }
-
-@include new-style-dropdown('.breadcrumbs-list .dropdown ');
-@include new-style-dropdown('.js-namespace-select + ');
 
 header.header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;

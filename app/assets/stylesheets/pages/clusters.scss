@@ -13,8 +13,6 @@
   max-width: 100%;
 }
 
-@include new-style-dropdown('.clusters-dropdown ');
-
 .clusters-container {
   .nav-bar-right {
     padding: $gl-padding-top $gl-padding;

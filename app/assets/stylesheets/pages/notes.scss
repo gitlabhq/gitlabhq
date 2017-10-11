@@ -490,8 +490,6 @@ ul.notes {
 }
 
 .note-actions {
-  @include new-style-dropdown;
-
   align-self: flex-start;
   flex-shrink: 0;
   display: inline-flex;

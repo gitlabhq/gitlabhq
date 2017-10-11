@@ -286,8 +286,6 @@
 
 // Pipeline visualization
 .pipeline-actions {
-  @include new-style-dropdown;
-
   border-bottom: 0;
 }
 
@@ -702,9 +700,6 @@ button.mini-pipeline-graph-dropdown-toggle {
     @include mini-pipeline-graph-color(rgba($gray-darkest, 0.1), $gray-darkest, $gray-darkest);
   }
 }
-
-@include new-style-dropdown('.big-pipeline-graph-dropdown-menu');
-@include new-style-dropdown('.mini-pipeline-graph-dropdown-menu');
 
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
