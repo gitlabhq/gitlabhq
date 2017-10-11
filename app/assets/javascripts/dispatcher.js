@@ -29,7 +29,8 @@ import CILintEditor from './ci_lint_editor';
 /* global ProjectNew */
 /* global ProjectShow */
 /* global ProjectImport */
-/* global Labels */
+import Labels from './labels';
+import LabelManager from './label_manager';
 /* global Shortcuts */
 /* global ShortcutsFindFile */
 /* global Sidebar */
@@ -459,7 +460,7 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
-            new gl.LabelManager();
+            new LabelManager();
           }
           $('.label-subscription').each((i, el) => {
             const $el = $(el);
