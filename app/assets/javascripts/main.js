@@ -116,7 +116,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './star';
 import './subscription';
 import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
