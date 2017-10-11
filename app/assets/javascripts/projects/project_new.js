@@ -34,7 +34,7 @@ const bindEvents = () => {
   const $selectedTemplateText = $('.selected-template');
   const $changeTemplateBtn = $('.change-template');
   const $selectedIcon = $('.selected-icon svg');
-  const $templateProjectNameInput = $('#template-project-name');
+  const $templateProjectNameInput = $('#template-project-name #project_path');
 
   if ($newProjectForm.length !== 1) {
     return;

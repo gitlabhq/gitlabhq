@@ -9,7 +9,7 @@ feature 'New project' do
     sign_in(user)
   end
 
-  it 'shows "New project" page', js: true do
+  it 'shows "New project" page', :js do
     visit new_project_path
 
     expect(page).to have_content('Project path')
@@ -25,7 +25,7 @@ feature 'New project' do
     expect(page).to have_link('GitLab export')
   end
 
-  context 'Visibility level selector', js: true do
+  context 'Visibility level selector', :js do
     Gitlab::VisibilityLevel.options.each do |key, level|
       it "sets selector to #{key}" do
         stub_application_setting(default_project_visibility: level)
@@ -134,7 +134,7 @@ feature 'New project' do
     end
   end
 
-  context 'Import project options', js: true do
+  context 'Import project options', :js do
     before do
       visit new_project_path
       find('#import-project-tab').trigger('click')
