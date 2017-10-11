@@ -5,6 +5,32 @@ class PushRule < ActiveRecord::Base
   validates :max_file_size, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   FILES_BLACKLIST = YAML.load_file(Rails.root.join('lib/gitlab/checks/files_blacklist.yml'))
+  SETTINGS_WITH_GLOBAL_DEFAULT = %i[reject_unsigned_commits commit_author_check].freeze
+
+  SETTINGS_WITH_GLOBAL_DEFAULT.each do |setting|
+    define_method(setting) do
+      value = super()
+
+      # return if value is true/false or if current object is the global setting
+      return value if global? || !value.nil?
+
+      PushRule.global&.public_send(setting)
+    end
+    alias_method "#{setting}?", setting
+
+    define_method("#{setting}=") do |value|
+      enabled_globally = PushRule.global&.public_send(setting)
+      is_disabled = !Gitlab::Utils.to_boolean(value)
+
+      # If setting is globally disabled and user disable it at project level,
+      # reset the attr so we can use the default global if required later.
+      if !enabled_globally && is_disabled
+        super(nil)
+      else
+        super(value)
+      end
+    end
+  end
 
   def self.global
     find_by(is_sample: true)
@@ -47,29 +73,6 @@ class PushRule < ActiveRecord::Base
 
     regex_list.find { |regex| data_match?(file_path, regex) }
   end
-
-  def reject_unsigned_commits=(value)
-    enabled_globally = PushRule.global&.reject_unsigned_commits
-    is_disabled = !Gitlab::Utils.to_boolean(value)
-
-    # If setting is globally disabled and user disable it at project level,
-    # reset the attr so we can use the default global if required later.
-    if !enabled_globally && is_disabled
-      super(nil)
-    else
-      super(value)
-    end
-  end
-
-  def reject_unsigned_commits
-    value = super
-
-    # return if value is true/false or if current object is the global setting
-    return value if global? || !value.nil?
-
-    PushRule.global&.reject_unsigned_commits
-  end
-  alias_method :reject_unsigned_commits?, :reject_unsigned_commits
 
   def global?
     is_sample?
