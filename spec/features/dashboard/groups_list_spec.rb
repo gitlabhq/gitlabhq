@@ -1,14 +1,15 @@
 require 'spec_helper'
 
 feature 'Dashboard Groups page', :js do
-  let!(:user) { create :user }
-  let!(:group) { create(:group) }
-  let!(:nested_group) { create(:group, :nested) }
-  let!(:another_group) { create(:group) }
+  let(:user) { create :user }
+  let(:group) { create(:group) }
+  let(:nested_group) { create(:group, :nested) }
+  let(:another_group) { create(:group) }
 
   it 'shows groups user is member of' do
     group.add_owner(user)
     nested_group.add_owner(user)
+    expect(another_group).to be_persisted
 
     sign_in(user)
     visit dashboard_groups_path
@@ -22,6 +23,7 @@ feature 'Dashboard Groups page', :js do
     before do
       group.add_owner(user)
       nested_group.add_owner(user)
+      expect(another_group).to be_persisted
 
       sign_in(user)
 
@@ -51,7 +53,7 @@ feature 'Dashboard Groups page', :js do
     end
   end
 
-  describe 'group with subgroups' do
+  describe 'group with subgroups', :nested_groups do
     let!(:subgroup) { create(:group, :public, parent: group) }
 
     before do
@@ -90,7 +92,8 @@ feature 'Dashboard Groups page', :js do
   end
 
   describe 'when using pagination' do
-    let(:group2) { create(:group) }
+    let(:group)  { create(:group, created_at: 5.days.ago) }
+    let(:group2) { create(:group, created_at: 2.days.ago) }
 
     before do
       group.add_owner(user)
@@ -102,12 +105,9 @@ feature 'Dashboard Groups page', :js do
       visit dashboard_groups_path
     end
 
-    it 'shows pagination' do
-      expect(page).to have_selector('.gl-pagination')
-      expect(page).to have_selector('.gl-pagination .page', count: 2)
-    end
-
     it 'loads results for next page' do
+      expect(page).to have_selector('.gl-pagination .page', count: 2)
+
       # Check first page
       expect(page).to have_content(group2.full_name)
       expect(page).to have_selector("#group-#{group2.id}")
