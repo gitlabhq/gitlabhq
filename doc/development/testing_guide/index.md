@@ -84,6 +84,7 @@ test should be re-implemented using RSpec instead.
 
 [^1]: /ci/yaml/README.html#dependencies
 
+[rails]: http://rubyonrails.org/
 [RSpec]: https://github.com/rspec/rspec-rails#feature-specs
 [Capybara]: https://github.com/teamcapybara/capybara
 [Karma]: http://karma-runner.github.io/
