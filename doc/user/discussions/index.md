@@ -155,7 +155,7 @@ comments in greater detail.
 
 ## Image discussions
 
-> [Introduced][ce-14531] in GitLab 10.1.
+> [Introduced][ce-14061] in GitLab 10.1.
 
 Sometimes a discussion is revolved around an image. With image discussions,
 you can easily target a specific coordinate of an image and start a discussion
@@ -227,6 +227,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 [ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
 [ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
+[ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
 [ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
