@@ -7,7 +7,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
 
 (function() {
   this.LabelsSelect = (function() {
-    function LabelsSelect(els) {
+    function LabelsSelect(els, options = {}) {
       var _this, $els;
       _this = this;
 
@@ -57,6 +57,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
           labelHTMLTemplate = _.template('<% _.each(labels, function(label){ %> <a href="<%- ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%- encodeURIComponent(label.title) %>"> <span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;"> <%- label.title %> </span> </a> <% }); %>');
           labelNoneHTMLTemplate = '<span class="no-value">None</span>';
         }
+        const handleClick = options.handleClick;
 
         $sidebarLabelTooltip.tooltip();
 
@@ -315,9 +316,9 @@ import DropdownUtils from './filtered_search/dropdown_utils';
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(options) {
-            const { $el, e, isMarking } = options;
-            const label = options.selectedObj;
+          clicked: function(clickEvent) {
+            const { $el, e, isMarking } = clickEvent;
+            const label = clickEvent.selectedObj;
 
             var isIssueIndex, isMRIndex, page, boardsModel;
             var fadeOutLoader = () => {
@@ -390,21 +391,8 @@ import DropdownUtils from './filtered_search/dropdown_utils';
                 .then(fadeOutLoader)
                 .catch(fadeOutLoader);
             }
-            else if ($dropdown.hasClass('js-board-config-modal')) {
-              if (label.isAny) {
-                gl.issueBoards.BoardsStore.boardConfig.labels = [];
-              } else if ($el.hasClass('is-active')) {
-                gl.issueBoards.BoardsStore.boardConfig.labels.push(new ListLabel({
-                  id: label.id,
-                  title: label.title,
-                  color: label.color[0],
-                  textColor: label.text_color || '#fff',
-                }));
-              } else {
-                let labels = gl.issueBoards.BoardsStore.boardConfig.labels;
-                labels = labels.filter(selected => selected.id !== label.id);
-                gl.issueBoards.BoardsStore.boardConfig.labels = labels;
-              }
+            else if (handleClick) {
+              handleClick(label);
             }
             else {
               if ($dropdown.hasClass('js-multiselect')) {

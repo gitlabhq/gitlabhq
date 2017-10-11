@@ -14,18 +14,10 @@ export default {
       type: String,
       required: true,
     },
-    value: {
-      type: Array,
-      required: false,
-    },
     canEdit: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    selected: {
-      type: Array,
-      required: true,
     },
   },
   components: {
@@ -33,11 +25,16 @@ export default {
   },
   computed: {
     labelIds() {
-      return this.selected.map(label => label.id).join(',');
+      return this.board.labels.map(label => label.id);
+    },
+    isEmpty() {
+      return this.board.labels.length === 0;
     },
   },
   mounted() {
-    new LabelsSelect();
+    new LabelsSelect(this.$refs.dropdownButton, {
+      handleClick: this.handleClick,
+    });
   },
   methods: {
     labelStyle(label) {
@@ -46,6 +43,22 @@ export default {
         backgroundColor: label.color,
       };
     },
+    handleClick(label) {
+      if (label.isAny) {
+        this.board.labels = [];
+      } else if (!this.board.labels.find(l => l.id === label.id)) {
+        this.board.labels.push(new ListLabel({
+          id: label.id,
+          title: label.title,
+          color: label.color[0],
+          textColor: label.text_color,
+        }));
+      } else {
+        let labels = this.board.labels;
+        labels = labels.filter(selected => selected.id !== label.id);
+        this.board.labels = labels;
+      }
+    }
   },
 };
 </script>
@@ -64,10 +77,10 @@ export default {
     </div>
     <div class="value issuable-show-labels">
       <span
-        v-if="board.labels.length === 0"
+        v-if="isEmpty"
         class="text-secondary"
       >
-        Any label
+        Any Label
       </span>
       <a
         v-else
@@ -96,6 +109,7 @@ export default {
       >
       <div class="dropdown">
         <button
+          ref="dropdownButton"
           :data-labels="labelsPath"
           class="dropdown-menu-toggle wide js-label-select js-multiselect js-extra-options js-board-config-modal"
           data-field-name="label_id[]"

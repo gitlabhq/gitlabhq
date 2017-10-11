@@ -234,7 +234,6 @@ export default {
 
           <board-labels-select
             :board="board"
-            :selected="board.labels"
             title="Labels"
             :can-edit="canAdminBoard"
             :labels-path="labelsPath"
