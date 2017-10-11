@@ -148,9 +148,8 @@ class Member < ActiveRecord::Base
         ::Members::ApproveAccessRequestService.new(
           source,
           current_user,
-          id: member.id,
           access_level: access_level
-        ).execute(force: ldap)
+        ).execute(member, ldap: ldap)
       else
         member.save
       end

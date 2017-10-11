@@ -1,12 +1,5 @@
 module Members
-  class RequestAccessService < BaseService
-    attr_accessor :source
-
-    def initialize(source, current_user)
-      @source = source
-      @current_user = current_user
-    end
-
+  class RequestAccessService < Members::BaseService
     def execute
       raise Gitlab::Access::AccessDeniedError unless can_request_access?(source)
 

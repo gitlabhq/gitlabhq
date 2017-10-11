@@ -17,7 +17,7 @@ describe Members::AuthorizedDestroyService do
 
       member = create :project_member, :invited, project: project
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { Member.count }.from(3).to(2)
     end
 
@@ -26,7 +26,7 @@ describe Members::AuthorizedDestroyService do
 
       member = create :project_member, :invited, project: project
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .not_to change { NotificationSetting.count }
     end
 
@@ -35,7 +35,7 @@ describe Members::AuthorizedDestroyService do
 
       member = create :group_member, :invited, group: group
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { Member.count }.from(2).to(1)
     end
 
@@ -44,7 +44,7 @@ describe Members::AuthorizedDestroyService do
 
       member = create :group_member, :invited, group: group
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .not_to change { NotificationSetting.count }
     end
   end
@@ -53,7 +53,7 @@ describe Members::AuthorizedDestroyService do
     it "doesn't destroy member notification_settings" do
       member = create(:project_member, user: member_user, requested_at: Time.now)
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .not_to change { NotificationSetting.count }
     end
   end
@@ -71,7 +71,7 @@ describe Members::AuthorizedDestroyService do
       merge_request = create :merge_request, target_project: group_project, source_project: group_project, assignee: member_user
       create :merge_request, target_project: project, source_project: project, assignee: member_user
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { number_of_assigned_issuables(member_user) }.from(4).to(2)
 
       expect(issue.reload.assignee_ids).to be_empty
@@ -82,7 +82,7 @@ describe Members::AuthorizedDestroyService do
       group.add_developer(member_user)
       member = group.members.find_by(user_id: member_user.id)
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { member_user.notification_settings.count }.by(-1)
     end
   end
@@ -98,12 +98,12 @@ describe Members::AuthorizedDestroyService do
       create :issue, project: project, assignees: [member_user]
       create :merge_request, target_project: project, source_project: project, assignee: member_user
 
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { number_of_assigned_issuables(member_user) }.from(2).to(0)
     end
 
     it 'destroys member notification_settings' do
-      expect { described_class.new(member, member_user).execute }
+      expect { described_class.new(member_user).execute(member) }
         .to change { member_user.notification_settings.count }.by(-1)
     end
   end

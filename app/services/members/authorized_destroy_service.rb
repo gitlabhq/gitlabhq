@@ -1,12 +1,10 @@
 module Members
   class AuthorizedDestroyService < BaseService
-    attr_accessor :member, :user
-
-    def initialize(member, user = nil)
-      @member, @user = member, user
+    def initialize(current_user = nil)
+      @current_user = current_user
     end
 
-    def execute
+    def execute(member)
       return false if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
 
       Member.transaction do
@@ -16,7 +14,7 @@ module Members
         member.destroy
       end
 
-      if member.request? && member.user != user
+      if member.request? && member.user != current_user
         notification_service.decline_access_request(member)
       end
 
@@ -36,7 +34,7 @@ module Members
           .where('user_id = :user_id AND EXISTS (:sub)', user_id: member.user_id, sub: issues)
           .delete_all
 
-        MergeRequestsFinder.new(user, group_id: member.source_id, assignee_id: member.user_id)
+        MergeRequestsFinder.new(current_user, group_id: member.source_id, assignee_id: member.user_id)
           .execute
           .update_all(assignee_id: nil)
       else

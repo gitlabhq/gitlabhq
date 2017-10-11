@@ -15,8 +15,9 @@ module MembershipActions
   end
 
   def destroy
+    member = membershipable.members_and_requesters.find(params[:id])
     Members::DestroyService.new(membershipable, current_user, params)
-      .execute(:all)
+      .execute(member)
 
     respond_to do |format|
       format.html do
@@ -36,16 +37,18 @@ module MembershipActions
   end
 
   def approve_access_request
-    member = Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
-
-    log_audit_event(member, action: :create)
+    access_requester = membershipable.requesters.find(params[:id])
+    Members::ApproveAccessRequestService
+      .new(membershipable, current_user, params)
+      .execute(access_requester)
 
     redirect_to members_page_url
   end
 
   def leave
-    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
-      .execute(:all)
+    member = membershipable.members_and_requesters.find_by!(user_id: current_user.id)
+    Members::DestroyService.new(membershipable, current_user)
+      .execute(member)
 
     notice =
       if member.request?
@@ -68,11 +71,6 @@ module MembershipActions
 
   def membershipable
     raise NotImplementedError
-  end
-
-  def log_audit_event(member, options = {})
-    AuditEventService.new(current_user, membershipable, options)
-      .for_member(member).security_event
   end
 
   def members_page_url
