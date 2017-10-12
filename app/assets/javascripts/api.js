@@ -131,7 +131,6 @@ const Api = {
 
     return this.wrapAjaxCall({
       url,
-      type: 'GET',
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
     });
