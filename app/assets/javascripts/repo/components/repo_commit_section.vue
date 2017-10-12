@@ -39,8 +39,6 @@ export default {
       if (status) {
         this.showBranchChangeDialog = false;
         this.tryCommit(null, true, true);
-      } else {
-        // reset the state
       }
     },
 
