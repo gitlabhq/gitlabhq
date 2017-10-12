@@ -56,5 +56,3 @@ export default class Autosave {
     return window.localStorage.removeItem(this.key);
   }
 }
-
-window.Autosave = Autosave;
