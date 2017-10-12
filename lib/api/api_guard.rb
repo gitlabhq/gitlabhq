@@ -42,6 +42,38 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
+      def find_current_user
+        user =
+          find_user_from_private_token ||
+          find_user_from_oauth_token ||
+          find_user_from_warden
+
+        return nil unless user
+
+        raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+
+        user
+      end
+
+      def private_token
+        params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+      end
+
+      private
+
+      def find_user_from_private_token
+        token_string = private_token.to_s
+        return nil unless token_string.present?
+
+        user =
+          find_user_by_authentication_token(token_string) ||
+          find_user_by_personal_access_token(token_string)
+
+        raise UnauthorizedError unless user
+
+        user
+      end
+
       # Invokes the doorkeeper guard.
       #
       # If token is presented and valid, then it sets @current_user.
@@ -60,9 +92,53 @@ module API
       #   scopes: (optional) scopes required for this guard.
       #           Defaults to empty array.
       #
-      def doorkeeper_guard(scopes: [])
-        access_token = find_access_token
-        return nil unless access_token
+      def find_user_from_oauth_token
+        access_token = find_oauth_access_token
+        return unless access_token
+
+        find_user_by_access_token(access_token)
+      end
+
+      def find_user_by_authentication_token(token_string)
+        User.find_by_authentication_token(token_string)
+      end
+
+      def find_user_by_personal_access_token(token_string)
+        access_token = PersonalAccessToken.find_by_token(token_string)
+        return unless access_token
+
+        find_user_by_access_token(access_token)
+      end
+
+      # Check the Rails session for valid authentication details
+      def find_user_from_warden
+        warden.try(:authenticate) if verified_request?
+      end
+
+      def warden
+        env['warden']
+      end
+
+      # Check if the request is GET/HEAD, or if CSRF token is valid.
+      def verified_request?
+        Gitlab::RequestForgeryProtection.verified?(env)
+      end
+
+      def find_oauth_access_token
+        return @oauth_access_token if defined?(@oauth_access_token)
+
+        token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
+        return @oauth_access_token = nil unless token
+
+        @oauth_access_token = OauthAccessToken.by_token(token)
+        raise UnauthorizedError unless @oauth_access_token
+
+        @oauth_access_token.revoke_previous_refresh_token!
+        @oauth_access_token
+      end
+
+      def find_user_by_access_token(access_token)
+        scopes = scopes_registered_for_endpoint
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
@@ -75,54 +151,29 @@ module API
           raise RevokedError
 
         when AccessTokenValidationService::VALID
-          User.find(access_token.resource_owner_id)
+          access_token.user
         end
-      end
-
-      def find_user_by_private_token(scopes: [])
-        token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-
-        return nil unless token_string.present?
-
-        user =
-          find_user_by_authentication_token(token_string) ||
-          find_user_by_personal_access_token(token_string, scopes)
-
-        raise UnauthorizedError unless user
-
-        user
-      end
-
-      private
-
-      def find_user_by_authentication_token(token_string)
-        User.find_by_authentication_token(token_string)
-      end
-
-      def find_user_by_personal_access_token(token_string, scopes)
-        access_token = PersonalAccessToken.active.find_by_token(token_string)
-        return unless access_token
-
-        if AccessTokenValidationService.new(access_token, request: request).include_any_scope?(scopes)
-          User.find(access_token.user_id)
-        end
-      end
-
-      def find_access_token
-        return @access_token if defined?(@access_token)
-
-        token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
-        return @access_token = nil unless token
-
-        @access_token = Doorkeeper::AccessToken.by_token(token)
-        raise UnauthorizedError unless @access_token
-
-        @access_token.revoke_previous_refresh_token!
-        @access_token
       end
 
       def doorkeeper_request
         @doorkeeper_request ||= ActionDispatch::Request.new(env)
+      end
+
+      # An array of scopes that were registered (using `allow_access_with_scope`)
+      # for the current endpoint class. It also returns scopes registered on
+      # `API::API`, since these are meant to apply to all API routes.
+      def scopes_registered_for_endpoint
+        @scopes_registered_for_endpoint ||=
+          begin
+            endpoint_classes = [options[:for].presence, ::API::API].compact
+            endpoint_classes.reduce([]) do |memo, endpoint|
+              if endpoint.respond_to?(:allowed_scopes)
+                memo.concat(endpoint.allowed_scopes)
+              else
+                memo
+              end
+            end
+          end
       end
     end
 
