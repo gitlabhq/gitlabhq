@@ -5,7 +5,7 @@ describe Gitlab::Auth do
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to eq [:api, :read_user]
+      expect(subject::API_SCOPES).to eq %i[api read_user sudo]
     end
 
     it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
@@ -19,7 +19,7 @@ describe Gitlab::Auth do
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user read_registry openid]
+      expect(subject.optional_scopes).to eq %i[read_user sudo read_registry openid]
     end
 
     context 'registry_scopes' do

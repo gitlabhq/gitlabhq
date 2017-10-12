@@ -127,8 +127,8 @@ describe API::Users do
     context "when admin" do
       context 'when sudo is defined' do
         it 'does not return 500' do
-          admin_personal_access_token = create(:personal_access_token, user: admin).token
-          get api("/users?private_token=#{admin_personal_access_token}&sudo=#{user.id}", admin)
+          admin_personal_access_token = create(:personal_access_token, user: admin, scopes: [:sudo])
+          get api("/users?sudo=#{user.id}", admin, personal_access_token: admin_personal_access_token)
 
           expect(response).to have_gitlab_http_status(:success)
         end

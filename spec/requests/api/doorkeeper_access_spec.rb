@@ -39,20 +39,20 @@ describe 'doorkeeper access' do
   end
 
   describe "when user is blocked" do
-    it "returns authentication error" do
+    it "returns authorization error" do
       user.block
       get api("/user"), access_token: token.token
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
   describe "when user is ldap_blocked" do
-    it "returns authentication error" do
+    it "returns authorization error" do
       user.ldap_block
       get api("/user"), access_token: token.token
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 end
