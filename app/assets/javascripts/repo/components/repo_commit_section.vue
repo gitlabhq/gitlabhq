@@ -73,16 +73,17 @@ export default {
       if (skipBranchCheck) {
         this.makeCommit(newBranch);
       } else {
-        Store.setBranchHash()
-        .then(() => {
-          if (Store.branchChanged) {
-            Store.showBranchChangeDialog = true;
-            this.$emit('showBranchChangeDialog:enabled');
-            return;
-          }
-          this.makeCommit(newBranch);
-        })
-        .catch(this.commitError);
+        Service.branchSingle()
+          .then((data) => {
+            Store.setBranchHash(data)
+            if (Store.branchChanged) {
+              Store.showBranchChangeDialog = true;
+              this.$emit('showBranchChangeDialog:enabled');
+              return;
+            }
+            this.makeCommit(newBranch);
+          })
+          .catch(this.commitError);
       }
     },
 

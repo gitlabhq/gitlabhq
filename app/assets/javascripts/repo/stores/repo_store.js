@@ -55,15 +55,12 @@ const RepoStore = {
     });
   },
 
-  setBranchHash() {
-    return Service.branchSingle()
-    .then((data) => {
-      if (RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
-        RepoStore.branchChanged = true;
-      }
-      RepoStore.currentHash = data.commit.id;
-      RepoStore.currentShortHash = data.commit.short_id;
-    });
+  setBranchHash(data) {
+    if (RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
+      RepoStore.branchChanged = true;
+    }
+    RepoStore.currentHash = data.commit.id;
+    RepoStore.currentShortHash = data.commit.short_id;
   },
 
   hasBranchChanged() {
