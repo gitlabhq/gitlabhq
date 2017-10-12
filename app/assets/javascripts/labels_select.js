@@ -393,6 +393,7 @@ import CreateLabelDropdown from './create_label';
                 .catch(fadeOutLoader);
             }
             else if (handleClick) {
+              e.preventDefault();
               handleClick(label);
             }
             else {

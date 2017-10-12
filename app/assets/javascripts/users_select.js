@@ -445,6 +445,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if ($el.closest('.add-issues-modal').length) {
             gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
           } else if (handleClick) {
+            e.preventDefault();
             handleClick(user, isMarking);
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));

@@ -174,6 +174,7 @@ import _ from 'underscore';
             if (!selected) return;
 
             if (options.handleClick) {
+              e.preventDefault();
               options.handleClick(selected);
               return;
             }

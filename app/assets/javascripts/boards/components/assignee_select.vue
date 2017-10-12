@@ -62,7 +62,7 @@ export default {
     },
     selectedId() {
       return this.selected ? this.selected.id : null;
-    }
+    },
   },
   watch: {
     selected() {
@@ -83,8 +83,8 @@ export default {
           id: undefined,
         };
       }
-      this.board.assignee_id = user.id;
-      this.board.assignee = user;
+      this.board.assignee_id = assignee.id;
+      this.board.assignee = assignee;
     },
   },
   mounted() {
