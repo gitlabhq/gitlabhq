@@ -105,36 +105,26 @@ When GitLab detects access to the repositories storage fails repeatedly, it can
 gracefully prevent attempts to access the storage. This might be useful when
 the repositories are stored somewhere on the network.
 
-The configuration could look as follows:
+This can be configured from the admin interface:
 
-**For Omnibus installations**
+![circuitbreaker configuration](img/circuitbreaker_config.png)
 
-1. Edit `/etc/gitlab/gitlab.rb`:
 
-    ```ruby
-    git_data_dirs({
-      "default" => {
-        "path" => "/mnt/nfs-01/git-data"
-       }
-    })
-    ```
+**Maximum git storage failures:** The number of failures of after which GitLab will
+completely prevent access to the storage. The number of failures can be reset in
+the admin interface: `https://gitlab.example.com/admin/health_check` or using the
+[api](../api/repository_storage_health.md) to allow access to the storage again.
 
-1. Save the file and [reconfigure GitLab][reconfigure-gitlab] for the changes to take effect.
+**Seconds to wait after a storage failure:** When access to a storage fails. GitLab
+will prevent access to the storage for the time specified here. This allows the
+filesystem to recover.
 
----
+**Seconds before reseting failure information:** The time in seconds GitLab will
+keep failure information. When no failures occur during this time, information about the
+mount is reset.
 
-**For installations from source**
-
-1. Edit `config/gitlab.yml`:
-
-    ```yaml
-    repositories:
-      storages: # You must have at least a `default` storage path.
-        default:
-          path: /home/git/repositories/
-    ```
-
-1. Save the file and [restart GitLab][restart-gitlab] for the changes to take effect.
+**Seconds to wait for a storage access attempt:** The time in seconds GitLab will
+try to access storage. After this time a timeout error will be raised.
 
 When storage failures occur, this will be visible in the admin interface like this:
 

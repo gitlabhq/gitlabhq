@@ -23,6 +23,7 @@ describe API::Settings, 'Settings' do
       expect(json_response['dsa_key_restriction']).to eq(0)
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
+      expect(json_response['circuitbreaker_failure_count_threshold']).not_to be_nil
     end
   end
 
@@ -52,7 +53,8 @@ describe API::Settings, 'Settings' do
           rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE,
           dsa_key_restriction: 2048,
           ecdsa_key_restriction: 384,
-          ed25519_key_restriction: 256
+          ed25519_key_restriction: 256,
+          circuitbreaker_failure_wait_time: 2
 
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -73,6 +75,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['dsa_key_restriction']).to eq(2048)
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
+        expect(json_response['circuitbreaker_failure_wait_time']).to eq(2)
       end
     end
 
