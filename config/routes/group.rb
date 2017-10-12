@@ -81,7 +81,7 @@ constraints(GroupUrlConstrainer.new) do
 
     ## EE-specific
     get :boards, to: redirect('/groups/%{group_id}/-/boards')
-end
+  end
 
   scope(path: '*id',
         as: :group,
