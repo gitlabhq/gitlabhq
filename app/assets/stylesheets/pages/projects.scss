@@ -558,6 +558,17 @@ a.deploy-project-label {
   }
 }
 
+.fork-thumbnail-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+
+  > h5 {
+    width: 100%;
+  }
+}
+
 .project-template {
   > .form-group {
     margin-bottom: 0;
@@ -646,8 +657,15 @@ a.deploy-project-label {
     margin-bottom: 0;
   }
 
+  .import-btn-container {
+    margin-bottom: 0;
+  }
+
+  .toggle-import-form {
+    padding-bottom: 10px;
+  }
+
   .import-buttons {
-    padding-left: 0;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap;

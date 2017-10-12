@@ -20,7 +20,9 @@ class GeoNodeStatus {
     this.$repositoriesSynced = $('.js-repositories-synced', this.$status);
     this.$repositoriesFailed = $('.js-repositories-failed', this.$status);
     this.$lfsObjectsSynced = $('.js-lfs-objects-synced', this.$status);
+    this.$lfsObjectsFailed = $('.js-lfs-objects-failed', this.$status);
     this.$attachmentsSynced = $('.js-attachments-synced', this.$status);
+    this.$attachmentsFailed = $('.js-attachments-failed', this.$status);
     this.$lastEventSeen = $('.js-last-event-seen', this.$status);
     this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health', this.$status);
@@ -78,15 +80,21 @@ class GeoNodeStatus {
         status.lfs_objects_count,
         status.lfs_objects_synced_in_percentage);
 
+      const lfsFailedText = gl.text.addDelimiter(status.lfs_objects_failed_count);
+
       const attachmentText = GeoNodeStatus.formatCountAndPercentage(
         status.attachments_synced_count,
         status.attachments_count,
         status.attachments_synced_in_percentage);
 
+      const attachmentFailedText = gl.text.addDelimiter(status.attachments_failed_count);
+
       this.$repositoriesSynced.text(repoText);
       this.$repositoriesFailed.text(repoFailedText);
       this.$lfsObjectsSynced.text(lfsText);
+      this.$lfsObjectsFailed.text(lfsFailedText);
       this.$attachmentsSynced.text(attachmentText);
+      this.$attachmentsFailed.text(attachmentFailedText);
 
       const eventDate = gl.utils.formatDate(new Date(status.last_event_date));
       const cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_date));

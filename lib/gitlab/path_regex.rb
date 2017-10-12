@@ -119,7 +119,6 @@ module Gitlab
       analytics
       audit_events
       avatar
-      boards
       edit
       group_members
       hooks

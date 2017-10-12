@@ -84,6 +84,27 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
       end
     end
 
+    context 'with a failed file' do
+      let!(:failed_registry) { create(:geo_file_registry, :lfs, file_id: 999, success: false) }
+
+      it 'does not stall backfill' do
+        unsynced = create(:lfs_object, :with_file)
+
+        stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 1)
+
+        expect(GeoFileDownloadWorker).not_to receive(:perform_async).with(:lfs, failed_registry.file_id)
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with(:lfs, unsynced.id)
+
+        subject.perform
+      end
+
+      it 'retries failed files' do
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
+
+        subject.perform
+      end
+    end
+
     context 'when node has namespace restrictions' do
       let(:synced_group) { create(:group) }
       let!(:project_in_synced_group) { create(:project, group: synced_group) }

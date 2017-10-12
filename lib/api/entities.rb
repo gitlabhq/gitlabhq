@@ -1018,8 +1018,10 @@ module API
       expose :repositories_failed_count
       expose :lfs_objects_count
       expose :lfs_objects_synced_count
+      expose :lfs_objects_failed_count
       expose :attachments_count
       expose :attachments_synced_count
+      expose :attachments_failed_count
       expose :last_event_id
       expose :last_event_date
       expose :cursor_last_event_id

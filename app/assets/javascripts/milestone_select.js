@@ -170,7 +170,7 @@ import _ from 'underscore';
 
             var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
             if (!selected) return;
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
             isSelecting = (selected.name !== selectedMilestone);
