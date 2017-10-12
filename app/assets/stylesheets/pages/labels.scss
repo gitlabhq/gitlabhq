@@ -112,14 +112,14 @@
   padding: 5px 10px;
   margin-bottom: 10px;
   background-color: $gl-danger;
-  color: $white-light;
+  color: $white;
 }
 
 .manage-labels-list {
   @include new-style-dropdown;
 
   > li:not(.empty-message):not(.is-not-draggable) {
-    background-color: $white-light;
+    background-color: $white;
     cursor: move;
     cursor: -webkit-grab;
     cursor: -moz-grab;
@@ -163,7 +163,7 @@
   display: inline-block;
   opacity: 0;
   transition: opacity .3s;
-  color: $gray-darkest;
+  color: $grey-400;
 }
 
 .prioritized-labels {
@@ -171,7 +171,7 @@
 
   .add-priority {
     display: none;
-    color: $gray-light;
+    color: $grey-50;
   }
 
   li:hover {

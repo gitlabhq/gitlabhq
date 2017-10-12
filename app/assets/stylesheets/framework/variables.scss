@@ -20,17 +20,20 @@ $darken-dark-factor: 10%;
 $darken-border-factor: 5%;
 $darken-border-dashed-factor: 25%;
 
-$white-light: #fff;
-$white-normal: #f0f0f0;
-$white-dark: #eaeaea;
-
-$gray-lightest: #fdfdfd;
-$gray-light: #fafafa;
-$gray-lighter: #f9f9f9;
-$gray-normal: #f5f5f5;
-$gray-dark: darken($gray-light, $darken-dark-factor);
-$gray-darker: #eee;
-$gray-darkest: #c4c4c4;
+$white: #fff;
+$grey-50: #fafafa;
+$grey-100: #f2f2f2;
+$grey-200: #dfdfdf;
+$grey-300: #cccccc;
+$grey-400: #bababa;
+$grey-500: #a7a7a7;
+$grey-600: #949494;
+$grey-700: #707070;
+$grey-800: #4f4f4f;
+$grey-900: #2e2e2e;
+$grey-950: #1f1f1f;
+$black: #000;
+$black-transparent: rgba(0, 0, 0, 0.3);
 
 $green-50: #f1fdf6;
 $green-100: #dcf5e7;
@@ -130,23 +133,18 @@ $theme-green-800: #145d33;
 $theme-green-900: #0d4524;
 $theme-green-950: #072d16;
 
+$border-white-light: darken($white, $darken-border-factor);
+$border-white-normal: darken($grey-100, $darken-border-factor);
 
-$black: #000;
-$black-transparent: rgba(0, 0, 0, 0.3);
-$almost-black: #242424;
-
-$border-white-light: darken($white-light, $darken-border-factor);
-$border-white-normal: darken($white-normal, $darken-border-factor);
-
-$border-gray-light: darken($gray-light, $darken-border-factor);
-$border-gray-normal: darken($gray-normal, $darken-border-factor);
-$border-gray-normal-dashed: darken($gray-normal, $darken-border-dashed-factor);
-$border-gray-dark: darken($white-normal, $darken-border-factor);
+$border-gray-light: darken($grey-50, $darken-border-factor);
+$border-gray-normal: darken($grey-100, $darken-border-factor);
+$border-gray-normal-dashed: darken($grey-100, $darken-border-dashed-factor);
+$border-gray-dark: darken($grey-100, $darken-border-factor);
 
 /*
  * UI elements
  */
-$border-color: #e5e5e5;
+$border-color: $grey-200;
 $focus-border-color: $blue-300;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
@@ -159,11 +157,11 @@ $well-light-text-color: #5b6169;
 $gl-font-size: 14px;
 $gl-font-weight-normal: 400;
 $gl-font-weight-bold: 600;
-$gl-text-color: #2e2e2e;
-$gl-text-color-secondary: #707070;
-$gl-text-color-tertiary: #949494;
-$gl-text-color-quaternary: #d6d6d6;
-$gl-text-color-inverted: rgba(255, 255, 255, 1);
+$gl-text-color: $grey-900;
+$gl-text-color-secondary: $grey-700;
+$gl-text-color-tertiary: $grey-600;
+$placeholder-text-color: $grey-600;
+$gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
 $gl-text-green-hover: $green-700;
@@ -172,12 +170,7 @@ $gl-text-orange: $orange-600;
 $gl-link-color: $blue-600;
 $gl-link-hover-color: $blue-800;
 $gl-grayish-blue: #7f8fa4;
-$gl-gray: $gl-text-color;
-$gl-gray-dark: #313236;
-$gl-gray-light: #5c5c5c;
-$gl-header-color: #4c4e54;
-$gl-header-nav-hover-color: #434343;
-$placeholder-text-color: $gl-text-color-tertiary;
+
 
 /*
  * Lists
@@ -325,7 +318,7 @@ $diff-image-info-color: grey;
 $diff-swipe-border: #999;
 $diff-view-modes-color: grey;
 $diff-view-modes-border: #c1c1c1;
-$diff-jagged-border-gradient-color: darken($white-normal, 8%);
+$diff-jagged-border-gradient-color: darken($grey-100, 8%);
 
 /*
  * Fonts
@@ -352,7 +345,7 @@ $dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, .4);
 $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-$dropdown-item-hover-bg: $gray-darker;
+$dropdown-item-hover-bg: $grey-200;
 
 /*
 * Filtered Search
@@ -450,9 +443,9 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 * Avatar
 */
 $avatar_radius: 50%;
-$avatar-border: $gray-normal;
-$avatar-border-hover: $gray-darker;
-$avatar-background: $gray-lightest;
+$avatar-border: $grey-100;
+$avatar-border-hover: $grey-200;
+$avatar-background: $grey-50;
 $gl-avatar-size: 40px;
 
 /*
@@ -611,7 +604,7 @@ $feature-toggle-color-enabled: #4a8bee;
 $runner-state-shared-bg: $green-400;
 $runner-state-specific-bg: $blue-400;
 $runner-status-online-color: $green-600;
-$runner-status-offline-color: $gray-darkest;
+$runner-status-offline-color: $grey-400;
 $runner-status-paused-color: $red-500;
 
 /*
@@ -657,7 +650,7 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: $gray-darker;
+$stage-hover-bg: $grey-200;
 $ci-action-icon-size: 22px;
 $pipeline-dropdown-line-height: 20px;
 $pipeline-dropdown-status-icon-size: 18px;
@@ -705,7 +698,7 @@ $perf-bar-staging: #291430;
 $perf-bar-development: #4c1210;
 $perf-bar-bucket-bg: #111;
 $perf-bar-bucket-color: #ccc;
-$perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
+$perf-bar-bucket-box-shadow-from: rgba($white, .2);
 $perf-bar-bucket-box-shadow-to: rgba($black, .25);
 
 /*

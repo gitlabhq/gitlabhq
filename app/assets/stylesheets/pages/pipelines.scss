@@ -40,7 +40,7 @@
       .btn.btn-retry:hover,
       .btn.btn-retry:focus {
         border-color: $dropdown-toggle-active-border-color;
-        background-color: $white-normal;
+        background-color: $grey-100;
       }
 
       svg path {
@@ -65,7 +65,7 @@
       .btn-group {
         &.open {
           .btn-default {
-            background-color: $white-normal;
+            background-color: $grey-100;
             border-color: $border-white-normal;
           }
         }
@@ -100,7 +100,7 @@
 
 .ci-table {
   .build.retried {
-    background-color: $gray-lightest;
+    background-color: $grey-50;
   }
 
   .commit-link {
@@ -326,7 +326,7 @@
 // Pipeline graph
 .pipeline-graph {
   width: 100%;
-  background-color: $gray-light;
+  background-color: $grey-50;
   padding: $gl-padding;
   white-space: nowrap;
   transition: max-height 0.3s, padding 0.3s;
@@ -532,7 +532,7 @@
       width: 100%;
       border: 1px solid $border-color;
       border-radius: 30px;
-      background-color: $white-light;
+      background-color: $white;
     }
 
     a.build-content:hover,
@@ -637,7 +637,7 @@
 // Dropdown button in mini pipeline graph
 button.mini-pipeline-graph-dropdown-toggle {
   border-radius: 100px;
-  background-color: $white-light;
+  background-color: $white;
   border-width: 1px;
   border-style: solid;
   width: $ci-action-icon-size;
@@ -699,7 +699,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    @include mini-pipeline-graph-color(rgba($gray-darkest, 0.1), $gray-darkest, $gray-darkest);
+    @include mini-pipeline-graph-color(rgba($grey-400, 0.1), $grey-400, $grey-400);
   }
 }
 
@@ -735,7 +735,7 @@ button.mini-pipeline-graph-dropdown-toggle {
       height: $ci-action-icon-size;
       padding: 2px 0 0 5px;
       font-size: 12px;
-      background-color: $white-light;
+      background-color: $white;
       position: absolute;
       top: 50%;
       right: $gl-padding;
@@ -891,7 +891,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   &::after {
     left: -5px;
     border-width: 10px 7px 10px 0;
-    border-right-color: $white-light;
+    border-right-color: $white;
   }
 }
 
@@ -928,7 +928,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   &::after {
     margin-top: 1px;
-    border-bottom-color: $white-light;
+    border-bottom-color: $white;
   }
 
   /**

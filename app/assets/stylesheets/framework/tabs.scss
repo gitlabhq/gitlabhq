@@ -1,5 +1,5 @@
 .gitlab-tabs {
-  background: $gray-light;
+  background: $grey-100;
   border: 1px solid $border-color;
 
   li {
@@ -10,7 +10,7 @@
     }
 
     &.active {
-      background: $white-light;
+      background: $white;
     }
 
     a {

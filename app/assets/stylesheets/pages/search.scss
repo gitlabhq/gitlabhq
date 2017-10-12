@@ -63,7 +63,7 @@ input[type="checkbox"]:hover {
     margin-left: 5px;
     line-height: 25px;
     width: 98%;
-    color: $white-light;
+    color: $white;
     background: none;
     transition: color ease-in-out $default-transition-duration;
   }
@@ -208,7 +208,7 @@ input[type="checkbox"]:hover {
     position: absolute;
     left: 10px;
     top: 10px;
-    color: $gray-darkest;
+    color: $grey-400;
     pointer-events: none;
   }
 
@@ -253,7 +253,7 @@ input[type="checkbox"]:hover {
   right: 10px;
   top: 10px;
   padding: 0;
-  color: $gray-darkest;
+  color: $grey-400;
   line-height: 0;
   background: none;
   border: 0;

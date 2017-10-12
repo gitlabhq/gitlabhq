@@ -14,11 +14,11 @@ table {
     .warning,
     .danger,
     .info {
-      color: $white-light;
+      color: $white;
 
       a:not(.btn) {
         text-decoration: underline;
-        color: $white-light;
+        color: $white;
       }
     }
 
@@ -31,7 +31,7 @@ table {
       }
 
       th {
-        background-color: $gray-light;
+        background-color: $grey-50;
         font-weight: $gl-font-weight-normal;
         border-bottom: 0;
 
@@ -41,7 +41,7 @@ table {
       }
 
       td {
-        border-color: $white-normal;
+        border-color: $grey-100;
       }
     }
   }

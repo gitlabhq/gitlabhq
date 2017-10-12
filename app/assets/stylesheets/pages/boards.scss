@@ -149,7 +149,7 @@
   position: relative;
   height: 100%;
   font-size: $issue-boards-font-size;
-  background: $gray-light;
+  background: $grey-50;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 }
@@ -202,7 +202,7 @@
 .board-delete {
   margin-right: 10px;
   padding: 0;
-  color: $gray-darkest;
+  color: $grey-400;
   background-color: transparent;
   border: 0;
   outline: 0;
@@ -215,7 +215,7 @@
 .board-blank-state {
   height: calc(100% - 49px);
   padding: $gl-padding;
-  background-color: $white-light;
+  background-color: $white;
 }
 
 .board-blank-state-list {
@@ -260,7 +260,7 @@
 .card {
   position: relative;
   padding: 11px 10px 11px $gl-padding;
-  background: $white-light;
+  background: $white;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
@@ -357,7 +357,7 @@
 
       a {
         position: static;
-        background-color: $white-light;
+        background-color: $white;
         transition: background-color 0s;
         margin-left: auto;
 
@@ -366,7 +366,7 @@
         }
 
         &:first-child:not(:only-child) {
-          box-shadow: -10px 0 10px 1px $white-light;
+          box-shadow: -10px 0 10px 1px $white;
         }
       }
     }
@@ -426,7 +426,7 @@
     bottom: 15px;
     right: 0;
     width: 22px;
-    color: $gray-darkest;
+    color: $grey-400;
 
     svg {
       position: absolute;
@@ -436,7 +436,7 @@
 
     &:hover {
       path {
-        fill: $gray-darkest;
+        fill: $grey-400;
       }
     }
   }
@@ -488,7 +488,7 @@
   min-height: 500px;
   margin: auto;
   padding: 25px 15px 0;
-  background-color: $white-light;
+  background-color: $white;
   border-radius: $border-radius-default;
   box-shadow: 0 2px 12px rgba($black, .5);
 
@@ -602,7 +602,7 @@
   top: -3px;
   width: 17px;
   background-color: $blue-500;
-  color: $white-light;
+  color: $white;
   border: 1px solid $blue-600;
   font-size: 9px;
   line-height: 15px;

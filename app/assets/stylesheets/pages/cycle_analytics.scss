@@ -201,7 +201,7 @@
       border-top: 1px solid transparent;
       border-bottom: 1px solid transparent;
       border-right: 1px solid $border-color;
-      background-color: $gray-light;
+      background-color: $grey-50;
 
       &.active {
         background-color: transparent;
@@ -216,7 +216,7 @@
       }
 
       &:hover:not(.active) {
-        background-color: $gray-lightest;
+        background-color: $grey-50;
         box-shadow: inset 2px 0 0 0 $border-color;
         cursor: pointer;
       }
@@ -287,7 +287,7 @@
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
-    border-bottom: 1px solid $gray-darker;
+    border-bottom: 1px solid $grey-200;
 
     &:last-child {
       border-bottom: 0;

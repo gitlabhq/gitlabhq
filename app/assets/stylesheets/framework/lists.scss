@@ -35,7 +35,7 @@
       color: $list-warning-row-color;
     }
 
-    &.smoke { background-color: $gray-light; }
+    &.smoke { background-color: $grey-50; }
 
     &:not(.ui-sort-disabled):hover {
       background: $row-hover;
@@ -45,7 +45,7 @@
       border-bottom: 0;
 
       &.bottom {
-        background: $gray-light;
+        background: $grey-50;
       }
     }
 
@@ -58,7 +58,7 @@
     p {
       padding-top: 1px;
       margin: 0;
-      color: $white-normal;
+      color: $grey-100;
 
       img {
         position: relative;
@@ -102,7 +102,7 @@ ul.content-list {
   padding: 0;
 
   li {
-    border-color: $white-normal;
+    border-color: $grey-100;
     font-size: $list-font-size;
     color: $list-text-color;
 
@@ -182,8 +182,8 @@ ul.content-list {
     }
 
     &.list-placeholder {
-      background-color: $gray-light;
-      border: dotted 1px $white-normal;
+      background-color: $grey-50;
+      border: dotted 1px $grey-100;
       margin: 1px 0;
       min-height: 52px;
     }
@@ -397,7 +397,7 @@ ul.indent-list {
       }
 
       &:last-child::before {
-        background: $white-light;
+        background: $white;
         height: auto;
         top: 30px;
         bottom: 0;
@@ -430,7 +430,7 @@ ul.indent-list {
   .group-row-contents {
     padding: 10px 10px 8px;
     border-top: solid 1px transparent;
-    border-bottom: solid 1px $white-normal;
+    border-bottom: solid 1px $grey-100;
 
     &:hover {
       border-color: $row-hover-border;

@@ -50,7 +50,7 @@
 
   .avatar-container {
     flex: 0 0 40px;
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .sidebar-context-title {
@@ -60,7 +60,7 @@
 }
 
 .settings-avatar {
-  background-color: $white-light;
+  background-color: $white;
 
   svg {
     fill: $gl-text-color-secondary;
@@ -76,7 +76,7 @@
   top: $header-height;
   bottom: 0;
   left: 0;
-  background-color: $gray-light;
+  background-color: $grey-50;
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
 
@@ -244,9 +244,9 @@
           min-width: 150px;
           margin-top: -1px;
           padding: 4px 1px;
-          background-color: $white-light;
+          background-color: $white;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
-          border: 1px solid $gray-darker;
+          border: 1px solid $grey-200;
           border-left: 0;
           border-radius: 0 3px 3px 0;
 
@@ -285,7 +285,7 @@
 
             &:hover,
             &:focus {
-              background-color: $gray-darker;
+              background-color: $grey-200;
             }
           }
         }
@@ -316,7 +316,7 @@
 
     &.active > a:hover,
     &.is-over > a {
-      background-color: $link-hover-background;
+      background-color: $white;
     }
   }
 }
@@ -330,7 +330,7 @@
   position: fixed;
   bottom: 0;
   padding: 16px;
-  background-color: $gray-light;
+  background-color: $grey-100;
   border: 0;
   border-top: 2px solid $border-color;
   color: $gl-text-color-secondary;
@@ -453,7 +453,7 @@
   @media (max-width: $screen-xs-max) {
     + .breadcrumbs-links {
       padding-left: $gl-padding;
-      border-left: 1px solid $gl-text-color-quaternary;
+      border-left: 1px solid $border-color;
     }
   }
 }

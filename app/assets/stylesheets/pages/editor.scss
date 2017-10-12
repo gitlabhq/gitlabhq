@@ -5,7 +5,7 @@
     border-left: 1px solid $border-color;
     border-bottom: 0;
     border-radius: $border-radius-small $border-radius-small 0 0;
-    background: $gray-normal;
+    background: $grey-100;
   }
 
   #editor {
@@ -19,7 +19,7 @@
   }
 
   .ace_gutter-cell {
-    background-color: $gray-light;
+    background-color: $grey-50;
   }
 
   .cancel-btn {
@@ -43,7 +43,7 @@
   }
 
   .editor-ref {
-    background: $gray-light;
+    background: $grey-50;
     padding-right: $gl-padding;
     border-right: 1px solid $border-color;
     display: block;

@@ -10,7 +10,7 @@
 
 @mixin chevron-active {
   .fa-chevron-down {
-    color: $gray-darkest;
+    color: $grey-400;
   }
 }
 
@@ -47,7 +47,7 @@
   .dropdown-toggle,
   .dropdown-menu-toggle {
     @include chevron-active;
-    border-color: $gray-darkest;
+    border-color: $grey-400;
   }
 
   [data-toggle="dropdown"] {
@@ -57,7 +57,7 @@
 
 .dropdown-toggle {
   padding: 6px 8px 6px 10px;
-  background-color: $white-light;
+  background-color: $white;
   color: $gl-text-color;
   font-size: 14px;
   text-align: left;
@@ -96,7 +96,7 @@
   }
 
   .fa {
-    color: $gray-darkest;
+    color: $grey-400;
   }
 
   .fa-chevron-down {
@@ -108,7 +108,7 @@
 
   &:hover {
     @include chevron-active;
-    border-color: $gray-darkest;
+    border-color: $grey-400;
   }
 
   &:focus:active {
@@ -192,7 +192,7 @@
   font-size: 14px;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
-  background-color: $white-light;
+  background-color: $white;
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
@@ -327,7 +327,7 @@
     &:hover,
     &:focus {
       background-color: $dropdown-hover-color;
-      color: $white-light;
+      color: $white;
     }
 
     &.droplab-item-selected i {
@@ -337,7 +337,7 @@
     &.divider {
       margin: 0 8px;
       padding: 0;
-      border-top: $gray-darkest;
+      border-top: $grey-400;
     }
 
     .icon {
@@ -910,7 +910,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   }
 
   .loading-animation {
-    color: $almost-black;
+    color: $grey-900;
   }
 
   .project-dropdown-sidebar {
@@ -969,7 +969,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
       position: absolute;
       top: 13px;
       right: 25px;
-      color: $md-area-border;
+      color: $border-color;
     }
   }
 
@@ -1006,7 +1006,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
 
   &:hover {
     .project-item-avatar-container .avatar {
-      border-color: $md-area-border;
+      border-color: $border-color;
     }
   }
 

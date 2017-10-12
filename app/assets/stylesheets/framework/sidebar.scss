@@ -3,7 +3,7 @@
   transition: padding $sidebar-transition-duration;
 
   .container-fluid {
-    background: $white-light;
+    background: $white;
     padding: 0 $gl-padding;
 
     &.container-blank {
@@ -24,7 +24,7 @@
 
   &:hover,
   &:focus {
-    color: $white-light;
+    color: $white;
     text-decoration: none;
   }
 }
@@ -46,7 +46,7 @@
     cursor: pointer;
 
     .btn {
-      background-color: $gray-light;
+      background-color: $grey-50;
     }
   }
 }

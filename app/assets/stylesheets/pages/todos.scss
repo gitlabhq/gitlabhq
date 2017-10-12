@@ -51,11 +51,11 @@
   }
 
   &.todo-pending.done-reversible {
-    background-color: $white-light;
+    background-color: $white;
 
     &:hover {
-      border-color: $white-normal;
-      background-color: $gray-light;
+      border-color: $grey-100;
+      background-color: $grey-50;
       border-top: 1px solid transparent;
 
       .todo-avatar,
@@ -70,7 +70,7 @@
     }
 
     .btn {
-      background-color: $gray-light;
+      background-color: $grey-50;
     }
   }
 }
@@ -142,7 +142,7 @@
 
       pre {
         border: 0;
-        background: $gray-light;
+        background: $grey-50;
         border-radius: 0;
         color: $todo-body-pre-color;
         margin: 0 20px;

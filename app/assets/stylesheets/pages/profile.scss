@@ -60,7 +60,7 @@
 
 .account-well {
   padding: 10px;
-  background-color: $gray-light;
+  background-color: $grey-50;
   border: 1px solid $border-color;
   border-radius: $border-radius-base;
 
@@ -167,7 +167,7 @@
   padding: 5px 10px;
   margin-left: -3px;
   line-height: 22px;
-  background-color: $gray-light;
+  background-color: $grey-50;
 
   &.not-active {
     color: $provider-btn-not-active-color;
@@ -419,7 +419,7 @@ table.u2f-registrations {
     }
 
     &.unverified {
-      @include status-color($gray-dark, $gray, $common-gray-dark);
+      @include status-color($grey-300, $gray, $common-gray-dark);
     }
   }
 }

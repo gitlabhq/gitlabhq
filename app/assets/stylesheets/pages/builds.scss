@@ -5,27 +5,27 @@
 
 @keyframes blinking-dots {
   0% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
+    background-color: rgba($white, 1);
+    box-shadow: 12px 0 0 0 rgba($white, 0.2),
+                24px 0 0 0 rgba($white, 0.2);
   }
 
   25% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 2),
-                24px 0 0 0 rgba($white-light, 0.2);
+    background-color: rgba($white, 0.4);
+    box-shadow: 12px 0 0 0 rgba($white, 2),
+                24px 0 0 0 rgba($white, 0.2);
   }
 
   75% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 1);
+    background-color: rgba($white, 0.4);
+    box-shadow: 12px 0 0 0 rgba($white, 0.2),
+                24px 0 0 0 rgba($white, 1);
   }
 
   100% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
+    background-color: rgba($white, 1);
+    box-shadow: 12px 0 0 0 rgba($white, 0.2),
+                24px 0 0 0 rgba($white, 0.2);
   }
 }
 
@@ -43,7 +43,7 @@
 
   .build-trace {
     background: $black;
-    color: $gray-darkest;
+    color: $grey-400;
     white-space: pre;
     overflow-x: auto;
     font-size: 12px;
@@ -58,7 +58,7 @@
 
   .top-bar {
     height: 35px;
-    background: $gray-light;
+    background: $grey-50;
     border: 1px solid $border-color;
     color: $gl-text-color;
     position: sticky;
@@ -285,7 +285,7 @@
   .trigger-build-value {
     padding: 2px 4px;
     color: $black;
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .label {
@@ -299,7 +299,7 @@
       color: $blue-500;
 
       &:hover {
-        color: $white-light;
+        color: $white;
       }
     }
 
@@ -342,7 +342,7 @@
   }
 
   .builds-container {
-    background-color: $white-light;
+    background-color: $white;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
@@ -389,7 +389,7 @@
       }
 
       &.retried {
-        background-color: $gray-lightest;
+        background-color: $grey-50;
       }
 
       &:hover {

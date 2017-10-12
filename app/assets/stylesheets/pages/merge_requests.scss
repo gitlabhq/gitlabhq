@@ -196,7 +196,7 @@
         content: '...';
         right: 0;
         font-family: $regular_font;
-        background-color: $gray-light;
+        background-color: $grey-50;
       }
     }
   }
@@ -244,7 +244,7 @@
 
     .bold {
       font-weight: $gl-font-weight-bold;
-      color: $gl-gray-light;
+      color: $gl-text-color;
     }
 
     .state-label {
@@ -485,7 +485,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  background-color: $gray-light;
+  background-color: $grey-50;
   border-radius: $border-radius-default $border-radius-default 0 0;
   padding: $gl-padding / 2 $gl-padding;
 
@@ -589,7 +589,7 @@
   .ci-table {
 
     th {
-      background-color: $white-light;
+      background-color: $white;
       color: $gl-text-color-secondary;
     }
   }
@@ -605,7 +605,7 @@
   @include new-style-dropdown;
 
   position: relative;
-  background: $gray-light;
+  background: $grey-50;
   color: $gl-text-color;
   z-index: 199;
 
@@ -647,7 +647,7 @@
 .merge-request-tabs-holder {
   top: $header-height;
   z-index: 200;
-  background-color: $white-light;
+  background-color: $white;
   border-bottom: 1px solid $border-color;
 
   @media (min-width: $screen-sm-min) {
@@ -691,7 +691,7 @@
     margin-right: auto;
 
     .inner-page-scroll-tabs {
-      background-color: $white-light;
+      background-color: $white;
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
     }

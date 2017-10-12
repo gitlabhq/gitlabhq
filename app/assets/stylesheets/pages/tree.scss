@@ -99,8 +99,8 @@
     margin-bottom: 0;
 
     tr {
-      border-bottom: 1px solid $white-normal;
-      border-top: 1px solid $white-normal;
+      border-bottom: 1px solid $grey-100;
+      border-top: 1px solid $grey-100;
 
       td,
       th {
@@ -122,7 +122,7 @@
 
       .commit-history-link-spacer {
         margin: 0 10px;
-        color: $white-normal;
+        color: $grey-100;
       }
 
       &:hover:not(.tree-truncated-warning) {
@@ -136,7 +136,7 @@
 
       &.selected {
         td {
-          background: $white-normal;
+          background: $grey-100;
           border-top: 1px solid $border-gray-dark;
           border-bottom: 1px solid $border-gray-dark;
         }
@@ -256,7 +256,7 @@
   .sub-header-block.border-top {
     margin-top: 20px;
     padding: 0;
-    border-top: 1px solid $white-dark;
+    border-top: 1px solid $grey-200;
     border-bottom: 0;
   }
 

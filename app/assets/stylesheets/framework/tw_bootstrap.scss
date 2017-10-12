@@ -190,7 +190,7 @@ summary {
 .alert {
   a:not(.btn) {
     @extend .alert-link;
-    color: $white-light;
+    color: $white;
     text-decoration: underline;
   }
 }

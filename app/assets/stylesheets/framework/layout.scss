@@ -6,18 +6,18 @@ html {
 
 body {
   &.navless {
-    background-color: $white-light !important;
+    background-color: $white !important;
   }
 
   &.card-content {
-    background-color: $gray-darker;
+    background-color: $grey-200;
 
     .content-wrapper {
       padding: 0;
 
       .container-fluid,
       .container-limited {
-        background-color: $gray-darker;
+        background-color: $grey-200;
       }
     }
   }

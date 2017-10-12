@@ -79,7 +79,7 @@
 }
 
 .project-feature-settings {
-  background: $gray-lighter;
+  background: $grey-50;
   border-top: 0;
   margin-bottom: 16px;
 }
@@ -369,7 +369,7 @@
         left: 1px;
         margin-top: -9px;
         border-width: 10px 7px 10px 0;
-        border-right-color: $white-light;
+        border-right-color: $white;
         pointer-events: none;
       }
     }
@@ -377,7 +377,7 @@
     .count {
       @include btn-gray;
       display: inline-block;
-      background: $white-light;
+      background: $white;
       border-radius: 2px;
       border-width: 1px;
       border-style: solid;
@@ -398,7 +398,7 @@
       }
 
       &:hover {
-        background: $white-light;
+        background: $white;
       }
     }
   }
@@ -606,7 +606,7 @@ a.deploy-project-label {
       flex: 1;
       text-align: left;
       padding-left: ($gl-padding * 3);
-      background-color: $white-light;
+      background-color: $white;
     }
 
     .selected-template {
@@ -730,7 +730,7 @@ a.deploy-project-label {
       z-index: 10;
       padding: 8px 0;
       text-align: center;
-      background-color: $white-light;
+      background-color: $white;
       color: $gl-text-color-tertiary;
       transform: translateY(-50%);
       font-size: 12px;
@@ -823,7 +823,7 @@ a.deploy-project-label {
     }
 
     &:hover {
-      background-color: $gray-normal;
+      background-color: $grey-100;
     }
   }
 }
@@ -957,7 +957,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: $white-light;
+    background: $white;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -977,7 +977,7 @@ pre.light-well {
   }
 
   i:nth-child(2) {
-    color: $white-light;
+    color: $white;
   }
 }
 
@@ -1197,7 +1197,7 @@ pre.light-well {
   padding: 32px;
   margin: 32px;
   border-radius: 3px;
-  background-color: $white-light;
+  background-color: $white;
 
   h3 {
     margin-top: 0;

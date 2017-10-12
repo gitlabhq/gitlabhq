@@ -85,7 +85,7 @@ ul.related-merge-requests > li {
 .merge-request-status {
   font-size: 13px;
   padding: 0 5px;
-  color: $white-light;
+  color: $white;
   height: 20px;
   border-radius: 3px;
   line-height: 18px;
@@ -111,12 +111,12 @@ ul.related-merge-requests > li {
   }
 
   &.closed {
-    background: $gray-light;
+    background: $grey-50;
     border-color: $border-color;
   }
 
   &.merged {
-    background: $gray-light;
+    background: $grey-50;
     border-color: $border-color;
   }
 }
@@ -185,11 +185,11 @@ ul.related-merge-requests > li {
   margin-bottom: 10px;
 
   .form-control {
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .btn {
-    background-color: $gray-light;
+    background-color: $grey-50;
     border: 1px solid $border-gray-normal;
   }
 }

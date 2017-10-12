@@ -11,7 +11,7 @@
     }
 
     &:hover {
-      background-color: $gray-normal;
+      background-color: $grey-100;
     }
 
     .diff-toggle-caret {
@@ -20,7 +20,7 @@
   }
 
   .diff-content {
-    background: $white-light;
+    background: $white;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
 
@@ -173,11 +173,11 @@
 
     .frame {
       display: inline-block;
-      background-color: $white-light;
+      background-color: $white;
       line-height: 0;
 
       img {
-        border: 1px solid $white-light;
+        border: 1px solid $white;
         background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
         linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
         background-size: 10px 10px;
@@ -342,7 +342,7 @@
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: $gray-darker;
+    background: $grey-200;
 
     ul,
     li {
@@ -523,7 +523,7 @@
   width: 19px;
   height: 19px;
   margin-right: 0;
-  border-color: $white-light;
+  border-color: $white;
   cursor: pointer;
   transition: all .1s ease-out;
 
@@ -566,7 +566,7 @@
 
   .collapse-icon,
   path {
-    fill: $white-light;
+    fill: $white;
   }
 
   &:focus {
@@ -586,7 +586,7 @@
     @media (min-width: $screen-sm-min) {
       margin-left: -$gl-padding;
       padding-left: $gl-padding;
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 
@@ -594,7 +594,7 @@
     position: -webkit-sticky;
     position: sticky;
     top: 24px;
-    background-color: $white-light;
+    background-color: $white;
     z-index: 190;
 
     &.diff-files-changed-merge-request {
@@ -608,7 +608,7 @@
     &.is-stuck {
       padding-top: 0;
       padding-bottom: 0;
-      border-bottom: 1px solid $white-dark;
+      border-bottom: 1px solid $grey-200;
       transform: translateY(16px);
 
       .diff-stats-additions-deletions-expanded,
@@ -679,8 +679,8 @@
 }
 
 .note-container {
-  background-color: $gray-light;
-  border-top: 1px solid $white-normal;
+  background-color: $grey-50;
+  border-top: 1px solid $grey-100;
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
@@ -690,11 +690,11 @@
     display: block;
     width: 100%;
     height: 10px;
-    background-color: $white-light;
-    background-image: linear-gradient(45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(225deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(135deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(-45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%);
+    background-color: $white;
+    background-image: linear-gradient(45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white 80%),
+      linear-gradient(225deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white 80%),
+      linear-gradient(135deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white 80%),
+      linear-gradient(-45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white 80%);
     background-position: 5px 5px,0 5px,0 5px,5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -713,7 +713,7 @@
 .diff-file .note-container > .new-note,
 .note-container .discussion-notes {
   margin-left: 100px;
-  border-left: 1px solid $white-normal;
+  border-left: 1px solid $grey-100;
 }
 
 .notes.active {
@@ -764,8 +764,8 @@
 .notes > .badge {
   position: absolute;
   background-color: $blue-400;
-  color: $white-light;
-  border: $white-light 1px solid;
+  color: $white;
+  border: $white 1px solid;
   min-height: $gl-padding;
   padding: 5px 8px;
   border-radius: 12px;
@@ -786,7 +786,7 @@
   position: absolute;
 
   &.inverted {
-    border-color: $white-light;
+    border-color: $white;
   }
 }
 
@@ -814,7 +814,7 @@
   }
 
   &.collapsed {
-    background-color: $white-light;
+    background-color: $white;
 
     .diff-notes-collapse,
     .note,

@@ -178,13 +178,13 @@
 }
 
 .rect-text-metric {
-  fill: $white-light;
+  fill: $white;
   stroke-width: 1;
-  stroke: $gray-darkest;
+  stroke: $grey-400;
 }
 
 .rect-axis-text {
-  fill: $white-light;
+  fill: $white;
 }
 
 .text-metric {
@@ -192,7 +192,7 @@
 }
 
 .selected-metric-line {
-  stroke: $gl-gray-dark;
+  stroke: $grey-900;
   stroke-width: 1;
 }
 
@@ -291,7 +291,7 @@
 
     .tick {
       > line {
-        stroke: $gray-darker;
+        stroke: $grey-200;
       }
 
       > text {

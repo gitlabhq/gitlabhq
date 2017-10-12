@@ -175,7 +175,7 @@
 }
 
 .discussion-form {
-  background-color: $white-light;
+  background-color: $white;
 }
 
 .discussion-form-container {
@@ -207,7 +207,7 @@
   font-size: 14px;
 
   .md-area {
-    background-color: $white-light;
+    background-color: $white;
   }
 }
 
@@ -225,7 +225,7 @@
 
   &.alert-dismissable {
     .close {
-      color: $white-light;
+      color: $white;
       opacity: 0.85;
       font-weight: $gl-font-weight-normal;
 
@@ -239,7 +239,7 @@
 .discussion-body,
 .diff-file {
   .discussion-reply-holder {
-    background-color: $white-light;
+    background-color: $white;
     padding: 10px 16px;
 
     &.is-replying {
@@ -269,7 +269,7 @@
     display: table;
 
     .btn-default path {
-      fill: $gray-darkest;
+      fill: $grey-400;
     }
 
     .btn-group {
@@ -394,7 +394,7 @@
     float: right;
 
     .toggle-icon {
-      color: $white-light;
+      color: $white;
       padding-right: 2px;
       margin-top: 2px;
     }

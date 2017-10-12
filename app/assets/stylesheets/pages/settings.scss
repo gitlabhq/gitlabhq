@@ -23,7 +23,7 @@
 }
 
 .settings {
-  border-bottom: 1px solid $gray-darker;
+  border-bottom: 1px solid $grey-200;
 
   &:first-of-type {
     margin-top: 10px;
@@ -94,7 +94,7 @@
     margin-bottom: 32px;
     padding: 16px;
     border: 1px solid $border-color;
-    background-color: $gray-light;
+    background-color: $grey-50;
   }
 
   .bs-callout,
@@ -198,7 +198,7 @@
     }
 
     .panel-heading .badge-count {
-      color: $white-light;
+      color: $white;
       background: $common-gray-dark;
     }
 

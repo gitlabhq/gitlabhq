@@ -117,7 +117,7 @@
   }
 
   .value-container {
-    background-color: $white-normal;
+    background-color: $grey-100;
     color: $filter-value-text-color;
     border-radius: 0 2px 2px 0;
     margin-right: 5px;
@@ -203,7 +203,7 @@
   width: 100%;
   min-width: 0;
   border: 1px solid $border-color;
-  background-color: $white-light;
+  background-color: $white;
 
   @media (max-width: $screen-xs-min) {
     -webkit-flex: 1 1 auto;
@@ -249,12 +249,12 @@
 
   .fa-times {
     right: 10px;
-    color: $gray-darkest;
+    color: $grey-400;
   }
 
   .clear-search {
     width: 35px;
-    background-color: $white-light;
+    background-color: $white;
     border: 0;
     outline: none;
     z-index: 1;
@@ -382,7 +382,7 @@
 @media (max-width: $screen-xs-max) {
   .issues-details-filters {
     padding: 0 0 10px;
-    background-color: $white-light;
+    background-color: $white;
     border-top: 0;
   }
 }
@@ -412,7 +412,7 @@
   outline: 0;
 
   .avatar {
-    border-color: $white-light;
+    border-color: $white;
   }
 }
 
@@ -432,7 +432,7 @@
     }
 
     .dropdown-label-box {
-      border-color: $white-light;
+      border-color: $white;
       border-style: solid;
       border-width: 1px;
       width: 17px;

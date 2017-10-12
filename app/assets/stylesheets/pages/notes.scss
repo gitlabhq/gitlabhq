@@ -48,15 +48,15 @@ ul.notes {
 
     .timeline-entry-inner {
       padding: $gl-padding $gl-btn-padding;
-      border-bottom: 1px solid $white-normal;
+      border-bottom: 1px solid $grey-100;
     }
 
     &:target,
     &.target {
-      border-bottom: 1px solid $white-normal;
+      border-bottom: 1px solid $grey-100;
 
       &:not(:first-child) {
-        border-top: 1px solid $white-normal;
+        border-top: 1px solid $grey-100;
         margin-top: -1px;
       }
 
@@ -232,7 +232,7 @@ ul.notes {
       svg {
         width: 16px;
         height: 16px;
-        fill: $gray-darkest;
+        fill: $grey-400;
         margin-top: 2px;
       }
     }
@@ -289,7 +289,7 @@ ul.notes {
             position: absolute;
             left: 0;
             bottom: 0;
-            background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
+            background: linear-gradient(rgba($white, 0.1) -100px, $white 100%);
           }
         }
       }
@@ -303,7 +303,7 @@ ul.notes {
     cursor: default;
 
     &:hover {
-      background-color: $gray-light;
+      background-color: $grey-50;
     }
   }
 
@@ -337,7 +337,7 @@ ul.notes {
         vertical-align: middle;
         text-align: center;
         padding: 10px 0;
-        background: $gray-light;
+        background: $grey-50;
         color: $text-color;
       }
 
@@ -348,7 +348,7 @@ ul.notes {
       }
 
       &.notes_content {
-        background-color: $gray-light;
+        background-color: $grey-50;
         border-width: 1px 0;
         padding: 0;
         vertical-align: top;
@@ -360,18 +360,18 @@ ul.notes {
 
         .discussion-notes {
           &:not(:first-child) {
-            border-top: 1px solid $white-normal;
+            border-top: 1px solid $grey-100;
             margin-top: 20px;
           }
 
           &:not(:last-child) {
-            border-bottom: 1px solid $white-normal;
+            border-bottom: 1px solid $grey-100;
             margin-bottom: 20px;
           }
         }
 
         .notes {
-          background-color: $white-light;
+          background-color: $white;
         }
 
         a code {
@@ -470,7 +470,7 @@ ul.notes {
 .discussion-actions {
   float: right;
   margin-left: 10px;
-  color: $gray-darkest;
+  color: $gey-400;
 
   @include notes-media('max', $screen-md-max) {
     float: none;
@@ -490,7 +490,7 @@ ul.notes {
   display: inline-flex;
   align-items: center;
   margin-left: 10px;
-  color: $gray-darkest;
+  color: $grey-400;
 
   @include notes-media('max', $screen-xs-max) {
     float: none;
@@ -534,8 +534,8 @@ ul.notes {
   line-height: 1;
   padding: 0;
   min-width: 16px;
-  color: $gray-darkest;
-  fill: $gray-darkest;
+  color: $grey-400;
+  fill: $grey-400;
 
   .fa {
     position: relative;
@@ -665,7 +665,7 @@ ul.notes {
 .discussion-body,
 .diff-file {
   .notes .note {
-    border-bottom: 1px solid $white-normal;
+    border-bottom: 1px solid $grey-100;
 
     .timeline-entry-inner {
       padding-left: $gl-padding;
@@ -676,7 +676,7 @@ ul.notes {
 }
 
 .disabled-comment {
-  background-color: $gray-light;
+  background-color: $grey-50;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
@@ -684,7 +684,7 @@ ul.notes {
 
   &.discussion-locked {
     border: 0;
-    background-color: $white-light;
+    background-color: $white;
   }
 
 
@@ -714,7 +714,7 @@ ul.notes {
 
   .btn {
     svg path {
-      fill: $gray-darkest;
+      fill: $grey-400;
     }
 
     &.discussion-create-issue-btn {
@@ -739,7 +739,7 @@ ul.notes {
   vertical-align: middle;
   display: inline-block;
   padding: 5px 10px 6px;
-  background-color: $gray-light;
+  background-color: $grey-50;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
@@ -765,7 +765,7 @@ ul.notes {
   background-color: transparent;
   border: 0;
   outline: 0;
-  color: $gray-darkest;
+  color: $grey-400;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {

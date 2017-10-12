@@ -5,7 +5,7 @@
 .event-item {
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top 40px;
-  border-bottom: 1px solid $white-normal;
+  border-bottom: 1px solid $grey-100;
   color: $list-text-color;
   position: relative;
 
@@ -86,7 +86,7 @@
 
       pre {
         border: 0;
-        background: $gray-light;
+        background: $grey-50;
         border-radius: 0;
         color: $events-pre-color;
         overflow: hidden;
@@ -116,10 +116,10 @@
   .event_icon {
     position: relative;
     float: right;
-    border: 1px solid $gray-darker;
+    border: 1px solid $grey-200;
     padding: 5px;
     border-radius: 5px;
-    background: $gray-light;
+    background: $grey-50;
     margin-left: 10px;
     top: -6px;
 

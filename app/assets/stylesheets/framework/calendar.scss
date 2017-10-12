@@ -81,7 +81,7 @@
 
   .pika-day {
     border-radius: 0;
-    background-color: $white-light;
+    background-color: $white;
     text-align: center;
   }
 
@@ -95,7 +95,7 @@
   .is-selected .pika-day,
   .pika-day:hover,
   .is-today .pika-day {
-    background: $gray-darker;
+    background: $grey-200;
     color: $gl-text-color;
     box-shadow: none;
   }

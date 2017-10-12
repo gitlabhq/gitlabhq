@@ -132,7 +132,7 @@
 
     &.search-active {
       form {
-        background-color: $white-light;
+        background-color: $white;
       }
 
       .location-badge {
@@ -182,19 +182,19 @@
 
 body {
   &.ui_indigo {
-    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900, $white-light);
+    @include gitlab-theme($indigo-100, $indigo-200, $indigo-500, $indigo-700, $indigo-800, $indigo-900, $white);
   }
 
   &.ui_dark {
-    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900, $white-light);
+    @include gitlab-theme($theme-gray-100, $theme-gray-200, $theme-gray-500, $theme-gray-700, $theme-gray-800, $theme-gray-900, $white);
   }
 
   &.ui_blue {
-    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900, $white-light);
+    @include gitlab-theme($theme-blue-100, $theme-blue-200, $theme-blue-500, $theme-blue-700, $theme-blue-800, $theme-blue-900, $white);
   }
 
   &.ui_green {
-    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900, $white-light);
+    @include gitlab-theme($theme-green-100, $theme-green-200, $theme-green-500, $theme-green-700, $theme-green-800, $theme-green-900, $white);
   }
 
   &.ui_light {
@@ -218,7 +218,7 @@ body {
 
           &.active > a,
           &.active > a:hover {
-            color: $white-light;
+            color: $white;
           }
         }
       }
@@ -234,11 +234,11 @@ body {
 
     .search {
       form {
-        background-color: $white-light;
+        background-color: $white;
         box-shadow: inset 0 0 0 1px $border-color;
 
         &:hover {
-          background-color: $white-light;
+          background-color: $white;
           box-shadow: inset 0 0 0 1px $blue-200;
 
           .location-badge {

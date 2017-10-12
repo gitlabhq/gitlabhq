@@ -1,5 +1,5 @@
 .info-well {
-  background: $gray-light;
+  background: $grey-50;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -86,12 +86,12 @@
 }
 
 .light-well {
-  background-color: $gray-light;
+  background-color: $grey-50;
   padding: 15px;
 }
 
 .dark-well {
-  background-color: $gray-normal;
+  background-color: $grey-100;
 
   .btn {
     width: 100%;

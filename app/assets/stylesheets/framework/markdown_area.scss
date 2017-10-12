@@ -108,8 +108,8 @@
 
 .markdown-area {
   border-radius: 0;
-  background: $white-light;
-  border: 1px solid $md-area-border;
+  background: $white;
+  border: 1px solid $border-color;
   min-height: 140px;
   max-height: 500px;
   padding: 5px;
@@ -131,13 +131,13 @@
 
   hr {
     // Darken 'whitesmoke' a bit to make it more visible in note bodies
-    border-color: darken($gray-normal, 8%);
+    border-color: darken($grey-100, 8%);
     margin: 10px 0;
   }
 
   // Border around images in issue and MR comments.
   img:not(.emoji) {
-    border: 1px solid $white-normal;
+    border: 1px solid $grey-100;
     padding: 5px;
     margin: 5px 0;
     // Ensure that image does not exceed viewport
@@ -197,7 +197,7 @@
   .cur {
     .avatar {
       @include disableAllAnimation;
-      border: 1px solid $white-light;
+      border: 1px solid $white;
     }
   }
 
@@ -214,7 +214,7 @@
       border: 0;
 
       &.cur {
-        background-color: $gray-darker;
+        background-color: $grey-200;
         color: $gl-text-color;
 
         small {

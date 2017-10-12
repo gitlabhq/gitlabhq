@@ -25,7 +25,7 @@
         width: 55px;
         height: 14px;
         margin: 0;
-        fill: $white-light;
+        fill: $white;
       }
     }
 
@@ -57,7 +57,7 @@
 
         .more-icon,
         .close-icon {
-          fill: $white-light;
+          fill: $white;
           margin: auto;
         }
       }
@@ -144,7 +144,7 @@
 
     .dropdown.open {
       > a {
-        border-bottom-color: $white-light;
+        border-bottom-color: $white;
       }
     }
 
@@ -233,14 +233,14 @@
           text-decoration: none;
           outline: 0;
           opacity: 1;
-          color: $white-light;
+          color: $white;
 
           svg {
             fill: currentColor;
           }
 
           &.header-user-dropdown-toggle .header-user-avatar {
-            border-color: $white-light;
+            border-color: $white;
           }
         }
       }
@@ -252,14 +252,14 @@
       .impersonated-user,
       .impersonated-user:hover {
         margin-right: 1px;
-        background-color: $white-light;
+        background-color: $white;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
 
       .impersonation-btn,
       .impersonation-btn:hover {
-        background-color: $white-light;
+        background-color: $white;
         margin-left: 0;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
@@ -288,7 +288,7 @@
     > a:focus {
       text-decoration: none;
       outline: 0;
-      color: $white-light;
+      color: $white;
 
       svg {
         fill: currentColor;
@@ -472,7 +472,7 @@
   font-weight: $gl-font-weight-bold;
 
   &:hover {
-    background-color: $white-light;
+    background-color: $white;
   }
 }
 
@@ -483,11 +483,10 @@
       font-weight: $gl-font-weight-normal;
       margin-left: -6px;
       font-size: 11px;
-      color: $white-light;
+      color: $white;
       padding: 0 5px;
       line-height: 12px;
       border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
 
       &.issues-count {
         background-color: $green-500;
@@ -570,8 +569,8 @@
 
 .navbar-empty {
   height: $header-height;
-  background: $white-light;
-  border-bottom: 1px solid $white-normal;
+  background: $white;
+  border-bottom: 1px solid $grey-100;
 
   .center-logo {
     margin: 8px 0;

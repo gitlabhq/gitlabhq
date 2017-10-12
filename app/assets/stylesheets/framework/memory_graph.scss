@@ -1,10 +1,10 @@
 .memory-graph-container {
   svg {
-    background: $white-light;
+    background: $white;
     cursor: pointer;
 
     &:hover {
-      box-shadow: 0 0 4px $gray-darkest inset;
+      box-shadow: 0 0 4px $grey-400 inset;
     }
   }
 

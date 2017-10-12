@@ -18,7 +18,7 @@ $colors: (
   white_button_origin_chosen  : #268ced,
 
   white_header_not_chosen     : #f0f0f0,
-  white_line_not_chosen       : $gray-light,
+  white_line_not_chosen       : $grey-50,
 
 
   dark_header_head_neutral   : rgba(#3f3, .2),
@@ -232,14 +232,14 @@ $colors: (
       right: 10px;
       padding: 0;
       outline: none;
-      color: $white-light;
+      color: $white;
       width: 75px; // static width to make 2 buttons have same width
       height: 19px;
     }
   }
 
   .btn-success .fa-spinner {
-    color: $white-light;
+    color: $white;
   }
 
   .editor-wrap {
@@ -274,7 +274,7 @@ $colors: (
   }
 
   .discard-changes-alert {
-    background-color: $gray-light;
+    background-color: $grey-50;
     text-align: right;
     padding: $gl-padding-top $gl-padding;
     color: $gl-text-color;

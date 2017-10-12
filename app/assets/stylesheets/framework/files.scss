@@ -35,7 +35,7 @@
 
   .file-title {
     position: relative;
-    background-color: $gray-light;
+    background-color: $grey-50;
     border-bottom: 1px solid $border-color;
     margin: 0;
     text-align: left;
@@ -75,7 +75,7 @@
   }
 
   .file-blame-legend {
-    background-color: $gray-light;
+    background-color: $grey-50;
     text-align: right;
     padding: 8px $gl-padding;
     border-bottom: 1px solid $border-color;
@@ -113,7 +113,7 @@
   }
 
   .file-content {
-    background: $white-light;
+    background: $white;
 
     &.image_file,
     &.video {
@@ -133,7 +133,7 @@
 
     &.blob-no-preview {
       background: $blob-bg;
-      text-shadow: 0 1px 2px $white-light;
+      text-shadow: 0 1px 2px $white;
       padding: 100px 0;
     }
 
@@ -221,7 +221,7 @@
         padding: 10px 0;
         border-left: 1px solid $border-color;
         margin-bottom: 0;
-        background: $white-light;
+        background: $white;
 
         li {
           color: $logs-li-color;
@@ -326,7 +326,7 @@ span.idiff {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $gray-light;
+  background-color: $grey-50;
   border-bottom: 1px solid $border-color;
   padding: 5px $gl-padding;
   margin: 0;
@@ -376,7 +376,7 @@ span.idiff {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background-color: $gray-light;
+  background-color: $grey-50;
   border-bottom: 1px solid $border-color;
   padding: 5px $gl-padding;
 }

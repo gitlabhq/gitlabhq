@@ -49,7 +49,7 @@ $font-size-base: $gl-font-size;
 
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
-$component-active-color: $white-light;
+$component-active-color: $white;
 $component-active-bg: $brand-info;
 
 //== Forms
@@ -67,19 +67,19 @@ $legend-color: $text-color;
 //##
 
 $pagination-color: $gl-text-color;
-$pagination-bg: $white-light;
+$pagination-bg: $white;
 $pagination-border: $border-color;
 
 $pagination-hover-color: $gl-text-color;
 $pagination-hover-bg: $row-hover;
 $pagination-hover-border: $border-color;
 
-$pagination-active-color: $white-light;
+$pagination-active-color: $white;
 $pagination-active-bg: $gl-link-color;
 $pagination-active-border: $gl-link-color;
 
 $pagination-disabled-color: #cdcdcd;
-$pagination-disabled-bg: $gray-light;
+$pagination-disabled-bg: $grey-50;
 $pagination-disabled-border: $border-color;
 
 
@@ -87,19 +87,19 @@ $pagination-disabled-border: $border-color;
 //
 //## Define colors for form feedback states and, by default, alerts.
 
-$state-success-text: $white-light;
+$state-success-text: $white;
 $state-success-bg: $brand-success;
 $state-success-border: $brand-success;
 
-$state-info-text: $white-light;
+$state-info-text: $white;
 $state-info-bg: $brand-info;
 $state-info-border: $brand-info;
 
-$state-warning-text: $white-light;
+$state-warning-text: $white;
 $state-warning-bg: $brand-warning;
 $state-warning-border: $brand-warning;
 
-$state-danger-text: $white-light;
+$state-danger-text: $white;
 $state-danger-bg: $brand-danger;
 $state-danger-border: $brand-danger;
 
@@ -118,8 +118,8 @@ $alert-border-radius: 0;
 $panel-border-radius: 2px;
 $panel-default-text: $text-color;
 $panel-default-border: $border-color;
-$panel-default-heading-bg: $gray-light;
-$panel-footer-bg: $gray-light;
+$panel-default-heading-bg: $grey-50;
+$panel-footer-bg: $grey-50;
 $panel-inner-border: $border-color;
 
 $badge-bg: $badge-bg;
@@ -129,7 +129,7 @@ $badge-color: $badge-color;
 //
 //##
 
-$well-bg: $gray-light;
+$well-bg: $grey-50;
 $well-border: #eee;
 
 //== Code
@@ -139,14 +139,14 @@ $well-border: #eee;
 $code-color: $red-600;
 $code-bg: lighten($red-100, 2%);
 
-$kbd-color: $white-light;
+$kbd-color: $white;
 $kbd-bg: #333;
 
 //== Buttons
 //
 //##
 $btn-default-color: $gl-text-color;
-$btn-default-bg: $white-light;
+$btn-default-bg: $white;
 $btn-default-border: #e7e9ed;
 
 //== Nav
@@ -157,11 +157,11 @@ $nav-link-padding: 13px $gl-padding;
 //== Code
 //
 //##
-$pre-bg: $gray-light !default;
+$pre-bg: $grey-50 !default;
 $pre-color: $gl-text-color !default;
 $pre-border-color: $border-color;
 
-$table-bg-accent: $gray-light;
+$table-bg-accent: $grey-50;
 
 $zindex-popover: 900;
 

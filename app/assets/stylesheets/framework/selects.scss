@@ -6,7 +6,7 @@
 .select2-container,
 .select2-container.select2-drop-above {
   .select2-choice {
-    background: $white-light;
+    background: $white;
     border-color: $input-border;
     height: 35px;
     padding: $gl-vert-padding $gl-input-padding;
@@ -33,7 +33,7 @@
         text-align: center;
         pointer-events: none;
         box-sizing: border-box;
-        color: $gray-darkest;
+        color: $grey-400;
         display: inline-block;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
@@ -48,7 +48,7 @@
     }
 
     &:hover {
-      border-color: $gray-darkest;
+      border-color: $grey-400;
       color: $gl-text-color;
     }
   }
@@ -83,7 +83,7 @@
 .select2-dropdown-open,
 .select2-dropdown-open.select2-drop-above {
   .select2-choice {
-    border-color: $gray-darkest;
+    border-color: $grey-400;
     outline: 0;
   }
 }
@@ -107,7 +107,7 @@
       border-color: $input-border;
       color: $gl-text-color;
       line-height: 15px;
-      background-color: $gray-light;
+      background-color: $grey-50;
       background-image: none;
       padding: 3px 18px 3px 5px;
 
@@ -142,7 +142,7 @@
 
   input {
     padding: 2px 25px 2px 5px;
-    background: $white-light image-url('select2.png');
+    background: $white image-url('select2.png');
     background-repeat: no-repeat;
     background-position: right 0 bottom 6px;
     border: 1px solid $input-border;
@@ -154,7 +154,7 @@
     }
 
     &.select2-active {
-      background-color: $white-light;
+      background-color: $white;
       background-image: image-url('select2-spinner.gif') !important;
       background-repeat: no-repeat;
       background-position: right 5px center !important;
@@ -214,7 +214,7 @@
 .select2-highlighted {
   .group-result {
     .group-path {
-      color: $white-light;
+      color: $white;
     }
   }
 }

@@ -38,7 +38,7 @@
 .repository-view {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
-  color: $almost-black;
+  color: $grey-900;
 
   .code.white pre .hll {
     background-color: $well-light-border !important;
@@ -131,14 +131,14 @@
 
       li {
         position: relative;
-        background: $gray-normal;
+        background: $grey-100;
         padding: #{$gl-padding / 2} $gl-padding;
-        border-right: 1px solid $white-dark;
-        border-bottom: 1px solid $white-dark;
+        border-right: 1px solid $grey-200;
+        border-bottom: 1px solid $grey-200;
         cursor: pointer;
 
         &.active {
-          background: $white-light;
+          background: $white;
           border-bottom: 0;
         }
 
@@ -171,7 +171,7 @@
 
         .close-icon,
         .unsaved-icon {
-          color: $gray-darkest;
+          color: $grey-400;
         }
 
         .unsaved-icon {
@@ -180,7 +180,7 @@
 
         &.tabs-divider {
           width: 100%;
-          background-color: $white-light;
+          background-color: $white;
           border-right: 0;
           border-top-right-radius: 2px;
         }
@@ -188,9 +188,9 @@
     }
 
     .repo-file-buttons {
-      background-color: $white-light;
+      background-color: $white;
       padding: 5px 10px;
-      border-top: 1px solid $white-normal;
+      border-top: 1px solid $grey-100;
     }
 
     #binary-viewer {
@@ -206,7 +206,7 @@
       .binary-unknown {
         text-align: center;
         padding-top: 100px;
-        background: $gray-light;
+        background: $grey-50;
         height: 100%;
         font-size: 17px;
 
@@ -218,7 +218,7 @@
   }
 
   #commit-area {
-    background: $gray-light;
+    background: $grey-50;
     padding: 20px;
 
     .help-block {
@@ -231,8 +231,8 @@
     height: 41px;
     position: relative;
     display: block;
-    border-bottom: 1px solid $white-normal;
-    background: $white-light;
+    border-bottom: 1px solid $grey-100;
+    background: $white;
     margin-top: -5px;
   }
 
@@ -248,7 +248,7 @@
 
     &.sidebar-mini {
       width: 20%;
-      border-right: 1px solid $white-normal;
+      border-right: 1px solid $grey-100;
       overflow: auto;
     }
 
@@ -286,7 +286,7 @@
 
     a {
       @include str-truncated(250px);
-      color: $almost-black;
+      color: $grey-900;
     }
   }
 }

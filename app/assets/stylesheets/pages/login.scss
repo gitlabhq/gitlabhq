@@ -148,7 +148,7 @@
       }
 
       &:not(.active) {
-        background-color: $gray-light;
+        background-color: $grey-50;
       }
 
       a {
@@ -181,7 +181,7 @@
   .form-control {
     &:active,
     &:focus {
-      background-color: $white-light;
+      background-color: $white;
     }
   }
 
@@ -249,7 +249,7 @@
       left: 0;
       right: 0;
       height: 40px;
-      background: $white-light;
+      background: $white;
     }
 
     .navless-container {

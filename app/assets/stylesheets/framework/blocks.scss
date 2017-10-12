@@ -23,11 +23,11 @@
 
 .row-content-block {
   margin-top: 0;
-  background-color: $gray-light;
+  background-color: $grey-50;
   padding: $gl-padding;
   margin-bottom: 0;
-  border-top: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
+  border-top: 1px solid $grey-200;
+  border-bottom: 1px solid $grey-200;
   color: $gl-text-color;
 
   &.oneline-block {
@@ -35,7 +35,7 @@
   }
 
   &.white {
-    background-color: $white-light;
+    background-color: $white;
   }
 
   &.top-block {
@@ -69,7 +69,7 @@
 
   &.content-component-block {
     padding: 11px 0;
-    background-color: $white-light;
+    background-color: $white;
   }
 
   .title {
@@ -99,14 +99,14 @@
   }
 
   &.build-content {
-    background-color: $white-light;
+    background-color: $white;
     border-top: 0;
   }
 }
 
 .sub-header-block {
-  background-color: $white-light;
-  border-bottom: 1px solid $white-dark;
+  background-color: $white;
+  border-bottom: 1px solid $grey-200;
   padding: 11px 0;
   margin-bottom: 11px;
 
@@ -122,7 +122,7 @@
 
 .cover-block {
   text-align: center;
-  background: $gray-light;
+  background: $grey-50;
   padding-top: 44px;
   position: relative;
 
@@ -181,7 +181,7 @@
   }
 
   &.groups-cover-block {
-    background: $white-light;
+    background: $white;
     border-bottom: 1px solid $border-color;
     text-align: left;
     padding: 24px 0;
@@ -251,7 +251,7 @@
 
 .content-block {
   padding: $gl-padding 0;
-  border-bottom: 1px solid $white-dark;
+  border-bottom: 1px solid $grey-200;
 
   &.oneline-block {
     line-height: 36px;

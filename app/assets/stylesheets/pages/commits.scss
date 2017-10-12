@@ -93,7 +93,7 @@
     font-family: inherit;
     left: $left;
     height: 100%;
-    border-right: 1px solid mix($input-border, $white-light);
+    border-right: 1px solid mix($input-border, $white);
     position: absolute;
     z-index: 1;
   }
@@ -115,9 +115,9 @@
 
 .commit-header {
   padding: 5px 10px;
-  background-color: $gray-light;
-  border-bottom: 1px solid $gray-darker;
-  border-top: 1px solid $gray-darker;
+  background-color: $grey-50;
+  border-bottom: 1px solid $grey-200;
+  border-top: 1px solid $grey-200;
   font-size: 14px;
 
   &:first-child {
@@ -142,7 +142,7 @@
 
 .text-expander {
   display: inline-block;
-  background: $white-light;
+  background: $white;
   color: $gl-text-color-secondary;
   padding: 0 4px;
   cursor: pointer;
@@ -154,12 +154,12 @@
   outline: none;
 
   &.open {
-    background-color: darken($gray-light, 10%);
+    background-color: darken($grey-50, 10%);
     box-shadow: inset 0 0 2px rgba($black, 0.2);
   }
 
   &:hover {
-    background-color: darken($gray-light, 10%);
+    background-color: darken($grey-50, 10%);
     text-decoration: none;
   }
 }
@@ -230,7 +230,7 @@
   }
 
   a.autodevops-badge {
-    color: $white-light;
+    color: $white;
   }
 
   a.autodevops-link {
@@ -241,7 +241,7 @@
     font-size: 14px;
     padding: 10px 15px;
     margin: 10px 0;
-    background: $gray-light;
+    background: $grey-50;
     display: none;
     white-space: pre-wrap;
     word-break: normal;
@@ -309,7 +309,7 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $common-gray-dark);
+    @include status-color($grey-300, $gray, $common-gray-dark);
     border-color: $common-gray-light;
   }
 }

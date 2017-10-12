@@ -82,7 +82,7 @@
 
   // Border around images in issue and MR descriptions.
   .description img:not(.emoji) {
-    border: 1px solid $white-normal;
+    border: 1px solid $grey-100;
     padding: 5px;
     max-height: calc(100vh - 100px);
     max-width: 100%;
@@ -172,7 +172,7 @@
       padding-left: 10px;
 
       &:hover {
-        color: $gray-darkest;
+        color: $grey-400;
       }
     }
   }
@@ -218,7 +218,7 @@
     button {
       float: right;
       padding: 1px 5px;
-      background-color: $gray-light;
+      background-color: $grey-50;
     }
   }
 
@@ -516,18 +516,18 @@
   padding: 16px 0;
 
   small {
-    color: $gray-darkest;
+    color: $grey-400;
   }
 }
 
 .edited-text {
-  color: $gray-darkest;
+  color: $grey-400;
   display: block;
   margin: 16px 0 0;
   font-size: 85%;
 
   .author_link {
-    color: $gray-darkest;
+    color: $grey-400;
   }
 }
 
@@ -835,7 +835,7 @@
   }
 
   .time-tracking-help-state {
-    background: $white-light;
+    background: $white;
     margin: 16px -20px 0;
     padding: 16px 20px;
     border-top: 1px solid $border-gray-light;
