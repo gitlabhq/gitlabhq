@@ -63,10 +63,6 @@ const RepoStore = {
     RepoStore.currentShortHash = data.commit.short_id;
   },
 
-  hasBranchChanged() {
-
-  },
-
   // mutations
   checkIsCommitable() {
     RepoStore.isCommitable = RepoStore.onTopOfBranch && RepoStore.canCommit;
