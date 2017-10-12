@@ -1,0 +1,5 @@
+---
+title: Make sure '&'  won’t be used for new ref types in CE
+merge_request:
+author:
+type: other
