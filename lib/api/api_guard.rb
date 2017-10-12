@@ -46,7 +46,7 @@ module API
     module HelperMethods
       def find_current_user
         user =
-          find_user_from_private_token ||
+          find_user_from_personal_access_token ||
           find_user_from_oauth_token ||
           find_user_from_warden ||
           find_user_by_job_token
@@ -64,13 +64,14 @@ module API
 
       private
 
-      def find_user_from_private_token
+      def find_user_from_personal_access_token
         token_string = private_token.to_s
         return nil unless token_string.present?
 
-        user =
-          find_user_by_authentication_token(token_string) ||
-          find_user_by_personal_access_token(token_string)
+        access_token = PersonalAccessToken.find_by_token(token_string)
+        raise UnauthorizedError unless access_token
+
+        user = find_user_by_access_token(access_token)
 
         raise UnauthorizedError unless user
 
@@ -97,17 +98,6 @@ module API
       #
       def find_user_from_oauth_token
         access_token = find_oauth_access_token
-        return unless access_token
-
-        find_user_by_access_token(access_token)
-      end
-
-      def find_user_by_authentication_token(token_string)
-        User.find_by_authentication_token(token_string)
-      end
-
-      def find_user_by_personal_access_token(token_string)
-        access_token = PersonalAccessToken.find_by_token(token_string)
         return unless access_token
 
         find_user_by_access_token(access_token)

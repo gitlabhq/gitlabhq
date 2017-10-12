@@ -56,20 +56,6 @@ describe 'Profile account page' do
     end
   end
 
-  describe 'when I reset private token' do
-    before do
-      visit profile_account_path
-    end
-
-    it 'resets private token' do
-      previous_token = find("#private-token").value
-
-      click_link('Reset private token')
-
-      expect(find('#private-token').value).not_to eq(previous_token)
-    end
-  end
-
   describe 'when I reset RSS token' do
     before do
       visit profile_account_path
