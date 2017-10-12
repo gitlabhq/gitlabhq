@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../../../flash';
 import AssigneeTitle from './assignee_title';
 import Assignees from './assignees';
 

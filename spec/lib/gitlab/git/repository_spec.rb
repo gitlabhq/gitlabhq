@@ -68,31 +68,52 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
     end
 
-    context 'with no Git env stored' do
-      before do
-        expect(Gitlab::Git::Env).to receive(:all).and_return({})
+    describe 'alternates keyword argument' do
+      context 'with no Git env stored' do
+        before do
+          allow(Gitlab::Git::Env).to receive(:all).and_return({})
+        end
+
+        it "is passed an empty array" do
+          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+
+          repository.rugged
+        end
       end
 
-      it "whitelist some variables and pass them via the alternates keyword argument" do
-        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: [])
+      context 'with absolute and relative Git object dir envvars stored' do
+        before do
+          allow(Gitlab::Git::Env).to receive(:all).and_return({
+            'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
+            'GIT_OBJECT_DIRECTORY' => 'ignored',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[ignored ignored],
+            'GIT_OTHER' => 'another_env'
+          })
+        end
 
-        repository.rugged
+        it "is passed the relative object dir envvars after being converted to absolute ones" do
+          alternates = %w[foo bar baz].map { |d| File.join(repository.path, './objects', d) }
+          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: alternates)
+
+          repository.rugged
+        end
       end
-    end
 
-    context 'with some Git env stored' do
-      before do
-        expect(Gitlab::Git::Env).to receive(:all).and_return({
-          'GIT_OBJECT_DIRECTORY' => 'foo',
-          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar',
-          'GIT_OTHER' => 'another_env'
-        })
-      end
+      context 'with only absolute Git object dir envvars stored' do
+        before do
+          allow(Gitlab::Git::Env).to receive(:all).and_return({
+            'GIT_OBJECT_DIRECTORY' => 'foo',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[bar baz],
+            'GIT_OTHER' => 'another_env'
+          })
+        end
 
-      it "whitelist some variables and pass them via the alternates keyword argument" do
-        expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar])
+        it "is passed the absolute object dir envvars as is" do
+          expect(Rugged::Repository).to receive(:new).with(repository.path, alternates: %w[foo bar baz])
 
-        repository.rugged
+          repository.rugged
+        end
       end
     end
   end
@@ -1486,6 +1507,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
         end
       end
+    end
+  end
+
+  describe '#fetch' do
+    let(:git_path) { Gitlab.config.git.bin_path }
+    let(:remote_name) { 'my_remote' }
+
+    subject { repository.fetch(remote_name) }
+
+    it 'fetches the remote and returns true if the command was successful' do
+      expect(repository).to receive(:popen)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .and_return(['', 0])
+
+      expect(subject).to be(true)
     end
   end
 

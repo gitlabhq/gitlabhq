@@ -285,7 +285,7 @@ import CreateLabelDropdown from './create_label';
           },
           hidden: function() {
             var isIssueIndex, isMRIndex, page, selectedLabels;
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             $selectbox.hide();
@@ -325,7 +325,7 @@ import CreateLabelDropdown from './create_label';
               $loading.fadeOut();
             };
 
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
 

@@ -11,9 +11,11 @@ module Gitlab
     #
     # This class is thread-safe via RequestStore.
     class Env
-      WHITELISTED_GIT_VARIABLES = %w[
+      WHITELISTED_VARIABLES = %w[
         GIT_OBJECT_DIRECTORY
+        GIT_OBJECT_DIRECTORY_RELATIVE
         GIT_ALTERNATE_OBJECT_DIRECTORIES
+        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
 
       def self.set(env)
@@ -33,7 +35,7 @@ module Gitlab
       end
 
       def self.whitelist_git_env(env)
-        env.select { |key, _| WHITELISTED_GIT_VARIABLES.include?(key.to_s) }.with_indifferent_access
+        env.select { |key, _| WHITELISTED_VARIABLES.include?(key.to_s) }.with_indifferent_access
       end
     end
   end

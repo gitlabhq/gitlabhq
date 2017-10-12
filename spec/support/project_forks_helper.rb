@@ -52,7 +52,7 @@ module ProjectForksHelper
     TestEnv.copy_repo(forked_project,
                       bare_repo: TestEnv.forked_repo_path_bare,
                       refs: TestEnv::FORKED_BRANCH_SHA)
-
+    forked_project.repository.after_import
     forked_project
   end
 end

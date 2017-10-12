@@ -12,6 +12,10 @@ module Gitlab
         GIT_OBJECT_DIRECTORY
         GIT_ALTERNATE_OBJECT_DIRECTORIES
       ].freeze
+      ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES = %w[
+        GIT_OBJECT_DIRECTORY_RELATIVE
+        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
+      ].freeze
       SEARCH_CONTEXT_LINES = 3
 
       NoRepository = Class.new(StandardError)
@@ -193,7 +197,7 @@ module Gitlab
       def has_local_branches?
         gitaly_migrate(:has_local_branches) do |is_enabled|
           if is_enabled
-            gitaly_ref_client.has_local_branches?
+            gitaly_repository_client.has_local_branches?
           else
             has_local_branches_rugged?
           end
@@ -1082,6 +1086,12 @@ module Gitlab
         @has_visible_content = has_local_branches?
       end
 
+      def fetch(remote = 'origin')
+        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
+
+        popen(args, @path).last.zero?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1220,7 +1230,16 @@ module Gitlab
       end
 
       def alternate_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
+        relative_paths = Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+
+        if relative_paths.any?
+          relative_paths.map { |d| File.join(path, d) }
+        else
+          Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
+            .flatten
+            .compact
+            .flat_map { |d| d.split(File::PATH_SEPARATOR) }
+        end
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit

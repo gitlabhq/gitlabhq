@@ -5,7 +5,6 @@ default-case, prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
 brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
 newline-per-chained-call, no-useless-escape, class-methods-use-this */
-/* global Flash */
 /* global Autosave */
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
@@ -18,7 +17,9 @@ import Dropzone from 'dropzone';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
+import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import './autosave';
 import './dropzone_input';
@@ -354,7 +355,7 @@ export default class Notes {
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline);
+        this.addFlash(noteEntity.errors.commands_only, 'notice', this.parentTimeline.get(0));
         this.refresh();
       }
       return;
@@ -557,7 +558,7 @@ export default class Notes {
    */
   setupNoteForm(form) {
     var textarea, key;
-    new gl.GLForm(form, this.enableGFM);
+    this.glForm = new GLForm(form, this.enableGFM);
     textarea = form.find('.js-note-text');
     key = [
       'Note',
@@ -593,7 +594,7 @@ export default class Notes {
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
-    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline);
+    return this.addFlash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', formParentTimeline.get(0));
   }
 
   updateNoteError($parentTimeline) {
@@ -1152,7 +1153,7 @@ export default class Notes {
     var targetId = $originalContentEl.data('target-id');
     var targetType = $originalContentEl.data('target-type');
 
-    new gl.GLForm($editForm.find('form'), this.enableGFM);
+    this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm.find('form')
       .attr('action', postUrl)
@@ -1213,13 +1214,13 @@ export default class Notes {
   }
 
   addFlash(...flashParams) {
-    this.flashInstance = new Flash(...flashParams);
+    this.flashContainer = new Flash(...flashParams);
   }
 
   clearFlash() {
-    if (this.flashInstance && this.flashInstance.flashContainer) {
-      this.flashInstance.flashContainer.hide();
-      this.flashInstance = null;
+    if (this.flashContainer) {
+      this.flashContainer.style.display = 'none';
+      this.flashContainer = null;
     }
   }
 
@@ -1257,7 +1258,7 @@ export default class Notes {
   }
 
   static checkMergeRequestStatus() {
-    if (getPagePath(1) === 'merge_requests') {
+    if (getPagePath(1) === 'merge_requests' && gl.mrWidget) {
       gl.mrWidget.checkStatus();
     }
   }

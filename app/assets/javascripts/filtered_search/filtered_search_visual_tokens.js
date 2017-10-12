@@ -1,5 +1,5 @@
 import AjaxCache from '../lib/utils/ajax_cache';
-import '../flash'; /* global Flash */
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import UsersCache from '../lib/utils/users_cache';
 

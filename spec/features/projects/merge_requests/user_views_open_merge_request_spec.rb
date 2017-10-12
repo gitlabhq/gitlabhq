@@ -6,7 +6,7 @@ describe 'User views an open merge request' do
   end
 
   context 'when a merge request does not have repository' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:project, :public, :repository) }
 
     before do
       visit(merge_request_path(merge_request))

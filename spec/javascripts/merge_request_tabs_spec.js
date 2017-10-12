@@ -277,7 +277,7 @@ import 'vendor/jquery.scrollTo';
     describe('loadDiff', function () {
       beforeEach(() => {
         loadFixtures('merge_requests/diff_comment.html.raw');
-        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        $('body').attr('data-page', 'projects:merge_requests:show');
         window.gl.ImageFile = () => {};
         window.notes = new Notes('', []);
         spyOn(window.notes, 'toggleDiffNote').and.callThrough();
@@ -286,6 +286,9 @@ import 'vendor/jquery.scrollTo';
       afterEach(() => {
         delete window.gl.ImageFile;
         delete window.notes;
+
+        // Undo what we did to the shared <body>
+        $('body').removeAttr('data-page');
       });
 
       it('requires an absolute pathname', function () {

@@ -454,19 +454,6 @@ module SharedPaths
   # ----------------------------------------
   # Public Projects
   # ----------------------------------------
-
-  step 'I visit the public projects area' do
-    visit explore_projects_path
-  end
-
-  step 'I visit the explore trending projects' do
-    visit trending_explore_projects_path
-  end
-
-  step 'I visit the explore starred projects' do
-    visit starred_explore_projects_path
-  end
-
   step 'I visit the public groups area' do
     visit explore_groups_path
   end

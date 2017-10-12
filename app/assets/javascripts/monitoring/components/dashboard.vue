@@ -1,6 +1,6 @@
 <script>
-  /* global Flash */
   import _ from 'underscore';
+  import Flash from '../../flash';
   import MonitoringService from '../services/monitoring_service';
   import GraphGroup from './graph_group.vue';
   import Graph from './graph.vue';

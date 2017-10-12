@@ -29,7 +29,7 @@ format:
 compile:
     stage: build
     script:
-      - go build -race -ldflags "-extldflags '-static'" -o mybinary
+      - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/mybinary
     artifacts:
       paths:
         - mybinary

@@ -9,11 +9,11 @@ should be deployed, upgraded, and configured.
 
 ## Chart Overview
 
-* **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today. It is suited for small to medium deployments, and is in beta while support for backups and other features are added.
+* **[GitLab-Omnibus](gitlab_omnibus.md)**: The best way to run GitLab on Kubernetes today, suited for small to medium deployments. The chart is in beta and will be deprecated by the [cloud native GitLab chart](#cloud-native-gitlab-chart).
 * **[Cloud Native GitLab Chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)**: The next generation GitLab chart, currently in development. Will support large deployments with horizontal scaling of individual GitLab components.
 * Other Charts
   * [GitLab Runner Chart](gitlab_runner_chart.md): For deploying just the GitLab Runner.
-  * [Advanced GitLab Installation](gitlab_chart.md): Provides additional deployment options, but provides less functionality out-of-the-box. It's beta, no longer actively developed, and will be deprecated by [gitlab-omnibus](#gitlab-omnibus-chart-recommended) once it supports these options.
+  * [Advanced GitLab Installation](gitlab_chart.md): Deprecated, being replaced by the [cloud native GitLab chart](#cloud-native-gitlab-chart). Provides additional deployment options, but provides less functionality out-of-the-box. 
   * [Community Contributed Charts](#community-contributed-charts): Community contributed charts, deprecated by the official GitLab chart.
 
 ## GitLab-Omnibus Chart (Recommended)
@@ -21,13 +21,13 @@ should be deployed, upgraded, and configured.
 
 This chart is the best available way to operate GitLab on Kubernetes. It deploys and configures nearly all features of GitLab, including: a [Runner](https://docs.gitlab.com/runner/), [Container Registry](../../user/project/container_registry.html#gitlab-container-registry), [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/), [automatic SSL](https://github.com/kubernetes/charts/tree/master/stable/kube-lego), and a [load balancer](https://github.com/kubernetes/ingress/tree/master/controllers/nginx). It is based on our [GitLab Omnibus Docker Images](https://docs.gitlab.com/omnibus/docker/README.html).
 
-Once the [cloud native charts](#upcoming-cloud-native-helm-charts) are ready for production use, this chart will be deprecated. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment.
+Once the [cloud native GitLab chart](#cloud-native-gitlab-chart) is ready for production use, this chart will be deprecated. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment.
 
-Learn more about the [gitlab-omnibus chart.](gitlab_omnibus.md)
+Learn more about the [gitlab-omnibus chart](gitlab_omnibus.md).
 
 ## Cloud Native GitLab Chart
 
-GitLab is working towards building a [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). A key part of this effort is to isolate each service into its [own Docker container and Helm chart](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420), rather than utilizing the all-in-one container image of the [current charts](#official-gitlab-helm-charts-recommended).
+GitLab is working towards building a [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). A key part of this effort is to isolate each service into its [own Docker container and Helm chart](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420), rather than utilizing the all-in-one container image of the [current chart](#gitlab-omnibus-chart-recommended).
 
 By offering individual containers and charts, we will be able to provide a number of benefits:
 * Easier horizontal scaling of each service,
@@ -35,9 +35,9 @@ By offering individual containers and charts, we will be able to provide a numbe
 * Potential for rolling updates and canaries within a service,
 * and plenty more.
 
-This is a large project and will be worked on over the span of multiple releases. For the most up-to-date status and release information, please see our [tracking issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420). We do not expect these to be production ready before the second half of 2018.
+This is a large project and will be worked on over the span of multiple releases. For the most up-to-date status and release information, please see our [tracking issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2420). We are planning to launch this chart in beta by the end of 2017.
 
-Learn more about the [cloud native GitLab chart.](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md)
+Learn more about the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
 
 ## Other Charts
 

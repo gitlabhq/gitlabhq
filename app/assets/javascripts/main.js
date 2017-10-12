@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
 
@@ -47,25 +46,14 @@ import './lib/utils/url_utility';
 // behaviors
 import './behaviors/';
 
-// u2f
-import './u2f/authenticate';
-import './u2f/error';
-import './u2f/register';
-import './u2f/util';
-
 // everything else
 import './activities';
 import './admin';
-import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './broadcast_message';
-import './build';
-import './build_artifacts';
-import './build_variables';
-import './ci_lint_editor';
 import './commits';
 import './compare';
 import './compare_autocomplete';
@@ -76,7 +64,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import './flash';
+import Flash from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -91,8 +79,6 @@ import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './label_manager';
-import './labels';
 import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
@@ -130,7 +116,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './star';
 import './subscription';
 import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
@@ -169,7 +154,6 @@ $(function () {
   var $document = $(document);
   var $window = $(window);
   var $sidebarGutterToggle = $('.js-sidebar-toggle');
-  var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
 
@@ -254,13 +238,6 @@ $(function () {
   // Form submitter
   });
   gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
-  // Flash
-  if ($flash.length > 0) {
-    $flash.click(function () {
-      return $(this).fadeOut();
-    });
-    $flash.show();
-  }
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;

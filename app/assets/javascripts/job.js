@@ -1,15 +1,12 @@
-/* eslint-disable func-names, wrap-iife, no-use-before-define,
-consistent-return, prefer-rest-params */
 import _ from 'underscore';
 import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
 
-window.Build = (function () {
-  Build.timeout = null;
-  Build.state = null;
-
-  function Build(options) {
+export default class Job {
+  constructor(options) {
+    this.timeout = null;
+    this.state = null;
     this.options = options || $('.js-build-options').data();
 
     this.pageUrl = this.options.pageUrl;
@@ -19,9 +16,7 @@ window.Build = (function () {
     this.$document = $(document);
     this.logBytes = 0;
     this.hasBeenScrolled = false;
-
     this.updateDropdown = this.updateDropdown.bind(this);
-    this.getBuildTrace = this.getBuildTrace.bind(this);
 
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
@@ -33,7 +28,7 @@ window.Build = (function () {
     this.$scrollTopBtn = $('.js-scroll-up');
     this.$scrollBottomBtn = $('.js-scroll-down');
 
-    clearTimeout(Build.timeout);
+    clearTimeout(this.timeout);
 
     this.initSidebar();
     this.populateJobs(this.buildStage);
@@ -85,7 +80,7 @@ window.Build = (function () {
     this.getBuildTrace();
   }
 
-  Build.prototype.initAffixTopArea = function () {
+  initAffixTopArea() {
     /**
       If the browser does not support position sticky, it returns the position as static.
       If the browser does support sticky, then we allow the browser to handle it, if not
@@ -100,13 +95,14 @@ window.Build = (function () {
         top: offsetTop,
       },
     });
-  };
+  }
 
-  Build.prototype.canScroll = function () {
+  // eslint-disable-next-line class-methods-use-this
+  canScroll() {
     return $(document).height() > $(window).height();
-  };
+  }
 
-  Build.prototype.toggleScroll = function () {
+  toggleScroll() {
     const currentPosition = $(document).scrollTop();
     const scrollHeight = $(document).height();
 
@@ -119,7 +115,7 @@ window.Build = (function () {
         this.toggleDisableButton(this.$scrollTopBtn, false);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
       } else if (currentPosition === 0) {
-        // User is at Top of Build Log
+        // User is at Top of  Log
 
         this.toggleDisableButton(this.$scrollTopBtn, true);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
@@ -133,38 +129,40 @@ window.Build = (function () {
       this.toggleDisableButton(this.$scrollTopBtn, true);
       this.toggleDisableButton(this.$scrollBottomBtn, true);
     }
-  };
+  }
 
-  Build.prototype.scrollDown = function () {
+  // eslint-disable-next-line class-methods-use-this
+  scrollDown() {
     $(document).scrollTop($(document).height());
-  };
+  }
 
-  Build.prototype.scrollToBottom = function () {
+  scrollToBottom() {
     this.scrollDown();
     this.hasBeenScrolled = true;
     this.toggleScroll();
-  };
+  }
 
-  Build.prototype.scrollToTop = function () {
+  scrollToTop() {
     $(document).scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
-  };
+  }
 
-  Build.prototype.toggleDisableButton = function ($button, disable) {
+  // eslint-disable-next-line class-methods-use-this
+  toggleDisableButton($button, disable) {
     if (disable && $button.prop('disabled')) return;
     $button.prop('disabled', disable);
-  };
+  }
 
-  Build.prototype.toggleScrollAnimation = function (toggle) {
+  toggleScrollAnimation(toggle) {
     this.$scrollBottomBtn.toggleClass('animate', toggle);
-  };
+  }
 
-  Build.prototype.initSidebar = function () {
+  initSidebar() {
     this.$sidebar = $('.js-build-sidebar');
-  };
+  }
 
-  Build.prototype.getBuildTrace = function () {
+  getBuildTrace() {
     return $.ajax({
       url: `${this.pageUrl}/trace.json`,
       data: { state: this.state },
@@ -204,7 +202,7 @@ window.Build = (function () {
             this.toggleScrollAnimation(false);
           }
 
-          Build.timeout = setTimeout(() => {
+          this.timeout = setTimeout(() => {
             this.getBuildTrace();
           }, 4000);
         } else {
@@ -225,14 +223,14 @@ window.Build = (function () {
         }
       })
       .then(() => this.toggleScroll());
-  };
-
-  Build.prototype.shouldHideSidebarForViewport = function () {
+  }
+  // eslint-disable-next-line class-methods-use-this
+  shouldHideSidebarForViewport() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
     return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
-  };
+  }
 
-  Build.prototype.toggleSidebar = function (shouldHide) {
+  toggleSidebar(shouldHide) {
     const shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
     const $toggleButton = $('.js-sidebar-build-toggle-header');
 
@@ -249,17 +247,17 @@ window.Build = (function () {
     } else {
       $toggleButton.removeClass('hidden');
     }
-  };
+  }
 
-  Build.prototype.sidebarOnResize = function () {
+  sidebarOnResize() {
     this.toggleSidebar(this.shouldHideSidebarForViewport());
-  };
+  }
 
-  Build.prototype.sidebarOnClick = function () {
+  sidebarOnClick() {
     if (this.shouldHideSidebarForViewport()) this.toggleSidebar();
-  };
-
-  Build.prototype.updateArtifactRemoveDate = function () {
+  }
+  // eslint-disable-next-line class-methods-use-this, consistent-return
+  updateArtifactRemoveDate() {
     const $date = $('.js-artifacts-remove');
     if ($date.length) {
       const date = $date.text();
@@ -267,23 +265,21 @@ window.Build = (function () {
         gl.utils.timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '),
       );
     }
-  };
-
-  Build.prototype.populateJobs = function (stage) {
+  }
+  // eslint-disable-next-line class-methods-use-this
+  populateJobs(stage) {
     $('.build-job').hide();
     $(`.build-job[data-stage="${stage}"]`).show();
-  };
-
-  Build.prototype.updateStageDropdownText = function (stage) {
+  }
+  // eslint-disable-next-line class-methods-use-this
+  updateStageDropdownText(stage) {
     $('.stage-selection').text(stage);
-  };
+  }
 
-  Build.prototype.updateDropdown = function (e) {
+  updateDropdown(e) {
     e.preventDefault();
     const stage = e.currentTarget.text;
     this.updateStageDropdownText(stage);
     this.populateJobs(stage);
-  };
-
-  return Build;
-})();
+  }
+}
