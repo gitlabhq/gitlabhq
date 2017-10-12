@@ -68,13 +68,7 @@ $(() => {
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
-      milestoneId: parseInt($boardApp.dataset.boardMilestoneId, 10),
-      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
-      weight: parseInt($boardApp.dataset.boardWeight, 10),
-      assigneeUsername: $boardApp.dataset.boardAssigneeUsername,
-      labels: JSON.parse($boardApp.dataset.labels || []),
       defaultAvatar: $boardApp.dataset.defaultAvatar,
-      cantEdit: [],
     },
     computed: {
       detailIssueVisible () {
@@ -82,56 +76,6 @@ $(() => {
       },
     },
     created () {
-      const updateFilterPath = (key, value) => {
-        if (!value) return;
-        const querystring = `${key}=${value}`;
-        Store.filter.path = [querystring].concat(
-          Store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
-        ).join('&');
-      };
-
-      if (this.milestoneId !== -1) {
-        let milestoneTitle = this.milestoneTitle;
-        if (this.milestoneId === 0) {
-          milestoneTitle = 'No+Milestone';
-        }
-        updateFilterPath('milestone_title', milestoneTitle);
-        this.cantEdit.push('milestone');
-      }
-
-      let weight = this.weight;
-      if (weight !== -1) {
-        if (weight === 0) {
-          weight = 'No+Weight';
-        }
-        updateFilterPath('weight', weight);
-        this.cantEdit.push('weight');
-      }
-      updateFilterPath('assignee_username', this.assigneeUsername);
-      if (this.assigneeUsername) {
-        this.cantEdit.push('assignee');
-      }
-
-      const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
-      this.labels.forEach((label) => {
-        const labelTitle = encodeURIComponent(label.title);
-        const param = `label_name[]=${labelTitle}`;
-        const labelIndex = filterPath.indexOf(param);
-
-        if (labelIndex === -1) {
-          filterPath.push(param);
-        }
-
-        this.cantEdit.push({
-          name: 'label',
-          value: label.title,
-        });
-      });
-
-      Store.filter.path = filterPath.join('&');
-
-      Store.updateFiltersUrl(true);
-
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
         listsEndpoint: this.listsEndpoint,
@@ -147,7 +91,7 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, this.cantEdit);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
