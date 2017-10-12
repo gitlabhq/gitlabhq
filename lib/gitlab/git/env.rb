@@ -30,6 +30,17 @@ module Gitlab
         RequestStore.fetch(:gitlab_git_env) { {} }
       end
 
+      def self.to_env_hash
+        env = {}
+
+        all.compact.each do |key, value|
+          value = value.join(File::PATH_SEPARATOR) if value.is_a?(Array)
+          env[key.to_s] = value
+        end
+
+        env
+      end
+
       def self.[](key)
         all[key]
       end
