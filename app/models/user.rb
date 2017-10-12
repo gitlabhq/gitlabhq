@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
 
   ignore_column :external_email
   ignore_column :email_provider
+  ignore_column :authentication_token
 
   add_authentication_token_field :incoming_email_token
   add_authentication_token_field :rss_token
