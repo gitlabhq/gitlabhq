@@ -267,6 +267,20 @@ RSpec.configure do |config|
 end
 ```
 
+### Debugging
+
+If you need to debug Capybara tests, using the following lines,
+you can get the current URL of Capybara server, logged in user email. Then you
+can add some arbitrary sleep to halt the test and go check out the page.
+
+Default user password is `12345678`. 
+
+```
+puts current_url
+puts user.email
+sleep(200)
+```
+
 ---
 
 [Return to Testing documentation](index.md)
