@@ -45,12 +45,6 @@ body.modal-open {
 
 .modal.popup-dialog {
   display: block;
-
-  @media (min-width: $screen-md-min) {
-    .modal-dialog {
-      margin-top: $new-navbar-height;
-    }
-  }
 }
 
 .modal-body {

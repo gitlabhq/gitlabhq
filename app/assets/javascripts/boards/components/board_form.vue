@@ -12,6 +12,15 @@ window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
 const Store = gl.issueBoards.BoardsStore;
+const boardDefaults = {
+  id: false,
+  name: '',
+  labels: [],
+  milestone_id: undefined,
+  assignee: {},
+  assignee_id: undefined,
+  weight: null,
+};
 
 export default {
   props: {
@@ -49,7 +58,7 @@ export default {
   },
   data() {
     return {
-      board: { ...Store.state.currentBoard },
+      board: { ...boardDefaults, ...this.currentBoard },
       expanded: false,
       issue: {},
       currentBoard: Store.state.currentBoard,
@@ -151,18 +160,9 @@ export default {
     resetFormState() {
       if (this.isNewForm) {
         // Clear the form when we open the "New board" modal
-        this.board = {
-          id: false,
-          name: '',
-          labels: [],
-          milestone: {},
-          milestone_id: undefined,
-          assignee: {},
-          assignee_id: undefined,
-          weight: null,
-        };
+        this.board = { ...boardDefaults };
       } else if (this.currentBoard && Object.keys(this.currentBoard).length) {
-        this.board = { ...this.currentBoard };
+        this.board = { ...boardDefaults, ...this.currentBoard };
       }
     },
   },
@@ -187,88 +187,88 @@ export default {
     @toggle="cancel"
     @submit="submit"
   >
-    <p v-if="isDeleteForm">
-      Are you sure you want to delete this board?
-    </p>
-    <form
-      v-else
-      class="js-board-config-modal"
-    >
-      <div
-        v-if="!readonly"
-        class="append-bottom-20"
+    <template slot="body">
+      <p v-if="isDeleteForm">
+        Are you sure you want to delete this board?
+      </p>
+      <form
+        v-else
+        class="js-board-config-modal"
       >
-        <label
-          class="form-section-title label-light"
-          for="board-new-name"
-        >
-          Board name
-        </label>
-        <input
-          ref="name"
-          class="form-control"
-          type="text"
-          id="board-new-name"
-          v-model="board.name"
-          placeholder="Enter board name"
-        >
-      </div>
-      <div v-if="scopedIssueBoardFeatureEnabled">
         <div
-          v-if="canAdminBoard"
-          class="media append-bottom-10"
+          v-if="!readonly"
+          class="append-bottom-20"
         >
-          <label class="form-section-title label-light media-body">
-            Board scope
-          </label>
-          <button
-            type="button"
-            class="btn"
-            @click="expanded = !expanded"
-            v-if="collapseScope"
+          <label
+            class="form-section-title label-light"
+            for="board-new-name"
           >
-            {{ expandButtonText }}
-          </button>
+            Board name
+          </label>
+          <input
+            ref="name"
+            class="form-control"
+            type="text"
+            id="board-new-name"
+            v-model="board.name"
+            placeholder="Enter board name"
+          >
         </div>
-        <p class="text-secondary append-bottom-10">
-          Board scope affects which issues are displayed for anyone who visits this board
-        </p>
-        <div v-if="!collapseScope || expanded">
-          <board-milestone-select
-            :board="board"
-            :milestone-path="milestonePath"
-            title="Milestone"
-            :can-edit="canAdminBoard"
-          />
+        <div v-if="scopedIssueBoardFeatureEnabled">
+          <div
+            v-if="canAdminBoard"
+            class="media append-bottom-10"
+          >
+            <label class="form-section-title label-light media-body">
+              Board scope
+            </label>
+            <button
+              type="button"
+              class="btn"
+              @click="expanded = !expanded"
+              v-if="collapseScope"
+            >
+              {{ expandButtonText }}
+            </button>
+          </div>
+          <p class="text-secondary append-bottom-10">
+            Board scope affects which issues are displayed for anyone who visits this board
+          </p>
+          <div v-if="!collapseScope || expanded">
+            <board-milestone-select
+              :board="board"
+              :milestone-path="milestonePath"
+              :can-edit="canAdminBoard"
+            />
 
-          <board-labels-select
-            :board="board"
-            title="Labels"
-            :can-edit="canAdminBoard"
-            :labels-path="labelsPath"
-          />
+            <board-labels-select
+              :board="board"
+              :can-edit="canAdminBoard"
+              :labels-path="labelsPath"
+            />
 
-          <user-select
-            any-user-text="Any assignee"
-            :board="board"
-            field-name="assignee_id"
-            label="Assignee"
-            :selected="board.assignee"
-            :can-edit="canAdminBoard"
-            placeholder-text="Select assignee"
-            :project-id="projectId"
-            :group-id="groupId"
-            wrapper-class="assignee"
-          />
+            <user-select
+              any-user-text="Any assignee"
+              :board="board"
+              field-name="assignee_id"
+              label="Assignee"
+              :selected="board.assignee"
+              :can-edit="canAdminBoard"
+              placeholder-text="Select assignee"
+              :project-id="projectId"
+              :group-id="groupId"
+              wrapper-class="assignee"
+            />
 
-          <board-weight-select
-            :board="board"
-            :weights="weightsArray"
-            v-model="board.weight"
-            :can-edit="canAdminBoard"
-          />
+            <board-weight-select
+              :board="board"
+              :weights="weightsArray"
+              v-model="board.weight"
+              :can-edit="canAdminBoard"
+            />
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </template>
   </popup-dialog>
 </template>
