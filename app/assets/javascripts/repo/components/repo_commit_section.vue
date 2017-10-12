@@ -3,11 +3,17 @@ import Flash from '../../flash';
 import Store from '../stores/repo_store';
 import RepoMixin from '../mixins/repo_mixin';
 import Service from '../services/repo_service';
+import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
+import { visitUrl } from '../../lib/utils/url_utility';
 
 export default {
+  mixins: [RepoMixin],
+
   data: () => Store,
 
-  mixins: [RepoMixin],
+  components: {
+    PopupDialog,
+  },
 
   computed: {
     showCommitable() {
@@ -28,7 +34,16 @@ export default {
   },
 
   methods: {
-    makeCommit() {
+    commitToNewBranch(status) {
+      if (status) {
+        this.showNewBranchDialog = false;
+        this.tryCommit(null, true, true);
+      } else {
+        // reset the state
+      }
+    },
+
+    makeCommit(newBranch) {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => ({
@@ -36,19 +51,63 @@ export default {
         file_path: f.path,
         content: f.newContent,
       }));
+      const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
       const payload = {
-        branch: Store.currentBranch,
+        branch,
         commit_message: commitMessage,
         actions,
       };
-      Store.submitCommitsLoading = true;
+      if (newBranch) {
+        payload.start_branch = this.currentBranch;
+      }
+      this.submitCommitsLoading = true;
       Service.commitFiles(payload)
-        .then(this.resetCommitState)
-        .catch(() => Flash('An error occurred while committing your changes'));
+        .then(() => {
+          this.resetCommitState();
+          if (this.startNewMR) {
+            this.redirectToNewMr(branch);
+          } else {
+            this.redirectToBranch(branch);
+          }
+        })
+        .catch(() => {
+          Flash('An error occurred while committing your changes');
+        });
+    },
+
+    tryCommit(e, skipBranchCheck = false, newBranch = false) {
+      if (skipBranchCheck) {
+        this.makeCommit(newBranch);
+      } else {
+        Store.setBranchHash()
+          .then(() => {
+            if (Store.branchChanged) {
+              Store.showNewBranchDialog = true;
+              return;
+            }
+            this.makeCommit(newBranch);
+          })
+          .catch(() => {
+            Flash('An error occurred while committing your changes');
+          });
+      }
+    },
+
+    redirectToNewMr(branch) {
+      visitUrl(this.newMrTemplateUrl.replace('{{source_branch}}', branch));
+    },
+
+    redirectToBranch(branch) {
+      visitUrl(this.customBranchURL.replace('{{branch}}', branch));
     },
 
     resetCommitState() {
       this.submitCommitsLoading = false;
+      this.openedFiles = this.openedFiles.map((file) => {
+        const f = file;
+        f.changed = false;
+        return f;
+      });
       this.changedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
@@ -62,9 +121,17 @@ export default {
 <div
   v-if="showCommitable"
   id="commit-area">
+  <popup-dialog
+    v-if="showNewBranchDialog"
+    :primary-button-label="__('Create new branch')"
+    kind="primary"
+    :title="__('Branch has changed')"
+    :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
+    @submit="commitToNewBranch"
+  />
   <form
     class="form-horizontal"
-    @submit.prevent="makeCommit">
+    @submit.prevent="tryCommit">
     <fieldset>
       <div class="form-group">
         <label class="col-md-4 control-label staged-files">
@@ -117,7 +184,7 @@ export default {
           class="btn btn-success">
           <i
             v-if="submitCommitsLoading"
-            class="fa fa-spinner fa-spin"
+            class="js-commit-loading-icon fa fa-spinner fa-spin"
             aria-hidden="true"
             aria-label="loading">
           </i>
@@ -125,6 +192,14 @@ export default {
             Commit {{changedFiles.length}} {{filePluralize}}
           </span>
         </button>
+      </div>
+      <div class="col-md-offset-4 col-md-6">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" v-model="startNewMR">
+            <span>Start a <strong>new merge request</strong> with these changes</span>
+          </label>
+        </div>
       </div>
     </fieldset>
   </form>

@@ -23,6 +23,7 @@ const RepoStore = {
     title: '',
     status: false,
   },
+  showNewBranchDialog: false,
   activeFile: Helper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: -1,
@@ -31,6 +32,12 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
+  startNewMR: false,
+  currentHash: '',
+  currentShortHash: '',
+  customBranchURL: '',
+  newMrTemplateUrl: '',
+  branchChanged: false,
   commitMessage: '',
   binaryTypes: {
     png: false,
@@ -47,6 +54,17 @@ const RepoStore = {
     Object.keys(RepoStore.binaryTypes).forEach((key) => {
       RepoStore.binaryTypes[key] = false;
     });
+  },
+
+  setBranchHash() {
+    return Service.getBranch()
+      .then((data) => {
+        if (RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
+          RepoStore.branchChanged = true;
+        }
+        RepoStore.currentHash = data.commit.id;
+        RepoStore.currentShortHash = data.commit.short_id;
+      });
   },
 
   // mutations
