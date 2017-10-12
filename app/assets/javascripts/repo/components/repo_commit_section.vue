@@ -34,7 +34,7 @@ export default {
 
   methods: {
     changeBranchSubmit(status) {
-      if(status){
+      if (status) {
         this.showBranchChangeDialog = false;
         this.tryCommit(null, true, true);
       } else {
@@ -42,7 +42,7 @@ export default {
       }
     },
 
-    tryCommit(e, skipBranchCheck=false, newBranch=false) {
+    tryCommit(e, skipBranchCheck = false, newBranch = false) {
       const makeCommit = () => {
         // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
         const commitMessage = this.commitMessage;
@@ -57,7 +57,7 @@ export default {
           commit_message: commitMessage,
           actions,
         };
-        if(newBranch) {
+        if (newBranch) {
           payload.start_branch = this.currentBranch;
         }
         this.submitCommitsLoading = true;
@@ -66,24 +66,27 @@ export default {
             this.reloadPage(branch);
             this.$emit('tryCommit:complete');
           })
-          .catch((e) => {
-            Flash('An error occurred while committing your changes')
-          });
-      }
+          .catch(this.commitError);
+      };
 
-      if(skipBranchCheck){
+      if (skipBranchCheck) {
         makeCommit();
       } else {
         Store.setBranchHash()
         .then(() => {
-          if(Store.branchChanged){
+          if (Store.branchChanged) {
             Store.showBranchChangeDialog = true;
             this.$emit('showBranchChangeDialog:enabled');
             return;
           }
           makeCommit();
         })
+        .catch(this.commitError);
       }
+    },
+
+    commitError() {
+      Flash('An error occurred while committing your changes');
     },
 
     reloadPage(branch) {
@@ -93,8 +96,10 @@ export default {
 
     resetCommitState() {
       this.submitCommitsLoading = false;
-      this.openedFiles.forEach(f => {
-        f.changed = false;
+      this.openedFiles.map((f) => {
+        const file = f;
+        file.changed = false;
+        return file;
       });
       this.changedFiles = [];
       this.commitMessage = '';

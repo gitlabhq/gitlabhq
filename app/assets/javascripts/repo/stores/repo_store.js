@@ -58,7 +58,7 @@ const RepoStore = {
   setBranchHash() {
     return Service.branchSingle()
     .then((data) => {
-      if(RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
+      if (RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
         RepoStore.branchChanged = true;
       }
       RepoStore.currentHash = data.commit.id;

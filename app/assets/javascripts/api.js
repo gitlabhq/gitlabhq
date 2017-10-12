@@ -128,12 +128,13 @@ const Api = {
     const url = Api.buildUrl(Api.branchSinglePath)
       .replace(':id', id)
       .replace(':branch', branch);
-      return this.wrapAjaxCall({
-        url,
-        type: 'GET',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'json',
-      });
+
+    return this.wrapAjaxCall({
+      url,
+      type: 'GET',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+    });
   },
 
   // Return text for a specific license
