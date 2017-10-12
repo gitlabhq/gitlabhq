@@ -61,8 +61,6 @@ module MergeRequests
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
       if delete_source_branch?
-        # Verify again that the source branch can be removed, since branch may be protected,
-        # or the source branch may have been updated.
         DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
           .execute(merge_request.source_branch)
       end
@@ -75,7 +73,10 @@ module MergeRequests
     def branch_deletion_user
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
-
+    
+    # Verify again that the source branch can be removed, since branch may be protected,
+    # or the source branch may have been updated, or the user may not have permission
+    #
     def delete_source_branch?
       params.fetch('should_remove_source_branch', @merge_request.force_remove_source_branch?) &&
         @merge_request.can_remove_source_branch?(branch_deletion_user)
