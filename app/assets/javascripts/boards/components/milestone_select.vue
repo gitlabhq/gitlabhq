@@ -53,6 +53,7 @@ export default {
       } else if (milestone.title === NO_MILESTONE) {
         id = 0;
       }
+      this.board.milestone_id = id;
       this.board.milestone = {
         ...milestone,
         id,

@@ -16,7 +16,9 @@ class BoardsStoreEE {
       name: '',
       labels: [],
       milestone: {},
+      milestone_id: undefined,
       assignee: {},
+      assignee_id: undefined,
       weight: null,
     };
     this.store.updateBoardConfig = this.updateBoardConfig;
@@ -25,9 +27,11 @@ class BoardsStoreEE {
   updateBoardConfig(board = {}) {
     this.boardConfig.id = board.id;
     this.boardConfig.name = board.name;
+    this.boardConfig.milestone_id = board.milestone_id;
     this.boardConfig.milestone = board.milestone;
     this.boardConfig.labels = board.labels || [];
     this.boardConfig.assignee = board.assignee || {};
+    this.boardConfig.assignee_id = board.assignee_id;
     this.boardConfig.weight = board.weight;
   }
 
