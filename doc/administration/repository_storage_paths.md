@@ -114,11 +114,7 @@ The configuration could look as follows:
     ```ruby
     git_data_dirs({
       "default" => {
-        "path" => "/mnt/nfs-01/git-data",
-        "failure_count_threshold" => 10,
-        "failure_wait_time" => 30,
-        "failure_reset_time" => 1800,
-        "storage_timeout" => 5
+        "path" => "/mnt/nfs-01/git-data"
        }
     })
     ```
@@ -136,30 +132,9 @@ The configuration could look as follows:
       storages: # You must have at least a `default` storage path.
         default:
           path: /home/git/repositories/
-          failure_count_threshold: 10 # number of failures before stopping attempts
-          failure_wait_time: 30 # Seconds after last access failure before trying again
-          failure_reset_time: 1800 # Time in seconds to expire failures
-          storage_timeout: 5 # Time in seconds to wait before aborting a storage access attempt
     ```
 
 1. Save the file and [restart GitLab][restart-gitlab] for the changes to take effect.
-
-
-**`failure_count_threshold`:** The number of failures of after which GitLab will
-completely prevent access to the storage. The number of failures can be reset in
-the admin interface: `https://gitlab.example.com/admin/health_check` or using the
-[api](../api/repository_storage_health.md) to allow access to the storage again.
-
-**`failure_wait_time`:** When access to a storage fails. GitLab will prevent
-access to the storage for the time specified here. This allows the filesystem to
-recover without.
-
-**`failure_reset_time`:** The time in seconds GitLab will keep failure
-information. When no failures occur during this time, information about the
-mount is reset.
-
-**`storage_timeout`:** The time in seconds GitLab will try to access storage.
-After this time a timeout error will be raised.
 
 When storage failures occur, this will be visible in the admin interface like this:
 

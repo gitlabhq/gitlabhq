@@ -10,18 +10,10 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
     # Override test-settings for the circuitbreaker with something more realistic
     # for these specs.
     stub_storage_settings('default' => {
-                            'path' => TestEnv.repos_path,
-                            'failure_count_threshold' => 10,
-                            'failure_wait_time' => 30,
-                            'failure_reset_time' => 1800,
-                            'storage_timeout' => 5
+                            'path' => TestEnv.repos_path
                           },
                           'broken' => {
-                            'path' => 'tmp/tests/non-existent-repositories',
-                            'failure_count_threshold' => 10,
-                            'failure_wait_time' => 30,
-                            'failure_reset_time' => 1800,
-                            'storage_timeout' => 5
+                            'path' => 'tmp/tests/non-existent-repositories'
                           },
                           'nopath' => { 'path' => nil }
                          )
@@ -75,10 +67,39 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       expect(circuit_breaker.hostname).to eq(hostname)
       expect(circuit_breaker.storage).to eq('default')
       expect(circuit_breaker.storage_path).to eq(TestEnv.repos_path)
-      expect(circuit_breaker.failure_count_threshold).to eq(10)
-      expect(circuit_breaker.failure_wait_time).to eq(30)
-      expect(circuit_breaker.failure_reset_time).to eq(1800)
-      expect(circuit_breaker.storage_timeout).to eq(5)
+    end
+  end
+
+  context 'circuitbreaker settings' do
+    before do
+      stub_application_setting(circuitbreaker_failure_count_threshold: 0,
+                               circuitbreaker_failure_wait_time: 1,
+                               circuitbreaker_failure_reset_time: 2,
+                               circuitbreaker_storage_timeout: 3)
+    end
+
+    describe '#failure_count_threshold' do
+      it 'reads the value from settings' do
+        expect(circuit_breaker.failure_count_threshold).to eq(0)
+      end
+    end
+
+    describe '#failure_wait_time' do
+      it 'reads the value from settings' do
+        expect(circuit_breaker.failure_wait_time).to eq(1)
+      end
+    end
+
+    describe '#failure_reset_time' do
+      it 'reads the value from settings' do
+        expect(circuit_breaker.failure_reset_time).to eq(2)
+      end
+    end
+
+    describe '#storage_timeout' do
+      it 'reads the value from settings' do
+        expect(circuit_breaker.storage_timeout).to eq(3)
+      end
     end
   end
 
@@ -151,10 +172,7 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
 
     context 'the `failure_wait_time` is set to 0' do
       before do
-        stub_storage_settings('default' => {
-                                'failure_wait_time' => 0,
-                                'path' => TestEnv.repos_path
-                              })
+        stub_application_setting(circuitbreaker_failure_wait_time: 0)
       end
 
       it 'is working even when there is a recent failure' do
