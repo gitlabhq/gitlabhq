@@ -6,7 +6,9 @@ import Service from '../services/repo_service';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 
 export default {
-  data: () => Store,
+  data() {
+    return Store;
+  },
 
   mixins: [RepoMixin],
 
