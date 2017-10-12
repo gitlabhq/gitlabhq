@@ -9,21 +9,6 @@
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      - number_of_tokens = incoming_email_token_enabled? ? 2 : 1
-      = "Private Token".pluralize(number_of_tokens)
-    %p
-      Keep your private tokens secret. Anyone with access to them can interact with some part of
-      GitLab as if they were you.
-  .col-lg-8.private-tokens-reset
-    = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to access your personalized RSS feeds without username/password authentication. It cannot be used to access any other data.' }
-
-    - if incoming_email_token_enabled?
-      = render partial: 'reset_token', locals: { label: 'Incoming email token', button_label: 'Reset incoming email token', help_text: 'Your incoming email token is used to authenticate you when creating new issues by email, and is included in your project-specific email addresses. It cannot be used to access any other data.' }
-
-%hr
-.row.prepend-top-default
-  .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
       Two-Factor Authentication
     %p
       Increase your account's security by enabling Two-Factor Authentication (2FA).
