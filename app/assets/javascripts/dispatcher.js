@@ -81,6 +81,8 @@ import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
 import U2FAuthenticate from './u2f/authenticate';
+import Members from './members';
+import memberExpirationDate from './member_expiration_date';
 
 (function() {
   var Dispatcher;
@@ -397,15 +399,15 @@ import U2FAuthenticate from './u2f/authenticate';
           new ProjectsList();
           break;
         case 'groups:group_members:index':
-          new gl.MemberExpirationDate();
-          new gl.Members();
+          memberExpirationDate();
+          new Members();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          memberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
-          new gl.MemberExpirationDate();
-          new gl.Members();
+          memberExpirationDate();
+          new Members();
           new UsersSelect();
           break;
         case 'groups:new':

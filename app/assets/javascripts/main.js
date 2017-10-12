@@ -84,8 +84,6 @@ import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
-import './member_expiration_date';
-import './members';
 import './merge_request';
 import './merge_request_tabs';
 import './milestone';
