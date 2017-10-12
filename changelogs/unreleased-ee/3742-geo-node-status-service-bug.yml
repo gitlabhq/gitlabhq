@@ -1,0 +1,5 @@
+---
+title: Fix reading the status of a secondary Geo node from the primary
+merge_request: 3140
+author:
+type: fixed

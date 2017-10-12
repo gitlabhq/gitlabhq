@@ -6,6 +6,26 @@ describe Geo::NodeStatusService do
 
   subject { described_class.new }
 
+  describe 'KEYS' do
+    it 'matches the serializer keys' do
+      exceptions = %w[
+        id
+        healthy
+        repositories_synced_in_percentage
+        lfs_objects_synced_in_percentage
+        attachments_synced_in_percentage
+      ]
+
+      expected = GeoNodeStatusEntity
+        .new(GeoNodeStatus.new)
+        .as_json
+        .keys
+        .map(&:to_s) - exceptions
+
+      expect(described_class::KEYS).to match_array(expected)
+    end
+  end
+
   describe '#call' do
     it 'parses a 401 response' do
       request = double(success?: false,
@@ -27,8 +47,10 @@ describe Geo::NodeStatusService do
                repositories_failed_count: 2,
                lfs_objects_count: 100,
                lfs_objects_synced_count: 50,
+               lfs_objects_failed_count: 12,
                attachments_count: 30,
                attachments_synced_count: 30,
+               attachments_failed_count: 25,
                last_event_id: 2,
                last_event_date: Time.now,
                cursor_last_event_id: 1,
