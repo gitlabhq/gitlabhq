@@ -22,20 +22,21 @@ function addEventsForNonVueEls() {
   };
 }
 
-function setInitialStore(data) {
+function setInitialStore(dataset) {
   Store.service = Service;
-  Store.service.url = data.url;
-  Store.service.refsUrl = data.refsUrl;
-  Store.projectId = data.projectId;
-  Store.projectName = data.projectName;
-  Store.projectUrl = data.projectUrl;
-  Store.canCommit = data.canCommit;
-  Store.onTopOfBranch = data.onTopOfBranch;
-  Store.customBranchURL = decodeURIComponent(data.blobUrl);
+  Store.service.url = dataset.url;
+  Store.service.refsUrl = dataset.refsUrl;
+  Store.projectId = dataset.projectId;
+  Store.projectName = dataset.projectName;
+  Store.projectUrl = dataset.projectUrl;
+  Store.canCommit = dataset.canCommit;
+  Store.onTopOfBranch = dataset.onTopOfBranch;
+  Store.customBranchURL = decodeURIComponent(dataset.blobUrl);
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
 
   Store.checkIsCommitable();
-  Store.setBranchHash();
+  Service.branchSingle()
+    .then(Store.setBranchHash);
 }
 
 function initRepo(el) {
