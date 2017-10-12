@@ -73,7 +73,7 @@ You can now start using your Kubernetes cluster for your deployments.
 
 To disable the Cluster integration, follow the same procedure.
 
-## Removing a cluster
+## Removing the Cluster integration
 
 NOTE: **Note:**
 You need Master [permissions] and above to remove a cluster integration.
