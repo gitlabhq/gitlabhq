@@ -87,7 +87,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
             'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
             'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
             'GIT_OBJECT_DIRECTORY' => 'ignored',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'ignored:ignored',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[ignored ignored],
             'GIT_OTHER' => 'another_env'
           })
         end
@@ -104,7 +104,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         before do
           allow(Gitlab::Git::Env).to receive(:all).and_return({
             'GIT_OBJECT_DIRECTORY' => 'foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar:baz',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[bar baz],
             'GIT_OTHER' => 'another_env'
           })
         end
