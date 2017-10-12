@@ -6,8 +6,7 @@ module Banzai
       def call
         doc.xpath('descendant-or-self::img').each do |img|
           img['class'] ||= '' << 'lazy'
-          unless img['src'].empty? 
-            img['data-src'] = img['src']
+          if img['src'] && !img['src'].empty? 
             begin
               size_parameters = CGI.parse(URI.parse(img['src']).query)
               unless size_parameters['w'].empty? || size_parameters['h'].empty?
@@ -27,8 +26,11 @@ module Banzai
                   end
                 end
               end
-            rescue URI::InvalidURIError              
+            rescue URI::InvalidURIError
             end
+
+            img['data-src'] = img['src']
+            img['src'] = LazyImageTagHelper.placeholder_image
           end
         end
 
