@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    MissingPersonalTokenError = Class.new(StandardError)
+    MissingPersonalAccessTokenError = Class.new(StandardError)
 
     REGISTRY_SCOPES = [:read_registry].freeze
 
@@ -39,7 +39,7 @@ module Gitlab
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
-        raise Gitlab::Auth::MissingPersonalTokenError
+        raise Gitlab::Auth::MissingPersonalAccessTokenError
       end
 
       def find_with_user_password(login, password)
@@ -107,7 +107,7 @@ module Gitlab
         user = find_with_user_password(login, password)
         return unless user
 
-        raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
+        raise Gitlab::Auth::MissingPersonalAccessTokenError if user.two_factor_enabled?
 
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
@@ -129,7 +129,7 @@ module Gitlab
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
         if token && valid_scoped_token?(token, available_scopes)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
+          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scope(token.scopes))
         end
       end
 
