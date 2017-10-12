@@ -88,12 +88,13 @@ export default {
     },
 
     commitError() {
+      this.submitCommitsLoading = false;
       Flash('An error occurred while committing your changes');
     },
 
     reloadPage(branch) {
       this.resetCommitState();
-      document.location.href = this.customBranchURL.replace('{{branch}}', branch);
+      gl.utils.visitUrl(this.customBranchURL.replace('{{branch}}', branch));
     },
 
     resetCommitState() {
