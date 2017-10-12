@@ -28,17 +28,17 @@ describe API::Helpers do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
   end
 
-  def set_env(user_or_token, identifier)
+  def set_env(token, identifier)
     clear_env
     clear_param
-    env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
+    env[API::APIGuard::PRIVATE_TOKEN_HEADER] = token
     env[API::Helpers::SUDO_HEADER] = identifier.to_s
   end
 
-  def set_param(user_or_token, identifier)
+  def set_param(token, identifier)
     clear_env
     clear_param
-    params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
+    params[API::APIGuard::PRIVATE_TOKEN_PARAM] = token
     params[API::Helpers::SUDO_PARAM] = identifier.to_s
   end
 
@@ -157,41 +157,6 @@ describe API::Helpers do
             it { is_expected.to eq(user) }
           end
         end
-      end
-    end
-
-    describe "when authenticating using a user's private token" do
-      it "returns a 401 response for an invalid token" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "returns a 401 response for a user without access" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it 'returns a 401 response for a user who is blocked' do
-        user.block!
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "leaves user as is when sudo not specified" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect(current_user).to eq(user)
-
-        clear_env
-
-        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user.private_token
-
-        expect(current_user).to eq(user)
       end
     end
 
@@ -443,16 +408,6 @@ describe API::Helpers do
 
         it 'returns an 403 Forbidden' do
           expect { sudo? }.to raise_error '403 - {"message"=>"403 Forbidden  - Private token must be specified in order to use sudo"}'
-        end
-      end
-
-      context 'private access token is used' do
-        before do
-          set_env(admin.private_token, user.id)
-        end
-
-        it 'returns true' do
-          expect(sudo?).to be_truthy
         end
       end
     end

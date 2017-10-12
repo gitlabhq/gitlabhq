@@ -25,7 +25,7 @@ describe 'doorkeeper access' do
     end
   end
 
-  describe "authorization by private token" do
+  describe "authorization by OAuth token" do
     it "returns authentication success" do
       get api("/user", user)
       expect(response).to have_gitlab_http_status(200)
