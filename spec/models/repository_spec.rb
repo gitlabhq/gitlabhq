@@ -1509,7 +1509,9 @@ describe Repository do
         :gitignore,
         :koding,
         :gitlab_ci,
-        :avatar
+        :avatar,
+        :issue_template,
+        :merge_request_template
       ])
 
       repository.after_change_head
