@@ -634,12 +634,6 @@ import U2FAuthenticate from './u2f/authenticate';
               shortcut_handler = new ShortcutsNavigation();
           }
           break;
-        case 'users':
-          const action = path[1];
-          import(/* webpackChunkName: 'user_profile' */ './users')
-            .then(user => user.default(action))
-            .catch(() => {});
-          break;
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
