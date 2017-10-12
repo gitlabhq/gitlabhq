@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      board: Store.boardConfig,
+      board: { ...Store.state.currentBoard },
       expanded: false,
       issue: {},
       currentBoard: Store.state.currentBoard,
@@ -151,15 +151,23 @@ export default {
     resetFormState() {
       if (this.isNewForm) {
         // Clear the form when we open the "New board" modal
-        Store.updateBoardConfig();
+        this.board = {
+          id: false,
+          name: '',
+          labels: [],
+          milestone: {},
+          milestone_id: undefined,
+          assignee: {},
+          assignee_id: undefined,
+          weight: null,
+        };
       } else if (this.currentBoard && Object.keys(this.currentBoard).length) {
-        Store.updateBoardConfig(this.currentBoard);
+        this.board = { ...this.currentBoard };
       }
     },
   },
   mounted() {
     this.resetFormState();
-
     if (this.$refs.name) {
       this.$refs.name.focus();
     }

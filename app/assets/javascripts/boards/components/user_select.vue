@@ -44,8 +44,7 @@ export default {
     },
     selected: {
       type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
     wrapperClass: {
       type: String,
@@ -59,8 +58,11 @@ export default {
   },
   computed: {
     hasValue() {
-      return this.selected.id;
+      return this.selected.id > 0;
     },
+    selectedId() {
+      return this.selected ? this.selected.id : null;
+    }
   },
   watch: {
     selected() {
@@ -74,12 +76,15 @@ export default {
       });
     },
     selectUser(user, isMarking) {
-      if (isMarking) {
-        gl.issueBoards.BoardsStore.boardConfig.assignee = user;
-      } else {
+      let assignee = user;
+      if (!isMarking) {
         // correctly select "unassigned" in Assignee dropdown
-        gl.issueBoards.BoardsStore.boardConfig.assignee = { id: undefined };
+        assignee = {
+          id: undefined,
+        };
       }
+      this.board.assignee_id = user.id;
+      this.board.assignee = user;
     },
   },
   mounted() {
@@ -144,7 +149,7 @@ export default {
           :data-any-user="anyUserText"
           :data-group-id="groupId"
           :data-project-id="projectId"
-          :data-selected="selected.id"
+          :data-selected="selectedId"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"
