@@ -715,12 +715,12 @@ class Repository
     end
   end
 
-  def branch_names_contains(sha, limit = nil)
-    limit && branch_count > limit ? [] : refs_contains_sha('branch', sha)
+  def branch_names_contains(sha)
+    refs_contains_sha('branch', sha)
   end
 
-  def tag_names_contains(sha, limit = nil)
-    limit && tag_count > limit ? [] : refs_contains_sha('tag', sha)
+  def tag_names_contains(sha)
+    refs_contains_sha('tag', sha)
   end
 
   def local_branches

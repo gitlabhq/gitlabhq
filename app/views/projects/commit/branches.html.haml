@@ -1,15 +1,19 @@
-- if @branches.any? || @tags.any?
+- if @branches.any?
   - branch = commit_default_branch(@project, @branches)
-  = link_to(project_ref_path(@project, branch), class: "label label-gray ref-name") do
-    = icon('code-fork')
-    = branch
+  - if branch == :limit_exceeded
+    = commit_branch_link('#', _('Too many branches to search'))
+  - else
+    = commit_branch_link(project_ref_path(@project, branch), branch)
 
-  -# `commit_default_branch` deletes the default branch from `@branches`,
-  -# so only render this if we have more branches left
-  - if @branches.any? || @tags.any?
-    %span
-      = link_to "…", "#", class: "js-details-expand label label-gray"
+-# `commit_default_branch` deletes the default branch from `@branches`,
+-# so only render this if we have more branches or tags left
+- if @branches.any? || @tags.any?
+  %span
+    = link_to "…", "#", class: "js-details-expand label label-gray"
 
-      %span.js-details-content.hide
-        = commit_branches_links(@project, @branches) if @branches.any?
-        = commit_tags_links(@project, @tags) if @tags.any?
+    %span.js-details-content.hide
+      = commit_branches_links(@project, @branches) if @branches.any?
+      - if @tags.first == :limit_exceeded
+        = commit_tag_link('#', _('Too many tags to search'))
+      - elsif @tags.any?
+        = commit_tags_links(@project, @tags)

@@ -60,23 +60,33 @@ module CommitsHelper
     branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
   end
 
+  # returns a link formatted as a commit branch link
+  def commit_branch_link(url, text)
+    link_to(url, class: 'label label-gray ref-name') do
+      icon('code-fork') + " #{text}"
+    end
+  end
+
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
     branches.sort.map do |branch|
-      link_to(project_ref_path(project, branch), class: "label label-gray ref-name") do
-        icon('code-fork') + " #{branch}"
-      end
-    end.join(" ").html_safe
+      commit_branch_link(project_ref_path(project, branch), branch)
+    end.join(' ').html_safe
+  end
+
+  # returns a link formatted as a commit tag link
+  def commit_tag_link(url, text)
+    link_to(url, class: 'label label-gray ref-name') do
+      icon('tag') + " #{text}"
+    end
   end
 
   # Returns the sorted links to tags, separated by a comma
   def commit_tags_links(project, tags)
     sorted = VersionSorter.rsort(tags)
     sorted.map do |tag|
-      link_to(project_ref_path(project, tag), class: "label label-gray ref-name") do
-        icon('tag') + " #{tag}"
-      end
-    end.join(" ").html_safe
+      commit_tag_link(project_ref_path(project, tag), tag)
+    end.join(' ').html_safe
   end
 
   def link_to_browse_code(project, commit)
