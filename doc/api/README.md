@@ -50,7 +50,6 @@ following locations:
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
 - [Services](services.md)
-- [Session](session.md)
 - [Settings](settings.md)
 - [Sidekiq metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
