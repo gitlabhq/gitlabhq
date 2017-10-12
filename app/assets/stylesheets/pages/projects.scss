@@ -634,8 +634,12 @@ a.deploy-project-label {
 }
 
 .project-import {
-  .form-group {
+  .import-btn-container {
     margin-bottom: 0;
+  }
+
+  .toggle-import-form {
+    padding-bottom: 10px;
   }
 
   .import-buttons {
