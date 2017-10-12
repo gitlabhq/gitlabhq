@@ -5,9 +5,9 @@ module LoadedInGroupList
     def with_counts(archived:)
       selects_including_counts = [
         'namespaces.*',
-        "(#{project_count_sql(archived).to_sql})",
-        "(#{subgroup_count_sql.to_sql})",
-        "(#{member_count_sql.to_sql})"
+        "(#{project_count_sql(archived).to_sql}) AS preloaded_project_count",
+        "(#{member_count_sql.to_sql}) AS preloaded_member_count",
+        "(#{subgroup_count_sql.to_sql}) AS preloaded_subgroup_count"
       ]
 
       select(selects_including_counts)
