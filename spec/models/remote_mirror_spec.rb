@@ -120,14 +120,6 @@ describe RemoteMirror do
       end
     end
 
-    context 'without project' do
-      it 'returns nil' do
-        allow_any_instance_of(described_class).to receive(:project).and_return(nil)
-
-        expect(remote_mirror.sync).to be_nil
-      end
-    end
-
     context 'as a Geo secondary' do
       it 'returns nil' do
         allow(Gitlab::Geo).to receive(:secondary?).and_return(true)

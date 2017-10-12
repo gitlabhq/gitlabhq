@@ -126,7 +126,7 @@ class GitPushService < BaseService
   protected
 
   def update_remote_mirrors
-    return if @project.remote_mirrors.empty?
+    return unless @project.has_remote_mirror?
 
     @project.mark_stuck_remote_mirrors_as_failed!
     @project.update_remote_mirrors

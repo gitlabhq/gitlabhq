@@ -126,7 +126,9 @@
               Enabling this will only make licensed EE features available to projects if the project namespace's plan
               includes the feature or if the project is public.
 
-  = render partial: 'repository_mirrors_form', locals: { f: f }
+  - if License.feature_available?(:repository_mirrors)
+    = render partial: 'repository_mirrors_form', locals: { f: f }
+    = render partial: 'repository_remote_mirrors_form', locals: { f: f }
 
   %fieldset
     %legend Sign-up Restrictions
