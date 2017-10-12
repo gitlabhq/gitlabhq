@@ -43,7 +43,6 @@ export default {
     },
 
     tryCommit(e, skipBranchCheck=false, newBranch=false) {
-
       const makeCommit = () => {
         // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
         const commitMessage = this.commitMessage;
@@ -64,8 +63,8 @@ export default {
         this.submitCommitsLoading = true;
         Service.commitFiles(payload)
           .then(() => {
-            this.resetCommitState();
-            document.location.href = this.customBranchURL.replace('{{branch}}', branch);
+            this.reloadPage(branch);
+            this.$emit('tryCommit:complete');
           })
           .catch((e) => {
             Flash('An error occurred while committing your changes')
@@ -79,11 +78,17 @@ export default {
         .then(() => {
           if(Store.branchChanged){
             Store.showBranchChangeDialog = true;
+            this.$emit('showBranchChangeDialog:enabled');
             return;
           }
           makeCommit();
         })
       }
+    },
+
+    reloadPage(branch) {
+      this.resetCommitState();
+      document.location.href = this.customBranchURL.replace('{{branch}}', branch);
     },
 
     resetCommitState() {

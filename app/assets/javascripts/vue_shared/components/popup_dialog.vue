@@ -78,13 +78,13 @@ export default {
       <div class="modal-footer">
         <button
           type="button"
-          class="btn"
+          class="btn close-button"
           :class="btnCancelKindClass"
           @click="emitSubmit(false)">
             {{closeButtonLabel}}
         </button>
         <button type="button"
-          class="btn"
+          class="btn primary-button"
           :class="btnKindClass"
           @click="emitSubmit(true)">
             {{primaryButtonLabel}}
