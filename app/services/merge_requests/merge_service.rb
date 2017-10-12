@@ -73,7 +73,7 @@ module MergeRequests
     def branch_deletion_user
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
-    
+
     # Verify again that the source branch can be removed, since branch may be protected,
     # or the source branch may have been updated, or the user may not have permission
     #
