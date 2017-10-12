@@ -104,7 +104,10 @@ feature 'Merge requests > User posts diff notes', :js do
       it 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 
-        first('.js-note-delete', visible: false).click
+        accept_confirm do
+          first('button.more-actions-toggle').click
+          first('.js-note-delete').click
+        end
 
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
