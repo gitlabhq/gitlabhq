@@ -16,28 +16,35 @@ const RepoEditor = {
   },
 
   mounted() {
-    Service.getRaw(this.activeFile.raw_path)
-      .then((rawResponse) => {
-        Store.blobRaw = rawResponse.data;
-        Store.activeFile.plain = rawResponse.data;
+    if (!this.activeFile.tempFile) {
+      Service.getRaw(this.activeFile.raw_path)
+        .then((rawResponse) => {
+          Store.blobRaw = rawResponse.data;
+          Store.activeFile.plain = rawResponse.data;
 
-        const monacoInstance = Helper.monaco.editor.create(this.$el, {
-          model: null,
-          readOnly: false,
-          contextmenu: true,
-          scrollBeyondLastLine: false,
-        });
-
-        Helper.monacoInstance = monacoInstance;
-
-        this.addMonacoEvents();
-
-        this.setupEditor();
-      })
-      .catch(Helper.loadingError);
+          this.createMonacoInstance();
+        })
+        .catch(Helper.loadingError);
+    } else {
+      this.createMonacoInstance();
+    }
   },
 
   methods: {
+    createMonacoInstance() {
+      const monacoInstance = Helper.monaco.editor.create(this.$el, {
+        model: null,
+        readOnly: false,
+        contextmenu: true,
+        scrollBeyondLastLine: false,
+      });
+
+      Helper.monacoInstance = monacoInstance;
+
+      this.addMonacoEvents();
+
+      this.setupEditor();
+    },
     setupEditor() {
       this.showHide();
 

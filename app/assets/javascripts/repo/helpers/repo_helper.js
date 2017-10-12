@@ -157,7 +157,7 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { id, url, name, icon, last_commit, tree_url } = entity;
+    const { id, url, name, icon, last_commit, tree_url, path, tempFile } = entity;
 
     return {
       id,
@@ -165,7 +165,9 @@ const RepoHelper = {
       name,
       url,
       tree_url,
+      path,
       level,
+      tempFile,
       icon: `fa-${icon}`,
       files: [],
       loading: false,

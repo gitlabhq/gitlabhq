@@ -18,8 +18,8 @@ const RepoTab = {
     },
     changedClass() {
       const tabChangedObj = {
-        'fa-times close-icon': !this.tab.changed,
-        'fa-circle unsaved-icon': this.tab.changed,
+        'fa-times close-icon': !this.tab.changed && !this.tab.tempFile,
+        'fa-circle unsaved-icon': this.tab.changed || this.tab.tempFile,
       };
       return tabChangedObj;
     },

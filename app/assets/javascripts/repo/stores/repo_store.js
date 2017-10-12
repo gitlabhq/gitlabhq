@@ -75,7 +75,7 @@ const RepoStore = {
       RepoStore.blobRaw = file.base64;
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
-    } else {
+    } else if (!file.tempFile) {
       Service.getRaw(file.raw_path)
         .then((rawResponse) => {
           RepoStore.blobRaw = rawResponse.data;
@@ -119,6 +119,11 @@ const RepoStore = {
       if (openedFile.path === file.path) foundIndex = i;
       return openedFile.path !== file.path;
     });
+
+    // remove the file from the sidebar if it is a tempFile
+    if (file.tempFile) {
+      RepoStore.files = RepoStore.files.filter(f => !(f.tempFile && f.path === file.path));
+    }
 
     // now activate the right tab based on what you closed.
     if (RepoStore.openedFiles.length === 0) {

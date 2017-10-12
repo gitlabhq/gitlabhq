@@ -2,7 +2,9 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path
 
-  - unless show_new_repo?
+  - if show_new_repo?
+    .js-new-dropdown
+  - else
     = render 'projects/tree/old_tree_header'
 
 .tree-controls

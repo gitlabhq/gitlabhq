@@ -49,7 +49,7 @@ export default {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => ({
-        action: 'update',
+        action: f.tempFile ? 'create' : 'update',
         file_path: f.path,
         content: f.newContent,
       }));

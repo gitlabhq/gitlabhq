@@ -5,6 +5,7 @@ import Service from './services/repo_service';
 import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
+import newDropdown from './components/new_dropdown/index.vue';
 import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
@@ -62,9 +63,22 @@ function initRepoEditButton(el) {
   });
 }
 
+function initNewDropdown(el) {
+  return new Vue({
+    el,
+    components: {
+      newDropdown,
+    },
+    render(createElement) {
+      return createElement('new-dropdown');
+    },
+  });
+}
+
 function initRepoBundle() {
   const repo = document.getElementById('repo');
   const editButton = document.querySelector('.editable-mode');
+  const newDropdownHolder = document.querySelector('.js-new-dropdown');
   setInitialStore(repo.dataset);
   addEventsForNonVueEls();
   initDropdowns();
@@ -73,6 +87,7 @@ function initRepoBundle() {
 
   initRepo(repo);
   initRepoEditButton(editButton);
+  initNewDropdown(newDropdownHolder);
 }
 
 $(initRepoBundle);
