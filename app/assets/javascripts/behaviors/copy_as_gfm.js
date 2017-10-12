@@ -1,7 +1,8 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
+
 import _ from 'underscore';
-import { insertText, getSelectedFragment, nodeMatchesSelector } from './lib/utils/common_utils';
-import { placeholderImage } from './lazy_loader';
+import { insertText, getSelectedFragment, nodeMatchesSelector } from '../lib/utils/common_utils';
+import { placeholderImage } from '../lazy_loader';
 
 const gfmRules = {
   // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
