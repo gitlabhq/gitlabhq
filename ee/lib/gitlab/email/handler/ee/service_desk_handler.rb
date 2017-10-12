@@ -59,7 +59,7 @@ module Gitlab
           end
 
           def from_address
-            (mail.reply_to || []).first || mail.sender || mail.from.first
+            (mail.reply_to || []).first || mail.from.first || mail.sender
           end
 
           def issue_title
