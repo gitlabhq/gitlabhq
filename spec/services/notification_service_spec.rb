@@ -744,6 +744,18 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
       end
 
+      it "doesn't send multiple email when a user is subscribed to multiple given labels" do
+        subscriber_to_both = create(:user) do |user|
+          [label_1, label_2].each { |label| label.toggle_subscription(user, project) }
+        end
+
+        notification.relabeled_issue(issue, [label_1, label_2], @u_disabled)
+
+        should_email(subscriber_to_label_1)
+        should_email(subscriber_to_label_2)
+        should_email(subscriber_to_both)
+      end
+
       context 'confidential issues' do
         let(:author) { create(:user) }
         let(:assignee) { create(:user) }
