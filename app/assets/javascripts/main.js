@@ -40,7 +40,6 @@ import './admin';
 import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
