@@ -11,7 +11,7 @@ module Geo
                  success: success,
                  bytes_downloaded: bytes_downloaded,
                  download_time_s: (Time.now - start_time).to_f.round(3))
-        update_registry(bytes_downloaded) if success
+        update_registry(bytes_downloaded, success: success)
       end
     end
 
@@ -37,13 +37,14 @@ module Geo
       end
     end
 
-    def update_registry(bytes_downloaded)
+    def update_registry(bytes_downloaded, success:)
       transfer = Geo::FileRegistry.find_or_initialize_by(
         file_type: object_type,
         file_id: object_db_id
       )
 
       transfer.bytes = bytes_downloaded
+      transfer.success = success
       transfer.save
     end
 
