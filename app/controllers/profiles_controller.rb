@@ -31,7 +31,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = "Incoming email token was successfully reset"
 
-    redirect_to profile_account_path
+    redirect_to profile_personal_access_tokens_path
   end
 
   def reset_rss_token
@@ -41,7 +41,7 @@ class ProfilesController < Profiles::ApplicationController
 
     flash[:notice] = "RSS token was successfully reset"
 
-    redirect_to profile_account_path
+    redirect_to profile_personal_access_tokens_path
   end
 
   def audit_log
