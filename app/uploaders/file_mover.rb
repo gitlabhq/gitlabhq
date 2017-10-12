@@ -21,6 +21,9 @@ class FileMover
   end
 
   def update_markdown
+    # We need to cutoff the end bracket as this is temporary markdown only based on the Image URL (without width + height) 
+    # but the actual markdown of a snippet contains ?w=xx&h=xx so it would not match as the temporary ends with a )
+    # See : https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14290#note_43204877
     updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown[0..-2], uploader.to_markdown[0..-2])
     model.update_attribute(update_field, updated_text)
 
