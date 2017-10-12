@@ -40,7 +40,6 @@ import './admin';
 import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './compare_autocomplete';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
