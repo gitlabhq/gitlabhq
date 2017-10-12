@@ -22,15 +22,24 @@ feature 'Dashboard Groups page', :js do
     wait_for_requests
 
     expect(page).to have_content(group.name)
-    expect(page).to have_content(nested_group.parent.name)
-
-    click_group_caret(nested_group.parent)
-    expect(page).to have_content(nested_group.name)
 
     expect(page).not_to have_content(another_group.name)
   end
 
-  describe 'when filtering groups' do
+  it 'shows subgroups the user is member of', :nested_groups do
+    group.add_owner(user)
+    nested_group.add_owner(user)
+
+    sign_in(user)
+    visit dashboard_groups_path
+    wait_for_requests
+
+    expect(page).to have_content(nested_group.parent.name)
+    click_group_caret(nested_group.parent)
+    expect(page).to have_content(nested_group.name)
+  end
+
+  describe 'when filtering groups', :nested_groups do
     before do
       group.add_owner(user)
       nested_group.add_owner(user)
@@ -64,7 +73,7 @@ feature 'Dashboard Groups page', :js do
     end
   end
 
-  describe 'group with subgroups' do
+  describe 'group with subgroups', :nested_groups do
     let!(:subgroup) { create(:group, :public, parent: group) }
 
     before do

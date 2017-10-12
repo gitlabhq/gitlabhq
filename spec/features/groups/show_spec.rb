@@ -32,7 +32,8 @@ feature 'Group show page' do
       group.add_owner(user)
       sign_in(user)
     end
-    context 'when subgroups are supported', :js do
+
+    context 'when subgroups are supported', :js, :nested_groups do
       before do
         allow(Group).to receive(:supports_nested_groups?) { true }
         visit path
