@@ -33,7 +33,7 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows issues when current user is author', :js do
-      find('#assignee_id', visible: false).set('')
+      execute_script("document.querySelector('#assignee_id').value=''")
       find('.js-author-search', match: :first).click
 
       expect(find('li[data-user-id="null"] a.is-active')).to be_visible
