@@ -77,7 +77,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
     context 'with an unfolded line' do
       before do
-        find('.js-unfold', match: :first).send_keys(:return)
+        find('.js-unfold', match: :first).click
         wait_for_requests
       end
 
@@ -136,7 +136,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
     context 'with an unfolded line' do
       before do
-        find('.js-unfold', match: :first).send_keys(:return)
+        find('.js-unfold', match: :first).click
         wait_for_requests
       end
 
