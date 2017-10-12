@@ -22,7 +22,6 @@
 
 ## Backend guides
 
-- [Testing standards and style guidelines](testing_guide/index.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [Sidekiq guidelines](sidekiq_style_guide.md) for working with Sidekiq workers
@@ -70,6 +69,11 @@
 - [Verifying database capabilities](verifying_database_capabilities.md)
 - [Hash indexes](hash_indexes.md)
 - [Swapping Tables](swapping_tables.md)
+
+## Testing guides
+
+- [Testing standards and style guidelines](testing_guide/index.md)
+- [Frontend testing standards and style guidelines](testing_guide/frontend_testing.md)
 
 ## Documentation guides
 
