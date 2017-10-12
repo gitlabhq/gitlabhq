@@ -1236,6 +1236,7 @@ module Gitlab
           relative_paths.map { |d| File.join(path, d) }
         else
           Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
+            .flatten
             .compact
             .flat_map { |d| d.split(File::PATH_SEPARATOR) }
         end
