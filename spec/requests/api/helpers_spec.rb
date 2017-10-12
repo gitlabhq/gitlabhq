@@ -178,18 +178,18 @@ describe API::Helpers do
         expect { current_user }.to raise_error /401/
       end
 
-      it "returns a 401 response for a user without access" do
+      it "returns a 403 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
-      it 'returns a 401 response for a user who is blocked' do
+      it 'returns a 403 response for a user who is blocked' do
         user.block!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
       it "leaves user as is when sudo not specified" do

@@ -5,7 +5,7 @@ module Gitlab
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user].freeze
+    API_SCOPES = [:api, :read_user, :sudo].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -227,8 +227,10 @@ module Gitlab
         []
       end
 
-      def available_scopes
-        API_SCOPES + registry_scopes
+      def available_scopes(current_user = nil)
+        scopes = API_SCOPES + registry_scopes
+        scopes.delete(:sudo) if current_user && !current_user.admin?
+        scopes
       end
 
       # Other available scopes
