@@ -6,10 +6,7 @@
 
 import Vue from 'vue';
 import MilestoneSelect from '~/boards/components/milestone_select.vue';
-import '~/boards/services/board_service';
-import '~/boards/stores/boards_store';
 import '~/issuable_context';
-import './mock_data';
 
 let vm;
 
@@ -38,8 +35,6 @@ const milestone2 = {
 describe('Milestone select component', () => {
   beforeEach((done) => {
     setFixtures('<div class="test-container"></div>');
-    gl.boardService = mockBoardService();
-    gl.issueBoards.BoardsStore.create();
 
     // eslint-disable-next-line no-new
     new IssuableContext();

@@ -6,7 +6,7 @@ import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
-import UserSelect from './user_select.vue';
+import AssigneeSelect from './assignee_select.vue';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -69,11 +69,11 @@ export default {
     };
   },
   components: {
+    AssigneeSelect,
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
     PopupDialog,
-    UserSelect,
   },
   computed: {
     isNewForm() {
@@ -247,7 +247,7 @@ export default {
               :labels-path="labelsPath"
             />
 
-            <user-select
+            <assignee-select
               any-user-text="Any assignee"
               :board="board"
               field-name="assignee_id"
