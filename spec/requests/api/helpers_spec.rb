@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'raven/transports/dummy'
+require_relative '../../../config/initializers/sentry'
 
 describe API::Helpers do
   include API::APIGuard::HelperMethods
@@ -164,18 +166,25 @@ describe API::Helpers do
     end
 
     describe "when authenticating using a user's private token" do
-      it "returns nil for an invalid token" do
+      it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a user without access" do
+      it "returns a 401 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
+      end
+
+      it 'returns a 401 response for a user who is blocked' do
+        user.block!
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
+
+        expect { current_user }.to raise_error /401/
       end
 
       it "leaves user as is when sudo not specified" do
@@ -198,24 +207,31 @@ describe API::Helpers do
         allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
       end
 
-      it "returns nil for an invalid token" do
+      it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a user without access" do
+      it "returns a 401 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
-      it "returns nil for a token without the appropriate scope" do
+      it 'returns a 401 response for a user who is blocked' do
+        user.block!
+        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+
+        expect { current_user }.to raise_error /401/
+      end
+
+      it "returns a 401 response for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
       it "leaves user as is when sudo not specified" do
@@ -231,14 +247,14 @@ describe API::Helpers do
         personal_access_token.revoke!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect(current_user).to be_nil
+        expect { current_user }.to raise_error /401/
       end
     end
 
@@ -385,6 +401,18 @@ describe API::Helpers do
             end
           end
         end
+
+        context 'when user is blocked' do
+          before do
+            user.block!
+          end
+
+          it 'changes current_user to sudo' do
+            set_env(admin, user.id)
+
+            expect(current_user).to eq(user)
+          end
+        end
       end
 
       context 'with regular user' do
@@ -484,9 +512,54 @@ describe API::Helpers do
       allow(exception).to receive(:backtrace).and_return(caller)
 
       expect_any_instance_of(self.class).to receive(:sentry_context)
-      expect(Raven).to receive(:capture_exception).with(exception)
+      expect(Raven).to receive(:capture_exception).with(exception, extra: {})
 
       handle_api_exception(exception)
+    end
+
+    context 'with a personal access token given' do
+      let(:token) { create(:personal_access_token, scopes: ['api'], user: user) }
+
+      # Regression test for https://gitlab.com/gitlab-org/gitlab-ce/issues/38571
+      it 'does not raise an additional exception because of missing `request`' do
+        # We need to stub at a lower level than #sentry_enabled? otherwise
+        # Sentry is not enabled when the request below is made, and the test
+        # would pass even without the fix
+        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
+        expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
+
+        get api('/projects', personal_access_token: token)
+
+        # The 500 status is expected as we're testing a case where an exception
+        # is raised, but Grape shouldn't raise an additional exception
+        expect(response).to have_gitlab_http_status(500)
+        expect(json_response['message']).not_to include("undefined local variable or method `request'")
+        expect(json_response['message']).to start_with("\nRuntimeError (Runtime Error!):")
+      end
+    end
+
+    context 'extra information' do
+      # Sentry events are an array of the form [auth_header, data, options]
+      let(:event_data) { Raven.client.transport.events.first[1] }
+
+      before do
+        stub_application_setting(
+          sentry_enabled: true,
+          sentry_dsn: "dummy://12345:67890@sentry.localdomain/sentry/42"
+        )
+        configure_sentry
+        Raven.client.configuration.encoding = 'json'
+      end
+
+      it 'sends the params, excluding confidential values' do
+        expect(Gitlab::Sentry).to receive(:enabled?).twice.and_return(true)
+        expect(ProjectsFinder).to receive(:new).and_raise('Runtime Error!')
+
+        get api('/projects', user), password: 'dont_send_this', other_param: 'send_this'
+
+        expect(event_data).to include('other_param=send_this')
+        expect(event_data).to include('password=********')
+      end
     end
   end
 
@@ -524,11 +597,10 @@ describe API::Helpers do
     context 'current_user is nil' do
       before do
         expect_any_instance_of(self.class).to receive(:current_user).and_return(nil)
-        allow_any_instance_of(self.class).to receive(:initial_current_user).and_return(nil)
       end
 
       it 'returns a 401 response' do
-        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
+        expect { authenticate! }.to raise_error /401/
       end
     end
 
@@ -536,33 +608,10 @@ describe API::Helpers do
       let(:user) { build(:user) }
 
       before do
-        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
+        expect_any_instance_of(self.class).to receive(:current_user).and_return(user)
       end
 
       it 'does not raise an error' do
-        expect { authenticate! }.not_to raise_error
-      end
-    end
-
-    context 'current_user is blocked' do
-      let(:user) { build(:user, :blocked) }
-
-      before do
-        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
-      end
-
-      it 'raises an error' do
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
-
-        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
-      end
-
-      it "doesn't raise an error if an admin user is impersonating a blocked user (via sudo)" do
-        admin_user = build(:user, :admin)
-
-        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(admin_user)
-
         expect { authenticate! }.not_to raise_error
       end
     end

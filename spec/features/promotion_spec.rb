@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Promotions', js: true do
+describe 'Promotions', :js do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:otherdeveloper) { create(:user, name: 'TheOtherDeveloper') }
@@ -44,7 +44,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for project features in general', js: true do
+  describe 'for project features in general', :js do
     context 'for .com' do
       before do
         project.team << [user, :master]
@@ -68,7 +68,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for service desk', js: true do
+  describe 'for service desk', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -95,7 +95,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for merge request improve', js: true do
+  describe 'for merge request improve', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -122,7 +122,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for repository features', js: true do
+  describe 'for repository features', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -150,7 +150,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for squash commits', js: true do
+  describe 'for squash commits', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -177,7 +177,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for burndown charts', js: true do
+  describe 'for burndown charts', :js do
     before do
       stub_application_setting(check_namespace_plan: true)
       allow(Gitlab).to receive(:com?) { true }
@@ -204,7 +204,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for issue boards ', js: true do
+  describe 'for issue boards ', :js do
     before do
       stub_application_setting(check_namespace_plan: true)
       allow(Gitlab).to receive(:com?) { true }
@@ -231,7 +231,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for issue export', js: true do
+  describe 'for issue export', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -247,7 +247,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for issue weight', js: true do
+  describe 'for issue weight', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -256,7 +256,7 @@ describe 'Promotions', js: true do
       sign_in(user)
     end
 
-    it 'should appear on the page', js: true do
+    it 'should appear on the page', :js do
       visit project_issue_path(project, issue)
       wait_for_requests
       find('.promote-weight-link').click
@@ -264,7 +264,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for issue templates', js: true do
+  describe 'for issue templates', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -273,7 +273,7 @@ describe 'Promotions', js: true do
       sign_in(user)
     end
 
-    it 'should appear on the page', js: true do
+    it 'should appear on the page', :js do
       visit new_project_issue_path(project)
       wait_for_requests
       find('#promotion-issue-template-link').click
@@ -281,7 +281,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for project audit events', js: true do
+  describe 'for project audit events', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -296,7 +296,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for group contribution analytics', js: true do
+  describe 'for group contribution analytics', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
@@ -326,7 +326,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for advanced search', js: true do
+  describe 'for advanced search', :js do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)

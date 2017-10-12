@@ -36,7 +36,9 @@ module EE
         end
 
         def member_uids
-          entry.memberuid
+          @member_uids ||= entry.memberuid.map do |uid|
+            ::Gitlab::LDAP::Person.normalize_uid(uid)
+          end
         end
 
         delegate :dn, to: :entry
@@ -48,17 +50,7 @@ module EE
             dns.concat(active_directory_members(entry, nested_groups_to_skip))
           end
 
-          if (entry.respond_to? :member) && (entry.respond_to? :submember)
-            dns.concat(entry.member + entry.submember)
-          elsif entry.respond_to? :member
-            dns.concat(entry.member)
-          elsif entry.respond_to? :uniquemember
-            dns.concat(entry.uniquemember)
-          elsif entry.respond_to? :memberof
-            dns.concat(entry.memberof)
-          else
-            Rails.logger.warn("Could not find member DNs for LDAP group #{entry.inspect}")
-          end
+          dns.concat(entry_member_dns(entry))
 
           dns.uniq
         end
@@ -103,7 +95,9 @@ module EE
           members = []
 
           # Concatenate the members in the current range
-          members.concat(entry[member_range_attribute(entry)])
+          dns = entry[member_range_attribute(entry)]
+          dns = normalize_dns(dns)
+          members.concat(dns)
 
           # Recursively concatenate members until end of ranges
           if has_more_member_ranges?(entry)
@@ -161,18 +155,36 @@ module EE
         # the user DN match, profit!
         def members_within_base(members)
           begin
-            base = Net::LDAP::DN.new(adapter.config.base.downcase).to_a
-          rescue RuntimeError
-            Rails.logger.error "Configured LDAP `base` is invalid: '#{adapter.config.base}'"
+            base = ::Gitlab::LDAP::DN.new(adapter.config.base).to_a
+          rescue ::Gitlab::LDAP::DN::FormatError => e
+            Rails.logger.error "Configured LDAP `base` is invalid: '#{adapter.config.base}'. Error: \"#{e.message}\""
             return []
           end
 
           members.select do |dn|
             begin
-              Net::LDAP::DN.new(dn.downcase).to_a.last(base.length) == base
-            rescue RuntimeError
-              Rails.logger.warn "Received invalid member DN from LDAP group '#{cn}': '#{dn}'. Skipping"
+              ::Gitlab::LDAP::DN.new(dn).to_a.last(base.length) == base
+            rescue ::Gitlab::LDAP::DN::FormatError => e
+              Rails.logger.warn "Received invalid member DN from LDAP group '#{cn}': '#{dn}'. Error: \"#{e.message}\". Skipping"
             end
+          end
+        end
+
+        def normalize_dns(dns)
+          dns.map do |dn|
+            ::Gitlab::LDAP::Person.normalize_dn(dn)
+          end
+        end
+
+        def entry_member_dns(entry)
+          dns = entry.try(:member) || entry.try(:uniquemember) || entry.try(:memberof)
+          dns&.concat(entry.try(:submember) || [])
+
+          if dns
+            normalize_dns(dns)
+          else
+            Rails.logger.warn("Could not find member DNs for LDAP group #{entry.inspect}")
+            []
           end
         end
       end

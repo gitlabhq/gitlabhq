@@ -105,18 +105,6 @@ describe NotificationService, :mailer do
     end
   end
 
-  describe 'Email' do
-    describe '#new_email' do
-      let!(:email) { create(:email) }
-
-      it { expect(notification.new_email(email)).to be_truthy }
-
-      it 'sends email to email owner' do
-        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
-    end
-  end
-
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }

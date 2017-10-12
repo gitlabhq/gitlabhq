@@ -13,15 +13,17 @@ class MergeRequestEntity < IssuableEntity
   expose :target_branch
   expose :target_project_id
 
+  expose :should_be_rebased?, as: :should_be_rebased
+  expose :ff_only_enabled do |merge_request|
+    merge_request.project.merge_requests_ff_only_enabled
+  end
+
   # EE-specific
   expose :approvals_before_merge
   expose :squash
   expose :rebase_commit_sha
   expose :rebase_in_progress?, as: :rebase_in_progress
-  expose :should_be_rebased?, as: :should_be_rebased
-  expose :ff_only_enabled do |merge_request|
-    merge_request.project.merge_requests_ff_only_enabled
-  end
+
   expose :can_push_to_source_branch do |merge_request|
     presenter(merge_request).can_push_to_source_branch?
   end
@@ -37,7 +39,6 @@ class MergeRequestEntity < IssuableEntity
   expose :closed_event, using: EventEntity
 
   # User entities
-  expose :author, using: UserEntity
   expose :merge_user, using: UserEntity
 
   # Diff sha's
@@ -45,7 +46,6 @@ class MergeRequestEntity < IssuableEntity
     merge_request.diff_head_sha if merge_request.diff_head_commit
   end
 
-  expose :merge_commit_sha
   expose :merge_commit_message
   expose :head_pipeline, with: PipelineDetailsEntity, as: :pipeline
 
@@ -58,6 +58,7 @@ class MergeRequestEntity < IssuableEntity
   expose :commits_count
   expose :cannot_be_merged?, as: :has_conflicts
   expose :can_be_merged?, as: :can_be_merged
+  expose :mergeable?, as: :mergeable
   expose :remove_source_branch?, as: :remove_source_branch
 
   expose :project_archived do |merge_request|

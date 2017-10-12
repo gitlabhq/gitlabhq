@@ -29,7 +29,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     wait_for_requests
   end
 
-  describe "new #{issuable_type}", js: true do
+  describe "new #{issuable_type}", :js do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
         case issuable_type
@@ -53,7 +53,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     end
   end
 
-  describe "note on #{issuable_type}", js: true do
+  describe "note on #{issuable_type}", :js do
     before do
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
     end
@@ -290,7 +290,7 @@ shared_examples 'issuable record that supports quick actions in its description 
     end
   end
 
-  describe "preview of note on #{issuable_type}", js: true do
+  describe "preview of note on #{issuable_type}", :js do
     it 'removes quick actions from note and explains them' do
       create(:user, username: 'bob')
 

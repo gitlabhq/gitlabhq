@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipelines for Merge Requests', js: true do
+feature 'Pipelines for Merge Requests', :js do
   describe 'pipeline tab' do
     given(:user) { create(:user) }
     given(:merge_request) { create(:merge_request) }

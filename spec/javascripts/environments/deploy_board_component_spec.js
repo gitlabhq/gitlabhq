@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DeployBoard from '~/environments/components/deploy_board_component.vue';
-import { deployBoardMockData, invalidDeployBoardMockData } from './mock_data';
+import { deployBoardMockData } from './mock_data';
 
 describe('Deploy Board', () => {
   let DeployBoardComponent;
@@ -17,7 +17,7 @@ describe('Deploy Board', () => {
         propsData: {
           deployBoardData: deployBoardMockData,
           isLoading: false,
-          hasError: false,
+          isEmpty: false,
         },
       }).$mount();
     });
@@ -46,15 +46,15 @@ describe('Deploy Board', () => {
     });
   });
 
-  describe('without valid data', () => {
+  describe('with empty state', () => {
     let component;
 
     beforeEach(() => {
       component = new DeployBoardComponent({
         propsData: {
-          deployBoardData: invalidDeployBoardMockData,
+          deployBoardData: {},
           isLoading: false,
-          hasError: false,
+          isEmpty: true,
         },
       }).$mount();
     });
@@ -65,21 +65,21 @@ describe('Deploy Board', () => {
     });
   });
 
-  describe('with error', () => {
+  describe('with loading state', () => {
     let component;
 
     beforeEach(() => {
       component = new DeployBoardComponent({
         propsData: {
           deployBoardData: {},
-          isLoading: false,
-          hasError: true,
+          isLoading: true,
+          isEmpty: false,
         },
       }).$mount();
     });
 
-    it('should render empty state', () => {
-      expect(component.$el.children.length).toEqual(1);
+    it('should render loading spinner', () => {
+      expect(component.$el.querySelector('.fa-spin')).toBeDefined();
     });
   });
 });

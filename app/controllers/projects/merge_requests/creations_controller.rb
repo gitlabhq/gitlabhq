@@ -122,10 +122,13 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def selected_target_project
-    if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?
+    if @project.id.to_s == params[:target_project_id] || !@project.forked?
       @project
+    elsif params[:target_project_id].present?
+      MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
+        .execute.find(params[:target_project_id])
     else
-      @project.forked_project_link.forked_from_project
+      @project.forked_from_project
     end
   end
 end

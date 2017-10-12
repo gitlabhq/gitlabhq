@@ -12,17 +12,17 @@ class License < ActiveRecord::Base
     contribution_analytics
     elastic_search
     export_issues
-    fast_forward_merge
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
     issue_board_milestone
     issue_weights
     jenkins_integration
-    ldap_extras
+    ldap_group_sync
     merge_request_approvers
     merge_request_rebase
     merge_request_squash
+    multiple_ldap_servers
     multiple_issue_assignees
     multiple_issue_boards
     push_rules
@@ -44,6 +44,7 @@ class License < ActiveRecord::Base
     geo
     group_issue_boards
     jira_dev_panel_integration
+    ldap_group_sync_filter
     object_storage
     service_desk
     variable_environment_scope
@@ -64,7 +65,6 @@ class License < ActiveRecord::Base
     cross_project_pipelines
     deploy_board
     export_issues
-    fast_forward_merge
     file_locks
     group_webhooks
     issuable_default_templates
@@ -110,7 +110,9 @@ class License < ActiveRecord::Base
     elastic_search
     extended_audit_events
     geo
-    ldap_extras
+    ldap_group_sync
+    ldap_group_sync_filter
+    multiple_ldap_servers
     object_storage
     repository_size_limit
   ].freeze

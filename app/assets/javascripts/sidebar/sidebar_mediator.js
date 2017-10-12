@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../flash';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
 
@@ -41,7 +40,7 @@ export default class SidebarMediator {
         this.store.setAssigneeData(data);
         this.store.setTimeTrackingData(data);
       })
-      .catch(() => new Flash('Error occured when fetching sidebar data'));
+      .catch(() => new Flash('Error occurred when fetching sidebar data'));
   }
 
   fetchAutocompleteProjects(searchTerm) {

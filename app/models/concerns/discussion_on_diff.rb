@@ -28,6 +28,10 @@ module DiscussionOnDiff
     true
   end
 
+  def file_new_path
+    first_note.position.new_path
+  end
+
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines(highlight: true)
     lines = highlight ? highlighted_diff_lines : diff_lines

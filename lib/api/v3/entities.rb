@@ -235,7 +235,7 @@ module API
         expose :created_at, :started_at, :finished_at
         expose :user, with: ::API::Entities::User
         expose :artifacts_file, using: ::API::Entities::JobArtifactFile, if: -> (build, opts) { build.artifacts? }
-        expose :commit, with: ::API::Entities::RepoCommit
+        expose :commit, with: ::API::Entities::Commit
         expose :runner, with: ::API::Entities::Runner
         expose :pipeline, with: ::API::Entities::PipelineBasic
       end
@@ -252,7 +252,7 @@ module API
       end
 
       class MergeRequestChanges < MergeRequest
-        expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
+        expose :diffs, as: :changes, using: ::API::Entities::Diff do |compare, _|
           compare.raw_diffs(limits: false).to_a
         end
       end

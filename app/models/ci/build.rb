@@ -14,6 +14,7 @@ module Ci
 
     has_many :deployments, as: :deployable
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -234,6 +235,10 @@ module Ci
       variables
     end
 
+    def features
+      { trace_sections: true }
+    end
+
     def merge_request
       return @merge_request if defined?(@merge_request)
 
@@ -264,6 +269,10 @@ module Ci
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
       update_attributes(coverage: coverage) if coverage.present?
+    end
+
+    def parse_trace_sections!
+      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
 
     def trace

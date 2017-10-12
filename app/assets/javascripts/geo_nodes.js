@@ -46,6 +46,10 @@ class GeoNodeStatus {
     $closestStatus.toggleClass('hidden');
   }
 
+  static formatCountAndPercentage(count, total, percentage) {
+    return `${gl.text.addDelimiter(count)}/${gl.text.addDelimiter(total)} (${percentage})`;
+  }
+
   getStatus() {
     $.getJSON(this.endpoint, (status) => {
       this.setStatusIcon(status.healthy);
@@ -62,10 +66,28 @@ class GeoNodeStatus {
         this.$dbReplicationLag.text('UNKNOWN');
       }
 
-      this.$repositoriesSynced.text(`${status.repositories_synced_count}/${status.repositories_count} (${status.repositories_synced_in_percentage})`);
-      this.$repositoriesFailed.text(status.repositories_failed_count);
-      this.$lfsObjectsSynced.text(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
-      this.$attachmentsSynced.text(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
+      const repoText = GeoNodeStatus.formatCountAndPercentage(
+        status.repositories_synced_count,
+        status.repositories_count,
+        status.repositories_synced_in_percentage);
+
+      const repoFailedText = gl.text.addDelimiter(status.repositories_failed_count);
+
+      const lfsText = GeoNodeStatus.formatCountAndPercentage(
+        status.lfs_objects_synced_count,
+        status.lfs_objects_count,
+        status.lfs_objects_synced_in_percentage);
+
+      const attachmentText = GeoNodeStatus.formatCountAndPercentage(
+        status.attachments_synced_count,
+        status.attachments_count,
+        status.attachments_synced_in_percentage);
+
+      this.$repositoriesSynced.text(repoText);
+      this.$repositoriesFailed.text(repoFailedText);
+      this.$lfsObjectsSynced.text(lfsText);
+      this.$attachmentsSynced.text(attachmentText);
+
       const eventDate = gl.utils.formatDate(new Date(status.last_event_date));
       const cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_date));
       this.$lastEventSeen.text(`${status.last_event_id} (${eventDate})`);

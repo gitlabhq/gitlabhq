@@ -108,6 +108,15 @@
   }
 }
 
+.subkeys-list {
+  @include basic-list;
+
+  li {
+    padding: 3px 0;
+    border: none;
+  }
+}
+
 .key-list-item {
   .key-list-item-info {
     @media (min-width: $screen-sm-min) {
@@ -389,11 +398,11 @@ table.u2f-registrations {
   }
 }
 
-.gpg-email-badge {
+.email-badge {
   display: inline;
   margin-right: $gl-padding / 2;
 
-  .gpg-email-badge-email {
+  .email-badge-email {
     display: inline;
     margin-right: $gl-padding / 4;
   }

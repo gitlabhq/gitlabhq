@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Branches' do
-  include ProtectedBranchHelpers
+  include EE::ProtectedBranchHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
@@ -14,12 +14,10 @@ describe 'Branches' do
     end
 
     describe 'Initial branches page' do
-      it 'shows all the branches' do
+      it 'shows all the branches sorted by last updated by default' do
         visit project_branches_path(project)
 
-        repository.branches_sorted_by(:name).first(20).each do |branch|
-          expect(page).to have_content("#{branch.name}")
-        end
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_desc))
       end
 
       it 'sorts the branches by name' do
@@ -28,22 +26,7 @@ describe 'Branches' do
         click_button "Last updated" # Open sorting dropdown
         click_link "Name"
 
-        sorted = repository.branches_sorted_by(:name).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
-      end
-
-      it 'sorts the branches by last updated' do
-        visit project_branches_path(project)
-
-        click_button "Last updated" # Open sorting dropdown
-        click_link "Last updated"
-
-        sorted = repository.branches_sorted_by(:updated_desc).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
       end
 
       it 'sorts the branches by oldest updated' do
@@ -52,10 +35,7 @@ describe 'Branches' do
         click_button "Last updated" # Open sorting dropdown
         click_link "Oldest updated"
 
-        sorted = repository.branches_sorted_by(:updated_asc).first(20).map do |branch|
-          Regexp.escape(branch.name)
-        end
-        expect(page).to have_content(/#{sorted.join(".*")}/)
+        expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))
       end
 
       it 'avoids a N+1 query in branches index' do
@@ -68,7 +48,7 @@ describe 'Branches' do
     end
 
     describe 'Find branches' do
-      it 'shows filtered branches', js: true do
+      it 'shows filtered branches', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -80,7 +60,7 @@ describe 'Branches' do
     end
 
     describe 'Delete unprotected branch' do
-      it 'removes branch after confirmation', js: true do
+      it 'removes branch after confirmation', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -93,30 +73,6 @@ describe 'Branches' do
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)
-      end
-    end
-
-    describe 'Delete protected branch' do
-      before do
-        project.add_user(user, :master)
-        visit project_protected_branches_path(project)
-        set_protected_branch_name('fix')
-        set_allowed_to('merge')
-        set_allowed_to('push')
-        click_on "Protect"
-
-        within(".protected-branches-list") { expect(page).to have_content('fix') }
-        expect(ProtectedBranch.count).to eq(1)
-        project.add_user(user, :developer)
-      end
-
-      it 'does not allow devleoper to remove protected branch', js: true do
-        visit project_branches_path(project)
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_css('.btn-remove.disabled')
       end
     end
   end
@@ -134,39 +90,6 @@ describe 'Branches' do
         expect(page).to have_content("Protected branches can be managed in project settings")
       end
     end
-
-    describe 'Delete protected branch' do
-      before do
-        visit project_protected_branches_path(project)
-        set_protected_branch_name('fix')
-        set_allowed_to('merge')
-        set_allowed_to('push')
-        click_on "Protect"
-
-        within(".protected-branches-list") { expect(page).to have_content('fix') }
-        expect(ProtectedBranch.count).to eq(1)
-      end
-
-      it 'removes branch after modal confirmation', js: true do
-        visit project_branches_path(project)
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_content('fix')
-        expect(find('.all-branches')).to have_selector('li', count: 1)
-        page.find('[data-target="#modal-delete-branch"]').trigger(:click)
-
-        expect(page).to have_css('.js-delete-branch[disabled]')
-        fill_in 'delete_branch_input', with: 'fix'
-        click_link 'Delete protected branch'
-
-        fill_in 'branch-search', with: 'fix'
-        find('#branch-search').native.send_keys(:enter)
-
-        expect(page).to have_content('No branches to show')
-      end
-    end
   end
 
   context 'logged out' do
@@ -179,5 +102,14 @@ describe 'Branches' do
         expect(page).not_to have_content 'Merge Request'
       end
     end
+  end
+
+  def sorted_branches(repository, count:, sort_by:)
+    sorted_branches =
+      repository.branches_sorted_by(sort_by).first(count).map do |branch|
+        Regexp.escape(branch.name)
+      end
+
+    Regexp.new(sorted_branches.join('.*'))
   end
 end

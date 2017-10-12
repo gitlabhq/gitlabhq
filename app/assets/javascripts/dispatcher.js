@@ -7,15 +7,11 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
-/* global CommitsList */
-/* global NewCommitForm */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
 /* global Search */
@@ -41,6 +37,7 @@
 /* global AdminEmailSelect */
 /* global ShortcutsWiki */
 
+import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
@@ -56,7 +53,6 @@ import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
-import GeoNodeForm from './geo/geo_node_form';
 import GeoNodes from './geo_nodes';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -83,7 +79,9 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -267,7 +265,7 @@ import initGroupAnalytics from './init_group_analytics';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -347,7 +345,6 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -524,7 +521,9 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          new ProjectFork();
+          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+            .then(fork => fork.default())
+            .catch(() => {});
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();
@@ -585,6 +584,11 @@ import initGroupAnalytics from './init_group_analytics';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
         case 'admin:licenses:new':
           const $licenseFile = $('.license-file');
           const $licenseKey = $('.license-key');
@@ -602,7 +606,6 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
-
       }
       switch (path[0]) {
         case 'sessions':
@@ -635,11 +638,13 @@ import initGroupAnalytics from './init_group_analytics';
                   new Labels();
               }
             case 'abuse_reports':
-              new gl.AbuseReports();
+              new AbuseReports();
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));
-              new GeoNodeForm($('.js-geo-node-form'));
+              import(/* webpackChunkName: 'geo_node_form' */ './geo/geo_node_form')
+                .then(geoNodeForm => geoNodeForm.default($('.js-geo-node-form')))
+                .catch(() => {});
               break;
           }
           break;

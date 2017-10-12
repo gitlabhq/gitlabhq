@@ -7,7 +7,7 @@ export default {
       type: String,
       required: false,
     },
-    body: {
+    text: {
       type: String,
       required: false,
     },
@@ -85,8 +85,8 @@ export default {
           </slot>
         </div>
         <div class="modal-body">
-          <slot>
-            <p>{{this.body}}</p>
+          <slot name="body" :text="text">
+            <p>{{this.text}}</p>
           </slot>
         </div>
         <slot name="footer">

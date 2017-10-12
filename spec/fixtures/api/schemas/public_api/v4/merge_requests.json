@@ -72,6 +72,7 @@
       "user_notes_count": { "type": "integer" },
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
+      "discussion_locked": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
       "approvals_before_merge": { "type": ["integer", "null"] },
       "squash": { "type": "boolean" },

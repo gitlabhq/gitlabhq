@@ -91,6 +91,11 @@ module Gitlab
         end
       end
 
+      def update_branch(branch_name, newrev, oldrev)
+        ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+        update_ref_in_hooks(ref, newrev, oldrev)
+      end
+
       private
 
       # Returns [newrev, should_run_after_create, should_run_after_create_branch]
@@ -152,13 +157,15 @@ module Gitlab
         # (and have!) accidentally reset the ref to an earlier state, clobbering
         # commits. See also https://github.com/libgit2/libgit2/issues/1534.
         command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
-        _, status = popen(
+
+        output, status = popen(
           command,
           repository.path) do |stdin|
           stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
         end
 
         unless status.zero?
+          Gitlab::GitLogger.error("'git update-ref' in #{repository.path}: #{output}")
           raise Gitlab::Git::CommitError.new(
             "Could not update branch #{Gitlab::Git.branch_name(ref)}." \
             " Please refresh and try again.")

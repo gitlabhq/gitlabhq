@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-27 16:26+0200\n"
-"PO-Revision-Date: 2017-09-27 16:26+0200\n"
+"POT-Creation-Date: 2017-10-06 22:39+0200\n"
+"PO-Revision-Date: 2017-10-06 22:39+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -20,6 +20,11 @@ msgstr ""
 
 msgid "%d commit"
 msgid_plural "%d commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d layer"
+msgid_plural "%d layers"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -57,6 +62,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1st contribution!"
+msgstr ""
+
+msgid "2FA enabled"
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -140,6 +148,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Author"
+msgstr ""
+
 msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
 msgstr ""
 
@@ -179,6 +190,9 @@ msgstr ""
 msgid "BillingPlans|Customer Support"
 msgstr ""
 
+msgid "BillingPlans|Downgrade"
+msgstr ""
+
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
 msgstr ""
 
@@ -213,9 +227,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "Billinglans|Downgrade"
 msgstr ""
 
 msgid "Branch"
@@ -379,6 +390,9 @@ msgstr ""
 msgid "Cherry-pick this merge request"
 msgstr ""
 
+msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -433,7 +447,133 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "Clone repository"
+msgstr ""
+
 msgid "Close"
+msgstr ""
+
+msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is disabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Copy cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Create cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Create new cluster on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Enable cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Google Cloud Platform project ID"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine project"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgstr ""
+
+msgid "ClusterIntegration|See machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
+msgstr ""
+
+msgid "ClusterIntegration|Number of nodes"
+msgstr ""
+
+msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgstr ""
+
+msgid "ClusterIntegration|Remove cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Remove integration"
+msgstr ""
+
+msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
+msgstr ""
+
+msgid "ClusterIntegration|Save changes"
+msgstr ""
+
+msgid "ClusterIntegration|See your projects"
+msgstr ""
+
+msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong on our end."
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine."
+msgstr ""
+
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgstr ""
+
+msgid "ClusterIntegration|Toggle Cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
+msgstr ""
+
+msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgstr ""
+
+msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Zone"
+msgstr ""
+
+msgid "ClusterIntegration|access to Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cluster"
+msgstr ""
+
+msgid "ClusterIntegration|help page"
+msgstr ""
+
+msgid "ClusterIntegration|meets the requirements"
+msgstr ""
+
+msgid "ClusterIntegration|properly configured"
 msgstr ""
 
 msgid "Comments"
@@ -443,6 +583,9 @@ msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Commit Message"
+msgstr ""
 
 msgid "Commit duration in minutes for last 30 commits"
 msgstr ""
@@ -471,6 +614,51 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
+msgid "Container Registry"
+msgstr ""
+
+msgid "ContainerRegistry|Created"
+msgstr ""
+
+msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
+msgstr ""
+
+msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
+msgstr ""
+
+msgid "ContainerRegistry|How to use the Container Registry"
+msgstr ""
+
+msgid "ContainerRegistry|Learn more about"
+msgstr ""
+
+msgid "ContainerRegistry|No tags in Container Registry for this container image."
+msgstr ""
+
+msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
+msgstr ""
+
+msgid "ContainerRegistry|Remove repository"
+msgstr ""
+
+msgid "ContainerRegistry|Remove tag"
+msgstr ""
+
+msgid "ContainerRegistry|Size"
+msgstr ""
+
+msgid "ContainerRegistry|Tag"
+msgstr ""
+
+msgid "ContainerRegistry|Tag ID"
+msgstr ""
+
+msgid "ContainerRegistry|Use different image names"
+msgstr ""
+
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
+msgstr ""
+
 msgid "Contribution guide"
 msgstr ""
 
@@ -487,9 +675,6 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Create New Directory"
-msgstr ""
-
-msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
@@ -694,6 +879,12 @@ msgstr[1] ""
 msgid "ForkedFromProjectPath|Forked from"
 msgstr ""
 
+msgid "ForkedFromProjectPath|Forked from %{project_name} (deleted)"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -706,6 +897,12 @@ msgstr ""
 msgid "Geo Nodes"
 msgstr ""
 
+msgid "Geo|Groups to replicate"
+msgstr ""
+
+msgid "Geo|Select groups to replicate."
+msgstr ""
+
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -716,6 +913,9 @@ msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
+msgstr ""
+
+msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -760,6 +960,9 @@ msgstr ""
 msgid "HealthCheck|Unhealthy"
 msgstr ""
 
+msgid "History"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -777,6 +980,11 @@ msgstr ""
 
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
+
+msgid "Instance"
+msgid_plural "Instances"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Interval Pattern"
 msgstr ""
@@ -819,10 +1027,19 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
-msgid "Last Update"
+msgid "Last commit"
 msgstr ""
 
-msgid "Last commit"
+msgid "Last edited %{date}"
+msgstr ""
+
+msgid "Last edited by %{name}"
+msgstr ""
+
+msgid "Last update"
+msgstr ""
+
+msgid "Last updated"
 msgstr ""
 
 msgid "LastPushEvent|You pushed to"
@@ -850,6 +1067,12 @@ msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Lock"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
 
 msgid "Locked Files"
 msgstr ""
@@ -914,6 +1137,9 @@ msgid "New snippet"
 msgstr ""
 
 msgid "New tag"
+msgstr ""
+
+msgid "No container images stored for this project. Add one by following the instructions above."
 msgstr ""
 
 msgid "No repository"
@@ -991,7 +1217,13 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "Only project members can comment."
+msgstr ""
+
 msgid "OpenedNDaysAgo|Opened"
+msgstr ""
+
+msgid "Opens in a new window"
 msgstr ""
 
 msgid "Options"
@@ -1016,6 +1248,9 @@ msgid "Pagination|« First"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "People without permission will never get a notification and won\\'t be able to comment."
 msgstr ""
 
 msgid "Pipeline"
@@ -1177,6 +1412,21 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
+msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr ""
+
+msgid "ProjectSettings|Only signed commits can be pushed to this repository."
+msgstr ""
+
+msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
+msgstr ""
+
+msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
+msgstr ""
+
+msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+msgstr ""
+
 msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
@@ -1267,6 +1517,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "Save changes"
+msgstr ""
+
 msgid "Save pipeline schedule"
 msgstr ""
 
@@ -1286,9 +1539,6 @@ msgid "Select Archive Format"
 msgstr ""
 
 msgid "Select a timezone"
-msgstr ""
-
-msgid "Select existing branch"
 msgstr ""
 
 msgid "Select target branch"
@@ -1327,6 +1577,18 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "Something went wrong on our end."
+msgstr ""
+
+msgid "Something went wrong while fetching the projects."
+msgstr ""
+
+msgid "Something went wrong while fetching the registry list."
+msgstr ""
+
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
 msgstr ""
 
 msgid "SortOptions|Access level, ascending"
@@ -1523,10 +1785,22 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
-msgid "This is the author's first Merge Request to this project. Handle with care."
+msgid "This is a confidential issue."
+msgstr ""
+
+msgid "This is the author's first Merge Request to this project."
+msgstr ""
+
+msgid "This issue is confidential and locked."
+msgstr ""
+
+msgid "This issue is locked."
 msgstr ""
 
 msgid "This means you can not push code until you create an empty repository or import existing one."
+msgstr ""
+
+msgid "This merge request is locked."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -1607,9 +1881,6 @@ msgstr ""
 msgid "Timeago|a week ago"
 msgstr ""
 
-msgid "Timeago|a while"
-msgstr ""
-
 msgid "Timeago|a year ago"
 msgstr ""
 
@@ -1661,6 +1932,9 @@ msgstr ""
 msgid "Timeago|in 1 year"
 msgstr ""
 
+msgid "Timeago|in a while"
+msgstr ""
+
 msgid "Timeago|less than a minute ago"
 msgstr ""
 
@@ -1684,6 +1958,12 @@ msgid "Total test time for all commits/merges"
 msgstr ""
 
 msgid "Track activity with Contribution Analytics."
+msgstr ""
+
+msgid "Unlock"
+msgstr ""
+
+msgid "Unlocked"
 msgstr ""
 
 msgid "Unstar"
@@ -1755,6 +2035,105 @@ msgstr ""
 msgid "Wiki"
 msgstr ""
 
+msgid "WikiClone|Clone your wiki"
+msgstr ""
+
+msgid "WikiClone|Git Access"
+msgstr ""
+
+msgid "WikiClone|Install Gollum"
+msgstr ""
+
+msgid "WikiClone|It is recommended to install %{markdown} so that GFM features render locally:"
+msgstr ""
+
+msgid "WikiClone|Start Gollum and edit locally"
+msgstr ""
+
+msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
+msgstr ""
+
+msgid "WikiHistoricalPage|This is an old version of this page."
+msgstr ""
+
+msgid "WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}."
+msgstr ""
+
+msgid "WikiHistoricalPage|history"
+msgstr ""
+
+msgid "WikiHistoricalPage|most recent version"
+msgstr ""
+
+msgid "WikiMarkdownDocs|More examples are in the %{docs_link}"
+msgstr ""
+
+msgid "WikiMarkdownDocs|documentation"
+msgstr ""
+
+msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
+msgstr ""
+
+msgid "WikiNewPagePlaceholder|how-to-setup"
+msgstr ""
+
+msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
+msgstr ""
+
+msgid "WikiNewPageTitle|New Wiki Page"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
+msgstr ""
+
+msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{page_link} and make sure your changes will not unintentionally remove theirs."
+msgstr ""
+
+msgid "WikiPageConflictMessage|the page"
+msgstr ""
+
+msgid "WikiPageCreate|Create %{page_title}"
+msgstr ""
+
+msgid "WikiPageEdit|Update %{page_title}"
+msgstr ""
+
+msgid "WikiPage|Page slug"
+msgstr ""
+
+msgid "WikiPage|Write your content or drag files here..."
+msgstr ""
+
+msgid "Wiki|Create Page"
+msgstr ""
+
+msgid "Wiki|Create page"
+msgstr ""
+
+msgid "Wiki|Edit Page"
+msgstr ""
+
+msgid "Wiki|Empty page"
+msgstr ""
+
+msgid "Wiki|More Pages"
+msgstr ""
+
+msgid "Wiki|New page"
+msgstr ""
+
+msgid "Wiki|Page history"
+msgstr ""
+
+msgid "Wiki|Page version"
+msgstr ""
+
+msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Wiki Pages"
+msgstr ""
+
 msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
 msgstr ""
 
@@ -1806,6 +2185,9 @@ msgstr ""
 msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
 msgstr ""
 
+msgid "Your comment will not be visible to the public."
+msgstr ""
+
 msgid "Your name"
 msgstr ""
 
@@ -1832,4 +2214,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "to help your contributors communicate effectively!"
+msgstr ""
+
+msgid "personal access token"
 msgstr ""

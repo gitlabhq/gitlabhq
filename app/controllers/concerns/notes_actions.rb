@@ -15,9 +15,9 @@ module NotesActions
 
     notes = notes_finder.execute
       .inc_relations_for_view
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     notes_json[:notes] =
       if noteable.discussions_rendered_on_frontend?
@@ -96,7 +96,8 @@ module NotesActions
           id: note.id,
           discussion_id: note.discussion_id(noteable),
           html: note_html(note),
-          note: note.note
+          note: note.note,
+          on_image: note.try(:on_image?)
         )
 
         discussion = note.to_discussion(noteable)
@@ -122,7 +123,9 @@ module NotesActions
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
-    if params[:view] == 'parallel'
+    on_image = discussion.on_image?
+
+    if params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"
       locals =
         if params[:line_type] == 'old'
@@ -132,7 +135,9 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      locals = { discussions: [discussion] }
+      @fresh_discussion = true
+
+      locals = { discussions: [discussion], on_image: on_image }
     end
 
     render_to_string(

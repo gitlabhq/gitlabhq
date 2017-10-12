@@ -26,6 +26,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    account:              './profile/account/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -77,6 +78,7 @@ var config = {
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     service_desk_issues:  './service_desk_issues/index.js',
+    registry_list:        './registry/index.js',
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -129,10 +131,6 @@ var config = {
         options: {
           name: '[name].[hash].[ext]',
         }
-      },
-      {
-        test: /locale\/\w+\/(.*)\.js$/,
-        loader: 'exports-loader?locales',
       },
       {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
@@ -210,6 +208,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'registry_list',
         'repo',
         'schedule_form',
         'schedules_index',
@@ -234,7 +233,7 @@ var config = {
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'webpack_runtime'],
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // enable scope hoisting

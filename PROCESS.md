@@ -1,4 +1,4 @@
-## GitLab Core Team & GitLab Inc. Contribution Process
+## GitLab core team & GitLab Inc. contribution process
 
 ---
 
@@ -196,6 +196,11 @@ reported in a release before its 'official' release date on the 22nd of the
 month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
+
+A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+just like any other issue, to help GitLab team members focus on issues that are
+relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
 
 ## Release retrospective and kickoff
 

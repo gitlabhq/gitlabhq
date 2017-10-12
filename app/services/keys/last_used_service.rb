@@ -1,7 +1,5 @@
 module Keys
   class LastUsedService
-    prepend ::EE::Keys::LastUsedService
-
     TIMEOUT = 1.day.to_i
 
     attr_reader :key
@@ -18,6 +16,8 @@ module Keys
     end
 
     def update?
+      return false if ::Gitlab::Database.read_only?
+
       last_used = key.last_used_at
 
       return false if last_used && (Time.zone.now - last_used) <= TIMEOUT

@@ -122,4 +122,12 @@ module KubernetesHelpers
       terminal
     end
   end
+
+  def kube_deployment_rollout_status
+    ::Gitlab::Kubernetes::RolloutStatus.from_specs(kube_deployment)
+  end
+
+  def empty_deployment_rollout_status
+    ::Gitlab::Kubernetes::RolloutStatus.from_specs()
+  end
 end

@@ -79,7 +79,11 @@
       },
 
       formatMetricUsage(series) {
-        return `${formatRelevantDigits(series.values[this.currentDataIndex].value)} ${this.unitOfDisplay}`;
+        const value = series.values[this.currentDataIndex].value;
+        if (isNaN(value)) {
+          return '-';
+        }
+        return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
       },
 
       createSeriesString(index, series) {

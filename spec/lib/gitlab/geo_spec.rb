@@ -1,36 +1,25 @@
 require 'spec_helper'
 
 describe Gitlab::Geo do
-  let(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
-  let(:secondary_node) { FactoryGirl.create(:geo_node) }
+  include ::EE::GeoHelpers
+
+  set(:primary_node)   { create(:geo_node, :primary) }
+  set(:secondary_node) { create(:geo_node) }
 
   describe 'current_node' do
-    before do
-      primary_node
-    end
-
     it 'returns a GeoNode instance' do
       expect(described_class.current_node).to eq(primary_node)
     end
   end
 
   describe 'primary_node' do
-    before do
-      primary_node
-      secondary_node
-    end
-
     it 'returns a GeoNode primary instance' do
-      expect(described_class.current_node).to eq(primary_node)
+      expect(described_class.primary_node).to eq(primary_node)
     end
   end
 
   describe 'primary?' do
     context 'when current node is a primary node' do
-      before do
-        primary_node
-      end
-
       it 'returns true' do
         expect(described_class.primary?).to be_truthy
       end
@@ -46,12 +35,12 @@ describe Gitlab::Geo do
   describe 'primary_node_configured?' do
     context 'when current node is a primary node' do
       it 'returns true' do
-        primary_node
-
         expect(described_class.primary_node_configured?).to be_truthy
       end
 
       it 'returns false when primary does not exist' do
+        primary_node.destroy
+
         expect(described_class.primary_node_configured?).to be_falsey
       end
     end
@@ -60,8 +49,7 @@ describe Gitlab::Geo do
   describe 'secondary?' do
     context 'when current node is a secondary node' do
       before do
-        secondary_node
-        allow(described_class).to receive(:current_node) { secondary_node }
+        stub_current_geo_node(secondary_node)
       end
 
       it 'returns true' do
@@ -78,16 +66,16 @@ describe Gitlab::Geo do
 
   describe 'enabled?' do
     context 'when any GeoNode exists' do
-      before do
-        secondary_node
-      end
-
       it 'returns true' do
         expect(described_class.enabled?).to be_truthy
       end
     end
 
     context 'when no GeoNode exists' do
+      before do
+        GeoNode.delete_all
+      end
+
       it 'returns false' do
         expect(described_class.enabled?).to be_falsey
       end
@@ -111,17 +99,10 @@ describe Gitlab::Geo do
       end
     end
 
-    context 'with RequestStore enabled' do
-      before do
-        RequestStore.begin!
-      end
-
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
+    context 'with RequestStore enabled', :request_store do
       it 'return false when no GeoNode exists' do
+        GeoNode.delete_all
+
         expect(GeoNode).to receive(:exists?).once.and_call_original
 
         2.times { expect(described_class.enabled?).to be_falsey }
@@ -129,25 +110,16 @@ describe Gitlab::Geo do
     end
   end
 
-  describe 'readonly?' do
+  describe 'secondary?' do
     context 'when current node is secondary' do
-      before do
-        secondary_node
-      end
-
       it 'returns true' do
-        allow(described_class).to receive(:current_node) { secondary_node }
+        stub_current_geo_node(secondary_node)
         expect(described_class.secondary?).to be_truthy
       end
     end
 
     context 'current node is primary' do
-      before do
-        primary_node
-      end
-
-      it 'returns false when ' do
-        allow(described_class).to receive(:current_node) { primary_node }
+      it 'returns false ' do
         expect(described_class.secondary?).to be_falsey
       end
     end
@@ -211,9 +183,6 @@ describe Gitlab::Geo do
     end
 
     it 'activates cron jobs for primary' do
-      allow(described_class).to receive(:primary?).and_return(true)
-      allow(described_class).to receive(:secondary?).and_return(false)
-
       described_class.configure_cron_jobs!
 
       expect(described_class.repository_sync_job).not_to be_enabled
@@ -221,9 +190,8 @@ describe Gitlab::Geo do
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
 
-    it 'activates cron jobs for secondary' do
-      allow(described_class).to receive(:primary?).and_return(false)
-      allow(described_class).to receive(:secondary?).and_return(true)
+    it 'does not activate cron jobs for secondary' do
+      stub_current_geo_node(secondary_node)
 
       described_class.configure_cron_jobs!
 
@@ -233,8 +201,7 @@ describe Gitlab::Geo do
     end
 
     it 'deactivates all jobs when Geo is not active' do
-      allow(described_class).to receive(:primary?).and_return(false)
-      allow(described_class).to receive(:secondary?).and_return(false)
+      GeoNode.update_all(enabled: false)
 
       described_class.configure_cron_jobs!
 
@@ -244,13 +211,11 @@ describe Gitlab::Geo do
     end
 
     it 'reactivates cron jobs when node turns off Geo' do
-      allow(described_class).to receive(:primary?).and_return(false)
-      allow(described_class).to receive(:secondary?).and_return(true)
+      stub_current_geo_node(secondary_node)
 
       described_class.configure_cron_jobs!
       expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
 
-      allow(described_class).to receive(:primary?).and_return(false)
       allow(described_class).to receive(:secondary?).and_return(false)
 
       described_class.configure_cron_jobs!

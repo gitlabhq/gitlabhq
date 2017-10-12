@@ -1,6 +1,4 @@
 <script>
-/* global Flash */
-
 /*
 `rawReferences` are separated by spaces.
 Given `abc 123 zxc`, `rawReferences = ['abc', '123', 'zxc']`
@@ -26,6 +24,7 @@ Your caret can stop touching a `rawReference` can happen in a variety of ways:
 
 */
 
+import Flash from '../../../flash';
 import eventHub from '../event_hub';
 import RelatedIssuesBlock from './related_issues_block.vue';
 import RelatedIssuesStore from '../stores/related_issues_store';

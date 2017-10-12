@@ -426,7 +426,7 @@ function UsersSelect(currentUser, els, options = {}) {
           }
 
           var isIssueIndex, isMRIndex, page, selected;
-          page = $('body').data('page');
+          page = $('body').attr('data-page');
           isIssueIndex = page === 'projects:issues:index';
           isMRIndex = (page === page && page === 'projects:merge_requests:index');
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {

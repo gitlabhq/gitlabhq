@@ -186,7 +186,7 @@ If you have an issue that spans across multiple repositories, the best thing is 
 ![Vim screen showing the rebase view](rebase.png)
 
 With git you can use an interactive rebase (`rebase -i`) to squash multiple commits into one and reorder them.
-In GitLab Enterprise Edition Starter and GitLab.com, you can also [rebase before merge](../user/project/merge_requests/fast_forward_merge.md) from the web interface.
+You can also [rebase before merge](../user/project/merge_requests/fast_forward_merge.md) from the web interface.
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
@@ -247,7 +247,7 @@ Before accepting a merge request, select `rebase before merge`.
 ![Merge request widget](merge_request_widget.png)
 
 GitLab will attempt to cleanly rebase before merging branches. If clean rebase is not possible, regular merge will be performed.
-If clean rebase is possible and history of the traget branch will be altered with the the merge.
+If clean rebase is possible and history of the target branch will be altered with the the merge.
 
 In conclusion, we can say that you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean but your history should represent what actually happened.

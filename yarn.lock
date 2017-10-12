@@ -2713,8 +2713,8 @@ getpass@^0.1.1:
     assert-plus "^1.0.0"
 
 "gitlab-svgs@https://gitlab.com/gitlab-org/gitlab-svgs.git":
-  version "1.0.2"
-  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#7f36f3951dd08904761780da48efcd639f34c3af"
+  version "1.0.4"
+  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#46c0a49cd43639948dfcc77a0f94d59deaad1e85"
 
 glob-base@^0.3.0:
   version "0.3.0"

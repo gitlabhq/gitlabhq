@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
 
@@ -35,12 +34,9 @@ import './shortcuts_network';
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
 
-// commit
-import './commit/file';
 import './commit/image_file';
 
 // lib/utils
-import './lib/utils/bootstrap_linked_tabs';
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
@@ -57,11 +53,10 @@ import './u2f/register';
 import './u2f/util';
 
 // everything else
-import './abuse_reports';
 import './activities';
 import './admin';
-import './ajax_loading_spinner';
 import './api';
+import './ajax_loading_spinner';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
@@ -71,19 +66,17 @@ import './build';
 import './build_artifacts';
 import './build_variables';
 import './ci_lint_editor';
-import './commit';
 import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
-import './create_label';
 import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import './flash';
+import Flash from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -111,7 +104,6 @@ import './merge_request';
 import './merge_request_tabs';
 import './milestone';
 import './milestone_select';
-import './mini_pipeline_graph_dropdown';
 import './namespace_select';
 import './new_branch_form';
 import './new_commit_form';
@@ -119,12 +111,10 @@ import './notes';
 import './notifications_dropdown';
 import './notifications_form';
 import './pager';
-import './pipelines';
 import './preview_markdown';
 import './project';
 import './project_avatar';
 import './project_find_file';
-import './project_fork';
 import './project_import';
 import './project_label_subscription';
 import './project_new';
@@ -188,7 +178,6 @@ $(function () {
   var $document = $(document);
   var $window = $(window);
   var $sidebarGutterToggle = $('.js-sidebar-toggle');
-  var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
 
@@ -273,13 +262,6 @@ $(function () {
   // Form submitter
   });
   gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
-  // Flash
-  if ($flash.length > 0) {
-    $flash.click(function () {
-      return $(this).fadeOut();
-    });
-    $flash.show();
-  }
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
@@ -311,7 +293,10 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
+  $('.navbar-toggle').on('click', () => {
+    $('.header-content').toggleClass('menu-expanded');
+    gl.lazyLoader.loadCheck();
+  });
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

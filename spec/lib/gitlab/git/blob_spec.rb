@@ -112,7 +112,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs'
     end
 
-    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when project_raw_show Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs'
     end
   end
@@ -150,7 +150,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it_behaves_like 'finding blobs by ID'
     end
 
-    context 'when the blob_raw Gitaly feature is disabled', skip_gitaly_mock: true do
+    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding blobs by ID'
     end
   end

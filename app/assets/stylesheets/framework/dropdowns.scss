@@ -745,7 +745,11 @@
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
 
-    li {
+    &.dropdown-open-top {
+      margin-bottom: $dropdown-vertical-offset;
+    }
+
+    li:not(.dropdown-bold-header) {
       display: block;
       padding: 0 1px;
 
@@ -873,12 +877,19 @@
       min-width: 100%;
     }
   }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
+      min-width: 100%;
+    }
+  }
 }
 
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
-header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
+header.header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;
 }
 

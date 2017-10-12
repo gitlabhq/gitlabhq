@@ -155,7 +155,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def remove_email
     email = user.emails.find(params[:email_id])
-    success = Emails::DestroyService.new(current_user, user: user, email: email.email).execute
+    success = Emails::DestroyService.new(current_user, user: user).execute(email)
 
     respond_to do |format|
       if success

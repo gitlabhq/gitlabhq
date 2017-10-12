@@ -218,13 +218,22 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :clusters, except: [:edit] do
+        collection do
+          get :login
+        end
+
+        member do
+          get :status, format: :json
+        end
+      end
+
       resources :environments, except: [:destroy] do
         member do
           post :stop
           get :terminal
           get :metrics
           get :additional_metrics
-          get :status, constraints: { format: :json }
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
@@ -307,7 +316,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :registry do
         resources :repository, only: [] do
-          resources :tags, only: [:destroy],
+          resources :tags, only: [:index, :destroy],
                            constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end

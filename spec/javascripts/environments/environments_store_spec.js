@@ -29,12 +29,12 @@ describe('Store', () => {
       stop_path: '/root/review-app/environments/7/stop',
       created_at: '2017-01-31T10:53:46.894Z',
       updated_at: '2017-01-31T10:53:46.894Z',
-      rollout_status_path: '/path',
+      rollout_status: {},
       hasDeployBoard: true,
-      isDeployBoardVisible: false,
+      isDeployBoardVisible: true,
       deployBoardData: {},
       isLoadingDeployBoard: false,
-      hasErrorDeployBoard: false,
+      isEmptyDeployBoard: false,
     };
 
     store.storeEnvironments(serverData);
@@ -58,20 +58,20 @@ describe('Store', () => {
       expect(store.state.environments.length).toEqual(serverData.length);
     });
 
-    it('should store a non folder environment with deploy board if rollout_status_path key is provided', () => {
+    it('should store a non folder environment with deploy board if rollout_status key is provided', () => {
       const environment = {
         name: 'foo',
         size: 1,
         latest: {
           id: 1,
-          rollout_status_path: 'url',
+          rollout_status: deployBoardMockData,
         },
       };
 
       store.storeEnvironments([environment]);
       expect(store.state.environments[0].hasDeployBoard).toEqual(true);
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
-      expect(store.state.environments[0].deployBoardData).toEqual({});
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
+      expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
     });
 
     it('should add folder keys when environment is a folder', () => {
@@ -192,7 +192,7 @@ describe('Store', () => {
         latest: {
           id: 1,
         },
-        rollout_status_path: 'path',
+        rollout_status: deployBoardMockData,
       };
 
       store.storeEnvironments([environment]);
@@ -201,16 +201,10 @@ describe('Store', () => {
     it('should toggle deploy board property for given environment id', () => {
       store.toggleDeployBoard(1);
 
-      expect(store.state.environments[0].isDeployBoardVisible).toEqual(true);
-    });
-
-    it('should store deploy board data for given environment id', () => {
-      store.storeDeployBoard(1, deployBoardMockData);
-      expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
+      expect(store.state.environments[0].isDeployBoardVisible).toEqual(false);
     });
 
     it('should keep deploy board data when updating environments', () => {
-      store.storeDeployBoard(1, deployBoardMockData);
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
 
       const environment = {
@@ -219,7 +213,7 @@ describe('Store', () => {
         latest: {
           id: 1,
         },
-        rollout_status_path: 'path',
+        rollout_status: deployBoardMockData,
       };
       store.storeEnvironments([environment]);
       expect(store.state.environments[0].deployBoardData).toEqual(deployBoardMockData);
@@ -243,12 +237,12 @@ describe('Store', () => {
         latest: {
           id: 1,
         },
-        rollout_status_path: 'path',
+        rollout_status: deployBoardMockData,
       };
 
       store.storeEnvironments([environment]);
 
-      expect(store.getOpenDeployBoards().length).toEqual(0);
+      expect(store.getOpenDeployBoards().length).toEqual(1);
     });
   });
 });

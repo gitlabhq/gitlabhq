@@ -39,7 +39,12 @@ import '~/notes';
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:merge_requets:show');
+      $('body').attr('data-page', 'projects:merge_requets:show');
+    });
+
+    afterEach(() => {
+      // Undo what we did to the shared <body>
+      $('body').removeAttr('data-page');
     });
 
     describe('task lists', function() {
@@ -815,7 +820,7 @@ import '~/notes';
       });
 
       it('shows a flash message', () => {
-        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         expect($('.flash-alert').is(':visible')).toBeTruthy();
       });
@@ -828,7 +833,7 @@ import '~/notes';
       });
 
       it('hides visible flash message', () => {
-        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline);
+        this.notes.addFlash('Error message 1', FLASH_TYPE_ALERT, this.notes.parentTimeline.get(0));
 
         this.notes.clearFlash();
 

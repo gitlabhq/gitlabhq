@@ -43,6 +43,14 @@ class LdapGroupLink < ActiveRecord::Base
     config.label
   end
 
+  def active?
+    if filter.present?
+      ::License.feature_available?(:ldap_group_sync_filter)
+    elsif cn.present?
+      ::License.feature_available?(:ldap_group_sync)
+    end
+  end
+
   private
 
   def nullify_blank_attributes

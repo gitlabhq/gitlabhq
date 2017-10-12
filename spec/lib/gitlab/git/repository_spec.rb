@@ -54,7 +54,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#rugged" do
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'raises a storage exception when storage is not available' do
         broken_repo = described_class.new('broken', 'a/path.git', '')
 
@@ -384,8 +384,42 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'when Gitaly commit_count feature is disabled', skip_gitaly_mock: true  do
+    context 'when Gitaly commit_count feature is disabled', :skip_gitaly_mock  do
       it_behaves_like 'simple commit counting'
+    end
+  end
+
+  describe '#has_local_branches?' do
+    shared_examples 'check for local branches' do
+      it { expect(repository.has_local_branches?).to eq(true) }
+
+      context 'mutable' do
+        let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+        after do
+          ensure_seeds
+        end
+
+        it 'returns false when there are no branches' do
+          # Sanity check
+          expect(repository.has_local_branches?).to eq(true)
+
+          FileUtils.rm_rf(File.join(repository.path, 'packed-refs'))
+          heads_dir = File.join(repository.path, 'refs/heads')
+          FileUtils.rm_rf(heads_dir)
+          FileUtils.mkdir_p(heads_dir)
+
+          expect(repository.has_local_branches?).to eq(false)
+        end
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like 'check for local branches'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like 'check for local branches'
     end
   end
 
@@ -419,7 +453,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like "deleting a branch"
     end
 
-    context "when Gitaly delete_branch is disabled", skip_gitaly_mock: true do
+    context "when Gitaly delete_branch is disabled", :skip_gitaly_mock do
       it_behaves_like "deleting a branch"
     end
   end
@@ -455,7 +489,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'creating a branch'
     end
 
-    context 'when Gitaly create_branch feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly create_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'creating a branch'
     end
   end
@@ -895,7 +929,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'extended commit counting'
     end
 
-    context 'when Gitaly count_commits feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly count_commits feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'extended commit counting'
     end
   end
@@ -962,7 +996,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'finding a branch'
     end
 
-    context 'when Gitaly find_branch feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly find_branch feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding a branch'
 
       it 'should reload Rugged::Repository and return master' do
@@ -1204,7 +1238,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of refs'
     end
 
-    context 'when Gitaly ref_exists feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of refs'
     end
   end
@@ -1226,7 +1260,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of tags'
     end
 
-    context 'when Gitaly ref_exists_tags feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists_tags feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of tags'
     end
   end
@@ -1250,7 +1284,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it_behaves_like 'checks the existence of branches'
     end
 
-    context 'when Gitaly ref_exists_branches feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of branches'
     end
   end
@@ -1327,8 +1361,131 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it_behaves_like 'languages'
 
-    context 'with rugged', skip_gitaly_mock: true do
+    context 'with rugged', :skip_gitaly_mock do
       it_behaves_like 'languages'
+    end
+  end
+
+  describe '#with_repo_branch_commit' do
+    context 'when comparing with the same repository' do
+      let(:start_repository) { repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+
+    context 'when comparing with another repository' do
+      let(:start_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+  end
+
+  describe '#fetch_source_branch' do
+    let(:local_ref) { 'refs/merge-requests/1/head' }
+
+    context 'when the branch exists' do
+      let(:source_branch) { 'master' }
+
+      it 'writes the ref' do
+        expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns true' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+      end
+    end
+
+    context 'when the branch does not exist' do
+      let(:source_branch) { 'definitely-not-master' }
+
+      it 'does not write the ref' do
+        expect(repository).not_to receive(:write_ref)
+
+        repository.fetch_source_branch(repository, source_branch, local_ref)
+      end
+
+      it 'returns false' do
+        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
+      end
+    end
+  end
+
+  describe '#rm_branch' do
+    shared_examples "user deleting a branch" do
+      let(:project) { create(:project, :repository) }
+      let(:repository) { project.repository.raw }
+      let(:user) { create(:user) }
+      let(:branch_name) { "to-be-deleted-soon" }
+
+      before do
+        project.team << [user, :developer]
+        repository.create_branch(branch_name)
+      end
+
+      it "removes the branch from the repo" do
+        repository.rm_branch(branch_name, user: user)
+
+        expect(repository.rugged.branches[branch_name]).to be_nil
+      end
+    end
+
+    context "when Gitaly user_delete_branch is enabled" do
+      it_behaves_like "user deleting a branch"
+    end
+
+    context "when Gitaly user_delete_branch is disabled", :skip_gitaly_mock do
+      it_behaves_like "user deleting a branch"
+    end
+  end
+
+  describe '#write_ref' do
+    context 'validations' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:ref_path, :ref) do
+        'foo bar' | '123'
+        'foobar'  | "12\x003"
+      end
+
+      with_them do
+        it 'raises ArgumentError' do
+          expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
+        end
+      end
     end
   end
 

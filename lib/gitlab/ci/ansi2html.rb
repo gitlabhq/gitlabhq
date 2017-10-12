@@ -155,7 +155,9 @@ module Gitlab
           stream.each_line do |line|
             s = StringScanner.new(line)
             until s.eos?
-              if s.scan(/\e([@-_])(.*?)([@-~])/)
+              if s.scan(Gitlab::Regex.build_trace_section_regex)
+                handle_section(s)
+              elsif s.scan(/\e([@-_])(.*?)([@-~])/)
                 handle_sequence(s)
               elsif s.scan(/\e(([@-_])(.*?)?)?$/)
                 break
@@ -181,6 +183,15 @@ module Gitlab
             size: stream.tell - start_offset,
             total: stream.size
           )
+        end
+
+        def handle_section(s)
+          action = s[1]
+          timestamp = s[2]
+          section = s[3]
+          line = s.matched()[0...-5] # strips \r\033[0K
+
+          @out << %{<div class="hidden" data-action="#{action}" data-timestamp="#{timestamp}" data-section="#{section}">#{line}</div>}
         end
 
         def handle_sequence(s)

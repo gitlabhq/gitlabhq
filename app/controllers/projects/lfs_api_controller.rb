@@ -4,6 +4,8 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   include GitlabRoutingHelper
   include LfsRequest
 
+  prepend ::EE::Projects::LfsApiController
+
   skip_before_action :lfs_check_access!, only: [:deprecated]
   before_action :lfs_check_batch_operation!, only: [:batch]
 
@@ -96,14 +98,19 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   def lfs_check_batch_operation!
-    if upload_request? && Gitlab::Geo.secondary?
+    if upload_request? && Gitlab::Database.read_only?
       render(
         json: {
-          message: "You cannot write to a secondary GitLab Geo instance. Please use #{geo_primary_default_url_to_repo(project)} instead."
+          message: lfs_read_only_message
         },
-        content_type: "application/vnd.git-lfs+json",
+        content_type: 'application/vnd.git-lfs+json',
         status: 403
       )
     end
+  end
+
+  # Overridden in EE
+  def lfs_read_only_message
+    _('You cannot write to this read-only GitLab instance.')
   end
 end

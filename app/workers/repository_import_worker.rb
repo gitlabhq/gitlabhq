@@ -4,6 +4,7 @@ class RepositoryImportWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
   include ExceptionBacktrace
+  include ProjectStartImport
 
   sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
@@ -38,7 +39,7 @@ class RepositoryImportWorker
   private
 
   def start_import(project)
-    return true if project.import_start
+    return true if start(project)
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while importing.")
     false

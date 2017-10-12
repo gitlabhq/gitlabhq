@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.3 (2017-10-05)
+
+- [FIXED] Rewrite Geo database rake tasks so they operate on the correct database. !3052
+- [FIXED] Show group tab if member lock is enabled.
+- [FIXED] File uploaders do not perform hard check, only soft check.
+- [FIXED] Only show Turn on Service Desk button when user has permissions.
+- [FIXED] Fix EE delta size check handling with annotated tags.
+
 ## 10.0.2 (2017-09-27)
 
 - [FIXED] Send valid project path as name for Jira dev panel.
@@ -52,6 +60,19 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: When MR approvals are disabled, but approvers were previously assigned, all approvers receive a notification on every MR.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
+
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fix EE delta size check handling with annotated tags.
+- [FIXED] Fix delta size check to handle commit or nil objects.
+
+## 9.5.7 (2017-10-03)
+
+- No changes.
+
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Show group tab if member lock is enabled.
 
 ## 9.5.5 (2017-09-18)
 

@@ -1,6 +1,6 @@
 <script>
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import EnvironmentsService from '../services/environments_service';
 import environmentTable from '../components/environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
@@ -170,7 +170,7 @@ export default {
 
         this.service.postAction(endpoint)
           .then(() => this.fetchEnvironments())
-          .catch(() => new Flash('An error occured while making the request.'));
+          .catch(() => new Flash('An error occurred while making the request.'));
       }
     },
   },

@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe Geo::FileDownloadService do
-  let!(:primary)  { create(:geo_node, :primary) }
-  let(:secondary) { create(:geo_node) }
+  include ::EE::GeoHelpers
+
+  set(:primary)  { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
 
   before do
-    allow(described_class).to receive(:current_node) { secondary }
+    stub_current_geo_node(secondary)
   end
 
   describe '#execute' do
@@ -64,6 +66,21 @@ describe Geo::FileDownloadService do
       subject { described_class.new(:attachment, upload.id) }
 
       it 'downloads the attachment' do
+        allow_any_instance_of(Gitlab::ExclusiveLease)
+          .to receive(:try_obtain).and_return(true)
+        allow_any_instance_of(Gitlab::Geo::FileTransfer)
+          .to receive(:download_from_primary).and_return(100)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      end
+    end
+
+    context 'with a snippet' do
+      let(:upload) { create(:upload, :personal_snippet) }
+
+      subject { described_class.new(:personal_file, upload.id) }
+
+      it 'downloads the file' do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
         allow_any_instance_of(Gitlab::Geo::FileTransfer)

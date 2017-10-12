@@ -208,7 +208,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       config.dig('users', 0, 'user')['token'] = 'token'
       config.dig('contexts', 0, 'context')['namespace'] = namespace
       config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
-        Base64.encode64('CA PEM DATA')
+        Base64.strict_encode64('CA PEM DATA')
 
       YAML.dump(config)
     end

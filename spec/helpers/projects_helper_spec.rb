@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
+  describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
 
     it "includes the route" do
@@ -200,13 +200,13 @@ describe ProjectsHelper do
     end
 
     it 'returns image tag for member avatar' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user)
     end
 
     it 'returns image tag with avatar class' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
     end

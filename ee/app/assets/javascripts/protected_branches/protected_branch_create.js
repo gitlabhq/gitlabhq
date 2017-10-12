@@ -1,12 +1,16 @@
-/* global Flash */
-
+import AccessorUtilities from '~/lib/utils/accessor';
+import Flash from '~/flash';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import ProtectedBranchDropdown from './protected_branch_dropdown';
 
+const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
+
 export default class ProtectedBranchCreate {
   constructor() {
     this.$form = $('.js-new-protected-branch');
+    this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
+    this.currentProjectUserDefaults = {};
     this.buildDropdowns();
     this.$branchInput = this.$form.find('input[name="protected_branch[name]"]');
     this.bindEvents();
@@ -43,14 +47,21 @@ export default class ProtectedBranchCreate {
       $dropdown: this.$form.find('.js-protected-branch-select'),
       onSelect: this.onSelectCallback,
     });
+
+    this.loadPreviousSelection();
   }
 
   // Enable submit button after selecting an option
   onSelect() {
     const $allowedToMerge = this[`${ACCESS_LEVELS.MERGE}_dropdown`].getSelectedItems();
     const $allowedToPush = this[`${ACCESS_LEVELS.PUSH}_dropdown`].getSelectedItems();
-    const toggle = !(this.$form.find('input[name="protected_branch[name]"]').val() && $allowedToMerge.length && $allowedToPush.length);
+    const toggle = !(
+      this.$form.find('input[name="protected_branch[name]"]').val() &&
+      $allowedToMerge.length &&
+      $allowedToPush.length
+    );
 
+    this.savePreviousSelection($allowedToMerge, $allowedToPush);
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
   }
 
@@ -89,6 +100,20 @@ export default class ProtectedBranchCreate {
     return formData;
   }
 
+  loadPreviousSelection() {
+    if (this.isLocalStorageAvailable) {
+      const savedDefaults = JSON.parse(window.localStorage.getItem(PB_LOCAL_STORAGE_KEY));
+      if (savedDefaults != null) {
+        this[`${ACCESS_LEVELS.MERGE}_dropdown`].setSelectedItems(savedDefaults.merge);
+        let updatedLabel = this[`${ACCESS_LEVELS.MERGE}_dropdown`].toggleLabel();
+        this[`${ACCESS_LEVELS.MERGE}_dropdown`].$dropdown.find('.dropdown-toggle-text').text(updatedLabel);
+        this[`${ACCESS_LEVELS.PUSH}_dropdown`].setSelectedItems(savedDefaults.push);
+        updatedLabel = this[`${ACCESS_LEVELS.PUSH}_dropdown`].toggleLabel();
+        this[`${ACCESS_LEVELS.PUSH}_dropdown`].$dropdown.find('.dropdown-toggle-text').text(updatedLabel);
+      }
+    }
+  }
+
   onFormSubmit(e) {
     e.preventDefault();
 
@@ -101,5 +126,15 @@ export default class ProtectedBranchCreate {
       location.reload();
     })
     .fail(() => new Flash('Failed to protect the branch'));
+  }
+
+  savePreviousSelection(mergeSelection, pushSelection) {
+    if (this.isLocalStorageAvailable) {
+      const branchDefaults = {
+        merge: mergeSelection || [],
+        push: pushSelection || [],
+      };
+      window.localStorage.setItem(PB_LOCAL_STORAGE_KEY, JSON.stringify(branchDefaults));
+    }
   }
 }

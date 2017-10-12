@@ -178,7 +178,7 @@ import _ from 'underscore';
               return;
             }
 
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
             isSelecting = (selected.name !== selectedMilestone);

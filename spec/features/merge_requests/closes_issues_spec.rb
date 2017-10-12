@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request closing issues message', js: true do
+feature 'Merge Request closing issues message', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue_1) { create(:issue, project: project)}
@@ -76,7 +76,7 @@ feature 'Merge Request closing issues message', js: true do
     end
   end
 
-  context 'approvals are enabled while closing issues', js: true do
+  context 'approvals are enabled while closing issues', :js do
     before do
       project.team << [user, :developer]
     end

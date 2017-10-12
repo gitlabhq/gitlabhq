@@ -29,14 +29,14 @@ describe Gitlab::LDAP::Adapter do
     end
 
     it 'returns a group object if search returns a result' do
-      entry = ldap_group_entry(%w(john mary), cn: 'group1')
+      entry = ldap_group_entry(%w(uid=john uid=mary), cn: 'group1')
       allow(adapter).to receive(:ldap_search).and_return([entry])
 
       results = adapter.groups('group1')
 
       expect(results.first).to be_a(EE::Gitlab::LDAP::Group)
       expect(results.first.cn).to eq('group1')
-      expect(results.first.member_dns).to match_array(%w(john mary))
+      expect(results.first.member_dns).to match_array(%w(uid=john uid=mary))
     end
   end
 end

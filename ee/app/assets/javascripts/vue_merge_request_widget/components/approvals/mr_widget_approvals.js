@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '~/flash';
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
 import ApprovalsBody from './approvals_body';
 import ApprovalsFooter from './approvals_footer';
@@ -83,4 +82,3 @@ export default {
     </div>
     `,
 };
-

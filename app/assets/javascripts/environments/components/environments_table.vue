@@ -74,7 +74,7 @@ export default {
           <deploy-board
             :deploy-board-data="model.deployBoardData"
             :is-loading="model.isLoadingDeployBoard"
-            :has-error="model.hasErrorDeployBoard"
+            :is-empty="model.isEmptyDeployBoard"
             />
         </div>
       </div>

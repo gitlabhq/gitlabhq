@@ -45,6 +45,7 @@ module Gitlab
       #{config.root}/ee/app/models/concerns
       #{config.root}/ee/app/policies
       #{config.root}/ee/app/serializers
+      #{config.root}/ee/app/presenters
       #{config.root}/ee/app/services
       #{config.root}/ee/app/workers
     ])
@@ -125,6 +126,7 @@ module Gitlab
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
+    config.assets.precompile << "locale/**/app.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -173,8 +175,8 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
-    # Gitlab Geo Middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadonlyGeo'
+    # Gitlab Read-only middleware support
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_girl false

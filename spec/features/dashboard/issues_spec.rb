@@ -24,7 +24,7 @@ RSpec.describe 'Dashboard Issues' do
       expect(page).not_to have_content(other_issue.title)
     end
 
-    it 'shows checkmark when unassigned is selected for assignee', js: true do
+    it 'shows checkmark when unassigned is selected for assignee', :js do
       find('.js-assignee-search').click
       find('li', text: 'Unassigned').click
       find('.js-assignee-search').click
@@ -32,7 +32,7 @@ RSpec.describe 'Dashboard Issues' do
       expect(find('li[data-user-id="0"] a.is-active')).to be_visible
     end
 
-    it 'shows issues when current user is author', js: true do
+    it 'shows issues when current user is author', :js do
       find('#assignee_id', visible: false).set('')
       find('.js-author-search', match: :first).click
 
@@ -70,7 +70,7 @@ RSpec.describe 'Dashboard Issues' do
   end
 
   describe 'new issue dropdown' do
-    it 'shows projects only with issues feature enabled', js: true do
+    it 'shows projects only with issues feature enabled', :js do
       find('.new-project-item-select-button').trigger('click')
 
       page.within('.select2-results') do
@@ -79,7 +79,7 @@ RSpec.describe 'Dashboard Issues' do
       end
     end
 
-    it 'shows the new issue page', js: true do
+    it 'shows the new issue page', :js do
       find('.new-project-item-select-button').trigger('click')
 
       wait_for_requests

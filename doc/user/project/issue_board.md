@@ -12,6 +12,8 @@ Other interesting links:
 - [GitLab Issue Board landing page on about.gitlab.com][landing]
 - [YouTube video introduction to Issue Boards][youtube]
 
+![GitLab Issue Board](img/issue_board.png)
+
 ## Overview
 
 The Issue Board builds on GitLab's existing
@@ -126,10 +128,6 @@ two defaults:
 - Label list: a list based on a label. It shows all opened issues with that label.
 - **Backlog** (default): shows all open issues that does not belong to one of lists. Always appears on the very left.
 - **Closed** (default): shows all closed issues. Always appears on the very right.
-
-![GitLab Issue Board](img/issue_board.png)
-
----
 
 In short, here's a list of actions you can take in an Issue Board:
 
@@ -295,7 +293,7 @@ milestone with the due date that is next.
 
 > Introduced in [GitLab Enterprise Edition 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
-Group issue boards are analogous to project-level issue boards ans they are accessible at the group
+Group issue boards are analogous to project-level issue boards and they are accessible at the group
 navigation level. A group-level issue board allows you to view all issues from all projects in that group
 (currently, it does not see issues from projects in subgroups). You can only associate group milestones
 and filter by group milestones for these boards. Similarly, you can only filter by group labels for these

@@ -1,5 +1,5 @@
 
-export const getPagePath = (index = 0) => $('body').data('page').split(':')[index];
+export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
@@ -71,6 +71,7 @@ export const handleLocationHash = () => {
   // This is required to handle non-unicode characters in hash
   hash = decodeURIComponent(hash);
 
+  const target = document.getElementById(hash) || document.getElementById(`user-content-${hash}`);
   const fixedTabs = document.querySelector('.js-tabs-affix');
   const fixedDiffStats = document.querySelector('.js-diff-files-changed.is-stuck');
   const fixedNav = document.querySelector('.navbar-gitlab');
@@ -78,25 +79,19 @@ export const handleLocationHash = () => {
   let adjustment = 0;
   if (fixedNav) adjustment -= fixedNav.offsetHeight;
 
-  // scroll to user-generated markdown anchor if we cannot find a match
-  if (document.getElementById(hash) === null) {
-    const target = document.getElementById(`user-content-${hash}`);
-    if (target && target.scrollIntoView) {
-      target.scrollIntoView(true);
-      window.scrollBy(0, adjustment);
-    }
-  } else {
-    // only adjust for fixedTabs when not targeting user-generated content
-    if (fixedTabs) {
-      adjustment -= fixedTabs.offsetHeight;
-    }
-
-    if (fixedDiffStats) {
-      adjustment -= fixedDiffStats.offsetHeight;
-    }
-
-    window.scrollBy(0, adjustment);
+  if (target && target.scrollIntoView) {
+    target.scrollIntoView(true);
   }
+
+  if (fixedTabs) {
+    adjustment -= fixedTabs.offsetHeight;
+  }
+
+  if (fixedDiffStats) {
+    adjustment -= fixedDiffStats.offsetHeight;
+  }
+
+  window.scrollBy(0, adjustment);
 };
 
 // Check if element scrolled into viewport from above or below

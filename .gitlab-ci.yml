@@ -28,7 +28,7 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
-  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/${CI_PROJECT_NAME}/report-master.json
+  FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   # This hack is needed to make ES not that memory hungry
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
 
@@ -93,12 +93,13 @@ stages:
     - export CI_NODE_TOTAL=${JOB_NAME[-1]}
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
-    - export ALL_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/${CI_PROJECT_NAME}/all_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
-    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/${CI_PROJECT_NAME}/new_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export SUITE_FLAKY_RSPEC_REPORT_PATH=${FLAKY_RSPEC_SUITE_REPORT_PATH}
+    - export FLAKY_RSPEC_REPORT_PATH=rspec_flaky/all_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export NEW_FLAKY_RSPEC_REPORT_PATH=rspec_flaky/new_${JOB_NAME[0]}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export FLAKY_RSPEC_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
-    - cp ${FLAKY_RSPEC_SUITE_REPORT_PATH} ${ALL_FLAKY_RSPEC_REPORT_PATH}
+    - '[[ -f $FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_REPORT_PATH}'
     - '[[ -f $NEW_FLAKY_RSPEC_REPORT_PATH ]] || echo "{}" > ${NEW_FLAKY_RSPEC_REPORT_PATH}'
     - scripts/gitaly-test-spawn
     - knapsack rspec "--color --format documentation"
@@ -240,7 +241,7 @@ retrieve-tests-metadata:
     - wget -O $KNAPSACK_SPINACH_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_SPINACH_SUITE_REPORT_PATH || rm $KNAPSACK_SPINACH_SUITE_REPORT_PATH
     - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
     - '[[ -f $KNAPSACK_SPINACH_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_SPINACH_SUITE_REPORT_PATH}'
-    - mkdir -p rspec_flaky/${CI_PROJECT_NAME}/
+    - mkdir -p rspec_flaky/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
 
@@ -259,24 +260,24 @@ update-tests-metadata:
     - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
-    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/${CI_PROJECT_NAME}/all_node_*.json
+    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - rm -f rspec_flaky/${CI_PROJECT_NAME}/*_node_*.json
+    - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
 
 flaky-examples-check:
   <<: *dedicated-runner
   image: ruby:2.3-alpine
   services: []
   before_script: []
-  cache: {}
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
-    NEW_FLAKY_SPECS_REPORT: rspec_flaky/${CI_PROJECT_NAME}/new_rspec_flaky_examples.json
+    NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
   stage: post-test
   allow_failure: yes
+  retry: 0
   only:
     - branches
   except:
@@ -288,7 +289,7 @@ flaky-examples-check:
       - rspec_flaky/
   script:
     - '[[ -f $NEW_FLAKY_SPECS_REPORT ]] || echo "{}" > ${NEW_FLAKY_SPECS_REPORT}'
-    - scripts/merge-reports $NEW_FLAKY_SPECS_REPORT rspec_flaky/${CI_PROJECT_NAME}/new_node_*.json
+    - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
 setup-test-env:
@@ -411,6 +412,7 @@ docs lint:
   before_script: []
   script:
     - scripts/lint-doc.sh
+    - scripts/lint-changelog-yaml
     - mv doc/ /nanoc/content/
     - cd /nanoc
     # Build HTML from Markdown
@@ -435,6 +437,7 @@ ee_compat_check:
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
   allow_failure: yes
+  retry: 0
   cache:
     key: "ee_compat_check_repo"
     paths:

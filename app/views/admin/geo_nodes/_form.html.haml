@@ -24,8 +24,8 @@
           = link_to 'here', help_page_path('gitlab-geo/configuration.html', anchor: 'step-5-enabling-the-secondary-gitlab-node')
 
 .form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
-  = form.label :namespace_ids, 'Namespaces to replicate', class: 'control-label'
+  = form.label :namespace_ids, s_('Geo|Groups to replicate'), class: 'control-label'
   .col-sm-10
-    = form.select :namespace_ids, namespaces_options(geo_node.namespace_ids), { include_hidden: true }, multiple: true, class: 'select2 select-wide', data: { field: 'namespace_ids' }
+    = hidden_field_tag "#{form.object_name}[namespace_ids]", geo_node.namespace_ids.join(","), class: 'js-geo-node-namespaces', data: { selected: node_namespaces_options(geo_node.namespaces).to_json }
     .help-block
-      Choose which namespaces you wish to replicate to this secondary node. Leave blank to replicate all.
+      #{ s_("Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all.") }

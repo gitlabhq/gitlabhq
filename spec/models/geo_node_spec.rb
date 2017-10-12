@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe GeoNode, type: :model do
+  include ::EE::GeoHelpers
+
   let(:new_node) { create(:geo_node, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   let(:new_primary_node) { create(:geo_node, :primary, schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   let(:empty_node) { described_class.new }
@@ -53,14 +55,17 @@ describe GeoNode, type: :model do
   end
 
   context 'prevent locking yourself out' do
-    subject do
-      GeoNode.new(host: Gitlab.config.gitlab.host,
-                  port: Gitlab.config.gitlab.port,
-                  relative_url_root: Gitlab.config.gitlab.relative_url_root)
-    end
-
     it 'does not accept adding a non primary node with same details as current_node' do
-      expect(subject).not_to be_valid
+      node = GeoNode.new(
+        host: Gitlab.config.gitlab.host,
+        port: Gitlab.config.gitlab.port,
+        relative_url_root: Gitlab.config.gitlab.relative_url_root,
+        geo_node_key: build(:geo_node_key)
+      )
+
+      expect(node).not_to be_valid
+      expect(node.errors.full_messages.count).to eq(1)
+      expect(node.errors[:base].first).to match('locking yourself out')
     end
   end
 
@@ -119,13 +124,13 @@ describe GeoNode, type: :model do
     subject { described_class.new }
 
     it 'returns true when node is the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { subject }
+      stub_current_geo_node(subject)
 
       expect(subject.current?).to eq true
     end
 
     it 'returns false when node is not the current node' do
-      allow(Gitlab::Geo).to receive(:current_node) { double }
+      stub_current_geo_node(double)
 
       expect(subject.current?).to eq false
     end

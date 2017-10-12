@@ -1,6 +1,5 @@
 /* eslint-disable no-new */
-/* global Flash */
-
+import Flash from '../flash';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 
 export default class ProtectedBranchEdit {
@@ -57,7 +56,7 @@ export default class ProtectedBranchEdit {
         },
       },
       error() {
-        new Flash('Failed to update branch!', null, $('.js-protected-branches-list'));
+        new Flash('Failed to update branch!', 'alert', document.querySelector('.js-protected-branches-list'));
       },
     }).always(() => {
       this.$allowedToMergeDropdown.enable();

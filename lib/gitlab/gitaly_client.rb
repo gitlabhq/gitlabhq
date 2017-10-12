@@ -28,6 +28,7 @@ module Gitlab
 
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
     MAXIMUM_GITALY_CALLS = 30
+    CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
     private_constant :MUTEX
@@ -79,7 +80,16 @@ module Gitlab
 
     def self.request_metadata(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
-      { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
+      metadata = {
+        'authorization' => "Bearer #{encoded_token}",
+        'client_name' => CLIENT_NAME
+      }
+
+      feature_stack = Thread.current[:gitaly_feature_stack]
+      feature = feature_stack && feature_stack[0]
+      metadata['call_site'] = feature.to_s if feature
+
+      { metadata: metadata }
     end
 
     def self.token(storage)
@@ -137,7 +147,14 @@ module Gitlab
       Gitlab::Metrics.measure(metric_name) do
         # Some migrate calls wrap other migrate calls
         allow_n_plus_1_calls do
-          yield is_enabled
+          feature_stack = Thread.current[:gitaly_feature_stack] ||= []
+          feature_stack.unshift(feature)
+          begin
+            yield is_enabled
+          ensure
+            feature_stack.shift
+            Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+          end
         end
       end
     end
@@ -151,7 +168,7 @@ module Gitlab
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
 
       # Do no enforce limits in production
-      return if Rails.env.production?
+      return if Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"]
 
       # Check if this call is nested within a allow_n_plus_1_calls
       # block and skip check if it is
@@ -233,6 +250,8 @@ module Gitlab
     end
 
     def self.encode(s)
+      return "" if s.nil?
+
       s.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 

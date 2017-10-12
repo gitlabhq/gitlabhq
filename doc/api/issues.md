@@ -106,13 +106,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/6",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
    }
 ]
 ```
@@ -214,13 +214,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/1",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
    }
 ]
 ```
@@ -323,13 +323,13 @@ Example response:
       "web_url": "http://example.com/example/example/issues/1",
       "confidential": false,
       "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false
    }
 ]
 ```
@@ -414,6 +414,7 @@ Example response:
    },
    "confidential": false,
    "weight": null,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -491,6 +492,7 @@ Example response:
    },
    "confidential": false,
    "weight": null,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -525,6 +527,7 @@ PUT /projects/:id/issues/:issue_iid
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight`       | integer | no       | The weight of the issue in range 0 to 9                                                                    |
+| `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -569,6 +572,7 @@ Example response:
    },
    "confidential": false,
    "weight": null,
+   "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
       "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -669,6 +673,7 @@ Example response:
   },
   "confidential": false,
   "weight": null,
+  "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -748,6 +753,7 @@ Example response:
   },
   "confidential": false,
   "weight": null,
+  "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
     "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
@@ -776,6 +782,44 @@ POST /projects/:id/issues/:issue_iid/unsubscribe
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/unsubscribe
+```
+
+Example response:
+
+```json
+{
+  "id": 93,
+  "iid": 12,
+  "project_id": 5,
+  "title": "Incidunt et rerum ea expedita iure quibusdam.",
+  "description": "Et cumque architecto sed aut ipsam.",
+  "state": "opened",
+  "created_at": "2016-04-05T21:41:45.217Z",
+  "updated_at": "2016-04-07T13:02:37.905Z",
+  "labels": [],
+  "milestone": null,
+  "assignee": {
+    "name": "Edwardo Grady",
+    "username": "keyon",
+    "id": 21,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/keyon"
+  },
+  "author": {
+    "name": "Vivian Hermann",
+    "username": "orville",
+    "id": 11,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/orville"
+  },
+  "subscribed": false,
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/12",
+  "confidential": false,
+  "discussion_locked": false
+}
 ```
 
 ## Create a todo
@@ -871,7 +915,8 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
     "confidential": false,
-    "weight": null
+    "weight": null,
+    "discussion_locked": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",

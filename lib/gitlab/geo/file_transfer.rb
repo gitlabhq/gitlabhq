@@ -2,9 +2,11 @@ module Gitlab
   module Geo
     class FileTransfer < Transfer
       def initialize(file_type, upload)
+        uploader = upload.uploader.constantize
+
         @file_type = file_type
         @file_id = upload.id
-        @filename = upload.path
+        @filename = uploader.absolute_path(upload)
         @request_data = build_request_data(upload)
       end
 

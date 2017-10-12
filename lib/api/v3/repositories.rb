@@ -19,7 +19,7 @@ module API
         end
 
         desc 'Get a project repository tree' do
-          success ::API::Entities::RepoTreeObject
+          success ::API::Entities::TreeObject
         end
         params do
           optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -35,7 +35,7 @@ module API
 
           tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
 
-          present tree.sorted_entries, with: ::API::Entities::RepoTreeObject
+          present tree.sorted_entries, with: ::API::Entities::TreeObject
         end
 
         desc 'Get a raw file contents'

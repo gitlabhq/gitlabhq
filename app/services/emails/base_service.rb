@@ -1,9 +1,8 @@
 module Emails
   class BaseService
-    def initialize(current_user, opts)
-      @current_user = current_user
-      @user = opts.delete(:user)
-      @email = opts[:email]
+    def initialize(current_user, params = {})
+      @current_user, @params = current_user, params.dup
+      @user = params.delete(:user)
     end
   end
 end

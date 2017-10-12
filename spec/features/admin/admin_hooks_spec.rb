@@ -74,7 +74,7 @@ describe 'Admin::Hooks', :js do
     end
   end
 
-  describe 'Test', js: true do
+  describe 'Test', :js do
     before do
       WebMock.stub_request(:post, @system_hook.url)
       visit admin_hooks_path

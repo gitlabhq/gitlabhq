@@ -84,16 +84,6 @@ module EE
       super || auditor?
     end
 
-    def remember_me!
-      return if ::Gitlab::Geo.secondary?
-      super
-    end
-
-    def forget_me!
-      return if ::Gitlab::Geo.secondary?
-      super
-    end
-
     def email_opted_in_source
       email_opted_in_source_id == EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM ? 'GitLab.com' : ''
     end
