@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, object-shorthand, consistent-return, no-unused-vars, comma-dangle, vars-on-top, prefer-template, max-len */
 
-window.Compare = class Compare {
+export default class Compare {
   constructor(opts) {
     this.opts = opts;
     this.source_loading = $(".js-source-loading");
@@ -85,4 +85,4 @@ window.Compare = class Compare {
       }
     });
   }
-};
+}

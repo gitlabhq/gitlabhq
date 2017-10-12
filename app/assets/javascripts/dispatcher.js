@@ -22,7 +22,7 @@ import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 /* global MergeRequest */
-/* global Compare */
+import Compare from './compare';
 /* global CompareAutocomplete */
 /* global ProjectFindFile */
 import ProjectNew from './project_new';
