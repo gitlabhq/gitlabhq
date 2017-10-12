@@ -285,7 +285,7 @@ const gfmRules = {
   },
 };
 
-class CopyAsGFM {
+export class CopyAsGFM {
   constructor() {
     $(document).on('copy', '.md, .wiki', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection); });
     $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', (e) => { CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection); });
@@ -470,7 +470,12 @@ class CopyAsGFM {
   }
 }
 
-window.gl = window.gl || {};
-window.gl.CopyAsGFM = CopyAsGFM;
+// Export CopyAsGFM as a global for rspec to access
+// see /spec/features/copy_as_gfm_spec.rb
+if (process.env.NODE_ENV !== 'production') {
+  window.CopyAsGFM = CopyAsGFM;
+}
 
-new CopyAsGFM();
+export default function initCopyAsGFM() {
+  return new CopyAsGFM();
+}
