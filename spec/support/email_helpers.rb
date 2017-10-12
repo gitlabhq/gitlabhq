@@ -20,7 +20,7 @@ module EmailHelpers
   end
 
   def should_not_email(user, recipients: email_recipients)
-    should_email(user, times: 0)
+    should_email(user, times: 0, recipients: recipients)
   end
 
   def should_not_email_anyone
