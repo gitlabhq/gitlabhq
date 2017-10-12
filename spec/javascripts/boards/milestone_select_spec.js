@@ -2,134 +2,154 @@
 /* global boardObj */
 /* global BoardService */
 /* global mockBoardService */
+/* global IssuableContext */
 
 import Vue from 'vue';
 import MilestoneSelect from '~/boards/components/milestone_select.vue';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
+import '~/issuable_context';
 import './mock_data';
 
-describe('Milestone select component', () => {
-  let selectMilestoneSpy;
-  let vm;
+let vm;
 
-  beforeEach(() => {
-    Vue.http.interceptors.push(boardsMockInterceptor);
+function selectedText() {
+  return vm.$el.querySelector('.value').innerText.trim();
+}
+
+function activeDropdownItem(index) {
+  const items = document.querySelectorAll('.is-active');
+  if (!items[index]) return '';
+  return items[index].innerText.trim();
+}
+
+const milestone = {
+  id: 1,
+  title: 'first milestone',
+  name: 'first milestone',
+};
+
+const milestone2 = {
+  id: 2,
+  title: 'second milestone',
+  name: 'second milestone',
+};
+
+describe('Milestone select component', () => {
+  beforeEach((done) => {
+    setFixtures('<div class="test-container"></div>');
     gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
-    selectMilestoneSpy = jasmine.createSpy('selectMilestone').and.callFake((milestone) => {
-      vm.board.milestone_id = milestone.id;
-    });
+    // eslint-disable-next-line no-new
+    new IssuableContext();
 
-    vm = new MilestoneSelect({
+    const Component = Vue.extend(MilestoneSelect);
+    vm = new Component({
       propsData: {
         board: boardObj,
         milestonePath: '/test/issue-boards/milestones.json',
-        selectMilestone: selectMilestoneSpy,
+        canEdit: true,
       },
+    }).$mount('.test-container');
+
+    setTimeout(done);
+  });
+
+  describe('canEdit', () => {
+    it('hides Edit button', (done) => {
+      vm.canEdit = false;
+      Vue.nextTick(() => {
+        expect(document.querySelector('.edit-link')).toBeFalsy();
+        done();
+      });
+    });
+
+    it('shows Edit button if true', (done) => {
+      vm.canEdit = true;
+      Vue.nextTick(() => {
+        expect(document.querySelector('.edit-link')).toBeTruthy();
+        done();
+      });
     });
   });
 
-  afterEach(() => {
-    Vue.http.interceptors = _.without(Vue.http.interceptors, boardsMockInterceptor);
-  });
-
-  describe('before mount', () => {
-    it('sets default data', () => {
-      expect(vm.loading).toBe(false);
-      expect(vm.milestones.length).toBe(0);
-      expect(vm.extraMilestones.length).toBe(3);
-      expect(vm.extraMilestones[0].title).toBe('Any Milestone');
-      expect(vm.extraMilestones[1].title).toBe('Upcoming');
-      expect(vm.extraMilestones[2].title).toBe('Started');
+  describe('selected value', () => {
+    it('defaults to Any Milestone', () => {
+      expect(selectedText()).toContain('Any Milestone');
     });
-  });
 
-  describe('mounted', () => {
-    describe('without board milestone', () => {
-      beforeEach((done) => {
-        vm.$mount();
+    it('shows No Milestone', (done) => {
+      vm.board.milestone_id = 0;
+      Vue.nextTick(() => {
+        expect(selectedText()).toContain('No Milestone');
+        done();
+      });
+    });
+
+    it('shows selected milestone title', (done) => {
+      vm.board.milestone_id = 20;
+      vm.board.milestone = {
+        id: 20,
+        title: 'Selected milestone',
+      };
+      Vue.nextTick(() => {
+        expect(selectedText()).toContain('Selected milestone');
+        done();
+      });
+    });
+
+    describe('clicking dropdown items', () => {
+      beforeEach(() => {
+        const deferred = new jQuery.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.resolve([
+          milestone,
+          milestone2,
+        ]));
+      });
+
+      it('sets Any Milestone', (done) => {
+        vm.board.milestone_id = 0;
+        vm.$el.querySelector('.edit-link').click();
 
         setTimeout(() => {
-          done();
+          vm.$el.querySelectorAll('li a')[0].click();
         });
-      });
-
-      it('loads data', () => {
-        expect(vm.milestones.length).toBe(1);
-      });
-
-      it('renders the milestone list', () => {
-        expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
-        expect(vm.$el.querySelectorAll('.board-milestone-list li').length).toBe(5);
-        expect(
-          vm.$el.querySelectorAll('.board-milestone-list li')[4].textContent,
-        ).toContain('test');
-      });
-
-      it('selects any milestone', () => {
-        vm.$el.querySelectorAll('.board-milestone-list a')[0].click();
-
-        expect(selectMilestoneSpy).toHaveBeenCalledWith({
-          id: null,
-          title: 'Any Milestone',
-        });
-      });
-
-      it('selects upcoming milestone', () => {
-        vm.$el.querySelectorAll('.board-milestone-list a')[1].click();
-
-        expect(selectMilestoneSpy).toHaveBeenCalledWith({
-          id: -2,
-          title: 'Upcoming',
-        });
-      });
-
-      it('selects started milestone', () => {
-        vm.$el.querySelectorAll('.board-milestone-list a')[2].click();
-
-        expect(selectMilestoneSpy).toHaveBeenCalledWith({
-          id: -3,
-          title: 'Started',
-        });
-      });
-
-      it('selects fetched milestone', () => {
-        vm.$el.querySelectorAll('.board-milestone-list a')[3].click();
-
-        expect(selectMilestoneSpy).toHaveBeenCalledWith({
-          id: 1,
-          title: 'test',
-        });
-      });
-
-      it('changes selected milestone', (done) => {
-        const firstLink = vm.$el.querySelectorAll('.board-milestone-list a')[0];
-
-        firstLink.click();
-
-        Vue.nextTick(() => {
-          expect(firstLink.querySelector('.fa-check')).toBeDefined();
-
-          done();
-        });
-      });
-    });
-
-    describe('with board milestone', () => {
-      beforeEach((done) => {
-        vm.board.milestone_id = 1;
-        vm.$mount();
 
         setTimeout(() => {
+          expect(activeDropdownItem(0)).toEqual('Any Milestone');
+          expect(selectedText()).toEqual('Any Milestone');
           done();
         });
       });
 
-      it('renders the selected milestone', () => {
-        expect(vm.$el.querySelector('.board-milestone-list .fa-check')).not.toBeNull();
-        expect(vm.$el.querySelectorAll('.board-milestone-list .fa-check').length).toBe(1);
+      it('sets No Milestone', (done) => {
+        vm.$el.querySelector('.edit-link').click();
+
+        setTimeout(() => {
+          vm.$el.querySelectorAll('li a')[1].click();
+        });
+
+        setTimeout(() => {
+          expect(activeDropdownItem(0)).toEqual('No Milestone');
+          expect(selectedText()).toEqual('No Milestone');
+          done();
+        });
+      });
+
+      it('sets milestone', (done) => {
+        vm.$el.querySelector('.edit-link').click();
+
+        setTimeout(() => {
+          vm.$el.querySelectorAll('li a')[4].click();
+        });
+
+        setTimeout(() => {
+          expect(activeDropdownItem(0)).toEqual('first milestone');
+          expect(selectedText()).toEqual('first milestone');
+          expect(vm.board.milestone).toEqual(milestone);
+          done();
+        });
       });
     });
   });

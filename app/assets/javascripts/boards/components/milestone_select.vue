@@ -1,6 +1,7 @@
 <script>
 /* global BoardService, MilestoneSelect */
 
+import '~/milestone_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 const ANY_MILESTONE = 'Any Milestone';
