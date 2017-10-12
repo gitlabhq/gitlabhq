@@ -72,11 +72,9 @@ Please see the table below for some examples:
 | 10.1.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.8` -> `10.1.4` | `8.17.7` is the last version in version `8`, `9.5.8` is the last version in version `9` |
 |
 
-
 More information about the release procedures can be found in our
 [release-tools documentation][rel]. You may also want to read our
 [Responsible Disclosure Policy][disclosure].
-
 
 [rel]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/
 [disclosure]: https://about.gitlab.com/disclosure/
