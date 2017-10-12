@@ -42,35 +42,36 @@ export default {
       }
     },
 
-    tryCommit(e, skipBranchCheck = false, newBranch = false) {
-      const makeCommit = () => {
-        // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-        const commitMessage = this.commitMessage;
-        const actions = this.changedFiles.map(f => ({
-          action: 'update',
-          file_path: f.path,
-          content: f.newContent,
-        }));
-        const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
-        const payload = {
-          branch,
-          commit_message: commitMessage,
-          actions,
-        };
-        if (newBranch) {
-          payload.start_branch = this.currentBranch;
-        }
-        this.submitCommitsLoading = true;
-        Service.commitFiles(payload)
-          .then(() => {
-            this.reloadPage(branch);
-            this.$emit('tryCommit:complete');
-          })
-          .catch(this.commitError);
+    makeCommit(newBranch) {
+      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
+      const commitMessage = this.commitMessage;
+      const actions = this.changedFiles.map(f => ({
+        action: 'update',
+        file_path: f.path,
+        content: f.newContent,
+      }));
+      const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
+      const payload = {
+        branch,
+        commit_message: commitMessage,
+        actions,
       };
+      if (newBranch) {
+        payload.start_branch = this.currentBranch;
+      }
+      this.submitCommitsLoading = true;
+      Service.commitFiles(payload)
+        .then(() => {
+          this.reloadPage(branch);
+          this.$emit('tryCommit:complete');
+        })
+        .catch(this.commitError);
+    },
+
+    tryCommit(e, skipBranchCheck = false, newBranch = false) {
 
       if (skipBranchCheck) {
-        makeCommit();
+        this.makeCommit(newBranch);
       } else {
         Store.setBranchHash()
         .then(() => {
@@ -79,7 +80,7 @@ export default {
             this.$emit('showBranchChangeDialog:enabled');
             return;
           }
-          makeCommit();
+          this.makeCommit(newBranch);
         })
         .catch(this.commitError);
       }
