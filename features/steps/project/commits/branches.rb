@@ -40,6 +40,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step 'I submit new branch form with invalid name' do
     fill_in 'branch_name', with: '1.0 stable'
+    page.find("body").click # defocus the branch_name input
     select_branch('master')
     click_button 'Create branch'
   end
