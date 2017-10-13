@@ -98,7 +98,7 @@ describe 'Gitlab::Git::Popen' do
       context 'timeout period' do
         let(:time_taken) do
           begin
-            start = Time.now;
+            start = Time.now
             klass.new.popen_with_timeout(%w(sleep 1000), timeout, path)
           rescue
             Time.now - start
@@ -107,7 +107,6 @@ describe 'Gitlab::Git::Popen' do
 
         it { expect(time_taken).to be >= timeout }
       end
-
 
       context 'clean up' do
         let(:instance) { klass.new }
@@ -120,7 +119,7 @@ describe 'Gitlab::Git::Popen' do
             pid = args.first
             begin
               Process.getpgid(pid)
-              fail "The child process should have been killed"
+              raise "The child process should have been killed"
             rescue Errno::ESRCH
             end
           end
