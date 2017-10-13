@@ -4,7 +4,6 @@ shared_examples 'discussion comments' do |resource_name|
   let(:toggle_selector) { "#{dropdown_selector} .dropdown-toggle" }
   let(:menu_selector) { "#{dropdown_selector} .dropdown-menu" }
   let(:submit_selector) { "#{form_selector} .js-comment-submit-button" }
-  let(:submit_button) { ".js-comment-submit-button" }
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
 
@@ -78,34 +77,27 @@ shared_examples 'discussion comments' do |resource_name|
     end
 
     it 'clicking the ul padding or divider should not change the text' do
-      find(menu_selector).click
+      execute_script("document.querySelector('#{menu_selector}').click()")
 
+      # on issues page, the menu closes when clicking anywhere, on other pages it will
+      # remain open if clicking divider or menu padding, but should not change button action
       if resource_name == 'issue'
         expect(find(dropdown_selector)).to have_content 'Comment'
 
         find(toggle_selector).click
-        find("#{menu_selector} .divider").click
+        execute_script("document.querySelector('#{menu_selector} .divider').click()")
       else
-        within dropdown_selector do
-          find('.dropdown-toggle').click
+        execute_script("document.querySelector('#{menu_selector}').click()")
 
-          expect(find('.dropdown-menu')).not_to be_nil
-          find('li[data-submit-text="Comment"]').click
-          expect(find(submit_button).value).to eq "Comment"
+        expect(page).to have_selector menu_selector
+        expect(find(dropdown_selector)).to have_content 'Comment'
 
-          find('.dropdown-toggle').click
-          page.driver.execute_script(
-            "document.querySelector('.comment-type-dropdown .dropdown-menu .divider').click()"
-          )
+        execute_script("document.querySelector('#{menu_selector} .divider').click()")
 
-          expect(find('.dropdown-menu')).not_to be_nil
-          find('li[data-submit-text="Comment"]').click
-        end
+        expect(page).to have_selector menu_selector
       end
 
-      within dropdown_selector do
-        expect(find(submit_button).value).to eq "Comment"
-      end
+      expect(find(dropdown_selector)).to have_content 'Comment'
     end
 
     describe 'when selecting "Start discussion"' do
@@ -115,8 +107,11 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it 'updates the submit button text and closes the dropdown' do
-        within dropdown_selector do
-          expect(find(submit_button).value).to eq "Start discussion"
+        # on issues page, the submit input is a <button>, on other pages it is <input>
+        if resource_name == 'issue'
+          expect(find(submit_selector)).to have_content 'Start discussion'
+        else
+          expect(find(submit_selector).value).to eq 'Start discussion'
         end
         expect(page).not_to have_selector menu_selector
       end
@@ -182,8 +177,11 @@ shared_examples 'discussion comments' do |resource_name|
           end
 
           it 'updates the submit button text and closes the dropdown' do
-            within dropdown_selector do
-              expect(find(submit_button).value).to eq "Comment"
+            # on issues page, the submit input is a <button>, on other pages it is <input>
+            if resource_name == 'issue'
+              expect(find(submit_selector)).to have_content 'Comment'
+            else
+              expect(find(submit_selector).value).to eq 'Comment'
             end
             expect(page).not_to have_selector menu_selector
           end
@@ -223,6 +221,7 @@ shared_examples 'discussion comments' do |resource_name|
     describe "on a closed #{resource_name}" do
       before do
         find("#{form_selector} .js-note-target-close").click
+        wait_for_requests
 
         find("#{form_selector} .note-textarea").send_keys('a')
       end
@@ -232,7 +231,7 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it "should show a 'Start discussion & reopen #{resource_name}' button when 'Start discussion' is selected" do
-        find(toggle_selector).send_keys(:return)
+        find(toggle_selector).click
 
         find("#{menu_selector} li", match: :first)
         all("#{menu_selector} li").last.click
