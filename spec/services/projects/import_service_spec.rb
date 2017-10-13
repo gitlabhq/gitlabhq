@@ -6,6 +6,41 @@ describe Projects::ImportService do
 
   subject { described_class.new(project, user) }
 
+  describe '#async?' do
+    it 'returns true for an asynchronous importer' do
+      importer_class = double(:importer, async?: true)
+
+      allow(subject).to receive(:has_importer?).and_return(true)
+      allow(subject).to receive(:importer_class).and_return(importer_class)
+
+      expect(subject).to be_async
+    end
+
+    it 'returns false for a regular importer' do
+      importer_class = double(:importer, async?: false)
+
+      allow(subject).to receive(:has_importer?).and_return(true)
+      allow(subject).to receive(:importer_class).and_return(importer_class)
+
+      expect(subject).not_to be_async
+    end
+
+    it 'returns false when the importer does not define #async?' do
+      importer_class = double(:importer)
+
+      allow(subject).to receive(:has_importer?).and_return(true)
+      allow(subject).to receive(:importer_class).and_return(importer_class)
+
+      expect(subject).not_to be_async
+    end
+
+    it 'returns false when the importer does not exist' do
+      allow(subject).to receive(:has_importer?).and_return(false)
+
+      expect(subject).not_to be_async
+    end
+  end
+
   describe '#execute' do
     context 'with unknown url' do
       before do

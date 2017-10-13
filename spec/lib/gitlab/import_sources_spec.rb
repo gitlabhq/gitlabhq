@@ -63,7 +63,7 @@ describe Gitlab::ImportSources do
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
-      'gitea' => Gitlab::GithubImport::Importer
+      'gitea' => Gitlab::LegacyGithubImport::Importer
     }
 
     import_sources.each do |name, klass|
