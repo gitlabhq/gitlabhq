@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import UserTabs from './user_tabs';
 
-export default function initUserProfile(action) {
+function initUserProfile(action) {
   // place profile avatars to top
   $('.profile-groups-avatars').tooltip({
     placement: 'top',
@@ -17,3 +17,9 @@ export default function initUserProfile(action) {
     $(this).parents('.project-limit-message').remove();
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const page = $('body').attr('data-page');
+  const action = page.split(':')[1];
+  initUserProfile(action);
+});

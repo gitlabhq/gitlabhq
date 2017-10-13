@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable class-methods-use-this, promise/catch-or-return */
 /* eslint-disable no-new */
 import Flash from './flash';
@@ -19,11 +20,26 @@ import Flash from './flash';
       $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
       gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
     }
+=======
+export default class Members {
+  constructor() {
+    this.addListeners();
+    this.initGLDropdown();
+  }
 
-    initGLDropdown() {
-      $('.js-member-permissions-dropdown').each((i, btn) => {
-        const $btn = $(btn);
+  addListeners() {
+    $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
+    $('.js-member-update-control').off('change').on('change', this.formSubmit.bind(this));
+    $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
+    gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
+  }
+>>>>>>> upstream/master
 
+  initGLDropdown() {
+    $('.js-member-permissions-dropdown').each((i, btn) => {
+      const $btn = $(btn);
+
+<<<<<<< HEAD
         $btn.glDropdown({
           selectable: true,
           isSelectable(selected, $el) {
@@ -62,37 +78,49 @@ import Flash from './flash';
             }
           },
         });
+=======
+      $btn.glDropdown({
+        selectable: true,
+        isSelectable(selected, $el) {
+          return !$el.hasClass('is-active');
+        },
+        fieldName: $btn.data('field-name'),
+        id(selected, $el) {
+          return $el.data('id');
+        },
+        toggleLabel(selected, $el) {
+          return $el.text();
+        },
+        clicked: (options) => {
+          this.formSubmit(null, options.$el);
+        },
+>>>>>>> upstream/master
       });
+    });
+  }
+  // eslint-disable-next-line class-methods-use-this
+  removeRow(e) {
+    const $target = $(e.target);
+
+    if ($target.hasClass('btn-remove')) {
+      $target.closest('.member')
+        .fadeOut(function fadeOutMemberRow() {
+          $(this).remove();
+        });
     }
+  }
 
-    removeRow(e) {
-      const $target = $(e.target);
+  formSubmit(e, $el = null) {
+    const $this = e ? $(e.currentTarget) : $el;
+    const { $toggle, $dateInput } = this.getMemberListItems($this);
 
-      if ($target.hasClass('btn-remove')) {
-        $target.closest('.member')
-          .fadeOut(function fadeOutMemberRow() {
-            $(this).remove();
-          });
-      }
-    }
+    $this.closest('form').trigger('submit.rails');
 
-    formSubmit(e, $el = null) {
-      const $this = e ? $(e.currentTarget) : $el;
-      const { $toggle, $dateInput } = this.getMemberListItems($this);
+    $toggle.disable();
+    $dateInput.disable();
+  }
 
-      $this.closest('form').trigger('submit.rails');
-
-      $toggle.disable();
-      $dateInput.disable();
-    }
-
-    formSuccess(e) {
-      const { $toggle, $dateInput } = this.getMemberListItems($(e.currentTarget).closest('.member'));
-
-      $toggle.enable();
-      $dateInput.enable();
-    }
-
+<<<<<<< HEAD
     showLDAPPermissionsWarning(e) {
       const $btn = $(e.currentTarget);
       const { $memberListItem } = this.getMemberListItems($btn);
@@ -146,7 +174,22 @@ import Flash from './flash';
         $memberListitem.toggleClass('is-overriden', override);
       });
     }
-  }
+=======
+  formSuccess(e) {
+    const { $toggle, $dateInput } = this.getMemberListItems($(e.currentTarget).closest('.member'));
 
-  gl.Members = Members;
-})();
+    $toggle.enable();
+    $dateInput.enable();
+>>>>>>> upstream/master
+  }
+  // eslint-disable-next-line class-methods-use-this
+  getMemberListItems($el) {
+    const $memberListItem = $el.is('.member') ? $el : $(`#${$el.data('el-id')}`);
+
+    return {
+      $memberListItem,
+      $toggle: $memberListItem.find('.dropdown-menu-toggle'),
+      $dateInput: $memberListItem.find('.js-access-expiration-date'),
+    };
+  }
+}

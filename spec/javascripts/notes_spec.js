@@ -431,19 +431,17 @@ import '~/notes';
     });
 
     describe('putEditFormInPlace', () => {
-      it('should call gl.GLForm with GFM parameter passed through', () => {
-        spyOn(gl, 'GLForm');
+      it('should call GLForm with GFM parameter passed through', () => {
+        const notes = new Notes('', []);
+        const $el = $(`
+          <div>
+            <form></form>
+          </div>
+        `);
 
-        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
-        $el.find.and.returnValue($('<div>'));
-        $el.closest.and.returnValue($('<div>'));
+        notes.putEditFormInPlace($el);
 
-        Notes.prototype.putEditFormInPlace.call({
-          getEditFormSelector: () => '',
-          enableGFM: true
-        }, $el);
-
-        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+        expect(notes.glForm.enableGFM).toBeTruthy();
       });
     });
 

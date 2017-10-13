@@ -79,6 +79,12 @@ FactoryGirl.define do
       merge_user author
     end
 
+    trait :remove_source_branch do
+      merge_params do
+        { 'force_remove_source_branch' => '1' }
+      end
+    end
+
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project
