@@ -392,7 +392,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
-    !!merge_jid && !merged?
+    !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
   def closed_without_fork?
