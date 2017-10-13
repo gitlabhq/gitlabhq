@@ -801,20 +801,17 @@ module API
 
       # EE-specific
       # Default filtering configuration
-      expose :milestone,
-             using: Entities::Milestone,
-             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
-      expose :assignee,
-             using: Entities::UserBasic,
-             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
-      expose :labels,
-             using: Entities::LabelBasic,
-             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
-      expose :weight,
-             if: -> (board, _) { board.parent.feature_available?(:scoped_issue_board) }
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
 
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
+      end
+
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
       end
     end
 
