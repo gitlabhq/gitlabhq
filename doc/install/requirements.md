@@ -71,8 +71,8 @@ errors during usage.
 
 - 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the [unicorn worker section below](#unicorn-workers) for more advice.
 - 2GB RAM + 2GB swap supports up to 100 users but it will be very slow
-- **4GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
-- 8GB RAM supports up to 1,000 users
+- **4GB RAM** is the recommended memory size for any installation and supports up to 100 users
+- 8GB RAM is recommended for production installations, and supports up to 1,000 users
 - 16GB RAM supports up to 2,000 users
 - 32GB RAM supports up to 4,000 users
 - 64GB RAM supports up to 8,000 users
