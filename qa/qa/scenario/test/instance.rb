@@ -6,6 +6,7 @@ module QA
       # including staging and on-premises installation.
       #
       class Instance < Entrypoint
+        tags :core
       end
     end
   end

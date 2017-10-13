@@ -7,11 +7,7 @@ module QA
         # including staging and on-premises installation.
         #
         class Mattermost < Scenario::Entrypoint
-          protected
-
-          def configure_specs(specs)
-            specs.exclusion_filter[:mattermost] = false
-          end
+          tags :core, :mattermost
         end
       end
     end
