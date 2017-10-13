@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Translate from '../vue_shared/translate';
-import Flash from '../flash';
 import GroupFilterableList from './groups_filterable_list';
 import GroupsStore from './store/groups_store';
 import GroupsService from './service/groups_service';
