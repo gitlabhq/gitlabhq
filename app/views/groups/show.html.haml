@@ -11,7 +11,7 @@
   .group-nav-container
     .nav-controls.clearfix
       = render "shared/groups/search_form"
-      = render "shared/groups/dropdown"
+      = render "shared/groups/dropdown", show_archive_options: true
       - if can? current_user, :create_projects, @group
         - new_project_label = _("New project")
         - new_subgroup_label = _("New subgroup")

@@ -25,30 +25,34 @@ export default class GroupFilterableList extends FilterableList {
   bindEvents() {
     super.bindEvents();
 
-    this.onFormSubmitWrapper = this.onFormSubmit.bind(this);
     this.onFilterOptionClikWrapper = this.onOptionClick.bind(this);
 
-    this.filterForm.addEventListener('submit', this.onFormSubmitWrapper);
     this.$dropdown.on('click', 'a', this.onFilterOptionClikWrapper);
   }
 
-  onFormSubmit(e) {
-    e.preventDefault();
-
-    const $form = $(this.form);
-    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
+  onFilterInput() {
     const queryData = {};
+    const $form = $(this.form);
+    const archivedParam = getParameterByName('archived', window.location.href);
+    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
 
     if (filterGroupsParam) {
       queryData[this.filterInputField] = filterGroupsParam;
     }
 
+    if (archivedParam) {
+      queryData.archived = archivedParam;
+    }
+
     this.filterResults(queryData);
-    this.setDefaultFilterOption();
+
+    if (this.setDefaultFilterOption) {
+      this.setDefaultFilterOption();
+    }
   }
 
   setDefaultFilterOption() {
-    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu a').first().text());
+    const defaultOption = $.trim(this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').first().text());
     this.$dropdown.find('.dropdown-label').text(defaultOption);
   }
 
@@ -56,17 +60,34 @@ export default class GroupFilterableList extends FilterableList {
     e.preventDefault();
 
     const queryData = {};
-    const sortParam = getParameterByName('sort', e.currentTarget.href);
+
+    // Get type of option selected from dropdown
+    const currentTargetClassList = e.currentTarget.parentElement.classList;
+    const isOptionFilterBySort = currentTargetClassList.contains('js-filter-sort-order');
+
+    // Get option query param, also preserve currently applied query param
+    const isOptionFilterByArchivedProjects = currentTargetClassList.contains('js-filter-archived-projects');
+    const sortParam = getParameterByName('sort', e.currentTarget.href) || getParameterByName('sort', window.location.href);
+    const archivedParam = getParameterByName('archived', e.currentTarget.href) || getParameterByName('archived', window.location.href);
 
     if (sortParam) {
       queryData.sort = sortParam;
     }
 
+    if (archivedParam) {
+      queryData.archived = archivedParam;
+    }
+
     this.filterResults(queryData);
 
     // Active selected option
-    this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
-    this.$dropdown.find('.dropdown-menu li a').removeClass('is-active');
+    if (isOptionFilterBySort) {
+      this.$dropdown.find('.dropdown-label').text($.trim(e.currentTarget.text));
+      this.$dropdown.find('.dropdown-menu li.js-filter-sort-order a').removeClass('is-active');
+    } else if (isOptionFilterByArchivedProjects) {
+      this.$dropdown.find('.dropdown-menu li.js-filter-archived-projects a').removeClass('is-active');
+    }
+
     $(e.target).addClass('is-active');
 
     // Clear current value on search form
