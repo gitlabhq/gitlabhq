@@ -21,27 +21,23 @@ class Rack::Attack
     { limit: limit_proc, period: period_proc }
   end
 
-  def self.define_throttles
-    throttle('throttle_unauthenticated', throttle_unauthenticated_options) do |req|
-      settings.throttle_unauthenticated_enabled &&
-        req.unauthenticated? &&
-        req.ip
-    end
-
-    throttle('throttle_authenticated_api', throttle_authenticated_api_options) do |req|
-      settings.throttle_authenticated_api_enabled &&
-        req.api_request? &&
-        req.authenticated_user_id
-    end
-
-    throttle('throttle_authenticated_web', throttle_authenticated_web_options) do |req|
-      settings.throttle_authenticated_web_enabled &&
-        req.web_request? &&
-        req.authenticated_user_id
-    end
+  throttle('throttle_unauthenticated', throttle_unauthenticated_options) do |req|
+    settings.throttle_unauthenticated_enabled &&
+      req.unauthenticated? &&
+      req.ip
   end
 
-  define_throttles unless Rails.env.test?
+  throttle('throttle_authenticated_api', throttle_authenticated_api_options) do |req|
+    settings.throttle_authenticated_api_enabled &&
+      req.api_request? &&
+      req.authenticated_user_id
+  end
+
+  throttle('throttle_authenticated_web', throttle_authenticated_web_options) do |req|
+    settings.throttle_authenticated_web_enabled &&
+      req.web_request? &&
+      req.authenticated_user_id
+  end
 
   class Request
     def unauthenticated?

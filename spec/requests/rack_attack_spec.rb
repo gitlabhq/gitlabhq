@@ -4,9 +4,6 @@ describe Rack::Attack do
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
   before do
-    # Ensure throttles are defined, because this is normally skipped for tests
-    described_class.define_throttles
-
     # Instead of test environment's :null_store
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
