@@ -1,7 +1,7 @@
 module QA
   module Scenario
     ##
-    # Run test suite against any GitLab instance,
+    # Base class for running the suite against any GitLab instance,
     # including staging and on-premises installation.
     #
     class Entrypoint < Template
