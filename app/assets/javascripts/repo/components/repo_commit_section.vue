@@ -69,13 +69,12 @@ export default {
     },
 
     tryCommit(e, skipBranchCheck = false, newBranch = false) {
-
       if (skipBranchCheck) {
         this.makeCommit(newBranch);
       } else {
         Service.branchSingle()
           .then((data) => {
-            Store.setBranchHash(data)
+            Store.setBranchHash(data);
             if (Store.branchChanged) {
               Store.showBranchChangeDialog = true;
               this.$emit('showBranchChangeDialog:enabled');

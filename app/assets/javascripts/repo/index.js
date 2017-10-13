@@ -37,6 +37,9 @@ function setInitialStore(dataset) {
   Store.checkIsCommitable();
   Service.branchSingle()
     .then(Store.setBranchHash);
+    .catch(() => {
+      Flash('There was a problem initializing the repo editor.');
+    });
 }
 
 function initRepo(el) {
