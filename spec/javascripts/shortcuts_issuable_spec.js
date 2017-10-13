@@ -1,7 +1,5 @@
-/* global ShortcutsIssuable */
-
 import '~/copy_as_gfm';
-import '~/shortcuts_issuable';
+import ShortcutsIssuable from '~/shortcuts_issuable';
 
 describe('ShortcutsIssuable', () => {
   const fixtureName = 'merge_requests/diff_comment.html.raw';
