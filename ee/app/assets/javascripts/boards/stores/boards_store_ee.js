@@ -12,15 +12,17 @@ class BoardsStoreEE {
       this.removePromotion();
     };
 
-    this.store.boardConfig = {
-      milestoneId: parseInt(this.$boardApp.dataset.boardMilestoneId, 10),
-      milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle,
-      assigneeUsername: this.$boardApp.dataset.boardAssigneeUsername,
-      labels: JSON.parse(this.$boardApp.dataset.labels || []),
-      weight: parseInt(this.$boardApp.dataset.boardWeight, 10),
-    };
-    this.store.cantEdit = [];
-    this.initBoardFilters();
+    if (this.$boardApp) {
+      this.store.boardConfig = {
+        milestoneId: parseInt(this.$boardApp.dataset.boardMilestoneId, 10),
+        milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle,
+        assigneeUsername: this.$boardApp.dataset.boardAssigneeUsername,
+        labels: JSON.parse(this.$boardApp.dataset.labels || []),
+        weight: parseInt(this.$boardApp.dataset.boardWeight, 10),
+      };
+      this.store.cantEdit = [];
+      this.initBoardFilters();
+    }
   }
 
   initBoardFilters() {

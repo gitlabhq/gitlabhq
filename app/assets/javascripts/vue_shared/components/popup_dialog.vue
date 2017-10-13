@@ -112,9 +112,6 @@ export default {
       </div>
     </div>
   </div>
-  <div
-    class="modal-backdrop fade in"
-    @click="close"
-  />
+  <div class="modal-backdrop fade in" />
 </div>
 </template>

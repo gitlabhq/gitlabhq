@@ -1,7 +1,7 @@
 <script>
 /* global BoardService */
-/* global Flash */
 
+import Flash from '~/flash';
 import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
@@ -65,7 +65,7 @@ export default {
       currentPage: Store.state.currentPage,
       milestones: [],
       milestoneDropdownOpen: false,
-      submitDisabled: false,
+      isLoading: false,
     };
   },
   components: {
@@ -115,9 +115,6 @@ export default {
       }
       return 'Edit board';
     },
-    milestoneToggleText() {
-      return this.board.milestone ? this.board.milestone.title : 'Milestone';
-    },
     expandButtonText() {
       return this.expanded ? 'Collapse' : 'Expand';
     },
@@ -130,18 +127,22 @@ export default {
     weightsArray() {
       return JSON.parse(this.weights);
     },
+    submitDisabled() {
+      return this.isLoading || this.board.name.length === 0;
+    },
   },
   methods: {
     submit() {
+      if (this.board.name.length === 0) return;
+      this.isLoading = true;
       if (this.isDeleteForm) {
-        this.submitDisabled = true;
         gl.boardService.deleteBoard(this.currentBoard)
           .then(() => {
             gl.utils.visitUrl(Store.rootPath);
           })
           .catch(() => {
             Flash('Failed to delete board. Please try again.');
-            this.submitDisabled = false;
+            this.isLoading = false;
           });
       } else {
         gl.boardService.createBoard(this.board)
@@ -151,6 +152,7 @@ export default {
           })
           .catch(() => {
             Flash('Unable to save your changes. Please try again.');
+            this.isLoading = false;
           });
       }
     },
@@ -194,6 +196,7 @@ export default {
       <form
         v-else
         class="js-board-config-modal"
+        @submit.prevent
       >
         <div
           v-if="!readonly"
@@ -211,6 +214,7 @@ export default {
             type="text"
             id="board-new-name"
             v-model="board.name"
+            @keyup.enter="submit"
             placeholder="Enter board name"
           >
         </div>
