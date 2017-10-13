@@ -8,7 +8,6 @@ const RepoStore = {
   canCommit: false,
   onTopOfBranch: false,
   editMode: false,
-  isTree: false,
   isRoot: false,
   prevURL: '',
   projectId: '',
@@ -72,10 +71,6 @@ const RepoStore = {
     RepoStore.isCommitable = RepoStore.onTopOfBranch && RepoStore.canCommit;
   },
 
-  addFilesToDirectory(inDirectory, currentList, newList) {
-    RepoStore.files = Helper.getNewMergedList(inDirectory, currentList, newList);
-  },
-
   toggleRawPreview() {
     RepoStore.activeFile.raw = !RepoStore.activeFile.raw;
     RepoStore.activeFileLabel = RepoStore.activeFile.raw ? 'Display rendered file' : 'Display source';
@@ -129,30 +124,6 @@ const RepoStore = {
     RepoStore.activeFileLabel = 'Display source';
   },
 
-  removeChildFilesOfTree(tree) {
-    let foundTree = false;
-    const treeToClose = tree;
-    let canStopSearching = false;
-    RepoStore.files = RepoStore.files.filter((file) => {
-      const isItTheTreeWeWant = file.url === treeToClose.url;
-      // if it's the next tree
-      if (foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
-        canStopSearching = true;
-        return true;
-      }
-      if (canStopSearching) return true;
-
-      if (isItTheTreeWeWant) foundTree = true;
-
-      if (foundTree) return file.level <= treeToClose.level;
-      return true;
-    });
-
-    treeToClose.opened = false;
-    treeToClose.icon = 'fa-folder';
-    return treeToClose;
-  },
-
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
     let foundIndex;
@@ -186,6 +157,7 @@ const RepoStore = {
     if (openedFilesAlreadyExists) return;
 
     openFile.changed = false;
+    openFile.active = true;
     RepoStore.openedFiles.push(openFile);
   },
 

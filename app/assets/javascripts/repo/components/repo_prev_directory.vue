@@ -1,38 +1,34 @@
 <script>
-import RepoMixin from '../mixins/repo_mixin';
+  import eventHub from '../event_hub';
 
-const RepoPreviousDirectory = {
-  props: {
-    prevUrl: {
-      type: String,
-      required: true,
+  export default {
+    props: {
+      prevUrl: {
+        type: String,
+        required: true,
+      },
     },
-  },
-
-  mixins: [RepoMixin],
-
-  computed: {
-    colSpanCondition() {
-      return this.isMini ? undefined : 3;
+    computed: {
+      colSpanCondition() {
+        return this.isMini ? undefined : 3;
+      },
     },
-  },
-
-  methods: {
-    linkClicked(file) {
-      this.$emit('linkclicked', file);
+    methods: {
+      linkClicked(file) {
+        eventHub.$emit('goToPreviousDirectoryClicked', file);
+      },
     },
-  },
-};
-
-export default RepoPreviousDirectory;
+  };
 </script>
 
 <template>
-<tr class="prev-directory">
-  <td
-    :colspan="colSpanCondition"
-    @click.prevent="linkClicked(prevUrl)">
-    <a :href="prevUrl">..</a>
-  </td>
-</tr>
+  <tr class="prev-directory">
+    <td
+      :colspan="colSpanCondition"
+      class="table-cell"
+      @click.prevent="linkClicked(prevUrl)"
+    >
+      <a :href="prevUrl">...</a>
+    </td>
+  </tr>
 </template>

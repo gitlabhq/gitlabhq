@@ -92,7 +92,7 @@ const RepoEditor = {
     },
 
     blobRaw() {
-      if (Helper.monacoInstance && !this.isTree) {
+      if (Helper.monacoInstance) {
         this.setupEditor();
       }
     },

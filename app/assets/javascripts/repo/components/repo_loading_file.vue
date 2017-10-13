@@ -1,42 +1,20 @@
 <script>
-const RepoLoadingFile = {
-  props: {
-    loading: {
-      type: Object,
-      required: false,
-      default: {},
-    },
-    hasFiles: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isMini: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
+  import repoMixin from '../mixins/repo_mixin';
 
-  computed: {
-    showGhostLines() {
-      return this.loading.tree && !this.hasFiles;
+  export default {
+    mixins: [
+      repoMixin,
+    ],
+    methods: {
+      lineOfCode(n) {
+        return `skeleton-line-${n}`;
+      },
     },
-  },
-
-  methods: {
-    lineOfCode(n) {
-      return `skeleton-line-${n}`;
-    },
-  },
-};
-
-export default RepoLoadingFile;
+  };
 </script>
 
 <template>
   <tr
-    v-if="showGhostLines"
     class="loading-file">
     <td>
       <div
@@ -64,7 +42,7 @@ export default RepoLoadingFile;
     <td
       v-if="!isMini"
       class="hidden-xs">
-      <div class="animation-container animation-container-small">
+      <div class="animation-container animation-container-small animation-container-right">
         <div
           v-for="n in 6"
           :key="n"

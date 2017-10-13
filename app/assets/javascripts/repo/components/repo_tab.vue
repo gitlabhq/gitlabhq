@@ -26,11 +26,13 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked: Store.setActiveFiles,
-
+    tabClicked(file) {
+      Store.setActiveFiles(file);
+    },
     closeTab(file) {
       if (file.changed) return;
-      this.$emit('tabclosed', file);
+
+      Store.removeFromOpenedFiles(file);
     },
   },
 };
@@ -39,25 +41,28 @@ export default RepoTab;
 </script>
 
 <template>
-<li @click="tabClicked(tab)">
-  <a
-    href="#0"
-    class="close"
-    @click.stop.prevent="closeTab(tab)"
-    :aria-label="closeLabel">
-    <i
-      class="fa"
-      :class="changedClass"
-      aria-hidden="true">
-    </i>
-  </a>
+  <li
+    :class="{ active : tab.active }"
+    @click="tabClicked(tab)"
+  >
+    <button
+      type="button"
+      class="close-btn"
+      @click.stop.prevent="closeTab(tab)"
+      :aria-label="closeLabel">
+      <i
+        class="fa"
+        :class="changedClass"
+        aria-hidden="true">
+      </i>
+    </button>
 
-  <a
-    href="#"
-    class="repo-tab"
-    :title="tab.url"
-    @click.prevent="tabClicked(tab)">
-    {{tab.name}}
-  </a>
-</li>
+    <a
+      href="#"
+      class="repo-tab"
+      :title="tab.url"
+      @click.prevent="tabClicked(tab)">
+      {{tab.name}}
+    </a>
+  </li>
 </template>
