@@ -378,7 +378,7 @@ describe 'Issue Boards', :js do
       end
 
       it 'filters by milestone' do
-        set_filter("milestone", "\"#{milestone.title}\"")
+        set_filter("milestone", "\"#{milestone.title}")
         click_filter_link(milestone.title)
         submit_filter
 
@@ -399,7 +399,7 @@ describe 'Issue Boards', :js do
       end
 
       it 'filters by label with space after reload' do
-        set_filter("label", "\"#{accepting.title}\"")
+        set_filter("label", "\"#{accepting.title}")
         click_filter_link(accepting.title)
         submit_filter
 
