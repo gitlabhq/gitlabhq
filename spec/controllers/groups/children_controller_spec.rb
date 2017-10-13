@@ -141,6 +141,15 @@ describe Groups::ChildrenController do
           expect(response).to have_http_status(200)
         end
 
+        it 'returns an array with one element when only one result is matched' do
+          create(:project, :public, namespace: group, name: 'match')
+
+          get :index, group_id: group.to_param, filter: 'match', format: :json
+
+          expect(json_response).to be_kind_of(Array)
+          expect(json_response.size).to eq(1)
+        end
+
         it 'returns an empty array when there are no search results' do
           subgroup = create(:group, :public, parent: group)
           l2_subgroup = create(:group, :public, parent: subgroup)

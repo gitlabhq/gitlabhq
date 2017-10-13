@@ -95,6 +95,15 @@ describe GroupChildSerializer do
           expect(project1_json[:id]).to eq(project1.id)
           expect(project2_json[:id]).to eq(project2.id)
         end
+
+        it 'returns an array when an array of a single instance was given' do
+          project = create(:project, namespace: parent)
+
+          json = serializer.represent([project])
+
+          expect(json).to be_kind_of(Array)
+          expect(json.size).to eq(1)
+        end
       end
     end
   end
