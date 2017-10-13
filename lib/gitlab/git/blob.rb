@@ -44,6 +44,18 @@ module Gitlab
           end
         end
 
+        def batch_raw(repository, blob_oids, blob_size_limit: nil)
+          Gitlab::GitalyClient.migrate(:blob_batch_raw) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::BlobService.new(repository).get_blobs(oids: blob_oids, limit: blob_size_limit)
+            else
+              blob_oids.map do |oid|
+                raw_by_rugged(repository, oid)
+              end
+            end
+          end
+        end
+
         # Returns an array of Blob instances, specified in blob_references as
         # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
         # full blob contents are returned. If blob_size_limit >= 0 then each blob will
