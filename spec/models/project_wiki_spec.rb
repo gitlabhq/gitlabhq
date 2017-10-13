@@ -180,37 +180,47 @@ describe ProjectWiki do
   end
 
   describe "#create_page" do
-    after do
-      destroy_page(subject.pages.first.page)
+    shared_examples 'creating a wiki page' do
+      after do
+        destroy_page(subject.pages.first.page)
+      end
+
+      it "creates a new wiki page" do
+        expect(subject.create_page("test page", "this is content")).not_to eq(false)
+        expect(subject.pages.count).to eq(1)
+      end
+
+      it "returns false when a duplicate page exists" do
+        subject.create_page("test page", "content")
+        expect(subject.create_page("test page", "content")).to eq(false)
+      end
+
+      it "stores an error message when a duplicate page exists" do
+        2.times { subject.create_page("test page", "content") }
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it "sets the correct commit message" do
+        subject.create_page("test page", "some content", :markdown, "commit message")
+        expect(subject.pages.first.page.version.message).to eq("commit message")
+      end
+
+      it 'updates project activity' do
+        subject.create_page('Test Page', 'This is content')
+
+        project.reload
+
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+      end
     end
 
-    it "creates a new wiki page" do
-      expect(subject.create_page("test page", "this is content")).not_to eq(false)
-      expect(subject.pages.count).to eq(1)
+    context 'when Gitaly wiki_write_page is enabled' do
+      it_behaves_like 'creating a wiki page'
     end
 
-    it "returns false when a duplicate page exists" do
-      subject.create_page("test page", "content")
-      expect(subject.create_page("test page", "content")).to eq(false)
-    end
-
-    it "stores an error message when a duplicate page exists" do
-      2.times { subject.create_page("test page", "content") }
-      expect(subject.error_message).to match(/Duplicate page:/)
-    end
-
-    it "sets the correct commit message" do
-      subject.create_page("test page", "some content", :markdown, "commit message")
-      expect(subject.pages.first.page.version.message).to eq("commit message")
-    end
-
-    it 'updates project activity' do
-      subject.create_page('Test Page', 'This is content')
-
-      project.reload
-
-      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+    context 'when Gitaly wiki_write_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'creating a wiki page'
     end
   end
 
