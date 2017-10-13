@@ -19,7 +19,17 @@ module Boards
         params.merge(label_ids: [list.label_id, *board.label_ids],
                      weight: board.weight,
                      milestone_id: board.milestone_id,
-                     assignee_ids: [board.assignee_id])
+                     assignee_ids: assignee_ids)
+      end
+
+      # This can be safely removed when the board
+      # receive multiple assignee support.
+      def assignee_ids
+        @board_assignee ||= board.assignee
+
+        return [] unless @board_assignee
+
+        [@board_assignee.id]
       end
 
       def board
