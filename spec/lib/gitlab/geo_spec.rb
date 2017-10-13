@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo do
+describe Gitlab::Geo, :geo do
   include ::EE::GeoHelpers
 
   set(:primary_node)   { create(:geo_node, :primary) }
@@ -15,6 +15,26 @@ describe Gitlab::Geo do
   describe 'primary_node' do
     it 'returns a GeoNode primary instance' do
       expect(described_class.primary_node).to eq(primary_node)
+    end
+  end
+
+  describe 'fdw?' do
+    let(:fdw_check) { "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'gitlab_secondary' AND table_type = 'FOREIGN TABLE'" }
+
+    before do
+      allow(::Geo::BaseRegistry.connection).to receive(:execute).with(anything).and_call_original
+    end
+
+    it 'returns true when PostgreSQL FDW is enabled' do
+      expect(::Geo::BaseRegistry.connection).to receive(:execute).with(fdw_check).and_return([{ 'count' => 1 }])
+
+      expect(described_class.fdw?).to be_truthy
+    end
+
+    it 'returns false when PostgreSQL FDW is not enabled' do
+      expect(::Geo::BaseRegistry.connection).to receive(:execute).with(fdw_check).and_return([{ 'count' => 0 }])
+
+      expect(described_class.fdw?).to be_falsey
     end
   end
 
