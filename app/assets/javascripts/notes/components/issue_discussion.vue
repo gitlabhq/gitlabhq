@@ -1,6 +1,6 @@
 <script>
-  /* global Flash */
   import { mapActions, mapGetters } from 'vuex';
+  import Flash from '../../flash';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -133,7 +133,7 @@
             this.isReplying = true;
             this.$nextTick(() => {
               const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
-              Flash(msg, 'alert', $(this.$el));
+              Flash(msg, 'alert', this.$el);
               this.$refs.noteForm.note = noteText;
               callback(err);
             });

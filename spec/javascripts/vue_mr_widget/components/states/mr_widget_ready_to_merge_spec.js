@@ -12,6 +12,7 @@ const createComponent = (customConfig = {}) => {
     pipeline: null,
     isPipelineFailed: false,
     isPipelinePassing: false,
+    isMergeAllowed: true,
     onlyAllowMergeIfPipelineSucceeds: false,
     hasCI: false,
     ciStatus: null,
@@ -212,21 +213,24 @@ describe('MRWidgetReadyToMerge', () => {
 
     describe('isMergeButtonDisabled', () => {
       it('should return false with initial data', () => {
+        vm.mr.isMergeAllowed = true;
         expect(vm.isMergeButtonDisabled).toBeFalsy();
       });
 
       it('should return true when there is no commit message', () => {
+        vm.mr.isMergeAllowed = true;
         vm.commitMessage = '';
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
       it('should return true if merge is not allowed', () => {
+        vm.mr.isMergeAllowed = false;
         vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
-        vm.mr.isPipelineFailed = true;
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
       it('should return true when the vm instance is making request', () => {
+        vm.mr.isMergeAllowed = true;
         vm.isMakingRequest = true;
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
@@ -234,53 +238,27 @@ describe('MRWidgetReadyToMerge', () => {
   });
 
   describe('methods', () => {
-    describe('isMergeAllowed', () => {
-      it('should return true when no pipeline and not required to succeed', () => {
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = false;
-        vm.mr.isPipelinePassing = false;
-        expect(vm.isMergeAllowed()).toBeTruthy();
-      });
-
-      it('should return true when pipeline failed and not required to succeed', () => {
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = false;
-        vm.mr.isPipelinePassing = false;
-        expect(vm.isMergeAllowed()).toBeTruthy();
-      });
-
-      it('should return false when pipeline failed and required to succeed', () => {
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
-        vm.mr.isPipelinePassing = false;
-        expect(vm.isMergeAllowed()).toBeFalsy();
-      });
-
-      it('should return true when pipeline succeeded and required to succeed', () => {
-        vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
-        vm.mr.isPipelinePassing = true;
-        expect(vm.isMergeAllowed()).toBeTruthy();
-      });
-    });
-
     describe('shouldShowMergeControls', () => {
       it('should return false when an external pipeline is running and required to succeed', () => {
-        spyOn(vm, 'isMergeAllowed').and.returnValue(false);
+        vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = false;
         expect(vm.shouldShowMergeControls()).toBeFalsy();
       });
 
       it('should return true when the build succeeded or build not required to succeed', () => {
-        spyOn(vm, 'isMergeAllowed').and.returnValue(true);
+        vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = false;
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button and a pipeline is running that needs to be successful', () => {
-        spyOn(vm, 'isMergeAllowed').and.returnValue(false);
+        vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = true;
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button but not required for the pipeline to succeed', () => {
-        spyOn(vm, 'isMergeAllowed').and.returnValue(true);
+        vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = true;
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });

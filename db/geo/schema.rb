@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171005045404) do
+ActiveRecord::Schema.define(version: 20171009162209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,10 +25,12 @@ ActiveRecord::Schema.define(version: 20171005045404) do
     t.integer "bytes", limit: 8
     t.string "sha256"
     t.datetime "created_at", null: false
+    t.boolean "success", default: false, null: false
   end
 
   add_index "file_registry", ["file_type", "file_id"], name: "index_file_registry_on_file_type_and_file_id", unique: true, using: :btree
   add_index "file_registry", ["file_type"], name: "index_file_registry_on_file_type", using: :btree
+  add_index "file_registry", ["success"], name: "index_file_registry_on_success", using: :btree
 
   create_table "project_registry", force: :cascade do |t|
     t.integer "project_id", null: false

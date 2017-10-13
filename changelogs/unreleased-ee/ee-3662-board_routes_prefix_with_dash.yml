@@ -1,0 +1,5 @@
+---
+title: Move group boards routes under - and remove "boards" from reserved paths
+merge_request:
+author:
+type: fixed

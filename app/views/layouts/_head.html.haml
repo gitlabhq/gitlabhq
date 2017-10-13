@@ -37,7 +37,7 @@
   - if content_for?(:library_javascripts)
     = yield :library_javascripts
 
-  = javascript_include_tag asset_path("locale/#{I18n.locale.to_s || I18n.default_locale.to_s}/app.js")
+  = javascript_include_tag asset_path("locale/#{I18n.locale.to_s || I18n.default_locale.to_s}/app.js") unless I18n.locale == :en
   = webpack_bundle_tag "webpack_runtime"
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "main"

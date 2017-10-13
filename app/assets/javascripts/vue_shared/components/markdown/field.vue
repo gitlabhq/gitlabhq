@@ -1,5 +1,5 @@
 <script>
-  /* global Flash */
+  import Flash from '../../../flash';
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
 

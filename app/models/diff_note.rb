@@ -17,8 +17,8 @@ class DiffNote < Note
 
   validates :original_position, presence: true
   validates :position, presence: true
-  validates :diff_line, presence: true
-  validates :line_code, presence: true, line_code: true
+  validates :diff_line, presence: true, if: :on_text?
+  validates :line_code, presence: true, line_code: true, if: :on_text?
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
@@ -48,6 +48,14 @@ class DiffNote < Note
     end
   end
 
+  def on_text?
+    position.position_type == "text"
+  end
+
+  def on_image?
+    position.position_type == "image"
+  end
+
   def diff_file
     @diff_file ||= self.original_position.diff_file(self.project.repository)
   end
@@ -61,6 +69,8 @@ class DiffNote < Note
   end
 
   def original_line_code
+    return unless on_text?
+
     self.diff_file.line_code(self.diff_line)
   end
 

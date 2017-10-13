@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards', js: true do
+describe 'Issue Boards', :js do
   include BoardHelpers
 
   let(:user)         { create(:user) }

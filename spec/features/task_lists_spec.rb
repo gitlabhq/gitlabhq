@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -63,7 +63,7 @@ feature 'Task Lists' do
   end
 
   describe 'for Issues' do
-    describe 'multiple tasks', js: true do
+    describe 'multiple tasks', :js do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
@@ -103,7 +103,7 @@ feature 'Task Lists' do
       end
     end
 
-    describe 'single incomplete task', js: true do
+    describe 'single incomplete task', :js do
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -122,7 +122,7 @@ feature 'Task Lists' do
       end
     end
 
-    describe 'single complete task', js: true do
+    describe 'single complete task', :js do
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
@@ -141,7 +141,7 @@ feature 'Task Lists' do
       end
     end
 
-    describe 'nested tasks', js: true do
+    describe 'nested tasks', :js do
       let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
 
       before do

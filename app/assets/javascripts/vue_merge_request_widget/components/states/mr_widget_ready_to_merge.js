@@ -1,7 +1,7 @@
-/* global Flash */
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
+import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
 
@@ -67,7 +67,7 @@ export default {
       return defaultClass;
     },
     iconClass() {
-      if (this.status === 'failed' || !this.commitMessage.length || !this.isMergeAllowed() || this.mr.preventMerge) {
+      if (this.status === 'failed' || !this.commitMessage.length || !this.mr.isMergeAllowed || this.mr.preventMerge) {
         return 'failed';
       }
       return 'success';
@@ -104,13 +104,8 @@ export default {
     },
   },
   methods: {
-    isMergeAllowed() {
-      return !this.mr.onlyAllowMergeIfPipelineSucceeds ||
-        this.mr.isPipelinePassing ||
-        this.mr.isPipelineSkipped;
-    },
     shouldShowMergeControls() {
-      return this.isMergeAllowed() || this.shouldShowMergeWhenPipelineSucceedsText;
+      return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;
     },
     updateCommitMessage() {
       const cmwd = this.mr.commitMessageWithDescription;

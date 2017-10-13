@@ -32,7 +32,7 @@
   <div class="issuable-note-warning">
     <i
       aria-hidden="true"
-      class="fa"
+      class="fa icon"
       :class="iconClass"
       v-if="!isLockedAndConfidential"
     ></i>

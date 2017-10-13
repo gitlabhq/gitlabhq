@@ -7,15 +7,13 @@
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
-/* global Commit */
-/* global CommitsList */
-/* global NewCommitForm */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global BuildArtifacts */
+import BuildArtifacts from './build_artifacts';
+import CILintEditor from './ci_lint_editor';
 /* global GroupsSelect */
 /* global Search */
 /* global Admin */
@@ -32,7 +30,8 @@
 /* global ProjectNew */
 /* global ProjectShow */
 /* global ProjectImport */
-/* global Labels */
+import Labels from './labels';
+import LabelManager from './label_manager';
 /* global Shortcuts */
 /* global ShortcutsFindFile */
 /* global Sidebar */
@@ -40,6 +39,7 @@
 /* global AdminEmailSelect */
 /* global ShortcutsWiki */
 
+import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
 import DeleteModal from './branches/branches_delete_modal';
@@ -81,7 +81,10 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
+import AjaxLoadingSpinner from './ajax_loading_spinner';
+import U2FAuthenticate from './u2f/authenticate';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -100,8 +103,8 @@ import initGroupAnalytics from './init_group_analytics';
     }
 
     Dispatcher.prototype.initPageScripts = function() {
-      var page, path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
-      page = $('body').attr('data-page');
+      var path, shortcut_handler, fileBlobPermalinkUrlElement, fileBlobPermalinkUrl;
+      const page = $('body').attr('data-page');
       if (!page) {
         return false;
       }
@@ -265,7 +268,7 @@ import initGroupAnalytics from './init_group_analytics';
           new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
-          gl.AjaxLoadingSpinner.init();
+          AjaxLoadingSpinner.init();
           new DeleteModal();
           break;
         case 'projects:issues:new':
@@ -345,7 +348,6 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new Commit();
           new gl.Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
@@ -504,7 +506,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
-            new gl.LabelManager();
+            new LabelManager();
           }
           $('.label-subscription').each((i, el) => {
             const $el = $(el);
@@ -565,7 +567,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
-          new gl.CILintEditor();
+          new CILintEditor();
           break;
         case 'users:show':
           new UserCallout();
@@ -585,6 +587,11 @@ import initGroupAnalytics from './init_group_analytics';
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
           break;
+        case 'projects:clusters:show':
+          import(/* webpackChunkName: "clusters" */ './clusters')
+            .then(cluster => new cluster.default()) // eslint-disable-line new-cap
+            .catch(() => {});
+          break;
         case 'admin:licenses:new':
           const $licenseFile = $('.license-file');
           const $licenseKey = $('.license-key');
@@ -602,20 +609,21 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
-
       }
       switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
-          gl.u2fAuthenticate = new gl.U2FAuthenticate(
+          const u2fAuthenticate = new U2FAuthenticate(
             $('#js-authenticate-u2f'),
             '#js-login-u2f-form',
             gon.u2f,
             document.querySelector('#js-login-2fa-device'),
             document.querySelector('.js-2fa-form'),
           );
-          gl.u2fAuthenticate.start();
+          u2fAuthenticate.start();
+          // needed in rspec
+          gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
           new Admin();
           switch (path[1]) {
@@ -635,7 +643,7 @@ import initGroupAnalytics from './init_group_analytics';
                   new Labels();
               }
             case 'abuse_reports':
-              new gl.AbuseReports();
+              new AbuseReports();
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));

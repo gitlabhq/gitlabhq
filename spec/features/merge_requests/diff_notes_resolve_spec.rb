@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff notes resolve', js: true do
+feature 'Diff notes resolve', :js do
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
@@ -88,14 +88,24 @@ feature 'Diff notes resolve', js: true do
         end
       end
 
-      it 'hides resolved discussion' do
-        page.within '.diff-content' do
-          click_button 'Resolve discussion'
+      describe 'resolved discussion' do
+        before do
+          page.within '.diff-content' do
+            click_button 'Resolve discussion'
+          end
+
+          visit_merge_request
         end
 
-        visit_merge_request
+        it 'hides when resolve discussion is clicked' do
+          expect(page).to have_selector('.discussion-body', visible: false)
+        end
 
-        expect(page).to have_selector('.discussion-body', visible: false)
+        it 'shows resolved discussion when toggled' do
+          find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
+
+          expect(page.find(".timeline-content #note_#{note.noteable_id}")).to be_visible
+        end
       end
 
       it 'allows user to resolve from reply form without a comment' do

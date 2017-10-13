@@ -13,7 +13,7 @@
  * 4. Commit widget
  */
 
-/* global Flash */
+import Flash from '../../flash';
 import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';

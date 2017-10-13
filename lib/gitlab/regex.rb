@@ -66,5 +66,9 @@ module Gitlab
       "can contain only lowercase letters, digits, and '-'. " \
       "Must start with a letter, and cannot end with '-'"
     end
+
+    def build_trace_section_regex
+      @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([^\r]+)\r\033\[0K/.freeze
+    end
   end
 end

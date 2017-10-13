@@ -16,7 +16,7 @@ describe('Issue Warning Component', () => {
         isLocked: true,
       });
 
-      expect(vm.$el.querySelector('i').className).toEqual('fa fa-lock');
+      expect(vm.$el.querySelector('i').className).toEqual('fa icon fa-lock');
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual('This issue is locked. Only project members can comment.');
     });
   });
@@ -27,7 +27,7 @@ describe('Issue Warning Component', () => {
         isConfidential: true,
       });
 
-      expect(vm.$el.querySelector('i').className).toEqual('fa fa-eye-slash');
+      expect(vm.$el.querySelector('i').className).toEqual('fa icon fa-eye-slash');
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual('This is a confidential issue. Your comment will not be visible to the public.');
     });
   });

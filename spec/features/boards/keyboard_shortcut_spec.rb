@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards shortcut', js: true do
+describe 'Issue Boards shortcut', :js do
   let(:project) { create(:project) }
 
   before do

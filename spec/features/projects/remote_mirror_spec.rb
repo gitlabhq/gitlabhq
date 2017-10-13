@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Project remote mirror', feature: true do
+feature 'Project remote mirror', :feature do
   let(:project) { create(:project, :repository, :remote_mirror) }
   let(:remote_mirror) { project.remote_mirrors.first }
   let(:user) { create(:user) }
 
-  describe 'On a project', js: true do
+  describe 'On a project', :js do
     before do
       project.team << [user, :master]
       sign_in user

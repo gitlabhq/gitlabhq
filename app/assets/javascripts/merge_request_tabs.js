@@ -1,9 +1,8 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global Flash */
 /* global notes */
 
 import Cookies from 'js-cookie';
-import './flash';
+import Flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
@@ -12,6 +11,8 @@ import {
   handleLocationHash,
   isMetaClick,
 } from './lib/utils/common_utils';
+
+import initDiscussionTab from './image_diff/init_discussion_tab';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -154,6 +155,8 @@ import {
         }
         this.resetViewContainer();
         this.destroyPipelinesView();
+
+        initDiscussionTab();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);

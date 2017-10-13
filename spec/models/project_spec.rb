@@ -57,6 +57,7 @@ describe Project do
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:build_trace_section_names)}
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:active_runners) }
@@ -77,6 +78,7 @@ describe Project do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
+    it { is_expected.to have_one(:cluster) }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -1004,7 +1006,7 @@ describe Project do
     let(:project) { create(:project) }
 
     context 'when avatar file is uploaded' do
-      let(:project) { create(:project, :with_avatar) }
+      let(:project) { create(:project, :public, :with_avatar) }
       let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 

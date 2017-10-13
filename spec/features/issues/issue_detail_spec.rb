@@ -28,8 +28,7 @@ feature 'Issue Detail', :js do
       fill_in 'issue-title', with: 'issue title'
       click_button 'Save'
 
-      visit profile_account_path
-      click_link 'Delete account'
+      Users::DestroyService.new(user).execute(user)
 
       visit project_issue_path(project, issue)
     end

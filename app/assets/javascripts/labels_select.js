@@ -4,6 +4,7 @@
 import _ from 'underscore';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
+import CreateLabelDropdown from './create_label';
 
 (function() {
   this.LabelsSelect = (function() {
@@ -61,7 +62,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
         $sidebarLabelTooltip.tooltip();
 
         if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
-          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
+          new CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), namespacePath, projectPath);
         }
 
         saveLabelData = function() {
@@ -284,7 +285,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
           },
           hidden: function() {
             var isIssueIndex, isMRIndex, page, selectedLabels;
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             $selectbox.hide();
@@ -324,7 +325,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
               $loading.fadeOut();
             };
 
-            page = $('body').data('page');
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
 

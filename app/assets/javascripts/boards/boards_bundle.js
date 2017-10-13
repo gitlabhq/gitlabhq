@@ -1,10 +1,10 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global BoardService */
-/* global Flash */
 
 import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import Flash from '../flash';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import './models/issue';

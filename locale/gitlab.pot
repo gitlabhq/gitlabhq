@@ -23,6 +23,11 @@ msgid_plural "%d commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d layer"
+msgid_plural "%d layers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] ""
@@ -57,6 +62,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1st contribution!"
+msgstr ""
+
+msgid "2FA enabled"
 msgstr ""
 
 msgid "A collection of graphs regarding Continuous Integration"
@@ -445,6 +453,129 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is disabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Copy cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Create cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Create new cluster on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Enable cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Google Cloud Platform project ID"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine project"
+msgstr ""
+
+msgid "ClusterIntegration|Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgstr ""
+
+msgid "ClusterIntegration|See machine types"
+msgstr ""
+
+msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
+msgstr ""
+
+msgid "ClusterIntegration|Number of nodes"
+msgstr ""
+
+msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgstr ""
+
+msgid "ClusterIntegration|Remove cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Remove integration"
+msgstr ""
+
+msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
+msgstr ""
+
+msgid "ClusterIntegration|Save changes"
+msgstr ""
+
+msgid "ClusterIntegration|See your projects"
+msgstr ""
+
+msgid "ClusterIntegration|See zones"
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong on our end."
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine."
+msgstr ""
+
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgstr ""
+
+msgid "ClusterIntegration|Toggle Cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
+msgstr ""
+
+msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgstr ""
+
+msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
+msgstr ""
+
+msgid "ClusterIntegration|Zone"
+msgstr ""
+
+msgid "ClusterIntegration|access to Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|cluster"
+msgstr ""
+
+msgid "ClusterIntegration|help page"
+msgstr ""
+
+msgid "ClusterIntegration|meets the requirements"
+msgstr ""
+
+msgid "ClusterIntegration|properly configured"
+msgstr ""
+
 msgid "Comments"
 msgstr ""
 
@@ -481,6 +612,51 @@ msgid "Committed by"
 msgstr ""
 
 msgid "Compare"
+msgstr ""
+
+msgid "Container Registry"
+msgstr ""
+
+msgid "ContainerRegistry|Created"
+msgstr ""
+
+msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
+msgstr ""
+
+msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
+msgstr ""
+
+msgid "ContainerRegistry|How to use the Container Registry"
+msgstr ""
+
+msgid "ContainerRegistry|Learn more about"
+msgstr ""
+
+msgid "ContainerRegistry|No tags in Container Registry for this container image."
+msgstr ""
+
+msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
+msgstr ""
+
+msgid "ContainerRegistry|Remove repository"
+msgstr ""
+
+msgid "ContainerRegistry|Remove tag"
+msgstr ""
+
+msgid "ContainerRegistry|Size"
+msgstr ""
+
+msgid "ContainerRegistry|Tag"
+msgstr ""
+
+msgid "ContainerRegistry|Tag ID"
+msgstr ""
+
+msgid "ContainerRegistry|Use different image names"
+msgstr ""
+
+msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
 msgstr ""
 
 msgid "Contribution guide"
@@ -739,6 +915,9 @@ msgstr ""
 msgid "GoToYourFork|Fork"
 msgstr ""
 
+msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -958,6 +1137,9 @@ msgid "New snippet"
 msgstr ""
 
 msgid "New tag"
+msgstr ""
+
+msgid "No container images stored for this project. Add one by following the instructions above."
 msgstr ""
 
 msgid "No repository"
@@ -1395,6 +1577,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Snippets"
+msgstr ""
+
+msgid "Something went wrong on our end."
+msgstr ""
+
+msgid "Something went wrong while fetching the projects."
+msgstr ""
+
+msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
 msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
@@ -2023,4 +2214,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "to help your contributors communicate effectively!"
+msgstr ""
+
+msgid "personal access token"
 msgstr ""

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Copy as GFM', js: true do
+describe 'Copy as GFM', :js do
   include MarkupHelper
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper

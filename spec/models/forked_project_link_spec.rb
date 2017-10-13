@@ -7,15 +7,6 @@ describe ForkedProjectLink, "add link on fork" do
   let(:project_to) { fork_project(project_from, user) }
   let(:user) { create(:user) }
 
-  def fork_project(from_project, user)
-    shell = double('gitlab_shell', fork_repository: true)
-
-    service = Projects::ForkService.new(from_project, user)
-    allow(service).to receive(:gitlab_shell).and_return(shell)
-
-    service.execute
-  end
-
   before do
     project_from.add_reporter(user)
   end

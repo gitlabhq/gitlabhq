@@ -102,6 +102,7 @@ Rails.application.routes.draw do
     resources :issues, module: :boards, only: [:index, :update]
   end
 
+  draw :google_api
   draw :import
   draw :uploads
   draw :explore

@@ -17,17 +17,11 @@
 
 /* Trial Banner */
 .gitlab-ee-license-banner.alert {
-  display: flex;
-  align-content: center;
-  justify-content: center;
   padding: 15px 35px;
-  position: fixed;
-  top: 0;
-  width: 100%;
+  position: relative;
   background: $red-400;
   color: $white-light;
   text-align: center;
-  z-index: 400;
 
   @media (max-width: $screen-md-min) {
     padding: 10px 35px;
@@ -54,8 +48,8 @@
 
   .close {
     position: absolute;
-    top: 15%;
-    right: 10px;
+    top: 12px;
+    right: $gl-padding;
   }
 }
 

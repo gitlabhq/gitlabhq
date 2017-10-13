@@ -2,7 +2,7 @@
 
 - if defined?(@merge_request) && @merge_request.discussion_locked?
   .issuable-note-warning
-    = icon('lock')
+    = icon('lock', class: 'icon')
     %span
       = _('This merge request is locked.')
       = _('Only project members can comment.')

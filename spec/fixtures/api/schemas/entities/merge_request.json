@@ -47,6 +47,7 @@
     "commits_count": { "type": ["integer", "null"] },
     "has_conflicts": { "type": "boolean" },
     "can_be_merged": { "type": "boolean" },
+    "mergeable": { "type": "boolean" },
     "project_archived": { "type": "boolean" },
     "only_allow_merge_if_pipeline_succeeds": { "type": "boolean" },
     "has_ci": { "type": "boolean" },

@@ -295,6 +295,7 @@ module ProjectsHelper
       snippets:         :read_project_snippet,
       settings:         :admin_project,
       builds:           :read_build,
+      clusters:         :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,

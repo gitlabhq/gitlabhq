@@ -54,7 +54,8 @@ or make changes to our frontend development guidelines.
 
 ---
 
-## [Testing](testing.md)
+## [Testing](../testing_guide/frontend_testing.md)
+
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
