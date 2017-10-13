@@ -64,11 +64,11 @@ export default class GroupFilterableList extends FilterableList {
     // Get type of option selected from dropdown
     const currentTargetClassList = e.currentTarget.parentElement.classList;
     const isOptionFilterBySort = currentTargetClassList.contains('js-filter-sort-order');
+    const isOptionFilterByArchivedProjects = currentTargetClassList.contains('js-filter-archived-projects');
 
     // Get option query param, also preserve currently applied query param
-    const isOptionFilterByArchivedProjects = currentTargetClassList.contains('js-filter-archived-projects');
-    const sortParam = getParameterByName('sort', e.currentTarget.href) || getParameterByName('sort', window.location.href);
-    const archivedParam = getParameterByName('archived', e.currentTarget.href) || getParameterByName('archived', window.location.href);
+    const sortParam = getParameterByName('sort', isOptionFilterBySort ? e.currentTarget.href : window.location.href);
+    const archivedParam = getParameterByName('archived', isOptionFilterByArchivedProjects ? e.currentTarget.href : window.location.href);
 
     if (sortParam) {
       queryData.sort = sortParam;
