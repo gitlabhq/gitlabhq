@@ -195,9 +195,11 @@ module SystemNoteService
     if time_spent == :reset
       body = "removed time spent"
     else
+      spent_at = noteable.spent_at
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
       body = "#{action} #{parsed_time} of time spent"
+      body << " at #{spent_at}" if spent_at
     end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
