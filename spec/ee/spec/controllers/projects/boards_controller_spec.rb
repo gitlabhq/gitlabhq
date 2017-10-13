@@ -68,7 +68,6 @@ describe Projects::BoardsController do
           expect(Board.count).to eq(1)
           expect(board).to have_attributes(create_params.except(:assignee_id))
           expect(board.assignee).to eq(user)
-
         end
       end
 
