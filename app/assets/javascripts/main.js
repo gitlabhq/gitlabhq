@@ -64,7 +64,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import Flash from './flash';
+import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -339,4 +339,10 @@ $(function () {
     event.preventDefault();
     gl.utils.visitUrl(`${action}${$(this).serialize()}`);
   });
+
+  const flashContainer = document.querySelector('.flash-container');
+
+  if (flashContainer && flashContainer.children.length) {
+    removeFlashClickListener(flashContainer.children[0]);
+  }
 });
