@@ -30,6 +30,12 @@ describe Geo::FileDownloadService do
 
         expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
+
+      it 'registers when the download fails with some other error' do
+        stub_transfer(Gitlab::Geo::FileTransfer, nil)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      end
     end
 
     context 'group avatar' do

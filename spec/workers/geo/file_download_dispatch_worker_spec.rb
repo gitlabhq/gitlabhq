@@ -62,6 +62,7 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
     it 'attempts to load a new batch without pending downloads' do
       stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
       stub_const('Geo::BaseSchedulerWorker::MAX_CAPACITY', 2)
+      allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(100)
 
       avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
       create_list(:lfs_object, 2, :with_file)
