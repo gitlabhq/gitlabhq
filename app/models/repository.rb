@@ -76,6 +76,7 @@ class Repository
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
+    @commit_cache = {}
   end
 
   def ==(other)
@@ -103,18 +104,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+    return ref if ref.is_a?(::Commit)
 
-    commit =
-      if ref.is_a?(Gitlab::Git::Commit)
-        ref
-      else
-        Gitlab::Git::Commit.find(raw_repository, ref)
-      end
+    find_commit(ref)
+  end
 
-    commit = ::Commit.new(commit, @project) if commit
-    commit
-  rescue Rugged::OdbError, Rugged::TreeError
-    nil
+  # Finding a commit by the passed SHA
+  # Also takes care of caching, based on the SHA
+  def commit_by(oid:)
+    return @commit_cache[oid] if @commit_cache.key?(oid)
+
+    @commit_cache[oid] = find_commit(oid)
   end
 
   def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
@@ -231,7 +231,7 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit(sha)
+    return unless sha && commit_by(oid: sha)
 
     return if kept_around?(sha)
 
@@ -1069,6 +1069,18 @@ class Repository
 
   private
 
+  # TODO Generice finder, later split this on finders by Ref or Oid
+  # gitlab-org/gitlab-ce#39239
+  def find_commit(oid_or_ref)
+    commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
+               oid_or_ref
+             else
+               Gitlab::Git::Commit.find(raw_repository, oid_or_ref)
+             end
+
+    ::Commit.new(commit, @project) if commit
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1107,12 +1119,12 @@ class Repository
 
   def last_commit_for_path_by_gitaly(sha, path)
     c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
-    commit(c)
+    commit_by(oid: c)
   end
 
   def last_commit_for_path_by_rugged(sha, path)
     sha = last_commit_id_for_path_by_shelling_out(sha, path)
-    commit(sha)
+    commit_by(oid: sha)
   end
 
   def last_commit_id_for_path_by_shelling_out(sha, path)
