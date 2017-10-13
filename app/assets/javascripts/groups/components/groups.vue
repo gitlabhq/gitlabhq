@@ -29,7 +29,8 @@ export default {
     change(page) {
       const filterGroupsParam = getParameterByName('filter_groups');
       const sortParam = getParameterByName('sort');
-      eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam);
+      const archivedParam = getParameterByName('archived');
+      eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam, archivedParam);
     },
   },
 };

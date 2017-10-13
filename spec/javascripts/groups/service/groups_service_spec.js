@@ -20,12 +20,13 @@ describe('GroupsService', () => {
         page: 2,
         filter: 'git',
         sort: 'created_asc',
+        archived: true,
       };
 
-      service.getGroups(55, 2, 'git', 'created_asc');
+      service.getGroups(55, 2, 'git', 'created_asc', true);
       expect(service.groups.get).toHaveBeenCalledWith({ parent_id: 55 });
 
-      service.getGroups(null, 2, 'git', 'created_asc');
+      service.getGroups(null, 2, 'git', 'created_asc', true);
       expect(service.groups.get).toHaveBeenCalledWith(queryParams);
     });
   });

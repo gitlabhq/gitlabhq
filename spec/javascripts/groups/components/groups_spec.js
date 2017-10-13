@@ -43,7 +43,7 @@ describe('GroupsComponent', () => {
         spyOn(eventHub, '$emit').and.stub();
 
         vm.change(2);
-        expect(eventHub.$emit).toHaveBeenCalledWith('fetchPage', 2, jasmine.any(Object), jasmine.any(Object));
+        expect(eventHub.$emit).toHaveBeenCalledWith('fetchPage', 2, jasmine.any(Object), jasmine.any(Object), jasmine.any(Object));
       });
     });
   });

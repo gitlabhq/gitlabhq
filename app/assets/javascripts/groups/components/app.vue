@@ -43,8 +43,8 @@ export default {
     },
   },
   methods: {
-    fetchGroups({ parentId, page, filterGroupsBy, sortBy, updatePagination }) {
-      return this.service.getGroups(parentId, page, filterGroupsBy, sortBy)
+    fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
+      return this.service.getGroups(parentId, page, filterGroupsBy, sortBy, archived)
                 .then((res) => {
                   if (updatePagination) {
                     this.updatePagination(res.headers);
@@ -63,6 +63,7 @@ export default {
     fetchAllGroups() {
       const page = getParameterByName('page') || null;
       const sortBy = getParameterByName('sort') || null;
+      const archived = getParameterByName('archived') || null;
       const filterGroupsBy = getParameterByName('filter') || null;
 
       this.isLoading = true;
@@ -71,13 +72,14 @@ export default {
         page,
         filterGroupsBy,
         sortBy,
+        archived,
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
     },
-    fetchPage(page, filterGroupsBy, sortBy) {
+    fetchPage(page, filterGroupsBy, sortBy, archived) {
       this.isLoading = true;
 
       // eslint-disable-next-line promise/catch-or-return
@@ -85,6 +87,7 @@ export default {
         page,
         filterGroupsBy,
         sortBy,
+        archived,
         updatePagination: true,
       }).then((res) => {
         this.isLoading = false;

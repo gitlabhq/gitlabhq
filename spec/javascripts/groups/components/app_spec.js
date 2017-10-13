@@ -102,9 +102,10 @@ describe('AppComponent', () => {
           page: 2,
           filterGroupsBy: 'git',
           sortBy: 'created_desc',
+          archived: true,
         });
         setTimeout(() => {
-          expect(vm.service.getGroups).toHaveBeenCalledWith(1, 2, 'git', 'created_desc');
+          expect(vm.service.getGroups).toHaveBeenCalledWith(1, 2, 'git', 'created_desc', true);
           done();
         }, 0);
       });
@@ -162,6 +163,7 @@ describe('AppComponent', () => {
           filterGroupsBy: null,
           sortBy: null,
           updatePagination: true,
+          archived: null,
         });
         setTimeout(() => {
           expect(vm.updateGroups).toHaveBeenCalled();
@@ -178,13 +180,14 @@ describe('AppComponent', () => {
         spyOn(window.history, 'replaceState');
         spyOn($, 'scrollTo');
 
-        vm.fetchPage(2, null, null);
+        vm.fetchPage(2, null, null, true);
         expect(vm.isLoading).toBeTruthy();
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           page: 2,
           filterGroupsBy: null,
           sortBy: null,
           updatePagination: true,
+          archived: true,
         });
         setTimeout(() => {
           expect(vm.isLoading).toBeFalsy();
