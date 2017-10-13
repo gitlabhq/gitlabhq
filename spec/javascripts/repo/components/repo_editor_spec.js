@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import RepoStore from '~/repo/stores/repo_store';
 import repoEditor from '~/repo/components/repo_editor.vue';
 
 describe('RepoEditor', () => {
@@ -6,6 +7,10 @@ describe('RepoEditor', () => {
     const RepoEditor = Vue.extend(repoEditor);
 
     this.vm = new RepoEditor().$mount();
+  });
+
+  afterEach(() => {
+    RepoStore.openedFiles = [];
   });
 
   it('renders an ide container', (done) => {

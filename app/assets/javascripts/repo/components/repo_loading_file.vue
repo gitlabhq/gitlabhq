@@ -26,29 +26,28 @@
         </div>
       </div>
     </td>
-
-    <td
-      v-if="!isMini"
-      class="hidden-sm hidden-xs">
-      <div class="animation-container">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
+    <template v-if="!isMini">
+      <td
+        class="hidden-sm hidden-xs">
+        <div class="animation-container">
+          <div
+            v-for="n in 6"
+            :key="n"
+            :class="lineOfCode(n)">
+          </div>
         </div>
-      </div>
-    </td>
+      </td>
 
-    <td
-      v-if="!isMini"
-      class="hidden-xs">
-      <div class="animation-container animation-container-small animation-container-right">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
+      <td
+        class="hidden-xs">
+        <div class="animation-container animation-container-small animation-container-right">
+          <div
+            v-for="n in 6"
+            :key="n"
+            :class="lineOfCode(n)">
+          </div>
         </div>
-      </div>
-    </td>
+      </td>
+    </template>
   </tr>
 </template>

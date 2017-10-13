@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 import Store from '../stores/repo_store';
@@ -31,7 +32,7 @@ export default {
   computed: {
     flattendFiles() {
       const map = (arr) => {
-        if (arr && arr.tree.length === 0) {
+        if (arr && arr.tree && arr.tree.length === 0) {
           return [];
         }
 
@@ -79,13 +80,12 @@ export default {
         Store.setActiveLine(lineNumber);
       } else {
         const openFile = Helper.getFileFromPath(file.url);
-        file.loading = true;
 
         if (openFile) {
-          file.loading = false;
           Store.setActiveFiles(openFile);
           Store.setActiveLine(lineNumber);
         } else {
+          file.loading = true;
           Service.url = file.url;
           Helper.getContent(file)
             .then(() => {

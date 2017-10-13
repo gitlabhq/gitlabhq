@@ -58,7 +58,7 @@
     </td>
 
     <template v-if="!isMini">
-      <td class="hidden-sm hidden-xs">
+      <td class="commit-message hidden-sm hidden-xs">
         <a
           @click.stop
           :href="file.lastCommit.url"
@@ -67,7 +67,7 @@
         </a>
       </td>
 
-      <td class="hidden-xs text-right">
+      <td class="commit-update hidden-xs text-right">
         <span :title="tooltipTitle(file.lastCommit.updatedAt)">
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>

@@ -16,6 +16,10 @@ describe('RepoTabs', () => {
     return new RepoTabs().$mount();
   }
 
+  afterEach(() => {
+    RepoStore.openedFiles = [];
+  });
+
   it('renders a list of tabs', () => {
     RepoStore.openedFiles = openedFiles;
 
@@ -27,19 +31,5 @@ describe('RepoTabs', () => {
     expect(tabs[0].classList.contains('active')).toBeTruthy();
     expect(tabs[1].classList.contains('active')).toBeFalsy();
     expect(tabs[2].classList.contains('tabs-divider')).toBeTruthy();
-  });
-
-  describe('methods', () => {
-    describe('tabClosed', () => {
-      it('calls removeFromOpenedFiles with file obj', () => {
-        const file = {};
-
-        spyOn(RepoStore, 'removeFromOpenedFiles');
-
-        repoTabs.methods.tabClosed(file);
-
-        expect(RepoStore.removeFromOpenedFiles).toHaveBeenCalledWith(file);
-      });
-    });
   });
 });

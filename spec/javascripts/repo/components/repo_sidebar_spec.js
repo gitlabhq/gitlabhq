@@ -3,6 +3,7 @@ import Helper from '~/repo/helpers/repo_helper';
 import RepoService from '~/repo/services/repo_service';
 import RepoStore from '~/repo/stores/repo_store';
 import repoSidebar from '~/repo/components/repo_sidebar.vue';
+import { file } from '../mock_data';
 
 describe('RepoSidebar', () => {
   let vm;
@@ -15,14 +16,15 @@ describe('RepoSidebar', () => {
 
   afterEach(() => {
     vm.$destroy();
+
+    RepoStore.files = [];
+    RepoStore.openedFiles = [];
   });
 
   it('renders a sidebar', () => {
-    RepoStore.files = [{
-      id: 0,
-    }];
+    RepoStore.files = [file()];
     RepoStore.openedFiles = [];
-    RepoStore.isRoot = false;
+    RepoStore.isRoot = true;
 
     vm = createComponent();
     const thead = vm.$el.querySelector('thead');
@@ -30,9 +32,9 @@ describe('RepoSidebar', () => {
 
     expect(vm.$el.id).toEqual('sidebar');
     expect(vm.$el.classList.contains('sidebar-mini')).toBeFalsy();
-    expect(thead.querySelector('.name').textContent).toEqual('Name');
-    expect(thead.querySelector('.last-commit').textContent).toEqual('Last commit');
-    expect(thead.querySelector('.last-update').textContent).toEqual('Last update');
+    expect(thead.querySelector('.name').textContent.trim()).toEqual('Name');
+    expect(thead.querySelector('.last-commit').textContent.trim()).toEqual('Last commit');
+    expect(thead.querySelector('.last-update').textContent.trim()).toEqual('Last update');
     expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
     expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
@@ -46,25 +48,21 @@ describe('RepoSidebar', () => {
     vm = createComponent();
 
     expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
-    expect(vm.$el.querySelector('thead')).toBeFalsy();
-    expect(vm.$el.querySelector('tbody .repo-file-options')).toBeTruthy();
+    expect(vm.$el.querySelector('thead')).toBeTruthy();
+    expect(vm.$el.querySelector('thead .repo-file-options')).toBeTruthy();
   });
 
   it('renders 5 loading files if tree is loading and not hasFiles', () => {
-    RepoStore.loading = {
-      tree: true,
-    };
+    RepoStore.loading.tree = true;
     RepoStore.files = [];
     vm = createComponent();
 
     expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
   });
 
-  it('renders a prev directory if isRoot', () => {
-    RepoStore.files = [{
-      id: 0,
-    }];
-    RepoStore.isRoot = true;
+  it('renders a prev directory if is not root', () => {
+    RepoStore.files = [file()];
+    RepoStore.isRoot = false;
     vm = createComponent();
 
     expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
@@ -74,48 +72,36 @@ describe('RepoSidebar', () => {
     describe('fileClicked', () => {
       it('should fetch data for new file', () => {
         spyOn(Helper, 'getContent').and.callThrough();
-        const file1 = {
-          id: 0,
-          url: '',
-        };
-        RepoStore.files = [file1];
+        RepoStore.files = [file()];
         RepoStore.isRoot = true;
         vm = createComponent();
 
-        vm.fileClicked(file1);
+        vm.fileClicked(RepoStore.files[0]);
 
-        expect(Helper.getContent).toHaveBeenCalledWith(file1);
+        expect(Helper.getContent).toHaveBeenCalledWith(RepoStore.files[0]);
       });
 
       it('should not fetch data for already opened files', () => {
-        const file = {
-          id: 42,
-          url: 'foo',
-        };
-
-        spyOn(Helper, 'getFileFromPath').and.returnValue(file);
+        const f = file();
+        spyOn(Helper, 'getFileFromPath').and.returnValue(f);
         spyOn(RepoStore, 'setActiveFiles');
         vm = createComponent();
-        vm.fileClicked(file);
+        vm.fileClicked(f);
 
-        expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(file);
+        expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(f);
       });
 
       it('should hide files in directory if already open', () => {
-        spyOn(RepoStore, 'removeChildFilesOfTree').and.callThrough();
-        const file1 = {
-          id: 0,
-          type: 'tree',
-          url: '',
-          opened: true,
-        };
-        RepoStore.files = [file1];
-        RepoStore.isRoot = true;
+        spyOn(Helper, 'setDirectoryToClosed').and.callThrough();
+        const f = file();
+        f.opened = true;
+        f.type = 'tree';
+        RepoStore.files = [f];
         vm = createComponent();
 
-        vm.fileClicked(file1);
+        vm.fileClicked(RepoStore.files[0]);
 
-        expect(RepoStore.removeChildFilesOfTree).toHaveBeenCalledWith(file1);
+        expect(Helper.setDirectoryToClosed).toHaveBeenCalledWith(RepoStore.files[0]);
       });
     });
 
@@ -131,36 +117,31 @@ describe('RepoSidebar', () => {
     });
 
     describe('back button', () => {
-      const file1 = {
-        id: 1,
-        url: 'file1',
-      };
-      const file2 = {
-        id: 2,
-        url: 'file2',
-      };
-      RepoStore.files = [file1, file2];
-      RepoStore.openedFiles = [file1, file2];
-      RepoStore.isRoot = true;
+      beforeEach(() => {
+        const f = file();
+        const file2 = Object.assign({}, file());
+        file2.url = 'test';
+        RepoStore.files = [f, file2];
+        RepoStore.openedFiles = [];
+        RepoStore.isRoot = true;
 
-      vm = createComponent();
-      vm.fileClicked(file1);
+        vm = createComponent();
+      });
 
       it('render previous file when using back button', () => {
         spyOn(Helper, 'getContent').and.callThrough();
 
-        vm.fileClicked(file2);
-        expect(Helper.getContent).toHaveBeenCalledWith(file2);
-        Helper.getContent.calls.reset();
+        vm.fileClicked(RepoStore.files[1]);
+        expect(Helper.getContent).toHaveBeenCalledWith(RepoStore.files[1]);
 
         history.pushState({
           key: Math.random(),
-        }, '', file1.url);
+        }, '', RepoStore.files[1].url);
         const popEvent = document.createEvent('Event');
         popEvent.initEvent('popstate', true, true);
         window.dispatchEvent(popEvent);
 
-        expect(Helper.getContent.calls.mostRecent().args[0].url).toContain(file1.url);
+        expect(Helper.getContent.calls.mostRecent().args[0].url).toContain(RepoStore.files[1].url);
 
         window.history.pushState({}, null, '/');
       });

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import RepoStore from '~/repo/stores/repo_store';
 import repoLoadingFile from '~/repo/components/repo_loading_file.vue';
 
 describe('RepoLoadingFile', () => {
@@ -28,6 +29,10 @@ describe('RepoLoadingFile', () => {
     });
   }
 
+  afterEach(() => {
+    RepoStore.openedFiles = [];
+  });
+
   it('renders 3 columns of animated LoC', () => {
     const vm = createComponent({
       loading: {
@@ -42,38 +47,16 @@ describe('RepoLoadingFile', () => {
   });
 
   it('renders 1 column of animated LoC if isMini', () => {
+    RepoStore.openedFiles = new Array(1);
     const vm = createComponent({
       loading: {
         tree: true,
       },
       hasFiles: false,
-      isMini: true,
     });
     const columns = [...vm.$el.querySelectorAll('td')];
 
     expect(columns.length).toEqual(1);
     assertColumns(columns);
-  });
-
-  it('does not render if tree is not loading', () => {
-    const vm = createComponent({
-      loading: {
-        tree: false,
-      },
-      hasFiles: false,
-    });
-
-    expect(vm.$el.innerHTML).toBeFalsy();
-  });
-
-  it('does not render if hasFiles is true', () => {
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: true,
-    });
-
-    expect(vm.$el.innerHTML).toBeFalsy();
   });
 });
