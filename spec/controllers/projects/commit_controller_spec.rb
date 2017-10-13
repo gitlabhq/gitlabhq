@@ -134,8 +134,8 @@ describe Projects::CommitController do
     end
   end
 
-  describe "GET branches" do
-    it "contains branch and tags information" do
+  describe 'GET branches' do
+    it 'contains branch and tags information' do
       commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
 
       get(:branches,
@@ -143,8 +143,26 @@ describe Projects::CommitController do
           project_id: project,
           id: commit.id)
 
-      expect(assigns(:branches)).to include("master", "feature_conflict")
-      expect(assigns(:tags)).to include("v1.1.0")
+      expect(assigns(:branches)).to include('master', 'feature_conflict')
+      expect(assigns(:branches_limit_exceeded)).to be_falsey
+      expect(assigns(:tags)).to include('v1.1.0')
+      expect(assigns(:tags_limit_exceeded)).to be_falsey
+    end
+
+    it 'returns :limit_exceeded when number of branches/tags reach a threshhold' do
+      commit = project.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      allow_any_instance_of(Repository).to receive(:branch_count).and_return(1001)
+      allow_any_instance_of(Repository).to receive(:tag_count).and_return(1001)
+
+      get(:branches,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: commit.id)
+
+      expect(assigns(:branches)).to eq([])
+      expect(assigns(:branches_limit_exceeded)).to be_truthy
+      expect(assigns(:tags)).to eq([])
+      expect(assigns(:tags_limit_exceeded)).to be_truthy
     end
   end
 
