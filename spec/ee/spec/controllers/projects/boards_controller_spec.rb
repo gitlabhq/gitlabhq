@@ -63,8 +63,12 @@ describe Projects::BoardsController do
         it 'valid board is created' do
           create_board create_params
 
+          board = Board.first
+
           expect(Board.count).to eq(1)
-          expect(Board.first).to have_attributes(create_params)
+          expect(board).to have_attributes(create_params.except(:assignee_id))
+          expect(board.assignee).to eq(user)
+
         end
       end
 
