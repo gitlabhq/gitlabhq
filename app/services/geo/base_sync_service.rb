@@ -37,10 +37,52 @@ module Geo
       end
     end
 
+    def primary_http_path_prefix
+      @primary_http_path_prefix ||= Gitlab::Geo.primary_node.url
+    end
+
     private
 
     def sync_repository
       raise NotImplementedError, 'This class should implement sync_repository method'
+    end
+
+    def current_node
+      ::Gitlab::Geo.current_node
+    end
+
+    def fetch_geo_mirror(repository)
+      case current_node&.clone_protocol
+      when 'http'
+        fetch_http_geo_mirror(repository)
+      when 'ssh'
+        fetch_ssh_geo_mirror(repository)
+      else
+        raise "Unknown clone protocol: #{current_node&.clone_protocol}"
+      end
+    end
+
+    def build_repository_url(prefix, repository)
+      url = prefix
+      url += '/' unless url.end_with?('/')
+
+      url + repository.full_path + '.git'
+    end
+
+    def fetch_http_geo_mirror(repository)
+      url = build_repository_url(primary_http_path_prefix, repository)
+
+      # Fetch the repository, using a JWT header for authentication
+      authorization = ::Gitlab::Geo::BaseRequest.new.authorization
+      header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
+
+      repository.with_config(header) { repository.fetch_geo_mirror(url) }
+    end
+
+    def fetch_ssh_geo_mirror(repository)
+      url = build_repository_url(primary_ssh_path_prefix, repository)
+
+      repository.fetch_geo_mirror(url)
     end
 
     def registry

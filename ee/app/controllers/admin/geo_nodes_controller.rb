@@ -86,6 +86,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
       :namespace_ids,
       :repos_max_capacity,
       :files_max_capacity,
+      :clone_protocol,
       geo_node_key_attributes: [:key]
     )
   end

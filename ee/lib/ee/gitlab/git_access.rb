@@ -13,6 +13,7 @@ module EE
         raise NotImplementedError.new unless defined?(super)
 
         return geo_node_key.active? if geo_node_key?
+        return true if actor == :geo
 
         super
       end
@@ -22,7 +23,7 @@ module EE
       def user
         raise NotImplementedError.new unless defined?(super)
 
-        return nil if actor.is_a?(::GeoNodeKey)
+        return nil if geo?
 
         super
       end
@@ -32,7 +33,7 @@ module EE
       def check_download_access!
         raise NotImplementedError.new unless defined?(super)
 
-        return if geo_node_key?
+        return if geo?
 
         super
       end
@@ -40,7 +41,7 @@ module EE
       def check_active_user!
         raise NotImplementedError.new unless defined?(super)
 
-        return if geo_node_key?
+        return if geo?
 
         super
       end
@@ -57,6 +58,10 @@ module EE
 
       def geo_node_key?
         actor.is_a?(::GeoNodeKey)
+      end
+
+      def geo?
+        geo_node_key? || actor == :geo
       end
     end
   end

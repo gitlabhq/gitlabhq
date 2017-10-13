@@ -802,6 +802,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.string "clone_url_prefix"
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
+    t.string "clone_protocol", default: "http", null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
