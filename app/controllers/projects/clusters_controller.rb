@@ -31,7 +31,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def create
-    @cluster = Ci::CreateClusterService
+    @cluster = Ci::CreateService
       .new(project, current_user, create_params)
       .execute(token_in_session)
 
@@ -88,19 +88,27 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def create_params
     params.require(:cluster).permit(
-      :gcp_project_id,
-      :gcp_cluster_zone,
-      :gcp_cluster_name,
-      :gcp_cluster_size,
-      :gcp_machine_type,
-      :project_namespace,
-      :enabled)
+      :enabled,
+      :platform_type,
+      :provider_type,
+      kubernetes_platform: [
+        :namespace
+      ],
+      gcp_provider: [
+        :project_id,
+        :cluster_zone,
+        :cluster_name,
+        :cluster_size,
+        :machine_type
+      ])
   end
 
   def update_params
     params.require(:cluster).permit(
-      :project_namespace,
-      :enabled)
+      :enabled,
+      kubernetes_platform: [
+        :namespace
+      ])
   end
 
   def authorize_google_api
