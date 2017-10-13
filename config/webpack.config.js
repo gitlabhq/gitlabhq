@@ -229,11 +229,8 @@ var config = {
         'graphs',
         'graphs_show',
         'monitoring',
-<<<<<<< HEAD
-        'burndown_chart',
-=======
         'users',
->>>>>>> upstream/master
+        'burndown_chart', // EE
       ],
     }),
 
