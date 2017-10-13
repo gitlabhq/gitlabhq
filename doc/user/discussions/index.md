@@ -194,38 +194,67 @@ load and will have a corresponding badge counter to match the counter on the ima
 
 > [Introduced][ce-14531] in GitLab 10.1.
 
-There might be some cases where a discussion is better off if it's locked down.
-For example:
+Sometimes a discussion is revolved around an image. With image discussions,
+you can easily target a specific coordinate of an image and start a discussion
+around it. Image discussions are available in merge requests and commit detail views.
 
-- Discussions that are several years old and the issue/merge request is closed,
-  but people continue to try to resurrect the discussion.
-- Discussions where someone or a group of people are trolling, are abusive, or
-  in-general are causing the discussion to be unproductive.
+To start an image discussion, hover your mouse over the image. Your mouse pointer
+should convert into an icon, indicating that the image is available for commenting.
+Simply click anywhere on the image to create a new discussion.
 
-In locked discussions, only team members can write new comments and edit the old
-ones.
+![Start image discussion](img/start_image_discussion.gif)
 
-To lock or unlock a discussion, you need to have at least Master [permissions]:
+After you click on the image, a comment form will be displayed that would be the start
+of your discussion. Once you save your comment, you will see a new badge displayed on
+top of your image. This badge represents your discussion.
 
-1. Find the "Lock" section in the sidebar and click **Edit**
-1. In the dialog that will appear, you can choose to turn on or turn off the
-   discussion lock
-1. Optionally, leave a comment to explain your reasoning behind that action
+>**Note:**
+This discussion badge is typically associated with a number that is only used as a visual
+reference for each discussion. In the merge request discussion tab,
+this badge will be indicated with a comment icon since each discussion will render a new
+image section.
 
-| Turn off discussion lock | Turn on discussion lock |
+Image discussions also work on diffs that replace an existing image. In this diff view
+mode, you can toggle the different view modes and still see the discussion point badges.
+
+| 2-up | Swipe | Onion Skin |
+| :-----------: | :----------: | :----------: |
+| ![2-up view](img/two_up_view.png) | ![swipe view](img/swipe_view.png) | ![onion skin view](img/onion_skin_view.png) |
+
+Image discussions also work well with resolvable discussions. Resolved discussions
+on diffs (not on the merge request discussion tab) will appear collapsed on page
+load and will have a corresponding badge counter to match the counter on the image.
+
+![Image resolved discussion](img/image_resolved_discussion.png)
+
+## Lock discussions
+
+> [Introduced][ce-14531] in GitLab 10.1.
+
+For large projects with many contributors, it may be useful to stop discussions
+in issues or merge requests in these scenarios:
+
+- The project maintainer has already resolved the discussion and it is not helpful
+for continued feedback. The project maintainer has already directed new conversation
+to newer issues or merge requests.
+- The people participating in the discussion are trolling, abusive, or otherwise
+being unproductive.
+
+In these cases, a user with Master permissions or higher in the project can lock (and unlock)
+an issue or a merge request, using the "Lock" section in the sidebar:
+
+| Unlock | Lock |
 | :-----------: | :----------: |
 | ![Turn off discussion lock](img/turn_off_lock.png) | ![Turn on discussion lock](img/turn_on_lock.png) |
 
-Every change is indicated by a system note in the issue's or merge request's
-comments.
+System notes indicate locking and unlocking.
 
 ![Discussion lock system notes](img/discussion_lock_system_notes.png)
 
-Once an issue or merge request is locked, project members can see the indicator
-in the comment area, whereas non project members can only see the information
-that the discussion is locked.
+In a locked issue or merge request, only team members can add new comments and
+edit existing comments. Non-team members are restricted from adding or editing comments.
 
-| Team member | Not a member |
+| Team member | Non-team member |
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 

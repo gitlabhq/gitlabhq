@@ -46,26 +46,14 @@ import './lib/utils/url_utility';
 // behaviors
 import './behaviors/';
 
-// u2f
-import './u2f/authenticate';
-import './u2f/error';
-import './u2f/register';
-import './u2f/util';
-
 // everything else
 import './activities';
 import './admin';
-import './api';
-import './ajax_loading_spinner';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './broadcast_message';
-import './build';
-import './build_artifacts';
-import './build_variables';
-import './ci_lint_editor';
 import './commits';
 import './compare';
 import './compare_autocomplete';
@@ -91,8 +79,6 @@ import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './label_manager';
-import './labels';
 import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
@@ -130,7 +116,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './star';
 import './subscription';
 import './subscription_select';
 import initBreadcrumbs from './breadcrumb';

@@ -647,7 +647,7 @@ module SystemNoteService
 
   def discussion_lock(issuable, author)
     action = issuable.discussion_locked? ? 'locked' : 'unlocked'
-    body = "#{action} this issue"
+    body = "#{action} this #{issuable.class.to_s.titleize.downcase}"
 
     create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
   end

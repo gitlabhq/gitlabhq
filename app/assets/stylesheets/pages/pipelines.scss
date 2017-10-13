@@ -236,9 +236,11 @@
 }
 
 .stage-cell {
-  @media (min-width: $screen-md-min) {
-    min-width: 148px;
-    margin-right: -4px;
+  &.table-section {
+    @media (min-width: $screen-md-min) {
+      min-width: 148px;
+      margin-right: -4px;
+    }
   }
 
   .mini-pipeline-graph-dropdown-toggle svg {

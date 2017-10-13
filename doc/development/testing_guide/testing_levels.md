@@ -67,7 +67,7 @@ run JavaScript tests, so you can either run unit tests (e.g. test a single
 JavaScript method), or integration tests (e.g. test a component that is composed
 of multiple components).
 
-## System tests or Feature tests
+## System tests or feature tests
 
 Formal definition: https://en.wikipedia.org/wiki/System_testing.
 
@@ -108,7 +108,7 @@ The reasons why we should follow these best practices are as follows:
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
-## Black-box tests or End-to-end tests
+## Black-box tests or end-to-end tests
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces

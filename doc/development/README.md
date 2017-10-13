@@ -57,18 +57,15 @@
 
 - [Merge Request checklist](database_merge_request_checklist.md)
 - [Adding database indexes](adding_database_indexes.md)
-- [Post Deployment Migrations](post_deployment_migrations.md)
 - [Foreign keys & associations](foreign_keys.md)
-- [Serializing data](serializing_data.md)
-- [Polymorphic associations](polymorphic_associations.md)
 - [Single table inheritance](single_table_inheritance.md)
-- [Background Migrations](background_migrations.md)
+- [Polymorphic associations](polymorphic_associations.md)
+- [Serializing data](serializing_data.md)
+- [Hash indexes](hash_indexes.md)
 - [Storing SHA1 hashes as binary](sha1_as_binary.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
-- [Hash indexes](hash_indexes.md)
-- [Swapping Tables](swapping_tables.md)
 
 ## Testing guides
 

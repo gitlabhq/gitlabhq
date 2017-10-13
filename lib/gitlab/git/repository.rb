@@ -193,7 +193,7 @@ module Gitlab
       def has_local_branches?
         gitaly_migrate(:has_local_branches) do |is_enabled|
           if is_enabled
-            gitaly_ref_client.has_local_branches?
+            gitaly_repository_client.has_local_branches?
           else
             has_local_branches_rugged?
           end
