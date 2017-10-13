@@ -1,7 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
 
 export default function initCompareAutocomplete() {
-  $('.js-compare-dropdown').each(() => {
+  $('.js-compare-dropdown').each(function() {
     var $dropdown, selected;
     $dropdown = $(this);
     selected = $dropdown.data('selected');
