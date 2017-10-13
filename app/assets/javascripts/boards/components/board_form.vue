@@ -115,9 +115,6 @@ export default {
       }
       return 'Edit board';
     },
-    milestoneToggleText() {
-      return this.board.milestone ? this.board.milestone.title : 'Milestone';
-    },
     expandButtonText() {
       return this.expanded ? 'Collapse' : 'Expand';
     },
