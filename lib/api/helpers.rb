@@ -397,7 +397,6 @@ module API
 
     private
 
-<<<<<<< HEAD
     def private_token
       params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
     end
@@ -420,8 +419,6 @@ module API
       warden.try(:authenticate) if verified_request?
     end
 
-=======
->>>>>>> upstream/master
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
@@ -432,7 +429,6 @@ module API
       end
     end
 
-<<<<<<< HEAD
     def find_current_user
       user =
         find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
@@ -447,8 +443,6 @@ module API
       user
     end
 
-=======
->>>>>>> upstream/master
     def sudo!
       return unless sudo_identifier
       return unless initial_current_user

@@ -126,7 +126,6 @@ module API
         Gitlab::RequestForgeryProtection.verified?(env)
       end
 
-<<<<<<< HEAD
       def find_user_by_job_token
         return @user_by_job_token if defined?(@user_by_job_token)
 
@@ -148,13 +147,12 @@ module API
       def find_user_by_authentication_token(token_string)
         User.find_by_authentication_token(token_string)
       end
-=======
+
       def find_oauth_access_token
         return @oauth_access_token if defined?(@oauth_access_token)
 
         token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
         return @oauth_access_token = nil unless token
->>>>>>> upstream/master
 
         @oauth_access_token = OauthAccessToken.by_token(token)
         raise UnauthorizedError unless @oauth_access_token
