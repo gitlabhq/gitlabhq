@@ -53,7 +53,6 @@ import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './broadcast_message';
 import './commits';
 import './compare';
 import './compare_autocomplete';

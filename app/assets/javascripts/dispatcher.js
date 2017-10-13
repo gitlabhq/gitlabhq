@@ -70,6 +70,7 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
@@ -555,6 +556,9 @@ import memberExpirationDate from './member_expiration_date';
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'broadcast_messages':
+              initBroadcastMessagesForm();
+              break;
             case 'cohorts':
               new UsagePing();
               break;
