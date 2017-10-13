@@ -11,8 +11,10 @@ module Geo
       repositories_failed_count
       lfs_objects_count
       lfs_objects_synced_count
+      lfs_objects_failed_count
       attachments_count
       attachments_synced_count
+      attachments_failed_count
       last_event_id
       last_event_date
       cursor_last_event_id
