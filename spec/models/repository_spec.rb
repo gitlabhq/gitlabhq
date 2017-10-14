@@ -922,13 +922,16 @@ describe Repository, models: true do
   describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
+    let(:updating_ref) { 'refs/heads/feature' }
+    let(:target_project) { project }
+    let(:target_repository) { target_project.repository }
 
     context 'when pre hooks were successful' do
       before do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(user, project, old_rev, new_rev, 'refs/heads/feature')
+          .with(user, target_repository, old_rev, new_rev, updating_ref)
           .and_yield(service).and_return(true)
       end
 
@@ -958,6 +961,58 @@ describe Repository, models: true do
 
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
+      end
+
+      context 'when target project does not have the commit' do
+        let(:target_project) { create(:project, :empty_repo) }
+        let(:old_rev) { Gitlab::Git::BLANK_SHA }
+        let(:new_rev) { project.commit('feature').sha }
+        let(:updating_ref) { 'refs/heads/master' }
+
+        it 'fetch_ref and create the branch' do
+          expect(target_project.repository).to receive(:fetch_ref)
+            .and_call_original
+
+          GitOperationService.new(user, target_repository)
+            .with_branch(
+              'master',
+              start_project: project,
+              start_branch_name: 'feature') { new_rev }
+
+          expect(target_repository.branch_names).to contain_exactly('master')
+        end
+      end
+
+      context 'when target project already has the commit' do
+        let(:target_project) { create(:project, :repository) }
+
+        it 'does not fetch_ref and just pass the commit' do
+          expect(target_repository).not_to receive(:fetch_ref)
+
+          GitOperationService.new(user, target_repository)
+            .with_branch('feature', start_project: project) { new_rev }
+        end
+      end
+    end
+
+    context 'when temporary ref failed to be created from other project' do
+      let(:target_project) { create(:project, :empty_repo) }
+
+      before do
+        expect(target_project.repository).to receive(:run_git)
+      end
+
+      it 'raises Rugged::ReferenceError' do
+        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
+          expect(err.cause).to be_nil
+        end
+
+        expect do
+          GitOperationService.new(user, target_project.repository)
+            .with_branch('feature',
+                         start_project: project,
+                         &:itself)
+        end.to raise_reference_error
       end
     end
 
@@ -2052,6 +2107,53 @@ describe Repository, models: true do
         expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
         expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.is_ancestor?(nil, nil)).to eq(false)
+      end
+    end
+  end
+
+  describe '#with_repo_branch_commit' do
+    context 'when comparing with the same repository' do
+      let(:start_repository) { repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
+      end
+    end
+
+    context 'when comparing with another repository' do
+      let(:forked_project) { create(:project, :repository) }
+      let(:start_repository) { forked_project.repository }
+
+      context 'when the branch exists' do
+        let(:start_branch_name) { 'master' }
+
+        it 'yields the commit' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(an_instance_of(::Commit))
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:start_branch_name) { 'definitely-not-master' }
+
+        it 'yields nil' do
+          expect { |b| repository.with_repo_branch_commit(start_repository, start_branch_name, &b) }
+            .to yield_with_args(nil)
+        end
       end
     end
   end

@@ -58,6 +58,10 @@ class Repository
     @project = project
   end
 
+  def ==(other)
+    @disk_path == other.disk_path
+  end
+
   def raw_repository
     return nil unless full_path
 
@@ -71,6 +75,10 @@ class Repository
     @path_to_repo ||= File.expand_path(
       File.join(repository_storage_path, disk_path + '.git')
     )
+  end
+
+  def inspect
+    "#<#{self.class.name}:#{@disk_path}>"
   end
 
   #
@@ -224,7 +232,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -235,6 +243,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -979,27 +991,26 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
+    return yield nil if start_repository.empty_repo?
 
-    branch_name_or_sha =
-      if start_repository == self
-        start_branch_name
+    if start_repository == self
+      yield commit(start_branch_name)
+    else
+      start_commit = start_repository.commit(start_branch_name)
+
+      return yield nil unless start_commit
+
+      sha = start_commit.sha
+
+      if branch_commit = commit(sha)
+        yield branch_commit
       else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
-        )
-
-        start_repository.commit(start_branch_name).sha
+        with_repo_tmp_commit(
+          start_repository, start_branch_name, sha) do |tmp_commit|
+          yield tmp_commit
+        end
       end
-
-    yield(commit(branch_name_or_sha))
-
-  ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    end
   end
 
   def add_remote(name, url)
@@ -1021,7 +1032,12 @@ class Repository
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    run_git(args)
+    message, status = run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)
@@ -1202,5 +1218,17 @@ class Repository
       .gitaly_commit_client
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
+  end
+
+  def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+    tmp_ref = fetch_ref(
+      start_repository.path_to_repo,
+      "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+      "refs/tmp/#{SecureRandom.hex}/head"
+    )
+
+    yield commit(sha)
+  ensure
+    rugged.references.delete(tmp_ref) if tmp_ref
   end
 end

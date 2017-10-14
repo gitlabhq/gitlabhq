@@ -14,7 +14,6 @@
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
-/* global ProjectFork */
 /* global BuildArtifacts */
 /* global GroupsSelect */
 /* global Search */
@@ -468,7 +467,9 @@ import initChangesDropdown from './init_changes_dropdown';
           shortcut_handler = true;
           break;
         case 'projects:forks:new':
-          new ProjectFork();
+          import(/* webpackChunkName: 'project_fork' */ './project_fork')
+            .then(fork => fork.default())
+            .catch(() => {});
           break;
         case 'projects:artifacts:browse':
           new ShortcutsNavigation();

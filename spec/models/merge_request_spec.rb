@@ -1660,12 +1660,40 @@ describe MergeRequest do
   end
 
   describe '#fetch_ref' do
-    it 'sets "ref_fetched" flag to true' do
+    before do
       subject.update!(ref_fetched: nil)
+    end
 
-      subject.fetch_ref
+    context 'when the branch exists' do
+      it 'writes the ref' do
+        expect(subject.target_project.repository).to receive(:write_ref).with(subject.ref_path, /\h{40}/)
 
-      expect(subject.reload.ref_fetched).to be_truthy
+        subject.fetch_ref
+      end
+
+      it 'sets "ref_fetched" flag to true' do
+        subject.fetch_ref
+
+        expect(subject.reload.ref_fetched).to be_truthy
+      end
+    end
+
+    context 'when the branch does not exist' do
+      before do
+        subject.source_branch = 'definitely-not-master'
+      end
+
+      it 'does not write the ref' do
+        expect(subject.target_project.repository).not_to receive(:write_ref)
+
+        subject.fetch_ref
+      end
+
+      it 'sets "ref_fetched" flag to true' do
+        subject.fetch_ref
+
+        expect(subject.reload.ref_fetched).to be_truthy
+      end
     end
   end
 

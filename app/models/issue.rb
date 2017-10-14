@@ -269,6 +269,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def update_project_counter_caches
+    Projects::OpenIssuesCountService.new(project).refresh_cache
+  end
+
   private
 
   # Returns `true` if the given User can read the current Issue.

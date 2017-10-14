@@ -358,6 +358,8 @@ module Gitlab
           raise 'rename_column_concurrently can not be run inside a transaction'
         end
 
+        check_trigger_permissions!(table)
+
         old_col = column_for(table, old)
         new_type = type || old_col.type
 
@@ -430,6 +432,8 @@ module Gitlab
       def cleanup_concurrent_column_rename(table, old, new)
         trigger_name = rename_trigger_name(table, old, new)
 
+        check_trigger_permissions!(table)
+
         if Database.postgresql?
           remove_rename_triggers_for_postgresql(table, trigger_name)
         else
@@ -485,14 +489,14 @@ module Gitlab
 
       # Removes the triggers used for renaming a PostgreSQL column concurrently.
       def remove_rename_triggers_for_postgresql(table, trigger)
-        execute("DROP TRIGGER #{trigger} ON #{table}")
-        execute("DROP FUNCTION #{trigger}()")
+        execute("DROP TRIGGER IF EXISTS #{trigger} ON #{table}")
+        execute("DROP FUNCTION IF EXISTS #{trigger}()")
       end
 
       # Removes the triggers used for renaming a MySQL column concurrently.
       def remove_rename_triggers_for_mysql(trigger)
-        execute("DROP TRIGGER #{trigger}_insert")
-        execute("DROP TRIGGER #{trigger}_update")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_insert")
+        execute("DROP TRIGGER IF EXISTS #{trigger}_update")
       end
 
       # Returns the (base) name to use for triggers when renaming columns.
@@ -610,6 +614,44 @@ module Gitlab
       def remove_foreign_key_without_error(*args)
         remove_foreign_key(*args)
       rescue ArgumentError
+      end
+
+      def sidekiq_queue_migrate(queue_from, to:)
+        while sidekiq_queue_length(queue_from) > 0
+          Sidekiq.redis do |conn|
+            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
+          end
+        end
+      end
+
+      def sidekiq_queue_length(queue_name)
+        Sidekiq.redis do |conn|
+          conn.llen("queue:#{queue_name}")
+        end
+      end
+
+      def check_trigger_permissions!(table)
+        unless Grant.create_and_execute_trigger?(table)
+          dbname = Database.database_name
+          user = Database.username
+
+          raise <<-EOF
+Your database user is not allowed to create, drop, or execute triggers on the
+table #{table}.
+
+If you are using PostgreSQL you can solve this by logging in to the GitLab
+database (#{dbname}) using a super user and running:
+
+    ALTER #{user} WITH SUPERUSER
+
+For MySQL you instead need to run:
+
+    GRANT ALL PRIVILEGES ON *.* TO #{user}@'%'
+
+Both queries will grant the user super user permissions, ensuring you don't run
+into similar problems in the future (e.g. when new tables are created).
+          EOF
+        end
       end
     end
   end

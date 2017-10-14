@@ -28,7 +28,10 @@ module Projects
 
         success
       else
-        error('Project could not be updated!')
+        model_errors = project.errors.full_messages.to_sentence
+        error_message = model_errors.presence || 'Project could not be updated!'
+
+        error(error_message)
       end
     end
 

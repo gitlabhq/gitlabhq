@@ -1,5 +1,0 @@
----
-title: Prevent a persistent XSS in the commit author block
-merge_request:
-author:
-type: security
