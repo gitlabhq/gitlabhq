@@ -162,7 +162,6 @@ module SystemNoteService
   #   "changed time estimate to 3d 5h"
   #
   # Returns the created Note object
-
   def change_time_estimate(noteable, project, author)
     parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
     body = if noteable.time_estimate == 0
@@ -188,7 +187,6 @@ module SystemNoteService
   #   "added 2h 30m of time spent"
   #
   # Returns the created Note object
-
   def change_time_spent(noteable, project, author)
     time_spent = noteable.time_spent
 
@@ -451,10 +449,6 @@ module SystemNoteService
     end
   end
 
-  def cross_reference?(note_text)
-    note_text =~ /\A#{cross_reference_note_prefix}/i
-  end
-
   # Check if a cross-reference is disallowed
   #
   # This method prevents adding a "mentioned in !1" note on every single commit
@@ -484,7 +478,6 @@ module SystemNoteService
   # mentioner - Mentionable object
   #
   # Returns Boolean
-
   def cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)

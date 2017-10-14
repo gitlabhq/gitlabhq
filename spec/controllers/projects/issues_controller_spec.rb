@@ -226,7 +226,7 @@ describe Projects::IssuesController do
           id: issue.iid,
           issue: { assignee_ids: [assignee.id] },
           format: :json
-        body = JSON.parse(response.body)
+        body = json_response
 
         expect(body['assignees'].first.keys)
           .to match_array(%w(id name username avatar_url state web_url))
