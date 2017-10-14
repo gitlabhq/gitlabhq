@@ -190,43 +190,6 @@ load and will have a corresponding badge counter to match the counter on the ima
 
 ![Image resolved discussion](img/image_resolved_discussion.png)
 
-## Locking discussions
-
-> [Introduced][ce-14531] in GitLab 10.1.
-
-Sometimes a discussion is revolved around an image. With image discussions,
-you can easily target a specific coordinate of an image and start a discussion
-around it. Image discussions are available in merge requests and commit detail views.
-
-To start an image discussion, hover your mouse over the image. Your mouse pointer
-should convert into an icon, indicating that the image is available for commenting.
-Simply click anywhere on the image to create a new discussion.
-
-![Start image discussion](img/start_image_discussion.gif)
-
-After you click on the image, a comment form will be displayed that would be the start
-of your discussion. Once you save your comment, you will see a new badge displayed on
-top of your image. This badge represents your discussion.
-
->**Note:**
-This discussion badge is typically associated with a number that is only used as a visual
-reference for each discussion. In the merge request discussion tab,
-this badge will be indicated with a comment icon since each discussion will render a new
-image section.
-
-Image discussions also work on diffs that replace an existing image. In this diff view
-mode, you can toggle the different view modes and still see the discussion point badges.
-
-| 2-up | Swipe | Onion Skin |
-| :-----------: | :----------: | :----------: |
-| ![2-up view](img/two_up_view.png) | ![swipe view](img/swipe_view.png) | ![onion skin view](img/onion_skin_view.png) |
-
-Image discussions also work well with resolvable discussions. Resolved discussions
-on diffs (not on the merge request discussion tab) will appear collapsed on page
-load and will have a corresponding badge counter to match the counter on the image.
-
-![Image resolved discussion](img/image_resolved_discussion.png)
-
 ## Lock discussions
 
 > [Introduced][ce-14531] in GitLab 10.1.
