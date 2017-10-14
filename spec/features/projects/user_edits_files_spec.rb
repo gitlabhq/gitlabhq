@@ -24,6 +24,8 @@ describe 'User edits files' do
     it 'inserts a content of a file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
@@ -39,6 +41,8 @@ describe 'User edits files' do
     it 'commits an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
@@ -53,6 +57,8 @@ describe 'User edits files' do
     it 'commits an edited file to a new branch', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
@@ -62,13 +68,14 @@ describe 'User edits files' do
 
       click_link('Changes')
 
-      wait_for_requests
       expect(page).to have_content('*.rbca')
     end
 
     it 'shows the diff of an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       click_link('Preview changes')
 
@@ -93,6 +100,8 @@ describe 'User edits files' do
 
       expect(page).to have_content(fork_message)
 
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
@@ -106,6 +115,9 @@ describe 'User edits files' do
       expect(page).to have_button('Cancel')
 
       click_link('Fork')
+
+      find('.file-editor', match: :first)
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
