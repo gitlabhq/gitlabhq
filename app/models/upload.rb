@@ -1,4 +1,7 @@
 class Upload < ActiveRecord::Base
+  # EE specific modules
+  prepend EE::Upload
+
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
 

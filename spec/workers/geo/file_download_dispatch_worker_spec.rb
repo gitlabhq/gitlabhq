@@ -1,10 +1,12 @@
 require 'spec_helper'
 
-describe Geo::FileDownloadDispatchWorker, :geo do
+# Disable transactions via :truncate method because a foreign table
+# can't see changes inside a transaction of a different connection.
+describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
   include ::EE::GeoHelpers
 
-  set(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
-  set(:secondary) { create(:geo_node) }
+  let(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
+  let(:secondary) { create(:geo_node) }
 
   before do
     stub_current_geo_node(secondary)
@@ -16,7 +18,11 @@ describe Geo::FileDownloadDispatchWorker, :geo do
 
   subject { described_class.new }
 
-  describe '#perform' do
+  shared_examples '#perform' do |skip_tests|
+    before do
+      skip if skip_tests
+    end
+
     it 'does not schedule anything when secondary role is disabled' do
       create(:lfs_object, :with_file)
 
@@ -25,6 +31,10 @@ describe Geo::FileDownloadDispatchWorker, :geo do
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
       subject.perform
+
+      # We need to unstub here or the DatabaseCleaner will have issues since it
+      # will appear as though the tracking DB were not available
+      allow(Gitlab::Geo).to receive(:geo_database_configured?).and_call_original
     end
 
     it 'does not schedule anything when node is disabled' do
@@ -143,5 +153,18 @@ describe Geo::FileDownloadDispatchWorker, :geo do
         subject.perform
       end
     end
+  end
+
+  describe 'when PostgreSQL FDW is available', :geo do
+    # Skip if FDW isn't activated on this database
+    it_behaves_like '#perform', !Gitlab::Geo.fdw?
+  end
+
+  describe 'when PostgreSQL FDW is not enabled', :geo do
+    before do
+      allow(Gitlab::Geo).to receive(:fdw?).and_return(false)
+    end
+
+    it_behaves_like '#perform', false
   end
 end
