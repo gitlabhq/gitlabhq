@@ -362,10 +362,15 @@ describe 'Pipelines', :js do
         context 'dropdown jobs list' do
           it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
             find('.js-builds-dropdown-button').click
+            dropdown_item = find('.mini-pipeline-graph-dropdown-item').native
 
-            execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
-
-            find('.mini-pipeline-graph-dropdown-item').click
+            %i(control command alt).each do |command|
+              page.driver.browser.action
+                .key_down(:command)
+                .click(dropdown_item)
+                .key_up(:command)
+                .perform
+            end
 
             expect(page).to have_selector('.js-ci-action-icon')
           end
