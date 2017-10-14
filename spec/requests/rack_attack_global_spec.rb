@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rack::Attack do
+describe 'Rack Attack global throttles' do
   NUM_TRIES_FOR_REJECTION = 3 # Flaky tests, have not figured out how to fix it
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
@@ -47,52 +47,52 @@ describe Rack::Attack do
       it 'rejects requests over the rate limit' do
         # At first, allow requests under the rate limit.
         requests_per_period.times do
-          get *get_args
+          get(*get_args)
           expect(response).to have_http_status 200
         end
 
         # the last straw
-        expect_rejection { get *get_args }
+        expect_rejection { get(*get_args) }
       end
 
       it 'allows requests after throttling and then waiting for the next period' do
         requests_per_period.times do
-          get *get_args
+          get(*get_args)
           expect(response).to have_http_status 200
         end
 
-        expect_rejection { get *get_args }
+        expect_rejection { get(*get_args) }
 
         Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
           requests_per_period.times do
-            get *get_args
+            get(*get_args)
             expect(response).to have_http_status 200
           end
 
-          expect_rejection { get *get_args }
+          expect_rejection { get(*get_args) }
         end
       end
 
       it 'counts requests from different users separately, even from the same IP' do
         requests_per_period.times do
-          get *get_args
+          get(*get_args)
           expect(response).to have_http_status 200
         end
 
         # would be over the limit if this wasn't a different user
-        get *other_user_get_args
+        get(*other_user_get_args)
         expect(response).to have_http_status 200
       end
 
       it 'counts all requests from the same user, even via different IPs' do
         requests_per_period.times do
-          get *get_args
+          get(*get_args)
           expect(response).to have_http_status 200
         end
 
         expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
 
-        expect_rejection { get *get_args }
+        expect_rejection { get(*get_args) }
       end
     end
 
@@ -104,7 +104,7 @@ describe Rack::Attack do
 
       it 'allows requests over the rate limit' do
         (1 + requests_per_period).times do
-          get *get_args
+          get(*get_args)
           expect(response).to have_http_status 200
         end
       end
@@ -381,7 +381,7 @@ describe Rack::Attack do
 
   def expect_rejection(&block)
     NUM_TRIES_FOR_REJECTION.times do |i|
-      block.call
+      yield
       break if response.status == 429 # success
       Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})"
     end
