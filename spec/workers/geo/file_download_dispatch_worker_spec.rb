@@ -157,7 +157,7 @@ describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
 
   describe 'when PostgreSQL FDW is available', :geo do
     # Skip if FDW isn't activated on this database
-    it_behaves_like '#perform', !Gitlab::Geo.fdw?
+    it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
   end
 
   describe 'when PostgreSQL FDW is not enabled', :geo do
