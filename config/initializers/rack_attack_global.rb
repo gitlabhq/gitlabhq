@@ -45,7 +45,7 @@ class Rack::Attack
     end
 
     def authenticated_user_id
-      session_user_id || sessionless_user_id
+      Gitlab::Auth::RequestAuthenticator.new(self).user&.id
     end
 
     def api_request?
@@ -54,16 +54,6 @@ class Rack::Attack
 
     def web_request?
       !api_request?
-    end
-
-    private
-
-    def session_user_id
-      Gitlab::Auth.find_session_user(self)&.id
-    end
-
-    def sessionless_user_id
-      Gitlab::Auth.find_sessionless_user(self)&.id
     end
   end
 end

@@ -125,7 +125,7 @@ class ApplicationController < ActionController::Base
   # This filter handles private tokens, personal access tokens, and atom
   # requests with rss tokens
   def authenticate_sessionless_user!
-    user = Gitlab::Auth.find_sessionless_user(request)
+    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
     sessionless_sign_in(user) if user
 >>>>>>> Add request throttles
