@@ -12,7 +12,7 @@ describe WebHookService do
   let(:data) do
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
   end
-  let(:service_instance) { described_class.new(project_hook, data, 'push_hooks') }
+  let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#execute' do
     before(:each) do

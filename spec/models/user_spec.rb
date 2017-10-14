@@ -2074,4 +2074,18 @@ describe User do
       end
     end
   end
+
+  describe '#verified_email?' do
+    it 'returns true when the email is the primary email' do
+      user = build :user, email: 'email@example.com'
+
+      expect(user.verified_email?('email@example.com')).to be true
+    end
+
+    it 'returns false when the email is not the primary email' do
+      user = build :user, email: 'email@example.com'
+
+      expect(user.verified_email?('other_email@example.com')).to be false
+    end
+  end
 end

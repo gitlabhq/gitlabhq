@@ -509,7 +509,7 @@ production: &base
         failure_count_threshold: 10 # number of failures before stopping attempts
         failure_wait_time: 30 # Seconds after an access failure before allowing access again
         failure_reset_time: 1800 # Time in seconds to expire failures
-        storage_timeout: 5 # Time in seconds to wait before aborting a storage access attempt
+        storage_timeout: 30 # Time in seconds to wait before aborting a storage access attempt
 
 
   ## Backup settings

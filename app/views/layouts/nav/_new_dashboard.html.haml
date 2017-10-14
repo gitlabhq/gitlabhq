@@ -7,7 +7,7 @@
     = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
       Groups
 
-  = nav_link(path: 'dashboard#activity', html_options: { class: "hidden-xs hidden-sm" }) do
+  = nav_link(path: 'dashboard#activity', html_options: { class: "hidden-xs hidden-sm hidden-md" }) do
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       Activity
 
@@ -17,7 +17,7 @@
       = icon("chevron-down", class: "dropdown-chevron")
     .dropdown-menu
       %ul
-        = nav_link(path: 'dashboard#activity', html_options: { class: "visible-xs visible-sm" }) do
+        = nav_link(path: 'dashboard#activity', html_options: { class: "visible-xs visible-sm visible-md" }) do
           = link_to activity_dashboard_path, title: 'Activity' do
             Activity
 

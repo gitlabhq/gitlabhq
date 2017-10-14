@@ -2,6 +2,50 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.8 (2017-10-04)
+
+- [FIXED] Fixed fork button being disabled for users who can fork to a group.
+
+## 9.5.7 (2017-10-03)
+
+- Fix gitlab rake:import:repos task.
+
+## 9.5.6 (2017-09-29)
+
+- [FIXED] Fix MR ready to merge buttons/controls at mobile breakpoint. !14242
+- [FIXED] Fix errors thrown in merge request widget with external CI service/integration.
+- [FIXED] Update x/x discussions resolved checkmark icon to be green when all discussions resolved.
+- [FIXED] Fix 500 error on merged merge requests when GitLab is restored from a backup.
+
+## 9.5.5 (2017-09-18)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [FIXED] Fix division by zero error in blame age mapping. !13803 (Jeff Stubler)
+- [FIXED] Fix problems sanitizing URLs with empty passwords. !14083
+- [FIXED] Fix a wrong `X-Gitlab-Event` header when testing webhooks. !14108
+- [FIXED] Fixes the 500 errors caused by a race condition in GPG's tmp directory handling. !14194 (Alexis Reigel)
+- [FIXED] Fix Pipeline Triggers to show triggered label and predefined variables (e.g. CI_PIPELINE_TRIGGERED). !14244
+- [FIXED] Fix project feature being deleted when updating project with invalid visibility level.
+- [FIXED] Fix new navigation wrapping and causing height to grow.
+- [FIXED] Fix buttons with different height in merge request widget.
+- [FIXED] Normalize styles for empty state combo button.
+- [FIXED] Fix broken svg in jobs dropdown for success status.
+- [FIXED] Improve migrations using triggers.
+- [FIXED] Disable GitLab Project Import Button if source disabled.
+- [CHANGED] Update the GPG verification semantics: A GPG signature must additionally match the committer in order to be verified. !13771 (Alexis Reigel)
+- [OTHER] Fix repository equality check and avoid fetching ref if the commit is already available. This affects merge request creation performance. !13685
+- [OTHER] Update documentation for confidential issue. !14117
+
+## 9.5.4 (2017-09-06)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Prevent a persistent XSS in the commit author block.
+- Fix XSS issue in go-get handling.
+- Resolve CSRF token leakage via pathname manipulation on environments page.
+- Fixes race condition in project uploads.
+- Disallow arbitrary properties in `th` and `td` `style` attributes.
+- Disallow the `name` attribute on all user-provided markup.
+
 ## 9.5.3 (2017-09-03)
 
 - [SECURITY] Filter additional secrets from Rails logs.

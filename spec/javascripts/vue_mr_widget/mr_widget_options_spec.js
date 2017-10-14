@@ -59,23 +59,15 @@ describe('mrWidgetOptions', () => {
     });
 
     describe('shouldRenderPipelines', () => {
-      it('should return true for the initial data', () => {
+      it('should return true when hasCI is true', () => {
+        vm.mr.hasCI = true;
+
         expect(vm.shouldRenderPipelines).toBeTruthy();
       });
 
-      it('should return true when pipeline is empty but MR.hasCI is set to true', () => {
-        vm.mr.pipeline = {};
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
-
-      it('should return true when pipeline available', () => {
+      it('should return false when hasCI is false', () => {
         vm.mr.hasCI = false;
-        expect(vm.shouldRenderPipelines).toBeTruthy();
-      });
 
-      it('should return false when there is no pipeline', () => {
-        vm.mr.pipeline = {};
-        vm.mr.hasCI = false;
         expect(vm.shouldRenderPipelines).toBeFalsy();
       });
     });

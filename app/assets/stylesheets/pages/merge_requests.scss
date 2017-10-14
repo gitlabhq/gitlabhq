@@ -367,6 +367,10 @@
   }
 }
 
+.mr-widget-body-controls {
+  flex-wrap: wrap;
+}
+
 .mr_source_commit,
 .mr_target_commit {
   margin-bottom: 0;

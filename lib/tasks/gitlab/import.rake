@@ -39,7 +39,8 @@ namespace :gitlab do
 
             project_params = {
               name: name,
-              path: name
+              path: name,
+              skip_disk_validation: true
             }
 
             # find group namespace

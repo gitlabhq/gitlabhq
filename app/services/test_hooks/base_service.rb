@@ -9,18 +9,17 @@ module TestHooks
     end
 
     def execute
+      trigger_key = hook.class::TRIGGERS.key(trigger.to_sym)
       trigger_data_method = "#{trigger}_data"
 
-      if !self.respond_to?(trigger_data_method, true) ||
-          !hook.class::TRIGGERS.value?(trigger.to_sym)
-
+      if trigger_key.nil? || !self.respond_to?(trigger_data_method, true)
         return error('Testing not available for this hook')
       end
 
       error_message = catch(:validation_error) do
         sample_data = self.__send__(trigger_data_method)
 
-        return hook.execute(sample_data, trigger)
+        return hook.execute(sample_data, trigger_key)
       end
 
       error(error_message)

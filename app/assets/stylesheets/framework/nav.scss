@@ -286,11 +286,7 @@
   display: flex;
   max-width: 350px;
   overflow: hidden;
-
-  @media(max-width: $screen-xs-max) {
-    width: 100%;
-    max-width: none;
-  }
+  float: right;
 
   .new-project-item-link {
     white-space: nowrap;
@@ -300,6 +296,23 @@
 
   .new-project-item-select-button {
     width: 32px;
+  }
+}
+
+.empty-state .project-item-select-holder.btn-group {
+  float: none;
+  display: inline-block;
+
+  .btn {
+    // overrides styles applied to plain `.empty-state .btn`
+    margin: 10px 0;
+    max-width: 300px;
+    width: auto;
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 250px;
+    }
+
   }
 }
 

@@ -32,8 +32,8 @@ class BuildDetailsEntity < JobEntity
   private
 
   def build_failed_issue_options
-    { title: "Build Failed ##{build.id}",
-      description: project_job_path(project, build) }
+    { title: "Job Failed ##{build.id}",
+      description: "Job [##{build.id}](#{project_job_path(project, build)}) failed for #{build.sha}:\n" }
   end
 
   def current_user

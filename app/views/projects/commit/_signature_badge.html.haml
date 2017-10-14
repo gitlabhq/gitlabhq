@@ -1,16 +1,26 @@
-- css_classes = commit_signature_badge_classes(css_classes)
+- signature = local_assigns.fetch(:signature)
+- title = local_assigns.fetch(:title)
+- label = local_assigns.fetch(:label)
+- css_class = local_assigns.fetch(:css_class)
+- icon = local_assigns.fetch(:icon)
+- show_user = local_assigns.fetch(:show_user, false)
+
+- css_classes = commit_signature_badge_classes(css_class)
 
 - title = capture do
   .gpg-popover-status
-    = title
+    .gpg-popover-icon{ class: css_class }
+      = render "shared/icons/#{icon}.svg"
+    %div
+      = title
 
 - content = capture do
-  .clearfix
-    = content
+  - if show_user
+    .clearfix
+      = render partial: 'projects/commit/signature_badge_user', locals: { signature: signature }
 
   GPG Key ID:
   %span.monospace= signature.gpg_key_primary_keyid
-
 
   = link_to('Learn more about signing commits', help_page_path('user/project/gpg_signed_commits/index.md'), class: 'gpg-popover-help-link')
 
