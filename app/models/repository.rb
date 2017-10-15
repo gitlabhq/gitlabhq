@@ -15,7 +15,6 @@ class Repository
   ].freeze
 
   include Gitlab::ShellAdapter
-  include RepositoryMirroring
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
