@@ -66,6 +66,13 @@ RSpec.describe Geo::RepositorySyncService do
       expect { subject.execute }.not_to raise_error
     end
 
+    it 'rescues when Gitlab::Git::RepositoryMirroring::RemoteError is raised' do
+      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo)
+        .and_raise(Gitlab::Git::RepositoryMirroring::RemoteError)
+
+      expect { subject.execute }.not_to raise_error
+    end
+
     it 'rescues exception and fires after_create hook when Gitlab::Git::Repository::NoRepository is raised' do
       allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Git::Repository::NoRepository }
 

@@ -21,6 +21,7 @@ module Geo
                  update_delay_s: update_delay_in_seconds,
                  download_time_s: download_time_in_seconds)
       rescue Gitlab::Git::Repository::NoRepository,
+             Gitlab::Git::RepositoryMirroring::RemoteError,
              Gitlab::Shell::Error,
              ProjectWiki::CouldNotCreateWikiError,
              Geo::EmptyCloneUrlPrefixError => e

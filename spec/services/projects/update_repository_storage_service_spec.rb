@@ -6,7 +6,6 @@ describe Projects::UpdateRepositoryStorageService do
   subject { described_class.new(project) }
 
   describe "#execute" do
-    let(:gitlab_shell) { Gitlab::Shell.new }
     let(:time) { Time.now }
 
     before do
@@ -18,7 +17,6 @@ describe Projects::UpdateRepositoryStorageService do
         'b' => { 'path' => 'tmp/tests/storage_b' }
       }
       stub_storage_settings(storages)
-      allow(subject).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       allow(Time).to receive(:now).and_return(time)
     end
@@ -33,9 +31,8 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
-            .and_return(true)
+          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_mirror)
+            .with(project.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
@@ -51,9 +48,8 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
-            .and_return(false)
+          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_mirror)
+            .with(project.repository.raw.path).and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
           subject.execute('b')
@@ -66,25 +62,38 @@ describe Projects::UpdateRepositoryStorageService do
 
     context 'with wiki', :skip_gitaly_mock do
       let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
+      let(:repository_double) { double(:repository) }
+      let(:wiki_repository_double) { double(:repository) }
 
       before do
         project.create_wiki
+
+        # Default stub for non-specified params
+        allow(Gitlab::Git::Repository).to receive(:new).and_call_original
+
+        relative_path = project.repository.raw.relative_path
+        allow(Gitlab::Git::Repository).to receive(:new)
+          .with('b', relative_path, "project-#{project.id}")
+          .and_return(repository_double)
+
+        wiki_relative_path = project.wiki.repository.raw.relative_path
+        allow(Gitlab::Git::Repository).to receive(:new)
+          .with('b', wiki_relative_path, "wiki-#{project.id}")
+          .and_return(wiki_repository_double)
       end
 
       context 'when the move succeeds' do
         it 'moves the repository and its wiki to the new storage and unmarks the repository as read only' do
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
-            .and_return(true)
+          expect(repository_double).to receive(:fetch_mirror)
+            .with(project.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
               project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.wiki.disk_path, 'tmp/tests/storage_b')
-            .and_return(true)
+          expect(wiki_repository_double).to receive(:fetch_mirror)
+            .with(project.wiki.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
@@ -100,12 +109,10 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move of the wiki fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
-            .and_return(true)
-          expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.wiki.disk_path, 'tmp/tests/storage_b')
-            .and_return(false)
+          expect(repository_double).to receive(:fetch_mirror)
+            .with(project.repository.raw.path).and_return(true)
+          expect(wiki_repository_double).to receive(:fetch_mirror)
+            .with(project.wiki.repository.raw.path).and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
           subject.execute('b')
