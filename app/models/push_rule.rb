@@ -44,6 +44,7 @@ class PushRule < ActiveRecord::Base
       branch_name_regex.present? ||
       author_email_regex.present? ||
       reject_unsigned_commits ||
+      commit_author_check ||
       member_check ||
       file_name_regex.present? ||
       max_file_size > 0 ||

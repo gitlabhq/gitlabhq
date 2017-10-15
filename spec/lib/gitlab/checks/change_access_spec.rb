@@ -440,6 +440,30 @@ describe Gitlab::Checks::ChangeAccess do
           end
         end
       end
+
+      context 'Check commit author rules' do
+        let(:push_rule) { create(:push_rule, commit_author_check: true) }
+
+        context 'with a commit from the authenticated user' do
+          before do
+            allow_any_instance_of(Commit).to receive(:committer_email).and_return(user.email)
+          end
+
+          it 'does not return an error' do
+            expect { subject }.not_to raise_error
+          end
+        end
+
+        context 'with a commit from a different user' do
+          before do
+            allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
+          end
+
+          it 'returns an error' do
+            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can only push your own commits to this repository")
+          end
+        end
+      end
     end
 
     context 'file lock rules' do

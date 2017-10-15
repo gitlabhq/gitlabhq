@@ -230,6 +230,12 @@ module Gitlab
           end
         end
 
+        if push_rule.commit_author_check
+          unless commit.committer_email.casecmp(user_access.user.email) == 0
+            return "You can only push your own commits to this repository"
+          end
+        end
+
         nil
       end
 
