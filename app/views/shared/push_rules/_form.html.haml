@@ -1,7 +1,7 @@
 = render 'shared/push_rules/reject_unsigned_commits_setting', form: f, push_rule: f.object
 
 .form-group
-  = f.check_box :commit_author_check, class: "pull-left", disabled: !can_change_commit_author_check?(f.object)
+  = f.check_box :commit_author_check, class: "pull-left", disabled: !can_change_push_rule?(f.object, :commit_author_check)
   .prepend-left-20
     = f.label :commit_author_check, class: "label-light append-bottom-0" do
       Author restriction

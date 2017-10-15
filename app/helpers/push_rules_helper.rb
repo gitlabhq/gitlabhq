@@ -5,7 +5,6 @@ module PushRulesHelper
     annotate_with_update_message(message, push_rule,
                                  enabled_globally: PushRule.global&.reject_unsigned_commits,
                                  enabled_in_project: push_rule.reject_unsigned_commits)
-    message.join(' ')
   end
 
   def commit_author_check_description(push_rule)
@@ -14,7 +13,6 @@ module PushRulesHelper
     annotate_with_update_message(message, push_rule,
                                  enabled_globally: PushRule.global&.commit_author_check,
                                  enabled_in_project: push_rule.commit_author_check)
-    message.join(' ')
   end
 
   private
@@ -33,5 +31,7 @@ module PushRulesHelper
         message << s_("ProjectSettings|Contact an admin to change this setting.") unless current_user.admin?
       end
     end
+
+    message.join(' ')
   end
 end
