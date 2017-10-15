@@ -2148,30 +2148,6 @@ describe Repository do
     end
   end
 
-  describe '#remove_remote' do
-    it 'remove a remote reference' do
-      repository.add_remote('upstream', 'http://repo.test')
-
-      expect(repository.remove_remote('upstream')).to eq(true)
-    end
-  end
-
-  describe '#remote_tags' do
-    it 'gets the remote tags' do
-      masterrev = repository.find_branch('master').dereferenced_target.id
-
-      expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags)
-        .with(repository.storage_path, repository.disk_path, 'upstream')
-        .and_return({ 'v0.0.1' => masterrev })
-
-      tags = repository.remote_tags('upstream')
-
-      expect(tags.first).to be_an_instance_of(Gitlab::Git::Tag)
-      expect(tags.first.name).to eq('v0.0.1')
-      expect(tags.first.dereferenced_target.id).to eq(masterrev)
-    end
-  end
-
   describe '#local_branches' do
     it 'returns the local branches' do
       masterrev = repository.find_branch('master').dereferenced_target
