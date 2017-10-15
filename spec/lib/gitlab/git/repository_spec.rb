@@ -559,30 +559,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#remote_delete" do
+  describe "#remove_remote" do
     before(:all) do
       @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_delete("expendable")
+      @repo.remove_remote("expendable")
     end
 
     it "should remove the remote" do
       expect(@repo.rugged.remotes).not_to include("expendable")
-    end
-
-    after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
-      ensure_seeds
-    end
-  end
-
-  describe "#remote_add" do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
-    end
-
-    it "should add the remote" do
-      expect(@repo.rugged.remotes.each_name.to_a).to include("new_remote")
     end
 
     after(:all) do
@@ -606,6 +590,61 @@ describe Gitlab::Git::Repository, seed_helper: true do
     after(:all) do
       FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
+    end
+  end
+
+  describe '#fetch_mirror' do
+    let(:new_repository) do
+      Gitlab::Git::Repository.new('default', 'my_project.git', '')
+    end
+
+    subject { new_repository.fetch_mirror(repository.path) }
+
+    before do
+      Gitlab::Shell.new.add_repository('default', 'my_project')
+    end
+
+    after do
+      Gitlab::Shell.new.remove_repository(TestEnv.repos_path, 'my_project')
+    end
+
+    it 'fetches a url as a mirror remote' do
+      subject
+
+      expect(refs(new_repository.path)).to eq(refs(repository.path))
+    end
+
+    context 'with keep-around refs' do
+      let(:sha) { SeedRepo::Commit::ID }
+      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+      before do
+        repository.rugged.references.create(keep_around_ref, sha, force: true)
+        repository.rugged.references.create(tmp_ref, sha, force: true)
+      end
+
+      it 'includes the temporary and keep-around refs' do
+        subject
+
+        expect(refs(new_repository.path)).to include(keep_around_ref)
+        expect(refs(new_repository.path)).to include(tmp_ref)
+      end
+    end
+  end
+
+  describe '#remote_tags' do
+    let(:target_commit_id) { SeedRepo::Commit::ID }
+
+    subject { repository.remote_tags('upstream') }
+
+    it 'gets the remote tags' do
+      expect(repository).to receive(:list_remote_tags).with('upstream')
+        .and_return(["#{target_commit_id}\trefs/tags/v0.0.1\n"])
+
+      expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
+      expect(subject.first.name).to eq('v0.0.1')
+      expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
     end
   end
 
@@ -1774,5 +1813,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
+  end
+
+  def refs(dir)
+    IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
+      line.split("\t").last
+    end
   end
 end
