@@ -48,7 +48,8 @@ module API
         user =
           find_user_from_private_token ||
           find_user_from_oauth_token ||
-          find_user_from_warden
+          find_user_from_warden ||
+          find_user_by_job_token
 
         return nil unless user
 

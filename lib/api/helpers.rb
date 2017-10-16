@@ -429,20 +429,6 @@ module API
       end
     end
 
-    def find_current_user
-      user =
-        find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
-        doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
-        find_user_from_warden ||
-        find_user_by_job_token
-
-      return nil unless user
-
-      raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
-
-      user
-    end
-
     def sudo!
       return unless sudo_identifier
       return unless initial_current_user
