@@ -63,6 +63,7 @@ describe('RepoSidebar', () => {
   it('renders a prev directory if is not root', () => {
     RepoStore.files = [file()];
     RepoStore.isRoot = false;
+    RepoStore.loading.tree = false;
     vm = createComponent();
 
     expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
