@@ -61,7 +61,7 @@ describe('Assignee select component', () => {
     it('hides Edit button', (done) => {
       vm.canEdit = false;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeFalsy();
+        expect(vm.$el.querySelector('.edit-link')).toBeFalsy();
         done();
       });
     });
@@ -69,7 +69,7 @@ describe('Assignee select component', () => {
     it('shows Edit button if true', (done) => {
       vm.canEdit = true;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeTruthy();
+        expect(vm.$el.querySelector('.edit-link')).toBeTruthy();
         done();
       });
     });

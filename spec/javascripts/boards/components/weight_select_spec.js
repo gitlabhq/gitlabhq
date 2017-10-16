@@ -72,7 +72,7 @@ describe('WeightSelect', () => {
 
   describe('active item in dropdown', () => {
     it('defaults to Any Weight', (done) => {
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
         expect(activeDropdownItem()).toEqual('Any Weight');
@@ -82,7 +82,7 @@ describe('WeightSelect', () => {
 
     it('shows No Weight', (done) => {
       vm.value = 0;
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
         expect(activeDropdownItem()).toEqual('No Weight');
@@ -92,7 +92,7 @@ describe('WeightSelect', () => {
 
     it('shows correct weight', (done) => {
       vm.value = 1;
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
         expect(activeDropdownItem()).toEqual('1');
@@ -103,10 +103,10 @@ describe('WeightSelect', () => {
 
   describe('changing weight', () => {
     it('sets value', (done) => {
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
-        document.querySelectorAll('li a')[3].click();
+        vm.$el.querySelectorAll('li a')[3].click();
       });
 
       setTimeout(() => {
@@ -118,10 +118,10 @@ describe('WeightSelect', () => {
 
     it('sets Any Weight', (done) => {
       vm.value = 2;
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
-        document.querySelectorAll('li a')[0].click();
+        vm.$el.querySelectorAll('li a')[0].click();
       });
 
       setTimeout(() => {
@@ -133,10 +133,10 @@ describe('WeightSelect', () => {
 
     it('sets No Weight', (done) => {
       vm.value = 2;
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
-        document.querySelectorAll('li a')[1].click();
+        vm.$el.querySelectorAll('li a')[1].click();
       });
 
       setTimeout(() => {

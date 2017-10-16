@@ -15,7 +15,7 @@ function selectedText() {
 }
 
 function activeDropdownItem(index) {
-  const items = document.querySelectorAll('.is-active');
+  const items = vm.$el.querySelectorAll('.is-active');
   if (!items[index]) return '';
   return items[index].innerText.trim();
 }
@@ -55,7 +55,7 @@ describe('Milestone select component', () => {
     it('hides Edit button', (done) => {
       vm.canEdit = false;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeFalsy();
+        expect(vm.$el.querySelector('.edit-link')).toBeFalsy();
         done();
       });
     });
@@ -63,7 +63,7 @@ describe('Milestone select component', () => {
     it('shows Edit button if true', (done) => {
       vm.canEdit = true;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeTruthy();
+        expect(vm.$el.querySelector('.edit-link')).toBeTruthy();
         done();
       });
     });

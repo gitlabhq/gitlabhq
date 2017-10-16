@@ -67,7 +67,7 @@ describe('LabelsSelect', () => {
     it('hides Edit button', (done) => {
       vm.canEdit = false;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeFalsy();
+        expect(vm.$el.querySelector('.edit-link')).toBeFalsy();
         done();
       });
     });
@@ -75,7 +75,7 @@ describe('LabelsSelect', () => {
     it('shows Edit button if true', (done) => {
       vm.canEdit = true;
       Vue.nextTick(() => {
-        expect(document.querySelector('.edit-link')).toBeTruthy();
+        expect(vm.$el.querySelector('.edit-link')).toBeTruthy();
         done();
       });
     });
@@ -107,10 +107,10 @@ describe('LabelsSelect', () => {
   describe('clicking dropdown items', () => {
     it('sets No labels', (done) => {
       vm.board.labels = [label];
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
-        document.querySelectorAll('li a')[0].click();
+        vm.$el.querySelectorAll('li a')[0].click();
       });
 
       setTimeout(() => {
@@ -121,10 +121,10 @@ describe('LabelsSelect', () => {
     });
 
     it('sets value', (done) => {
-      document.querySelector('.edit-link').click();
+      vm.$el.querySelector('.edit-link').click();
 
       setTimeout(() => {
-        document.querySelectorAll('li a')[1].click();
+        vm.$el.querySelectorAll('li a')[1].click();
       });
 
       setTimeout(() => {
