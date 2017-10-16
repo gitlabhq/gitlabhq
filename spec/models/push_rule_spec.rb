@@ -52,6 +52,17 @@ describe PushRule do
     let(:signed_commit) { double(has_signature?: true) }
     let(:unsigned_commit) { double(has_signature?: false) }
 
+    context 'when feature is not licensed and it is enabled' do
+      before do
+        stub_licensed_features(reject_unsigned_commits: false)
+        global_push_rule.update_attribute(:reject_unsigned_commits, true)
+      end
+
+      it 'accepts unsigned commits' do
+        expect(push_rule.commit_signature_allowed?(unsigned_commit)).to eq(true)
+      end
+    end
+
     context 'when enabled at a global level' do
       before do
         global_push_rule.update_attribute(:reject_unsigned_commits, true)

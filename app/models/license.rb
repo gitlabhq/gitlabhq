@@ -47,6 +47,7 @@ class License < ActiveRecord::Base
     object_storage
     service_desk
     variable_environment_scope
+    reject_unsigned_commits
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES
@@ -115,6 +116,7 @@ class License < ActiveRecord::Base
     multiple_ldap_servers
     object_storage
     repository_size_limit
+    reject_unsigned_commits
   ].freeze
 
   validate :valid_license

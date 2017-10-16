@@ -22,6 +22,7 @@ class PushRule < ActiveRecord::Base
   end
 
   def commit_signature_allowed?(commit)
+    return true unless License.feature_available?(:reject_unsigned_commits)
     return true unless reject_unsigned_commits
 
     commit.has_signature?
