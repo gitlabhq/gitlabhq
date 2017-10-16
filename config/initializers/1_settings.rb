@@ -113,12 +113,14 @@ class Settings < Settingslogic
       URI.parse(url_without_path).host
     end
 
-    # Random cron time every Sunday to load balance usage pings
-    def cron_random_weekly_time
+    # Runs every minute in a random ten-minute period on Sundays, to balance the
+    # load on the server receiving these pings. The usage ping is safe to run
+    # multiple times because of a 24 hour exclusive lock.
+    def cron_for_usage_ping
       hour = rand(24)
-      minute = rand(60)
+      minute = rand(6)
 
-      "#{minute} #{hour} * * 0"
+      "#{minute}0-#{minute}9 #{hour} * * 0"
     end
   end
 end
@@ -398,7 +400,7 @@ Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
