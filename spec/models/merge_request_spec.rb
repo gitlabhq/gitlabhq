@@ -1472,10 +1472,30 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
-    it 'returns true when merge_id is present and MR is not merged' do
+    it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }
 
       expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: nil)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if MR is merged' do
+      merge_request = build_stubbed(:merge_request, state: :merged, merge_jid: 'foo')
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if there is no merge job running' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { false }
+
+      expect(merge_request.merge_ongoing?).to be(false)
     end
   end
 

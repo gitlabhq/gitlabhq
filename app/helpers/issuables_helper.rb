@@ -314,18 +314,10 @@ module IssuablesHelper
     @issuable_templates ||=
       case issuable
       when Issue
-        issue_template_names
+        ref_project.repository.issue_template_names
       when MergeRequest
-        merge_request_template_names
+        ref_project.repository.merge_request_template_names
       end
-  end
-
-  def merge_request_template_names
-    @merge_request_templates ||= Gitlab::Template::MergeRequestTemplate.dropdown_names(ref_project)
-  end
-
-  def issue_template_names
-    @issue_templates ||= Gitlab::Template::IssueTemplate.dropdown_names(ref_project)
   end
 
   def selected_template(issuable)

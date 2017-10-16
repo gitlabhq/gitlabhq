@@ -25,7 +25,7 @@
             show_any: "true",
             project_id: @project&.try(:id),
             labels: labels_filter_path(false),
-            namespace_path: @project.try(:namespace).try(:full_path),
+            namespace_path: @namespace_path,
             project_path: @project.try(:path) },
           ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
           %span.dropdown-toggle-text
