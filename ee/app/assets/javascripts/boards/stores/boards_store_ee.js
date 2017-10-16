@@ -12,17 +12,21 @@ class BoardsStoreEE {
       this.removePromotion();
     };
 
-    if (this.$boardApp) {
-      this.store.boardConfig = {
-        milestoneId: parseInt(this.$boardApp.dataset.boardMilestoneId, 10),
-        milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle,
-        assigneeUsername: this.$boardApp.dataset.boardAssigneeUsername,
-        labels: JSON.parse(this.$boardApp.dataset.labels || []),
-        weight: parseInt(this.$boardApp.dataset.boardWeight, 10),
-      };
-      this.store.cantEdit = [];
-      this.initBoardFilters();
-    }
+    const baseCreate = this.store.create.bind(this.store);
+    this.store.create = () => {
+      baseCreate();
+      if (this.$boardApp) {
+        this.store.boardConfig = {
+          milestoneId: parseInt(this.$boardApp.dataset.boardMilestoneId, 10),
+          milestoneTitle: this.$boardApp.dataset.boardMilestoneTitle,
+          assigneeUsername: this.$boardApp.dataset.boardAssigneeUsername,
+          labels: JSON.parse(this.$boardApp.dataset.labels || []),
+          weight: parseInt(this.$boardApp.dataset.boardWeight, 10),
+        };
+        this.store.cantEdit = [];
+        this.initBoardFilters();
+      }
+    };
   }
 
   initBoardFilters() {
@@ -30,7 +34,7 @@ class BoardsStoreEE {
       if (!value) return;
       const querystring = `${key}=${value}`;
       this.store.filter.path = [querystring].concat(
-        this.store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null)
+        this.store.filter.path.split('&').filter(param => param.match(new RegExp(`^${key}=(.*)$`, 'g')) === null),
       ).join('&');
     };
 
