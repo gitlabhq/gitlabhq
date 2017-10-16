@@ -6,7 +6,7 @@ module Banzai
       def call
         doc.xpath('descendant-or-self::img').each do |img|
           img['class'] ||= '' << 'lazy'
-          unless img['src'].nil? 
+          unless img['src'].nil? || img['src'].empty?
             begin
               size_parameters = CGI.parse(URI.parse(img['src']).query)
               unless size_parameters['w'].empty? || size_parameters['h'].empty?
