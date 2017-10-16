@@ -146,7 +146,9 @@ import _ from 'underscore';
           clicked: function(options) {
             const { $el, e } = options;
             let selected = options.selectedObj;
+
             var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
+            if (!selected) return;
             page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
