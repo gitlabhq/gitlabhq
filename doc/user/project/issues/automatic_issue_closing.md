@@ -19,7 +19,7 @@ When not specified, the default issue closing pattern as shown below will be
 used:
 
 ```bash
-((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
+((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)
 ```
 
 Note that `%{issue_ref}` is a complex regular expression defined inside GitLab's
@@ -34,6 +34,7 @@ This translates to the following keywords:
 - Close, Closes, Closed, Closing, close, closes, closed, closing
 - Fix, Fixes, Fixed, Fixing, fix, fixes, fixed, fixing
 - Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
+- Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
 
 ---
 
