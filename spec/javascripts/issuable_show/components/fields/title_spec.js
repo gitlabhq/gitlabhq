@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import eventHub from '~/issue_show/event_hub';
-import Store from '~/issue_show/stores';
-import titleField from '~/issue_show/components/fields/title.vue';
+import eventHub from '~/issuable_show/event_hub';
+import Store from '~/issuable_show/stores';
+import titleField from '~/issuable_show/components/fields/title.vue';
 import { keyboardDownEvent } from '../../helpers';
 
 describe('Title field component', () => {

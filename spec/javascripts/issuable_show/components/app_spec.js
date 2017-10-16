@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import '~/render_math';
 import '~/render_gfm';
-import issuableApp from '~/issue_show/components/app.vue';
-import eventHub from '~/issue_show/event_hub';
+import issuableApp from '~/issuable_show/components/app.vue';
+import eventHub from '~/issuable_show/event_hub';
 import issueShowData from '../mock_data';
 
 function formatText(text) {

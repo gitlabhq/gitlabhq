@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Store from '~/issue_show/stores';
-import titleComponent from '~/issue_show/components/title.vue';
+import Store from '~/issuable_show/stores';
+import titleComponent from '~/issuable_show/components/title.vue';
 
 describe('Title component', () => {
   let vm;

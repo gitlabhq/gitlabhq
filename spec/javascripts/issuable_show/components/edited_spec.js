@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import edited from '~/issue_show/components/edited.vue';
+import edited from '~/issuable_show/components/edited.vue';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');

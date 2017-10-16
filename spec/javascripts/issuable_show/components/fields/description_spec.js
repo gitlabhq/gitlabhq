@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import eventHub from '~/issue_show/event_hub';
-import Store from '~/issue_show/stores';
-import descriptionField from '~/issue_show/components/fields/description.vue';
+import eventHub from '~/issuable_show/event_hub';
+import Store from '~/issuable_show/stores';
+import descriptionField from '~/issuable_show/components/fields/description.vue';
 import { keyboardDownEvent } from '../../helpers';
 
 describe('Description field component', () => {

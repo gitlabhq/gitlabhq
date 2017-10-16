@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import formComponent from '~/issue_show/components/form.vue';
+import formComponent from '~/issuable_show/components/form.vue';
 import '~/templates/issuable_template_selector';
 import '~/templates/issuable_template_selectors';
 

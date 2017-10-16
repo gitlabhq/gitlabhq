@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import descriptionComponent from '~/issue_show/components/description.vue';
+import descriptionComponent from '~/issuable_show/components/description.vue';
 
 describe('Description component', () => {
   let vm;

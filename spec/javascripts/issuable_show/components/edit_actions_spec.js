@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import editActions from '~/issue_show/components/edit_actions.vue';
-import eventHub from '~/issue_show/event_hub';
-import Store from '~/issue_show/stores';
+import editActions from '~/issuable_show/components/edit_actions.vue';
+import eventHub from '~/issuable_show/event_hub';
+import Store from '~/issuable_show/stores';
 
 describe('Edit Actions components', () => {
   let vm;
