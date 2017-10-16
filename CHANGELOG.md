@@ -457,6 +457,15 @@ entry.
 - Use a specialized class for querying events to improve performance.
 - Update build badges to be pipeline badges and display passing instead of success.
 
+## 9.4.7 (2017-10-16)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
+
 ## 9.4.6 (2017-09-06)
 
 - [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
