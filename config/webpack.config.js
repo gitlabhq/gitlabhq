@@ -236,7 +236,7 @@ var config = {
         from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
-          if (/\.js$/.test(path) && !/worker/i.test(path)) {
+          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +
