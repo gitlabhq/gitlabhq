@@ -3,6 +3,14 @@ require_relative 'devise_helpers'
 module LoginHelpers
   include DeviseHelpers
 
+  # Overriding Devise::Test::IntegrationHelpers#sign_in to store @current_user
+  # since we may need it in LiveDebugger#live_debug.
+  def sign_in(resource, scope: nil)
+    super
+
+    @current_user = resource
+  end
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -28,7 +36,7 @@ module LoginHelpers
 
     gitlab_sign_in_with(user, **kwargs)
 
-    user
+    @current_user = user
   end
 
   def gitlab_sign_in_via(provider, user, uid)
