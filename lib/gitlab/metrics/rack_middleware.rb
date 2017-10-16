@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def transaction_from_env(env)
-        trans = Transaction.new(env)
+        trans = WebTransaction.new(env)
 
         trans.set(:request_uri, filtered_path(env), false)
         trans.set(:request_method, env['REQUEST_METHOD'], false)
