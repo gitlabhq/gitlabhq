@@ -1082,6 +1082,30 @@ module Gitlab
         @has_visible_content = has_local_branches?
       end
 
+      def fetch(remote = 'origin')
+        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
+
+        popen(args, @path).last.zero?
+      end
+
+      def blob_at(sha, path)
+        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      def commit_index(user, branch_name, index, options)
+        committer = user_to_committer(user)
+
+        OperationService.new(user, self).with_branch(branch_name) do
+          commit_params = options.merge(
+            tree: index.write_tree(rugged),
+            author: committer,
+            committer: committer
+          )
+
+          create_commit(commit_params)
+        end
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end

@@ -472,9 +472,7 @@ class Repository
   end
 
   def blob_at(sha, path)
-    unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -905,14 +903,6 @@ class Repository
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository
       )
-    end
-  end
-
-  def resolve_conflicts(user, branch_name, params)
-    with_branch(user, branch_name) do
-      committer = user_to_committer(user)
-
-      create_commit(params.merge(author: committer, committer: committer))
     end
   end
 

@@ -35,7 +35,7 @@ describe MergeRequests::Conflicts::ListService do
     it 'returns a falsey value when the MR has a missing ref after a force push' do
       merge_request = create_merge_request('conflict-resolvable')
       service = conflicts_service(merge_request)
-      allow(service.conflicts).to receive(:merge_index).and_raise(Rugged::OdbError)
+      allow_any_instance_of(Rugged::Repository).to receive(:merge_commits).and_raise(Rugged::OdbError)
 
       expect(service.can_be_resolved_in_ui?).to be_falsey
     end
