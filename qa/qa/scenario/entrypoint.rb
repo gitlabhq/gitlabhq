@@ -9,8 +9,8 @@ module QA
         @tags = tags
       end
 
-      def self.tag_switches
-        @tags.map { |tag| ['-t', tag.to_s] }
+      def self.get_tags
+        @tags
       end
 
       def perform(address, *files)
@@ -24,7 +24,11 @@ module QA
         Runtime::Release.perform_before_hooks
 
         Specs::Runner.perform do |specs|
-          specs.rspec('--tty', self.class.tag_switches, files.any? ? files : 'qa/specs/features')
+          specs.rspec(
+            tty: true,
+            tags: self.class.get_tags,
+            files: files.any? ? files : 'qa/specs/features'
+          )
         end
       end
     end
