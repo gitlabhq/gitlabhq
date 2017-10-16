@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues. !541
+- [SECURITY] Escape user name in filtered search bar.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] Rewrite Geo database rake tasks so they operate on the correct database. !3052
