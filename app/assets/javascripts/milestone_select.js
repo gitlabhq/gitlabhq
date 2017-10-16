@@ -169,11 +169,7 @@ import _ from 'underscore';
             let selected = options.selectedObj;
 
             var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
-
-            // EE begins
             if (!selected) return;
-            // EE ends
-
             page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
