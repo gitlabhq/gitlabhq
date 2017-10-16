@@ -43,16 +43,6 @@
             type: 'link',
           });
         }
-
-        if (this.job.retry_path) {
-          actions.push({
-            label: 'Retry',
-            path: this.job.retry_path,
-            cssClass: 'js-retry-button btn btn-inverted-secondary visible-md-block visible-lg-block',
-            type: 'ujs-link',
-          });
-        }
-
         return actions;
       },
     },
