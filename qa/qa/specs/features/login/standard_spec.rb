@@ -1,6 +1,6 @@
 module QA
   feature 'standard root login' do
-    scenario 'user logs in using credentials' do
+    scenario 'user logs in using credentials', :core do
       Page::Main::Entry.act { sign_in_using_credentials }
 
       # TODO, since `Signed in successfully` message was removed

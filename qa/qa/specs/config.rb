@@ -33,14 +33,6 @@ module QA
             mocks.verify_partial_doubles = true
           end
 
-          config.define_derived_metadata(file_path: %r{/specs/features/(?!mattermost/)}) do |metadata|
-            metadata[:core] = true
-          end
-
-          config.define_derived_metadata(file_path: %r{/specs/features/mattermost/}) do |metadata|
-            metadata[:mattermost] = true
-          end
-
           config.order = :random
           Kernel.srand config.seed
           config.formatter = :documentation

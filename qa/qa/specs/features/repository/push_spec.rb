@@ -1,7 +1,7 @@
 module QA
   feature 'push code to repository' do
     context 'with regular account over http' do
-      scenario 'user pushes code to the repository' do
+      scenario 'user pushes code to the repository', :core do
         Page::Main::Entry.act { sign_in_using_credentials }
 
         Scenario::Gitlab::Project::Create.perform do |scenario|
