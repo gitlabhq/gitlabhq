@@ -70,15 +70,27 @@ module Gitlab
 
     # All Gitaly RPC call sites should use GitalyClient.call. This method
     # makes sure that per-request authentication headers are set.
+    #
+    # This method optionally takes a block which receives the keyword
+    # arguments hash 'kwargs' that will be passed to gRPC. This allows the
+    # caller to modify or augment the keyword arguments. The block must
+    # return a hash.
+    #
+    # For example:
+    #
+    # GitalyClient.call(storage, service, rpc, request) do |kwargs|
+    #   kwargs.merge(deadline: Time.now + 10)
+    # end
+    #
     def self.call(storage, service, rpc, request)
       enforce_gitaly_request_limits(:call)
 
-      metadata = request_metadata(storage)
-      metadata = yield(metadata) if block_given?
-      stub(service, storage).__send__(rpc, request, metadata) # rubocop:disable GitlabSecurity/PublicSend
+      kwargs = request_kwargs(storage)
+      kwargs = yield(kwargs) if block_given?
+      stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def self.request_metadata(storage)
+    def self.request_kwargs(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
         'authorization' => "Bearer #{encoded_token}",
