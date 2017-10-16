@@ -15,7 +15,9 @@
 
 <template>
   <tr
-    class="loading-file">
+    class="loading-file"
+    aria-label="Loading files"
+  >
     <td>
       <div
         class="animation-container animation-container-small">

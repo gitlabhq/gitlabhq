@@ -1,7 +1,11 @@
 <script>
   import eventHub from '../event_hub';
+  import repoMixin from '../mixins/repo_mixin';
 
   export default {
+    mixins: [
+      repoMixin,
+    ],
     props: {
       prevUrl: {
         type: String,

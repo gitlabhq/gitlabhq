@@ -31,16 +31,10 @@ export default {
   data: () => Store,
   computed: {
     flattendFiles() {
-      const map = (arr) => {
-        if (arr && arr.files && arr.files.length === 0) {
-          return [];
-        }
-
-        return _.map(arr.files, a => [a, map(a)]);
-      };
+      const mapFiles = arr => (!arr.files.length ? [] : _.map(arr.files, a => [a, mapFiles(a)]));
 
       return _.chain(this.files)
-        .map(arr => [arr, map(arr)])
+        .map(arr => [arr, mapFiles(arr)])
         .flatten()
         .value();
     },
