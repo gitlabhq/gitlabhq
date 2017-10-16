@@ -13,7 +13,6 @@ module QA
 
       def initialize
         @address = ENV['GITLAB_URL']
-        @exclusion_filter = { mattermost: true }
       end
 
       def perform
