@@ -212,6 +212,14 @@ entry.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
 
+## 9.5.9 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
+
 ## 9.5.8 (2017-10-04)
 
 - [FIXED] Fixed fork button being disabled for users who can fork to a group.
