@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
