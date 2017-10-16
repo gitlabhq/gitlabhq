@@ -68,7 +68,6 @@ describe Projects::BoardsController do
           expect(Board.count).to eq(1)
           expect(board).to have_attributes(create_params.except(:assignee_id))
           expect(board.assignee).to eq(user)
-
         end
       end
 
@@ -141,7 +140,8 @@ describe Projects::BoardsController do
       it 'updates board with valid params' do
         update_board board, update_params
 
-        expect(board.reload).to have_attributes(update_params)
+        expect(board.reload).to have_attributes(update_params.except(:assignee_id))
+        expect(board.assignee).to eq(user)
       end
     end
 
