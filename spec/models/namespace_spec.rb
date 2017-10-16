@@ -165,7 +165,7 @@ describe Namespace do
     it "moves dir if path changed" do
       namespace.update_attributes(path: namespace.full_path + '_new')
 
-      expect(gitlab_shell.exists?(@project.repository_storage_path, "#{namespace.path}/#{@project.path}.git")).to be_truthy
+      expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
     end
 
     context "when any project has container images" do
