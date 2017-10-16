@@ -168,9 +168,6 @@ import memberExpirationDate from './member_expiration_date';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          if (page === 'projects:merge_requests:index') {
-            new UserCallout({ setCalloutPerProject: true });
-          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
 
@@ -352,7 +349,10 @@ import memberExpirationDate from './member_expiration_date';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new UserCallout({ setCalloutPerProject: true });
+          new UserCallout({
+            setCalloutPerProject: true,
+            className: 'js-autodevops-banner',
+          });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -371,9 +371,6 @@ import memberExpirationDate from './member_expiration_date';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
-          break;
-        case 'projects:pipelines:index':
-          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -432,7 +429,6 @@ import memberExpirationDate from './member_expiration_date';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
