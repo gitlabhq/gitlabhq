@@ -35,6 +35,8 @@ Here are some things to keep in mind regarding test performance:
   [Gotchas](../gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
+- When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
+  use a Capyabara matcher beforehand (e.g. `find('.js-foo')`) to ensure the element actually exists.
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
