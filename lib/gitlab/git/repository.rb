@@ -1072,6 +1072,13 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git_with_timeout(args, timeout, env: {})
+        circuit_breaker.perform do
+          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)
       end
