@@ -34,8 +34,11 @@ module EE
     def milestone
       return nil unless parent.feature_available?(:scoped_issue_board)
 
-      if milestone_id == ::Milestone::Upcoming.id
+      case milestone_id
+      when ::Milestone::Upcoming.id
         ::Milestone::Upcoming
+      when ::Milestone::Started.id
+        ::Milestone::Started
       else
         super
       end

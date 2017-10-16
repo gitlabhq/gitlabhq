@@ -33,6 +33,12 @@ describe Board do
         expect(board.milestone).to eq Milestone::Upcoming
       end
 
+      it 'returns Milestone::Started for started milestone id' do
+        board.milestone_id = Milestone::Started.id
+
+        expect(board.milestone).to eq Milestone::Started
+      end
+
       it 'returns milestone for valid milestone id' do
         milestone = create(:milestone)
         board.milestone_id = milestone.id
