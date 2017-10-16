@@ -94,7 +94,7 @@ const RepoHelper = {
     .then((response) => {
       const data = response.data;
       if (response.headers && response.headers['page-title']) data.pageTitle = response.headers['page-title'];
-      if (response.headers && response.headers['is-root']) Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
+      if (response.headers && response.headers['is-root'] && Store.isRoot === null) Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
 
       if (file && file.type === 'blob') {
         if (!file) file = data;

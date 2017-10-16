@@ -22,7 +22,7 @@
 </script>
 
 <template>
-  <tr class="prev-directory">
+  <tr class="file prev-directory">
     <td
       :colspan="colSpanCondition"
       class="table-cell"

@@ -136,7 +136,7 @@ export default {
     </thead>
     <tbody>
       <repo-previous-directory
-        v-if="!isRoot"
+        v-if="!isRoot && !loading.tree"
         :prev-url="prevURL"
       />
       <repo-loading-file

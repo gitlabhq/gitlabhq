@@ -2,13 +2,12 @@ import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
 const RepoStore = {
-  monaco: {},
   monacoLoading: false,
   service: '',
   canCommit: false,
   onTopOfBranch: false,
   editMode: false,
-  isRoot: false,
+  isRoot: null,
   prevURL: '',
   projectId: '',
   projectName: '',
@@ -38,21 +37,9 @@ const RepoStore = {
   newMrTemplateUrl: '',
   branchChanged: false,
   commitMessage: '',
-  binaryTypes: {
-    png: false,
-    md: false,
-    svg: false,
-    unknown: false,
-  },
   loading: {
     tree: false,
     blob: false,
-  },
-
-  resetBinaryTypes() {
-    Object.keys(RepoStore.binaryTypes).forEach((key) => {
-      RepoStore.binaryTypes[key] = false;
-    });
   },
 
   setBranchHash() {

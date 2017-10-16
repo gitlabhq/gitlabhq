@@ -58,10 +58,11 @@
     </td>
 
     <template v-if="!isMini">
-      <td class="commit-message hidden-sm hidden-xs">
+      <td class="hidden-sm hidden-xs">
         <a
           @click.stop
           :href="file.lastCommit.url"
+          class="commit-message"
         >
           {{ file.lastCommit.message }}
         </a>

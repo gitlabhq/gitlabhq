@@ -1,5 +1,6 @@
 import RepoHelper from '~/repo/helpers/repo_helper';
 
+// eslint-disable-next-line import/prefer-default-export
 export const file = () => RepoHelper.serializeBlob({
   icon: 'icon',
   url: 'url',
