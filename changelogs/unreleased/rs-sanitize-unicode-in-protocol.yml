@@ -1,5 +1,0 @@
----
-title: Prevent a persistent XSS in user-provided markup
-merge_request:
-author:
-type: security
