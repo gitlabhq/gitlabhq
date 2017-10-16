@@ -3,7 +3,7 @@ module Gitlab
     # Class for tracking timing information about method calls
     class MethodCall
       BASE_LABELS = { module: nil, method: nil }.freeze
-      attr_reader :real_time, :cpu_time, :call_count
+      attr_reader :real_time, :cpu_time, :call_count, :labels
 
       def self.call_real_duration_histogram
         @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
@@ -31,6 +31,7 @@ module Gitlab
         @method_name = method_name
         @transaction = transaction
         @name = name
+        @labels = { module: @module_name, method: @method_name }
         @real_time = 0
         @cpu_time = 0
         @call_count = 0
@@ -53,10 +54,6 @@ module Gitlab
         self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), cpu_time / 1000.0)
 
         retval
-      end
-
-      def labels
-        @labels ||= { module: @module_name, method: @method_name }
       end
 
       # Returns a Metric instance of the current method call.
