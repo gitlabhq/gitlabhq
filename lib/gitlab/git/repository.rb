@@ -1062,6 +1062,13 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git_with_timeout(args, timeout, env: {})
+        circuit_breaker.perform do
+          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)
       end
@@ -1090,6 +1097,24 @@ module Gitlab
         args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
 
         popen(args, @path).last.zero?
+      end
+
+      def blob_at(sha, path)
+        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      def commit_index(user, branch_name, index, options)
+        committer = user_to_committer(user)
+
+        OperationService.new(user, self).with_branch(branch_name) do
+          commit_params = options.merge(
+            tree: index.write_tree(rugged),
+            author: committer,
+            committer: committer
+          )
+
+          create_commit(commit_params)
+        end
       end
 
       def gitaly_repository

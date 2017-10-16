@@ -1,8 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global ShortcutsNavigation */
 /* global IssuableIndex */
-/* global ShortcutsIssuable */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
@@ -32,13 +30,9 @@ import CILintEditor from './ci_lint_editor';
 /* global ProjectImport */
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Shortcuts */
-/* global ShortcutsFindFile */
 /* global Sidebar */
 /* global WeightSelect */
 /* global AdminEmailSelect */
-/* global ShortcutsWiki */
-
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -87,6 +81,10 @@ import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
+import Shortcuts from './shortcuts';
+import ShortcutsNavigation from './shortcuts_navigation';
+import ShortcutsFindFile from './shortcuts_find_file';
+import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';

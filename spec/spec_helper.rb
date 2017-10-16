@@ -181,6 +181,10 @@ RSpec.configure do |config|
     example.run if Group.supports_nested_groups?
   end
 
+  config.around(:each, :geo) do |example|
+    example.run if Gitlab::Database.postgresql?
+  end
+
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
   end
