@@ -137,16 +137,10 @@ module API
           end
       end
 
-      private
-
       def route_authentication_setting
         return {} unless respond_to?(:route_setting)
 
         route_setting(:authentication) || {}
-      end
-
-      def find_user_by_authentication_token(token_string)
-        User.find_by_authentication_token(token_string)
       end
 
       def find_oauth_access_token
