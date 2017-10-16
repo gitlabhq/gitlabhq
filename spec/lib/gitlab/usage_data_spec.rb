@@ -61,6 +61,8 @@ describe Gitlab::UsageData do
         deployments
         environments
         gcp_clusters
+        gcp_clusters_enabled
+        gcp_clusters_disabled
         in_review_folder
         groups
         issues
