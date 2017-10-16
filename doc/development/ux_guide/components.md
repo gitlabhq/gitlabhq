@@ -254,6 +254,35 @@ Skeleton loading can replace any existing UI elements for the period in which th
 
 ---
 
+## Dialog modals
+Dialog modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until making an action. Using dialog modals sparingly as it is interruptive.
+
+### Usage
+
+* When the action is irreversible, we should provide the details and confirm with the user before they take an advanced action.
+* When the action will affect privacy or authorization, we should provide the advanced information and confirm with the user.
+
+### Style
+* Dialog modals contain the header title, content, and action bar.
+* Having an affirmative action, a dismissive action, and an extra action in action bar.
+* The order of actions in the action bar: Affirmative action → Extra action → Dismissive action (Right to left)
+* Confirmations regarding labels should keep labeling styling.
+* References to commits, branches, and tags should be **monospaced**.
+
+### Writing
+* The header title is a question instead of a descriptive phrase.
+* The content should not be ambiguous and unclear. It should provide specific information as a reference for the user to take an advanced action.
+
+### Placement
+* Dialog modals should always be the center of the screen horizontally and have **72px** from the top of the screen.
+
+| Dialog with 2 actions | Dialog with 3 actions | Special confirmation |
+| --------------------- | --------------------- | -------------------- |
+| ![two-actions]() | ![three-actions]() | ![spcial-confirmation]() |
+
+
+---
+
 ## Panels
 
 > TODO: Catalog how we are currently using panels and rationalize how they relate to alerts
