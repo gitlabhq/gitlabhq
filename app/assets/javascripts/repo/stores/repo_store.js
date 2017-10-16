@@ -8,6 +8,7 @@ const RepoStore = {
   onTopOfBranch: false,
   editMode: false,
   isRoot: null,
+  isInitialRoot: null,
   prevURL: '',
   projectId: '',
   projectName: '',

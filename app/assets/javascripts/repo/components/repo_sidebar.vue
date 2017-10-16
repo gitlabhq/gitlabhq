@@ -32,11 +32,11 @@ export default {
   computed: {
     flattendFiles() {
       const map = (arr) => {
-        if (arr && arr.tree && arr.tree.length === 0) {
+        if (arr && arr.files && arr.files.length === 0) {
           return [];
         }
 
-        return _.map(arr.tree, a => [a, map(a)]);
+        return _.map(arr.files, a => [a, map(a)]);
       };
 
       return _.chain(this.files)
@@ -100,7 +100,7 @@ export default {
 
     goToPreviousDirectoryClicked(prevURL) {
       Service.url = prevURL;
-      Helper.getContent(null)
+      Helper.getContent(null, true)
         .then(() => Helper.scrollTabsRight())
         .catch(Helper.loadingError);
     },

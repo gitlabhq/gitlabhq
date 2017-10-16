@@ -66,7 +66,7 @@ const RepoHelper = {
     const dir = entry;
 
     dir.opened = false;
-    dir.tree = [];
+    dir.files = [];
   },
 
   isRenderable() {
@@ -83,7 +83,7 @@ const RepoHelper = {
     .catch(RepoHelper.loadingError);
   },
 
-  getContent(treeOrFile) {
+  getContent(treeOrFile, emptyFiles = false) {
     let file = treeOrFile;
 
     if (!Store.files.length) {
@@ -94,7 +94,10 @@ const RepoHelper = {
     .then((response) => {
       const data = response.data;
       if (response.headers && response.headers['page-title']) data.pageTitle = response.headers['page-title'];
-      if (response.headers && response.headers['is-root'] && Store.isRoot === null) Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
+      if (response.headers && response.headers['is-root'] && !Store.isInitialRoot) {
+        Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
+        Store.isInitialRoot = Store.isRoot;
+      }
 
       if (file && file.type === 'blob') {
         if (!file) file = data;
@@ -120,15 +123,22 @@ const RepoHelper = {
         Store.loading.tree = false;
         RepoHelper.setDirectoryOpen(file, data.pageTitle || data.name);
 
-        if (!file) {
-          Store.files = this.dataToListOfFiles(data);
-        } else {
-          file.tree = this.dataToListOfFiles(data, file.level + 1);
+        if (emptyFiles) {
+          Store.files = [];
         }
+
+        this.addToDirectory(file, data);
 
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     }).catch(RepoHelper.loadingError);
+  },
+
+  addToDirectory(file, data) {
+    const tree = file || Store;
+    const files = tree.files.concat(this.dataToListOfFiles(data, file ? file.level + 1 : 0));
+
+    tree.files = files;
   },
 
   setFile(data, file) {
@@ -144,18 +154,6 @@ const RepoHelper = {
     Store.setActiveFiles(newFile);
   },
 
-  serializeBlob(blob, level) {
-    return RepoHelper.serializeRepoEntity('blob', blob, level);
-  },
-
-  serializeTree(tree, level) {
-    return RepoHelper.serializeRepoEntity('tree', tree, level);
-  },
-
-  serializeSubmodule(submodule, level) {
-    return RepoHelper.serializeRepoEntity('submodule', submodule, level);
-  },
-
   serializeRepoEntity(type, entity, level = 0) {
     const { url, name, icon, last_commit } = entity;
     const returnObj = {
@@ -164,7 +162,7 @@ const RepoHelper = {
       url,
       level,
       icon: `fa-${icon}`,
-      tree: [],
+      files: [],
       loading: false,
       opened: false,
     };
@@ -192,9 +190,9 @@ const RepoHelper = {
   dataToListOfFiles(data, level) {
     const { blobs, trees, submodules } = data;
     return [
-      ...trees.map(tree => RepoHelper.serializeTree(tree, level)),
-      ...blobs.map(blob => RepoHelper.serializeBlob(blob, level)),
-      ...submodules.map(submodule => RepoHelper.serializeSubmodule(submodule, level)),
+      ...trees.map(tree => RepoHelper.serializeRepoEntity('tree', tree, level)),
+      ...submodules.map(submodule => RepoHelper.serializeRepoEntity('submodule', submodule, level)),
+      ...blobs.map(blob => RepoHelper.serializeRepoEntity('blob', blob, level)),
     ];
   },
 

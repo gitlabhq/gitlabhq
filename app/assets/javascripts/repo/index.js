@@ -35,6 +35,7 @@ function setInitialStore(data) {
   Store.newMrTemplateUrl = decodeURIComponent(data.newMrTemplateUrl);
   Store.customBranchURL = decodeURIComponent(data.blobUrl);
   Store.isRoot = convertPermissionToBoolean(data.root);
+  Store.isInitialRoot = convertPermissionToBoolean(data.root);
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
   Store.setBranchHash();
