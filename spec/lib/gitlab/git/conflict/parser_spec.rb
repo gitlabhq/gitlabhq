@@ -1,11 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::Parser do
-  let(:parser) { described_class.new }
-
-  describe '#parse' do
+describe Gitlab::Git::Conflict::Parser do
+  describe '.parse' do
     def parse_text(text)
-      parser.parse(text, our_path: 'README.md', their_path: 'README.md')
+      described_class.parse(text, our_path: 'README.md', their_path: 'README.md')
     end
 
     context 'when the file has valid conflicts' do
@@ -87,33 +85,37 @@ CONFLICT
       end
 
       let(:lines) do
-        parser.parse(text, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
+        described_class.parse(text, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
       end
+      let(:old_line_numbers) do
+        lines.select { |line| line[:type] != 'new' }.map { |line| line[:line_old] }
+      end
+      let(:new_line_numbers) do
+        lines.select { |line| line[:type] != 'old' }.map { |line| line[:line_new] }
+      end
+      let(:line_indexes) { lines.map { |line| line[:line_obj_index] } }
 
       it 'sets our lines as new lines' do
-        expect(lines[8..13]).to all(have_attributes(type: 'new'))
-        expect(lines[26..27]).to all(have_attributes(type: 'new'))
-        expect(lines[56..57]).to all(have_attributes(type: 'new'))
+        expect(lines[8..13]).to all(include(type: 'new'))
+        expect(lines[26..27]).to all(include(type: 'new'))
+        expect(lines[56..57]).to all(include(type: 'new'))
       end
 
       it 'sets their lines as old lines' do
-        expect(lines[14..19]).to all(have_attributes(type: 'old'))
-        expect(lines[28..29]).to all(have_attributes(type: 'old'))
-        expect(lines[58..59]).to all(have_attributes(type: 'old'))
+        expect(lines[14..19]).to all(include(type: 'old'))
+        expect(lines[28..29]).to all(include(type: 'old'))
+        expect(lines[58..59]).to all(include(type: 'old'))
       end
 
       it 'sets non-conflicted lines as both' do
-        expect(lines[0..7]).to all(have_attributes(type: nil))
-        expect(lines[20..25]).to all(have_attributes(type: nil))
-        expect(lines[30..55]).to all(have_attributes(type: nil))
-        expect(lines[60..62]).to all(have_attributes(type: nil))
+        expect(lines[0..7]).to all(include(type: nil))
+        expect(lines[20..25]).to all(include(type: nil))
+        expect(lines[30..55]).to all(include(type: nil))
+        expect(lines[60..62]).to all(include(type: nil))
       end
 
-      it 'sets consecutive line numbers for index, old_pos, and new_pos' do
-        old_line_numbers = lines.select { |line| line.type != 'new' }.map(&:old_pos)
-        new_line_numbers = lines.select { |line| line.type != 'old' }.map(&:new_pos)
-
-        expect(lines.map(&:index)).to eq(0.upto(62).to_a)
+      it 'sets consecutive line numbers for line_obj_index, line_old, and line_new' do
+        expect(line_indexes).to eq(0.upto(62).to_a)
         expect(old_line_numbers).to eq(1.upto(53).to_a)
         expect(new_line_numbers).to eq(1.upto(53).to_a)
       end
@@ -123,12 +125,12 @@ CONFLICT
       context 'when there is a non-start delimiter first' do
         it 'raises UnexpectedDelimiter when there is a middle delimiter first' do
           expect { parse_text('=======') }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'raises UnexpectedDelimiter when there is an end delimiter first' do
           expect { parse_text('>>>>>>> README.md') }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'does not raise when there is an end delimiter for a different path first' do
@@ -143,12 +145,12 @@ CONFLICT
 
         it 'raises UnexpectedDelimiter when it is followed by an end delimiter' do
           expect { parse_text(start_text + '>>>>>>> README.md' + end_text) }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'raises UnexpectedDelimiter when it is followed by another start delimiter' do
           expect { parse_text(start_text + start_text + end_text) }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'does not raise when it is followed by a start delimiter for a different path' do
@@ -163,12 +165,12 @@ CONFLICT
 
         it 'raises UnexpectedDelimiter when it is followed by another middle delimiter' do
           expect { parse_text(start_text + '=======' + end_text) }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'raises UnexpectedDelimiter when it is followed by a start delimiter' do
           expect { parse_text(start_text + start_text + end_text) }
-            .to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnexpectedDelimiter)
         end
 
         it 'does not raise when it is followed by a start delimiter for another path' do
@@ -181,25 +183,25 @@ CONFLICT
         start_text = "<<<<<<< README.md\n=======\n"
 
         expect { parse_text(start_text) }
-          .to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
+          .to raise_error(Gitlab::Git::Conflict::Parser::MissingEndDelimiter)
 
         expect { parse_text(start_text + '>>>>>>> some-other-path.md') }
-          .to raise_error(Gitlab::Conflict::Parser::MissingEndDelimiter)
+          .to raise_error(Gitlab::Git::Conflict::Parser::MissingEndDelimiter)
       end
     end
 
     context 'other file types' do
       it 'raises UnmergeableFile when lines is blank, indicating a binary file' do
         expect { parse_text('') }
-          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+          .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
 
         expect { parse_text(nil) }
-          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+          .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end
 
       it 'raises UnmergeableFile when the file is over 200 KB' do
         expect { parse_text('a' * 204801) }
-          .to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+          .to raise_error(Gitlab::Git::Conflict::Parser::UnmergeableFile)
       end
 
       # All text from Rugged has an encoding of ASCII_8BIT, so force that in
@@ -214,7 +216,7 @@ CONFLICT
       context 'when the file contains non-UTF-8 characters' do
         it 'raises UnsupportedEncoding' do
           expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }
-            .to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
+            .to raise_error(Gitlab::Git::Conflict::Parser::UnsupportedEncoding)
         end
       end
     end
