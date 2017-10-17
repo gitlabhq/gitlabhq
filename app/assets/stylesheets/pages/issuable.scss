@@ -72,10 +72,20 @@
     }
   }
 
+  .title-container {
+    display: flex;
+  }
+
   .title {
     padding: 0;
     margin-bottom: 16px;
     border-bottom: none;
+  }
+
+  .btn-edit {
+    margin-left: auto;
+    // Set height to match title height
+    height: 2em;
   }
 
   // Border around images in issue and MR descriptions.
