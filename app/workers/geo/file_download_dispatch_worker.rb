@@ -2,6 +2,10 @@ module Geo
   class FileDownloadDispatchWorker < Geo::BaseSchedulerWorker
     private
 
+    def max_capacity
+      current_node.files_max_capacity
+    end
+
     def schedule_job(object_db_id, object_type)
       job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
 
