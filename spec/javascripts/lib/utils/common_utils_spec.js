@@ -474,7 +474,11 @@ describe('common_utils', () => {
       });
 
       it('should return the svg for a linked icon', () => {
-        expect(gl.utils.spriteIcon('test')).toEqual('<svg><use xlink:href="icons.svg#test" /></svg>');
+        expect(gl.utils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+      });
+
+      it('should set svg className when passed', () => {
+        expect(gl.utils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
       });
     });
   });

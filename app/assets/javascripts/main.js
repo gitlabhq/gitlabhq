@@ -54,7 +54,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import Flash from './flash';
+import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -340,8 +340,16 @@ $(function () {
     gl.utils.visitUrl(`${action}${$(this).serialize()}`);
   });
 
+<<<<<<< HEAD
   /**
    * EE specific scripts
    */
   $('#modal-upload-trial-license').modal('show');
+=======
+  const flashContainer = document.querySelector('.flash-container');
+
+  if (flashContainer && flashContainer.children.length) {
+    removeFlashClickListener(flashContainer.children[0]);
+  }
+>>>>>>> 3fa410c831dac1dd1a74a14260ed99a5920218f8
 });

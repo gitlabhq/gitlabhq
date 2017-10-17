@@ -7,6 +7,9 @@ module Gcp
     belongs_to :user
     belongs_to :service
 
+    scope :enabled, -> { where(enabled: true) }
+    scope :disabled, -> { where(enabled: false) }
+
     default_value_for :gcp_cluster_zone, 'us-central1-a'
     default_value_for :gcp_cluster_size, 3
     default_value_for :gcp_machine_type, 'n1-standard-4'

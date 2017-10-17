@@ -22,7 +22,8 @@ const RepoEditor = {
         const monacoInstance = Helper.monaco.editor.create(this.$el, {
           model: null,
           readOnly: false,
-          contextmenu: false,
+          contextmenu: true,
+          scrollBeyondLastLine: false,
         });
 
         Helper.monacoInstance = monacoInstance;

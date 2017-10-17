@@ -72,7 +72,12 @@ describe Gitlab::UsageData do
         deployments
         environments
         gcp_clusters
+<<<<<<< HEAD
         geo_nodes
+=======
+        gcp_clusters_enabled
+        gcp_clusters_disabled
+>>>>>>> 3fa410c831dac1dd1a74a14260ed99a5920218f8
         in_review_folder
         groups
         issues

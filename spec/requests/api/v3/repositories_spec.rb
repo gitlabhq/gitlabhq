@@ -97,10 +97,11 @@ describe API::V3::Repositories do
     end
   end
 
-  {
-    'blobs/:sha' => 'blobs/master',
-    'commits/:sha/blob' => 'commits/master/blob'
-  }.each do |desc_path, example_path|
+  [
+    ['blobs/:sha', 'blobs/master'],
+    ['blobs/:sha', 'blobs/v1.1.0'],
+    ['commits/:sha/blob', 'commits/master/blob']
+  ].each do |desc_path, example_path|
     describe "GET /projects/:id/repository/#{desc_path}" do
       let(:route) { "/projects/#{project.id}/repository/#{example_path}?filepath=README.md" }
       shared_examples_for 'repository blob' do
@@ -110,7 +111,7 @@ describe API::V3::Repositories do
         end
         context 'when sha does not exist' do
           it_behaves_like '404 response' do
-            let(:request) { get v3_api(route.sub('master', 'invalid_branch_name'), current_user) }
+            let(:request) { get v3_api("/projects/#{project.id}/repository/#{desc_path.sub(':sha', 'invalid_branch_name')}?filepath=README.md", current_user) }
             let(:message) { '404 Commit Not Found' }
           end
         end

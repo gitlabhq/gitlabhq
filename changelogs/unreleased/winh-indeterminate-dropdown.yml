@@ -1,0 +1,5 @@
+---
+title: Fix alignment for indeterminate marker in dropdowns
+merge_request: 14809
+author:
+type: fixed
