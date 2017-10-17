@@ -36,8 +36,8 @@ export default class LazyLoader {
     }
   }
   loadCheck() {
-    this.searchLazyImages();
-    this.startContentObserver();
+    //this.searchLazyImages();
+    //this.startContentObserver();
   }
   scrollCheck() {
     requestAnimationFrame(() => this.checkElementsInView());
