@@ -1,8 +1,10 @@
 # Automatic issue closing
 
->**Note:**
-This is the user docs. In order to change the default issue closing pattern,
-follow the steps in the [administration docs].
+>**Notes:**
+> - This is the user docs. In order to change the default issue closing pattern,
+>   follow the steps in the [administration docs].
+> - For performance reasons, automatic issue closing is disabled for the very
+>   first push from an existing repository.
 
 When a commit or merge request resolves one or more issues, it is possible to
 automatically have these issues closed when the commit or merge request lands
