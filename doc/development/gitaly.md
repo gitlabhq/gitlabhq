@@ -85,24 +85,12 @@ Commits and other git data, is now fetched through Gitaly. These fetches can,
 much like with a database, be batched. This improves performance for the client
 and for Gitaly itself and therefore for the users too. To keep performance stable
 and guard performance regressions, Gitaly calls can be counted and the call count
-can be tested against:
+can be tested against. This requires the `:request_store` flag to be set.
 
 ```ruby
 describe 'Gitaly Request count tests' do
-  context 'when the request store is activated', :request_store do
-    it 'correctly counts the gitaly requests made' do
-      count = gitaly_request_count { subject }
-
-      expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
-    end
-  end
-
-  context 'when the request store is disabled' do
-    it 'is always zero' do
-      subject
-
-      expect(Gitlab::GitalyClient.get_request_count).to be_zero
-    end
+  it 'correctly counts the gitaly requests made' do
+    expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
   end
 end
 ```
