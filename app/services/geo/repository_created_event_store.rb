@@ -10,7 +10,7 @@ module Geo
         repository_storage_name: project.repository.storage,
         repository_storage_path: project.repository_storage_path,
         repo_path: project.disk_path,
-        wiki_path: "#{project.disk_path}.wiki",
+        wiki_path: ("#{project.disk_path}.wiki" if project.wiki_enabled?),
         project_name: project.name
       )
     end
