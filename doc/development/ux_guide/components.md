@@ -266,9 +266,9 @@ Dialog modals are only used for having a conversation and confirmation with the 
 ### Style
 
 * Dialog modals contain the header, body, and actions.
-  * **Actions:** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from right to left: Affirmative action → Extra action → Dismissive action
-  * **Header:** The header title is a question instead of a descriptive phrase.
-  * **Body:** The content in body should never be ambiguous and unclear. It provides specific information.
+  * **Header(1):** The header title is a question instead of a descriptive phrase.
+  * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
+  * **Actions(3):** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from right to left: Affirmative action → Extra action → Dismissive action
 * Confirmations regarding labels should keep labeling styling.
 * References to commits, branches, and tags should be **monospaced**.
 
