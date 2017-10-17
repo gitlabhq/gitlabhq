@@ -11,30 +11,16 @@ module Geo
     end
 
     def perform(project_id, scheduled_time)
-      project  = Project.find(project_id)
       registry = Geo::ProjectRegistry.find_or_initialize_by(project_id: project_id)
+      project = registry.project
 
-      Geo::RepositorySyncService.new(project).execute if sync_repository?(registry, scheduled_time)
-      Geo::WikiSyncService.new(project).execute if sync_wiki?(registry, scheduled_time)
-    rescue ActiveRecord::RecordNotFound => e
-      Gitlab::Geo::Logger.error(
-        class: self.class.name,
-        message: "Couldn't find project, skipping syncing",
-        project_id: project_id,
-        error: e
-      )
-    end
+      if project.nil?
+        Gitlab::Geo::Logger.error(class: self.class.name, message: "Couldn't find project, skipping syncing", project_id: project_id)
+        return
+      end
 
-    private
-
-    def sync_repository?(registry, scheduled_time)
-      !registry.repository_synced_since?(scheduled_time) &&
-        registry.resync_repository?
-    end
-
-    def sync_wiki?(registry, scheduled_time)
-      !registry.wiki_synced_since?(scheduled_time) &&
-        registry.resync_wiki?
+      Geo::RepositorySyncService.new(project).execute if registry.repository_sync_due?(scheduled_time)
+      Geo::WikiSyncService.new(project).execute if registry.wiki_sync_due?(scheduled_time)
     end
   end
 end

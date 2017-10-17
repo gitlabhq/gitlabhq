@@ -12,6 +12,10 @@ module Gitlab
         GIT_OBJECT_DIRECTORY
         GIT_ALTERNATE_OBJECT_DIRECTORIES
       ].freeze
+      ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES = %w[
+        GIT_OBJECT_DIRECTORY_RELATIVE
+        GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
+      ].freeze
       SEARCH_CONTEXT_LINES = 3
 
       NoRepository = Class.new(StandardError)
@@ -700,7 +704,17 @@ module Gitlab
         tags.find { |tag| tag.name == name }
       end
 
-      def merge(user, source_sha, target_branch, message)
+      def merge(user, source_sha, target_branch, message, &block)
+        gitaly_migrate(:operation_user_merge_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_merge_branch(user, source_sha, target_branch, message, &block)
+          else
+            rugged_merge(user, source_sha, target_branch, message, &block)
+          end
+        end
+      end
+
+      def rugged_merge(user, source_sha, target_branch, message)
         committer = Gitlab::Git.committer_hash(email: user.email, name: user.name)
 
         OperationService.new(user, self).with_branch(target_branch) do |start_commit|
@@ -1058,6 +1072,13 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git_with_timeout(args, timeout, env: {})
+        circuit_breaker.perform do
+          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)
       end
@@ -1080,6 +1101,30 @@ module Gitlab
         return @has_visible_content if defined?(@has_visible_content)
 
         @has_visible_content = has_local_branches?
+      end
+
+      def fetch(remote = 'origin')
+        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
+
+        popen(args, @path).last.zero?
+      end
+
+      def blob_at(sha, path)
+        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      def commit_index(user, branch_name, index, options)
+        committer = user_to_committer(user)
+
+        OperationService.new(user, self).with_branch(branch_name) do
+          commit_params = options.merge(
+            tree: index.write_tree(rugged),
+            author: committer,
+            committer: committer
+          )
+
+          create_commit(commit_params)
+        end
       end
 
       def gitaly_repository
@@ -1220,7 +1265,16 @@ module Gitlab
       end
 
       def alternate_object_directories
-        Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES).compact
+        relative_paths = Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
+
+        if relative_paths.any?
+          relative_paths.map { |d| File.join(path, d) }
+        else
+          Gitlab::Git::Env.all.values_at(*ALLOWED_OBJECT_DIRECTORIES_VARIABLES)
+            .flatten
+            .compact
+            .flat_map { |d| d.split(File::PATH_SEPARATOR) }
+        end
       end
 
       # Get the content of a blob for a given commit.  If the blob is a commit

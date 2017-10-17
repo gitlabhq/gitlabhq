@@ -29,3 +29,17 @@
     = hidden_field_tag "#{form.object_name}[namespace_ids]", geo_node.namespace_ids.join(","), class: 'js-geo-node-namespaces', data: { selected: node_namespaces_options(geo_node.namespaces).to_json }
     .help-block
       #{ s_("Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all.") }
+
+.form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
+  = form.label :repos_max_capacity, s_('Geo|Repository sync capacity'), class: 'control-label'
+  .col-sm-10
+    = form.number_field :repos_max_capacity, class: 'form-control', min: 0
+    .help-block
+      #{ s_('Control the maximum concurrency of repository backfill for this secondary node') }
+
+.form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
+  = form.label :files_max_capacity, s_('Geo|File sync capacity'), class: 'control-label'
+  .col-sm-10
+    = form.number_field :files_max_capacity, class: 'form-control', min: 0
+    .help-block
+      #{ s_('Control the maximum concurrency of LFS/attachment backfill for this secondary node') }

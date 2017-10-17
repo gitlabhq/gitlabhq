@@ -1,0 +1,5 @@
+---
+title: Don't create build failed todos when the job is automatically retried
+merge_request:
+author:
+type: fixed

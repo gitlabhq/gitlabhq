@@ -403,7 +403,11 @@ export const setCiStatusFavicon = (pageUrl) => {
   });
 };
 
-export const spriteIcon = icon => `<svg><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+export const spriteIcon = (icon, className = '') => {
+  const classAttribute = className.length > 0 ? `class="${className}"` : '';
+
+  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+};
 
 export const imagePath = imgUrl => `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/${imgUrl}`;
 

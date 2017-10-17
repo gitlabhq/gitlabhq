@@ -44,7 +44,6 @@ import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './broadcast_message';
 import './commits';
 import './compare';
 import './compare_autocomplete';
@@ -55,7 +54,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import Flash from './flash';
+import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -75,8 +74,6 @@ import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
-import './member_expiration_date';
-import './members';
 import './merge_request';
 import './merge_request_tabs';
 import './milestone';
@@ -347,4 +344,9 @@ $(function () {
    * EE specific scripts
    */
   $('#modal-upload-trial-license').modal('show');
+  const flashContainer = document.querySelector('.flash-container');
+
+  if (flashContainer && flashContainer.children.length) {
+    removeFlashClickListener(flashContainer.children[0]);
+  }
 });

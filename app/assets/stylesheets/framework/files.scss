@@ -10,6 +10,10 @@
     border: 0;
   }
 
+  &.file-holder-bottom-radius {
+    border-radius: 0 0 $border-radius-small $border-radius-small;
+  }
+
   &.readme-holder {
     margin: $gl-padding 0;
 

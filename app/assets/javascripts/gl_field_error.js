@@ -54,7 +54,7 @@ const inputErrorClass = 'gl-field-error-outline';
 const errorAnchorSelector = '.gl-field-error-anchor';
 const ignoreInputSelector = '.gl-field-error-ignore';
 
-class GlFieldError {
+export default class GlFieldError {
   constructor({ input, formErrors }) {
     this.inputElement = $(input);
     this.inputDomElement = this.inputElement.get(0);
@@ -159,6 +159,3 @@ class GlFieldError {
     this.fieldErrorElement.hide();
   }
 }
-
-window.gl = window.gl || {};
-window.gl.GlFieldError = GlFieldError;
