@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include GroupDescendant
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -81,6 +82,8 @@ class Project < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  alias_method :parent, :namespace
+  alias_attribute :parent_id, :namespace_id
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit
@@ -477,6 +480,13 @@ class Project < ActiveRecord::Base
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
+  end
+
+  # returns all ancestor-groups upto but excluding the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
+      .base_and_ancestors(upto: top)
   end
 
   def lfs_enabled?
@@ -1547,10 +1557,6 @@ class Project < ActiveRecord::Base
     return unless map
 
     map.public_path_for_source_path(path)
-  end
-
-  def parent
-    namespace
   end
 
   def parent_changed?

@@ -6,7 +6,7 @@
 = webpack_bundle_tag 'common_vue'
 = webpack_bundle_tag 'groups'
 
-- if @groups.empty?
-  = render 'empty_state'
+- if params[:filter].blank? && @groups.empty?
+  = render 'shared/groups/empty_state'
 - else
   = render 'groups'

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe GroupsController do
   let(:user) { create(:user) }
@@ -146,42 +146,6 @@ describe GroupsController do
         get :index
 
         expect(response).to redirect_to(explore_groups_path)
-      end
-    end
-  end
-
-  describe 'GET #subgroups', :nested_groups do
-    let!(:public_subgroup) { create(:group, :public, parent: group) }
-    let!(:private_subgroup) { create(:group, :private, parent: group) }
-
-    context 'as a user' do
-      before do
-        sign_in(user)
-      end
-
-      it 'shows all subgroups' do
-        get :subgroups, id: group.to_param
-
-        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
-      end
-
-      context 'being member of private subgroup' do
-        it 'shows public and private subgroups the user is member of' do
-          group_member.destroy!
-          private_subgroup.add_guest(user)
-
-          get :subgroups, id: group.to_param
-
-          expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
-        end
-      end
-    end
-
-    context 'as a guest' do
-      it 'shows the public subgroups' do
-        get :subgroups, id: group.to_param
-
-        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
       end
     end
   end
@@ -425,62 +389,62 @@ describe GroupsController do
           end
         end
       end
+
+      context 'for a POST request' do
+        context 'when requesting the canonical path with different casing' do
+          it 'does not 404' do
+            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+
+            expect(response).not_to have_http_status(404)
+          end
+
+          it 'does not redirect to the correct casing' do
+            post :update, id: group.to_param.upcase, group: { path: 'new_path' }
+
+            expect(response).not_to have_http_status(301)
+          end
+        end
+
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+          it 'returns not found' do
+            post :update, id: redirect_route.path, group: { path: 'new_path' }
+
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
+
+      context 'for a DELETE request' do
+        context 'when requesting the canonical path with different casing' do
+          it 'does not 404' do
+            delete :destroy, id: group.to_param.upcase
+
+            expect(response).not_to have_http_status(404)
+          end
+
+          it 'does not redirect to the correct casing' do
+            delete :destroy, id: group.to_param.upcase
+
+            expect(response).not_to have_http_status(301)
+          end
+        end
+
+        context 'when requesting a redirected path' do
+          let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
+
+          it 'returns not found' do
+            delete :destroy, id: redirect_route.path
+
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
     end
 
-    context 'for a POST request' do
-      context 'when requesting the canonical path with different casing' do
-        it 'does not 404' do
-          post :update, id: group.to_param.upcase, group: { path: 'new_path' }
-
-          expect(response).not_to have_http_status(404)
-        end
-
-        it 'does not redirect to the correct casing' do
-          post :update, id: group.to_param.upcase, group: { path: 'new_path' }
-
-          expect(response).not_to have_http_status(301)
-        end
-      end
-
-      context 'when requesting a redirected path' do
-        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
-
-        it 'returns not found' do
-          post :update, id: redirect_route.path, group: { path: 'new_path' }
-
-          expect(response).to have_http_status(404)
-        end
-      end
+    def group_moved_message(redirect_route, group)
+      "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
     end
-
-    context 'for a DELETE request' do
-      context 'when requesting the canonical path with different casing' do
-        it 'does not 404' do
-          delete :destroy, id: group.to_param.upcase
-
-          expect(response).not_to have_http_status(404)
-        end
-
-        it 'does not redirect to the correct casing' do
-          delete :destroy, id: group.to_param.upcase
-
-          expect(response).not_to have_http_status(301)
-        end
-      end
-
-      context 'when requesting a redirected path' do
-        let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
-
-        it 'returns not found' do
-          delete :destroy, id: redirect_route.path
-
-          expect(response).to have_http_status(404)
-        end
-      end
-    end
-  end
-
-  def group_moved_message(redirect_route, group)
-    "Group '#{redirect_route.path}' was moved to '#{group.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end
