@@ -73,6 +73,8 @@ describe Gitlab::UsageData do
         environments
         gcp_clusters
         geo_nodes
+        gcp_clusters_enabled
+        gcp_clusters_disabled
         in_review_folder
         groups
         issues

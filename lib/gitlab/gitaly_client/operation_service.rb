@@ -74,6 +74,37 @@ module Gitlab
           raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
         end
       end
+
+      def user_merge_branch(user, source_sha, target_branch, message)
+        request_enum = QueueEnumerator.new
+        response_enum = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_merge_branch,
+          request_enum.each
+        )
+
+        request_enum.push(
+          Gitaly::UserMergeBranchRequest.new(
+            repository: @gitaly_repo,
+            user: Util.gitaly_user(user),
+            commit_id: source_sha,
+            branch: GitalyClient.encode(target_branch),
+            message: GitalyClient.encode(message)
+          )
+        )
+
+        yield response_enum.next.commit_id
+
+        request_enum.push(Gitaly::UserMergeBranchRequest.new(apply: true))
+
+        branch_update = response_enum.next.branch_update
+        raise Gitlab::Git::CommitError.new('failed to apply merge to branch') unless branch_update.commit_id.present?
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+      ensure
+        request_enum.close
+      end
     end
   end
 end

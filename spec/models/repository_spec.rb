@@ -1286,21 +1286,31 @@ describe Repository do
 
     let(:message) { 'Test \r\n\r\n message' }
 
-    it 'merges the code and returns the commit id' do
-      expect(merge_commit).to be_present
-      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    shared_examples '#merge' do
+      it 'merges the code and returns the commit id' do
+        expect(merge_commit).to be_present
+        expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+      end
+
+      it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+      end
+
+      it 'removes carriage returns from commit message' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+      end
     end
 
-    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    context 'with gitaly' do
+      it_behaves_like '#merge'
     end
 
-    it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge'
     end
 
     def merge(repository, user, merge_request, message)
