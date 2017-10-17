@@ -1,9 +1,8 @@
-- if @branches.any? || @branches_limit_exceeded
-  - if @branches_limit_exceeded
-    = commit_branch_link('#', _('Too many branches to search'))
-  - else
-    - branch = commit_default_branch(@project, @branches)
-    = commit_branch_link(project_ref_path(@project, branch), branch)
+- if @branches_limit_exceeded
+  = commit_branch_link('#', _('Too many branches to search'))
+- elsif @branches.any?
+  - branch = commit_default_branch(@project, @branches)
+  = commit_branch_link(project_ref_path(@project, branch), branch)
 
 -# `commit_default_branch` deletes the default branch from `@branches`,
 -# so only render this if we have more branches or tags left
