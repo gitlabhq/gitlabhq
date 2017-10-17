@@ -1,5 +1,6 @@
 <script>
   import Flash from '../../../flash';
+  import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
 
@@ -85,7 +86,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new gl.GLForm($(this.$refs['gl-form']), true);
+      return new GLForm($(this.$refs['gl-form']), true);
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('gl-form');

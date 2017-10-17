@@ -81,7 +81,11 @@ export default class PrometheusMetrics {
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
     backOff((next, stop) => {
-      $.getJSON(this.activeMetricsEndpoint)
+      $.ajax({
+        url: this.activeMetricsEndpoint,
+        dataType: 'json',
+        global: false,
+      })
         .done((res) => {
           if (res && res.success) {
             stop(res);

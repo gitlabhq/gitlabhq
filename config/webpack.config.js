@@ -93,6 +93,7 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+    users:                './users/index.js',
     performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
@@ -226,8 +227,10 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
+        'graphs_show',
         'monitoring',
-        'burndown_chart',
+        'users',
+        'burndown_chart', // EE
       ],
     }),
 

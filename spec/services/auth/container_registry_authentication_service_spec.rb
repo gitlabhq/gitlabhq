@@ -48,6 +48,21 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
   end
 
+  shared_examples 'a browsable' do
+    let(:access) do
+      [{ 'type' => 'registry',
+         'name' => 'catalog',
+         'actions' => ['*'] }]
+    end
+
+    it_behaves_like 'a valid token'
+    it_behaves_like 'not a container repository factory'
+
+    it 'has the correct scope' do
+      expect(payload).to include('access' => access)
+    end
+  end
+
   shared_examples 'an accessible' do
     let(:access) do
       [{ 'type' => 'repository',
@@ -56,7 +71,10 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     it_behaves_like 'a valid token'
-    it { expect(payload).to include('access' => access) }
+
+    it 'has the correct scope' do
+      expect(payload).to include('access' => access)
+    end
   end
 
   shared_examples 'an inaccessible' do
@@ -121,6 +139,17 @@ describe Auth::ContainerRegistryAuthenticationService do
 
   context 'user authorization' do
     let(:current_user) { create(:user) }
+
+    context 'for registry catalog' do
+      let(:current_params) do
+        { scope: "registry:catalog:*" }
+      end
+
+      context 'disallow browsing for users without Gitlab admin rights' do
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+    end
 
     context 'for private project' do
       let(:project) { create(:project) }
@@ -503,6 +532,16 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
   end
 
+  context 'registry catalog browsing authorized as admin' do
+    let(:current_user) { create(:user, :admin) }
+
+    let(:current_params) do
+      { scope: "registry:catalog:*" }
+    end
+
+    it_behaves_like 'a browsable'
+  end
+
   context 'unauthorized' do
     context 'disallow to use scope-less authentication' do
       it_behaves_like 'a forbidden'
@@ -548,6 +587,15 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'a forbidden'
         it_behaves_like 'not a container repository factory'
       end
+    end
+
+    context 'for registry catalog' do
+      let(:current_params) do
+        { scope: "registry:catalog:*" }
+      end
+
+      it_behaves_like 'a forbidden'
+      it_behaves_like 'not a container repository factory'
     end
   end
 end
