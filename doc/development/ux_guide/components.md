@@ -10,6 +10,7 @@
 * [Tables](#tables)
 * [Blocks](#blocks)
 * [Panels](#panels)
+* [Dialog modals](#dialog-modals)
 * [Alerts](#alerts)
 * [Forms](#forms)
 * [Search box](#search-box)
@@ -255,31 +256,31 @@ Skeleton loading can replace any existing UI elements for the period in which th
 ---
 
 ## Dialog modals
-Dialog modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until making an action. Using dialog modals sparingly as it is interruptive.
+Dialog modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until closing the modal.
 
 ### Usage
 
-* When the action is irreversible, we should provide the details and confirm with the user before they take an advanced action.
-* When the action will affect privacy or authorization, we should provide the advanced information and confirm with the user.
+* When the action is irreversible, dialog modals provide the details and confirm with the user before they take an advanced action.
+* When the action will affect privacy or authorization, dialog modals provide the advanced information and confirm with the user.
 
 ### Style
-* Dialog modals contain the header title, content, and action bar.
-* Having an affirmative action, a dismissive action, and an extra action in action bar.
-* The order of actions in the action bar: (Right to left) Affirmative action → Extra action → Dismissive action 
+
+* Dialog modals contain the header, body, and actions.
+  * **Actions:** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from right to left: Affirmative action → Extra action → Dismissive action
+  * **Header:** The header title is a question instead of a descriptive phrase.
+  * **Body:** The content in body should never be ambiguous and unclear. It provides specific information.
 * Confirmations regarding labels should keep labeling styling.
 * References to commits, branches, and tags should be **monospaced**.
 
-### Writing
-* The header title is a question instead of a descriptive phrase.
-* The content should not be ambiguous and unclear. It should provide specific information as a reference for the user to take an advanced action.
+![layout-modal](img/modals-layout-for-modals.png)
 
 ### Placement
+
 * Dialog modals should always be the center of the screen horizontally and have **72px** from the top of the screen.
 
 | Dialog with 2 actions | Dialog with 3 actions | Special confirmation |
 | --------------------- | --------------------- | -------------------- |
-| ![two-actions]() | ![three-actions]() | ![spcial-confirmation]() |
-
+| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons-special.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
 
 ---
 
