@@ -89,8 +89,10 @@ can be tested against. This requires the `:request_store` flag to be set.
 
 ```ruby
 describe 'Gitaly Request count tests' do
-  it 'correctly counts the gitaly requests made' do
-    expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+  context 'when the request store is activated', :request_store do
+    it 'correctly counts the gitaly requests made' do
+      expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+    end
   end
 end
 ```
