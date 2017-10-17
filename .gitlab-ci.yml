@@ -157,12 +157,8 @@ stages:
 
 # Trigger a package build in omnibus-gitlab repository
 build-package:
-  image: ruby:2.3-alpine
+  image: ruby:2.4-alpine
   before_script: []
-  services: []
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
   stage: build
   cache: {}
   when: manual
@@ -183,13 +179,9 @@ build-package:
     - apk add --update openssl
     - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
     - chmod 755 trigger-build-docs
-  services: []
   cache: {}
   dependencies: []
-  artifacts: {}
   variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
     GIT_STRATEGY: none
   when: manual
   only:
