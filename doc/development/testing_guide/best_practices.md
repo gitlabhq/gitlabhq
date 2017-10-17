@@ -62,10 +62,10 @@ writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 Sometimes you may need to debug Capybara tests by observing browser behavior.
 
-You can stall Capybara and view the website on the browser by using the
+You can pause Capybara and view the website on the browser by using the
 `live_debug` method in your spec. The current page will be automatically opened
 in your default browser.
-You may need to sign-in first (the current user's credentials are displayed in
+You may need to sign in first (the current user's credentials are displayed in
 the terminal).
 
 To resume the test run, you only need to press `c`.
