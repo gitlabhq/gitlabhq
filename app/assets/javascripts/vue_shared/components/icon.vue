@@ -13,7 +13,6 @@
   />
 
 */
-
   export default {
     props: {
       name: {
@@ -27,7 +26,7 @@
         default: 0,
       },
 
-      cssClass: {
+      cssClasses: {
         type: String,
         required: false,
         default: '',
@@ -38,17 +37,15 @@
       spriteHref() {
         return `${gon.sprite_icons}#${this.name}`;
       },
-      fullCssClass() {
-        let classString = '' || this.cssClass;
-        if (this.size) classString += `s${this.size}`;
-        return classString;
+      iconSizeClass() {
+        return this.size ? `s${this.size}` : '';
       },
     },
   };
 </script>
 <template>
   <svg
-    :class="fullCssClass">
+    :class="[iconSizeClass, cssClasses]">
     <use 
       v-bind="{'xlink:href':spriteHref}"/>
   </svg>
