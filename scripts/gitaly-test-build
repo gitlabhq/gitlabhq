@@ -10,8 +10,8 @@ require 'fileutils'
 # gitlab-ce and gitaly.
 
 dir = 'tmp/tests/gitaly'
-
-abort 'gitaly build failed' unless system('make', chdir: dir)
+env = {'BUNDLE_PATH' => 'vendor/bundle'}
+abort 'gitaly build failed' unless system(env, 'make', chdir: dir)
 
 # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
 # Without this a gitaly executable created in the setup-test-env job
