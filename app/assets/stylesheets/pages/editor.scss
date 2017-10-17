@@ -4,7 +4,7 @@
     border-right: 1px solid $border-color;
     border-left: 1px solid $border-color;
     border-bottom: none;
-    border-radius: 2px;
+    border-radius: $border-radius-small $border-radius-small 0 0;
     background: $gray-normal;
   }
 

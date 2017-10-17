@@ -1,9 +1,10 @@
 <script>
+import _ from 'underscore';
 import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 import Store from '../stores/repo_store';
+import eventHub from '../event_hub';
 import RepoPreviousDirectory from './repo_prev_directory.vue';
-import RepoFileOptions from './repo_file_options.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
 import RepoMixin from '../mixins/repo_mixin';
@@ -11,21 +12,35 @@ import RepoMixin from '../mixins/repo_mixin';
 export default {
   mixins: [RepoMixin],
   components: {
-    'repo-file-options': RepoFileOptions,
     'repo-previous-directory': RepoPreviousDirectory,
     'repo-file': RepoFile,
     'repo-loading-file': RepoLoadingFile,
   },
-
   created() {
     window.addEventListener('popstate', this.checkHistory);
   },
   destroyed() {
+    eventHub.$off('fileNameClicked', this.fileClicked);
+    eventHub.$off('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
     window.removeEventListener('popstate', this.checkHistory);
   },
+  mounted() {
+    eventHub.$on('fileNameClicked', this.fileClicked);
+    eventHub.$on('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
+  },
+  data() {
+    return Store;
+  },
+  computed: {
+    flattendFiles() {
+      const mapFiles = arr => (!arr.files.length ? [] : _.map(arr.files, a => [a, mapFiles(a)]));
 
-  data: () => Store,
-
+      return _.chain(this.files)
+        .map(arr => [arr, mapFiles(arr)])
+        .flatten()
+        .value();
+    },
+  },
   methods: {
     checkHistory() {
       let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
@@ -52,21 +67,21 @@ export default {
     },
 
     fileClicked(clickedFile, lineNumber) {
-      let file = clickedFile;
+      const file = clickedFile;
+
       if (file.loading) return;
-      file.loading = true;
 
       if (file.type === 'tree' && file.opened) {
-        file = Store.removeChildFilesOfTree(file);
-        file.loading = false;
+        Helper.setDirectoryToClosed(file);
         Store.setActiveLine(lineNumber);
       } else {
         const openFile = Helper.getFileFromPath(file.url);
+
         if (openFile) {
-          file.loading = false;
           Store.setActiveFiles(openFile);
           Store.setActiveLine(lineNumber);
         } else {
+          file.loading = true;
           Service.url = file.url;
           Helper.getContent(file)
             .then(() => {
@@ -81,7 +96,7 @@ export default {
 
     goToPreviousDirectoryClicked(prevURL) {
       Service.url = prevURL;
-      Helper.getContent(null)
+      Helper.getContent(null, true)
         .then(() => Helper.scrollTabsRight())
         .catch(Helper.loadingError);
     },
@@ -92,38 +107,43 @@ export default {
 <template>
 <div id="sidebar" :class="{'sidebar-mini' : isMini}">
   <table class="table">
-    <thead v-if="!isMini">
+    <thead>
       <tr>
-        <th class="name">Name</th>
-        <th class="hidden-sm hidden-xs last-commit">Last commit</th>
-        <th class="hidden-xs last-update text-right">Last update</th>
+        <th
+          v-if="isMini"
+          class="repo-file-options title"
+        >
+          <strong class="clgray">
+            {{ projectName }}
+          </strong>
+        </th>
+        <template v-else>
+          <th class="name">
+            Name
+          </th>
+          <th class="hidden-sm hidden-xs last-commit">
+            Last commit
+          </th>
+          <th class="hidden-xs last-update text-right">
+            Last update
+          </th>
+        </template>
       </tr>
     </thead>
     <tbody>
-      <repo-file-options
-        :is-mini="isMini"
-        :project-name="projectName"
-      />
       <repo-previous-directory
-        v-if="isRoot"
+        v-if="!isRoot && !loading.tree"
         :prev-url="prevURL"
-        @linkclicked="goToPreviousDirectoryClicked(prevURL)"/>
+      />
       <repo-loading-file
+        v-if="!flattendFiles.length && loading.tree"
         v-for="n in 5"
         :key="n"
-        :loading="loading"
-        :has-files="!!files.length"
-        :is-mini="isMini"
       />
       <repo-file
-        v-for="file in files"
+        v-for="file in flattendFiles"
         :key="file.id"
         :file="file"
-        :is-mini="isMini"
-        @linkclicked="fileClicked(file)"
-        :is-tree="isTree"
-        :has-files="!!files.length"
-        :active-file="activeFile"
       />
     </tbody>
   </table>

@@ -5,7 +5,9 @@ import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 
 const RepoEditor = {
-  data: () => Store,
+  data() {
+    return Store;
+  },
 
   destroyed() {
     if (Helper.monacoInstance) {
@@ -22,7 +24,8 @@ const RepoEditor = {
         const monacoInstance = Helper.monaco.editor.create(this.$el, {
           model: null,
           readOnly: false,
-          contextmenu: false,
+          contextmenu: true,
+          scrollBeyondLastLine: false,
         });
 
         Helper.monacoInstance = monacoInstance;
@@ -92,7 +95,7 @@ const RepoEditor = {
     },
 
     blobRaw() {
-      if (Helper.monacoInstance && !this.isTree) {
+      if (Helper.monacoInstance) {
         this.setupEditor();
       }
     },

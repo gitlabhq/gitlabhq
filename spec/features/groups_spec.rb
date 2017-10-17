@@ -90,8 +90,7 @@ feature 'Group' do
 
     context 'as admin' do
       before do
-        visit subgroups_group_path(group)
-        click_link 'New Subgroup'
+        visit new_group_path(group, parent_id: group.id)
       end
 
       it 'creates a nested group' do
@@ -111,23 +110,13 @@ feature 'Group' do
         sign_out(:user)
         sign_in(user)
 
-        visit subgroups_group_path(group)
-        click_link 'New Subgroup'
+        visit new_group_path(group, parent_id: group.id)
+
         fill_in 'Group path', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))
         expect(page).to have_content("Group 'bar' was successfully created.")
-      end
-    end
-
-    context 'when nested group feature is disabled' do
-      it 'renders 404' do
-        allow(Group).to receive(:supports_nested_groups?).and_return(false)
-
-        visit subgroups_group_path(group)
-
-        expect(page.status_code).to eq(404)
       end
     end
   end
@@ -210,13 +199,15 @@ feature 'Group' do
   describe 'group page with nested groups', :nested_groups, :js do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
+    let!(:project) { create(:project, namespace: group) }
     let!(:path)  { group_path(group) }
 
-    it 'has nested groups tab with nested groups inside' do
+    it 'it renders projects and groups on the page' do
       visit path
-      click_link 'Subgroups'
+      wait_for_requests
 
       expect(page).to have_content(nested_group.name)
+      expect(page).to have_content(project.name)
     end
   end
 

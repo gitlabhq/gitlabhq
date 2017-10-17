@@ -8,7 +8,7 @@ export default class GroupsService {
     this.groups = Vue.resource(endpoint);
   }
 
-  getGroups(parentId, page, filterGroups, sort) {
+  getGroups(parentId, page, filterGroups, sort, archived) {
     const data = {};
 
     if (parentId) {
@@ -20,11 +20,15 @@ export default class GroupsService {
       }
 
       if (filterGroups) {
-        data.filter_groups = filterGroups;
+        data.filter = filterGroups;
       }
 
       if (sort) {
         data.sort = sort;
+      }
+
+      if (archived) {
+        data.archived = archived;
       }
     }
 

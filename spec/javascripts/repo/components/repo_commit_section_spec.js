@@ -134,6 +134,7 @@ describe('RepoCommitSection', () => {
     afterEach(() => {
       vm.$destroy();
       el.remove();
+      RepoStore.openedFiles = [];
     });
 
     it('shows commit message', () => {

@@ -3,32 +3,36 @@ require 'spec_helper'
 describe Projects::PipelinesController do
   include ApiHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
     stub_not_protect_default_branch
     project.add_developer(user)
-    project.project_feature.update(
-      builds_access_level: feature)
+    project.project_feature.update(builds_access_level: feature)
 
     sign_in(user)
   end
 
   describe 'GET index.json' do
     before do
-      create(:ci_empty_pipeline, status: 'pending', project: project)
-      create(:ci_empty_pipeline, status: 'running', project: project)
-      create(:ci_empty_pipeline, status: 'created', project: project)
-      create(:ci_empty_pipeline, status: 'success', project: project)
+      branch_head = project.commit
+      parent = branch_head.parent
 
-      get :index, namespace_id: project.namespace,
-                  project_id: project,
-                  format: :json
+      create(:ci_empty_pipeline, status: 'pending', project: project, sha: branch_head.id)
+      create(:ci_empty_pipeline, status: 'running', project: project, sha: branch_head.id)
+      create(:ci_empty_pipeline, status: 'created', project: project, sha: parent.id)
+      create(:ci_empty_pipeline, status: 'success', project: project, sha: parent.id)
+    end
+
+    subject do
+      get :index, namespace_id: project.namespace, project_id: project, format: :json
     end
 
     it 'returns JSON with serialized pipelines' do
+      subject
+
       expect(response).to have_http_status(:ok)
       expect(response).to match_response_schema('pipeline')
 
@@ -38,6 +42,12 @@ describe Projects::PipelinesController do
       expect(json_response['count']['running']).to eq 1
       expect(json_response['count']['pending']).to eq 1
       expect(json_response['count']['finished']).to eq 1
+    end
+
+    context 'when performing gitaly calls', :request_store do
+      it 'limits the Gitaly requests' do
+        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+      end
     end
   end
 
