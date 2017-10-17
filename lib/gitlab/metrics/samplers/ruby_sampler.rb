@@ -23,7 +23,7 @@ module Gitlab
         def initialize(interval)
           super(interval)
 
-          if Gitlab::Metrics.mri?
+          if Metrics.mri?
             require 'allocations'
 
             Allocations.start
@@ -32,15 +32,15 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:sampler_duration] = Gitlab::Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', {})
-          metrics[:total_time] = Gitlab::Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
+          metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', {})
+          metrics[:total_time] = Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
-            metrics[key] = Gitlab::Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
+            metrics[key] = Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
           end
 
-          metrics[:objects_total] = Gitlab::Metrics.gauge(with_prefix(:objects, :total), 'Objects total', labels.merge(class: nil), :livesum)
-          metrics[:memory_usage] = Gitlab::Metrics.gauge(with_prefix(:memory, :usage_total), 'Memory used total', labels, :livesum)
-          metrics[:file_descriptors] = Gitlab::Metrics.gauge(with_prefix(:file, :descriptors_total), 'File descriptors total', labels, :livesum)
+          metrics[:objects_total] = Metrics.gauge(with_prefix(:objects, :total), 'Objects total', labels.merge(class: nil), :livesum)
+          metrics[:memory_usage] = Metrics.gauge(with_prefix(:memory, :usage_total), 'Memory used total', labels, :livesum)
+          metrics[:file_descriptors] = Metrics.gauge(with_prefix(:file, :descriptors_total), 'File descriptors total', labels, :livesum)
 
           metrics
         end
