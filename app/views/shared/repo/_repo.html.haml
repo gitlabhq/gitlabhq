@@ -1,4 +1,5 @@
-#repo{ data: { url: content_url,
+#repo{ data: { root: @path.empty?.to_s,
+               url: content_url,
                project_name: project.name,
                refs_url: refs_project_path(project, format: :json),
                project_url: project_path(project),
