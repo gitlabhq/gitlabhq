@@ -153,6 +153,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :circuitbreaker_failure_count_threshold,
+            :circuitbreaker_failure_wait_time,
+            :circuitbreaker_failure_reset_time,
+            :circuitbreaker_storage_timeout,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

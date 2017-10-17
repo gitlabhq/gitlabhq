@@ -114,6 +114,19 @@ describe ApplicationSetting do
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
+    context 'circuitbreaker settings' do
+      [:circuitbreaker_failure_count_threshold,
+       :circuitbreaker_failure_wait_time,
+       :circuitbreaker_failure_reset_time,
+       :circuitbreaker_storage_timeout].each do |field|
+        it "Validates #{field} as number" do
+          is_expected.to validate_numericality_of(field)
+                           .only_integer
+                           .is_greater_than_or_equal_to(0)
+        end
+      end
+    end
+
     context 'repository storages' do
       before do
         storages = {
