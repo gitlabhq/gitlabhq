@@ -916,6 +916,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   .project-dropdown-content {
     position: relative;
     width: 70%;
+    overflow: scroll;
   }
 
   @media (max-width: $screen-xs-max) {
