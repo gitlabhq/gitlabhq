@@ -3,7 +3,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 
 const IconComponent = Vue.extend(Icon);
 
-fdescribe('Sprite Icon Component', function () {
+describe('Sprite Icon Component', function () {
   describe('Initialization', function () {
     beforeEach(function () {
       this.propsData = {
