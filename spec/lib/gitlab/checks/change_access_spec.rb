@@ -11,7 +11,7 @@ describe Gitlab::Checks::ChangeAccess do
     let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
 
-    let(:change_access) do
+    subject(:change_access) do
       described_class.new(
         changes,
         project: project,
@@ -20,19 +20,13 @@ describe Gitlab::Checks::ChangeAccess do
       )
     end
 
-    subject do
-      # TODO: Replace use of `subject` with `subject.exec`
-      # Then rename change_access back to subject
-      change_access.exec
-    end
-
     before do
       project.add_developer(user)
     end
 
     context 'without failed checks' do
       it "doesn't raise an error" do
-        expect { subject }.not_to raise_error
+        expect { subject.exec }.not_to raise_error
       end
     end
 
@@ -40,7 +34,7 @@ describe Gitlab::Checks::ChangeAccess do
       it 'raises an error' do
         expect(user_access).to receive(:can_do_action?).with(:push_code).and_return(false)
 
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
       end
     end
 
@@ -51,7 +45,7 @@ describe Gitlab::Checks::ChangeAccess do
         allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
         expect(user_access).to receive(:can_do_action?).with(:admin_project).and_return(false)
 
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
       end
 
       context 'with protected tag' do
@@ -67,7 +61,7 @@ describe Gitlab::Checks::ChangeAccess do
             let(:newrev) { '0000000000000000000000000000000000000000' }
 
             it 'is prevented' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be deleted/)
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be deleted/)
             end
           end
 
@@ -76,7 +70,7 @@ describe Gitlab::Checks::ChangeAccess do
             let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
 
             it 'is prevented' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be updated/)
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be updated/)
             end
           end
         end
@@ -87,14 +81,14 @@ describe Gitlab::Checks::ChangeAccess do
           let(:ref) { 'refs/tags/v9.1.0' }
 
           it 'prevents creation below access level' do
-            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /allowed to create this tag as it is protected/)
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /allowed to create this tag as it is protected/)
           end
 
           context 'when user has access' do
             let!(:protected_tag) { create(:protected_tag, :developers_can_create, project: project, name: 'v*') }
 
             it 'allows tag creation' do
-              expect { subject }.not_to raise_error
+              expect { subject.exec }.not_to raise_error
             end
           end
         end
@@ -107,7 +101,7 @@ describe Gitlab::Checks::ChangeAccess do
         let(:ref) { 'refs/heads/master' }
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'The default branch of a project cannot be deleted.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'The default branch of a project cannot be deleted.')
         end
       end
 
@@ -120,7 +114,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'raises an error if the user is not allowed to do forced pushes to protected branches' do
           expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to force push code to a protected branch on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to force push code to a protected branch on this project.')
         end
 
         it 'raises an error if the user is not allowed to merge to protected branches' do
@@ -128,13 +122,13 @@ describe Gitlab::Checks::ChangeAccess do
           expect(user_access).to receive(:can_merge_to_branch?).and_return(false)
           expect(user_access).to receive(:can_push_to_branch?).and_return(false)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to merge code into protected branches on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to merge code into protected branches on this project.')
         end
 
         it 'raises an error if the user is not allowed to push to protected branches' do
           expect(user_access).to receive(:can_push_to_branch?).and_return(false)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
         end
 
         context 'branch deletion' do
@@ -143,7 +137,7 @@ describe Gitlab::Checks::ChangeAccess do
 
           context 'if the user is not allowed to delete protected branches' do
             it 'raises an error' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
             end
           end
 
@@ -156,13 +150,13 @@ describe Gitlab::Checks::ChangeAccess do
               let(:protocol) { 'web' }
 
               it 'allows branch deletion' do
-                expect { subject }.not_to raise_error
+                expect { subject.exec }.not_to raise_error
               end
             end
 
             context 'over SSH or HTTP' do
               it 'raises an error' do
-                expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only delete protected branches using the web interface.')
+                expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only delete protected branches using the web interface.')
               end
             end
           end
@@ -183,7 +177,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'skips integrity check' do
           expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
 
-          change_access.exec
+          subject.exec
         end
       end
 
@@ -198,19 +192,19 @@ describe Gitlab::Checks::ChangeAccess do
           it 'skips integrity check' do
             expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
 
-            change_access.exec
+            subject.exec
           end
         end
 
         it 'fails if any LFS blobs are missing' do
-          expect { change_access.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /LFS objects are missing/)
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /LFS objects are missing/)
         end
 
         it 'succeeds if LFS objects have already been uploaded' do
           lfs_object = create(:lfs_object, oid: blob_object.lfs_oid)
           create(:lfs_objects_project, project: project, lfs_object: lfs_object)
 
-          expect { change_access.exec }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
       end
     end
