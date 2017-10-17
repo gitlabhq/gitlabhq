@@ -5,8 +5,6 @@
   = render 'shared/shared_runners_minutes_limit', project: @project
 
 %div{ 'class' => container_class }
-  - if show_auto_devops_callout?(@project)
-    = render 'shared/auto_devops_callout'
   #pipelines-list-vue{ data: { endpoint: project_pipelines_path(@project, format: :json),
     "help-page-path" => help_page_path('ci/quick_start/README'),
     "help-auto-devops-path" => help_page_path('topics/autodevops/index.md'),

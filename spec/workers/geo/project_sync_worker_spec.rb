@@ -102,6 +102,23 @@ RSpec.describe Geo::ProjectSyncWorker do
       end
     end
 
+    context 'wiki is not enabled for project' do
+      let!(:registry) { create(:geo_project_registry, resync_repository: true, resync_wiki: true, project: project) }
+
+      before do
+        project.update!(wiki_enabled: false)
+        subject.perform(project.id, Time.now)
+      end
+
+      it 'syncs the project repository' do
+        expect(repository_sync_service).to have_received(:execute)
+      end
+
+      it 'does not sync the project wiki' do
+        expect(wiki_sync_service).not_to have_received(:execute)
+      end
+    end
+
     context 'when project repository was synced after the time the job was scheduled in' do
       it 'does not perform Geo::RepositorySyncService for the given project' do
         create(:geo_project_registry, :synced, :repository_dirty, project: project, last_repository_synced_at: Time.now)
