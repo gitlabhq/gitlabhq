@@ -35,8 +35,14 @@ variables:
 
 before_script:
   - bundle --version
+  - date
   - source scripts/utils.sh
+  - date
   - source scripts/prepare_build.sh
+  - date
+
+after_script:
+  - date
 
 stages:
   - build
@@ -299,7 +305,9 @@ compile-assets:
     <<: *default-cache
   script:
     - node --version
+    - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     expire_in: 7d
@@ -498,11 +506,15 @@ db:check-schema-pg:
     - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
     - cp config/gitlab.yml.example config/gitlab.yml
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - date
     - git checkout $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS
+    - date
     - . scripts/prepare_build.sh
+    - date
     - bundle exec rake db:migrate
 
 migration:path-pg:
@@ -574,7 +586,9 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
   script:
+    - date
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - date
     - bundle exec rake gitlab:assets:compile
   artifacts:
     name: webpack-report
@@ -592,8 +606,11 @@ karma:
     BABEL_ENV: "coverage"
     CHROME_LOG_FILE: "chrome_debug.log"
   script:
+    - date
     - scripts/gitaly-test-spawn
+    - date
     - bundle exec rake gettext:po_to_json
+    - date
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
@@ -691,7 +708,9 @@ lint:javascript:report:
     - setup-test-env
   before_script: []
   script:
+    - date
     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
+    - date
     - yarn run eslint-report || true # ignore exit code
   artifacts:
     name: eslint-report
