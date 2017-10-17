@@ -20,19 +20,29 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       .where(resync_repository: false, resync_wiki: false)
   end
 
-  def resync_repository?
-    resync_repository || last_repository_successful_sync_at.nil?
+  def repository_sync_due?(scheduled_time)
+    never_synced_repository? || repository_sync_needed?(scheduled_time)
   end
 
-  def resync_wiki?
-    resync_wiki || last_wiki_successful_sync_at.nil?
+  def wiki_sync_due?(scheduled_time)
+    project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
-  def repository_synced_since?(timestamp)
-    last_repository_synced_at && last_repository_synced_at > timestamp
+  private
+
+  def never_synced_repository?
+    last_repository_successful_sync_at.nil?
   end
 
-  def wiki_synced_since?(timestamp)
-    last_wiki_synced_at && last_wiki_synced_at > timestamp
+  def never_synced_wiki?
+    last_wiki_successful_sync_at.nil?
+  end
+
+  def repository_sync_needed?(timestamp)
+    resync_repository? && (last_repository_synced_at.nil? || timestamp > last_repository_synced_at)
+  end
+
+  def wiki_sync_needed?(timestamp)
+    resync_wiki? && (last_wiki_synced_at.nil? || timestamp > last_wiki_synced_at)
   end
 end
