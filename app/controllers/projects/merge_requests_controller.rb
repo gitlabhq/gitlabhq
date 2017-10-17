@@ -100,6 +100,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
+  def discussions
+    notes = @merge_request.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    discussions = Discussion.build_collection(notes, @merge_request)
+
+    render json: DiscussionSerializer.new(project: @project, noteable: @merge_request, current_user: current_user).represent(discussions)
+  end
+
   def commits
     # Get commits from repository
     # or from cache if already merged
