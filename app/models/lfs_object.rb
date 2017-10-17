@@ -1,7 +1,4 @@
 class LfsObject < ActiveRecord::Base
-  # EE specific modules
-  prepend EE::LfsObject
-
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :lfs_objects_projects
 

@@ -10,7 +10,6 @@ module EE
       include Elastic::ProjectsSearch
       prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
-      prepend ::EE::Geo::ForeignDataWrapped
 
       before_validation :mark_remote_mirrors_for_removal
 

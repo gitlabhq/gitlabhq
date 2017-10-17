@@ -54,10 +54,10 @@ module Geo
     end
 
     def fdw_find_lfs_object_ids
-      fdw_table = "#{Gitlab::Geo.fdw_schema}.lfs_objects"
+      fdw_table = Geo::Fdw::LfsObject.table_name
 
       # Filter out objects in object storage (this is done in GeoNode#lfs_objects)
-      LfsObject.fdw.joins("LEFT OUTER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id AND file_registry.file_type = 'lfs'")
+      Geo::Fdw::LfsObject.joins("LEFT OUTER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id AND file_registry.file_type = 'lfs'")
         .where("#{fdw_table}.file_store IS NULL OR #{fdw_table}.file_store = #{LfsObjectUploader::LOCAL_STORE}")
         .where('file_registry.file_id IS NULL')
         .order(created_at: :desc)
@@ -67,10 +67,10 @@ module Geo
     end
 
     def fdw_find_upload_object_ids
-      fdw_table = "#{Gitlab::Geo.fdw_schema}.uploads"
+      fdw_table = Geo::Fdw::Upload.table_name
       obj_types = Geo::FileService::DEFAULT_OBJECT_TYPES.map { |val| "'#{val}'" }.join(',')
 
-      Upload.fdw.joins("LEFT OUTER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id AND file_registry.file_type IN (#{obj_types})")
+      Geo::Fdw::Upload.joins("LEFT OUTER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id AND file_registry.file_type IN (#{obj_types})")
         .where('file_registry.file_id IS NULL')
         .order(created_at: :desc)
         .limit(db_retrieve_batch_size)
