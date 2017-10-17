@@ -95,7 +95,7 @@ describe('RepoFile', () => {
 
   describe('methods', () => {
     describe('linkClicked', () => {
-      it('$emits linkclicked with file obj', () => {
+      it('$emits fileNameClicked with file obj', () => {
         spyOn(eventHub, '$emit');
 
         const vm = createComponent({
@@ -104,7 +104,7 @@ describe('RepoFile', () => {
 
         vm.linkClicked(vm.file);
 
-        expect(eventHub.$emit).toHaveBeenCalledWith('linkclicked', vm.file);
+        expect(eventHub.$emit).toHaveBeenCalledWith('fileNameClicked', vm.file);
       });
     });
   });
