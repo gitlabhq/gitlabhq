@@ -1,40 +1,42 @@
-class Rack::Attack
+module Gitlab::Throttle
   def self.settings
     Gitlab::CurrentSettings.current_application_settings
   end
 
-  def self.throttle_unauthenticated_options
+  def self.unauthenticated_options
     limit_proc = proc { |req| settings.throttle_unauthenticated_requests_per_period }
     period_proc = proc { |req| settings.throttle_unauthenticated_period_in_seconds.seconds }
     { limit: limit_proc, period: period_proc }
   end
 
-  def self.throttle_authenticated_api_options
+  def self.authenticated_api_options
     limit_proc = proc { |req| settings.throttle_authenticated_api_requests_per_period }
     period_proc = proc { |req| settings.throttle_authenticated_api_period_in_seconds.seconds }
     { limit: limit_proc, period: period_proc }
   end
 
-  def self.throttle_authenticated_web_options
+  def self.authenticated_web_options
     limit_proc = proc { |req| settings.throttle_authenticated_web_requests_per_period }
     period_proc = proc { |req| settings.throttle_authenticated_web_period_in_seconds.seconds }
     { limit: limit_proc, period: period_proc }
   end
+end
 
-  throttle('throttle_unauthenticated', throttle_unauthenticated_options) do |req|
-    settings.throttle_unauthenticated_enabled &&
+class Rack::Attack
+  throttle('throttle_unauthenticated', Gitlab::Throttle.unauthenticated_options) do |req|
+    Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
       req.unauthenticated? &&
       req.ip
   end
 
-  throttle('throttle_authenticated_api', throttle_authenticated_api_options) do |req|
-    settings.throttle_authenticated_api_enabled &&
+  throttle('throttle_authenticated_api', Gitlab::Throttle.authenticated_api_options) do |req|
+    Gitlab::Throttle.settings.throttle_authenticated_api_enabled &&
       req.api_request? &&
       req.authenticated_user_id
   end
 
-  throttle('throttle_authenticated_web', throttle_authenticated_web_options) do |req|
-    settings.throttle_authenticated_web_enabled &&
+  throttle('throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
+    Gitlab::Throttle.settings.throttle_authenticated_web_enabled &&
       req.web_request? &&
       req.authenticated_user_id
   end
