@@ -14,6 +14,11 @@
     "revision": {
       "type": "string"
     },
+    "short_revision": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 8
+    },
     "total_size": {
       "type": "integer"
     },
