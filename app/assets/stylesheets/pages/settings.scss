@@ -55,11 +55,15 @@
   overflow-y: scroll;
   padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
+  // Keep the section from expanding when we scroll over it
+  pointer-events: none;
 
   .settings.expanded & {
     max-height: none;
     overflow-y: visible;
     animation: expandMaxHeight 300ms ease-in;
+    // Reset and allow clicks again when expanded
+    pointer-events: auto;
   }
 
   .settings.no-animate & {
