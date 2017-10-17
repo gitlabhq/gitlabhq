@@ -209,6 +209,16 @@ describe ApplicationSetting do
     end
   end
 
+  context 'restrict creating duplicates' do
+    before do
+      described_class.create_from_defaults
+    end
+
+    it 'raises an record creation violation if already created' do
+      expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
   context 'restricted signup domains' do
     it 'sets single domain' do
       setting.domain_whitelist_raw = 'example.com'
