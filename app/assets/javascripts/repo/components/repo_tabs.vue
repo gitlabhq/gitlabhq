@@ -8,7 +8,9 @@
     components: {
       'repo-tab': RepoTab,
     },
-    data: () => Store,
+    data() {
+      return Store;
+    },
   };
 </script>
 

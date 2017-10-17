@@ -3,7 +3,9 @@ import Store from '../stores/repo_store';
 import RepoMixin from '../mixins/repo_mixin';
 
 export default {
-  data: () => Store,
+  data() {
+    return Store;
+  },
   mixins: [RepoMixin],
   computed: {
     buttonLabel() {

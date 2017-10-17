@@ -9,7 +9,9 @@ import { visitUrl } from '../../lib/utils/url_utility';
 export default {
   mixins: [RepoMixin],
 
-  data: () => Store,
+  data() {
+    return Store;
+  },
 
   components: {
     PopupDialog,

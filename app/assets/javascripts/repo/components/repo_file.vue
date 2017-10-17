@@ -31,7 +31,7 @@
     },
     methods: {
       linkClicked(file) {
-        eventHub.$emit('linkclicked', file);
+        eventHub.$emit('fileNameClicked', file);
       },
     },
   };
@@ -40,7 +40,7 @@
 <template>
   <tr
     class="file"
-    @click.stop="linkClicked(file)">
+    @click.prevent="linkClicked(file)">
     <td>
       <i
         class="fa fa-fw file-icon"

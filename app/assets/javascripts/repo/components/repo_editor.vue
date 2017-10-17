@@ -5,7 +5,9 @@ import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 
 const RepoEditor = {
-  data: () => Store,
+  data() {
+    return Store;
+  },
 
   destroyed() {
     if (Helper.monacoInstance) {

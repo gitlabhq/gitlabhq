@@ -20,15 +20,17 @@ export default {
     window.addEventListener('popstate', this.checkHistory);
   },
   destroyed() {
-    eventHub.$off('linkclicked', this.fileClicked);
+    eventHub.$off('fileNameClicked', this.fileClicked);
     eventHub.$off('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
     window.removeEventListener('popstate', this.checkHistory);
   },
   mounted() {
-    eventHub.$on('linkclicked', this.fileClicked);
+    eventHub.$on('fileNameClicked', this.fileClicked);
     eventHub.$on('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
   },
-  data: () => Store,
+  data() {
+    return Store;
+  },
   computed: {
     flattendFiles() {
       const mapFiles = arr => (!arr.files.length ? [] : _.map(arr.files, a => [a, mapFiles(a)]));

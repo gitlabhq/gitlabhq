@@ -69,6 +69,19 @@ describe('RepoSidebar', () => {
     expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
   });
 
+  describe('flattendFiles', () => {
+    it('returns a flattend array of files', () => {
+      const f = file();
+      f.files.push(file('testing 123'));
+      const files = [f, file()];
+      vm = createComponent();
+      vm.files = files;
+
+      expect(vm.flattendFiles.length).toBe(3);
+      expect(vm.flattendFiles[1].name).toBe('testing 123');
+    });
+  });
+
   describe('methods', () => {
     describe('fileClicked', () => {
       it('should fetch data for new file', () => {

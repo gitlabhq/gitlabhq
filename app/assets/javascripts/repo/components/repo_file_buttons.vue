@@ -4,7 +4,9 @@ import Helper from '../helpers/repo_helper';
 import RepoMixin from '../mixins/repo_mixin';
 
 const RepoFileButtons = {
-  data: () => Store,
+  data() {
+    return Store;
+  },
 
   mixins: [RepoMixin],
 

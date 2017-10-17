@@ -55,18 +55,20 @@ const RepoHelper = {
   },
 
   setDirectoryOpen(tree, title) {
-    const file = tree;
-    if (!file) return;
+    if (!tree) return;
 
-    file.opened = true;
-    RepoHelper.updateHistoryEntry(file.url, title);
+    Object.assign(tree, {
+      opened: true,
+    });
+
+    RepoHelper.updateHistoryEntry(tree.url, title);
   },
 
   setDirectoryToClosed(entry) {
-    const dir = entry;
-
-    dir.opened = false;
-    dir.files = [];
+    Object.assign(entry, {
+      opened: false,
+      files: [],
+    });
   },
 
   isRenderable() {
@@ -156,7 +158,8 @@ const RepoHelper = {
 
   serializeRepoEntity(type, entity, level = 0) {
     const { url, name, icon, last_commit } = entity;
-    const returnObj = {
+
+    return {
       type,
       name,
       url,
@@ -165,20 +168,13 @@ const RepoHelper = {
       files: [],
       loading: false,
       opened: false,
-    };
-
-    // eslint-disable-next-line camelcase
-    if (last_commit) {
-      returnObj.lastCommit = {
+      // eslint-disable-next-line camelcase
+      lastCommit: last_commit ? {
         url: `${Store.projectUrl}/commit/${last_commit.id}`,
         message: last_commit.message,
         updatedAt: last_commit.committed_date,
-      };
-    } else {
-      returnObj.lastCommit = {};
-    }
-
-    return returnObj;
+      } : {},
+    };
   },
 
   scrollTabsRight() {
