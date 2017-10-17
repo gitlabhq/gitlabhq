@@ -16,8 +16,8 @@
     },
     "short_revision": {
       "type": "string",
-      "minLength": 8,
-      "maxLength": 8
+      "minLength": 9,
+      "maxLength": 9
     },
     "total_size": {
       "type": "integer"
