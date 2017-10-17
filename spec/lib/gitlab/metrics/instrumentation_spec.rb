@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Instrumentation do
   let(:env) { {} }
-  let(:transaction) { Gitlab::Metrics::Transaction.new(env) }
+  let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 
   before do
     @dummy = Class.new do

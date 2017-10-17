@@ -4,7 +4,7 @@ describe Gitlab::Middleware::RailsQueueDuration do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:env) { {} }
-  let(:transaction) { Gitlab::Metrics::Transaction.new(env) }
+  let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
 
   before do
     expect(app).to receive(:call).with(env).and_return('yay')

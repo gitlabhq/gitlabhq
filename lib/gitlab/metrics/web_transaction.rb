@@ -1,8 +1,6 @@
 module Gitlab
   module Metrics
-    # Class for storing metrics information of a single transaction.
-    class WebTransaction
-      BASE_LABELS = { controller: nil, action: nil }.freeze
+    class WebTransaction < BaseTransaction
       CONTROLLER_KEY = 'action_controller.instance'.freeze
       ENDPOINT_KEY = 'api.endpoint'.freeze
 
@@ -18,10 +16,9 @@ module Gitlab
         'image/svg+xml' => :svg
       }.freeze
 
-      attr_reader :tags, :values, :method, :metrics
-
-      def action
-        "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
+      def initialize(env)
+        super()
+        @env = env
       end
 
       def labels

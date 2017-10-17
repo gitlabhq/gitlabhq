@@ -115,7 +115,7 @@ describe Gitlab::Metrics do
     end
 
     context 'with a transaction' do
-      let(:transaction) { Gitlab::Metrics::Transaction.new({}) }
+      let(:transaction) { Gitlab::Metrics::WebTransaction.new({}) }
 
       before do
         allow(described_class).to receive(:current_transaction)
@@ -155,7 +155,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'sets the action of a transaction' do
-        trans = Gitlab::Metrics::Transaction.new({})
+        trans = Gitlab::Metrics::WebTransaction.new({})
 
         expect(described_class).to receive(:current_transaction)
           .and_return(trans)
@@ -185,7 +185,7 @@ describe Gitlab::Metrics do
 
     context 'with a transaction' do
       it 'adds an event' do
-        transaction = Gitlab::Metrics::Transaction.new({})
+        transaction = Gitlab::Metrics::WebTransaction.new({})
 
         expect(transaction).to receive(:add_event).with(:meow)
 

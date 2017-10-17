@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::Transaction do
+describe Gitlab::Metrics::WebTransaction do
   let(:env) { {} }
   let(:transaction) { described_class.new(env) }
 

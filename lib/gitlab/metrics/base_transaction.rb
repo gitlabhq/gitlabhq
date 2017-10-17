@@ -2,7 +2,8 @@ module Gitlab
   module Metrics
     # Class for storing metrics information of a single transaction.
     class BaseTransaction
-      BASE_LABELS = { }.freeze
+      # base labels shared among all transactions
+      BASE_LABELS = { controller: nil, action: nil }.freeze
 
       THREAD_KEY = :_gitlab_metrics_transaction
 
@@ -15,9 +16,7 @@ module Gitlab
         Thread.current[THREAD_KEY]
       end
 
-      # action - A String describing the action performed, usually the class
-      #          plus method name.
-      def initialize(env)
+      def initialize
         @metrics = []
         @methods = {}
 
@@ -26,7 +25,6 @@ module Gitlab
 
         @values = Hash.new(0)
         @tags = {}
-        @env = env
 
         @memory_before = 0
         @memory_after = 0
@@ -38,10 +36,6 @@ module Gitlab
 
       def allocated_memory
         @memory_after - @memory_before
-      end
-
-      def labels
-        {}
       end
 
       def run
@@ -120,7 +114,6 @@ module Gitlab
 
         submit_hashes = submit.map do |metric|
           hash = metric.to_hash
-
           hash[:tags][:action] ||= action if action && !metric.event?
 
           hash
@@ -129,7 +122,16 @@ module Gitlab
         Metrics.submit_metrics(submit_hashes)
       end
 
-      private
+      def labels
+        BASE_LABELS
+      end
+
+      # returns string describing the action performed, usually the class plus method name.
+      def action
+        "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
+      end
+
+      protected
 
       def self.metric_transaction_duration_seconds
         @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
