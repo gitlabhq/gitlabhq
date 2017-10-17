@@ -41,6 +41,10 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
 
       expect(key_exists).to be_falsey
     end
+
+    it 'does not break when there are no keys in redis' do
+      expect { described_class.reset_all! }.not_to raise_error
+    end
   end
 
   describe '.for_storage' do
