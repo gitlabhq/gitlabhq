@@ -1272,7 +1272,7 @@ class Project < ActiveRecord::Base
 
     # self.forked_from_project will be nil before the project is saved, so
     # we need to go through the relation
-    original_project = forked_project_link.forked_from_project
+    original_project = forked_project_link&.forked_from_project
     return true unless original_project
 
     level <= original_project.visibility_level

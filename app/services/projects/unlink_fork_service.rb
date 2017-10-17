@@ -15,8 +15,8 @@ module Projects
 
       refresh_forks_count(@project.forked_from_project)
 
-      @project.forked_project_link.destroy
       @project.fork_network_member.destroy
+      @project.forked_project_link.destroy
     end
 
     def refresh_forks_count(project)
