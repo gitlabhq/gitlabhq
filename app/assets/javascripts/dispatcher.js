@@ -310,17 +310,19 @@ import Diff from './diff';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
-          initNotes();
+          if (document.querySelector('.js-old-notes')) {
+            new gl.Diff();
+            initNotes();
 
-          const mrShowNode = document.querySelector('.merge-request');
-          window.mergeRequest = new MergeRequest({
-            action: mrShowNode.dataset.mrAction,
-          });
+            const mrShowNode = document.querySelector('.merge-request');
+            window.mergeRequest = new MergeRequest({
+              action: mrShowNode.dataset.mrAction,
+            });
+          }
           break;
         case 'dashboard:activity':
           new gl.Activities();
