@@ -5,4 +5,3 @@ module Geo
     end
   end
 end
-
