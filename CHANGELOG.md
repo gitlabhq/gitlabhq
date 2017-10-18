@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
@@ -211,6 +217,14 @@ entry.
 - Move ConvDev Index location to after Cohorts.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.9 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
 
 ## 9.5.8 (2017-10-04)
 
@@ -456,6 +470,15 @@ entry.
 - Skip oAuth authorization for trusted applications.
 - Use a specialized class for querying events to improve performance.
 - Update build badges to be pipeline badges and display passing instead of success.
+
+## 9.4.7 (2017-10-16)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
 
 ## 9.4.6 (2017-09-06)
 

@@ -4,6 +4,7 @@ describe Namespace do
   include ProjectForksHelper
 
   let!(:namespace) { create(:namespace) }
+  let(:gitlab_shell) { Gitlab::Shell.new }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -167,25 +168,18 @@ describe Namespace do
     end
   end
 
-  describe '#move_dir' do
+  describe '#move_dir', :request_store do
     let(:namespace) { create(:namespace) }
     let!(:project) { create(:project_empty_repo, namespace: namespace) }
-
-    before do
-      allow(namespace).to receive(:path_changed?).and_return(true)
-    end
 
     it "raises error when directory exists" do
       expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 
     it "moves dir if path changed" do
-      new_path = namespace.full_path + "_new"
+      namespace.update_attributes(path: namespace.full_path + '_new')
 
-      allow(namespace).to receive(:full_path_was).and_return(namespace.full_path)
-      allow(namespace).to receive(:full_path).and_return(new_path)
-      expect(namespace).to receive(:remove_exports!)
-      expect(namespace.move_dir).to be_truthy
+      expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
     end
 
     context "when any project has container images" do
