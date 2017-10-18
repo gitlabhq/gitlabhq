@@ -157,7 +157,7 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { id, url, name, icon, last_commit, tree_url, path, tempFile } = entity;
+    const { id, url, name, icon, last_commit, tree_url, path, tempFile, opened = false } = entity;
 
     return {
       id,
@@ -171,7 +171,7 @@ const RepoHelper = {
       icon: `fa-${icon}`,
       files: [],
       loading: false,
-      opened: false,
+      opened,
       // eslint-disable-next-line camelcase
       lastCommit: last_commit ? {
         url: `${Store.projectUrl}/commit/${last_commit.id}`,
@@ -224,6 +224,29 @@ const RepoHelper = {
 
   loadingError() {
     Flash('Unable to load this content at this time.');
+  },
+
+  findOrCreateEntry(type, tree, name) {
+    let exists = true;
+    let foundEntry = tree.files.find(dir => dir.type === type && dir.name === name);
+
+    if (!foundEntry) {
+      foundEntry = RepoHelper.serializeRepoEntity(type, {
+        name,
+        path: tree.path ? `${tree.path}/${name}` : name,
+        icon: type === 'tree' ? 'folder' : 'file-text-o',
+        tempFile: true,
+        opened: true,
+      }, tree.level !== undefined ? tree.level + 1 : 0);
+
+      exists = false;
+      tree.files.push(foundEntry);
+    }
+
+    return {
+      entry: foundEntry,
+      exists,
+    };
   },
 };
 

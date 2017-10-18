@@ -27,29 +27,23 @@
         let tree = RepoStore;
 
         if (this.type === 'tree') {
-          tree = RepoHelper.serializeRepoEntity('tree', {
-            name: this.entryName,
-            path: this.entryName,
-            icon: 'folder',
-            tempFile: true,
-          });
-          RepoStore.files.push(tree);
+          const dirNames = this.entryName.split('/');
 
-          RepoHelper.setDirectoryOpen(tree, tree.name);
+          dirNames.forEach((dirName) => {
+            tree = RepoHelper.findOrCreateEntry('tree', tree, dirName).entry;
+          });
         }
 
-        const file = RepoHelper.serializeRepoEntity('blob', {
-          name: fileName,
-          path: tree.path ? `${tree.path}/${fileName}` : fileName,
-          icon: 'file-text-o',
-          tempFile: true,
-        }, (this.type === 'tree' ? tree.level + 1 : 0));
+        if ((this.type === 'tree' && tree.tempFile) || this.type === 'blob') {
+          const file = RepoHelper.findOrCreateEntry('blob', tree, fileName);
 
-        tree.files.push(file);
+          if (!file.exists) {
+            RepoHelper.setFile(file.entry, file.entry);
 
-        RepoHelper.setFile(file, file);
-        RepoStore.editMode = true;
-        RepoStore.toggleBlobView();
+            RepoStore.editMode = true;
+            RepoStore.toggleBlobView();
+          }
+        }
 
         this.toggleModalOpen();
       },
