@@ -109,6 +109,11 @@ This can be configured from the admin interface:
 
 ![circuitbreaker configuration](img/circuitbreaker_config.png)
 
+**Number of access attempts**: The number of attempts GitLab will make to access a
+storage when probing a shard.
+
+**Number of failures before backing off**: The number of failures after which
+GitLab will start temporarily disabling access to a storage shard on a host.
 
 **Maximum git storage failures:** The number of failures of after which GitLab will
 completely prevent access to the storage. The number of failures can be reset in
