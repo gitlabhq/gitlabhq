@@ -24,43 +24,42 @@
 </script>
 
 <template>
-  <div class="breadcrumb repo-breadcrumb">
-    <div class="dropdown">
-      <button
-        type="button"
-        class="btn btn-default dropdown-toggle add-to-tree"
-        data-toggle="dropdown"
-        data-target=".add-to-tree-dropdown"
-      >
-        <i
-          class="fa fa-plus"
-          aria-hidden="true"
+  <div>
+    <ul class="breadcrumb repo-breadcrumb">
+      <li class="dropdown">
+        <button
+          type="button"
+          class="btn btn-default dropdown-toggle add-to-tree"
+          data-toggle="dropdown"
         >
-        </i>
-      </button>
-    </div>
-    <div class="add-to-tree-dropdown">
-      <ul class="dropdown-menu">
-        <li>
-          <a
-            href="#"
-            role="button"
-            @click.prevent="createNewItem('blob')"
+          <i
+            class="fa fa-plus"
+            aria-hidden="true"
           >
-            {{ __('New file') }}
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            role="button"
-            @click.prevent="createNewItem('tree')"
-          >
-            {{ __('New directory') }}
-          </a>
-        </li>
-      </ul>
-    </div>
+          </i>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a
+              href="#"
+              role="button"
+              @click.prevent="createNewItem('blob')"
+            >
+              {{ __('New file') }}
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              role="button"
+              @click.prevent="createNewItem('tree')"
+            >
+              {{ __('New directory') }}
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
     <new-modal
       v-if="openModal"
       :type="modalType"

@@ -30,7 +30,7 @@ const RepoTab = {
       Store.setActiveFiles(file);
     },
     closeTab(file) {
-      if (file.changed) return;
+      if (file.changed || file.tempFile) return;
 
       Store.removeFromOpenedFiles(file);
     },

@@ -24,12 +24,13 @@
         if (this.entryName === '') return;
 
         const fileName = this.type === 'tree' ? '.gitkeep' : this.entryName;
-        let tree = null;
+        let tree = RepoStore;
 
         if (this.type === 'tree') {
-          tree = RepoHelper.serializeTree({
+          tree = RepoHelper.serializeRepoEntity('tree', {
             name: this.entryName,
             path: this.entryName,
+            icon: 'folder',
             tempFile: true,
           });
           RepoStore.files.push(tree);
@@ -37,17 +38,14 @@
           RepoHelper.setDirectoryOpen(tree, tree.name);
         }
 
-        const file = RepoHelper.serializeBlob({
+        const file = RepoHelper.serializeRepoEntity('blob', {
           name: fileName,
-          path: tree ? `${tree}/${fileName}` : fileName,
+          path: tree.path ? `${tree.path}/${fileName}` : fileName,
+          icon: 'file-text-o',
           tempFile: true,
-        });
+        }, (this.type === 'tree' ? tree.level + 1 : 0));
 
-        if (tree) {
-          RepoStore.addFilesToDirectory(tree, RepoStore.files, [file]);
-        } else {
-          RepoStore.addFilesToDirectory(tree, RepoStore.files, [...RepoStore.files, file]);
-        }
+        tree.files.push(file);
 
         RepoHelper.setFile(file, file);
         RepoStore.editMode = true;
@@ -82,6 +80,9 @@
         return __('File name');
       },
     },
+    mounted() {
+      this.$refs.fieldName.focus();
+    },
   };
 </script>
 
@@ -107,6 +108,7 @@
             type="text"
             class="form-control"
             v-model="entryName"
+            ref="fieldName"
           />
         </div>
       </fieldset>
