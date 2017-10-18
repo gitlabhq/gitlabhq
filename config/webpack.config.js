@@ -93,6 +93,7 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+    users:                './users/index.js',
     performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
@@ -226,8 +227,10 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
+        'graphs_show',
         'monitoring',
-        'burndown_chart',
+        'users',
+        'burndown_chart', // EE
       ],
     }),
 
@@ -245,7 +248,7 @@ var config = {
         from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
-          if (/\.js$/.test(path) && !/worker/i.test(path)) {
+          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +

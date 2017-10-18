@@ -5,8 +5,6 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    UnauthorizedError = Class.new(StandardError)
-
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
@@ -426,23 +424,9 @@ module API
 
       begin
         @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
-      rescue APIGuard::UnauthorizedError, UnauthorizedError
+      rescue APIGuard::UnauthorizedError
         unauthorized!
       end
-    end
-
-    def find_current_user
-      user =
-        find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
-        doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
-        find_user_from_warden ||
-        find_user_by_job_token
-
-      return nil unless user
-
-      raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
-
-      user
     end
 
     def sudo!
@@ -507,23 +491,6 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
-    end
-
-    # An array of scopes that were registered (using `allow_access_with_scope`)
-    # for the current endpoint class. It also returns scopes registered on
-    # `API::API`, since these are meant to apply to all API routes.
-    def scopes_registered_for_endpoint
-      @scopes_registered_for_endpoint ||=
-        begin
-          endpoint_classes = [options[:for].presence, ::API::API].compact
-          endpoint_classes.reduce([]) do |memo, endpoint|
-            if endpoint.respond_to?(:allowed_scopes)
-              memo.concat(endpoint.allowed_scopes)
-            else
-              memo
-            end
-          end
-        end
     end
   end
 end

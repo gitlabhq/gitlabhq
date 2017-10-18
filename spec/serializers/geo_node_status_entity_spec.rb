@@ -6,8 +6,10 @@ describe GeoNodeStatusEntity, :postgresql do
       id: 1,
       health: '',
       attachments_count: 329,
+      attachments_failed_count: 25,
       attachments_synced_count: 141,
       lfs_objects_count: 256,
+      lfs_objects_failed_count: 12,
       lfs_objects_synced_count: 123,
       repositories_count: 10,
       repositories_synced_count: 5,
@@ -29,9 +31,11 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:healthy) }
   it { is_expected.to have_key(:health) }
   it { is_expected.to have_key(:attachments_count) }
+  it { is_expected.to have_key(:attachments_failed_count) }
   it { is_expected.to have_key(:attachments_synced_count) }
   it { is_expected.to have_key(:attachments_synced_in_percentage) }
   it { is_expected.to have_key(:lfs_objects_count) }
+  it { is_expected.to have_key(:lfs_objects_failed_count) }
   it { is_expected.to have_key(:lfs_objects_synced_count) }
   it { is_expected.to have_key(:lfs_objects_synced_in_percentage) }
   it { is_expected.to have_key(:repositories_count) }

@@ -5,7 +5,6 @@ module Geo
 
     DB_RETRIEVE_BATCH_SIZE = 1000
     LEASE_TIMEOUT = 60.minutes
-    MAX_CAPACITY = 10
     RUN_TIME = 60.minutes.to_i
 
     attr_reader :pending_resources, :scheduled_jobs, :start_time, :loops
@@ -18,7 +17,7 @@ module Geo
     # The scheduling works as the following:
     #
     # 1. Load a batch of IDs that we need to schedule (DB_RETRIEVE_BATCH_SIZE) into a pending list.
-    # 2. Schedule them so that at most MAX_CAPACITY are running at once.
+    # 2. Schedule them so that at most `max_capacity` are running at once.
     # 3. When a slot frees, schedule another job.
     # 4. When we have drained the pending list, load another batch into memory, and schedule the
     #    remaining jobs, excluding ones in progress.
@@ -82,7 +81,7 @@ module Geo
     end
 
     def max_capacity
-      MAX_CAPACITY
+      raise NotImplementedError
     end
 
     def run_time

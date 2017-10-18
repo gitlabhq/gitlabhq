@@ -161,9 +161,10 @@
     }
   }
 
-  .dropdown-bold-header {
+  li.dropdown-bold-header {
     color: $gl-text-color-secondary;
     font-size: 12px;
+    padding: 0 16px;
   }
 
   .navbar-collapse {

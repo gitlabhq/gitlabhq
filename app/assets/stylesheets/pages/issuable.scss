@@ -117,7 +117,7 @@
 }
 
 .right-sidebar {
-  a,
+  a:not(.btn-retry),
   .btn-link {
     color: inherit;
   }
@@ -459,7 +459,7 @@
     }
   }
 
-  a {
+  a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;

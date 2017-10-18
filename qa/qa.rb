@@ -18,6 +18,7 @@ module QA
     # Support files
     #
     autoload :Actable, 'qa/scenario/actable'
+    autoload :Entrypoint, 'qa/scenario/entrypoint'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -25,14 +26,26 @@ module QA
     #
     module Test
       autoload :Instance, 'qa/scenario/test/instance'
+
+      module Integration
+        autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+      end
     end
 
     ##
     # GitLab instance scenarios.
     #
     module Gitlab
+      module Group
+        autoload :Create, 'qa/scenario/gitlab/group/create'
+      end
+
       module Project
         autoload :Create, 'qa/scenario/gitlab/project/create'
+      end
+
+      module Sandbox
+        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
       end
     end
   end
@@ -55,6 +68,7 @@ module QA
     end
 
     module Group
+      autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
     end
 

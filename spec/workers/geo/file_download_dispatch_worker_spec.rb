@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::FileDownloadDispatchWorker, :postgresql do
+describe Geo::FileDownloadDispatchWorker, :geo do
   include ::EE::GeoHelpers
 
   set(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
@@ -61,7 +61,8 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
     # 2. We send 2, wait for 1 to finish, and then send again.
     it 'attempts to load a new batch without pending downloads' do
       stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 5)
-      stub_const('Geo::BaseSchedulerWorker::MAX_CAPACITY', 2)
+      secondary.update!(files_max_capacity: 2)
+      allow_any_instance_of(::Gitlab::Geo::Transfer).to receive(:download_from_primary).and_return(100)
 
       avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
       create_list(:lfs_object, 2, :with_file)
@@ -80,6 +81,27 @@ describe Geo::FileDownloadDispatchWorker, :postgresql do
       expect(subject).to receive(:load_pending_resources).exactly(4).times.and_call_original
 
       Sidekiq::Testing.inline! do
+        subject.perform
+      end
+    end
+
+    context 'with a failed file' do
+      let!(:failed_registry) { create(:geo_file_registry, :lfs, file_id: 999, success: false) }
+
+      it 'does not stall backfill' do
+        unsynced = create(:lfs_object, :with_file)
+
+        stub_const('Geo::BaseSchedulerWorker::DB_RETRIEVE_BATCH_SIZE', 1)
+
+        expect(GeoFileDownloadWorker).not_to receive(:perform_async).with(:lfs, failed_registry.file_id)
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with(:lfs, unsynced.id)
+
+        subject.perform
+      end
+
+      it 'retries failed files' do
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
+
         subject.perform
       end
     end

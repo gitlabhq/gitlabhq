@@ -102,7 +102,7 @@ describe Geo::RepositorySyncWorker, :postgresql do
 
       before do
         allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(2) # Must be >1 because of the Geo::BaseSchedulerWorker#interleave
-        allow_any_instance_of(described_class).to receive(:max_capacity).and_return(3) # Must be more than db_retrieve_batch_size
+        secondary.update!(repos_max_capacity: 3) # Must be more than db_retrieve_batch_size
         allow_any_instance_of(Project).to receive(:ensure_repository).and_raise(Gitlab::Shell::Error.new('foo'))
         allow_any_instance_of(Geo::ProjectSyncWorker).to receive(:sync_wiki?).and_return(false)
         allow_any_instance_of(Geo::RepositorySyncService).to receive(:expire_repository_caches)

@@ -516,6 +516,7 @@ Timelog:
 - merge_request_id
 - issue_id
 - user_id
+- spent_at
 - created_at
 - updated_at
 ProjectAutoDevops:

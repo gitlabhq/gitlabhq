@@ -21,15 +21,6 @@ window._ = _;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
-// shortcuts
-import './shortcuts';
-import './shortcuts_blob';
-import './shortcuts_dashboard_navigation';
-import './shortcuts_navigation';
-import './shortcuts_find_file';
-import './shortcuts_issuable';
-import './shortcuts_network';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -46,26 +37,13 @@ import './lib/utils/url_utility';
 // behaviors
 import './behaviors/';
 
-// u2f
-import './u2f/authenticate';
-import './u2f/error';
-import './u2f/register';
-import './u2f/util';
-
 // everything else
 import './activities';
 import './admin';
-import './api';
-import './ajax_loading_spinner';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './broadcast_message';
-import './build';
-import './build_artifacts';
-import './build_variables';
-import './ci_lint_editor';
 import './commits';
 import './compare';
 import './compare_autocomplete';
@@ -76,7 +54,7 @@ import './diff';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
-import Flash from './flash';
+import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -91,15 +69,11 @@ import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './label_manager';
-import './labels';
 import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
-import './member_expiration_date';
-import './members';
 import './merge_request';
 import './merge_request_tabs';
 import './milestone';
@@ -130,7 +104,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './star';
 import './subscription';
 import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
@@ -371,4 +344,9 @@ $(function () {
    * EE specific scripts
    */
   $('#modal-upload-trial-license').modal('show');
+  const flashContainer = document.querySelector('.flash-container');
+
+  if (flashContainer && flashContainer.children.length) {
+    removeFlashClickListener(flashContainer.children[0]);
+  }
 });

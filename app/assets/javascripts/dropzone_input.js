@@ -237,9 +237,12 @@ window.DropzoneInput = (function() {
     };
 
     const insertToTextArea = function(filename, url) {
-      return $(child).val(function(index, val) {
+      const $child = $(child);
+      $child.val(function(index, val) {
         return val.replace(`{{${filename}}}`, url);
       });
+
+      $child.trigger('change');
     };
 
     const appendToTextArea = function(url) {

@@ -8,6 +8,8 @@ describe Geo::FileDownloadService do
 
   before do
     stub_current_geo_node(secondary)
+
+    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
   end
 
   describe '#execute' do
@@ -15,15 +17,24 @@ describe Geo::FileDownloadService do
       let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
 
-      subject { described_class.new(:avatar, upload.id) }
+      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
 
       it 'downloads a user avatar' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+      end
+
+      it 'registers when the download fails with some other error' do
+        stub_transfer(Gitlab::Geo::FileTransfer, nil)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
@@ -31,15 +42,18 @@ describe Geo::FileDownloadService do
       let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: group, uploader: 'AvatarUploader') }
 
-      subject { described_class.new(:avatar, upload.id) }
+      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
 
       it 'downloads a group avatar' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
@@ -47,15 +61,18 @@ describe Geo::FileDownloadService do
       let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
 
-      subject { described_class.new(:avatar, upload.id) }
+      subject(:execute!) { described_class.new(:avatar, upload.id).execute }
 
       it 'downloads a project avatar' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
@@ -63,30 +80,36 @@ describe Geo::FileDownloadService do
       let(:note) { create(:note, :with_attachment) }
       let(:upload) { Upload.find_by(model: note, uploader: 'AttachmentUploader') }
 
-      subject { described_class.new(:attachment, upload.id) }
+      subject(:execute!) { described_class.new(:attachment, upload.id).execute }
 
       it 'downloads the attachment' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
     context 'with a snippet' do
       let(:upload) { create(:upload, :personal_snippet) }
 
-      subject { described_class.new(:personal_file, upload.id) }
+      subject(:execute!) { described_class.new(:personal_file, upload.id).execute }
 
       it 'downloads the file' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { execute! }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
@@ -101,12 +124,15 @@ describe Geo::FileDownloadService do
       end
 
       it 'downloads the file' do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::FileTransfer)
-          .to receive(:download_from_primary).and_return(100)
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
 
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
     end
 
@@ -115,18 +141,21 @@ describe Geo::FileDownloadService do
 
       subject { described_class.new(:lfs, lfs_object.id) }
 
-      before do
-        allow_any_instance_of(Gitlab::ExclusiveLease)
-          .to receive(:try_obtain).and_return(true)
-        allow_any_instance_of(Gitlab::Geo::LfsTransfer)
-          .to receive(:download_from_primary).and_return(100)
+      it 'downloads an LFS object' do
+        stub_transfer(Gitlab::Geo::LfsTransfer, 100)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
       end
 
-      it 'downloads an LFS object' do
-        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::LfsTransfer, -1)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
       end
 
       it 'logs a message' do
+        stub_transfer(Gitlab::Geo::LfsTransfer, 100)
+
         expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, success: true, bytes_downloaded: 100)).and_call_original
 
         subject.execute
@@ -137,6 +166,11 @@ describe Geo::FileDownloadService do
       it 'raises an error' do
         expect { described_class.new(:bad, 1).execute }.to raise_error(NameError)
       end
+    end
+
+    def stub_transfer(kls, result)
+      instance = double("(instance of #{kls})", download_from_primary: result)
+      allow(kls).to receive(:new).and_return(instance)
     end
   end
 end

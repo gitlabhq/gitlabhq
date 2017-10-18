@@ -72,7 +72,14 @@ describe Gitlab::PathRegex do
     route_set = Rails.application.routes
     routes_collection = route_set.routes
     routes_array = routes_collection.routes
-    routes_array.map { |route| route.path.spec.to_s }
+    non_deprecated_redirect_routes = routes_array.reject do |route|
+      app = route.app
+      # `app.app` is either another app, or `self`. We want to find the final app.
+      app = app.app while app.try(:app) && app.app != app
+
+      app.is_a?(ActionDispatch::Routing::PathRedirect) && app.block.include?('/-/')
+    end
+    non_deprecated_redirect_routes.map { |route| route.path.spec.to_s }
   end
 
   let(:routes_without_format) { all_routes.map { |path| without_format(path) } }

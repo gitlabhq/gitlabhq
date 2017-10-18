@@ -1,7 +1,12 @@
 require 'spec_helper'
 
 describe Geo::ProjectRegistry do
-  subject { create(:geo_project_registry) }
+  using RSpec::Parameterized::TableSyntax
+
+  set(:project) { create(:project) }
+  set(:registry) { create(:geo_project_registry, project_id: project.id) }
+
+  subject { registry }
 
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
@@ -33,85 +38,79 @@ describe Geo::ProjectRegistry do
     end
   end
 
-  describe '#resync_repository?' do
-    it 'returns true when resync_repository is true' do
-      subject.resync_repository = true
+  describe '#repository_sync_due?' do
+    where(:resync_repository, :last_successful_sync, :last_sync, :expected) do
+      now = Time.now
+      past = now - 1.year
+      future = now + 1.year
 
-      expect(subject.resync_repository).to be true
+      true  | nil | nil | true
+      true  | now | nil | true
+      false | nil | nil | true
+      false | now | nil | false
+
+      true  | nil | past | true
+      true  | now | past | true
+      false | nil | past | true
+      false | now | past | false
+
+      true  | nil | future | true
+      true  | now | future | false
+      false | nil | future | true
+      false | now | future | false
     end
 
-    it 'returns true when last_repository_successful_sync_at is nil' do
-      subject.last_repository_successful_sync_at = nil
+    with_them do
+      before do
+        registry.update!(resync_repository: resync_repository, last_repository_successful_sync_at: last_successful_sync, last_repository_synced_at: last_sync)
+      end
 
-      expect(subject.resync_repository).to be true
-    end
+      subject { registry.repository_sync_due?(Time.now) }
 
-    it 'returns false when resync_repository is false and last_repository_successful_sync_at is present' do
-      subject.resync_repository = false
-      subject.last_repository_successful_sync_at = Time.now
-
-      expect(subject.resync_repository).to be false
-    end
-  end
-
-  describe '#resync_wiki?' do
-    it 'returns true when resync_wiki is true' do
-      subject.resync_wiki = true
-
-      expect(subject.resync_wiki).to be true
-    end
-
-    it 'returns true when last_wiki_successful_sync_at is nil' do
-      subject.last_wiki_successful_sync_at = nil
-
-      expect(subject.resync_wiki).to be true
-    end
-
-    it 'returns false when resync_wiki is false and last_wiki_successful_sync_at is present' do
-      subject.resync_wiki = false
-      subject.last_wiki_successful_sync_at = Time.now
-
-      expect(subject.resync_wiki).to be false
+      it { is_expected.to eq(expected) }
     end
   end
 
-  describe '#repository_synced_since?' do
-    it 'returns false when last_repository_synced_at is nil' do
-      subject.last_repository_synced_at = nil
+  describe '#wiki_sync_due?' do
+    where(:resync_wiki, :last_successful_sync, :last_sync, :expected) do
+      now = Time.now
+      past = now - 1.year
+      future = now + 1.year
 
-      expect(subject.repository_synced_since?(Time.now)).to be_nil
+      true  | nil | nil | true
+      true  | now | nil | true
+      false | nil | nil | true
+      false | now | nil | false
+
+      true  | nil | past | true
+      true  | now | past | true
+      false | nil | past | true
+      false | now | past | false
+
+      true  | nil | future | true
+      true  | now | future | false
+      false | nil | future | true
+      false | now | future | false
     end
 
-    it 'returns false when last_repository_synced_at before timestamp' do
-      subject.last_repository_synced_at = Time.now - 2.hours
+    with_them do
+      before do
+        registry.update!(resync_wiki: resync_wiki, last_wiki_successful_sync_at: last_successful_sync, last_wiki_synced_at: last_sync)
+      end
 
-      expect(subject.repository_synced_since?(Time.now)).to be false
-    end
+      subject { registry.wiki_sync_due?(Time.now) }
 
-    it 'returns true when last_repository_synced_at after timestamp' do
-      subject.last_repository_synced_at = Time.now + 2.hours
+      context 'wiki enabled' do
+        it { is_expected.to eq(expected) }
+      end
 
-      expect(subject.repository_synced_since?(Time.now)).to be true
-    end
-  end
+      context 'wiki disabled' do
+        before do
+          project.update!(wiki_enabled: false)
+        end
 
-  describe '#wiki_synced_since?' do
-    it 'returns false when last_wiki_synced_at is nil' do
-      subject.last_wiki_synced_at = nil
-
-      expect(subject.wiki_synced_since?(Time.now)).to be_nil
-    end
-
-    it 'returns false when last_wiki_synced_at before timestamp' do
-      subject.last_wiki_synced_at = Time.now - 2.hours
-
-      expect(subject.wiki_synced_since?(Time.now)).to be false
-    end
-
-    it 'returns true when last_wiki_synced_at after timestamp' do
-      subject.last_wiki_synced_at = Time.now + 2.hours
-
-      expect(subject.wiki_synced_since?(Time.now)).to be true
+        it { is_expected.to be_falsy }
+      end
     end
   end
 end
