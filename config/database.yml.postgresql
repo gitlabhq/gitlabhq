@@ -6,20 +6,13 @@ production:
   encoding: unicode
   database: gitlabhq_production
   pool: 10
-<<<<<<< HEAD
-  # username: git
-  # password:
-  # host: localhost
-  # port: 5432
+  username: git
+  password: "secure password"
+  host: localhost
   # load_balancing:
   #   hosts:
   #     - host1.example.com
   #     - host2.example.com
-=======
-  username: git
-  password: "secure password"
-  host: localhost
->>>>>>> upstream/master
 
 #
 # Development specific
