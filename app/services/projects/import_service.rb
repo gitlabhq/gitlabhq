@@ -87,16 +87,16 @@ module Projects
       end
     end
 
+    def importer_class
+      Gitlab::ImportSources.importer(project.import_type)
+    end
+
     def has_importer?
       Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
       importer_class.new(project)
-    end
-
-    def importer_class
-      Gitlab::ImportSources.importer(project.import_type)
     end
 
     def unknown_url?
