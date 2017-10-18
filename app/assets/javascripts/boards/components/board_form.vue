@@ -148,7 +148,7 @@ export default {
         gl.boardService.createBoard(this.board)
           .then(resp => resp.json())
           .then((data) => {
-            gl.utils.visitUrl(`${Store.rootPath}/${data.id}`);
+            gl.utils.visitUrl(data.board_path);
           })
           .catch(() => {
             Flash('Unable to save your changes. Please try again.');
