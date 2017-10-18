@@ -42,7 +42,6 @@ constraints(GroupUrlConstrainer.new) do
       ## EE-specific
     end
 
-<<<<<<< HEAD
     resource :avatar, only: [:destroy]
     resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
       member do
@@ -76,33 +75,17 @@ constraints(GroupUrlConstrainer.new) do
       end
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :billings, only: [:index]
+
+      resources :children, only: [:index]
 
       ## EE-specific
+      resources :billings, only: [:index]
       resources :boards, only: [:index, :show, :create, :update, :destroy]
     end
 
     ## EE-specific
     get :boards, to: redirect('/groups/%{group_id}/-/boards')
   end
-=======
-    resources :variables, only: [:index, :show, :update, :create, :destroy]
-
-    resources :children, only: [:index]
-  end
-end
-
-scope(path: 'groups/*id',
-      controller: :groups,
-      constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
-  get :edit, as: :edit_group
-  get :issues, as: :issues_group
-  get :merge_requests, as: :merge_requests_group
-  get :projects, as: :projects_group
-  get :activity, as: :activity_group
-  get '/', action: :show, as: :group_canonical
-end
->>>>>>> upstream/master
 
   scope(path: '*id',
         as: :group,
