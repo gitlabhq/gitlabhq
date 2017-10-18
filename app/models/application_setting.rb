@@ -33,6 +33,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  default_value_for :id, 1
+
   validates :uuid, presence: true
 
   validates :session_expire_delay,
