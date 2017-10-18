@@ -25,8 +25,8 @@ describe WikiPages::CreateService do
       end
 
       it 'triggers Geo::RepositoryUpdatedEventStore when Geo is enabled' do
-        expect(Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: Geo::RepositoryUpdatedEvent::WIKI).and_call_original
-        expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
+        expect(::Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: Geo::RepositoryUpdatedEvent::WIKI).and_call_original
+        expect_any_instance_of(::Geo::RepositoryUpdatedEventStore).to receive(:create)
 
         service.execute
       end
