@@ -1,6 +1,5 @@
-/* global dateFormat */
-
 import Pikaday from 'pikaday';
+import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 // Add datepickers to all `js-access-expiration-date` elements. If those elements are
 // children of an element with the `clearable-input` class, and have a sibling
@@ -22,8 +21,10 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
       format: 'yyyy-mm-dd',
       minDate: new Date(),
       container: $input.parent().get(0),
+      parse: dateString => parsePikadayDate(dateString),
+      toString: date => pikadayToString(date),
       onSelect(dateText) {
-        $input.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
+        $input.val(calendar.toString(dateText));
 
         $input.trigger('change');
 
@@ -31,7 +32,7 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
       },
     });
 
-    calendar.setDate(new Date($input.val()));
+    calendar.setDate(parsePikadayDate($input.val()));
     $input.data('pikaday', calendar);
   });
 
