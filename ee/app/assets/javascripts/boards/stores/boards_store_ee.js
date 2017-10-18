@@ -39,11 +39,11 @@ class BoardsStoreEE {
     };
 
     let milestoneTitle = this.store.boardConfig.milestoneTitle;
-    if (this.store.boardConfig.milestoneId !== -1) {
-      if (this.store.boardConfig.milestoneId === 0) {
-        milestoneTitle = 'No+Milestone';
-      }
-      updateFilterPath('milestone_title', encodeURIComponent(milestoneTitle));
+    if (this.store.boardConfig.milestoneId === 0) {
+      milestoneTitle = 'No+Milestone';
+    }
+    if (milestoneTitle) {
+      updateFilterPath('milestone_title', milestoneTitle);
       this.store.cantEdit.push('milestone');
     }
 
