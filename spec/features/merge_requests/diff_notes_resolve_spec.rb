@@ -97,14 +97,33 @@ feature 'Diff notes resolve', :js do
           visit_merge_request
         end
 
-        it 'hides when resolve discussion is clicked' do
-          expect(page).to have_selector('.discussion-body', visible: false)
+        describe 'timeline view' do
+          it 'hides when resolve discussion is clicked' do
+            expect(page).to have_selector('.discussion-body', visible: false)
+          end
+
+          it 'shows resolved discussion when toggled' do
+            find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
+
+            expect(page.find(".timeline-content #note_#{note.noteable_id}")).to be_visible
+          end
         end
 
-        it 'shows resolved discussion when toggled' do
-          find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
+        describe 'side-by-side view' do
+          before do
+            page.within('.merge-request-tabs') { click_link 'Changes' }
+            page.find('#parallel-diff-btn').click
+          end
 
-          expect(page.find(".timeline-content #note_#{note.noteable_id}")).to be_visible
+          it 'hides when resolve discussion is clicked' do
+            expect(page).to have_selector('.diffs .diff-file .notes_holder', visible: false)
+          end
+
+          it 'shows resolved discussion when toggled' do
+            find('.diff-comment-avatar-holders').click
+
+            expect(find('.diffs .diff-file .notes_holder')).to be_visible
+          end
         end
       end
 
