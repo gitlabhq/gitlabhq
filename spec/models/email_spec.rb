@@ -2,8 +2,37 @@ require 'spec_helper'
 
 describe Email do
   describe 'validations' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+
     it_behaves_like 'an object with email-formated attributes', :email do
       subject { build(:email) }
+    end
+    
+    it 'can not add the same email to same user' do
+      create(:email, email: 'new@email.com', user: user1)
+
+      expect(build(:email, email: 'new@email.com', user: user1)).not_to be_valid
+    end
+
+    it 'can add the same email for different users' do
+      create(:email, email: 'new@email.com', user: user1)
+
+      expect(build(:email, email: 'new@email.com', user: user2)).to be_valid
+    end
+
+    it 'does not add duplicate email if the other one is already confirmed' do
+      create(:email, :confirmed, email: 'new@email.com', user: user1)
+
+      expect(build(:email, email: 'new@email.com', user: user2)).not_to be_valid
+    end
+
+    it 'adds if another user has same email and not confirmed' do
+      expect(build(:email, email: user1.email, user: user2)).not_to be_valid
+
+      user1.update_attribute(:confirmed_at, nil)
+
+      expect(build(:email, email: user1.email, user: user2)).to be_valid
     end
   end
 

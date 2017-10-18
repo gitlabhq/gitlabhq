@@ -1,11 +1,17 @@
+# Secondary emails can be added as long as there is not another
+# confirmed email address (either in users or emails tables).
+# This prevents someone from camping out on an email address that
+# is not their own.  The first email to be confirmed wins.
 class Email < ActiveRecord::Base
   include Sortable
 
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :email, presence: true, uniqueness: true, email: true
-  validate :unique_email, if: ->(email) { email.email_changed? }
+  validates :email, presence: true, email: true
+  validates_uniqueness_of :email, scope: :user_id
+  validates_uniqueness_of :email, conditions: -> { where.not(confirmed_at: nil) }
+  validate :unique_email
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
@@ -20,12 +26,18 @@ class Email < ActiveRecord::Base
     write_attribute(:email, value.downcase.strip)
   end
 
-  def unique_email
-    self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
-  end
-
   # once email is confirmed, update the gpg signatures
   def update_invalid_gpg_signatures
     user.update_invalid_gpg_signatures if confirmed?
   end
+
+  private
+
+  # check that another user does not have the same confirmed email
+  def unique_email
+    if User.where.not(confirmed_at: nil).exists?(email: self.email)
+      self.errors.add(:email, 'has already been taken')
+    end
+  end
+
 end
