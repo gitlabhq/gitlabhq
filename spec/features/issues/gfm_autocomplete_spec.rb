@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', :js do
+  include InputHelper
+
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
@@ -14,10 +16,14 @@ feature 'GFM autocomplete', :js do
     wait_for_requests
   end
 
+  after do
+    execute_script("localStorage.clear();");
+  end
+
   it 'updates issue descripton with GFM reference' do
     find('.issuable-edit').click
 
-    find('#issue-description').native.send_keys("@#{user.name[0...3]}")
+    simulateInput('#issue-description', "@#{user.name[0...3]}")
 
     find('.atwho-view .cur').click
 
@@ -100,7 +106,7 @@ feature 'GFM autocomplete', :js do
   it 'includes items for assignee dropdowns with non-ASCII characters in name' do
     page.within '.timeline-content-form' do
       find('#note-body').native.send_keys('')
-      find('#note-body').native.send_keys("@#{user.name[0...8]}")
+      simulateInput('#note-body', "@#{user.name[0...8]}");
     end
 
     expect(page).to have_selector('.atwho-container')
@@ -128,7 +134,7 @@ feature 'GFM autocomplete', :js do
       note = find('#note-body')
       page.within '.timeline-content-form' do
         note.native.send_keys('')
-        note.native.send_keys("~#{label.title[0]}")
+        simulateInput('#note-body', "~#{label.title[0]}")
         note.click
       end
 
@@ -195,7 +201,7 @@ feature 'GFM autocomplete', :js do
       note = find('#note-body')
       page.within '.timeline-content-form' do
         note.native.send_keys('')
-        note.native.send_keys(":cartwheel")
+        note.native.send_keys(":cartwheel_")
         note.click
       end
 
@@ -228,7 +234,8 @@ feature 'GFM autocomplete', :js do
         note.click
       end
 
-      find('.atwho-view li', text: '/assign').native.send_keys(:tab)
+      find('.atwho-view li', text: '/assign')
+      note.native.send_keys(:tab)
 
       user_item = find('.atwho-view li', text: user.username)
       expect(user_item).to have_content(user.username)
