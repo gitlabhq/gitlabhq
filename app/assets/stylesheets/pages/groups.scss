@@ -31,19 +31,6 @@
   }
 }
 
-<<<<<<< HEAD
-
-.ldap-group-links {
-  .form-actions {
-    margin-bottom: $gl-padding;
-  }
-}
-
-.groups-header {
-  @media (min-width: $screen-sm-min) {
-    .nav-links {
-      width: 35%;
-=======
 .group-nav-container .nav-controls {
   display: flex;
   align-items: flex-start;
@@ -69,7 +56,6 @@
         color: inherit;
         margin-left: 0;
       }
->>>>>>> upstream/master
     }
 
     .dropdown-menu {
