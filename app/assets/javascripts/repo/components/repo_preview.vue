@@ -4,7 +4,9 @@
 import Store from '../stores/repo_store';
 
 export default {
-  data: () => Store,
+  data() {
+    return Store;
+  },
   computed: {
     html() {
       return this.activeFile.html;

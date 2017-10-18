@@ -6,6 +6,7 @@ production:
   encoding: unicode
   database: gitlabhq_production
   pool: 10
+<<<<<<< HEAD
   # username: git
   # password:
   # host: localhost
@@ -14,6 +15,11 @@ production:
   #   hosts:
   #     - host1.example.com
   #     - host2.example.com
+=======
+  username: git
+  password: "secure password"
+  host: localhost
+>>>>>>> upstream/master
 
 #
 # Development specific
@@ -24,8 +30,8 @@ development:
   database: gitlabhq_development
   pool: 5
   username: postgres
-  password:
-  # host: localhost
+  password: "secure password"
+  host: localhost
 
 #
 # Staging specific
@@ -34,10 +40,10 @@ staging:
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_staging
-  pool: 5
-  username: postgres
-  password:
-  # host: localhost
+  pool: 10
+  username: git
+  password: "secure password"
+  host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -49,5 +55,5 @@ test: &test
   pool: 5
   username: postgres
   password:
-  # host: localhost
+  host: localhost
   prepared_statements: false

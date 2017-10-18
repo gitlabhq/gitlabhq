@@ -9,7 +9,12 @@ class Group < Namespace
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
+<<<<<<< HEAD
   prepend EE::GeoAwareAvatar
+=======
+  include LoadedInGroupList
+  include GroupDescendant
+>>>>>>> upstream/master
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members

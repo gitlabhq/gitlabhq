@@ -45,6 +45,17 @@ module SortingHelper
     options
   end
 
+  def groups_sort_options_hash
+    options = {
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_recently_updated => sort_title_recently_updated,
+      sort_value_oldest_updated => sort_title_oldest_updated
+    }
+
+    options
+  end
+
   def member_sort_options_hash
     {
       sort_value_access_level_asc  => sort_title_access_level_asc,

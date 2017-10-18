@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2017-10-06 22:39+0200\n"
 "PO-Revision-Date: 2017-10-06 22:39+0200\n"
+=======
+"POT-Creation-Date: 2017-10-10 17:50+0200\n"
+"PO-Revision-Date: 2017-10-10 17:50+0200\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -113,6 +118,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "An error occurred. Please try again."
 msgstr ""
 
 msgid "Appearance"
@@ -450,7 +458,11 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Close"
+=======
+msgid "Cluster"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
@@ -498,13 +510,10 @@ msgstr ""
 msgid "ClusterIntegration|Google Container Engine project"
 msgstr ""
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
-msgid "ClusterIntegration|See machine types"
+msgid "ClusterIntegration|Machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
@@ -516,7 +525,13 @@ msgstr ""
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgstr ""
+
 msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgstr ""
+
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|Remove cluster integration"
@@ -528,7 +543,10 @@ msgstr ""
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
 msgstr ""
 
-msgid "ClusterIntegration|Save changes"
+msgid "ClusterIntegration|Save"
+msgstr ""
+
+msgid "ClusterIntegration|See machine types"
 msgstr ""
 
 msgid "ClusterIntegration|See your projects"
@@ -540,16 +558,10 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine."
-msgstr ""
-
-msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -775,7 +787,11 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Dismiss Merge Request promotion"
+=======
+msgid "Dismiss Cycle Analytics introduction box"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Don't show again"
@@ -845,6 +861,9 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
 msgid "Explore projects"
+msgstr ""
+
+msgid "Explore public groups"
 msgstr ""
 
 msgid "Failed to change the owner"
@@ -942,6 +961,51 @@ msgstr ""
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
+msgid "GroupsEmptyState|A group is a collection of several projects."
+msgstr ""
+
+msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
+msgstr ""
+
+msgid "GroupsEmptyState|No groups found"
+msgstr ""
+
+msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
+msgstr ""
+
+msgid "GroupsTreeRole|as"
+msgstr ""
+
+msgid "GroupsTree|Are you sure you want to leave the \"${this.group.fullName}\" group?"
+msgstr ""
+
+msgid "GroupsTree|Create a project in this group."
+msgstr ""
+
+msgid "GroupsTree|Create a subgroup in this group."
+msgstr ""
+
+msgid "GroupsTree|Edit group"
+msgstr ""
+
+msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
+msgstr ""
+
+msgid "GroupsTree|Filter by name..."
+msgstr ""
+
+msgid "GroupsTree|Leave this group"
+msgstr ""
+
+msgid "GroupsTree|Loading groups"
+msgstr ""
+
+msgid "GroupsTree|Sorry, no groups matched your search"
+msgstr ""
+
+msgid "GroupsTree|Sorry, no groups or projects matched your search"
+msgstr ""
+
 msgid "Health Check"
 msgstr ""
 
@@ -981,10 +1045,18 @@ msgstr ""
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Instance"
 msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
+=======
+msgid "Internal - The group and any internal projects can be viewed by any logged in user."
+msgstr ""
+
+msgid "Internal - The project can be accessed by any logged in user."
+msgstr ""
+>>>>>>> upstream/master
 
 msgid "Interval Pattern"
 msgstr ""
@@ -1054,6 +1126,9 @@ msgstr ""
 msgid "Learn more in the|pipeline schedules documentation"
 msgstr ""
 
+msgid "Leave"
+msgstr ""
+
 msgid "Leave group"
 msgstr ""
 
@@ -1074,7 +1149,11 @@ msgstr ""
 msgid "Locked"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Locked Files"
+=======
+msgid "Login"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Median"
@@ -1104,7 +1183,11 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Multiple issue boards"
+=======
+msgid "New Cluster"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "New Issue"
@@ -1124,16 +1207,25 @@ msgstr ""
 msgid "New file"
 msgstr ""
 
+msgid "New group"
+msgstr ""
+
 msgid "New issue"
 msgstr ""
 
 msgid "New merge request"
 msgstr ""
 
+msgid "New project"
+msgstr ""
+
 msgid "New schedule"
 msgstr ""
 
 msgid "New snippet"
+msgstr ""
+
+msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
@@ -1355,7 +1447,49 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
+msgid "Private - Project access must be granted explicitly to each user."
+msgstr ""
+
+msgid "Private - The group and its projects can only be viewed by members."
+msgstr ""
+
 msgid "Profile"
+msgstr ""
+
+msgid "Profiles|Account scheduled for removal."
+msgstr ""
+
+msgid "Profiles|Delete Account"
+msgstr ""
+
+msgid "Profiles|Delete account"
+msgstr ""
+
+msgid "Profiles|Delete your account?"
+msgstr ""
+
+msgid "Profiles|Deleting an account has the following effects:"
+msgstr ""
+
+msgid "Profiles|Invalid password"
+msgstr ""
+
+msgid "Profiles|Invalid username"
+msgstr ""
+
+msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|You don't have access to delete this user."
+msgstr ""
+
+msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
+msgstr ""
+
+msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|your account"
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -1412,6 +1546,7 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -1425,6 +1560,9 @@ msgid "ProjectSettings|This setting is applied on the server level but has been 
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+=======
+msgid "Projects"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "ProjectsDropdown|Frequently visited"
@@ -1448,7 +1586,14 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Push Rules"
+=======
+msgid "Public - The group and any public projects can be viewed without any authentication."
+msgstr ""
+
+msgid "Public - The project can be accessed without any authentication."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Push events"
@@ -1582,13 +1727,20 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+=======
+msgid "Sort by"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "SortOptions|Access level, ascending"
@@ -1706,6 +1858,9 @@ msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
 msgid "Start the Runner!"
+msgstr ""
+
+msgid "Subgroups"
 msgstr ""
 
 msgid "Switch branch/tag"
@@ -1957,9 +2112,12 @@ msgstr ""
 msgid "Total test time for all commits/merges"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Track activity with Contribution Analytics."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Unlock"
 msgstr ""
 
@@ -2152,7 +2310,13 @@ msgstr ""
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are on a read-only GitLab instance."
+msgstr ""
+
 msgid "You can only add files when you are on a branch"
+msgstr ""
+
+msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You have reached your project limit"
@@ -2188,6 +2352,12 @@ msgstr ""
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Your groups"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Your name"
 msgstr ""
 
@@ -2213,8 +2383,15 @@ msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "to help your contributors communicate effectively!"
+=======
+msgid "password"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "username"
 msgstr ""

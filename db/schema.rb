@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20171010140746) do
+=======
+ActiveRecord::Schema.define(version: 20171012101043) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +161,10 @@ ActiveRecord::Schema.define(version: 20171010140746) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
+    t.integer "circuitbreaker_failure_count_threshold", default: 160
+    t.integer "circuitbreaker_failure_wait_time", default: 30
+    t.integer "circuitbreaker_failure_reset_time", default: 1800
+    t.integer "circuitbreaker_storage_timeout", default: 30
   end
 
   create_table "approvals", force: :cascade do |t|

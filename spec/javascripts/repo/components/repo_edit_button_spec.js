@@ -9,6 +9,10 @@ describe('RepoEditButton', () => {
     return new RepoEditButton().$mount();
   }
 
+  afterEach(() => {
+    RepoStore.openedFiles = [];
+  });
+
   it('renders an edit button that toggles the view state', (done) => {
     RepoStore.isCommitable = true;
     RepoStore.changedFiles = [];
@@ -37,13 +41,5 @@ describe('RepoEditButton', () => {
     const vm = createComponent();
 
     expect(vm.$el.innerHTML).toBeUndefined();
-  });
-
-  describe('methods', () => {
-    describe('editCancelClicked', () => {
-      it('sets dialog to open when there are changedFiles');
-
-      it('toggles editMode and calls toggleBlobView');
-    });
   });
 });

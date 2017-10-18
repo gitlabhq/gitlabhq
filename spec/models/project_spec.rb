@@ -2066,6 +2066,21 @@ describe Project do
     it { expect(project.gitea_import?).to be true }
   end
 
+  describe '#ancestors_upto', :nested_groups do
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
+    let(:child2) { create(:group, parent: child) }
+    let(:project) { create(:project, namespace: child2) }
+
+    it 'returns all ancestors when no namespace is given' do
+      expect(project.ancestors_upto).to contain_exactly(child2, child, parent)
+    end
+
+    it 'includes ancestors upto but excluding the given ancestor' do
+      expect(project.ancestors_upto(parent)).to contain_exactly(child2, child)
+    end
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 
@@ -2610,6 +2625,12 @@ describe Project do
     let(:project) { create(:project) }
 
     it { expect(project.parent).to eq(project.namespace) }
+  end
+
+  describe '#parent_id' do
+    let(:project) { create(:project) }
+
+    it { expect(project.parent_id).to eq(project.namespace_id) }
   end
 
   describe '#parent_changed?' do

@@ -30,6 +30,7 @@ cp config/database.yml.$GITLAB_DATABASE config/database.yml
 cp config/database_geo.yml.$GITLAB_DATABASE config/database_geo.yml
 
 if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
+<<<<<<< HEAD
     sed -i 's/# host:.*/host: postgres/g' config/database.yml
 
     # EE-only
@@ -43,6 +44,11 @@ else # Assume it's mysql
     sed -i 's/username:.*/username: root/g' config/database_geo.yml
     sed -i 's/password:.*/password:/g' config/database_geo.yml
     sed -i 's/# host:.*/host: mysql/g' config/database_geo.yml
+=======
+    sed -i 's/localhost/postgres/g' config/database.yml
+else # Assume it's mysql
+    sed -i 's/localhost/mysql/g' config/database.yml
+>>>>>>> upstream/master
 fi
 
 cp config/resque.yml.example config/resque.yml
