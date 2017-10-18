@@ -17,7 +17,12 @@
   img.lazy {
     min-width: 200px;
     min-height: 100px;
-    background-color: $gray-lightest;
+    background-color: $gray-dark;
+  }
+
+  img.lazy.lazy-sized {
+    min-width: auto;
+    min-height: auto;
   }
 
   img.js-lazy-loaded,

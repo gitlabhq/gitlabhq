@@ -36,8 +36,8 @@ export default class LazyLoader {
     }
   }
   loadCheck() {
-    //this.searchLazyImages();
-    //this.startContentObserver();
+    this.searchLazyImages();
+    this.startContentObserver();
   }
   scrollCheck() {
     requestAnimationFrame(() => this.checkElementsInView());
@@ -70,7 +70,7 @@ export default class LazyLoader {
       img.setAttribute('src', img.getAttribute('data-src'));
       img.removeAttribute('data-src');
       img.classList.remove('lazy');
-      img.classList.add('js-lazy-loaded');
+      //img.classList.add('js-lazy-loaded');
       img.removeAttribute('style');
     }
   }
