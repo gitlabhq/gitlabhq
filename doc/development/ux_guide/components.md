@@ -280,7 +280,7 @@ Dialog modals are only used for having a conversation and confirmation with the 
 
 | Dialog with 2 actions | Dialog with 3 actions | Special confirmation |
 | --------------------- | --------------------- | -------------------- |
-| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons-special.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
+| ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
 
 ---
 
