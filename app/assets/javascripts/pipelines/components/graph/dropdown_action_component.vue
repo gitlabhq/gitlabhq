@@ -48,7 +48,6 @@
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
     aria-label="Job's action">
-    <icon
-      :name="actionIcon"/>
+    <icon :name="actionIcon"/>
   </a>
 </template>

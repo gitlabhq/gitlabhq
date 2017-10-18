@@ -39,7 +39,8 @@
 
     computed: {
       cssClass() {
-        return `${gl.text.dasherize(this.actionIcon)} js-icon-${gl.text.dasherize(this.actionIcon)}`;
+        const actionIconDash = gl.text.dasherize(this.actionIcon)
+        return `${actionIconDash} js-icon-${actionIconDash}`;
       },
     },
   };
@@ -53,7 +54,6 @@
     class="ci-action-icon-container ci-action-icon-wrapper"
     :class="cssClass"
     data-container="body">
-    <icon
-      :name="actionIcon"/>
+    <icon :name="actionIcon"/>
   </a>
 </template>
