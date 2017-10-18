@@ -50,6 +50,9 @@ module Gitlab
     end
 
     def encode_utf8(message)
+      return nil if message == nil
+      return message if message.encoding == Encoding::UTF_8
+
       detect = CharlockHolmes::EncodingDetector.detect(message)
       if detect && detect[:encoding]
         begin

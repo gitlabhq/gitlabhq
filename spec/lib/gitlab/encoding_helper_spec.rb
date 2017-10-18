@@ -82,6 +82,16 @@ describe Gitlab::EncodingHelper do
   describe '#encode_utf8' do
     [
       [
+        "nil",
+        nil,
+        nil
+      ],
+      [
+        "empty string",
+        "".encode("ASCII-8BIT"),
+        "".encode("UTF-8")
+      ],
+      [
         "encodes valid utf8 encoded string to utf8",
         "λ, λ, λ".encode("UTF-8"),
         "λ, λ, λ".encode("UTF-8")
@@ -93,7 +103,7 @@ describe Gitlab::EncodingHelper do
       ],
       [
         "encodes valid ISO-8859-1 encoded string to utf8",
-        "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("ISO-8859-1", "UTF-8"),
+        "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("ISO-8859-1"),
         "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("UTF-8")
       ],
       [
@@ -104,9 +114,9 @@ describe Gitlab::EncodingHelper do
       ]
     ].each do |description, test_string, xpect|
       it description do
-        r = ext_class.encode_utf8(test_string.force_encoding('UTF-8'))
+        r = ext_class.encode_utf8(test_string)
         expect(r).to eq(xpect)
-        expect(r.encoding.name).to eq('UTF-8')
+        expect(r.encoding.name).to eq('UTF-8') if !xpect.nil?
       end
     end
 
