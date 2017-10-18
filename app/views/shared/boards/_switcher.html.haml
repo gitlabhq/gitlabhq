@@ -38,8 +38,8 @@
 
     %board-form{ ":milestone-path" => "milestonePath",
       "labels-path" => labels_filter_path(true),
-      "project-id" => @project&.id,
-      "group-id" => @group&.id,
+      ":project-id" => "Number(#{@project&.id})",
+      ":group-id" => "Number(#{@group&.id})",
       ":can-admin-board" => can?(current_user, :admin_board, parent),
       ":scoped-issue-board-feature-enabled" => parent.feature_available?(:scoped_issue_board),
       "weights" => [Issue::WEIGHT_ANY] + Issue.weight_options,

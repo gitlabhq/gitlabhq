@@ -24,9 +24,9 @@ export default {
       required: true,
     },
     groupId: {
-      type: String,
+      type: Number,
       required: false,
-      default: '',
+      default: 0,
     },
     label: {
       type: String,
@@ -38,9 +38,9 @@ export default {
       default: 'Select user',
     },
     projectId: {
-      type: String,
+      type: Number,
       required: false,
-      default: '',
+      default: 0,
     },
     selected: {
       type: Object,

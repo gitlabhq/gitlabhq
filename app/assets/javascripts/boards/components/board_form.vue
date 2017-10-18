@@ -42,14 +42,14 @@ export default {
       default: false,
     },
     projectId: {
-      type: String,
+      type: Number,
       required: false,
-      default: '',
+      default: 0,
     },
     groupId: {
-      type: String,
+      type: Number,
       required: false,
-      default: '',
+      default: 0,
     },
     weights: {
       type: String,
