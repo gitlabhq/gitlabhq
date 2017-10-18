@@ -43,7 +43,7 @@ class BoardsStoreEE {
       if (this.store.boardConfig.milestoneId === 0) {
         milestoneTitle = 'No+Milestone';
       }
-      updateFilterPath('milestone_title', milestoneTitle);
+      updateFilterPath('milestone_title', encodeURIComponent(milestoneTitle));
       this.store.cantEdit.push('milestone');
     }
 

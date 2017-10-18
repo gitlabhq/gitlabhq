@@ -9,8 +9,13 @@ module EE
                                 (!@project.feature_available?(:multiple_issue_boards) ||
                                  !@project.feature_available?(:scoped_issue_board) ||
                                  !@project.feature_available?(:issue_board_focus_mode))).to_s
+
+      milestone_title = board&.milestone&.title
+      if [::Milestone::Started, ::Milestone::Upcoming].include? board&.milestone
+        milestone_title = board&.milestone&.name
+      end
       data = {
-        board_milestone_title: board&.milestone&.title,
+        board_milestone_title: milestone_title,
         board_milestone_id: board&.milestone_id,
         board_assignee_username: board&.assignee&.username,
         label_ids: board&.label_ids,
