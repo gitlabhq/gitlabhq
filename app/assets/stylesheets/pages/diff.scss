@@ -382,6 +382,16 @@
   }
 }
 
+.diff-viewer,
+.diff-viewer .text-file,
+.text-file .line_holder {
+  border-radius: inherit;
+}
+
+.text-file .line_holder:last-of-type .diff-line-num:first-child {
+  border-bottom-left-radius: 3px;
+}
+
 .file-content .diff-file {
   margin: 0;
   border: none;
