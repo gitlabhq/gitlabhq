@@ -10,10 +10,15 @@ module EE
                                  !@project.feature_available?(:scoped_issue_board) ||
                                  !@project.feature_available?(:issue_board_focus_mode))).to_s
 
-      milestone_title = board&.milestone&.title
-      if [::Milestone::Started, ::Milestone::Upcoming].include? board&.milestone
-        milestone_title = board&.milestone&.name
-      end
+      # Issues backend filtering expect MilestoneStruct#name as `milestone_title`
+      # param. For instance, "Upcoming" is an invalid param, "#upcoming" is expected.
+      milestone_title =
+        if board.milestone.is_a?(::Milestone::MilestoneStruct)
+          board.milestone.name
+        else
+          board.milestone&.title
+        end
+
       data = {
         board_milestone_title: milestone_title,
         board_milestone_id: board&.milestone_id,
