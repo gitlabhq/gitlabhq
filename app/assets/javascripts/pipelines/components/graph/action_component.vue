@@ -39,7 +39,7 @@
 
     computed: {
       cssClass() {
-        const actionIconDash = gl.text.dasherize(this.actionIcon)
+        const actionIconDash = gl.text.dasherize(this.actionIcon);
         return `${actionIconDash} js-icon-${actionIconDash}`;
       },
     },
