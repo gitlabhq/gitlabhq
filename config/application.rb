@@ -37,21 +37,13 @@ module Gitlab
     config.generators.templates.push("#{config.root}/generator_templates")
 
     # EE specific paths.
-    config.eager_load_paths.push(*%W[
-      #{config.root}/ee/lib
-      #{config.root}/ee/app/controllers
-      #{config.root}/ee/app/helpers
-      #{config.root}/ee/app/mailers
-      #{config.root}/ee/app/models
-      #{config.root}/ee/app/models/concerns
-      #{config.root}/ee/app/policies
-      #{config.root}/ee/app/serializers
-      #{config.root}/ee/app/presenters
-      #{config.root}/ee/app/services
-      #{config.root}/ee/app/workers
-    ])
+    ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+      ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
+      memo << ee_path.to_s if ee_path.exist?
+    end
+    config.eager_load_paths.concat(ee_paths)
 
-    config.paths['app/views'].push(*%W[
+    config.paths['app/views'].concat(%W[
       #{config.root}/ee/app/views
     ])
 
