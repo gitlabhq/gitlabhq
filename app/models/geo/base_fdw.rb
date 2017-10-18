@@ -1,5 +1,3 @@
-class Geo::BaseFdw < ActiveRecord::Base
-  include ::EE::Geo::GeoTrackable
-
+class Geo::BaseFdw < Geo::TrackingBase
   self.abstract_class = true
 end

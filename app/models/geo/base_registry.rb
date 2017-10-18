@@ -1,5 +1,3 @@
-class Geo::BaseRegistry < ActiveRecord::Base
-  include ::EE::Geo::GeoTrackable
-
+class Geo::BaseRegistry < Geo::TrackingBase
   self.abstract_class = true
 end
