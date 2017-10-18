@@ -1,12 +1,12 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
 /* global Autosave */
-/* global dateFormat */
 
 import Pikaday from 'pikaday';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
+import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
 
 (function() {
   this.IssuableForm = (function() {
@@ -38,11 +38,13 @@ import ZenMode from './zen_mode';
           theme: 'gitlab-theme animate-picker',
           format: 'yyyy-mm-dd',
           container: $issuableDueDate.parent().get(0),
+          parse: dateString => parsePikadayDate(dateString),
+          toString: date => pikadayToString(date),
           onSelect: function(dateText) {
-            $issuableDueDate.val(dateFormat(new Date(dateText), 'yyyy-mm-dd'));
+            $issuableDueDate.val(calendar.toString(dateText));
           }
         });
-        calendar.setDate(new Date($issuableDueDate.val()));
+        calendar.setDate(parsePikadayDate($issuableDueDate.val()));
       }
     }
 

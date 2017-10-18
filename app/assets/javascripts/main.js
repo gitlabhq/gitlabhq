@@ -51,8 +51,6 @@ import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
 import './diff';
-import './dropzone_input';
-import './due_date_select';
 import './files_comment_button';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
