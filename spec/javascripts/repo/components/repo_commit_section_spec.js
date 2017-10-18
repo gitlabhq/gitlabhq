@@ -2,29 +2,13 @@ import Vue from 'vue';
 import repoCommitSection from '~/repo/components/repo_commit_section.vue';
 import RepoStore from '~/repo/stores/repo_store';
 import RepoService from '~/repo/services/repo_service';
+import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 describe('RepoCommitSection', () => {
   const branch = 'master';
   const projectUrl = 'projectUrl';
-  const changedFiles = [{
-    id: 0,
-    changed: true,
-    url: `/namespace/${projectUrl}/blob/${branch}/dir/file0.ext`,
-    path: 'dir/file0.ext',
-    newContent: 'a',
-  }, {
-    id: 1,
-    changed: true,
-    url: `/namespace/${projectUrl}/blob/${branch}/dir/file1.ext`,
-    path: 'dir/file1.ext',
-    newContent: 'b',
-  }];
-  const openedFiles = changedFiles.concat([{
-    id: 2,
-    url: `/namespace/${projectUrl}/blob/${branch}/dir/file2.ext`,
-    path: 'dir/file2.ext',
-    changed: false,
-  }]);
+  let changedFiles;
+  let openedFiles;
 
   RepoStore.projectUrl = projectUrl;
 
@@ -33,6 +17,29 @@ describe('RepoCommitSection', () => {
 
     return new RepoCommitSection().$mount(el);
   }
+
+  beforeEach(() => {
+    // Create a copy for each test because these can get modified directly
+    changedFiles = [{
+      id: 0,
+      changed: true,
+      url: `/namespace/${projectUrl}/blob/${branch}/dir/file0.ext`,
+      path: 'dir/file0.ext',
+      newContent: 'a',
+    }, {
+      id: 1,
+      changed: true,
+      url: `/namespace/${projectUrl}/blob/${branch}/dir/file1.ext`,
+      path: 'dir/file1.ext',
+      newContent: 'b',
+    }];
+    openedFiles = changedFiles.concat([{
+      id: 2,
+      url: `/namespace/${projectUrl}/blob/${branch}/dir/file2.ext`,
+      path: 'dir/file2.ext',
+      changed: false,
+    }]);
+  });
 
   it('renders a commit section', () => {
     RepoStore.isCommitable = true;
@@ -85,55 +92,104 @@ describe('RepoCommitSection', () => {
     expect(vm.$el.innerHTML).toBeFalsy();
   });
 
-  it('shows commit submit and summary if commitMessage and spinner if submitCommitsLoading', (done) => {
+  describe('when submitting', () => {
+    let el;
+    let vm;
     const projectId = 'projectId';
     const commitMessage = 'commitMessage';
-    RepoStore.isCommitable = true;
-    RepoStore.currentBranch = branch;
-    RepoStore.targetBranch = branch;
-    RepoStore.openedFiles = openedFiles;
-    RepoStore.projectId = projectId;
 
-    // We need to append to body to get form `submit` events working
-    // Otherwise we run into, "Form submission canceled because the form is not connected"
-    // See https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm
-    const el = document.createElement('div');
-    document.body.appendChild(el);
+    beforeEach((done) => {
+      RepoStore.isCommitable = true;
+      RepoStore.currentBranch = branch;
+      RepoStore.targetBranch = branch;
+      RepoStore.openedFiles = openedFiles;
+      RepoStore.projectId = projectId;
 
-    const vm = createComponent(el);
-    const commitMessageEl = vm.$el.querySelector('#commit-message');
-    const submitCommit = vm.$refs.submitCommit;
+      // We need to append to body to get form `submit` events working
+      // Otherwise we run into, "Form submission canceled because the form is not connected"
+      // See https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm
+      el = document.createElement('div');
+      document.body.appendChild(el);
 
-    vm.commitMessage = commitMessage;
+      vm = createComponent(el);
+      vm.commitMessage = commitMessage;
 
-    Vue.nextTick(() => {
-      expect(commitMessageEl.value).toBe(commitMessage);
-      expect(submitCommit.disabled).toBeFalsy();
+      spyOn(vm, 'tryCommit').and.callThrough();
+      spyOn(vm, 'redirectToNewMr').and.stub();
+      spyOn(vm, 'redirectToBranch').and.stub();
+      spyOn(RepoService, 'commitFiles').and.returnValue(Promise.resolve());
+      spyOn(RepoService, 'getBranch').and.returnValue(Promise.resolve({
+        commit: {
+          id: 1,
+          short_id: 1,
+        },
+      }));
 
-      spyOn(vm, 'makeCommit').and.callThrough();
-      spyOn(RepoService, 'commitFiles').and.callFake(() => Promise.resolve());
-
-      submitCommit.click();
-
+      // Wait for the vm data to be in place
       Vue.nextTick(() => {
-        expect(vm.makeCommit).toHaveBeenCalled();
-        expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeTruthy();
-
-        const args = RepoService.commitFiles.calls.allArgs()[0];
-        const { commit_message, actions, branch: payloadBranch } = args[0];
-
-        expect(commit_message).toBe(commitMessage);
-        expect(actions.length).toEqual(2);
-        expect(payloadBranch).toEqual(branch);
-        expect(actions[0].action).toEqual('update');
-        expect(actions[1].action).toEqual('update');
-        expect(actions[0].content).toEqual(openedFiles[0].newContent);
-        expect(actions[1].content).toEqual(openedFiles[1].newContent);
-        expect(actions[0].file_path).toEqual(openedFiles[0].path);
-        expect(actions[1].file_path).toEqual(openedFiles[1].path);
-
         done();
       });
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+      el.remove();
+    });
+
+    it('shows commit message', () => {
+      const commitMessageEl = vm.$el.querySelector('#commit-message');
+      expect(commitMessageEl.value).toBe(commitMessage);
+    });
+
+    it('allows you to submit', () => {
+      const submitCommit = vm.$refs.submitCommit;
+      expect(submitCommit.disabled).toBeFalsy();
+    });
+
+    it('shows commit submit and summary if commitMessage and spinner if submitCommitsLoading', (done) => {
+      const submitCommit = vm.$refs.submitCommit;
+      submitCommit.click();
+
+      // Wait for the branch check to finish
+      getSetTimeoutPromise()
+        .then(() => Vue.nextTick())
+        .then(() => {
+          expect(vm.tryCommit).toHaveBeenCalled();
+          expect(submitCommit.querySelector('.js-commit-loading-icon')).toBeTruthy();
+          expect(vm.redirectToBranch).toHaveBeenCalled();
+
+          const args = RepoService.commitFiles.calls.allArgs()[0];
+          const { commit_message, actions, branch: payloadBranch } = args[0];
+
+          expect(commit_message).toBe(commitMessage);
+          expect(actions.length).toEqual(2);
+          expect(payloadBranch).toEqual(branch);
+          expect(actions[0].action).toEqual('update');
+          expect(actions[1].action).toEqual('update');
+          expect(actions[0].content).toEqual(openedFiles[0].newContent);
+          expect(actions[1].content).toEqual(openedFiles[1].newContent);
+          expect(actions[0].file_path).toEqual(openedFiles[0].path);
+          expect(actions[1].file_path).toEqual(openedFiles[1].path);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('redirects to MR creation page if start new MR checkbox checked', (done) => {
+      vm.startNewMR = true;
+
+      Vue.nextTick()
+        .then(() => {
+          const submitCommit = vm.$refs.submitCommit;
+          submitCommit.click();
+        })
+        // Wait for the branch check to finish
+        .then(() => getSetTimeoutPromise())
+        .then(() => {
+          expect(vm.redirectToNewMr).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
@@ -143,6 +199,7 @@ describe('RepoCommitSection', () => {
         const vm = {
           submitCommitsLoading: true,
           changedFiles: new Array(10),
+          openedFiles: new Array(3),
           commitMessage: 'commitMessage',
           editMode: true,
         };

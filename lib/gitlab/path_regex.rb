@@ -26,14 +26,12 @@ module Gitlab
       apple-touch-icon.png
       assets
       autocomplete
-      boards
       ci
       dashboard
       deploy.html
       explore
       favicon.ico
       files
-      google_api
       groups
       header_logo_dark.png
       header_logo_light.png
@@ -120,7 +118,6 @@ module Gitlab
       analytics
       audit_events
       avatar
-      boards
       edit
       group_members
       hooks

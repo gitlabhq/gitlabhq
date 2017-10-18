@@ -74,6 +74,18 @@ module Gitlab
       GeoNode.where(host: host, port: port).exists?
     end
 
+    def self.fdw?
+      self.cache_value(:geo_fdw?) do
+        ::Geo::BaseRegistry.connection.execute(
+          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{self.fdw_schema}' AND table_type = 'FOREIGN TABLE'"
+        ).first.fetch('count').to_i.positive?
+      end
+    end
+
+    def self.fdw_schema
+      'gitlab_secondary'.freeze
+    end
+
     def self.repository_sync_job
       Sidekiq::Cron::Job.find('geo_repository_sync_worker')
     end

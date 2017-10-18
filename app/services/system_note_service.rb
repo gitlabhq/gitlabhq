@@ -195,9 +195,11 @@ module SystemNoteService
     if time_spent == :reset
       body = "removed time spent"
     else
+      spent_at = noteable.spent_at
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
       body = "#{action} #{parsed_time} of time spent"
+      body << " at #{spent_at}" if spent_at
     end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
@@ -647,7 +649,7 @@ module SystemNoteService
 
   def discussion_lock(issuable, author)
     action = issuable.discussion_locked? ? 'locked' : 'unlocked'
-    body = "#{action} this issue"
+    body = "#{action} this #{issuable.class.to_s.titleize.downcase}"
 
     create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
   end

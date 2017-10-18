@@ -1,13 +1,11 @@
-/* eslint-disable no-new */
-/* global Build */
 import { bytesToKiB } from '~/lib/utils/number_utils';
 import '~/lib/utils/datetime_utility';
 import '~/lib/utils/url_utility';
-import '~/build';
+import Job from '~/job';
 import '~/breakpoints';
 
-describe('Build', () => {
-  const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
+describe('Job', () => {
+  const JOB_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1`;
 
   preloadFixtures('builds/build-with-artifacts.html.raw');
 
@@ -26,14 +24,14 @@ describe('Build', () => {
 
     describe('setup', () => {
       beforeEach(function () {
-        this.build = new Build();
+        this.job = new Job();
       });
 
       it('copies build options', function () {
-        expect(this.build.pageUrl).toBe(BUILD_URL);
-        expect(this.build.buildStatus).toBe('success');
-        expect(this.build.buildStage).toBe('test');
-        expect(this.build.state).toBe('');
+        expect(this.job.pageUrl).toBe(JOB_URL);
+        expect(this.job.buildStatus).toBe('success');
+        expect(this.job.buildStage).toBe('test');
+        expect(this.job.state).toBe('');
       });
 
       it('only shows the jobs matching the current stage', () => {
@@ -87,15 +85,15 @@ describe('Build', () => {
           complete: true,
         });
 
-        this.build = new Build();
+        this.job = new Job();
 
         expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
-        expect(this.build.state).toBe('newstate');
+        expect(this.job.state).toBe('newstate');
 
         jasmine.clock().tick(4001);
 
         expect($('#build-trace .js-build-output').text()).toMatch(/UpdateMore/);
-        expect(this.build.state).toBe('finalstate');
+        expect(this.job.state).toBe('finalstate');
       });
 
       it('replaces the entire build trace', () => {
@@ -122,7 +120,7 @@ describe('Build', () => {
           append: false,
         });
 
-        this.build = new Build();
+        this.job = new Job();
 
         expect($('#build-trace .js-build-output').text()).toMatch(/Update/);
 
@@ -148,7 +146,7 @@ describe('Build', () => {
             total: 100,
           });
 
-          this.build = new Build();
+          this.job = new Job();
 
           expect(document.querySelector('.js-truncated-info').classList).not.toContain('hidden');
         });
@@ -167,7 +165,7 @@ describe('Build', () => {
             total: 100,
           });
 
-          this.build = new Build();
+          this.job = new Job();
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
@@ -193,7 +191,7 @@ describe('Build', () => {
 
           deferred2.resolve();
 
-          this.build = new Build();
+          this.job = new Job();
 
           expect(
             document.querySelector('.js-truncated-info-size').textContent.trim(),
@@ -227,7 +225,7 @@ describe('Build', () => {
             total: 100,
           });
 
-          this.build = new Build();
+          this.job = new Job();
 
           expect(
             document.querySelector('.js-raw-link').textContent.trim(),
@@ -249,7 +247,7 @@ describe('Build', () => {
             total: 100,
           });
 
-          this.build = new Build();
+          this.job = new Job();
 
           expect(document.querySelector('.js-truncated-info').classList).toContain('hidden');
         });
@@ -270,7 +268,7 @@ describe('Build', () => {
           total: 100,
         });
 
-        this.build = new Build();
+        this.job = new Job();
       });
 
       it('should render trace controls', () => {
@@ -293,11 +291,12 @@ describe('Build', () => {
   describe('getBuildTrace', () => {
     it('should request build trace with state parameter', (done) => {
       spyOn(jQuery, 'ajax').and.callThrough();
-      new Build();
+      // eslint-disable-next-line no-new
+      new Job();
 
       setTimeout(() => {
         expect(jQuery.ajax).toHaveBeenCalledWith(
-          { url: `${BUILD_URL}/trace.json`, data: { state: '' } },
+          { url: `${JOB_URL}/trace.json`, data: { state: '' } },
         );
         done();
       }, 0);

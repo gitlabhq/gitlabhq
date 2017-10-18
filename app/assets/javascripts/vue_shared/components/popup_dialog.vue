@@ -26,9 +26,19 @@ export default {
       required: false,
       default: '',
     },
-    primaryButtonLabel: {
+    closeKind: {
       type: String,
       required: false,
+      default: 'default',
+    },
+    closeButtonLabel: {
+      type: String,
+      required: false,
+      default: 'Cancel',
+    },
+    primaryButtonLabel: {
+      type: String,
+      required: true,
     },
     submitDisabled: {
       type: Boolean,
@@ -41,6 +51,11 @@ export default {
     btnKindClass() {
       return {
         [`btn-${this.kind}`]: true,
+      };
+    },
+    btnCancelKindClass() {
+      return {
+        [`btn-${this.closeKind}`]: true,
       };
     },
   },

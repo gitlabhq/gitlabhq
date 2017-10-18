@@ -64,6 +64,10 @@ const RepoService = {
     return urlArray.join('/');
   },
 
+  getBranch() {
+    return Api.branchSingle(Store.projectId, Store.currentBranch);
+  },
+
   commitFiles(payload) {
     return Api.commitMultiple(Store.projectId, payload)
       .then(this.commitFlash);

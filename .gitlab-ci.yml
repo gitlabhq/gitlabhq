@@ -69,6 +69,12 @@ stages:
     - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
+.use-pg-9-6: &use-pg-9-6
+  services:
+    - postgres:9.6
+    - redis:alpine
+    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+
 .use-mysql: &use-mysql
   services:
     - mysql:latest
@@ -116,6 +122,17 @@ stages:
   <<: *rspec-metadata
   <<: *use-pg
   <<: *except-docs
+
+.rspec-geo-pg-9-6: &rspec-metadata-pg-geo
+  <<: *use-pg-9-6
+  <<: *except-docs
+  stage: test
+  script:
+    - export NO_KNAPSACK=1
+    - export CACHE_CLASSES=true
+    - source scripts/prepare_postgres_fdw.sh
+    - scripts/gitaly-test-spawn
+    - bundle exec rspec --color --format documentation --tag geo spec/
 
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
@@ -337,6 +354,8 @@ rspec-pg 21 25: *rspec-metadata-pg
 rspec-pg 22 25: *rspec-metadata-pg
 rspec-pg 23 25: *rspec-metadata-pg
 rspec-pg 24 25: *rspec-metadata-pg
+
+rspec-pg geo: *rspec-metadata-pg-geo
 
 rspec-mysql 0 25: *rspec-metadata-mysql
 rspec-mysql 1 25: *rspec-metadata-mysql
@@ -588,7 +607,7 @@ karma:
     - chrome_debug.log
     - coverage-javascript/
 
-codeclimate:
+codequality:
   <<: *except-docs
   <<: *pull-cache
   before_script: []

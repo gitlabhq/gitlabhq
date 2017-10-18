@@ -42,7 +42,7 @@ digging into specific reference guides.
 - **The permissions model** - Learn about the access levels a user can have for
   performing certain CI actions
   - [User permissions](../user/permissions.md#gitlab-ci)
-  - [Jobs permissions](../user/permissions.md#jobs-permissions)
+  - [Job permissions](../user/permissions.md#job-permissions)
 
 ## Auto DevOps
 

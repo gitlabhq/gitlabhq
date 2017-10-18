@@ -4,7 +4,7 @@
 - dom_id = "group_member_#{group_link.id}"
 %li.member.group_member{ id: dom_id }
   %span.list-item-name
-    = image_tag group_icon(group), class: "avatar s40", alt: ''
+    = group_icon(group, class: "avatar s40", alt: '')
     %strong
       = link_to group.full_name, group_path(group)
     .cgray

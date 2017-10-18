@@ -100,7 +100,7 @@ class GeoNodeStatus
 
   def lfs_objects_synced_count
     @lfs_objects_synced_count ||= begin
-      relation = Geo::FileRegistry.where(file_type: :lfs)
+      relation = Geo::FileRegistry.synced.where(file_type: :lfs)
 
       if Gitlab::Geo.current_node.restricted_project_ids
         relation = relation.where(file_id: lfs_objects.pluck(:id))
@@ -112,6 +112,14 @@ class GeoNodeStatus
 
   def lfs_objects_synced_count=(value)
     @lfs_objects_synced_count = value.to_i
+  end
+
+  def lfs_objects_failed_count
+    @lfs_objects_failed_count ||= Geo::FileRegistry.failed.where(file_type: :lfs).count
+  end
+
+  def lfs_objects_failed_count=(value)
+    @lfs_objects_failed_count = value.to_i
   end
 
   def lfs_objects_synced_in_percentage
@@ -129,7 +137,7 @@ class GeoNodeStatus
   def attachments_synced_count
     @attachments_synced_count ||= begin
       upload_ids = attachments.pluck(:id)
-      synced_ids = Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
+      synced_ids = Geo::FileRegistry.synced.where(file_type: Geo::FileService::DEFAULT_OBJECT_TYPES).pluck(:file_id)
 
       (synced_ids & upload_ids).length
     end
@@ -137,6 +145,14 @@ class GeoNodeStatus
 
   def attachments_synced_count=(value)
     @attachments_synced_count = value.to_i
+  end
+
+  def attachments_failed_count
+    @attachments_failed_count ||= Geo::FileRegistry.failed.where(file_type: Geo::FileService::DEFAULT_OBJECT_TYPES).count
+  end
+
+  def attachments_failed_count=(value)
+    @attachments_failed_count = value.to_i
   end
 
   def attachments_synced_in_percentage

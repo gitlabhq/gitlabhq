@@ -19,15 +19,17 @@ module Gitlab
           full_scan! if options[:full_scan]
 
           until exit?
-            Events.fetch_in_batches do |batch|
-              handle_events(batch)
-            end
+            run_once!
 
             return if exit?
 
             # When no new event is found sleep for a few moments
             sleep(POOL_WAIT)
           end
+        end
+
+        def run_once!
+          Events.fetch_in_batches { |batch| handle_events(batch) }
         end
 
         # Execute routines to verify the required initial data is available

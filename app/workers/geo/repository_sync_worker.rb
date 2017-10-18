@@ -1,11 +1,9 @@
 module Geo
   class RepositorySyncWorker < Geo::BaseSchedulerWorker
-    MAX_CAPACITY = 25
-
     private
 
     def max_capacity
-      MAX_CAPACITY
+      current_node.repos_max_capacity
     end
 
     def schedule_job(project_id)

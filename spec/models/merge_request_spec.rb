@@ -869,27 +869,15 @@ describe MergeRequest do
     end
   end
 
-  describe "#hook_attrs" do
-    let(:attrs_hash) { subject.hook_attrs }
+  describe '#hook_attrs' do
+    it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
+      builder = double
 
-    [:source, :target].each do |key|
-      describe "#{key} key" do
-        include_examples 'project hook data', project_key: key do
-          let(:data)    { attrs_hash }
-          let(:project) { subject.send("#{key}_project") }
-        end
-      end
-    end
+      expect(Gitlab::HookData::MergeRequestBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    it "has all the required keys" do
-      expect(attrs_hash).to include(:source)
-      expect(attrs_hash).to include(:target)
-      expect(attrs_hash).to include(:last_commit)
-      expect(attrs_hash).to include(:work_in_progress)
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
+      subject.hook_attrs
     end
   end
 
@@ -1899,10 +1887,30 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
-    it 'returns true when merge_id is present and MR is not merged' do
+    it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }
 
       expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: nil)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if MR is merged' do
+      merge_request = build_stubbed(:merge_request, state: :merged, merge_jid: 'foo')
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if there is no merge job running' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { false }
+
+      expect(merge_request.merge_ongoing?).to be(false)
     end
   end
 

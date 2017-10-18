@@ -266,6 +266,15 @@ describe Gitlab::Checks::ChangeAccess do
             expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
           end
         end
+
+        context 'when the default branch does not match the push rules' do
+          let(:push_rule) { create(:push_rule, branch_name_regex: 'not-master') }
+          let(:ref) { "refs/heads/#{project.default_branch}" }
+
+          it 'allows the default branch even if it does not match push rule' do
+            expect { subject }.not_to raise_error
+          end
+        end
       end
 
       context 'existing member rules' do
