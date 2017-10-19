@@ -62,6 +62,7 @@ const RepoHelper = {
     });
 
     RepoHelper.updateHistoryEntry(tree.url, title);
+    Store.path = tree.path;
   },
 
   setDirectoryToClosed(entry) {
@@ -157,7 +158,18 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { id, url, name, icon, last_commit, tree_url, path, tempFile, opened = false } = entity;
+    const {
+      id,
+      url,
+      name,
+      icon,
+      last_commit,
+      tree_url,
+      path,
+      tempFile,
+      active,
+      opened,
+    } = entity;
 
     return {
       id,
@@ -172,6 +184,7 @@ const RepoHelper = {
       files: [],
       loading: false,
       opened,
+      active,
       // eslint-disable-next-line camelcase
       lastCommit: last_commit ? {
         url: `${Store.projectUrl}/commit/${last_commit.id}`,
@@ -215,7 +228,7 @@ const RepoHelper = {
   },
 
   findOpenedFileFromActive() {
-    return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
+    return Store.openedFiles.find(openedFile => Store.activeFile.id === openedFile.id);
   },
 
   getFileFromPath(path) {
@@ -232,11 +245,13 @@ const RepoHelper = {
 
     if (!foundEntry) {
       foundEntry = RepoHelper.serializeRepoEntity(type, {
+        id: name,
         name,
         path: tree.path ? `${tree.path}/${name}` : name,
         icon: type === 'tree' ? 'folder' : 'file-text-o',
         tempFile: true,
         opened: true,
+        active: true,
       }, tree.level !== undefined ? tree.level + 1 : 0);
 
       exists = false;
@@ -247,6 +262,11 @@ const RepoHelper = {
       entry: foundEntry,
       exists,
     };
+  },
+
+  removeAllTmpFiles() {
+    Store.openedFiles = Store.openedFiles.filter(f => !f.tempFile);
+    Store.files = Store.files.filter(f => !f.tempFile);
   },
 };
 

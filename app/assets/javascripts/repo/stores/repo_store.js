@@ -76,7 +76,7 @@ const RepoStore = {
       RepoStore.blobRaw = file.base64;
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
-    } else if (!file.tempFile) {
+    } else {
       Service.getRaw(file)
         .then((rawResponse) => {
           RepoStore.blobRaw = rawResponse.data;
@@ -84,14 +84,16 @@ const RepoStore = {
         }).catch(Helper.loadingError);
     }
 
-    if (!file.loading) Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
+    if (!file.loading && !file.tempFile) {
+      Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
+    }
     RepoStore.binary = file.binary;
     RepoStore.setActiveLine(-1);
   },
 
   setFileActivity(file, openedFile, i) {
     const activeFile = openedFile;
-    activeFile.active = file.url === activeFile.url;
+    activeFile.active = file.id === activeFile.id;
 
     if (activeFile.active) RepoStore.setActiveFile(activeFile, i);
 
@@ -99,7 +101,7 @@ const RepoStore = {
   },
 
   setActiveFile(activeFile, i) {
-    RepoStore.activeFile = Object.assign({}, RepoStore.activeFile, activeFile);
+    RepoStore.activeFile = Object.assign({}, Helper.getDefaultActiveFile(), activeFile);
     RepoStore.activeFileIndex = i;
   },
 
@@ -175,12 +177,14 @@ const RepoStore = {
   // getters
 
   isActiveFile(file) {
-    return file && file.url === RepoStore.activeFile.url;
+    return file && file.id === RepoStore.activeFile.id;
   },
 
   isPreviewView() {
     return RepoStore.currentBlobView === 'repo-preview';
   },
 };
+
+window.RepoStore = RepoStore;
 
 export default RepoStore;

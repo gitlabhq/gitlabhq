@@ -2,7 +2,7 @@ import Vue from 'vue';
 import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
 import RepoStore from '~/repo/stores/repo_store';
 
-fdescribe('RepoFileButtons', () => {
+describe('RepoFileButtons', () => {
   const activeFile = {
     extension: 'md',
     url: 'url',

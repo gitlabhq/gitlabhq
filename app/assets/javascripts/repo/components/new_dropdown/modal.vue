@@ -21,13 +21,22 @@
     },
     methods: {
       createEntryInStore() {
-        if (this.entryName === '') return;
+        const originalPath = RepoStore.path;
+        let entryName = this.entryName;
 
-        const fileName = this.type === 'tree' ? '.gitkeep' : this.entryName;
+        if (entryName.indexOf(`${RepoStore.path}/`) !== 0) {
+          RepoStore.path = '';
+        } else {
+          entryName = entryName.replace(`${RepoStore.path}/`, '');
+        }
+
+        if (entryName === '') return;
+
+        const fileName = this.type === 'tree' ? '.gitkeep' : entryName;
         let tree = RepoStore;
 
         if (this.type === 'tree') {
-          const dirNames = this.entryName.split('/');
+          const dirNames = entryName.split('/');
 
           dirNames.forEach((dirName) => {
             if (dirName === '') return;
@@ -43,11 +52,13 @@
             RepoHelper.setFile(file.entry, file.entry);
 
             RepoStore.editMode = true;
-            RepoStore.toggleBlobView();
+            RepoStore.currentBlobView = 'repo-editor';
           }
         }
 
         this.toggleModalOpen();
+
+        RepoStore.path = originalPath;
       },
       toggleModalOpen() {
         this.$emit('toggle');
