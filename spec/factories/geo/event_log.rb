@@ -24,7 +24,7 @@ FactoryGirl.define do
     repository_storage_path { project.repository_storage_path }
     add_attribute(:repo_path) { project.disk_path }
     project_name { project.name }
-    wiki_path { "#{project.disk_path}.wiki" }
+    wiki_path { project.wiki.disk_path }
   end
 
   factory :geo_repository_updated_event, class: Geo::RepositoryUpdatedEvent do

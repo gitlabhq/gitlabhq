@@ -31,7 +31,7 @@ module Geo
     end
 
     def new_wiki_path_with_namespace
-      "#{project.disk_path}.wiki"
+      project.wiki.disk_path
     end
   end
 end
