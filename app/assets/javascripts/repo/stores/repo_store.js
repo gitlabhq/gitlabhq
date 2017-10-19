@@ -38,6 +38,7 @@ const RepoStore = {
   newMrTemplateUrl: '',
   branchChanged: false,
   commitMessage: '',
+  path: '',
   loading: {
     tree: false,
     blob: false,

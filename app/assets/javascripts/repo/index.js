@@ -28,6 +28,7 @@ function setInitialStore(data) {
   Store.service = Service;
   Store.service.url = data.url;
   Store.service.refsUrl = data.refsUrl;
+  Store.path = data.currentPath;
   Store.projectId = data.projectId;
   Store.projectName = data.projectName;
   Store.projectUrl = data.projectUrl;

@@ -31,6 +31,7 @@
           type="button"
           class="btn btn-default dropdown-toggle add-to-tree"
           data-toggle="dropdown"
+          aria-label="Create new file or directory"
         >
           <i
             class="fa fa-plus"
