@@ -10,6 +10,7 @@ module EE
 
       # These can safely be changed to has_many when we support
       # multiple assignees on the board configuration.
+      # https://gitlab.com/gitlab-org/gitlab-ee/issues/3786
       has_one :board_assignee
       has_one :assignee, through: :board_assignee
 
