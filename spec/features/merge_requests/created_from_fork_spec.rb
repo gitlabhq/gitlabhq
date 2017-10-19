@@ -83,7 +83,6 @@ feature 'Merge request created from fork' do
       page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
       page.within('.ci-table') do
-        expect(page).to have_content pipeline.status
         expect(page).to have_content pipeline.id
       end
     end
