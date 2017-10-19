@@ -1,7 +1,7 @@
 module Gitlab
   module Metrics
     # Class for storing metrics information of a single transaction.
-    class BaseTransaction
+    class Transaction
       # base labels shared among all transactions
       BASE_LABELS = { controller: nil, action: nil }.freeze
 
@@ -130,8 +130,6 @@ module Gitlab
       def action
         "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
       end
-
-      protected
 
       def self.metric_transaction_duration_seconds
         @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Subscribers::RailsCache do
   let(:env) { {} }
-  let(:transaction) { Gitlab::Metrics::Transaction.new(env) }
+  let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
   let(:subscriber) { described_class.new }
 
   let(:event) { double(:event, duration: 15.2) }

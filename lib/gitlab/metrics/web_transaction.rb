@@ -1,6 +1,6 @@
 module Gitlab
   module Metrics
-    class WebTransaction < BaseTransaction
+    class WebTransaction < Transaction
       CONTROLLER_KEY = 'action_controller.instance'.freeze
       ENDPOINT_KEY = 'api.endpoint'.freeze
 
