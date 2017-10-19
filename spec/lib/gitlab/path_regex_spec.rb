@@ -155,12 +155,14 @@ describe Gitlab::PathRegex do
   end
 
   let(:ee_paths_after_group_id) do
-    %w(analytics
-       ldap
-       ldap_group_links
-       notification_setting
-       audit_events
-       pipeline_quota hooks)
+    %w[audit_events
+      analytics
+      ldap
+      ldap_group_links
+      notification_setting
+      pipeline_quota hooks
+      subgroups
+    ]
   end
 
   describe 'TOP_LEVEL_ROUTES' do
