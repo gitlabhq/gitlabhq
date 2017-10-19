@@ -181,11 +181,22 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       expect(circuit_breaker.last_failure).to be_nil
     end
 
-    it 'only accessibility check once' do
+    it 'only performs the accessibility check once' do
       expect(Gitlab::Git::Storage::ForkedStorageCheck)
         .to receive(:storage_available?).once.and_call_original
 
       2.times { circuit_breaker.perform { '' } }
+    end
+
+    it 'calls the check with the correct arguments' do
+      stub_application_setting(circuitbreaker_storage_timeout: 30,
+                               circuitbreaker_access_retries: 3)
+
+      expect(Gitlab::Git::Storage::ForkedStorageCheck)
+        .to receive(:storage_available?).with(TestEnv.repos_path, 30, 3)
+              .and_call_original
+
+      circuit_breaker.perform { '' }
     end
 
     context 'with the feature disabled' do

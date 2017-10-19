@@ -91,7 +91,7 @@ module Gitlab
           return @storage_available if @storage_available
 
           if @storage_available = Gitlab::Git::Storage::ForkedStorageCheck
-                                    .storage_available?(storage_path, storage_timeout)
+                                    .storage_available?(storage_path, storage_timeout, access_retries)
             track_storage_accessible
           else
             track_storage_inaccessible
