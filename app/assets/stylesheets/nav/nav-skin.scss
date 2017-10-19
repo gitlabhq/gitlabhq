@@ -1,0 +1,31 @@
+.nav {
+  &.nav-dark {
+    background: $nav-background-dark;
+    padding: 5px 16px;
+    .nav-menu {
+      vertical-align: middle;
+    }
+    .nav-item {
+      &.nav-item-active {
+        .nav-link {
+          background: $white;
+          color: $black;
+        }
+      }
+
+      .nav-link {
+        color: $white;
+        font-size: 12px;  
+        vertical-align: middle;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .logo {
+    display: inline-block;
+    img {
+      vertical-align: middle;
+    }
+  }
+}

@@ -1,79 +1,78 @@
 %header.navbar.navbar-gitlab
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
-  .container-fluid
-    .header-content
-      .title-container
-        %h1.title
-          = link_to root_path, title: 'Dashboard', id: 'logo' do
-            = brand_header_logo
-            %span.logo-text.hidden-xs
-              = render 'shared/logo_type.svg'
+  .header-content
+    .title-container
+      %h1.title
+        = link_to root_path, title: 'Dashboard', id: 'logo' do
+          = brand_header_logo
+          %span.logo-text.hidden-xs
+            = render 'shared/logo_type.svg'
 
+      - if current_user
+        = render "layouts/nav/dashboard"
+      - else
+        = render "layouts/nav/explore"
+
+    .navbar-collapse.collapse
+      %ul.nav.navbar-nav
         - if current_user
-          = render "layouts/nav/dashboard"
+          = render 'layouts/header/new_dropdown'
+        %li.hidden-sm.hidden-xs
+          = render 'layouts/search' unless current_controller?(:search)
+        %li.visible-sm-inline-block.visible-xs-inline-block
+          = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            = sprite_icon('search', size: 16)
+        - if current_user
+          = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
+            = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = sprite_icon('issues', size: 16)
+              - issues_count = assigned_issuables_count(:issues)
+              %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
+                = number_with_delimiter(issues_count)
+          = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
+            = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = sprite_icon('git-merge', size: 16)
+              - merge_requests_count = assigned_issuables_count(:merge_requests)
+              %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
+                = number_with_delimiter(merge_requests_count)
+          = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
+            = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = sprite_icon('todo-done', size: 16)
+              %span.badge.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
+                = todos_count_format(todos_pending_count)
+          %li.header-user.dropdown
+            = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
+              = image_tag avatar_icon(current_user, 23), width: 23, height: 23, class: "header-user-avatar"
+              = sprite_icon('angle-down', css_class: 'caret-down')
+            .dropdown-menu-nav.dropdown-menu-align-right
+              %ul
+                %li.current-user
+                  .user-name.bold
+                    = current_user.name
+                  @#{current_user.username}
+                %li.divider
+                %li
+                  = link_to "Profile", current_user, class: 'profile-link', data: { user: current_user.username }
+                %li
+                  = link_to "Settings", profile_path
+                - if current_user
+                  %li
+                    = link_to "Help", help_path
+                %li.divider
+                %li
+                  = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
+          - if session[:impersonator_id]
+            %li.impersonation
+              = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                = icon('user-secret')
         - else
-          = render "layouts/nav/explore"
+          %li
+            %div
+              = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
 
-      .navbar-collapse.collapse
-        %ul.nav.navbar-nav
-          - if current_user
-            = render 'layouts/header/new_dropdown'
-          %li.hidden-sm.hidden-xs
-            = render 'layouts/search' unless current_controller?(:search)
-          %li.visible-sm-inline-block.visible-xs-inline-block
-            = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              = sprite_icon('search', size: 16)
-          - if current_user
-            = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('issues', size: 16)
-                - issues_count = assigned_issuables_count(:issues)
-                %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
-                  = number_with_delimiter(issues_count)
-            = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
-              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('git-merge', size: 16)
-                - merge_requests_count = assigned_issuables_count(:merge_requests)
-                %span.badge.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
-                  = number_with_delimiter(merge_requests_count)
-            = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = sprite_icon('todo-done', size: 16)
-                %span.badge.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
-                  = todos_count_format(todos_pending_count)
-            %li.header-user.dropdown
-              = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
-                = image_tag avatar_icon(current_user, 23), width: 23, height: 23, class: "header-user-avatar"
-                = sprite_icon('angle-down', css_class: 'caret-down')
-              .dropdown-menu-nav.dropdown-menu-align-right
-                %ul
-                  %li.current-user
-                    .user-name.bold
-                      = current_user.name
-                    @#{current_user.username}
-                  %li.divider
-                  %li
-                    = link_to "Profile", current_user, class: 'profile-link', data: { user: current_user.username }
-                  %li
-                    = link_to "Settings", profile_path
-                  - if current_user
-                    %li
-                      = link_to "Help", help_path
-                  %li.divider
-                  %li
-                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
-            - if session[:impersonator_id]
-              %li.impersonation
-                = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                  = icon('user-secret')
-          - else
-            %li
-              %div
-                = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
-
-      %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
-        %span.sr-only Toggle navigation
-        = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
-        = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
+    %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
+      %span.sr-only Toggle navigation
+      = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
+      = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
 
 = render 'shared/outdated_browser'

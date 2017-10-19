@@ -1,0 +1,21 @@
+html, body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 20px;
+  box-sizing: border-box;
+  color: $grey-900;
+}
+
+*:focus {
+  outline: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 5px;
+}
