@@ -1031,6 +1031,10 @@ class Repository
     if instance_variable_defined?(ivar)
       instance_variable_get(ivar)
     else
+      # If the repository doesn't exist and a fallback was specified we return
+      # that value inmediately. This saves us Rugged/gRPC invocations.
+      return fallback unless fallback.nil? || exists?
+
       begin
         value =
           if memoize_only
@@ -1040,8 +1044,9 @@ class Repository
           end
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
-        # if e.g. HEAD or the entire repository doesn't exist we want to
-        # gracefully handle this and not cache anything.
+        # Even if the above `#exists?` check passes these errors might still
+        # occur (for example because of a non-existing HEAD). We want to
+        # gracefully handle this and not cache anything
         fallback
       end
     end
