@@ -79,3 +79,8 @@ elsif Gitlab::Database.mysql?
     NATIVE_DATABASE_TYPES[:datetime_with_timezone] = { name: 'timestamp' }
   end
 end
+
+# Ensure `datetime_with_timezone` columns are correctly written to schema.rb
+if (ActiveRecord::Base.connection.active? rescue false)
+  ActiveRecord::Base.connection.send :reload_type_map
+end
