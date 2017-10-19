@@ -13,7 +13,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import autosize from 'vendor/autosize';
-import Dropzone from 'dropzone';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -22,13 +21,11 @@ import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import './autosave';
-import './dropzone_input';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
 window.autosize = autosize;
-window.Dropzone = Dropzone;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');
