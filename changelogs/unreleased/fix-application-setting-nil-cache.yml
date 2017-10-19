@@ -1,0 +1,5 @@
+---
+title: Fix application setting to cache nil object
+merge_request:
+author:
+type: fixed
