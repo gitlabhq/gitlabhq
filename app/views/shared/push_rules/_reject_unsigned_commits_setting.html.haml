@@ -1,4 +1,4 @@
-- return unless License.feature_available?(:reject_unsigned_commits)
+- return unless push_rule.available?(:reject_unsigned_commits)
 
 - form = local_assigns.fetch(:form)
 - push_rule = local_assigns.fetch(:push_rule)

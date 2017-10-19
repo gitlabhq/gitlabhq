@@ -116,7 +116,6 @@ class License < ActiveRecord::Base
     multiple_ldap_servers
     object_storage
     repository_size_limit
-    reject_unsigned_commits
   ].freeze
 
   validate :valid_license
