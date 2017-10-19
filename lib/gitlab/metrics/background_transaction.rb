@@ -1,6 +1,6 @@
 module Gitlab
   module Metrics
-    class SidekiqTransaction < Transaction
+    class BackgroundTransaction < Transaction
       def initialize(worker_class)
         super()
         @worker_class = worker_class

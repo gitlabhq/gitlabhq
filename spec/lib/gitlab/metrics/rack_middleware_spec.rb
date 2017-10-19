@@ -32,7 +32,7 @@ describe Gitlab::Metrics::RackMiddleware do
     let(:transaction) { middleware.transaction_from_env(env) }
 
     it 'returns a Transaction' do
-      expect(transaction).to be_an_instance_of(Gitlab::Metrics::Transaction)
+      expect(transaction).to be_an_instance_of(Gitlab::Metrics::WebTransaction)
     end
 
     it 'stores the request method and URI in the transaction as values' do

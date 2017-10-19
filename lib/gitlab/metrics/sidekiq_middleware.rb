@@ -5,7 +5,7 @@ module Gitlab
     # This middleware is intended to be used as a server-side middleware.
     class SidekiqMiddleware
       def call(worker, message, queue)
-        trans = SidekiqTransaction.new(worker.class)
+        trans = BackgroundTransaction.new(worker.class)
 
         begin
           # Old gitlad-shell messages don't provide enqueued_at/created_at attributes

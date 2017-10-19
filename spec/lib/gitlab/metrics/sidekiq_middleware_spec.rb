@@ -5,7 +5,7 @@ describe Gitlab::Metrics::SidekiqMiddleware do
   let(:message) { { 'args' => ['test'], 'enqueued_at' => Time.new(2016, 6, 23, 6, 59).to_f } }
 
   def run(worker, message)
-    expect(Gitlab::Metrics::Transaction).to receive(:new)
+    expect(Gitlab::Metrics::BackgroundTransaction).to receive(:new)
       .with(worker.class)
       .and_call_original
 
