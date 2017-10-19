@@ -24,12 +24,9 @@ module Boards
 
       # This can be safely removed when the board
       # receive multiple assignee support.
+      # See: https://gitlab.com/gitlab-org/gitlab-ee/issues/3786
       def assignee_ids
-        @board_assignee ||= board.assignee
-
-        return [] unless @board_assignee
-
-        [@board_assignee.id]
+        @assigne_ids ||= Array(board.assignee&.id)
       end
 
       def board
