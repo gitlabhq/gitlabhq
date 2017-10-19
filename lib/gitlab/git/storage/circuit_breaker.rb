@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def perform
-          return yield unless Feature.enabled?('git_storage_circuit_breaker')
+          return yield unless enabled?
 
           check_storage_accessible!
 
@@ -77,6 +77,15 @@ module Gitlab
         end
 
         private
+
+        # The circuitbreaker can be enabled for the entire fleet using a Feature
+        # flag.
+        #
+        # Enabling it for a single host can be done setting the
+        # `GIT_STORAGE_CIRCUIT_BREAKER` environment variable.
+        def enabled?
+          ENV['GIT_STORAGE_CIRCUIT_BREAKER'].present? || Feature.enabled?('git_storage_circuit_breaker')
+        end
 
         def failure_info
           @failure_info ||= get_failure_info

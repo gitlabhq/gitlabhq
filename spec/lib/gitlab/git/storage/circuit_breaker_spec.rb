@@ -200,10 +200,21 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
     end
 
     context 'with the feature disabled' do
-      it 'returns the block without checking accessibility' do
+      before do
         stub_feature_flags(git_storage_circuit_breaker: false)
+      end
 
-        expect(circuit_breaker).not_to receive(:circuit_broken?)
+      it 'returns the block without checking accessibility' do
+        expect(circuit_breaker).not_to receive(:check_storage_accessible!)
+
+        result = circuit_breaker.perform { 'hello' }
+
+        expect(result).to eq('hello')
+      end
+
+      it 'allows enabling the feature using an ENV var' do
+        stub_env('GIT_STORAGE_CIRCUIT_BREAKER', 'true')
+        expect(circuit_breaker).to receive(:check_storage_accessible!)
 
         result = circuit_breaker.perform { 'hello' }
 
