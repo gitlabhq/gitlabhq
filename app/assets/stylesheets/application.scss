@@ -17,27 +17,11 @@
  * directory.
  */
 
-@import "../../../node_modules/pikaday/scss/pikaday";
-
-/*
- * GitLab UI framework
- */
-@import "framework";
-
 /*
  * Font icons
  */
 @import "font-awesome";
 
-/*
- * Page specific styles (issues, projects etc):
- */
-@import "pages/**/*";
-
-/*
- * Code highlight
- */
-@import "highlight/**/*";
 
 /*
  * Styles for JS behaviors.
