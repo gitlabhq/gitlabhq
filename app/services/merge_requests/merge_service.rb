@@ -64,6 +64,8 @@ module MergeRequests
         DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
           .execute(merge_request.source_branch)
       end
+
+      clean_diff_files
     end
 
     def clean_merge_jid
@@ -92,6 +94,12 @@ module MergeRequests
       else
         clean_merge_jid
       end
+    end
+
+    def clean_diff_files
+      diffs = merge_request.merge_request_diffs.order('merge_request_diffs.id DESC').select(:id)
+      non_latest_diff_ids = diffs[0...-1]
+      MergeRequestDiffFile.where('merge_request_diff_id IN(?)', non_latest_diff_ids).delete_all
     end
 
     def merge_request_info
