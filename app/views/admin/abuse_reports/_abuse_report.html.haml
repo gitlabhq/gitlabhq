@@ -24,11 +24,11 @@
       = markdown_field(abuse_report, :message)
   %td
     - if user
-      = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),
-        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, remote: true, method: :delete, class: "btn btn-sm btn-block btn-remove js-remove-tr"
+      = link_to 'Remove & report', admin_abuse_report_path(abuse_report, remove_user: true),
+        data: { confirm: "#{user.name} will be removed! Are you sure you want to remove this user?" }, remote: true, method: :delete, class: "btn btn-block btn-danger js-remove-tr"
     - if user && !user.blocked?
-      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-sm btn-block"
+      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-default btn-block"
     - else
-      .btn.btn-sm.disabled.btn-block
+      .btn.btn-default.disabled.btn-block
         Already blocked
-    = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-sm btn-block btn-close js-remove-tr"
+    = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-default btn-block js-remove-tr"
