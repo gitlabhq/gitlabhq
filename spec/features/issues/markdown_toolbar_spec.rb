@@ -11,6 +11,10 @@ feature 'Issue markdown toolbar', :js do
     visit project_issue_path(project, issue)
   end
 
+  after do
+    execute_script("localStorage.clear();");
+  end
+
   it "doesn't include first new line when adding bold" do
     find('#note-body').native.send_keys('test')
     find('#note-body').native.send_key(:enter)
