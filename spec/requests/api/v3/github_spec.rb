@@ -15,7 +15,7 @@ describe API::V3::Github do
 
       get v3_api("/orgs/#{group.path}/repos", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq([])
     end
   end
@@ -24,7 +24,7 @@ describe API::V3::Github do
     it 'returns an empty array' do
       get v3_api('/user/repos', user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq([])
     end
   end
@@ -33,7 +33,7 @@ describe API::V3::Github do
     it 'returns an empty array' do
       get v3_api('/repos/-/jira/pulls', user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq([])
     end
   end
@@ -51,7 +51,7 @@ describe API::V3::Github do
       end
 
       it 'returns an array of projects with github format' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(2)
@@ -70,7 +70,7 @@ describe API::V3::Github do
       it 'returns 401' do
         get v3_api("/users/foo/repos", nil)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -86,7 +86,7 @@ describe API::V3::Github do
 
       get v3_api('/users/foo/repos', user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response.size).to eq(1)
       expect(json_response.first['id']).to eq(licensed_project.id)
@@ -100,7 +100,7 @@ describe API::V3::Github do
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
 
@@ -114,7 +114,7 @@ describe API::V3::Github do
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", nil)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -126,7 +126,7 @@ describe API::V3::Github do
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", unauthorized_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -141,7 +141,7 @@ describe API::V3::Github do
 
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('entities/github/commit')
       end
     end
@@ -150,7 +150,7 @@ describe API::V3::Github do
       it 'returns 401' do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", nil)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -162,7 +162,7 @@ describe API::V3::Github do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}",
                    unauthorized_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 404 when not licensed' do
@@ -173,7 +173,7 @@ describe API::V3::Github do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}",
                    unauthorized_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

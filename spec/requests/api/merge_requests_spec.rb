@@ -33,26 +33,26 @@ describe API::MergeRequests do
       it 'returns an array of all merge requests' do
         get api('/merge_requests', user), scope: 'all'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
       end
 
       it "returns authentication error without any scope" do
         get api("/merge_requests")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it "returns authentication error  when scope is assigned-to-me" do
         get api("/merge_requests"), scope: 'assigned-to-me'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it "returns authentication error  when scope is created-by-me" do
         get api("/merge_requests"), scope: 'created-by-me'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -158,7 +158,7 @@ describe API::MergeRequests do
       it 'returns merge requests for public projects' do
         get api("/projects/#{project.id}/merge_requests")
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
       end
 
@@ -166,7 +166,7 @@ describe API::MergeRequests do
         project = create(:project, :private)
         get api("/projects/#{project.id}/merge_requests")
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -729,7 +729,7 @@ describe API::MergeRequests do
         end
 
         it 'returns a 400' do
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
         end
 
         it 'includes the error in the response' do
@@ -745,7 +745,7 @@ describe API::MergeRequests do
           end
 
           it 'returns a 400' do
-            expect(response).to have_http_status(400)
+            expect(response).to have_gitlab_http_status(400)
           end
 
           it 'includes the error in the response' do
@@ -760,7 +760,7 @@ describe API::MergeRequests do
           end
 
           it 'returns a created status' do
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
           end
 
           it 'sets approvals_before_merge of the newly-created MR' do
@@ -858,7 +858,7 @@ describe API::MergeRequests do
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
-      expect(response).to have_http_status(406)
+      expect(response).to have_gitlab_http_status(406)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
@@ -870,7 +870,7 @@ describe API::MergeRequests do
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it "returns 401 if user has no permissions to merge" do
@@ -899,7 +899,7 @@ describe API::MergeRequests do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
       end.to change { merge_request.reload.squash }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do
@@ -969,7 +969,7 @@ describe API::MergeRequests do
     it "updates squash and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), squash: true
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['squash']).to be_truthy
     end
 
@@ -1181,7 +1181,7 @@ describe API::MergeRequests do
 
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['approvals_required']).to eq 2
       expect(json_response['approvals_left']).to eq 1
       expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
@@ -1201,7 +1201,7 @@ describe API::MergeRequests do
       end
 
       it 'returns a 401' do
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -1223,7 +1223,7 @@ describe API::MergeRequests do
         end
 
         it 'approves the merge request' do
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['approvals_left']).to eq(1)
           expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
           expect(json_response['user_has_approved']).to be true
@@ -1236,7 +1236,7 @@ describe API::MergeRequests do
         end
 
         it 'approves the merge request' do
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['approvals_left']).to eq(1)
           expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
           expect(json_response['user_has_approved']).to be true
@@ -1249,7 +1249,7 @@ describe API::MergeRequests do
         end
 
         it 'returns a 409' do
-          expect(response).to have_http_status(409)
+          expect(response).to have_gitlab_http_status(409)
         end
 
         it 'does not approve the merge request' do
@@ -1279,7 +1279,7 @@ describe API::MergeRequests do
       end
 
       it 'unapproves the merge request' do
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['approvals_left']).to eq(1)
         usernames = json_response['approved_by'].map { |u| u['user']['username'] }
         expect(usernames).not_to include(unapprover.username)

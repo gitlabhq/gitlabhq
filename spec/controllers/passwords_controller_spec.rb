@@ -12,7 +12,7 @@ describe PasswordsController do
 
         post :create
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 

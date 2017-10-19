@@ -20,7 +20,7 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "deletes push rule from project" do
         delete v3_api("/projects/#{project.id}/push_rule", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Hash
       end
     end
@@ -29,7 +29,7 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "returns a 403 error" do
         delete v3_api("/projects/#{project.id}/push_rule", user3)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end
@@ -39,7 +39,7 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "deletes push rule from project" do
         delete v3_api("/projects/#{project.id}/push_rule", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response).to be_an Hash
         expect(json_response['message']).to eq('404 Push Rule Not Found')
       end
@@ -47,7 +47,7 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
       it "returns a 403 error if not authorized" do
         delete v3_api("/projects/#{project.id}/push_rule", user3)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end

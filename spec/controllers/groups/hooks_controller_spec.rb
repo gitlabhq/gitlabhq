@@ -18,7 +18,7 @@ describe Groups::HooksController do
       it 'is successfull' do
         get :index, group_id: group.to_param
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -41,7 +41,7 @@ describe Groups::HooksController do
 
         post :create, group_id: group.to_param, hook: hook_params
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(group.hooks.size).to eq(1)
         expect(group.hooks.first).to have_attributes(hook_params)
       end
@@ -57,7 +57,7 @@ describe Groups::HooksController do
       it 'renders a 404' do
         get :index, group_id: group.to_param
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

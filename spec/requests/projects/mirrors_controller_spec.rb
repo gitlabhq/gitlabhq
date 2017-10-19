@@ -24,7 +24,7 @@ describe Projects::MirrorsController do
         mirror_trigger_builds: '0'
       }
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(response).to redirect_to(project_settings_repository_path(project))
       expect(flash[:alert]).to include("Import url can't be blank")
     end

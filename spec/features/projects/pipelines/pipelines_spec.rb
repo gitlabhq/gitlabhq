@@ -525,7 +525,7 @@ describe 'Pipelines', :js do
       let(:project) { create(:project, :public, :repository) }
 
       it { expect(page).to have_content 'Build with confidence' }
-      it { expect(page).to have_http_status(:success) }
+      it { expect(page).to have_gitlab_http_status(:success) }
     end
 
     context 'when project is private' do

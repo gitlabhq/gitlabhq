@@ -29,14 +29,14 @@ describe API::Geo do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/attachment/#{upload.id}"), nil, Authorization: 'Test'
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     context 'attachment file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/attachment/#{upload.id}"), nil, req_header
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(note.attachment.path)
       end
@@ -46,7 +46,7 @@ describe API::Geo do
       it 'responds with 404' do
         get api("/geo/transfers/attachment/100000"), nil, req_header
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -64,14 +64,14 @@ describe API::Geo do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/avatar/#{upload.id}"), nil, Authorization: 'Test'
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     context 'avatar file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/avatar/#{upload.id}"), nil, req_header
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(user.avatar.path)
       end
@@ -81,7 +81,7 @@ describe API::Geo do
       it 'responds with 404' do
         get api("/geo/transfers/avatar/100000"), nil, req_header
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -100,14 +100,14 @@ describe API::Geo do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/file/#{upload.id}"), nil, Authorization: 'Test'
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     context 'file file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/file/#{upload.id}"), nil, req_header
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to end_with('dk.png')
       end
@@ -117,7 +117,7 @@ describe API::Geo do
       it 'responds with 404' do
         get api("/geo/transfers/file/100000"), nil, req_header
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -136,14 +136,14 @@ describe API::Geo do
     it 'responds with 401 with invalid auth header' do
       get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, Authorization: 'Test'
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     context 'LFS file exists' do
       it 'responds with 200 with X-Sendfile' do
         get api("/geo/transfers/lfs/#{lfs_object.id}"), nil, req_header
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
         expect(response.headers['X-Sendfile']).to eq(lfs_object.file.path)
       end
@@ -153,7 +153,7 @@ describe API::Geo do
       it 'responds with 404' do
         get api("/geo/transfers/lfs/100000"), nil, req_header
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -164,7 +164,7 @@ describe API::Geo do
     it 'responds with 401 with invalid auth header' do
       get api('/geo/status'), nil, Authorization: 'Test'
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'responds with 401 when the db_key_base is wrong' do
@@ -172,7 +172,7 @@ describe API::Geo do
 
       get api('/geo/status'), nil, request.headers
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     context 'when requesting secondary node with valid auth header' do
@@ -184,7 +184,7 @@ describe API::Geo do
       it 'responds with 200' do
         get api('/geo/status'), nil, request.headers
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('geo_node_status')
       end
     end
@@ -198,7 +198,7 @@ describe API::Geo do
       it 'responds with 403' do
         get api('/geo/status'), nil, request.headers
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end

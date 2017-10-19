@@ -67,7 +67,7 @@ describe ProjectsController do
           id: project.id,
           project: params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       params.except(:repository_size_limit).each do |param, value|
         expect(project.public_send(param)).to eq(value)
       end
@@ -87,7 +87,7 @@ describe ProjectsController do
           id: project.id,
           project: params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(project.approver_groups.pluck(:group_id)).to contain_exactly(params[:approver_group_ids])
       expect(project.approvers.pluck(:user_id)).to contain_exactly(params[:approver_ids])
     end
@@ -103,7 +103,7 @@ describe ProjectsController do
           id: project.id,
           project: params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       params.each do |param, value|
         expect(project.public_send(param)).to eq(value)
       end
@@ -122,7 +122,7 @@ describe ProjectsController do
           id: project.id,
           project: params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(project.service_desk_enabled).to eq(true)
     end
 

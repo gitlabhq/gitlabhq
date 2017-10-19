@@ -50,7 +50,7 @@ describe Projects::VariablesController do
         post :update, namespace_id: project.namespace.to_param, project_id: project,
                       id: variable.id, variable: { key: '?', value: variable.value }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template :show
       end
     end
