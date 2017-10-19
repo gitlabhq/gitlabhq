@@ -110,7 +110,7 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView() && !data.render_error) {
-          Service.getRaw(data.raw_path)
+          Service.getRaw(data)
           .then((rawResponse) => {
             Store.blobRaw = rawResponse.data;
             data.plain = rawResponse.data;

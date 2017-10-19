@@ -77,7 +77,7 @@ const RepoStore = {
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
     } else if (!file.tempFile) {
-      Service.getRaw(file.raw_path)
+      Service.getRaw(file)
         .then((rawResponse) => {
           RepoStore.blobRaw = rawResponse.data;
           Helper.findOpenedFileFromActive().plain = rawResponse.data;

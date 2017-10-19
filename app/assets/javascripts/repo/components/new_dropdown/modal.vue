@@ -13,7 +13,7 @@
     },
     data() {
       return {
-        entryName: '',
+        entryName: RepoStore.path !== '' ? `${RepoStore.path}/` : '',
       };
     },
     components: {
@@ -30,6 +30,8 @@
           const dirNames = this.entryName.split('/');
 
           dirNames.forEach((dirName) => {
+            if (dirName === '') return;
+
             tree = RepoHelper.findOrCreateEntry('tree', tree, dirName).entry;
           });
         }

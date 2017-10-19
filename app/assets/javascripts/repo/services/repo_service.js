@@ -12,8 +12,14 @@ const RepoService = {
   },
   richExtensionRegExp: /md/,
 
-  getRaw(url) {
-    return axios.get(url, {
+  getRaw(file) {
+    if (file.tempFile) {
+      return Promise.resolve({
+        data: '',
+      });
+    }
+
+    return axios.get(file.raw_path, {
       // Stop Axios from parsing a JSON file into a JS object
       transformResponse: [res => res],
     });
