@@ -117,31 +117,41 @@ describe ProjectWiki do
   end
 
   describe "#find_page" do
-    before do
-      create_page("index page", "This is an awesome Gollum Wiki")
+    shared_examples 'finding a wiki page' do
+      before do
+        create_page("index page", "This is an awesome Gollum Wiki")
+      end
+
+      after do
+        destroy_page(subject.pages.first.page)
+      end
+
+      it "returns the latest version of the page if it exists" do
+        page = subject.find_page("index page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns nil if the page does not exist" do
+        expect(subject.find_page("non-existant")).to eq(nil)
+      end
+
+      it "can find a page by slug" do
+        page = subject.find_page("index-page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns a WikiPage instance" do
+        page = subject.find_page("index page")
+        expect(page).to be_a WikiPage
+      end
     end
 
-    after do
-      destroy_page(subject.pages.first.page)
+    context 'when Gitaly wiki_find_page is enabled' do
+      it_behaves_like 'finding a wiki page'
     end
 
-    it "returns the latest version of the page if it exists" do
-      page = subject.find_page("index page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns nil if the page does not exist" do
-      expect(subject.find_page("non-existant")).to eq(nil)
-    end
-
-    it "can find a page by slug" do
-      page = subject.find_page("index-page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns a WikiPage instance" do
-      page = subject.find_page("index page")
-      expect(page).to be_a WikiPage
+    context 'when Gitaly wiki_find_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding a wiki page'
     end
   end
 
