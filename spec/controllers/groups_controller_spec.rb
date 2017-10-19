@@ -238,7 +238,7 @@ describe GroupsController do
     it 'updates the path successfully' do
       post :update, id: group.to_param, group: { path: 'new_path' }
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(controller).to set_flash[:notice]
     end
 
@@ -309,7 +309,7 @@ describe GroupsController do
               it 'does not redirect' do
                 get :issues, id: group.to_param
 
-                expect(response).not_to have_http_status(301)
+                expect(response).not_to have_gitlab_http_status(301)
               end
             end
 
@@ -328,7 +328,7 @@ describe GroupsController do
               it 'does not redirect' do
                 get :show, id: group.to_param
 
-                expect(response).not_to have_http_status(301)
+                expect(response).not_to have_gitlab_http_status(301)
               end
             end
 
@@ -395,13 +395,13 @@ describe GroupsController do
           it 'does not 404' do
             post :update, id: group.to_param.upcase, group: { path: 'new_path' }
 
-            expect(response).not_to have_http_status(404)
+            expect(response).not_to have_gitlab_http_status(404)
           end
 
           it 'does not redirect to the correct casing' do
             post :update, id: group.to_param.upcase, group: { path: 'new_path' }
 
-            expect(response).not_to have_http_status(301)
+            expect(response).not_to have_gitlab_http_status(301)
           end
         end
 
@@ -411,7 +411,7 @@ describe GroupsController do
           it 'returns not found' do
             post :update, id: redirect_route.path, group: { path: 'new_path' }
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -421,13 +421,13 @@ describe GroupsController do
           it 'does not 404' do
             delete :destroy, id: group.to_param.upcase
 
-            expect(response).not_to have_http_status(404)
+            expect(response).not_to have_gitlab_http_status(404)
           end
 
           it 'does not redirect to the correct casing' do
             delete :destroy, id: group.to_param.upcase
 
-            expect(response).not_to have_http_status(301)
+            expect(response).not_to have_gitlab_http_status(301)
           end
         end
 
@@ -437,7 +437,7 @@ describe GroupsController do
           it 'returns not found' do
             delete :destroy, id: redirect_route.path
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end

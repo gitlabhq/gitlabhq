@@ -28,7 +28,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 200 status code' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns JSON with a message' do
@@ -116,7 +116,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 404 status code' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -126,7 +126,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 404 status code' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -138,7 +138,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 200 status code' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       it 'returns the file in JSON format' do
@@ -198,7 +198,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns an OK response' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -224,7 +224,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'has a message with the name of the first missing section' do
@@ -254,7 +254,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'has a message with the name of the missing file' do
@@ -292,7 +292,7 @@ describe Projects::MergeRequests::ConflictsController do
       end
 
       it 'returns a 400 error' do
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'has a message with the path of the problem file' do
