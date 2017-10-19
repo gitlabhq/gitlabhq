@@ -20,6 +20,11 @@ module EE
         !PushRule.global&.reject_unsigned_commits
       end
 
+      with_scope :global
+      condition(:remote_mirror_available) do
+        ::Gitlab::CurrentSettings.current_application_settings.remote_mirror_available
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -48,6 +53,8 @@ module EE
       end
 
       rule { can?(:developer_access) }.enable :admin_board
+
+      rule { (remote_mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
 
       rule { deploy_board_disabled & ~is_development }.prevent :read_deploy_board
 

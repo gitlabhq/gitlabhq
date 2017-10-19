@@ -17,6 +17,7 @@ class RemoteMirror < ActiveRecord::Base
 
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
 
+  after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.remote_mirror_available }
   after_save :refresh_remote, if: :mirror_url_changed?
   after_update :reset_fields, if: :mirror_url_changed?
   after_destroy :remove_remote
@@ -85,6 +86,7 @@ class RemoteMirror < ActiveRecord::Base
 
   def enabled
     return false unless project && super
+    return false unless project.remote_mirror_available?
     return false unless project.repository_exists?
     return false if project.pending_delete?
 
@@ -145,6 +147,12 @@ class RemoteMirror < ActiveRecord::Base
       last_successful_update_at: nil,
       update_status: 'finished'
     )
+  end
+
+  def set_override_remote_mirror_available
+    enabled = read_attribute(:enabled)
+
+    project.update(remote_mirror_available_overridden: enabled)
   end
 
   def refresh_remote
