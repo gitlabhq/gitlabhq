@@ -219,9 +219,7 @@ ActiveRecord::Schema.define(version: 20171010140746) do
     t.integer "assignee_id", null: false
   end
 
-  add_index "board_assignees", ["assignee_id"], name: "index_board_assignees_on_assignee_id", using: :btree
   add_index "board_assignees", ["board_id", "assignee_id"], name: "index_board_assignees_on_board_id_and_assignee_id", unique: true, using: :btree
-  add_index "board_assignees", ["board_id"], name: "index_board_assignees_on_board_id", using: :btree
 
   create_table "board_labels", force: :cascade do |t|
     t.integer "board_id", null: false
@@ -229,8 +227,6 @@ ActiveRecord::Schema.define(version: 20171010140746) do
   end
 
   add_index "board_labels", ["board_id", "label_id"], name: "index_board_labels_on_board_id_and_label_id", unique: true, using: :btree
-  add_index "board_labels", ["board_id"], name: "index_board_labels_on_board_id", using: :btree
-  add_index "board_labels", ["label_id"], name: "index_board_labels_on_label_id", using: :btree
 
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
