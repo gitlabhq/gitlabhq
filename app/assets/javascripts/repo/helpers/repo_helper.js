@@ -8,6 +8,7 @@ const RepoHelper = {
 
   getDefaultActiveFile() {
     return {
+      id: '',
       active: true,
       binary: false,
       extension: '',
