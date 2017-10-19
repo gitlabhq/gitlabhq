@@ -21,7 +21,7 @@
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-danger remove-logo"
         %hr
       = f.hidden_field :logo_cache
       = f.file_field :logo, class: ""
@@ -38,7 +38,7 @@
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-danger remove-logo"
         %hr
       = f.hidden_field :header_logo_cache
       = f.file_field :header_logo, class: ""
@@ -46,9 +46,9 @@
         Maximum file size is 1MB. Pages are optimized for a 72x72 px header logo
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save append-right-10'
+    = f.submit 'Save', class: 'btn btn-success append-right-10'
     - if @appearance.persisted?
-      = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
+      = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn btn-default', target: '_blank', rel: 'noopener noreferrer'
 
     - if @appearance.updated_at
       %span.pull-right
