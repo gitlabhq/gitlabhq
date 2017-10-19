@@ -49,11 +49,10 @@ stages:
     - gitlab-org
 
 .tests-metadata-state: &tests-metadata-state
-  services: []
+  <<: *dedicated-runner
   variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
+  before_script: []
   artifacts:
     expire_in: 31d
     paths:
@@ -80,6 +79,7 @@ stages:
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -109,16 +109,15 @@ stages:
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -141,12 +140,10 @@ stages:
 .spinach-metadata-pg: &spinach-metadata-pg
   <<: *spinach-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -222,7 +219,6 @@ review-docs-cleanup:
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
   cache:
@@ -240,7 +236,6 @@ retrieve-tests-metadata:
 
 update-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
   <<: *only-canonical-masters
   stage: post-test
   cache:
