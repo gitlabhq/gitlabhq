@@ -154,7 +154,6 @@ describe Namespace do
     end
   end
 
-<<<<<<< HEAD
   describe '#ancestors_upto', :nested_groups do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
@@ -169,10 +168,7 @@ describe Namespace do
     end
   end
 
-  describe '#move_dir' do
-=======
   describe '#move_dir', :request_store do
->>>>>>> origin/master
     let(:namespace) { create(:namespace) }
     let!(:project) { create(:project_empty_repo, namespace: namespace) }
 
