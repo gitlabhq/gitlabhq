@@ -19,13 +19,6 @@
 
   = render 'shared/issuable/search_bar', type: :issues
 
-  .row-content-block.second-block
-    Only issues from the
-    %strong= @group.name
-    group are listed here.
-    - if current_user
-      To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
-
   = render 'shared/issues'
 - else
   = render 'shared/empty_states/issues', project_select_button: true
