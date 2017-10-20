@@ -1,0 +1,5 @@
+---
+title: Reduce the quiet times between scheduler runs on Geo secondaries
+merge_request: 3185
+author:
+type: performance
