@@ -1,13 +1,13 @@
 import Visibility from 'visibilityjs';
-import Flash from '../../flash';
-import Poll from '../../lib/utils/poll';
+import Flash from '~/flash';
+import Poll from '~/lib/utils/poll';
+import loadAwardsHandler from '~/awards_handler';
+import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
+import { isInViewport, scrollToElement } from '~/lib/utils/common_utils';
 import * as types from './mutation_types';
 import * as utils from './utils';
 import * as constants from '../constants';
 import service from '../services/issue_notes_service';
-import loadAwardsHandler from '../../awards_handler';
-import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
-import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 

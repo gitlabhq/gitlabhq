@@ -1,5 +1,5 @@
 /* globals Autosave */
-import '../../autosave';
+import '~/autosave';
 
 export default {
   methods: {

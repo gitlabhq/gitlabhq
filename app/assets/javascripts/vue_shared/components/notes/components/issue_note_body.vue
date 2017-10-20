@@ -3,7 +3,7 @@
   import issueNoteAwardsList from './issue_note_awards_list.vue';
   import issueNoteAttachment from './issue_note_attachment.vue';
   import issueNoteForm from './issue_note_form.vue';
-  import TaskList from '../../task_list';
+  import TaskList from '~/task_list';
   import autosave from '../mixins/autosave';
 
   export default {

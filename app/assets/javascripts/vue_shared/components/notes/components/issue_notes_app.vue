@@ -1,15 +1,15 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
-  import Flash from '../../flash';
+  import Flash from '~/flash';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import store from '../stores/';
   import * as constants from '../constants';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';
-  import systemNote from '../../vue_shared/components/notes/system_note.vue';
+  import systemNote from './issue_system_note.vue';
   import issueCommentForm from './issue_comment_form.vue';
-  import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
-  import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import placeholderNote from './issue_placeholder_note.vue';
+  import placeholderSystemNote from './issue_placeholder_system_note.vue';
 
   export default {
     name: 'issueNotesApp',

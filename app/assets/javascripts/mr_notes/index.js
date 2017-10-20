@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueNotesApp from '../notes/components/issue_notes_app.vue';
+import issueNotesApp from '~/vue_shared/components/notes/components/issue_notes_app.vue';
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#js-vue-mr-discussions',

@@ -5,8 +5,8 @@
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import editSvg from 'icons/_icon_pencil.svg';
   import ellipsisSvg from 'icons/_ellipsis_v.svg';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
 
   export default {
     name: 'issueNoteActions',

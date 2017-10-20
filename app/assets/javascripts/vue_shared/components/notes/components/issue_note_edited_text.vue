@@ -1,5 +1,5 @@
 <script>
-  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+  import timeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
   export default {
     name: 'editedNoteText',
