@@ -16,10 +16,6 @@ feature 'GFM autocomplete', :js do
     wait_for_requests
   end
 
-  after do
-    execute_script("localStorage.clear();")
-  end
-
   it 'updates issue descripton with GFM reference' do
     find('.issuable-edit').click
 

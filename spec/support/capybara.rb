@@ -45,6 +45,9 @@ RSpec.configure do |config|
   end
 
   config.after(:example, :js) do |example|
+    # prevent localstorage from introducing side effects based on test order
+    execute_script("localStorage.clear();")
+
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
     # but `block_and_wait_for_requests_complete` is called before it so by
     # calling it explicitely here, we prevent any new requests from being fired
