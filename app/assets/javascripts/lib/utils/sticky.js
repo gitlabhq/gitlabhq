@@ -28,14 +28,10 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
   }
 };
 
-export default (el, insertPlaceholder = true) => {
+export default (el, stickyTop, insertPlaceholder = true) => {
   if (!el) return;
 
-  const computedStyle = window.getComputedStyle(el);
-
-  if (!/sticky/.test(computedStyle.position)) return;
-
-  const stickyTop = parseInt(computedStyle.top, 10);
+  if (typeof CSS === 'undefined' || !(CSS.supports('(position: -webkit-sticky) or (position: sticky)'))) return;
 
   document.addEventListener('scroll', () => isSticky(el, window.scrollY, stickyTop, insertPlaceholder), {
     passive: true,
