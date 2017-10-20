@@ -130,6 +130,7 @@ module Gitlab
       notification_setting
       pipeline_quota
       projects
+      subgroups
     ].freeze
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES

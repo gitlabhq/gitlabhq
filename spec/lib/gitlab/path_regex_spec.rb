@@ -155,7 +155,8 @@ describe Gitlab::PathRegex do
   end
 
   let(:ee_paths_after_group_id) do
-    %w[audit_events
+    %w[
+      audit_events
       analytics
       ldap
       ldap_group_links
