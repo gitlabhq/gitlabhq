@@ -95,7 +95,7 @@ const RepoHelper = {
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-      if (response.headers && response.headers['page-title']) data.pageTitle = response.headers['page-title'];
+      if (response.headers && response.headers['page-title']) data.pageTitle = decodeURI(response.headers['page-title']);
       if (response.headers && response.headers['is-root'] && !Store.isInitialRoot) {
         Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
         Store.isInitialRoot = Store.isRoot;
