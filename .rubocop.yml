@@ -665,7 +665,7 @@ Metrics/ParameterLists:
 # A complexity metric geared towards measuring complexity for a human reader.
 Metrics/PerceivedComplexity:
   Enabled: true
-  Max: 15
+  Max: 14
 
 # Lint ########################################################################
 
