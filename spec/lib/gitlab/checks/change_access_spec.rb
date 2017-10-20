@@ -371,6 +371,10 @@ describe Gitlab::Checks::ChangeAccess do
       end
 
       context 'GPG sign rules' do
+        before do
+          stub_licensed_features(reject_unsigned_commits: true)
+        end
+
         let(:push_rule) { create(:push_rule, reject_unsigned_commits: true) }
 
         it_behaves_like 'check ignored when push rule unlicensed'

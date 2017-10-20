@@ -22,6 +22,7 @@ class PushRule < ActiveRecord::Base
   end
 
   def commit_signature_allowed?(commit)
+    return true unless available?(:reject_unsigned_commits)
     return true unless reject_unsigned_commits
 
     commit.has_signature?
@@ -72,6 +73,14 @@ class PushRule < ActiveRecord::Base
 
   def global?
     is_sample?
+  end
+
+  def available?(feature_sym)
+    if global?
+      License.feature_available?(feature_sym)
+    else
+      project&.feature_available?(feature_sym)
+    end
   end
 
   private
