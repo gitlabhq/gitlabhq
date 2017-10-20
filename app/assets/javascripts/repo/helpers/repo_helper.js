@@ -98,8 +98,8 @@ const RepoHelper = {
     .then((response) => {
       const data = response.data;
       if (response.headers && response.headers['page-title']) data.pageTitle = decodeURI(response.headers['page-title']);
-      if (response.headers && response.headers['is-root'] && !Store.isInitialRoot) {
-        Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
+      if (data.path && !Store.isInitialRoot) {
+        Store.isRoot = data.path === '/';
         Store.isInitialRoot = Store.isRoot;
       }
 
@@ -140,6 +140,10 @@ const RepoHelper = {
 
   addToDirectory(file, data) {
     const tree = file || Store;
+
+    // TODO: Figure out why `popstate` is being trigger in the specs
+    if (!tree.files) return;
+
     const files = tree.files.concat(this.dataToListOfFiles(data, file ? file.level + 1 : 0));
 
     tree.files = files;
@@ -236,7 +240,8 @@ const RepoHelper = {
     return Store.openedFiles.find(file => file.url === path);
   },
 
-  loadingError() {
+  loadingError(e) {
+    console.log(e);
     Flash('Unable to load this content at this time.');
   },
 

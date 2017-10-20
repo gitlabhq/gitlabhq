@@ -71,6 +71,22 @@ describe('new file modal component', () => {
 
         expect(RepoStore.openedFiles.length).toBe(1);
       });
+
+      it(`creates ${type} in the current stores path`, () => {
+        RepoStore.path = 'testing';
+        vm.entryName = 'testing/app';
+
+        vm.$el.querySelector('.btn-success').click();
+
+        expect(RepoStore.files[0].path).toBe('testing/app');
+        expect(RepoStore.files[0].name).toBe('app');
+
+        if (type === 'tree') {
+          expect(RepoStore.files[0].files.length).toBe(1);
+        }
+
+        RepoStore.path = '';
+      });
     });
   });
 
