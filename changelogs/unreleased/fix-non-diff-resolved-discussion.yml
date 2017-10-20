@@ -1,0 +1,5 @@
+---
+title: Force non diff resolved discussion to display when collapse toggled
+merge_request:
+author:
+type: fixed
