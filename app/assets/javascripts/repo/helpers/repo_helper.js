@@ -157,12 +157,14 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { url, name, icon, last_commit } = entity;
+    const { id, url, name, icon, last_commit, tree_url } = entity;
 
     return {
+      id,
       type,
       name,
       url,
+      tree_url,
       level,
       icon: `fa-${icon}`,
       files: [],

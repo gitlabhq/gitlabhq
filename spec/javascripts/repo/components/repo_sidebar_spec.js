@@ -117,6 +117,21 @@ describe('RepoSidebar', () => {
 
         expect(Helper.setDirectoryToClosed).toHaveBeenCalledWith(RepoStore.files[0]);
       });
+
+      describe('submodule', () => {
+        it('opens submodule project URL', () => {
+          spyOn(gl.utils, 'visitUrl');
+
+          const f = file();
+          f.type = 'submodule';
+
+          vm = createComponent();
+
+          vm.fileClicked(f);
+
+          expect(gl.utils.visitUrl).toHaveBeenCalledWith('url');
+        });
+      });
     });
 
     describe('goToPreviousDirectoryClicked', () => {
