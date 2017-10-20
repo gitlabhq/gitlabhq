@@ -193,6 +193,21 @@ describe ApplicationSetting do
         expect(described_class.current).to eq(:last)
       end
     end
+
+    context 'when an ApplicationSetting is not yet present' do
+      it 'does not cache nil object' do
+        # when missing settings a nil object is returned, but not cached
+        allow(described_class).to receive(:last).and_return(nil).twice
+        expect(described_class.current).to be_nil
+
+        # when the settings are set the method returns a valid object
+        allow(described_class).to receive(:last).and_return(:last)
+        expect(described_class.current).to eq(:last)
+
+        # subsequent calls get everything from cache
+        expect(described_class.current).to eq(:last)
+      end
+    end
   end
 
   context 'restricted signup domains' do
