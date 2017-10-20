@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import issueDiscussion from '~/notes/components/issue_discussion.vue';
+import store from '~/vue_shared/components/notes/stores';
+import issueDiscussion from '~/vue_shared/components/notes/components/issue_discussion.vue';
 import { issueDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('issue_discussion component', () => {

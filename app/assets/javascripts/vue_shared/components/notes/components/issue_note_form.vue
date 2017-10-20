@@ -1,8 +1,8 @@
 <script>
   import { mapGetters } from 'vuex';
   import eventHub from '../event_hub';
-  import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
-  import markdownField from '~/vue_shared/components/markdown/field.vue';
+  import issueWarning from '../../issue/issue_warning.vue';
+  import markdownField from '../../markdown/field.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {

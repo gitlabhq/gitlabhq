@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import issueNoteSignedOut from '~/notes/components/issue_note_signed_out_widget.vue';
-import store from '~/notes/stores';
+import issueNoteSignedOut from '~/vue_shared/components/notes/components/issue_note_signed_out_widget.vue';
+import store from '~/vue_shared/components/notes/stores';
 import { notesDataMock } from '../mock_data';
 
 describe('issue_note_signed_out_widget component', () => {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import awardsNote from '~/notes/components/issue_note_awards_list.vue';
+import store from '~/vue_shared/components/notes/stores';
+import awardsNote from '~/vue_shared/components/notes/components/issue_note_awards_list.vue';
 import { issueDataMock, notesDataMock } from '../mock_data';
 
 describe('issue_note_awards_list component', () => {

@@ -1,4 +1,4 @@
-import mutations from '~/notes/stores/mutations';
+import mutations from '~/vue_shared/components/notes/stores/mutations';
 import { note, discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
 
 describe('Mutation Notes Store', () => {

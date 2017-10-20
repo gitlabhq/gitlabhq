@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueNoteAttachment from '~/notes/components/issue_note_attachment.vue';
+import issueNoteAttachment from '~/vue_shared/components/notes/components/issue_note_attachment.vue';
 
 describe('issue note attachment', () => {
   it('should render properly', () => {

@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import issueNoteForm from '~/notes/components/issue_note_form.vue';
+import store from '~/vue_shared/components/notes/stores';
+import issueNoteForm from '~/vue_shared/components/notes/components/issue_note_form.vue';
 import { issueDataMock, notesDataMock } from '../mock_data';
-import { keyboardDownEvent } from '../../issue_show/helpers';
+import { keyboardDownEvent } from '../../../../issue_show/helpers';
 
 describe('issue_note_form component', () => {
   let vm;

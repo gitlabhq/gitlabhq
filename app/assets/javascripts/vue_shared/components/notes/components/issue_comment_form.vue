@@ -8,11 +8,11 @@
   import TaskList from '~/task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
-  import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
+  import issueWarning from '../../issue/issue_warning.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import issueDiscussionLockedWidget from './issue_discussion_locked_widget.vue';
-  import markdownField from '~/vue_shared/components/markdown/field.vue';
-  import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+  import markdownField from '../../markdown/field.vue';
+  import userAvatarLink from '../../user_avatar/user_avatar_link.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {

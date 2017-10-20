@@ -5,7 +5,7 @@
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import Flash from '~/flash';
   import { glEmojiTag } from '~/emoji';
-  import tooltip from '~/vue_shared/directives/tooltip';
+  import tooltip from '../../../directives/tooltip';
 
   export default {
     props: {

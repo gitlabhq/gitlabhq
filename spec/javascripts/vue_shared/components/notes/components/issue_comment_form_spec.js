@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import autosize from 'vendor/autosize';
-import store from '~/notes/stores';
-import issueCommentForm from '~/notes/components/issue_comment_form.vue';
+import store from '~/vue_shared/components/notes/stores';
+import issueCommentForm from '~/vue_shared/components/notes/components/issue_comment_form.vue';
 import { loggedOutIssueData, notesDataMock, userDataMock, issueDataMock } from '../mock_data';
-import { keyboardDownEvent } from '../../issue_show/helpers';
+import { keyboardDownEvent } from '../../../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
   let vm;

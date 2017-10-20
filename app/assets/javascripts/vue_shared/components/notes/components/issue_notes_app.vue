@@ -1,7 +1,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import Flash from '~/flash';
-  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import loadingIcon from '../../loading_icon.vue';
   import store from '../stores/';
   import * as constants from '../constants';
   import issueNote from './issue_note.vue';

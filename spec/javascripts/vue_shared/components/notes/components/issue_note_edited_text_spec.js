@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueNoteEditedText from '~/notes/components/issue_note_edited_text.vue';
+import issueNoteEditedText from '~/vue_shared/components/notes/components/issue_note_edited_text.vue';
 
 describe('issue_note_edited_text', () => {
   let vm;

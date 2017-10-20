@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import issueNoteHeader from '~/notes/components/issue_note_header.vue';
-import store from '~/notes/stores';
+import issueNoteHeader from '~/vue_shared/components/notes/components/issue_note_header.vue';
+import store from '~/vue_shared/components/notes/stores';
 
 describe('issue_note_header component', () => {
   let vm;

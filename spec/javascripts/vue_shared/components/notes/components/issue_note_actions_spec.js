@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import issueActions from '~/notes/components/issue_note_actions.vue';
+import store from '~/vue_shared/components/notes/stores';
+import issueActions from '~/vue_shared/components/notes/components/issue_note_actions.vue';
 import { userDataMock } from '../mock_data';
 
 describe('issse_note_actions component', () => {

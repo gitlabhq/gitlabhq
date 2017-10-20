@@ -1,7 +1,6 @@
-
 import Vue from 'vue';
-import store from '~/notes/stores';
-import noteBody from '~/notes/components/issue_note_body.vue';
+import store from '~/vue_shared/components/notes/stores';
+import noteBody from '~/vue_shared/components/notes/components/issue_note_body.vue';
 import { issueDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note_body component', () => {

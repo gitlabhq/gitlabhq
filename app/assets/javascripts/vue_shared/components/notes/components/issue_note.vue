@@ -1,7 +1,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import Flash from '~/flash';
-  import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+  import userAvatarLink from '../../user_avatar/user_avatar_link.vue';
   import issueNoteHeader from './issue_note_header.vue';
   import issueNoteActions from './issue_note_actions.vue';
   import issueNoteBody from './issue_note_body.vue';

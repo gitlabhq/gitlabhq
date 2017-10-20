@@ -17,7 +17,7 @@
    *   />
    */
   import { mapGetters } from 'vuex';
-  import userAvatarLink from '../user_avatar/user_avatar_link.vue';
+  import userAvatarLink from '../../user_avatar/user_avatar_link.vue';
 
   export default {
     name: 'placeholderNote',

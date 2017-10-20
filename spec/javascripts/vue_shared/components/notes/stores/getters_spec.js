@@ -1,4 +1,4 @@
-import * as getters from '~/notes/stores/getters';
+import * as getters from '~/vue_shared/components/notes/stores/getters';
 import { notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
 
 describe('Getters Notes Store', () => {

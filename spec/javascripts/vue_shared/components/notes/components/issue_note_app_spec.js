@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import issueNotesApp from '~/notes/components/issue_notes_app.vue';
-import service from '~/notes/services/issue_notes_service';
+import issueNotesApp from '~/vue_shared/components/notes/components/issue_notes_app.vue';
+import service from '~/vue_shared/components/notes/services/issue_notes_service';
 import * as mockData from '../mock_data';
 
 describe('issue_note_app', () => {
