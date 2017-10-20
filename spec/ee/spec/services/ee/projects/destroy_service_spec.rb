@@ -6,7 +6,7 @@ describe Projects::DestroyService do
   let!(:project_id) { project.id }
   let!(:project_name) { project.name }
   let!(:project_path) { project.disk_path }
-  let!(:wiki_path) { project.disk_path + '.wiki' }
+  let!(:wiki_path) { project.wiki.disk_path }
   let!(:storage_name) { project.repository_storage }
   let!(:storage_path) { project.repository_storage_path }
 

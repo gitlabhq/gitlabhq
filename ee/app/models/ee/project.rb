@@ -132,7 +132,9 @@ module EE
     end
 
     def has_remote_mirror?
-      feature_available?(:repository_mirrors) && remote_mirrors.enabled.exists?
+      feature_available?(:repository_mirrors) &&
+        remote_mirror_available? &&
+        remote_mirrors.enabled.exists?
     end
 
     def updating_remote_mirror?
@@ -140,7 +142,7 @@ module EE
     end
 
     def update_remote_mirrors
-      return unless feature_available?(:repository_mirrors)
+      return unless feature_available?(:repository_mirrors) && remote_mirror_available?
 
       remote_mirrors.enabled.each(&:sync)
     end
@@ -461,6 +463,11 @@ module EE
       end
 
       @disabled_services
+    end
+
+    def remote_mirror_available?
+      remote_mirror_available_overridden ||
+        current_application_settings.remote_mirror_available
     end
 
     private

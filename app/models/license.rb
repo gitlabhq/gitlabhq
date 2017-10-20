@@ -47,6 +47,7 @@ class License < ActiveRecord::Base
     object_storage
     service_desk
     variable_environment_scope
+    reject_unsigned_commits
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES

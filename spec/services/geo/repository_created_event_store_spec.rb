@@ -29,7 +29,7 @@ describe Geo::RepositoryCreatedEventStore do
         expect(event).to have_attributes(
           project_id: project.id,
           repo_path: project.disk_path,
-          wiki_path: "#{project.disk_path}.wiki",
+          wiki_path: project.wiki.disk_path,
           project_name: project.name,
           repository_storage_name: project.repository_storage,
           repository_storage_path: project.repository_storage_path

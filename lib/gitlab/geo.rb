@@ -14,6 +14,8 @@ module Gitlab
 
     SECONDARY_JOBS = %i(repository_sync_job file_download_job).freeze
 
+    FDW_SCHEMA = 'gitlab_secondary'.freeze
+
     def self.current_node
       self.cache_value(:geo_node_current) do
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
@@ -77,13 +79,13 @@ module Gitlab
     def self.fdw?
       self.cache_value(:geo_fdw?) do
         ::Geo::BaseRegistry.connection.execute(
-          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{self.fdw_schema}' AND table_type = 'FOREIGN TABLE'"
+          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{FDW_SCHEMA}' AND table_type = 'FOREIGN TABLE'"
         ).first.fetch('count').to_i.positive?
       end
     end
 
-    def self.fdw_schema
-      'gitlab_secondary'.freeze
+    def self.fdw_table(table_name)
+      FDW_SCHEMA + ".#{table_name}"
     end
 
     def self.repository_sync_job

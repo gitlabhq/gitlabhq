@@ -26,7 +26,7 @@ describe PostReceive do
       end
 
       it 'calls Geo::RepositoryUpdatedEventStore' do
-        expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
+        expect_any_instance_of(::Geo::RepositoryUpdatedEventStore).to receive(:create)
 
         described_class.new.perform(gl_repository, key_id, base64_changes)
       end
@@ -39,8 +39,8 @@ describe PostReceive do
     it 'triggers Geo::RepositoryUpdatedEventStore when Geo is enabled' do
       allow(Gitlab::Geo).to receive(:enabled?) { true }
 
-      expect(Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: Geo::RepositoryUpdatedEvent::WIKI).and_call_original
-      expect_any_instance_of(Geo::RepositoryUpdatedEventStore).to receive(:create)
+      expect(::Geo::RepositoryUpdatedEventStore).to receive(:new).with(instance_of(Project), source: ::Geo::RepositoryUpdatedEvent::WIKI).and_call_original
+      expect_any_instance_of(::Geo::RepositoryUpdatedEventStore).to receive(:create)
 
       described_class.new.perform(gl_repository, key_id, base64_changes)
     end

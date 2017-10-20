@@ -89,6 +89,7 @@ import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
+import DueDateSelectors from './due_date_select';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -257,7 +258,7 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
-          new gl.DueDateSelectors();
+          new DueDateSelectors();
           new GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
@@ -590,7 +591,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
-          new gl.DueDateSelectors();
+          new DueDateSelectors();
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters')

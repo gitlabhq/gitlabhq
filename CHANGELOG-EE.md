@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues. !541
+- [SECURITY] Escape user name in filtered search bar.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] Rewrite Geo database rake tasks so they operate on the correct database. !3052
@@ -60,6 +65,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: When MR approvals are disabled, but approvers were previously assigned, all approvers receive a notification on every MR.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
+
+## 9.5.9 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues.
+- Escape user name in filtered search bar.
 
 ## 9.5.8 (2017-10-04)
 
@@ -136,6 +146,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix accessing individual files on Object Storage.
 - Fix rebase button when merge request is created from a fork.
 - Skip oAuth authorization for trusted applications.
+
+## 9.4.7 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues.
+- Fix when pushing without a branch name. !2879
+- Escape user name in filtered search bar.
 
 ## 9.4.6 (2017-09-06)
 

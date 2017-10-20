@@ -21,17 +21,62 @@ describe GitPushService do
       described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
-    it 'fails stuck remote mirrors' do
-      allow(project).to receive(:update_remote_mirrors).and_return(project.remote_mirrors)
-      expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
+    context 'when remote mirror feature is enabled' do
+      it 'fails stuck remote mirrors' do
+        allow(project).to receive(:update_remote_mirrors).and_return(project.remote_mirrors)
+        expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
 
-      subject.execute
+        subject.execute
+      end
+
+      it 'updates remote mirrors' do
+        expect(project).to receive(:update_remote_mirrors)
+
+        subject.execute
+      end
     end
 
-    it 'updates remote mirrors' do
-      expect(project).to receive(:update_remote_mirrors)
+    context 'when remote mirror feature is disabled' do
+      before do
+        stub_application_setting(remote_mirror_available: false)
+      end
 
-      subject.execute
+      context 'with remote mirrors global setting overridden' do
+        before do
+          project.remote_mirror_available_overridden = true
+        end
+
+        it 'fails stuck remote mirrors' do
+          allow(project).to receive(:update_remote_mirrors).and_return(project.remote_mirrors)
+          expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
+
+          subject.execute
+        end
+
+        it 'updates remote mirrors' do
+          expect(project).to receive(:update_remote_mirrors)
+
+          subject.execute
+        end
+      end
+
+      context 'without remote mirrors global setting overridden' do
+        before do
+          project.remote_mirror_available_overridden = false
+        end
+
+        it 'does not fails stuck remote mirrors' do
+          expect(project).not_to receive(:mark_stuck_remote_mirrors_as_failed!)
+
+          subject.execute
+        end
+
+        it 'does not updates remote mirrors' do
+          expect(project).not_to receive(:update_remote_mirrors)
+
+          subject.execute
+        end
+      end
     end
   end
 

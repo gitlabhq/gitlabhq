@@ -5,6 +5,8 @@
 /* global IssuableContext */
 /* global Sidebar */
 
+import DueDateSelectors from './due_date_select';
+
 export default () => {
   const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
 
@@ -15,6 +17,6 @@ export default () => {
   new WeightSelect();
   new IssuableContext(sidebarOptions.currentUser);
   gl.Subscription.bindAll('.subscription');
-  new gl.DueDateSelectors();
+  new DueDateSelectors();
   window.sidebar = new Sidebar();
 };

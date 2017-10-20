@@ -75,17 +75,36 @@ class Projects::MirrorsController < Projects::ApplicationController
     @remote_mirror = @project.remote_mirrors.first_or_initialize
   end
 
+  def remote_mirror_attributes
+    { remote_mirrors_attributes: %i[url id enabled] }
+  end
+
+  def mirror_params_attributes
+    attributes = [
+      :mirror,
+      :import_url,
+      :username_only_import_url,
+      :mirror_user_id,
+      :mirror_trigger_builds,
+
+      import_data_attributes: %i[
+        id
+        auth_method
+        password
+        ssh_known_hosts
+        regenerate_ssh_private_key
+      ]
+    ]
+
+    if can?(current_user, :admin_remote_mirror, project)
+      attributes << remote_mirror_attributes
+    end
+
+    attributes
+  end
+
   def mirror_params
-    params.require(:project)
-      .permit(
-        :mirror,
-        :import_url,
-        :username_only_import_url,
-        :mirror_user_id,
-        :mirror_trigger_builds,
-        import_data_attributes: [:id, :auth_method, :password, :ssh_known_hosts, :regenerate_ssh_private_key],
-        remote_mirrors_attributes: [:url, :id, :enabled]
-      )
+    params.require(:project).permit(mirror_params_attributes)
   end
 
   def safe_mirror_params
