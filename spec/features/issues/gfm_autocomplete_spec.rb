@@ -17,13 +17,13 @@ feature 'GFM autocomplete', :js do
   end
 
   after do
-    execute_script("localStorage.clear();");
+    execute_script("localStorage.clear();")
   end
 
   it 'updates issue descripton with GFM reference' do
     find('.issuable-edit').click
 
-    simulateInput('#issue-description', "@#{user.name[0...3]}")
+    simulate_input('#issue-description', "@#{user.name[0...3]}")
 
     find('.atwho-view .cur').click
 
@@ -106,7 +106,7 @@ feature 'GFM autocomplete', :js do
   it 'includes items for assignee dropdowns with non-ASCII characters in name' do
     page.within '.timeline-content-form' do
       find('#note-body').native.send_keys('')
-      simulateInput('#note-body', "@#{user.name[0...8]}");
+      simulate_input('#note-body', "@#{user.name[0...8]}")
     end
 
     expect(page).to have_selector('.atwho-container')
@@ -134,7 +134,7 @@ feature 'GFM autocomplete', :js do
       note = find('#note-body')
       page.within '.timeline-content-form' do
         note.native.send_keys('')
-        simulateInput('#note-body', "~#{label.title[0]}")
+        simulate_input('#note-body', "~#{label.title[0]}")
         note.click
       end
 

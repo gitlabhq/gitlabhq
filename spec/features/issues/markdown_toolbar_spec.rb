@@ -12,7 +12,7 @@ feature 'Issue markdown toolbar', :js do
   end
 
   after do
-    execute_script("localStorage.clear();");
+    execute_script("localStorage.clear();")
   end
 
   it "doesn't include first new line when adding bold" do
