@@ -13,24 +13,28 @@ module Geo
     end
 
     def load_pending_resources
-      project_ids_not_synced = find_project_ids_not_synced
-      project_ids_updated_recently = find_project_ids_updated_recently
+      resources = find_project_ids_not_synced(batch_size: db_retrieve_batch_size)
+      remaining_capacity = db_retrieve_batch_size - resources.size
 
-      interleave(project_ids_not_synced, project_ids_updated_recently)
+      if remaining_capacity.zero?
+        resources
+      else
+        resources + find_project_ids_updated_recently(batch_size: remaining_capacity)
+      end
     end
 
-    def find_project_ids_not_synced
+    def find_project_ids_not_synced(batch_size:)
       healthy_shards_restriction(current_node.unsynced_projects)
         .reorder(last_repository_updated_at: :desc)
-        .limit(db_retrieve_batch_size)
+        .limit(batch_size)
         .pluck(:id)
     end
 
-    def find_project_ids_updated_recently
+    def find_project_ids_updated_recently(batch_size:)
       current_node.project_registries
                   .dirty
                   .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
-                  .limit(db_retrieve_batch_size)
+                  .limit(batch_size)
                   .pluck(:project_id)
     end
 

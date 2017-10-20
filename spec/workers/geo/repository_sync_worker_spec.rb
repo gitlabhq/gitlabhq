@@ -101,10 +101,14 @@ describe Geo::RepositorySyncWorker, :postgresql do
       let!(:project_list) { create_list(:project, 4, :random_last_repository_updated_at) }
 
       before do
+        # Neither of these are needed for this spec
+        unsynced_project.destroy
+        project_in_synced_group.destroy
+
         allow_any_instance_of(described_class).to receive(:db_retrieve_batch_size).and_return(2) # Must be >1 because of the Geo::BaseSchedulerWorker#interleave
         secondary.update!(repos_max_capacity: 3) # Must be more than db_retrieve_batch_size
         allow_any_instance_of(Project).to receive(:ensure_repository).and_raise(Gitlab::Shell::Error.new('foo'))
-        allow_any_instance_of(Geo::ProjectSyncWorker).to receive(:sync_wiki?).and_return(false)
+        allow_any_instance_of(Geo::ProjectRegistry).to receive(:wiki_sync_due?).and_return(false)
         allow_any_instance_of(Geo::RepositorySyncService).to receive(:expire_repository_caches)
       end
 
