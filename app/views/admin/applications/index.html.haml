@@ -21,5 +21,5 @@
         %td= application.redirect_uri
         %td= application.access_tokens.map(&:resource_owner_id).uniq.count
         %td= application.trusted? ? 'Y': 'N'
-        %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
+        %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-default'
         %td= render 'delete_form', application: application

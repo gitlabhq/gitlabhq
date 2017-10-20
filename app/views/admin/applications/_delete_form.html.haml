@@ -1,4 +1,4 @@
-- submit_btn_css ||= 'btn btn-link btn-danger'
+- submit_btn_css ||= 'btn btn-danger'
 = form_tag admin_application_path(application) do
   %input{ :name => "_method", :type => "hidden", :value => "delete" }/
   = submit_tag 'Delete', onclick: "return confirm('Are you sure you want to delete this application?')", class: submit_btn_css
