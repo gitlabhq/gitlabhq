@@ -1,4 +1,3 @@
-import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 import Service from '../services/repo_service';
 import Store from '../stores/repo_store';
 import Flash from '../../flash';
@@ -240,8 +239,7 @@ const RepoHelper = {
     return Store.openedFiles.find(file => file.url === path);
   },
 
-  loadingError(e) {
-    console.log(e);
+  loadingError() {
     Flash('Unable to load this content at this time.');
   },
 
