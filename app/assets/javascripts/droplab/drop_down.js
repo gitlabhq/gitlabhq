@@ -1,5 +1,5 @@
 import utils from './utils';
-import { SELECTED_CLASS, IGNORE_CLASS } from './constants';
+import { SELECTED_CLASS, IGNORE_CLASS, IGNORE_HIDING_CLASS } from './constants';
 
 class DropDown {
   constructor(list) {
@@ -42,7 +42,7 @@ class DropDown {
     this.addSelectedClass(selected);
 
     e.preventDefault();
-    this.hide();
+    if (!e.target.classList.contains(IGNORE_HIDING_CLASS)) this.hide();
 
     const listEvent = new CustomEvent('click.dl', {
       detail: {

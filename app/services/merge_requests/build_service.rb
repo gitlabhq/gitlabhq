@@ -1,6 +1,8 @@
 module MergeRequests
   class BuildService < MergeRequests::BaseService
     def execute
+      issue_iid = params.delete(:issue_iid)
+
       self.merge_request = MergeRequest.new(params)
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
@@ -9,7 +11,7 @@ module MergeRequests
       merge_request.can_be_created  = branches_valid?
 
       compare_branches if branches_present?
-      assign_title_and_description if merge_request.can_be_created
+      assign_title_and_description(issue_iid) if merge_request.can_be_created
 
       merge_request
     end
@@ -104,29 +106,28 @@ module MergeRequests
     # - Setting the title as 'Resolves "Emoji don't show up in commit title"' if there is
     #   more than one commit in the MR
     #
-    def assign_title_and_description
-      if match = source_branch.match(/\A(\d+)-/)
-        iid = match[1]
-      end
-
+    # Another way to generate both the `Closes` reference and the `Resolve` title is to pass an iid explicitly.
+    # In that case a branch name may not fit this schema above.
+    def assign_title_and_description(issue_iid = nil)
+      issue_iid ||= source_branch.match(/\A(\d+)-/).try(:[], 1)
       commits = compare_commits
-      if commits && commits.count == 1
+
+      if commits&.count == 1
         commit = commits.first
         merge_request.title = commit.title
         merge_request.description ||= commit.description.try(:strip)
-      elsif iid && issue = target_project.get_issue(iid, current_user)
-        case issue
-        when Issue
-          merge_request.title = "Resolve \"#{issue.title}\""
-        when ExternalIssue
-          merge_request.title = "Resolve #{issue.title}"
-        end
+      elsif issue_iid && issue = target_project.get_issue(issue_iid, current_user)
+        merge_request.title =
+          case issue
+          when Issue         then "Resolve \"#{issue.title}\""
+          when ExternalIssue then "Resolve #{issue.title}"
+          end
       else
         merge_request.title = source_branch.titleize.humanize
       end
 
-      if iid
-        closes_issue = "Closes ##{iid}"
+      if issue_iid
+        closes_issue = "Closes ##{issue_iid}"
 
         if description.present?
           merge_request.description += closes_issue.prepend("\n\n")

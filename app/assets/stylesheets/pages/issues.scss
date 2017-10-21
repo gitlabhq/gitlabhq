@@ -192,6 +192,20 @@ ul.related-merge-requests > li {
 .create-mr-dropdown-wrap {
   @include new-style-dropdown;
 
+  .ref::selection {
+    color: $placeholder-text-color;
+  }
+
+  .dropdown {
+    .dropdown-menu-toggle {
+      min-width: 285px;
+    }
+
+    .dropdown-select {
+      width: 285px;
+    }
+  }
+
   .btn-group:not(.hide) {
     display: flex;
   }
@@ -201,7 +215,7 @@ ul.related-merge-requests > li {
     flex-shrink: 0;
   }
 
-  .dropdown-menu {
+  .create-merge-request-dropdown-menu {
     width: 300px;
     opacity: 1;
     visibility: visible;
@@ -209,7 +223,7 @@ ul.related-merge-requests > li {
     display: none;
   }
 
-  .dropdown-toggle {
+  .create-merge-request-dropdown-toggle {
     .fa-caret-down {
       pointer-events: none;
       color: inherit;
@@ -217,12 +231,33 @@ ul.related-merge-requests > li {
     }
   }
 
+  .droplab-item-ignore {
+    pointer-events: auto;
+  }
+
+  .create-item {
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+  }
+
   li:not(.divider) {
+    padding: 6px;
+
     &.droplab-item-selected {
       .icon-container {
         i {
           visibility: visible;
         }
+      }
+
+      .description {
+        display: block;
+        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -237,7 +272,6 @@ ul.related-merge-requests > li {
 
     .description {
       padding-left: 30px;
-      font-size: 13px;
 
       strong {
         display: block;
