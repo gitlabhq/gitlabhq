@@ -1,5 +1,0 @@
----
-title: Strip gitlab-runner section markers in build trace HTML view
-merge_request: 14393
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Does not check if an invariant hashed storage path exists on disk when renaming
-  projects.
-merge_request: 14428
-author:
-type: fixed

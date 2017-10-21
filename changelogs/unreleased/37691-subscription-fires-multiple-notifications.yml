@@ -1,5 +1,0 @@
----
-title: Fixed duplicate notifications when added multiple labels on an issue
-merge_request: 14798
-author:
-type: fixed

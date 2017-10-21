@@ -1,5 +1,0 @@
----
-title: Fix the number representing the amount of commits related to a push event
-merge_request:
-author:
-type: fixed
