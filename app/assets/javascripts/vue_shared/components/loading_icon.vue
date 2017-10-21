@@ -31,7 +31,7 @@
         return this.inline ? 'span' : 'div';
       },
       cssClass() {
-        return `fa-${this.size}x ${this.class}`;
+        return `fa-${this.size}x ${this.class}`.trim();
       },
     },
   };
