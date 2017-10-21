@@ -5,4 +5,3 @@ module InputHelper
     evaluate_script("window.simulateInput(#{selector.to_json}, #{input.to_json});")
   end
 end
-  
