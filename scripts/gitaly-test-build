@@ -10,7 +10,7 @@ require 'fileutils'
 # gitlab-ce and gitaly.
 
 dir = 'tmp/tests/gitaly'
-env = {'BUNDLE_PATH' => 'vendor/bundle'}
+env = { 'BUNDLE_PATH' => File.join(Dir.pwd, dir, 'ruby/vendor/bundle') }
 abort 'gitaly build failed' unless system(env, 'make', chdir: dir)
 
 # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
