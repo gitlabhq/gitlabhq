@@ -497,7 +497,7 @@ class Repository
     return false unless full_path
 
     value = Gitlab::Redis::Cache.with { |redis| redis.get(exists_cache_key) }
-    return value == 'true' unless value.nil?
+    return JSON.parse(value).first unless value.nil?
 
     new_value = raw_repository.exists?
 
@@ -505,7 +505,7 @@ class Repository
     # (via Rails.cache). A false negative from 'exists?' has a severe impact
     # on user experience. By using a shorter expiry time we limit the impact
     # of such a fault.
-    Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, new_value, ex: EXISTS_CACHE_TTL) }
+    Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, [new_value].to_json, ex: EXISTS_CACHE_TTL) }
 
     new_value
   end
