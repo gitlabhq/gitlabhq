@@ -43,8 +43,13 @@ describe('MRWidgetDeployment', () => {
   });
 
   describe('methods', () => {
-    let vm = createComponent();
-    const deployment = deploymentMockData[0];
+    let vm;
+    let deployment;
+
+    beforeEach(() => {
+      vm = createComponent();
+      deployment = deploymentMockData[0];
+    });
 
     describe('formatDate', () => {
       it('should work', () => {
