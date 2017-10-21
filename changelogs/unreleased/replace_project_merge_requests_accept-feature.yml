@@ -1,5 +1,0 @@
----
-title: Replace the 'project/merge_requests/accept.feature' spinach test with an rspec analog
-merge_request: 14176
-author: Vitaliy @blackst0ne Klachkov
-type: other

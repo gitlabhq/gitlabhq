@@ -1,5 +1,0 @@
----
-title: Set default scope on PATs that don't have one set to allow them to be revoked
-merge_request:
-author:
-type: fixed
