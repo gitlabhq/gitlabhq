@@ -1,6 +1,6 @@
 require 'logger'
 
-GRPC_LOGGER = Logger.new(Rails.root.join('log/grpc.log'))
+GRPC_LOGGER = Logger.new(STDOUT)#Rails.root.join('log/grpc.log'))
 GRPC_LOGGER.level = ENV['GRPC_LOG_LEVEL'].presence || 'WARN'
 GRPC_LOGGER.progname = 'GRPC'
 
