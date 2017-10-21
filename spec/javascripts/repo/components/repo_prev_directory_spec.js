@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import repoPrevDirectory from '~/repo/components/repo_prev_directory.vue';
+import eventHub from '~/repo/event_hub';
 
 describe('RepoPrevDirectory', () => {
   function createComponent(propsData) {
@@ -20,7 +21,7 @@ describe('RepoPrevDirectory', () => {
     spyOn(vm, 'linkClicked');
 
     expect(link.href).toMatch(`/${prevUrl}`);
-    expect(link.textContent).toEqual('..');
+    expect(link.textContent).toEqual('...');
 
     link.click();
 
@@ -29,14 +30,17 @@ describe('RepoPrevDirectory', () => {
 
   describe('methods', () => {
     describe('linkClicked', () => {
-      const vm = jasmine.createSpyObj('vm', ['$emit']);
+      it('$emits linkclicked with prevUrl', () => {
+        const prevUrl = 'prevUrl';
+        const vm = createComponent({
+          prevUrl,
+        });
 
-      it('$emits linkclicked with file obj', () => {
-        const file = {};
+        spyOn(eventHub, '$emit');
 
-        repoPrevDirectory.methods.linkClicked.call(vm, file);
+        vm.linkClicked(prevUrl);
 
-        expect(vm.$emit).toHaveBeenCalledWith('linkclicked', file);
+        expect(eventHub.$emit).toHaveBeenCalledWith('goToPreviousDirectoryClicked', prevUrl);
       });
     });
   });

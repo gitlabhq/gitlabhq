@@ -76,6 +76,7 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
@@ -430,10 +431,15 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Activities();
           break;
         case 'groups:show':
+          const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
           new ProjectsList();
+
+          if (newGroupChildWrapper) {
+            new NewGroupChild(newGroupChildWrapper);
+          }
           break;
         case 'groups:group_members:index':
           memberExpirationDate();

@@ -9,6 +9,10 @@ describe('RepoFileButtons', () => {
     return new RepoFileButtons().$mount();
   }
 
+  afterEach(() => {
+    RepoStore.openedFiles = [];
+  });
+
   it('renders Raw, Blame, History, Permalink and Preview toggle', () => {
     const activeFile = {
       extension: 'md',

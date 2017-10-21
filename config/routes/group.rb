@@ -75,9 +75,11 @@ constraints(GroupUrlConstrainer.new) do
       end
 
       resources :variables, only: [:index, :show, :update, :create, :destroy]
-      resources :billings, only: [:index]
+
+      resources :children, only: [:index]
 
       ## EE-specific
+      resources :billings, only: [:index]
       resources :boards, only: [:index, :show, :create, :update, :destroy]
     end
 

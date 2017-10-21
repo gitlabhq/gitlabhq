@@ -531,13 +531,12 @@ ul.notes {
   padding: 0;
   min-width: 16px;
   color: $gray-darkest;
+  fill: $gray-darkest;
 
   .fa {
     position: relative;
     font-size: 16px;
   }
-
-
 
   svg {
     height: 16px;
@@ -566,6 +565,7 @@ ul.notes {
 
     .link-highlight {
       color: $gl-link-color;
+      fill: $gl-link-color;
 
       svg {
         fill: $gl-link-color;

@@ -3,7 +3,8 @@ import Visibility from 'visibilityjs';
 import axios from 'axios';
 import Poll from './lib/utils/poll';
 import { s__ } from './locale';
-import './flash';
+import initSettingsPanels from './settings_panels';
+import Flash from './flash';
 
 /**
  * Cluster page has 2 separate parts:
@@ -24,6 +25,8 @@ class ClusterService {
 
 export default class Clusters {
   constructor() {
+    initSettingsPanels();
+
     const dataset = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.state = {

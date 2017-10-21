@@ -466,7 +466,7 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     + .breadcrumbs-links {
-      padding-left: 17px;
+      padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
     }
   }
