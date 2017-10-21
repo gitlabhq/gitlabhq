@@ -1,5 +1,0 @@
----
-title: Find stuck scheduled import jobs and also mark them as failed.
-merge_request: 3055
-author:
-type: fixed

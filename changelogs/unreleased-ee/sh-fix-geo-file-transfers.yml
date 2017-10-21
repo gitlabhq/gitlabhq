@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix attachments/avatars saving to the wrong directory'
-merge_request:
-author:
-type: fixed

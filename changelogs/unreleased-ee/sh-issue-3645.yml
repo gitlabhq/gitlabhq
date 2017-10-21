@@ -1,5 +1,0 @@
----
-title: 'Geo: Limit the huge cross-database pluck for LFS objects and attachments'
-merge_request:
-author:
-type: fixed

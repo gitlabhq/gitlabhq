@@ -1,5 +1,0 @@
----
-title: Always allow the default branch as a branch name
-merge_request: 3154
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix removing the username from the git repository URL for pull mirroring
-merge_request: 3060
-author:
-type: fixed
