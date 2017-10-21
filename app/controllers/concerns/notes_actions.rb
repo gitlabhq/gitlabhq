@@ -106,7 +106,8 @@ module NotesActions
             discussion_resolvable: discussion.resolvable?,
 
             diff_discussion_html: diff_discussion_html(discussion),
-            discussion_html: discussion_html(discussion)
+            discussion_html: discussion_html(discussion),
+            discussion_line_code: discussion.line_code,
           )
         end
       end
