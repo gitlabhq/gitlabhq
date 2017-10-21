@@ -43,6 +43,7 @@ future GitLab releases.**
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **CI_DISPOSABLE_ENVIRONMENT**   | all    | 10.1   | Mark that job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
 | **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
@@ -73,6 +74,7 @@ future GitLab releases.**
 | **CI_SERVER_NAME**              | all    | all    | The name of CI server that is used to coordinate jobs |
 | **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
 | **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
+| **CI_SHARED_ENVIRONMENT**       | all    | 10.1   | Mark that job is executed in a shared environment (something that is persisted across CI invocations like `shell` or `ssh` executor). If the environment is shared, it is set to true, otherwise it is not defined at all. |
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
 | **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
