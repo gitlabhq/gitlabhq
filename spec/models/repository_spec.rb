@@ -1106,6 +1106,25 @@ describe Repository do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
     end
+
+    it 'is cached' do
+      repository.expire_exists_cache
+
+      expect(repository.raw_repository).to receive(:exists?).once.and_call_original
+      expect(repository.exists?).to eq(true)
+
+      # This second call should hit the cache
+      expect(repository.exists?).to eq(true)
+
+      new_project = Project.find(project.id)
+      new_repository = new_project.repository
+
+      # Check that the value is not just memoized on the repository instance
+      expect(new_repository.raw_repository).not_to receive(:exists?)
+
+      # This call should hit the cache
+      expect(repository.exists?).to eq(true)
+    end
   end
 
   describe '#exists?' do
@@ -1483,7 +1502,7 @@ describe Repository do
       end
 
       it 'flushes the exists cache' do
-        expect(repository).to receive(:expire_exists_cache).twice
+        expect(repository).to receive(:expire_exists_cache).at_least(:once)
 
         repository.before_delete
       end
@@ -1863,12 +1882,17 @@ describe Repository do
   end
 
   describe '#expire_exists_cache' do
-    let(:cache) { repository.send(:cache) }
-
     it 'expires the cache' do
-      expect(cache).to receive(:expire).with(:exists?)
+      repository.exists?
+      Gitlab::Redis::Cache.with do |redis|
+        expect(redis.get(repository.exists_cache_key)).to be_present
+      end
 
       repository.expire_exists_cache
+
+      Gitlab::Redis::Cache.with do |redis|
+        expect(redis.get(repository.exists_cache_key)).to eq(nil)
+      end
     end
   end
 
@@ -2002,6 +2026,7 @@ describe Repository do
     it 'expires the caches of all methods' do
       expect(repository).to receive(:expire_method_caches)
         .with(Repository::CACHED_METHODS)
+      expect(repository).to receive(:expire_exists_cache)
 
       repository.expire_all_method_caches
     end

@@ -14,6 +14,8 @@ class Repository
     #{REF_ENVIRONMENTS}
   ].freeze
 
+  EXISTS_CACHE_TTL = 10.minutes
+
   include Gitlab::ShellAdapter
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
@@ -33,7 +35,7 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref has_visible_content?
+                      tag_count avatar empty? root_ref has_visible_content?
                       issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
@@ -286,6 +288,7 @@ class Repository
   end
 
   def expire_all_method_caches
+    expire_exists_cache
     expire_method_caches(CACHED_METHODS)
   end
 
@@ -355,7 +358,7 @@ class Repository
   end
 
   def expire_exists_cache
-    expire_method_caches(%i(exists?))
+    Gitlab::Redis::Cache.with { |redis| redis.del(exists_cache_key) }
   end
 
   # expire cache that doesn't depend on repository data (when expiring)
@@ -493,9 +496,23 @@ class Repository
   def exists?
     return false unless full_path
 
-    raw_repository.exists?
+    value = Gitlab::Redis::Cache.with { |redis| redis.get(exists_cache_key) }
+    return value == 'true' unless value.nil?
+
+    new_value = raw_repository.exists?
+
+    # We don't use 'cache_method' because that has a two-week expiry time
+    # (via Rails.cache). A false negative from 'exists?' has a severe impact
+    # on user experience. By using a shorter expiry time we limit the impact
+    # of such a fault.
+    Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, new_value, ex: EXISTS_CACHE_TTL) }
+
+    new_value
   end
-  cache_method :exists?
+
+  def exists_cache_key
+    Gitlab::Redis::Cache::CACHE_NAMESPACE + ":repository_exists:#{full_path}"
+  end
 
   delegate :empty?, to: :raw_repository
   cache_method :empty?
