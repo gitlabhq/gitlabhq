@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-10 17:50+0200\n"
-"PO-Revision-Date: 2017-10-10 17:50+0200\n"
+"POT-Creation-Date: 2017-10-22 16:40+0300\n"
+"PO-Revision-Date: 2017-10-22 16:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -106,6 +106,12 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "AdminHealthPageLink|health page"
+msgstr ""
+
+msgid "Advanced settings"
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -125,6 +131,9 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
 msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to leave this group?"
 msgstr ""
 
 msgid "Are you sure you want to reset registration token?"
@@ -160,16 +169,19 @@ msgstr ""
 msgid "AutoDevOps|Auto DevOps (Beta)"
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
 msgid "AutoDevOps|Enable in settings"
 msgstr ""
 
+msgid "AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
+msgstr ""
+
+msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
 msgid "Branch"
@@ -178,6 +190,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr ""
+
+msgid "Branch has changed"
 msgstr ""
 
 msgid "BranchSwitcherPlaceholder|Search branches"
@@ -375,6 +390,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgstr ""
+
 msgid "Clone repository"
 msgstr ""
 
@@ -382,6 +400,9 @@ msgid "Cluster"
 msgstr ""
 
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster details"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster integration"
@@ -435,6 +456,9 @@ msgstr ""
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
 msgstr ""
 
+msgid "ClusterIntegration|Manage Cluster integration on your GitLab project"
+msgstr ""
+
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
 msgstr ""
 
@@ -459,7 +483,7 @@ msgstr ""
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
 msgstr ""
 
-msgid "ClusterIntegration|Save"
+msgid "ClusterIntegration|See and edit the details for your cluster"
 msgstr ""
 
 msgid "ClusterIntegration|See machine types"
@@ -612,6 +636,9 @@ msgid "Create empty bare repository"
 msgstr ""
 
 msgid "Create merge request"
+msgstr ""
+
+msgid "Create new branch"
 msgstr ""
 
 msgid "Create new..."
@@ -1021,6 +1048,9 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Maximum git storage failures"
+msgstr ""
+
 msgid "Median"
 msgstr ""
 
@@ -1347,6 +1377,9 @@ msgstr ""
 msgid "Profiles|your account"
 msgstr ""
 
+msgid "Project '%{project_name}' is in the process of being deleted."
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
@@ -1354,9 +1387,6 @@ msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
-msgstr ""
-
-msgid "Project '%{project_name}' will be deleted."
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
@@ -1494,6 +1524,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
 msgid "Save changes"
 msgstr ""
 
@@ -1510,6 +1543,15 @@ msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Search branches and tags"
+msgstr ""
+
+msgid "Seconds before reseting failure information"
+msgstr ""
+
+msgid "Seconds to wait after a storage failure"
+msgstr ""
+
+msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
 msgid "Select Archive Format"
@@ -1714,6 +1756,9 @@ msgstr ""
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
+msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
@@ -1744,6 +1789,12 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
+msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
+msgstr ""
+
+msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
+msgstr ""
+
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
@@ -1751,6 +1802,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
 msgid "This is a confidential issue."
@@ -1974,6 +2028,9 @@ msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
+msgstr ""
+
+msgid "When access to a storage fails. GitLab will prevent access to the storage for the time specified here. This allows the filesystem to recover. Repositories on failing shards are temporarly unavailable"
 msgstr ""
 
 msgid "Wiki"
