@@ -624,7 +624,7 @@ Style/PredicateName:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 55.25
+  Max: 54.28
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
