@@ -2,9 +2,9 @@
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid)
-  - get_refs_path = refs_namespace_project_path(@project.namespace, @project)
+  - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
 
-  .create-mr-dropdown-wrap{ data: { can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, get_refs_path: get_refs_path } }
+  .create-mr-dropdown-wrap{ data: { can_create_path: can_create_path, create_mr_path: create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path } }
     .btn-group.unavailable
       %button.btn.btn-grouped{ type: 'button', disabled: 'disabled' }
         = icon('spinner', class: 'fa-spin')

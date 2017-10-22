@@ -31,12 +31,13 @@ export default class CreateMergeRequestDropdown {
     this.createBranchPath = this.wrapperEl.dataset.createBranchPath;
     this.createMrPath = this.wrapperEl.dataset.createMrPath;
     this.droplabInitialized = false;
-    this.getRefsPath = this.wrapperEl.dataset.getRefsPath;
+    this.getRefDelay = 0;
     this.isCreatingBranch = false;
     this.isCreatingMergeRequest = false;
-    this.isGettingRefs = false;
+    this.isGettingRef = false;
     this.inputsAreValid = true;
     this.mergeRequestCreated = false;
+    this.refsPath = this.wrapperEl.dataset.refsPath;
     this.delay = null;
     this.refs = {};
 
@@ -62,7 +63,7 @@ export default class CreateMergeRequestDropdown {
     this.createMergeRequestButton.removeAttribute('disabled');
 
     this.createTargetButton.classList.remove('disabled');
-    this.createTargetButton.removeAttribute('disabled', 'disabled');
+    this.createTargetButton.removeAttribute('disabled');
 
     this.dropdownToggle.classList.remove('disabled');
     this.dropdownToggle.removeAttribute('disabled');
@@ -128,37 +129,41 @@ export default class CreateMergeRequestDropdown {
     });
   }
 
-  getRefs() {
-    return $.ajax({
+  findByValue(objects, ref, exactSearch = true) {
+    if (!objects || !objects.length) return false;
+    if (objects.indexOf(ref) > 0) return ref;
+    if (exactSearch) return false;
+
+    return objects[0];
+  }
+
+  getRef(ref, type = 'all') {
+    if (!ref) return false;
+
+    $.ajax({
       method: 'GET',
       dataType: 'json',
-      url: this.getRefsPath,
+      url: this.refsPath + ref,
       beforeSend: () => {
-        this.isGettingRefs = true;
+        this.isGettingRef = true;
       },
     })
     .always(() => {
-      this.isGettingRefs = false;
+      this.isGettingRef = false;
     })
     .done((data) => {
-      this.refs = data;
+      const branches = data[Object.keys(data)[0]];
+      const tags = data[Object.keys(data)[1]];
+      if (type === 'branch') return this.findByValue(branches, ref);
+      return this.findByValue(branches, ref) || this.findByValue(tags, ref);
     })
     .fail(() => {
       this.unavailable();
       this.disable();
-      new Flash('Failed to get refs.');
+      new Flash('Failed to get ref.');
+
+      return false;
     });
-  }
-
-  getRef(ref, type = 'all') {
-    if (!this.refs) return false;
-
-    const target = new RegExp(`^${$.trim(ref).replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`);
-
-    if (type === 'branch') return this.refs.Branches.find(value => target.test(value));
-
-    return this.refs.Branches.find(value => target.test(value)) ||
-      this.refs.Tags.find(value => target.test(value));
   }
 
   initDroplab() {
@@ -197,7 +202,6 @@ export default class CreateMergeRequestDropdown {
     this.createMergeRequestButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
     this.createTargetButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
     this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
-    this.dropdownToggle.addEventListener('click', this.onClickGetRefs.bind(this));
     this.branchInput.addEventListener('keyup', this.onChangeBranchInput.bind(this));
     this.refInput.addEventListener('keyup', this.onChangeRefInput.bind(this));
     this.refInput.addEventListener('keydown', this.processTab.bind(this));
@@ -208,7 +212,7 @@ export default class CreateMergeRequestDropdown {
       this.mergeRequestCreated ||
       this.isCreatingBranch ||
       this.branchCreated ||
-      this.isGettingRefs;
+      this.isGettingRef;
   }
 
   // target: 'branch', 'ref'
@@ -272,14 +276,10 @@ export default class CreateMergeRequestDropdown {
     this.branchInput.focus();
   }
 
-  onClickGetRefs() {
-    this.getRefs();
-  }
-
   onChangeBranchInput(event) {
     const branch = this.branchInput.value;
 
-    if (this.isGettingRefs) return;
+    if (this.isGettingRef) return;
 
     // `ENTER` key submits the data.
     if (event.keyCode === 13 && this.inputsAreValid) {
@@ -303,6 +303,8 @@ export default class CreateMergeRequestDropdown {
       return;
     }
 
+    // If a found branch equals exact the same as a user typed,
+    // that means a new branch cannot be created as it is already exists.
     if (this.getRef(branch, 'branch') === branch) {
       this.inputsAreValid = false;
       this.disableCreateAction();
@@ -314,14 +316,14 @@ export default class CreateMergeRequestDropdown {
       this.createBranchPath = this.createBranchPath.replace(/(branch_name=)(.+?)(?=&issue)/, `$1${branch}`);
       this.createMrPath = this.createMrPath.replace(/(branch_name=)(.+?)(?=&ref)/, `$1${branch}`);
     }
-  }
+}
 
   onChangeRefInput(event) {
     // Remove selected text (autocomplete text).
     const ref = this.refInput.value.slice(0, this.refInput.selectionStart) +
       this.refInput.value.slice(this.refInput.selectionEnd);
 
-    if (this.isGettingRefs) return;
+    if (this.isGettingRef) return;
 
     // `ENTER` key submits the data.
     if (event.keyCode === 13 && this.inputsAreValid) {
