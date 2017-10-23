@@ -333,6 +333,7 @@ import '~/notes';
           diff_discussion_html: false,
         };
         $form = jasmine.createSpyObj('$form', ['closest', 'find']);
+        $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
         notes = jasmine.createSpyObj('notes', [
