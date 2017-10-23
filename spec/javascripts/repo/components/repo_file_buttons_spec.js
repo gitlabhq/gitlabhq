@@ -35,7 +35,6 @@ describe('RepoFileButtons', () => {
     const blame = vm.$el.querySelector('.blame');
     const history = vm.$el.querySelector('.history');
 
-    expect(vm.$el.id).toEqual('repo-file-buttons');
     expect(raw.href).toMatch(`/${activeFile.raw_path}`);
     expect(raw.textContent.trim()).toEqual('Raw');
     expect(blame.href).toMatch(`/${activeFile.blame_path}`);

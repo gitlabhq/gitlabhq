@@ -1,6 +1,6 @@
 <script>
-  import RepoHelper from '../../helpers/repo_helper';
   import RepoStore from '../../stores/repo_store';
+  import RepoHelper from '../../helpers/repo_helper';
   import eventHub from '../../event_hub';
   import newModal from './modal.vue';
 

@@ -1,5 +1,8 @@
 import Vue from 'vue';
 import newDropdown from '~/repo/components/new_dropdown/index.vue';
+import RepoStore from '~/repo/stores/repo_store';
+import RepoHelper from '~/repo/helpers/repo_helper';
+import eventHub from '~/repo/event_hub';
 import createComponent from '../../../helpers/vue_mount_component_helper';
 
 describe('new dropdown component', () => {
@@ -13,6 +16,10 @@ describe('new dropdown component', () => {
 
   afterEach(() => {
     vm.$destroy();
+
+    RepoStore.files = [];
+    RepoStore.openedFiles = [];
+    RepoStore.setViewToPreview();
   });
 
   it('renders new file and new directory links', () => {
@@ -58,6 +65,127 @@ describe('new dropdown component', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('createEntryInStore', () => {
+    ['tree', 'blob'].forEach((type) => {
+      describe(type, () => {
+        it('closes modal after creating file', () => {
+          vm.openModal = true;
+
+          eventHub.$emit('createNewEntry', 'testing', type);
+
+          expect(vm.openModal).toBeFalsy();
+        });
+
+        it('sets editMode to true', () => {
+          eventHub.$emit('createNewEntry', 'testing', type);
+
+          expect(RepoStore.editMode).toBeTruthy();
+        });
+
+        it('toggles blob view', () => {
+          eventHub.$emit('createNewEntry', 'testing', type);
+
+          expect(RepoStore.isPreviewView()).toBeFalsy();
+        });
+
+        it('adds file into activeFiles', () => {
+          eventHub.$emit('createNewEntry', 'testing', type);
+
+          expect(RepoStore.openedFiles.length).toBe(1);
+        });
+
+        it(`creates ${type} in the current stores path`, () => {
+          RepoStore.path = 'testing';
+
+          eventHub.$emit('createNewEntry', 'testing/app', type);
+
+          expect(RepoStore.files[0].path).toBe('testing/app');
+          expect(RepoStore.files[0].name).toBe('app');
+
+          if (type === 'tree') {
+            expect(RepoStore.files[0].files.length).toBe(1);
+          }
+
+          RepoStore.path = '';
+        });
+      });
+    });
+
+    describe('file', () => {
+      it('creates new file', () => {
+        eventHub.$emit('createNewEntry', 'testing', 'blob');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('testing');
+        expect(RepoStore.files[0].type).toBe('blob');
+        expect(RepoStore.files[0].tempFile).toBeTruthy();
+      });
+
+      it('does not create temp file when file already exists', () => {
+        RepoStore.files.push(RepoHelper.serializeRepoEntity('blob', {
+          name: 'testing',
+        }));
+
+        eventHub.$emit('createNewEntry', 'testing', 'blob');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('testing');
+        expect(RepoStore.files[0].type).toBe('blob');
+        expect(RepoStore.files[0].tempFile).toBeUndefined();
+      });
+    });
+
+    describe('tree', () => {
+      it('creates new tree', () => {
+        eventHub.$emit('createNewEntry', 'testing', 'tree');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('testing');
+        expect(RepoStore.files[0].type).toBe('tree');
+        expect(RepoStore.files[0].tempFile).toBeTruthy();
+        expect(RepoStore.files[0].files.length).toBe(1);
+        expect(RepoStore.files[0].files[0].name).toBe('.gitkeep');
+      });
+
+      it('creates multiple trees when entryName has slashes', () => {
+        eventHub.$emit('createNewEntry', 'app/test', 'tree');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('app');
+        expect(RepoStore.files[0].files[0].name).toBe('test');
+        expect(RepoStore.files[0].files[0].files[0].name).toBe('.gitkeep');
+      });
+
+      it('creates tree in existing tree', () => {
+        RepoStore.files.push(RepoHelper.serializeRepoEntity('tree', {
+          name: 'app',
+        }));
+
+        eventHub.$emit('createNewEntry', 'app/test', 'tree');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('app');
+        expect(RepoStore.files[0].tempFile).toBeUndefined();
+        expect(RepoStore.files[0].files[0].tempFile).toBeTruthy();
+        expect(RepoStore.files[0].files[0].name).toBe('test');
+        expect(RepoStore.files[0].files[0].files[0].name).toBe('.gitkeep');
+      });
+
+      it('does not create new tree when already exists', () => {
+        RepoStore.files.push(RepoHelper.serializeRepoEntity('tree', {
+          name: 'app',
+        }));
+
+        eventHub.$emit('createNewEntry', 'app', 'tree');
+
+        expect(RepoStore.files.length).toBe(1);
+        expect(RepoStore.files[0].name).toBe('app');
+        expect(RepoStore.files[0].tempFile).toBeUndefined();
+        expect(RepoStore.files[0].files.length).toBe(0);
+      });
     });
   });
 });
