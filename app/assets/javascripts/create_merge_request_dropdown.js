@@ -19,7 +19,7 @@ export default class CreateMergeRequestDropdown {
     this.createTargetButton = this.wrapperEl.querySelector('.js-create-target');
     this.dropdownList = this.wrapperEl.querySelector('.dropdown-menu');
     this.dropdownToggle = this.wrapperEl.querySelector('.js-dropdown-toggle');
-    this.refInput = this.wrapperEl.querySelector('.ref');
+    this.refInput = this.wrapperEl.querySelector('.js-ref');
     this.refMessage = this.wrapperEl.querySelector('.ref-message');
     this.unavailableButton = this.wrapperEl.querySelector('.unavailable');
     this.unavailableButtonArrow = this.unavailableButton.querySelector('.fa');
@@ -44,60 +44,19 @@ export default class CreateMergeRequestDropdown {
     this.init();
   }
 
-  init() {
-    this.checkAbilityToCreateBranch();
-  }
-
   available() {
     this.availableButton.classList.remove('hide');
     this.unavailableButton.classList.add('hide');
   }
 
-  unavailable() {
-    this.availableButton.classList.add('hide');
-    this.unavailableButton.classList.remove('hide');
-  }
-
-  enable() {
-    this.createMergeRequestButton.classList.remove('disabled');
-    this.createMergeRequestButton.removeAttribute('disabled');
-
-    this.createTargetButton.classList.remove('disabled');
-    this.createTargetButton.removeAttribute('disabled');
-
-    this.dropdownToggle.classList.remove('disabled');
-    this.dropdownToggle.removeAttribute('disabled');
-  }
-
-  disable() {
-    this.disableCreateAction();
-
-    this.dropdownToggle.classList.add('disabled');
-    this.dropdownToggle.setAttribute('disabled', 'disabled');
-  }
-
-  disableCreateAction() {
-    this.createMergeRequestButton.classList.add('disabled');
-    this.createMergeRequestButton.setAttribute('disabled', 'disabled');
-
-    this.createTargetButton.classList.add('disabled');
-    this.createTargetButton.setAttribute('disabled', 'disabled');
-  }
-
-  hide() {
-    this.wrapperEl.classList.add('hide');
-  }
-
-  setUnavailableButtonState(isLoading = true) {
-    if (isLoading) {
-      this.unavailableButtonArrow.classList.add('fa-spinner', 'fa-spin');
-      this.unavailableButtonArrow.classList.remove('fa-exclamation-triangle');
-      this.unavailableButtonText.textContent = 'Checking branch availability…';
-    } else {
-      this.unavailableButtonArrow.classList.remove('fa-spinner', 'fa-spin');
-      this.unavailableButtonArrow.classList.add('fa-exclamation-triangle');
-      this.unavailableButtonText.textContent = 'New branch unavailable';
-    }
+  bindEvents() {
+    this.createMergeRequestButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
+    this.createTargetButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
+    this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
+    this.branchInput.addEventListener('keyup', this.onChangeInput.bind(this));
+    // this.branchInput.addEventListener('keyup', this.onChangeBranchInput.bind(this));
+    // this.refInput.addEventListener('keyup', this.onChangeRefInput.bind(this));
+    // this.refInput.addEventListener('keydown', this.processTab.bind(this));
   }
 
   checkAbilityToCreateBranch() {
@@ -129,48 +88,66 @@ export default class CreateMergeRequestDropdown {
     });
   }
 
+  createBranch() {
+    return $.ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: this.createBranchPath,
+      beforeSend: () => (this.isCreatingBranch = true),
+    })
+    .done((data) => {
+      this.branchCreated = true;
+      window.location.href = data.url;
+    })
+    .fail(() => new Flash('Failed to create a branch for this issue. Please try again.'));
+  }
+
+  createMergeRequest() {
+    return $.ajax({
+      method: 'POST',
+      dataType: 'json',
+      url: this.createMrPath,
+      beforeSend: () => (this.isCreatingMergeRequest = true),
+    })
+    .done((data) => {
+      this.mergeRequestCreated = true;
+      window.location.href = data.url;
+    })
+    .fail(() => new Flash('Failed to create Merge Request. Please try again.'));
+  }
+
+  disable() {
+    this.disableCreateAction();
+
+    this.dropdownToggle.classList.add('disabled');
+    this.dropdownToggle.setAttribute('disabled', 'disabled');
+  }
+
+  disableCreateAction() {
+    this.createMergeRequestButton.classList.add('disabled');
+    this.createMergeRequestButton.setAttribute('disabled', 'disabled');
+
+    this.createTargetButton.classList.add('disabled');
+    this.createTargetButton.setAttribute('disabled', 'disabled');
+  }
+
+  enable() {
+    this.createMergeRequestButton.classList.remove('disabled');
+    this.createMergeRequestButton.removeAttribute('disabled');
+
+    this.createTargetButton.classList.remove('disabled');
+    this.createTargetButton.removeAttribute('disabled');
+
+    this.dropdownToggle.classList.remove('disabled');
+    this.dropdownToggle.removeAttribute('disabled');
+  }
+
   findByValue(objects, ref, exactSearch = true) {
     if (!objects || !objects.length) return false;
-    if (objects.indexOf(ref) > 0) return ref;
+    if (objects.indexOf(ref) > -1) return ref;
     if (exactSearch) return false;
 
     return objects[0];
-  }
-
-  getRef(ref, type = 'all') {
-    if (!ref) return false;
-
-    $.ajax({
-      method: 'GET',
-      dataType: 'json',
-      url: this.refsPath + ref,
-      beforeSend: () => {
-        this.isGettingRef = true;
-      },
-    })
-    .always(() => {
-      this.isGettingRef = false;
-    })
-    .done((data) => {
-      const branches = data[Object.keys(data)[0]];
-      const tags = data[Object.keys(data)[1]];
-      if (type === 'branch') return this.findByValue(branches, ref);
-      return this.findByValue(branches, ref) || this.findByValue(tags, ref);
-    })
-    .fail(() => {
-      this.unavailable();
-      this.disable();
-      new Flash('Failed to get ref.');
-
-      return false;
-    });
-  }
-
-  initDroplab() {
-    this.droplab = new DropLab();
-
-    this.droplab.init(this.dropdownToggle, this.dropdownList, [InputSetter],
-      this.getDroplabConfig());
   }
 
   getDroplabConfig() {
@@ -198,13 +175,49 @@ export default class CreateMergeRequestDropdown {
     };
   }
 
-  bindEvents() {
-    this.createMergeRequestButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
-    this.createTargetButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
-    this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
-    this.branchInput.addEventListener('keyup', this.onChangeBranchInput.bind(this));
-    this.refInput.addEventListener('keyup', this.onChangeRefInput.bind(this));
-    this.refInput.addEventListener('keydown', this.processTab.bind(this));
+  getRef(ref, type = 'all') {
+    if (!ref) return false;
+
+    return $.ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: this.refsPath + ref,
+      beforeSend: () => {
+        this.isGettingRef = true;
+      },
+    })
+    .always(() => {
+      this.isGettingRef = false;
+    })
+    .done((data) => {
+      const branches = data[Object.keys(data)[0]];
+      const tags = data[Object.keys(data)[1]];
+
+      if (type === 'branch') return this.updateInputState(type, ref, this.findByValue(branches, ref));
+      return this.updateInputState(type, ref, this.findByValue(branches, ref) || this.findByValue(tags, ref));
+    })
+    .fail(() => {
+      this.unavailable();
+      this.disable();
+      new Flash('Failed to get ref.');
+
+      return false;
+    });
+  }
+
+  hide() {
+    this.wrapperEl.classList.add('hide');
+  }
+
+  init() {
+    this.checkAbilityToCreateBranch();
+  }
+
+  initDroplab() {
+    this.droplab = new DropLab();
+
+    this.droplab.init(this.dropdownToggle, this.dropdownList, [InputSetter],
+      this.getDroplabConfig());
   }
 
   isBusy() {
@@ -215,65 +228,52 @@ export default class CreateMergeRequestDropdown {
       this.isGettingRef;
   }
 
-  // target: 'branch', 'ref'
-  // type: 'checking', 'available', 'not_available'
-  showMessage(target, type) {
-    let input;
-    let message;
-    let text;
+  onChangeInput(event) {
+    let target;
+    let value;
 
-    if (target === 'branch') {
-      input = this.branchInput;
-      message = this.branchMessage;
-      text = 'branch name';
+    if (event.srcElement === this.branchInput) {
+      target = 'branch';
+      value = this.branchInput.value;
+    } else if (event.srcElement === this.refInput) {
+      target = 'ref';
+      value = this.srcElement.value.slice(0, this.srcElement.selectionStart) +
+      this.srcElement.value.slice(this.srcElement.selectionEnd);
     } else {
-      input = this.refInput;
-      message = this.refMessage;
-      text = 'source';
+      return false;
     }
 
-    // Remove gl-field error classes
-    input.classList.remove('gl-field-error-outline');
-    input.classList.remove('gl-field-success-outline');
-    message.classList.remove('gl-field-hint');
-    message.classList.remove('gl-field-error-message');
-    message.classList.remove('gl-field-success-message');
+    if (this.isGettingRef) return false;
 
-    if (type === 'checking') {
-      message.classList.add('gl-field-hint');
-      message.textContent = `Checking ${text} availability...`;
-      message.classList.remove('hide');
-
-      return;
+    // `ENTER` key submits the data.
+    if (event.keyCode === 13 && this.inputsAreValid) {
+      this.createMergeRequestButton.click();
+      return true;
     }
 
-    if (type === 'not_available') {
-      if (target === 'branch') {
-        text = 'Branch is already taken';
-      } else {
-        text = 'Source is not available';
-      }
-
-      input.classList.add('gl-field-error-outline');
-      message.classList.add('gl-field-error-message');
-      message.textContent = text;
-      message.classList.remove('hide');
-
-      return;
+    // `ESC` key closes the dropdown.
+    if (event.keyCode === 27) {
+      this.dropdownToggle.click();
+      return true;
     }
 
-    if (type === 'available') {
-      text = text.charAt(0).toUpperCase() + text.slice(1);
-
-      input.classList.add('gl-field-success-outline');
-      message.classList.add('gl-field-success-message');
-      message.textContent = `${text} is available`;
-      message.classList.remove('hide');
+    // If the input is empty, use the original value generated by the backend.
+    if (!value) {
+      this.createBranchPath = this.wrapperEl.dataset.createBranchPath;
+      this.createMrPath = this.wrapperEl.dataset.createMrPath;
+      this.inputsAreValid = true;
+      this.enable();
+      this.showMessage(target, 'available');
+      return true;
     }
-  }
 
-  onClickSetFocusOnBranchNameInput() {
-    this.branchInput.focus();
+    clearTimeout(this.getRefDelay);
+
+    this.getRefDelay = setTimeout(() => {
+      this.getRef(value, target);
+    }, 500);
+
+    return true;
   }
 
   onChangeBranchInput(event) {
@@ -303,6 +303,8 @@ export default class CreateMergeRequestDropdown {
       return;
     }
 
+    this.getRef(branch, 'branch');
+
     // If a found branch equals exact the same as a user typed,
     // that means a new branch cannot be created as it is already exists.
     if (this.getRef(branch, 'branch') === branch) {
@@ -316,7 +318,7 @@ export default class CreateMergeRequestDropdown {
       this.createBranchPath = this.createBranchPath.replace(/(branch_name=)(.+?)(?=&issue)/, `$1${branch}`);
       this.createMrPath = this.createMrPath.replace(/(branch_name=)(.+?)(?=&ref)/, `$1${branch}`);
     }
-}
+  }
 
   onChangeRefInput(event) {
     // Remove selected text (autocomplete text).
@@ -396,6 +398,10 @@ export default class CreateMergeRequestDropdown {
     this.disable();
   }
 
+  onClickSetFocusOnBranchNameInput() {
+    this.branchInput.focus();
+  }
+
   // `TAB` autocompletes the source.
   processTab(event) {
     if (event.keyCode !== 9) return;
@@ -408,31 +414,79 @@ export default class CreateMergeRequestDropdown {
     this.refInput.value = value;
   }
 
-  createMergeRequest() {
-    return $.ajax({
-      method: 'POST',
-      dataType: 'json',
-      url: this.createMrPath,
-      beforeSend: () => (this.isCreatingMergeRequest = true),
-    })
-    .done((data) => {
-      this.mergeRequestCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create Merge Request. Please try again.'));
+  setUnavailableButtonState(isLoading = true) {
+    if (isLoading) {
+      this.unavailableButtonArrow.classList.add('fa-spinner', 'fa-spin');
+      this.unavailableButtonArrow.classList.remove('fa-exclamation-triangle');
+      this.unavailableButtonText.textContent = 'Checking branch availability…';
+    } else {
+      this.unavailableButtonArrow.classList.remove('fa-spinner', 'fa-spin');
+      this.unavailableButtonArrow.classList.add('fa-exclamation-triangle');
+      this.unavailableButtonText.textContent = 'New branch unavailable';
+    }
   }
 
-  createBranch() {
-    return $.ajax({
-      method: 'POST',
-      dataType: 'json',
-      url: this.createBranchPath,
-      beforeSend: () => (this.isCreatingBranch = true),
-    })
-    .done((data) => {
-      this.branchCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create a branch for this issue. Please try again.'));
+  // target: 'branch', 'ref'
+  // type: 'checking', 'available', 'not_available'
+  showMessage(target, type) {
+    let input;
+    let message;
+    let text;
+
+    if (target === 'branch') {
+      input = this.branchInput;
+      message = this.branchMessage;
+      text = 'branch name';
+    } else {
+      input = this.refInput;
+      message = this.refMessage;
+      text = 'source';
+    }
+
+    // Remove gl-field error classes
+    input.classList.remove('gl-field-error-outline');
+    input.classList.remove('gl-field-success-outline');
+    message.classList.remove('gl-field-hint');
+    message.classList.remove('gl-field-error-message');
+    message.classList.remove('gl-field-success-message');
+
+    if (type === 'checking') {
+      message.classList.add('gl-field-hint');
+      message.textContent = `Checking ${text} availability...`;
+      message.classList.remove('hide');
+
+      return;
+    }
+
+    if (type === 'not_available') {
+      if (target === 'branch') {
+        text = 'Branch is already taken';
+      } else {
+        text = 'Source is not available';
+      }
+
+      input.classList.add('gl-field-error-outline');
+      message.classList.add('gl-field-error-message');
+      message.textContent = text;
+      message.classList.remove('hide');
+
+      return;
+    }
+
+    if (type === 'available') {
+      text = text.charAt(0).toUpperCase() + text.slice(1);
+
+      input.classList.add('gl-field-success-outline');
+      message.classList.add('gl-field-success-message');
+      message.textContent = `${text} is available`;
+      message.classList.remove('hide');
+    }
   }
+
+  unavailable() {
+    this.availableButton.classList.add('hide');
+    this.unavailableButton.classList.remove('hide');
+  }
+
+  updateInputState(target, ref, found) {
 }
