@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import ciBadge from '~/vue_shared/components/ci_badge_link.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('CI Badge Link Component', () => {
   let CIBadge;
+  let vm;
 
   const statuses = {
     canceled: {
@@ -70,20 +72,27 @@ describe('CI Badge Link Component', () => {
     },
   };
 
-  it('should render each status badge', () => {
+  beforeEach(() => {
     CIBadge = Vue.extend(ciBadge);
-    Object.keys(statuses).map((status) => {
-      const vm = new CIBadge({
-        propsData: {
-          status: statuses[status],
-        },
-      }).$mount();
+  });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  it('should render each status badge', () => {
+    Object.keys(statuses).map((status) => {
+      vm = mountComponent(CIBadge, { status: statuses[status] });
       expect(vm.$el.getAttribute('href')).toEqual(statuses[status].details_path);
       expect(vm.$el.textContent.trim()).toEqual(statuses[status].text);
       expect(vm.$el.getAttribute('class')).toEqual(`ci-status ci-${statuses[status].group}`);
       expect(vm.$el.querySelector('svg')).toBeDefined();
       return vm;
     });
+  });
+
+  it('should not render label', () => {
+    vm = mountComponent(CIBadge, { status: statuses.canceled, showText: false });
+    expect(vm.$el.textContent.trim()).toEqual('');
   });
 });
