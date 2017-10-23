@@ -12,7 +12,7 @@ describe API::V3::Milestones do
     it 'returns project milestones' do
       get v3_api("/projects/#{project.id}/milestones", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(milestone.title)
     end
@@ -20,13 +20,13 @@ describe API::V3::Milestones do
     it 'returns a 401 error if user not authenticated' do
       get v3_api("/projects/#{project.id}/milestones")
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'returns an array of active milestones' do
       get v3_api("/projects/#{project.id}/milestones?state=active", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(milestone.id)
@@ -35,7 +35,7 @@ describe API::V3::Milestones do
     it 'returns an array of closed milestones' do
       get v3_api("/projects/#{project.id}/milestones?state=closed", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_milestone.id)
@@ -46,7 +46,7 @@ describe API::V3::Milestones do
     it 'returns a project milestone by id' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq(milestone.title)
       expect(json_response['iid']).to eq(milestone.iid)
     end
@@ -63,7 +63,7 @@ describe API::V3::Milestones do
     it 'returns a project milestone by iid array' do
       get v3_api("/projects/#{project.id}/milestones", user), iid: [milestone.iid, closed_milestone.iid]
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(2)
       expect(json_response.first['title']).to eq milestone.title
       expect(json_response.first['id']).to eq milestone.id
@@ -72,13 +72,13 @@ describe API::V3::Milestones do
     it 'returns 401 error if user not authenticated' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}")
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'returns a 404 error if milestone id not found' do
       get v3_api("/projects/#{project.id}/milestones/1234", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -86,7 +86,7 @@ describe API::V3::Milestones do
     it 'creates a new project milestone' do
       post v3_api("/projects/#{project.id}/milestones", user), title: 'new milestone'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new milestone')
       expect(json_response['description']).to be_nil
     end
@@ -95,7 +95,7 @@ describe API::V3::Milestones do
       post v3_api("/projects/#{project.id}/milestones", user),
         title: 'new milestone', description: 'release', due_date: '2013-03-02', start_date: '2013-02-02'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['description']).to eq('release')
       expect(json_response['due_date']).to eq('2013-03-02')
       expect(json_response['start_date']).to eq('2013-02-02')
@@ -104,20 +104,20 @@ describe API::V3::Milestones do
     it 'returns a 400 error if title is missing' do
       post v3_api("/projects/#{project.id}/milestones", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns a 400 error if params are invalid (duplicate title)' do
       post v3_api("/projects/#{project.id}/milestones", user),
         title: milestone.title, description: 'release', due_date: '2013-03-02'
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'creates a new project with reserved html characters' do
       post v3_api("/projects/#{project.id}/milestones", user), title: 'foo & bar 1.1 -> 2.2'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('foo & bar 1.1 -> 2.2')
       expect(json_response['description']).to be_nil
     end
@@ -128,7 +128,7 @@ describe API::V3::Milestones do
       put v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user),
         title: 'updated title'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq('updated title')
     end
 
@@ -137,7 +137,7 @@ describe API::V3::Milestones do
 
       put v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user), due_date: nil
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['due_date']).to be_nil
     end
 
@@ -145,7 +145,7 @@ describe API::V3::Milestones do
       put v3_api("/projects/#{project.id}/milestones/1234", user),
         title: 'updated title'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -153,7 +153,7 @@ describe API::V3::Milestones do
     it 'updates a project milestone' do
       put v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user),
         state_event: 'close'
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['state']).to eq('closed')
     end
@@ -175,7 +175,7 @@ describe API::V3::Milestones do
     it 'returns project issues for a particular milestone' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
@@ -183,14 +183,14 @@ describe API::V3::Milestones do
     it 'matches V3 response schema for a list of issues' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('public_api/v3/issues')
     end
 
     it 'returns a 401 error if user not authenticated' do
       get v3_api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     describe 'confidential issues' do
@@ -207,7 +207,7 @@ describe API::V3::Milestones do
       it 'returns confidential issues to team members' do
         get v3_api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
@@ -219,7 +219,7 @@ describe API::V3::Milestones do
 
         get v3_api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
@@ -228,7 +228,7 @@ describe API::V3::Milestones do
       it 'does not return confidential issues to regular users' do
         get v3_api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", create(:user))
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)

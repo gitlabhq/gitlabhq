@@ -19,7 +19,7 @@ describe Projects::EnvironmentsController do
       it 'responds with status code 200' do
         get :index, environment_params
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -59,7 +59,7 @@ describe Projects::EnvironmentsController do
         end
 
         it 'sets the polling interval header' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers['Poll-Interval']).to eq("3000")
         end
       end
@@ -137,7 +137,7 @@ describe Projects::EnvironmentsController do
         params[:id] = 12345
         get :show, params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -155,7 +155,7 @@ describe Projects::EnvironmentsController do
       patch_params = environment_params.merge(environment: { external_url: 'https://git.gitlab.com' })
       patch :update, patch_params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
     end
   end
 
@@ -166,7 +166,7 @@ describe Projects::EnvironmentsController do
 
         patch :stop, environment_params(format: :json)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -179,7 +179,7 @@ describe Projects::EnvironmentsController do
 
         patch :stop, environment_params(format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
               project_job_url(project, action) })
@@ -193,7 +193,7 @@ describe Projects::EnvironmentsController do
 
         patch :stop, environment_params(format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
               project_environment_url(project, environment) })
@@ -206,7 +206,7 @@ describe Projects::EnvironmentsController do
       it 'responds with a status code 200' do
         get :terminal, environment_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'loads the terminals for the enviroment' do
@@ -220,7 +220,7 @@ describe Projects::EnvironmentsController do
       it 'responds with a status code 404' do
         get :terminal, environment_params(id: 666)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -244,7 +244,7 @@ describe Projects::EnvironmentsController do
 
           get :terminal_websocket_authorize, environment_params
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.headers["Content-Type"]).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
           expect(response.body).to eq('{"workhorse":"response"}')
         end
@@ -254,7 +254,7 @@ describe Projects::EnvironmentsController do
         it 'returns 404' do
           get :terminal_websocket_authorize, environment_params(id: 666)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -290,7 +290,7 @@ describe Projects::EnvironmentsController do
         it 'returns a metrics JSON document' do
           get :metrics, environment_params(format: :json)
 
-          expect(response).to have_http_status(204)
+          expect(response).to have_gitlab_http_status(204)
           expect(json_response).to eq({})
         end
       end
@@ -330,7 +330,7 @@ describe Projects::EnvironmentsController do
         it 'returns a metrics JSON document' do
           get :additional_metrics, environment_params(format: :json)
 
-          expect(response).to have_http_status(204)
+          expect(response).to have_gitlab_http_status(204)
           expect(json_response).to eq({})
         end
       end
