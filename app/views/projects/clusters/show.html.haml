@@ -33,7 +33,7 @@
         - else
           = s_('ClusterIntegration|Cluster integration is disabled for this project.')
 
-    = form_for [@project.namespace.becomes(Namespace), @project, @cluster] do |field|
+    = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
       = form_errors(@cluster)
       .form-group.append-bottom-20
         %label.append-bottom-10
@@ -62,9 +62,9 @@
         %label.append-bottom-10{ for: 'cluter-name' }
           = s_('ClusterIntegration|Cluster name')
         .input-group
-          %input.form-control.cluster-name{ value: @cluster.gcp_cluster_name, disabled: true }
+          %input.form-control.cluster-name{ value: @cluster.name, disabled: true }
           %span.input-group-addon.clipboard-addon
-            = clipboard_button(text: @cluster.gcp_cluster_name, title: s_('ClusterIntegration|Copy cluster name'))
+            = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy cluster name'))
 
   %section.settings#js-cluster-advanced-settings
     .settings-header

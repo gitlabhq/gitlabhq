@@ -4,11 +4,13 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
 
+      self.table_name = 'cluster_platforms_kubernetes'
+
       TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
-      self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
+      self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.cluster_id] }
 
-      belongs_to :cluster
+      belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Clusters::Cluster'
 
       attr_encrypted :password,
         mode: :per_attribute_iv,
@@ -28,8 +30,8 @@ module Clusters
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
-      validates :api_url, url: true, presence: true
-      validates :token, presence: true
+      validates :api_url, url: true, presence: true, on: :update
+      validates :token, presence: true, on: :update
 
       after_save :clear_reactive_cache!
       
@@ -53,9 +55,9 @@ module Clusters
           { key: 'KUBECONFIG', value: config, public: false, file: true }
         ]
 
-        if ca_pem.present?
-          variables << { key: 'KUBE_CA_PEM', value: ca_pem, public: true }
-          variables << { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
+        if ca_cert.present?
+          variables << { key: 'KUBE_CA_PEM', value: ca_cert, public: true }
+          variables << { key: 'KUBE_CA_PEM_FILE', value: ca_cert, public: true, file: true }
         end
 
         variables
@@ -76,7 +78,7 @@ module Clusters
       # Caches resources in the namespace so other calls don't need to block on
       # network access
       def calculate_reactive_cache
-        return unless active? && project && !project.pending_delete?
+        return unless active? && cluster.project && !cluster.project.pending_delete?
 
         # We may want to cache extra things in the future
         { pods: read_pods }
@@ -87,15 +89,16 @@ module Clusters
           url: api_url,
           namespace: actual_namespace,
           token: token,
-          ca_pem: ca_pem)
+          ca_pem: ca_cert)
       end
 
       def namespace_placeholder
         default_namespace || TEMPLATE_PLACEHOLDER
       end
 
-      def default_namespace
-        "#{cluster.first_project.path}-#{cluster.first_project.id}" if cluster.first_project
+      def default_namespace(project = nil)
+        project ||= cluster&.project
+        "#{project.path}-#{project.id}" if project
       end
 
       def read_secrets
@@ -120,9 +123,9 @@ module Clusters
       def kubeclient_ssl_options
         opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
 
-        if ca_pem.present?
+        if ca_cert.present?
           opts[:cert_store] = OpenSSL::X509::Store.new
-          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
+          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_cert))
         end
 
         opts
@@ -131,7 +134,11 @@ module Clusters
       private
 
       def build_kubeclient!(api_path: 'api', api_version: 'v1')
-        raise "Incomplete settings" unless api_url && actual_namespace && token
+        raise "Incomplete settings" unless api_url && actual_namespace
+
+        unless (username && password) || token
+          raise "Either username/password or token is required to access API"
+        end
 
         ::Kubeclient::Client.new(
           join_api_url(api_path),
@@ -143,7 +150,7 @@ module Clusters
       end
 
       def kubeclient_auth_options
-        return { username: username, password: password } if username
+        return { username: username, password: password } if username && password
         return { bearer_token: token } if token
       end
 
@@ -159,7 +166,7 @@ module Clusters
       def terminal_auth
         {
           token: token,
-          ca_pem: ca_pem,
+          ca_pem: ca_cert,
           max_session_time: current_application_settings.terminal_max_session_time
         }
       end

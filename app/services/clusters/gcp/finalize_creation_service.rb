@@ -7,15 +7,14 @@ module Clusters
         @provider = provider
 
         configure_provider
-        configure_kubernetes_platform
-        request_kuberenetes_platform_token
+        configure_kubernetes
 
         ActiveRecord::Base.transaction do
-          kubernetes_platform.update!
+          kubernetes.save!
           provider.make_created!
         end
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        return cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
+        cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
         cluster.make_errored!("Failed to configure GKE Cluster: #{e.message}")
       end
@@ -26,23 +25,20 @@ module Clusters
         provider.endpoint = gke_cluster.endpoint
       end
 
-      def configure_kubernetes_platform
-        kubernetes_platform = cluster.kubernetes_platform
-        kubernetes_platform.api_url = 'https://' + endpoint
-        kubernetes_platform.ca_cert = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
-        kubernetes_platform.username = gke_cluster.master_auth.username
-        kubernetes_platform.password = gke_cluster.master_auth.password
+      def configure_kubernetes
+        kubernetes.api_url = 'https://' + gke_cluster.endpoint
+        kubernetes.ca_cert = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
+        kubernetes.username = gke_cluster.master_auth.username
+        kubernetes.password = gke_cluster.master_auth.password
+        kubernetes.token = request_kuberenetes_token
       end
 
-      def request_kuberenetes_platform_token
-        kubernetes_platform.read_secrets.each do |secret|
+      def request_kuberenetes_token
+        kubernetes.read_secrets.each do |secret|
           name = secret.dig('metadata', 'name')
           if /default-token/ =~ name
             token_base64 = secret.dig('data', 'token')
-            if token_base64
-              kubernetes_platform.token = Base64.decode64(token_base64)
-              break
-            end
+            return Base64.decode64(token_base64) if token_base64
           end
         end
       end
@@ -50,16 +46,16 @@ module Clusters
       def gke_cluster
         @gke_cluster ||= provider.api_client.projects_zones_clusters_get(
           provider.gcp_project_id,
-          provider.gcp_cluster_zone,
-          provider.gcp_cluster_name)
+          provider.zone,
+          cluster.name)
       end
 
       def cluster
-        provider.cluster
+        @cluster ||= provider.cluster
       end
 
-      def kubernetes_platform
-        cluster.kubernetes_platform
+      def kubernetes
+        @kubernetes ||= cluster.platform_kubernetes
       end
     end
   end

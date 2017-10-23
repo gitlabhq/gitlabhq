@@ -178,8 +178,8 @@ class Project < ActiveRecord::Base
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
 
-  has_many :cluster_projects, class_name: 'Clusters::ClusterProject'
-  has_one :cluster, through: :cluster_projects
+  has_one :cluster_project, class_name: 'Clusters::Project'
+  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy

@@ -12,7 +12,7 @@ module Clusters
 
         request_operation do |operation|
           case operation.status
-          when 'RUNNING'
+          when 'PENDING', 'RUNNING'
             continue_creation(operation)
           when 'DONE'
             finalize_creation
@@ -25,11 +25,15 @@ module Clusters
       private
 
       def continue_creation(operation)
-        if TIMEOUT < Time.now.utc - operation.start_time.to_time.utc
-          return provider.make_errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
+        if elapsed_time_from_creation(operation) < TIMEOUT
+          WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, provider.cluster_id)
+        else
+          provider.make_errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
         end
+      end
 
-        WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, provider.cluster_id)
+      def elapsed_time_from_creation(operation)
+        Time.now.utc - operation.start_time.to_time.utc
       end
 
       def finalize_creation
@@ -37,7 +41,7 @@ module Clusters
       end
 
       def request_operation(&blk)
-        Clusters::FetchGcpOperationService.new.execute(provider, &blk)
+        Clusters::Gcp::FetchOperationService.new.execute(provider, &blk)
       end
     end
   end

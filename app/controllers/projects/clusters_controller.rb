@@ -27,11 +27,17 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
-    @cluster = project.build_cluster
+    @cluster = Clusters::Cluster.new(
+      platform_type: :kubernetes,
+      provider_type: :gcp).tap do |cluster|
+      cluster.build_provider_gcp
+      cluster.build_platform_kubernetes
+      cluster.projects << project
+    end
   end
 
   def create
-    @cluster = Ci::CreateService
+    @cluster = Clusters::CreateService
       .new(project, current_user, create_params)
       .execute(token_in_session)
 
@@ -58,7 +64,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    Ci::UpdateClusterService
+    Clusters::UpdateService
       .new(project, current_user, update_params)
       .execute(cluster)
 
@@ -89,16 +95,16 @@ class Projects::ClustersController < Projects::ApplicationController
   def create_params
     params.require(:cluster).permit(
       :enabled,
+      :name,
       :platform_type,
       :provider_type,
-      kubernetes_platform: [
+      platform_kubernetes_attributes: [
         :namespace
       ],
-      gcp_provider: [
-        :project_id,
-        :cluster_zone,
-        :cluster_name,
-        :cluster_size,
+      provider_gcp_attributes: [
+        :gcp_project_id,
+        :zone,
+        :num_nodes,
         :machine_type
       ])
   end
@@ -106,7 +112,7 @@ class Projects::ClustersController < Projects::ApplicationController
   def update_params
     params.require(:cluster).permit(
       :enabled,
-      kubernetes_platform: [
+      platform_kubernetes_attributes: [
         :namespace
       ])
   end

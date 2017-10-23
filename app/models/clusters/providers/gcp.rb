@@ -1,10 +1,12 @@
 module Clusters
   module Providers
     class Gcp < ActiveRecord::Base
-      belongs_to :cluster
+      self.table_name = 'cluster_providers_gcp'
 
-      default_value_for :cluster_zone, 'us-central1-a'
-      default_value_for :cluster_size, 3
+      belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Clusters::Cluster'
+
+      default_value_for :zone, 'us-central1-a'
+      default_value_for :num_nodes, 3
       default_value_for :machine_type, 'n1-standard-4'
 
       attr_encrypted :access_token,
@@ -12,23 +14,16 @@ module Clusters
         key: Gitlab::Application.secrets.db_key_base,
         algorithm: 'aes-256-cbc'
 
-      validates :project_id,
+      validates :gcp_project_id,
         length: 1..63,
         format: {
           with: Gitlab::Regex.kubernetes_namespace_regex,
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
-      validates :cluster_name,
-        length: 1..63,
-        format: {
-          with: Gitlab::Regex.kubernetes_namespace_regex,
-          message: Gitlab::Regex.kubernetes_namespace_regex_message
-        }
+      validates :zone, presence: true
 
-      validates :cluster_zone, presence: true
-
-      validates :cluster_size,
+      validates :num_nodes,
         presence: true,
         numericality: {
           only_integer: true,
@@ -54,9 +49,13 @@ module Clusters
         end
 
         before_transition any => [:errored, :created] do |provider|
-          provider.token = nil
+          provider.access_token = nil
           provider.operation_id = nil
-          provider.save!
+        end
+
+        before_transition any => [:creating] do |provider, transition|
+          operation_id = transition.args.first
+          provider.operation_id = operation_id if operation_id
         end
 
         before_transition any => [:errored] do |provider, transition|

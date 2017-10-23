@@ -4,7 +4,7 @@ class WaitForClusterCreationWorker
 
   def perform(cluster_id)
     Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
-      cluster.gcp_provider.try do |provider|
+      cluster.provider_gcp.try do |provider|
         Clusters::Gcp::VerifyProvisionStatusService.new.execute(provider)
       end
     end

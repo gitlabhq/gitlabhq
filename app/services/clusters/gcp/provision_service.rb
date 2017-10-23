@@ -6,43 +6,41 @@ module Clusters
       def execute(provider)
         @provider = provider
 
-        unless operation.status == 'RUNNING' || operation.status == 'PENDING'
-          return provider.make_errored!("Operation status is unexpected; #{operation.status_message}")
+        get_operation_id do |operation_id|
+          if provider.make_creating(operation_id)
+            WaitForClusterCreationWorker.perform_in(
+              Clusters::Gcp::VerifyProvisionStatusService::INITIAL_INTERVAL,
+              provider.id)
+          else
+            provider.make_errored!("Failed to update provider record; #{provider.errors}")
+          end
         end
-
-        provider.operation_id = operation_id
-
-        unless provider.operation_id
-          return provider.make_errored!('Can not find operation_id from self_link')
-        end
-
-        if provider.make_creating
-          WaitForClusterCreationWorker.perform_in(
-            WaitForClusterCreationWorker::INITIAL_INTERVAL, provider.id)
-        else
-          return provider.make_errored!("Failed to update provider record; #{provider.errors}")
-        end
-      rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        return provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       end
 
       private
 
-      def operation_id
-        api_client.parse_operation_id(operation.self_link)
-      end
-
-      def operation
-        @operation ||= api_client.projects_zones_providers_create(
-          provider.project_id,
-          provider.provider_zone,
-          provider.provider_name,
-          provider.provider_size,
+      def get_operation_id
+        operation = provider.api_client.projects_zones_clusters_create(
+          provider.gcp_project_id,
+          provider.zone,
+          provider.cluster.name,
+          provider.num_nodes,
           machine_type: provider.machine_type)
-      end
 
-      def api_client
-        provider.api_client
+        unless operation.status == 'PENDING' || operation.status == 'RUNNING'
+          return provider.make_errored!("Operation status is unexpected; #{operation.status_message}")
+        end
+
+        operation_id = provider.api_client.parse_operation_id(operation.self_link)
+
+        unless operation_id
+          return provider.make_errored!('Can not find operation_id from self_link')
+        end
+
+        yield(operation_id)
+
+      rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
+        provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       end
     end
   end

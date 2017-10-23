@@ -1,8 +1,8 @@
-module Gcp
+module Clusters
   class ClusterPolicy < BasePolicy
     alias_method :cluster, :subject
 
-    delegate { @subject.project }
+    delegate { cluster.project }
 
     rule { can?(:master_access) }.policy do
       enable :update_cluster
