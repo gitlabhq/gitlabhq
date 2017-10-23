@@ -68,6 +68,7 @@ import Diff from './diff';
 
     constructor({ action, setUrl, stubLocation } = {}) {
       const mergeRequestTabs = document.querySelector('.js-tabs-affix');
+      const navbar = document.querySelector('.navbar-gitlab');
       const paddingTop = 16;
 
       this.diffsLoaded = false;
@@ -79,7 +80,7 @@ import Diff from './diff';
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
-      this.stickyTop = document.querySelector('.navbar-gitlab').offsetHeight - paddingTop;
+      this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
 
       if (mergeRequestTabs) {
         this.stickyTop += mergeRequestTabs.offsetHeight;
