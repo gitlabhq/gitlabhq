@@ -234,6 +234,7 @@ import DueDateSelectors from './due_date_select';
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
           new gl.Diff();
