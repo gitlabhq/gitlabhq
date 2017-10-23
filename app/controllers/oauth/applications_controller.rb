@@ -18,7 +18,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def create
     @application = Applications::CreateService.new(current_user, create_application_params).execute
 
-    if @application.persited?
+    if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
 
       redirect_to oauth_application_url(@application)
@@ -57,7 +57,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
   def create_application_params
     application_params.tap do |params|
-      params[:doorkeeper_application][:owner] = current_user
+      params[:owner] = current_user
       params[:ip_address] = request.remote_ip
     end
   end
