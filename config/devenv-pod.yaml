@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-env
+  labels:
+    environment: dev-userid
+spec:
+  volumes:
+  - name: repo-data
+    emptyDir: {}
+  containers:
+  - name: fs
+    image: micaelbergeron/gitlab-web-ide-fs
+    ports:
+    - containerPort: 9000
+    volumeMounts:
+      - name: repo-data
+        mountPath: /export
+    env:
+      - name: REPO_URL
+        value: https://gitlab.com/mbergeron/gitlab-web-ide.git
+  - name: app
+    image: micaelbergeron/gitlab-web-ide-app
+    ports:
+      - containerPort: 5000
+    volumeMounts:
+      - name: repo-data
+        mountPath: /app
+    env:
+      - name: PORT
+        value: '5000'
