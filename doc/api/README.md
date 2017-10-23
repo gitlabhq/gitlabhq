@@ -53,6 +53,7 @@ following locations:
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Protected Branches](protected_branches.md)
+- [Protected Tags](protected_tags.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
