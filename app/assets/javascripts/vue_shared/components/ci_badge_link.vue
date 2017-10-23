@@ -54,7 +54,7 @@
     :href="status.details_path"
     :class="cssClass"
     v-tooltip
-    :title="status.text">
+    :title="!showText ? status.text : ''">
     <ci-icon :status="status" />
 
     <template v-if="showText">

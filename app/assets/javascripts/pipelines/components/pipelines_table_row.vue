@@ -31,7 +31,7 @@ export default {
     },
     viewType: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   components: {
