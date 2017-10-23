@@ -103,6 +103,16 @@ import '~/notes';
         $('.js-comment-button').click();
         expect(this.autoSizeSpy).toHaveBeenTriggered();
       });
+
+      it('should not place escaped text in the comment box in case of error', function() {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $(textarea).text('A comment with `markup`.');
+
+        deferred.reject();
+        $('.js-comment-button').click();
+        expect($(textarea).val()).toEqual('A comment with `markup`.');
+      });
     });
 
     describe('updateNote', () => {
