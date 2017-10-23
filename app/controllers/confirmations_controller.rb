@@ -15,7 +15,8 @@ class ConfirmationsController < Devise::ConfirmationsController
     if signed_in?(:user)
       after_sign_in(resource)
     else
-      Gitlab::AppLogger.info("Email Confirmed: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip}")
+      username = (_resource_name == :email ? resource.user.username : resource.username)
+      Gitlab::AppLogger.info("Email Confirmed: username=#{username} email=#{resource.email} ip=#{request.remote_ip}")
       flash[:notice] += " Please sign in."
       new_session_path(:user)
     end
