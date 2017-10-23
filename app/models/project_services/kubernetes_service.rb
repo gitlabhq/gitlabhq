@@ -127,6 +127,21 @@ class KubernetesService < DeploymentService
     end
   end
 
+  def development_proxy(environment)
+    kubeclient = build_kubeclient!
+    pod = development_pod(environment)
+    name = pod['metadata']['name']
+    fs_port = pod['spec']['containers'].first['ports'].first['containerPort']
+    app_port = pod['spec']['containers'].last['ports'].first['containerPort']
+    [ kubeclient.proxy_url('pod', name, fs_port, actual_namespace), kubeclient.proxy_url('pod', name, app_port, actual_namespace) ]
+  end
+
+
+  def development_terminal(environment)
+    terminal = terminals_for_pod(api_url, actual_namespace, development_pod(environment))
+    add_terminal_auth(terminal, terminal_auth)
+  end
+
   # Caches resources in the namespace so other calls don't need to block on
   # network access
   def calculate_reactive_cache
@@ -208,6 +223,26 @@ class KubernetesService < DeploymentService
       ca_pem: ca_pem,
       max_session_time: current_application_settings.terminal_max_session_time
     }
+  end
+
+  def development_pod(environment)
+    with_reactive_cache do |data|
+      pod = filter_by_label(data[:pods], environment: environment).first
+
+      unless pod
+        pod = YAML.load_file(Rails.root.join('config/k8s-devenv-pod.yaml'))
+        pod['metadata']['name'] = "#{environment}-pod"
+        pod['metadata']['labels']['environment'] = environment
+        pod['spec']['containers'].first['env'].first['value'] = project.url_to_repo
+        # TODO: Figure out image dynamically
+        pod['spec']['containers'].last['image'] = 'micaelbergeron/gitlab-web-ide-app'
+        # TODO: Figure out port dynamically
+        pod['spec']['containers'].last['ports'].first['containerPort'] = 5000
+        pod['spec']['containers'].last['env']  = [ { name: 'PORT', value: '5000' } ]
+        build_kubeclient!.create_pod(pod.symbolize_keys)
+      end
+      pod
+    end
   end
 
   def enforce_namespace_to_lower_case
