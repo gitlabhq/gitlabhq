@@ -7,3 +7,25 @@
 .fade-leave-to {
   opacity: 0;
 }
+
+@mixin expand-fade($size, $max-width) {
+  .expand-fade-#{$size}-enter-active,
+  .expand-fade-#{$size}-leave-active {
+    overflow: hidden;
+    // Explicit `max-width` is needed because we can't transition from `auto`
+    // And we can't make this sufficiently large because it wouldn't smoothly
+    // expand and would have a significant delay when collapsing
+    max-width: $max-width;
+    transition: max-width $default-transition-duration $general-hover-transition-curve,
+      opacity $default-transition-duration $general-hover-transition-curve;
+  }
+
+  .expand-fade-#{$size}-enter,
+  .expand-fade-#{$size}-leave-to {
+    max-width: 0;
+    opacity: 0;
+  }
+}
+
+@include expand-fade('sm', 50px);
+@include expand-fade('md', 200px);

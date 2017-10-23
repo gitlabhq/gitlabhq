@@ -61,8 +61,10 @@ describe('LoadingButton', function () {
         label: LABEL,
       });
       const label = vm.$el.querySelector('.js-loading-button-label');
+      const spacer = vm.$el.querySelector('.js-loading-button-spacer');
 
       expect(label.textContent.trim()).toEqual(LABEL);
+      expect(spacer).toBeDefined();
     });
   });
 

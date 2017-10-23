@@ -49,17 +49,21 @@ export default {
     type="button"
     :disabled="loading"
   >
-      <transition name="fade">
+      <transition name="expand-fade-sm">
         <loading-icon
           v-if="loading"
           :inline="true"
           class="js-loading-button-icon"
-          :class="{
-              'append-right-5': label
-          }"
         />
       </transition>
-      <transition name="fade">
+      <transition name="expand-fade-sm">
+        <span
+          v-if="loading && label"
+          class="append-right-5 js-loading-button-spacer"
+        >
+        </span>
+      </transition>
+      <transition name="expand-fade-md">
         <span
           v-if="label"
           class="js-loading-button-label"
