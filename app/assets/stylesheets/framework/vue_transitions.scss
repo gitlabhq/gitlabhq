@@ -1,0 +1,9 @@
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity $sidebar-transition-duration $general-hover-transition-curve;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
