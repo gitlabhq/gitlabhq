@@ -5,6 +5,7 @@ import Service from './services/repo_service';
 import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
+import newBranchForm from './components/new_branch_form.vue';
 import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
@@ -62,6 +63,26 @@ function initRepoEditButton(el) {
   });
 }
 
+function initNewBranchForm() {
+  const el = document.querySelector('.js-new-branch-dropdown');
+
+  if (!el) return null;
+
+  return new Vue({
+    el,
+    components: {
+      newBranchForm,
+    },
+    render(createElement) {
+      return createElement('new-branch-form', {
+        props: {
+          currentBranch: Store.currentBranch,
+        },
+      });
+    },
+  });
+}
+
 function initRepoBundle() {
   const repo = document.getElementById('repo');
   const editButton = document.querySelector('.editable-mode');
@@ -73,6 +94,7 @@ function initRepoBundle() {
 
   initRepo(repo);
   initRepoEditButton(editButton);
+  initNewBranchForm();
 }
 
 $(initRepoBundle);
