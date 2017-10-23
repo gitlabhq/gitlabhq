@@ -39,7 +39,8 @@ export default {
       this.dialog.status = status;
 
       // remove tmp files
-      Helper.removeAllTmpFiles();
+      Helper.removeAllTmpFiles('openedFiles');
+      Helper.removeAllTmpFiles('files');
     },
 
     toggleBlobView: Store.toggleBlobView,

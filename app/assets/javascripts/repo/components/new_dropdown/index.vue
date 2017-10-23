@@ -1,4 +1,7 @@
 <script>
+  import RepoHelper from '../../helpers/repo_helper';
+  import RepoStore from '../../stores/repo_store';
+  import eventHub from '../../event_hub';
   import newModal from './modal.vue';
 
   export default {
@@ -9,6 +12,7 @@
       return {
         openModal: false,
         modalType: '',
+        currentPath: RepoStore.path,
       };
     },
     methods: {
@@ -19,6 +23,17 @@
       toggleModalOpen() {
         this.openModal = !this.openModal;
       },
+      createNewEntryInStore(name, type) {
+        RepoHelper.createNewEntry(name, type);
+
+        this.toggleModalOpen();
+      },
+    },
+    created() {
+      eventHub.$on('createNewEntry', this.createNewEntryInStore);
+    },
+    beforeDestroy() {
+      eventHub.$off('createNewEntry', this.createNewEntryInStore);
     },
   };
 </script>
@@ -64,6 +79,7 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
+      :current-path="currentPath"
       @toggle="toggleModalOpen"
     />
   </div>

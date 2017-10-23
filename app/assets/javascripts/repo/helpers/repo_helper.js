@@ -242,7 +242,13 @@ const RepoHelper = {
   loadingError() {
     Flash('Unable to load this content at this time.');
   },
-
+  openEditMode() {
+    Store.editMode = true;
+    Store.currentBlobView = 'repo-editor';
+  },
+  updateStorePath(path) {
+    Store.path = path;
+  },
   findOrCreateEntry(type, tree, name) {
     let exists = true;
     let foundEntry = tree.files.find(dir => dir.type === type && dir.name === name);
@@ -267,10 +273,44 @@ const RepoHelper = {
       exists,
     };
   },
+  removeAllTmpFiles(storeFilesKey) {
+    Store[storeFilesKey] = Store[storeFilesKey].filter(f => !f.tempFile);
+  },
+  createNewEntry(name, type) {
+    const originalPath = Store.path;
+    let entryName = name;
 
-  removeAllTmpFiles() {
-    Store.openedFiles = Store.openedFiles.filter(f => !f.tempFile);
-    Store.files = Store.files.filter(f => !f.tempFile);
+    if (entryName.indexOf(`${originalPath}/`) !== 0) {
+      this.updateStorePath('');
+    } else {
+      entryName = entryName.replace(`${originalPath}/`, '');
+    }
+
+    if (entryName === '') return;
+
+    const fileName = type === 'tree' ? '.gitkeep' : entryName;
+    let tree = Store;
+
+    if (type === 'tree') {
+      const dirNames = entryName.split('/');
+
+      dirNames.forEach((dirName) => {
+        if (dirName === '') return;
+
+        tree = this.findOrCreateEntry('tree', tree, dirName).entry;
+      });
+    }
+
+    if ((type === 'tree' && tree.tempFile) || type === 'blob') {
+      const file = this.findOrCreateEntry('blob', tree, fileName);
+
+      if (!file.exists) {
+        this.setFile(file.entry, file.entry);
+        this.openEditMode();
+      }
+    }
+
+    this.updateStorePath(originalPath);
   },
 };
 

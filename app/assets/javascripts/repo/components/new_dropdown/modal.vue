@@ -1,11 +1,14 @@
 <script>
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
-  import RepoStore from '../../stores/repo_store';
-  import RepoHelper from '../../helpers/repo_helper';
+  import eventHub from '../../event_hub';
 
   export default {
     props: {
+      currentPath: {
+        type: String,
+        required: true,
+      },
       type: {
         type: String,
         required: true,
@@ -13,7 +16,7 @@
     },
     data() {
       return {
-        entryName: RepoStore.path !== '' ? `${RepoStore.path}/` : '',
+        entryName: this.currentPath !== '' ? `${this.currentPath}/` : '',
       };
     },
     components: {
@@ -21,44 +24,7 @@
     },
     methods: {
       createEntryInStore() {
-        const originalPath = RepoStore.path;
-        let entryName = this.entryName;
-
-        if (entryName.indexOf(`${RepoStore.path}/`) !== 0) {
-          RepoStore.path = '';
-        } else {
-          entryName = entryName.replace(`${RepoStore.path}/`, '');
-        }
-
-        if (entryName === '') return;
-
-        const fileName = this.type === 'tree' ? '.gitkeep' : entryName;
-        let tree = RepoStore;
-
-        if (this.type === 'tree') {
-          const dirNames = entryName.split('/');
-
-          dirNames.forEach((dirName) => {
-            if (dirName === '') return;
-
-            tree = RepoHelper.findOrCreateEntry('tree', tree, dirName).entry;
-          });
-        }
-
-        if ((this.type === 'tree' && tree.tempFile) || this.type === 'blob') {
-          const file = RepoHelper.findOrCreateEntry('blob', tree, fileName);
-
-          if (!file.exists) {
-            RepoHelper.setFile(file.entry, file.entry);
-
-            RepoStore.editMode = true;
-            RepoStore.currentBlobView = 'repo-editor';
-          }
-        }
-
-        this.toggleModalOpen();
-
-        RepoStore.path = originalPath;
+        eventHub.$emit('createNewEntry', this.entryName, this.type);
       },
       toggleModalOpen() {
         this.$emit('toggle');

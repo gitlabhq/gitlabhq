@@ -37,7 +37,7 @@ export default RepoFileButtons;
 <template>
   <div
     v-if="showButtons"
-    id="repo-file-buttons"
+    class="repo-file-buttons"
   >
     <a
       :href="activeFile.raw_path"

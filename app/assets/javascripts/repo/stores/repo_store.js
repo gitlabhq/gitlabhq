@@ -185,6 +185,4 @@ const RepoStore = {
   },
 };
 
-window.RepoStore = RepoStore;
-
 export default RepoStore;
