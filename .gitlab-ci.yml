@@ -52,7 +52,8 @@ stages:
   <<: *dedicated-runner
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
-  before_script: []
+  before_script:
+    - source scripts/utils.sh
   artifacts:
     expire_in: 31d
     paths:
