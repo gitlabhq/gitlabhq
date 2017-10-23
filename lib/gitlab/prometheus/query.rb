@@ -2,19 +2,10 @@ module Gitlab
   module Prometheus
     class Query
       include ActiveModel::Model
-###       unit: req / sec
-      # series:
-      #   - label: code
-      # when:
-      #   - value: 2xx
-      # color: green
-      # - value: 4xx
-      # color: yellow
-      # - value: 5xx
-      # color: red
+      include ActiveRecord::Base
+      enum
 
-      attr_accessor :unit, :sereis
-      attr_accessor :title, :required_metrics, :weight, :y_label, :queries
+      attr_accessor :unit, :series_dsl, :label, :type
 
       validates :title, :required_metrics, :weight, :y_label, :queries, presence: true
 
