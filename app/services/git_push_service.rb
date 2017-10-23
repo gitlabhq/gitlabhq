@@ -123,10 +123,16 @@ class GitPushService < BaseService
     return unless @project.lfs_enabled?
     return unless @project.lfs_objects.exists?
 
-    unprocessed_lfs_push = @project.unprocessed_lfs_pushes.create!(ref: params[:ref],
-                                                                   newrev: params[:newrev])
+    unless push_remove_branch?
+      unprocessed_lfs_push = @project.unprocessed_lfs_pushes.create!(ref: params[:ref],
+                                                                     newrev: params[:newrev])
 
-    UpdateLfsPointersWorker.perform_async(unprocessed_lfs_push.id)
+      UpdateLfsPointersWorker.perform_async(unprocessed_lfs_push.id)
+    end
+
+    if push_remove_branch? || force_push?
+      LfsProjectCleanupWorker.perform_async(@project.id)
+    end
   end
 
   protected
@@ -211,6 +217,12 @@ class GitPushService < BaseService
 
   def push_to_branch?
     Gitlab::Git.branch_ref?(params[:ref])
+  end
+
+  def force_push?
+    return @force_push if defined?(@force_push)
+
+    @force_push = Gitlab::Checks::ForcePush.force_push?(@project, params[:oldrev], params[:newrev])
   end
 
   def default_branch?
