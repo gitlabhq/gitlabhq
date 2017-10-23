@@ -1564,6 +1564,60 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#ff_merge' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+    let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:user) { build(:user) }
+    let(:target_branch) { 'test-ff-target-branch' }
+
+    before do
+      repository.create_branch(target_branch, branch_head)
+    end
+
+    after do
+      ensure_seeds
+    end
+
+    subject { repository.ff_merge(user, source_sha, target_branch) }
+
+    it 'performs a ff_merge' do
+      expect(subject.newrev).to eq(source_sha)
+      expect(subject.repo_created).to be(false)
+      expect(subject.branch_created).to be(false)
+
+      expect(repository.commit(target_branch).id).to eq(source_sha)
+    end
+
+    context 'with a non-existing target branch' do
+      subject { repository.ff_merge(user, source_sha, 'this-isnt-real') }
+
+      it 'throws an ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'with a non-existing source commit' do
+      let(:source_sha) { 'f001' }
+
+      it 'throws an ArgumentError' do
+        expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when the source sha is not a descendant of the branch head' do
+      let(:source_sha) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+
+      it "doesn't perform the ff_merge" do
+        expect { subject }.to raise_error(Gitlab::Git::CommitError)
+
+        expect(repository.commit(target_branch).id).to eq(branch_head)
+      end
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged
