@@ -8,7 +8,8 @@
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
-/* global GroupAvatar */
+import groupAvatar from './group_avatar';
+import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
@@ -423,11 +424,11 @@ import Diff from './diff';
         case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'groups:edit':
         case 'admin:groups:edit':
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -474,7 +475,7 @@ import Diff from './diff';
             const $el = $(el);
 
             if ($el.find('.dropdown-group-label').length) {
-              new gl.GroupLabelSubscription($el);
+              new GroupLabelSubscription($el);
             } else {
               new gl.ProjectLabelSubscription($el);
             }

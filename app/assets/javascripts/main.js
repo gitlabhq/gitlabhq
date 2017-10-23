@@ -55,8 +55,6 @@ import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
 import './gl_form';
-import './group_avatar';
-import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
