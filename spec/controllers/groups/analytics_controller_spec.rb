@@ -43,7 +43,7 @@ describe Groups::AnalyticsController do
 
     get :show, group_id: group.path
 
-    expect(response).to have_http_status(404)
+    expect(response).to have_gitlab_http_status(404)
   end
 
   context 'unlicensed but we show promotions' do
@@ -58,7 +58,7 @@ describe Groups::AnalyticsController do
 
       get :show, group_id: group.path
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 

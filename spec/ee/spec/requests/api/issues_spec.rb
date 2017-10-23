@@ -33,7 +33,7 @@ describe API::Issues, :mailer do
       it 'matches V4 response schema' do
         get api('/issues', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/issues', dir: 'ee')
       end
     end
@@ -45,7 +45,7 @@ describe API::Issues, :mailer do
         title: 'new issue', labels: 'label, label2', weight: 3,
         assignee_ids: [user2.id]
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
@@ -60,7 +60,7 @@ describe API::Issues, :mailer do
     it 'updates an issue with no weight' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['weight']).to eq(5)
     end
 
@@ -69,21 +69,21 @@ describe API::Issues, :mailer do
 
       put api("/projects/#{project.id}/issues/#{weighted_issue.iid}", user), weight: nil
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['weight']).to be_nil
     end
 
     it 'returns 400 if weight is less than minimum weight' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: -1
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
     it 'returns 400 if weight is more than maximum weight' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 10
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
@@ -95,7 +95,7 @@ describe API::Issues, :mailer do
       it 'ignores the update' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['weight']).to be_nil
         expect(issue.reload.read_attribute(:weight)).to be_nil
       end
@@ -103,7 +103,7 @@ describe API::Issues, :mailer do
   end
 
   def expect_paginated_array_response(size: nil)
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(200)
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.length).to eq(size) if size

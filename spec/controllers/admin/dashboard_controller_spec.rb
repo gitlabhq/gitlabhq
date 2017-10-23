@@ -6,21 +6,21 @@ describe Admin::DashboardController do
       sign_in(create(:user, :admin))
       get :index
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it "does not allow an auditor user to access the page" do
       sign_in(create(:user, :auditor))
       get :index
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "does not allow a regular user to access the page" do
       sign_in(create(:user))
       get :index
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context 'with pending_delete projects' do

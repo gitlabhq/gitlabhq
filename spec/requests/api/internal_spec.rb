@@ -14,7 +14,7 @@ describe API::Internal do
 
       get api("/internal/check"), secret_token: secret_token
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['api_version']).to eq(API::API.version)
       expect(json_response['redis']).to be(true)
     end
@@ -35,7 +35,7 @@ describe API::Internal do
       it 'returns one broadcast message'  do
         get api('/internal/broadcast_message'), secret_token: secret_token
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['message']).to eq(broadcast_message.message)
       end
     end
@@ -44,7 +44,7 @@ describe API::Internal do
       it 'returns nothing'  do
         get api('/internal/broadcast_message'), secret_token: secret_token
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
       end
     end
@@ -55,7 +55,7 @@ describe API::Internal do
 
         get api('/internal/broadcast_message'), secret_token: secret_token
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
       end
     end
@@ -68,7 +68,7 @@ describe API::Internal do
       it 'returns active broadcast message(s)' do
         get api('/internal/broadcast_messages'), secret_token: secret_token
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response[0]['message']).to eq(broadcast_message.message)
       end
     end
@@ -77,7 +77,7 @@ describe API::Internal do
       it 'returns nothing' do
         get api('/internal/broadcast_messages'), secret_token: secret_token
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
       end
     end
@@ -154,7 +154,7 @@ describe API::Internal do
       it 'returns the correct information about the key' do
         lfs_auth(key.id, project)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
         expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
 
@@ -164,7 +164,7 @@ describe API::Internal do
       it 'returns a 404 when the wrong key is provided' do
         lfs_auth(nil, project)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -174,7 +174,7 @@ describe API::Internal do
       it 'returns the correct information about the key' do
         lfs_auth(key.id, project)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
         expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).token)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
@@ -186,7 +186,7 @@ describe API::Internal do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['name']).to eq(user.name)
     end
@@ -262,7 +262,7 @@ describe API::Internal do
             GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
           }.to_json)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
 
@@ -270,7 +270,7 @@ describe API::Internal do
         it 'responds with success' do
           push(key, project.wiki)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
@@ -282,7 +282,7 @@ describe API::Internal do
         it 'responds with success' do
           pull(key, project.wiki)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
@@ -296,7 +296,7 @@ describe API::Internal do
             allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(false)
             pull(key, project)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -310,7 +310,7 @@ describe API::Internal do
             allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(true)
             pull(key, project)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -331,7 +331,7 @@ describe API::Internal do
             allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(false)
             push(key, project)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -345,7 +345,7 @@ describe API::Internal do
             allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(true)
             push(key, project)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -363,7 +363,7 @@ describe API::Internal do
           it do
             pull(key, project_with_repo_path('/' + project.full_path))
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -374,7 +374,7 @@ describe API::Internal do
           it do
             pull(key, project_with_repo_path(project.full_path))
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
@@ -392,7 +392,7 @@ describe API::Internal do
         it do
           pull(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
           expect(user).not_to have_an_activity_record
         end
@@ -402,7 +402,7 @@ describe API::Internal do
         it do
           push(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
           expect(user).not_to have_an_activity_record
         end
@@ -420,7 +420,7 @@ describe API::Internal do
         it do
           pull(key, personal_project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
           expect(user).not_to have_an_activity_record
         end
@@ -430,7 +430,7 @@ describe API::Internal do
         it do
           push(key, personal_project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
           expect(user).not_to have_an_activity_record
         end
@@ -447,7 +447,7 @@ describe API::Internal do
         it do
           pull(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
         end
       end
@@ -456,7 +456,7 @@ describe API::Internal do
         it do
           push(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
         end
       end
@@ -473,7 +473,7 @@ describe API::Internal do
         it do
           archive(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
         end
       end
@@ -482,7 +482,7 @@ describe API::Internal do
         it do
           archive(key, project)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
         end
       end
@@ -492,7 +492,7 @@ describe API::Internal do
       it do
         pull(key, project_with_repo_path('gitlab/notexist'))
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response["status"]).to be_falsey
       end
     end
@@ -501,7 +501,7 @@ describe API::Internal do
       it do
         pull(OpenStruct.new(id: 0), project)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response["status"]).to be_falsey
       end
     end
@@ -583,7 +583,7 @@ describe API::Internal do
       it 'rejects the push' do
         push_with_path(key, old_path_to_repo)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq(project_moved_message)
       end
@@ -591,7 +591,7 @@ describe API::Internal do
       it 'rejects the SSH pull' do
         pull_with_path(key, old_path_to_repo)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['status']).to be_falsey
         expect(json_response['message']).to eq(project_moved_message)
       end
@@ -662,7 +662,7 @@ describe API::Internal do
   #
   #     post api("/internal/notify_post_receive"), valid_params
   #
-  #     expect(response).to have_http_status(200)
+  #     expect(response).to have_gitlab_http_status(200)
   #   end
   #
   #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
@@ -674,7 +674,7 @@ describe API::Internal do
   #
   #     post api("/internal/notify_post_receive"), valid_wiki_params
   #
-  #     expect(response).to have_http_status(200)
+  #     expect(response).to have_gitlab_http_status(200)
   #   end
   #
   #   it "returns 500 if the gitaly call fails" do
@@ -683,7 +683,7 @@ describe API::Internal do
   #
   #     post api("/internal/notify_post_receive"), valid_params
   #
-  #     expect(response).to have_http_status(500)
+  #     expect(response).to have_gitlab_http_status(500)
   #   end
   #
   #   context 'with a gl_repository parameter' do
@@ -704,7 +704,7 @@ describe API::Internal do
   #
   #       post api("/internal/notify_post_receive"), valid_params
   #
-  #       expect(response).to have_http_status(200)
+  #       expect(response).to have_gitlab_http_status(200)
   #     end
   #
   #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
@@ -716,7 +716,7 @@ describe API::Internal do
   #
   #       post api("/internal/notify_post_receive"), valid_wiki_params
   #
-  #       expect(response).to have_http_status(200)
+  #       expect(response).to have_gitlab_http_status(200)
   #     end
   #   end
   # end
@@ -782,7 +782,7 @@ describe API::Internal do
       it 'returns one broadcast message'  do
         post api("/internal/post_receive"), valid_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(broadcast_message.message)
       end
     end
@@ -791,7 +791,7 @@ describe API::Internal do
       it 'returns empty string'  do
         post api("/internal/post_receive"), valid_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
       end
     end
@@ -802,7 +802,7 @@ describe API::Internal do
 
         post api("/internal/post_receive"), valid_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
       end
     end

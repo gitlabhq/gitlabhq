@@ -31,7 +31,7 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           list_boards
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'text/html'
         end
       end
@@ -59,7 +59,7 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           list_boards format: :json
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'application/json'
         end
       end
@@ -92,7 +92,7 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           read_board board: board
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'text/html'
         end
       end
@@ -114,7 +114,7 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           read_board board: board, format: :json
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'application/json'
         end
       end
@@ -126,7 +126,7 @@ describe Projects::BoardsController do
 
         read_board board: another_board
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

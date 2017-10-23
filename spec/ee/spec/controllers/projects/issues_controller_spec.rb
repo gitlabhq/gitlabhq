@@ -105,7 +105,7 @@ describe Projects::IssuesController do
 
           perform :get, :index, sort: 'weight'
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(assigns(:issues)).to eq(expected)
         end
 
@@ -115,7 +115,7 @@ describe Projects::IssuesController do
 
           perform :get, :index, weight: 1
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(assigns(:issues)).to eq([issue2])
         end
       end
@@ -124,7 +124,7 @@ describe Projects::IssuesController do
         it 'sets issue weight' do
           perform :put, :update, id: issue.to_param, issue: { weight: 6 }, format: :json
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(issue.reload.weight).to eq(6)
         end
       end
@@ -133,7 +133,7 @@ describe Projects::IssuesController do
         it 'sets issue weight' do
           perform :post, :create, issue: new_issue.attributes
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(Issue.count).to eq(1)
 
           issue = Issue.first
@@ -153,7 +153,7 @@ describe Projects::IssuesController do
 
           perform :get, :index, weight: 1
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(assigns(:issues)).to match_array(expected)
         end
       end
@@ -162,7 +162,7 @@ describe Projects::IssuesController do
         it 'does not set issue weight' do
           perform :put, :update, id: issue.to_param, issue: { weight: 6 }, format: :json
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(issue.reload.weight).to be_nil
           expect(issue.reload.read_attribute(:weight)).to eq(5) # pre-existing data is not overwritten
         end
@@ -172,7 +172,7 @@ describe Projects::IssuesController do
         it 'does not set issue weight' do
           perform :post, :create, issue: new_issue.attributes
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(Issue.count).to eq(1)
 
           issue = Issue.first
@@ -231,7 +231,7 @@ describe Projects::IssuesController do
       it 'returns a 404' do
         get_service_desk
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

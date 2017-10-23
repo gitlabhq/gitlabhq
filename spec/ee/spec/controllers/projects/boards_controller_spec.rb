@@ -39,7 +39,7 @@ describe Projects::BoardsController do
         it 'returns a successful 200 response' do
           create_board name: 'Backend'
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it 'returns the created board' do
@@ -53,7 +53,7 @@ describe Projects::BoardsController do
         it 'returns an unprocessable entity 422 response' do
           create_board name: nil
 
-          expect(response).to have_http_status(422)
+          expect(response).to have_gitlab_http_status(422)
         end
       end
 
@@ -67,7 +67,7 @@ describe Projects::BoardsController do
           create_board name: 'Backend'
 
           expect(response.content_type).to eq 'application/json'
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end
@@ -77,7 +77,7 @@ describe Projects::BoardsController do
 
       create_board name: 'Backend'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     def create_board(name:)
@@ -95,7 +95,7 @@ describe Projects::BoardsController do
       it 'returns a successful 200 response' do
         update_board board: board, name: 'Frontend'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'returns the updated board' do
@@ -109,7 +109,7 @@ describe Projects::BoardsController do
       it 'returns an unprocessable entity 422 response' do
         update_board board: board, name: nil
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
       end
     end
 
@@ -117,7 +117,7 @@ describe Projects::BoardsController do
       it 'returns a not found 404 response' do
         update_board board: 999, name: 'Frontend'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -131,7 +131,7 @@ describe Projects::BoardsController do
         update_board board: board, name: 'Backend'
 
         expect(response.content_type).to eq 'application/json'
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -164,7 +164,7 @@ describe Projects::BoardsController do
       it 'returns a not found 404 response' do
         remove_board board: 999
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -177,7 +177,7 @@ describe Projects::BoardsController do
       it 'returns a not found 404 response' do
         remove_board board: board
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

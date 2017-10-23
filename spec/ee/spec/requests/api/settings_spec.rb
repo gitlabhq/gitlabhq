@@ -14,7 +14,7 @@ describe API::Settings, 'EE Settings' do
     it 'sets EE specific settings' do
       put api("/application/settings", admin), help_text: 'Help text'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['help_text']).to eq('Help text')
     end
   end
@@ -28,7 +28,7 @@ describe API::Settings, 'EE Settings' do
     it 'hides repository mirror attributes when the feature is available' do
       get api("/application/settings", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.keys).not_to include('mirror_max_capacity')
     end
 
@@ -46,7 +46,7 @@ describe API::Settings, 'EE Settings' do
     it 'has repository mirror attributes when the feature is available' do
       get api("/application/settings", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.keys).to include('mirror_max_capacity')
     end
 

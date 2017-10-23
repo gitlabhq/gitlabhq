@@ -17,7 +17,7 @@ describe API::Repositories do
       it 'returns the repository tree' do
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 
@@ -106,7 +106,7 @@ describe API::Repositories do
       it 'returns blob attributes as json' do
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['size']).to eq(111)
         expect(json_response['encoding']).to eq("base64")
         expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
@@ -165,7 +165,7 @@ describe API::Repositories do
 
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       context 'when sha does not exist' do
@@ -218,7 +218,7 @@ describe API::Repositories do
       it 'returns the repository archive' do
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
@@ -230,7 +230,7 @@ describe API::Repositories do
       it 'returns the repository archive archive.zip' do
         get api("/projects/#{project.id}/repository/archive.zip", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
@@ -242,7 +242,7 @@ describe API::Repositories do
       it 'returns the repository archive archive.tar.bz2' do
         get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         repo_name = project.repository.name.gsub("\.git", "")
         type, params = workhorse_send_data
@@ -293,7 +293,7 @@ describe API::Repositories do
       it "compares branches" do
         get api(route, current_user), from: 'master', to: 'feature'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -301,7 +301,7 @@ describe API::Repositories do
       it "compares tags" do
         get api(route, current_user), from: 'v1.0.0', to: 'v1.1.0'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -309,7 +309,7 @@ describe API::Repositories do
       it "compares commits" do
         get api(route, current_user), from: sample_commit.id, to: sample_commit.parent_id
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_falsey
@@ -318,7 +318,7 @@ describe API::Repositories do
       it "compares commits in reverse order" do
         get api(route, current_user), from: sample_commit.parent_id, to: sample_commit.id
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present
         expect(json_response['diffs']).to be_present
       end
@@ -326,7 +326,7 @@ describe API::Repositories do
       it "compares same refs" do
         get api(route, current_user), from: 'master', to: 'master'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_empty
         expect(json_response['diffs']).to be_empty
         expect(json_response['compare_same_ref']).to be_truthy
@@ -367,7 +367,7 @@ describe API::Repositories do
       it 'returns valid data' do
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
 

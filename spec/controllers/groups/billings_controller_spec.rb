@@ -21,7 +21,7 @@ describe Groups::BillingsController do
 
         get :index, group_id: group
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template(:index)
       end
 
@@ -42,7 +42,7 @@ describe Groups::BillingsController do
 
         get :index, group_id: group.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'renders 404 when it is not gitlab.com' do
@@ -52,7 +52,7 @@ describe Groups::BillingsController do
 
         get :index, group_id: group
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
