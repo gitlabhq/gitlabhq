@@ -13,23 +13,27 @@ module Geo
     end
 
     def load_pending_resources
-      unsynced = find_unsynced_objects
-      failed = find_failed_objects
+      resources = find_unsynced_objects(batch_size: db_retrieve_batch_size)
+      remaining_capacity = db_retrieve_batch_size - resources.count
 
-      interleave(unsynced, failed)
+      if remaining_capacity.zero?
+        resources
+      else
+        resources + find_failed_objects(batch_size: remaining_capacity)
+      end
     end
 
-    def find_unsynced_objects
-      lfs_object_ids = find_lfs_object_ids
-      upload_objects_ids = find_upload_object_ids
+    def find_unsynced_objects(batch_size:)
+      lfs_object_ids = find_lfs_object_ids(batch_size: batch_size)
+      upload_objects_ids = find_upload_object_ids(batch_size: batch_size)
 
       interleave(lfs_object_ids, upload_objects_ids)
     end
 
-    def find_failed_objects
+    def find_failed_objects(batch_size:)
       Geo::FileRegistry
         .failed
-        .limit(db_retrieve_batch_size)
+        .limit(batch_size)
         .pluck(:file_id, :file_type)
     end
 
@@ -37,7 +41,7 @@ module Geo
       current_node.restricted_project_ids
     end
 
-    def find_lfs_object_ids
+    def find_lfs_object_ids(batch_size:)
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
@@ -48,12 +52,12 @@ module Geo
         end
 
       relation
-        .limit(db_retrieve_batch_size)
+        .limit(batch_size)
         .pluck(:id)
         .map { |id| [id, :lfs] }
     end
 
-    def find_upload_object_ids
+    def find_upload_object_ids(batch_size:)
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
@@ -64,7 +68,7 @@ module Geo
         end
 
       relation
-        .limit(db_retrieve_batch_size)
+        .limit(batch_size)
         .pluck(:id, :uploader)
         .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').underscore] }
     end
@@ -84,7 +88,6 @@ module Geo
 
       Geo::Fdw::Upload.joins("LEFT OUTER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id AND file_registry.file_type IN (#{obj_types})")
         .where('file_registry.file_id IS NULL')
-        .order(created_at: :desc)
     end
 
     def legacy_find_upload_object_ids
