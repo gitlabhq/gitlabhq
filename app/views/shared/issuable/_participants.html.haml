@@ -14,5 +14,5 @@
         = link_to_member(@project, participant, name: false, size: 24, lazy_load: true)
   - if participants_extra > 0
     .hide-collapsed.participants-more
-      %button.btn-transparent.btn-blank.js-participants-more{ data: { original_text: "+ #{participants_size - 7} more", less_text: "- show less", type: 'button' } }
+      %button.btn-transparent.btn-blank.js-participants-more{ type: 'button', data: { original_text: "+ #{participants_size - 7} more", less_text: "- show less" } }
         + #{participants_extra} more
