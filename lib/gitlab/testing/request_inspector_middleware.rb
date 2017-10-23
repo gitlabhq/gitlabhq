@@ -30,12 +30,12 @@ module Gitlab
         request_headers = env_http_headers(env)
         status, headers, body = @app.call(env)
 
-        log_response({
+        log_response(OpenStruct.new(
           url: url,
           status_code: status,
           request_headers: request_headers,
           response_headers: headers
-        })
+        ))
 
         [status, headers, body]
       end
@@ -52,7 +52,6 @@ module Gitlab
 
       def log_response(response)
         @@logged_requests.push(response)
-        STDOUT.puts response.to_json
       end
     end
   end

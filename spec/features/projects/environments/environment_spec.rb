@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Environment' do
+  include InspectRequests
+
   given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
@@ -193,11 +195,14 @@ feature 'Environment' do
         create(:environment, project: project,
                              name: 'staging-1.0/review',
                              state: :available)
-
-        visit folder_project_environments_path(project, id: 'staging-1.0')
       end
 
       it 'renders a correct environment folder' do
+        reqs = inspect_requests do
+          visit folder_project_environments_path(project, id: 'staging-1.0')
+        end
+
+        expect(reqs.first.status_code).to eq(200)
         expect(page).to have_content('Environments / staging-1.0')
       end
     end
