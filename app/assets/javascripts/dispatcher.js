@@ -12,7 +12,7 @@
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
@@ -448,7 +448,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
