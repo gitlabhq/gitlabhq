@@ -15,7 +15,7 @@ feature 'New project' do
     expect(page).to have_content('Project path')
     expect(page).to have_content('Project name')
 
-    find('#import-project-tab').trigger('click')
+    find('#import-project-tab').click
 
     expect(page).to have_link('GitHub')
     expect(page).to have_link('Bitbucket')
@@ -137,7 +137,7 @@ feature 'New project' do
   context 'Import project options', :js do
     before do
       visit new_project_path
-      find('#import-project-tab').trigger('click')
+      find('#import-project-tab').click
     end
 
     context 'from git repository url' do
