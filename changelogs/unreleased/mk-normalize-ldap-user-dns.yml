@@ -1,5 +1,0 @@
----
-title: Search or compare LDAP DNs case-insensitively and ignore excess whitespace
-merge_request: 14697
-author:
-type: fixed

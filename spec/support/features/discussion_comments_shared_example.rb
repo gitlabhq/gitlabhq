@@ -128,14 +128,31 @@ shared_examples 'discussion comments' do |resource_name|
         end
       end
 
-      it 'clicking "Start discussion" will post a discussion' do
-        find(submit_selector).click
+      describe 'creating a discussion' do
+        before do
+          find(submit_selector).click
+          find(comments_selector, match: :first)
+        end
 
-        find(comments_selector, match: :first)
-        new_comment = all(comments_selector).last
+        it 'clicking "Start discussion" will post a discussion' do
+          new_comment = all(comments_selector).last
 
-        expect(new_comment).to have_content 'a'
-        expect(new_comment).to have_selector '.discussion'
+          expect(new_comment).to have_content 'a'
+          expect(new_comment).to have_selector '.discussion'
+        end
+
+        if resource_name == 'merge request'
+          it 'shows resolved discussion when toggled' do
+            click_button "Resolve discussion"
+
+            expect(page).to have_selector('.note-row-1', visible: true)
+
+            refresh
+            click_button "Toggle discussion"
+
+            expect(page).to have_selector('.note-row-1', visible: true)
+          end
+        end
       end
 
       if resource_name == 'issue'

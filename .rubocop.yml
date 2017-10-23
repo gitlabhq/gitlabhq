@@ -624,7 +624,7 @@ Style/PredicateName:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 55.25
+  Max: 54.28
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -665,7 +665,7 @@ Metrics/ParameterLists:
 # A complexity metric geared towards measuring complexity for a human reader.
 Metrics/PerceivedComplexity:
   Enabled: true
-  Max: 15
+  Max: 14
 
 # Lint ########################################################################
 

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 import Service from './services/repo_service';
 import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
@@ -31,8 +32,13 @@ function setInitialStore(data) {
   Store.projectUrl = data.projectUrl;
   Store.canCommit = data.canCommit;
   Store.onTopOfBranch = data.onTopOfBranch;
+  Store.newMrTemplateUrl = decodeURIComponent(data.newMrTemplateUrl);
+  Store.customBranchURL = decodeURIComponent(data.blobUrl);
+  Store.isRoot = convertPermissionToBoolean(data.root);
+  Store.isInitialRoot = convertPermissionToBoolean(data.root);
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
+  Store.setBranchHash();
 }
 
 function initRepo(el) {

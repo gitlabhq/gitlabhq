@@ -60,12 +60,14 @@ feature 'Merge request conflict resolution', :js do
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
         wait_for_requests
+        find('.files-wrapper .diff-file pre')
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
         wait_for_requests
+        find('.files-wrapper .diff-file pre')
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
@@ -139,6 +141,7 @@ feature 'Merge request conflict resolution', :js do
       it 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
           wait_for_requests
+          find('.files-wrapper .diff-file pre')
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 

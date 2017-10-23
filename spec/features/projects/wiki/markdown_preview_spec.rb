@@ -14,7 +14,6 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
 
   background do
     project.team << [user, :master]
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
 
     sign_in(user)
 

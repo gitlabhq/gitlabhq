@@ -1,5 +1,0 @@
----
-title: Perform prometheus data endpoint requests in parallel
-merge_request: 14003
-author:
-type: fixed

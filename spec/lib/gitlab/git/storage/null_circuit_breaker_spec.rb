@@ -54,6 +54,10 @@ describe Gitlab::Git::Storage::NullCircuitBreaker do
   end
 
   describe '#failure_count_threshold' do
+    before do
+      stub_application_setting(circuitbreaker_failure_count_threshold: 1)
+    end
+
     it { expect(breaker.failure_count_threshold).to eq(1) }
   end
 

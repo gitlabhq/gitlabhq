@@ -28,7 +28,7 @@ module Gitlab
       private
 
       def execute(args)
-        output, status = popen(args, nil, Gitlab::Git::Env.all.stringify_keys)
+        output, status = popen(args, nil, Gitlab::Git::Env.to_env_hash)
 
         unless status.zero?
           raise "Got a non-zero exit code while calling out `#{args.join(' ')}`: #{output}"

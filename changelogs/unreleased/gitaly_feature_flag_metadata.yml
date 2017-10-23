@@ -1,5 +1,0 @@
----
-title: Add client and call site metadata to Gitaly calls for better traceability
-merge_request: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14332
-author:
-type: added

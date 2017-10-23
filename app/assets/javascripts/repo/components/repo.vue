@@ -11,7 +11,9 @@ import Helper from '../helpers/repo_helper';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
 
 export default {
-  data: () => Store,
+  data() {
+    return Store;
+  },
   mixins: [RepoMixin],
   components: {
     RepoSidebar,

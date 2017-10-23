@@ -1,8 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global ShortcutsNavigation */
 /* global IssuableIndex */
-/* global ShortcutsIssuable */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
@@ -31,10 +29,7 @@ import CILintEditor from './ci_lint_editor';
 /* global ProjectImport */
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Shortcuts */
-/* global ShortcutsFindFile */
 /* global Sidebar */
-/* global ShortcutsWiki */
 
 import CommitsList from './commits';
 import Issue from './issue';
@@ -70,6 +65,7 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initBroadcastMessagesForm from './broadcast_message';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
@@ -77,12 +73,20 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
 import GlFieldErrors from './gl_field_errors';
 import GLForm from './gl_form';
+import Shortcuts from './shortcuts';
+import ShortcutsNavigation from './shortcuts_navigation';
+import ShortcutsFindFile from './shortcuts_find_file';
+import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
+import Members from './members';
+import memberExpirationDate from './member_expiration_date';
+import DueDateSelectors from './due_date_select';
 
 (function() {
   var Dispatcher;
@@ -166,9 +170,6 @@ import U2FAuthenticate from './u2f/authenticate';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          if (page === 'projects:merge_requests:index') {
-            new UserCallout({ setCalloutPerProject: true });
-          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
           IssuableIndex.init(pagePrefix);
 
@@ -232,7 +233,7 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
-          new gl.DueDateSelectors();
+          new DueDateSelectors();
           new GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
@@ -350,7 +351,10 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new UserCallout({ setCalloutPerProject: true });
+          new UserCallout({
+            setCalloutPerProject: true,
+            className: 'js-autodevops-banner',
+          });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -369,9 +373,6 @@ import U2FAuthenticate from './u2f/authenticate';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
-          break;
-        case 'projects:pipelines:index':
-          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -393,21 +394,26 @@ import U2FAuthenticate from './u2f/authenticate';
           new gl.Activities();
           break;
         case 'groups:show':
+          const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
           new ProjectsList();
+
+          if (newGroupChildWrapper) {
+            new NewGroupChild(newGroupChildWrapper);
+          }
           break;
         case 'groups:group_members:index':
-          new gl.MemberExpirationDate();
-          new gl.Members();
+          memberExpirationDate();
+          new Members();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          new gl.MemberExpirationDate('.js-access-expiration-date-groups');
+          memberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
-          new gl.MemberExpirationDate();
-          new gl.Members();
+          memberExpirationDate();
+          new Members();
           new UsersSelect();
           break;
         case 'groups:new':
@@ -430,7 +436,6 @@ import U2FAuthenticate from './u2f/authenticate';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -528,7 +533,7 @@ import U2FAuthenticate from './u2f/authenticate';
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
-          new gl.DueDateSelectors();
+          new DueDateSelectors();
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters')
@@ -553,6 +558,9 @@ import U2FAuthenticate from './u2f/authenticate';
         case 'admin':
           new Admin();
           switch (path[1]) {
+            case 'broadcast_messages':
+              initBroadcastMessagesForm();
+              break;
             case 'cohorts':
               new UsagePing();
               break;

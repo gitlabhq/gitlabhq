@@ -7,6 +7,30 @@ describe Gcp::Cluster do
 
   it { is_expected.to validate_presence_of(:gcp_cluster_zone) }
 
+  describe '.enabled' do
+    subject { described_class.enabled }
+
+    let!(:cluster) { create(:gcp_cluster, enabled: true) }
+
+    before do
+      create(:gcp_cluster, enabled: false)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.disabled' do
+    subject { described_class.disabled }
+
+    let!(:cluster) { create(:gcp_cluster, enabled: false) }
+
+    before do
+      create(:gcp_cluster, enabled: true)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe '#default_value_for' do
     let(:cluster) { described_class.new }
 

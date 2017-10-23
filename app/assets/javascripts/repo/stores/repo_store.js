@@ -2,14 +2,13 @@ import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
 const RepoStore = {
-  monaco: {},
   monacoLoading: false,
   service: '',
   canCommit: false,
   onTopOfBranch: false,
   editMode: false,
-  isTree: false,
-  isRoot: false,
+  isRoot: null,
+  isInitialRoot: null,
   prevURL: '',
   projectId: '',
   projectName: '',
@@ -23,6 +22,7 @@ const RepoStore = {
     title: '',
     status: false,
   },
+  showNewBranchDialog: false,
   activeFile: Helper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: -1,
@@ -31,31 +31,32 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
+  startNewMR: false,
+  currentHash: '',
+  currentShortHash: '',
+  customBranchURL: '',
+  newMrTemplateUrl: '',
+  branchChanged: false,
   commitMessage: '',
-  binaryTypes: {
-    png: false,
-    md: false,
-    svg: false,
-    unknown: false,
-  },
   loading: {
     tree: false,
     blob: false,
   },
 
-  resetBinaryTypes() {
-    Object.keys(RepoStore.binaryTypes).forEach((key) => {
-      RepoStore.binaryTypes[key] = false;
-    });
+  setBranchHash() {
+    return Service.getBranch()
+      .then((data) => {
+        if (RepoStore.currentHash !== '' && data.commit.id !== RepoStore.currentHash) {
+          RepoStore.branchChanged = true;
+        }
+        RepoStore.currentHash = data.commit.id;
+        RepoStore.currentShortHash = data.commit.short_id;
+      });
   },
 
   // mutations
   checkIsCommitable() {
     RepoStore.isCommitable = RepoStore.onTopOfBranch && RepoStore.canCommit;
-  },
-
-  addFilesToDirectory(inDirectory, currentList, newList) {
-    RepoStore.files = Helper.getNewMergedList(inDirectory, currentList, newList);
   },
 
   toggleRawPreview() {
@@ -111,30 +112,6 @@ const RepoStore = {
     RepoStore.activeFileLabel = 'Display source';
   },
 
-  removeChildFilesOfTree(tree) {
-    let foundTree = false;
-    const treeToClose = tree;
-    let canStopSearching = false;
-    RepoStore.files = RepoStore.files.filter((file) => {
-      const isItTheTreeWeWant = file.url === treeToClose.url;
-      // if it's the next tree
-      if (foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
-        canStopSearching = true;
-        return true;
-      }
-      if (canStopSearching) return true;
-
-      if (isItTheTreeWeWant) foundTree = true;
-
-      if (foundTree) return file.level <= treeToClose.level;
-      return true;
-    });
-
-    treeToClose.opened = false;
-    treeToClose.icon = 'fa-folder';
-    return treeToClose;
-  },
-
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
     let foundIndex;
@@ -168,6 +145,7 @@ const RepoStore = {
     if (openedFilesAlreadyExists) return;
 
     openFile.changed = false;
+    openFile.active = true;
     RepoStore.openedFiles.push(openFile);
   },
 

@@ -36,6 +36,7 @@ class Projects::TreeController < Projects::ApplicationController
 
       format.json do
         page_title @path.presence || _("Files"), @ref, @project.name_with_namespace
+        response.header['is-root'] = @path.empty?
 
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38261
         Gitlab::GitalyClient.allow_n_plus_1_calls do

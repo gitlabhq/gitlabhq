@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import repoTab from '~/repo/components/repo_tab.vue';
+import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoTab', () => {
   function createComponent(propsData) {
@@ -18,7 +19,7 @@ describe('RepoTab', () => {
     const vm = createComponent({
       tab,
     });
-    const close = vm.$el.querySelector('.close');
+    const close = vm.$el.querySelector('.close-btn');
     const name = vm.$el.querySelector(`a[title="${tab.url}"]`);
 
     spyOn(vm, 'closeTab');
@@ -44,26 +45,43 @@ describe('RepoTab', () => {
       tab,
     });
 
-    expect(vm.$el.querySelector('.close .fa-circle')).toBeTruthy();
+    expect(vm.$el.querySelector('.close-btn .fa-circle')).toBeTruthy();
   });
 
   describe('methods', () => {
     describe('closeTab', () => {
-      const vm = jasmine.createSpyObj('vm', ['$emit']);
-
       it('returns undefined and does not $emit if file is changed', () => {
-        const file = { changed: true };
-        const returnVal = repoTab.methods.closeTab.call(vm, file);
+        const tab = {
+          url: 'url',
+          name: 'name',
+          changed: true,
+        };
+        const vm = createComponent({
+          tab,
+        });
 
-        expect(returnVal).toBeUndefined();
-        expect(vm.$emit).not.toHaveBeenCalled();
+        spyOn(RepoStore, 'removeFromOpenedFiles');
+
+        vm.$el.querySelector('.close-btn').click();
+
+        expect(RepoStore.removeFromOpenedFiles).not.toHaveBeenCalled();
       });
 
       it('$emits tabclosed event with file obj', () => {
-        const file = { changed: false };
-        repoTab.methods.closeTab.call(vm, file);
+        const tab = {
+          url: 'url',
+          name: 'name',
+          changed: false,
+        };
+        const vm = createComponent({
+          tab,
+        });
 
-        expect(vm.$emit).toHaveBeenCalledWith('tabclosed', file);
+        spyOn(RepoStore, 'removeFromOpenedFiles');
+
+        vm.$el.querySelector('.close-btn').click();
+
+        expect(RepoStore.removeFromOpenedFiles).toHaveBeenCalledWith(tab);
       });
     });
   });

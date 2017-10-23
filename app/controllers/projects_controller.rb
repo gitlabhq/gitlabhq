@@ -4,6 +4,7 @@ class ProjectsController < Projects::ApplicationController
   include PreviewMarkdown
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :redirect_git_extension, only: [:show]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
@@ -125,7 +126,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:alert] = _("Project '%{project_name}' will be deleted.") % { project_name: @project.name_with_namespace }
+    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.name_with_namespace }
 
     redirect_to dashboard_projects_path, status: 302
   rescue Projects::DestroyService::DestroyError => ex
@@ -388,5 +389,14 @@ class ProjectsController < Projects::ApplicationController
 
   def project_export_enabled
     render_404 unless current_application_settings.project_export_enabled?
+  end
+
+  def redirect_git_extension
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
   end
 end

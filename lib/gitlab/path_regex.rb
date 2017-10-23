@@ -26,7 +26,6 @@ module Gitlab
       apple-touch-icon.png
       assets
       autocomplete
-      boards
       ci
       dashboard
       deploy.html
@@ -129,7 +128,6 @@ module Gitlab
       notification_setting
       pipeline_quota
       projects
-      subgroups
     ].freeze
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES

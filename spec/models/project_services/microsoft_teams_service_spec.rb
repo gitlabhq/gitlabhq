@@ -108,12 +108,8 @@ describe MicrosoftTeamsService do
           message: "user created page: Awesome wiki_page"
         }
       end
-
-      let(:wiki_page_sample_data) do
-        service = WikiPages::CreateService.new(project, user, opts)
-        wiki_page = service.execute
-        Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create')
-      end
+      let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
+      let(:wiki_page_sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
       it "calls Microsoft Teams API" do
         chat_service.execute(wiki_page_sample_data)

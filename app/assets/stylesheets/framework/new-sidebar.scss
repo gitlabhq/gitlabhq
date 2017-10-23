@@ -6,7 +6,7 @@ $active-background: rgba(0, 0, 0, .04);
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
-$hover-background: $white-light;
+$hover-background: rgba(0, 0, 0, .06);
 $hover-color: $gl-text-color;
 $inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
@@ -330,7 +330,7 @@ $new-sidebar-collapsed-width: 50px;
 
     &.active > a:hover,
     &.is-over > a {
-      background-color: $white-light;
+      background-color: $hover-background;
     }
   }
 }
@@ -344,7 +344,7 @@ $new-sidebar-collapsed-width: 50px;
   position: fixed;
   bottom: 0;
   padding: 16px;
-  background-color: $gray-normal;
+  background-color: $gray-light;
   border: 0;
   border-top: 2px solid $border-color;
   color: $gl-text-color-secondary;
@@ -466,7 +466,7 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     + .breadcrumbs-links {
-      padding-left: 17px;
+      padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
     }
   }

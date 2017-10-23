@@ -35,7 +35,7 @@ feature 'issuable templates', :js do
       page.within('.content .issuable-actions') do
         click_on 'Edit'
       end
-      fill_in :'issue-title', with: 'test issue title'
+      fill_in :'issuable-title', with: 'test issue title'
     end
 
     scenario 'user selects "bug" template' do
@@ -80,7 +80,7 @@ feature 'issuable templates', :js do
       page.within('.content .issuable-actions') do
         click_on 'Edit'
       end
-      fill_in :'issue-title', with: 'test issue title'
+      fill_in :'issuable-title', with: 'test issue title'
       fill_in :'issue-description', with: prior_description
     end
 

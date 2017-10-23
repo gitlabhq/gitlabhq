@@ -2,15 +2,13 @@ module Gitlab
   module Git
     module Storage
       class CircuitBreaker
+        include CircuitBreakerSettings
+
         FailureInfo = Struct.new(:last_failure, :failure_count)
 
         attr_reader :storage,
                     :hostname,
-                    :storage_path,
-                    :failure_count_threshold,
-                    :failure_wait_time,
-                    :failure_reset_time,
-                    :storage_timeout
+                    :storage_path
 
         delegate :last_failure, :failure_count, to: :failure_info
 
@@ -18,7 +16,7 @@ module Gitlab
           pattern = "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}*"
 
           Gitlab::Git::Storage.redis.with do |redis|
-            all_storage_keys = redis.keys(pattern)
+            all_storage_keys = redis.scan_each(match: pattern).to_a
             redis.del(*all_storage_keys) unless all_storage_keys.empty?
           end
 
@@ -53,10 +51,6 @@ module Gitlab
 
           config = Gitlab.config.repositories.storages[@storage]
           @storage_path = config['path']
-          @failure_count_threshold = config['failure_count_threshold']
-          @failure_wait_time = config['failure_wait_time']
-          @failure_reset_time = config['failure_reset_time']
-          @storage_timeout = config['storage_timeout']
         end
 
         def perform
