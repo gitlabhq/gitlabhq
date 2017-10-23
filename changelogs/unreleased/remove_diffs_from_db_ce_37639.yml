@@ -1,0 +1,5 @@
+---
+title: Delete old (non-latest) merge request diffs after merge
+merge_request:
+author:
+type: changed

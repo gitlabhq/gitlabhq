@@ -15,10 +15,6 @@ describe MergeRequests::MergeService do
     context 'diff files' do
       let(:service) { described_class.new(project, user) }
 
-      # before do
-      #   allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
-      # end
-
       it 'clears non-latest diff files' do
         merge_request.create_merge_request_diff
         non_latest_diff = merge_request.create_merge_request_diff
