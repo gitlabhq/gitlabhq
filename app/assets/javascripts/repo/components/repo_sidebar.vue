@@ -74,6 +74,10 @@ export default {
       if (file.type === 'tree' && file.opened) {
         Helper.setDirectoryToClosed(file);
         Store.setActiveLine(lineNumber);
+      } else if (file.type === 'submodule') {
+        file.loading = true;
+
+        gl.utils.visitUrl(file.url);
       } else {
         const openFile = Helper.getFileFromPath(file.url);
 

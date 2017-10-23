@@ -312,9 +312,9 @@ describe ApplicationHelper do
 
   describe '#locale_path' do
     it 'returns the locale path with an `_`' do
-      Gitlab::I18n.locale = 'pt-BR'
-
-      expect(helper.locale_path).to include('assets/locale/pt_BR/app')
+      Gitlab::I18n.with_locale('pt-BR') do
+        expect(helper.locale_path).to include('assets/locale/pt_BR/app')
+      end
     end
   end
 end

@@ -57,7 +57,7 @@
       },
 
       showError(message) {
-        Flash((errorMessages[message]));
+        Flash(errorMessages[message]);
       },
     },
   };

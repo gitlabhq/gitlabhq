@@ -11,8 +11,8 @@ import {
   handleLocationHash,
   isMetaClick,
 } from './lib/utils/common_utils';
-
 import initDiscussionTab from './image_diff/init_discussion_tab';
+import Diff from './diff';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -292,7 +292,7 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
           }
           this.diffsLoaded = true;
 
-          new gl.Diff();
+          new Diff();
           this.scrollToElement('#diffs');
 
           $('.diff-file').each((i, el) => {

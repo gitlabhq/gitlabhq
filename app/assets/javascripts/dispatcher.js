@@ -87,6 +87,7 @@ import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
+import Diff from './diff';
 
 (function() {
   var Dispatcher;
@@ -237,7 +238,7 @@ import DueDateSelectors from './due_date_select';
           new GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
-          new gl.Diff();
+          new Diff();
           initChangesDropdown();
           break;
         case 'projects:branches:new':
@@ -273,7 +274,7 @@ import DueDateSelectors from './due_date_select';
           }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
@@ -307,7 +308,7 @@ import DueDateSelectors from './due_date_select';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
@@ -323,7 +324,7 @@ import DueDateSelectors from './due_date_select';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new gl.Diff();
+          new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           new MiniPipelineGraph({

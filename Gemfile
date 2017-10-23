@@ -102,7 +102,7 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.1.0'
+gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
 gem 'google-api-client', '~> 0.13.6'
@@ -281,7 +281,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta17'
   gem 'raindrops', '~> 0.18'
 end
 
