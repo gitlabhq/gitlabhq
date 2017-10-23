@@ -70,6 +70,11 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      namespace :workspaces do
+        get :show
+        get :attach
+      end
+
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
