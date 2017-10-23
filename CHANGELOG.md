@@ -100,7 +100,7 @@ entry.
 - [CHANGED] Added defaults for protected branches dropdowns on the repository settings. !14278
 - [CHANGED] Show confirmation modal before deleting account. !14360
 - [CHANGED] Allow creating merge requests across a fork network. !14422
-- [CHANGED] Re-arrange <script> tags before <template> tags in .vue files. !14671
+- [CHANGED] Re-arrange script HTML tags before template HTML tags in .vue files. !14671
 - [CHANGED] Create idea of read-only database. !14688
 - [CHANGED] Add active states to nav bar counters.
 - [CHANGED] Add view replaced file link for image diffs.
