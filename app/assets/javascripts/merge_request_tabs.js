@@ -67,6 +67,9 @@ import Diff from './diff';
   class MergeRequestTabs {
 
     constructor({ action, setUrl, stubLocation } = {}) {
+      const mergeRequestTabs = document.querySelector('.js-tabs-affix');
+      const paddingTop = 16;
+
       this.diffsLoaded = false;
       this.pipelinesLoaded = false;
       this.commitsLoaded = false;
@@ -76,6 +79,11 @@ import Diff from './diff';
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
+      this.stickyTop = document.querySelector('.navbar-gitlab').offsetHeight - paddingTop;
+
+      if (mergeRequestTabs) {
+        this.stickyTop += mergeRequestTabs.offsetHeight;
+      }
 
       if (stubLocation) {
         location = stubLocation;
@@ -278,7 +286,7 @@ import Diff from './diff';
           const $container = $('#diffs');
           $container.html(data.html);
 
-          initChangesDropdown();
+          initChangesDropdown(this.stickyTop);
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
