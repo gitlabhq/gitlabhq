@@ -51,20 +51,19 @@ const PARTICIPANTS_ROW_COUNT = 7;
     }
 
     IssuableContext.prototype.initParticipants = function() {
-      $(document).on("click", ".js-participants-more", this.toggleHiddenParticipants);
-      return $(".js-participants-author").each(function(i) {
+      $(document).on('click', '.js-participants-more', this.toggleHiddenParticipants);
+      return $('.js-participants-author').each(function(i) {
         if (i >= PARTICIPANTS_ROW_COUNT) {
-          return $(this).addClass("js-participants-hidden").hide();
+          return $(this).addClass('js-participants-hidden').hide();
         }
       });
     };
 
-    IssuableContext.prototype.toggleHiddenParticipants = function(e) {
-      var currentText, lessText, originalText;
-      e.preventDefault();
-      currentText = $(this).text().trim();
-      lessText = $(this).data("less-text");
-      originalText = $(this).data("original-text");
+    IssuableContext.prototype.toggleHiddenParticipants = function() {
+      const currentText = $(this).text().trim();
+      const lessText = $(this).data('less-text');
+      const originalText = $(this).data('original-text');
+
       if (currentText === originalText) {
         $(this).text(lessText);
 
@@ -73,7 +72,7 @@ const PARTICIPANTS_ROW_COUNT = 7;
         $(this).text(originalText);
       }
 
-      $(".js-participants-hidden").toggle();
+      $('.js-participants-hidden').toggle();
     };
 
     return IssuableContext;
