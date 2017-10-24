@@ -13,10 +13,7 @@ constraints(GroupUrlConstrainer.new) do
     get :merge_requests, as: :merge_requests_group
     get :projects, as: :projects_group
     get :activity, as: :activity_group
-<<<<<<< HEAD
     get :subgroups, as: :subgroups_group
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     get '/', action: :show, as: :group_canonical
   end
 
@@ -24,7 +21,6 @@ constraints(GroupUrlConstrainer.new) do
         module: :groups,
         as: :group,
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
-<<<<<<< HEAD
 
     ## EE-specific
     resource :analytics, only: [:show]
@@ -89,35 +85,6 @@ constraints(GroupUrlConstrainer.new) do
 
     ## EE-specific
     get :boards, to: redirect('/groups/%{group_id}/-/boards')
-=======
-    resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
-      post :resend_invite, on: :member
-      delete :leave, on: :collection
-    end
-
-    resource :avatar, only: [:destroy]
-    resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
-      member do
-        get :merge_requests
-        get :participants
-        get :labels
-      end
-    end
-
-    resources :labels, except: [:show] do
-      post :toggle_subscription, on: :member
-    end
-
-    scope path: '-' do
-      namespace :settings do
-        resource :ci_cd, only: [:show], controller: 'ci_cd'
-      end
-
-      resources :variables, only: [:index, :show, :update, :create, :destroy]
-
-      resources :children, only: [:index]
-    end
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
   end
 
   scope(path: '*id',
