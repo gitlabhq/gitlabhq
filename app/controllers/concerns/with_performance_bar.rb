@@ -10,7 +10,7 @@ module WithPerformanceBar
 
     cookie = cookies[:perf_bar_enabled]
 
-    if !cookie.present?
+    unless cookie.present?
       if Rails.env.development?
         cookies[:perf_bar_enabled] = 'true'
         return true
