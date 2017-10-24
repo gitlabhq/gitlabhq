@@ -1,3 +1,5 @@
+# rubocop:disable Style/ClassVars
+
 module Gitlab
   module Testing
     class RequestInspectorMiddleware
@@ -30,12 +32,13 @@ module Gitlab
         request_headers = env_http_headers(env)
         status, headers, body = @app.call(env)
 
-        log_response(OpenStruct.new(
+        request = OpenStruct.new(
           url: url,
           status_code: status,
           request_headers: request_headers,
           response_headers: headers
-        ))
+        )
+        log_request request
 
         [status, headers, body]
       end
@@ -43,14 +46,14 @@ module Gitlab
       private
 
       def env_http_headers(env)
-        Hash[*env.select {|k,v| k.start_with? 'HTTP_'}
-          .collect {|k,v| [k.sub(/^HTTP_/, ''), v]}
-          .collect {|k,v| [k.split('_').collect(&:capitalize).join('-'), v]}
+        Hash[*env.select {|k, v| k.start_with? 'HTTP_'}
+          .collect {|k, v| [k.sub(/^HTTP_/, ''), v]}
+          .collect {|k, v| [k.split('_').collect(&:capitalize).join('-'), v]}
           .sort
           .flatten]
       end
 
-      def log_response(response)
+      def log_request(response)
         @@logged_requests.push(response)
       end
     end
