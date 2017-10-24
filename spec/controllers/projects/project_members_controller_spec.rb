@@ -8,7 +8,7 @@ describe Projects::ProjectMembersController do
     it 'should have the project_members address with a 200 status code' do
       get :index, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -30,7 +30,7 @@ describe Projects::ProjectMembersController do
                       user_ids: project_user.id,
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(project.users).not_to include project_user
       end
     end
@@ -79,7 +79,7 @@ describe Projects::ProjectMembersController do
                          project_id: project,
                          id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -94,7 +94,7 @@ describe Projects::ProjectMembersController do
                            project_id: project,
                            id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).to include member
         end
       end
@@ -137,7 +137,7 @@ describe Projects::ProjectMembersController do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -168,7 +168,7 @@ describe Projects::ProjectMembersController do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -221,7 +221,7 @@ describe Projects::ProjectMembersController do
                                       project_id: project,
                                       id: 42
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -236,7 +236,7 @@ describe Projects::ProjectMembersController do
                                         project_id: project,
                                         id: member
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(project.members).not_to include member
         end
       end

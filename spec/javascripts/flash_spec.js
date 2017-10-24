@@ -2,6 +2,7 @@ import flash, {
   createFlashEl,
   createAction,
   hideFlash,
+  removeFlashClickListener,
 } from '~/flash';
 
 describe('Flash', () => {
@@ -263,6 +264,26 @@ describe('Flash', () => {
             actionConfig.clickHandler,
           ).toHaveBeenCalled();
         });
+      });
+    });
+  });
+
+  describe('removeFlashClickListener', () => {
+    beforeEach(() => {
+      document.body.innerHTML += '<div class="flash-container"><div class="flash"></div></div>';
+    });
+
+    it('removes global flash on click', (done) => {
+      const flashEl = document.querySelector('.flash');
+
+      removeFlashClickListener(flashEl, false);
+
+      flashEl.parentNode.click();
+
+      setTimeout(() => {
+        expect(document.querySelector('.flash')).toBeNull();
+
+        done();
       });
     });
   });

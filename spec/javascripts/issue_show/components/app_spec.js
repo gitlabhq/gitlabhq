@@ -332,4 +332,15 @@ describe('Issuable output', () => {
         .catch(done.fail);
     });
   });
+
+  describe('show inline edit button', () => {
+    it('should not render by default', () => {
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+
+    it('should render if showInlineEditButton', () => {
+      vm.showInlineEditButton = true;
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+  });
 });

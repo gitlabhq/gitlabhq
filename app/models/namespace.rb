@@ -162,6 +162,13 @@ class Namespace < ActiveRecord::Base
       .base_and_ancestors
   end
 
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
+  end
+
   def self_and_ancestors
     return self.class.where(id: id) unless parent_id
 

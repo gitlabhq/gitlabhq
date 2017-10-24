@@ -40,6 +40,10 @@ const createFlashEl = (message, type, isInContentWrapper = false) => `
   </div>
 `;
 
+const removeFlashClickListener = (flashEl, fadeTransition) => {
+  flashEl.parentNode.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+};
+
 /*
  *  Flash banner supports different types of Flash configurations
  *  along with ability to provide actionConfig which can be used to show
@@ -70,7 +74,7 @@ const createFlash = function createFlash(
   flashContainer.innerHTML = createFlashEl(message, type, isInContentWrapper);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
-  flashEl.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+  removeFlashClickListener(flashEl, fadeTransition);
 
   if (actionConfig) {
     flashEl.innerHTML += createAction(actionConfig);
@@ -90,5 +94,6 @@ export {
   createFlashEl,
   createAction,
   hideFlash,
+  removeFlashClickListener,
 };
 window.Flash = createFlash;

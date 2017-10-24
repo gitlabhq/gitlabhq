@@ -1,6 +1,0 @@
----
-title: Fix notes type created from import. This should fix some missing notes issues
-  from imported projects
-merge_request: 14524
-author:
-type: fixed

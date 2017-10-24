@@ -23,14 +23,14 @@ module Gitlab
       end
 
       def write_page(name, format, content, commit_details)
-        assert_type!(format, Symbol)
-        assert_type!(commit_details, CommitDetails)
-
-        gollum_wiki.write_page(name, format, content, commit_details.to_h)
-
-        nil
-      rescue Gollum::DuplicatePageError => e
-        raise Gitlab::Git::Wiki::DuplicatePageError, e.message
+        @repository.gitaly_migrate(:wiki_write_page) do |is_enabled|
+          if is_enabled
+            gitaly_write_page(name, format, content, commit_details)
+            gollum_wiki.clear_cache
+          else
+            gollum_write_page(name, format, content, commit_details)
+          end
+        end
       end
 
       def delete_page(page_path, commit_details)
@@ -109,6 +109,25 @@ module Gitlab
         unless object.is_a?(klass)
           raise ArgumentError, "expected a #{klass}, got #{object.inspect}"
         end
+      end
+
+      def gitaly_wiki_client
+        @gitaly_wiki_client ||= Gitlab::GitalyClient::WikiService.new(@repository)
+      end
+
+      def gollum_write_page(name, format, content, commit_details)
+        assert_type!(format, Symbol)
+        assert_type!(commit_details, CommitDetails)
+
+        gollum_wiki.write_page(name, format, content, commit_details.to_h)
+
+        nil
+      rescue Gollum::DuplicatePageError => e
+        raise Gitlab::Git::Wiki::DuplicatePageError, e.message
+      end
+
+      def gitaly_write_page(name, format, content, commit_details)
+        gitaly_wiki_client.write_page(name, format, content, commit_details)
       end
     end
   end

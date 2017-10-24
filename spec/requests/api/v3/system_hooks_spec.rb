@@ -12,7 +12,7 @@ describe API::V3::SystemHooks do
       it "returns authentication error" do
         get v3_api("/hooks")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -20,7 +20,7 @@ describe API::V3::SystemHooks do
       it "returns forbidden error" do
         get v3_api("/hooks", user)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -28,7 +28,7 @@ describe API::V3::SystemHooks do
       it "returns an array of hooks" do
         get v3_api("/hooks", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
         expect(json_response.first['push_events']).to be false
@@ -43,14 +43,14 @@ describe API::V3::SystemHooks do
       expect do
         delete v3_api("/hooks/#{hook.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end.to change { SystemHook.count }.by(-1)
     end
 
     it 'returns 404 if the system hook does not exist' do
       delete v3_api('/hooks/12345', admin)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 end

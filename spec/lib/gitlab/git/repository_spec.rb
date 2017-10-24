@@ -87,7 +87,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
             'GIT_OBJECT_DIRECTORY_RELATIVE' => './objects/foo',
             'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => ['./objects/bar', './objects/baz'],
             'GIT_OBJECT_DIRECTORY' => 'ignored',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'ignored:ignored',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[ignored ignored],
             'GIT_OTHER' => 'another_env'
           })
         end
@@ -104,7 +104,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         before do
           allow(Gitlab::Git::Env).to receive(:all).and_return({
             'GIT_OBJECT_DIRECTORY' => 'foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar:baz',
+            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => %w[bar baz],
             'GIT_OTHER' => 'another_env'
           })
         end
@@ -1507,6 +1507,60 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
         end
       end
+    end
+  end
+
+  describe '#fetch' do
+    let(:git_path) { Gitlab.config.git.bin_path }
+    let(:remote_name) { 'my_remote' }
+
+    subject { repository.fetch(remote_name) }
+
+    it 'fetches the remote and returns true if the command was successful' do
+      expect(repository).to receive(:popen)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .and_return(['', 0])
+
+      expect(subject).to be(true)
+    end
+  end
+
+  describe '#merge' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:source_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
+    let(:user) { build(:user) }
+    let(:target_branch) { 'test-merge-target-branch' }
+
+    before do
+      repository.create_branch(target_branch, '6d394385cf567f80a8fd85055db1ab4c5295806f')
+    end
+
+    after do
+      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+      ensure_seeds
+    end
+
+    shared_examples '#merge' do
+      it 'can perform a merge' do
+        merge_commit_id = nil
+        result = repository.merge(user, source_sha, target_branch, 'Test merge') do |commit_id|
+          merge_commit_id = commit_id
+        end
+
+        expect(result.newrev).to eq(merge_commit_id)
+        expect(result.repo_created).to eq(false)
+        expect(result.branch_created).to eq(false)
+      end
+    end
+
+    context 'with gitaly' do
+      it_behaves_like '#merge'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge'
     end
   end
 

@@ -37,7 +37,7 @@ describe 'OpenID Connect requests' do
     it 'userinfo response is unauthorized' do
       request_user_info
 
-      expect(response).to have_http_status 403
+      expect(response).to have_gitlab_http_status 403
       expect(response.body).to be_blank
     end
   end

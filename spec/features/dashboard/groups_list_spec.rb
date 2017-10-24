@@ -6,6 +6,13 @@ feature 'Dashboard Groups page', :js do
   let(:nested_group) { create(:group, :nested) }
   let(:another_group) { create(:group) }
 
+  def click_group_caret(group)
+    within("#group-#{group.id}") do
+      first('.folder-caret').click
+    end
+    wait_for_requests
+  end
+
   it 'shows groups user is member of' do
     group.add_owner(user)
     nested_group.add_owner(user)
@@ -13,13 +20,27 @@ feature 'Dashboard Groups page', :js do
 
     sign_in(user)
     visit dashboard_groups_path
+    wait_for_requests
 
-    expect(page).to have_content(group.full_name)
-    expect(page).to have_content(nested_group.full_name)
-    expect(page).not_to have_content(another_group.full_name)
+    expect(page).to have_content(group.name)
+
+    expect(page).not_to have_content(another_group.name)
   end
 
-  describe 'when filtering groups' do
+  it 'shows subgroups the user is member of', :nested_groups do
+    group.add_owner(user)
+    nested_group.add_owner(user)
+
+    sign_in(user)
+    visit dashboard_groups_path
+    wait_for_requests
+
+    expect(page).to have_content(nested_group.parent.name)
+    click_group_caret(nested_group.parent)
+    expect(page).to have_content(nested_group.name)
+  end
+
+  describe 'when filtering groups', :nested_groups do
     before do
       group.add_owner(user)
       nested_group.add_owner(user)
@@ -30,25 +51,26 @@ feature 'Dashboard Groups page', :js do
       visit dashboard_groups_path
     end
 
-    it 'filters groups' do
-      fill_in 'filter_groups', with: group.name
+    it 'expands when filtering groups' do
+      fill_in 'filter', with: nested_group.name
       wait_for_requests
 
-      expect(page).to have_content(group.full_name)
-      expect(page).not_to have_content(nested_group.full_name)
-      expect(page).not_to have_content(another_group.full_name)
+      expect(page).not_to have_content(group.name)
+      expect(page).to have_content(nested_group.parent.name)
+      expect(page).to have_content(nested_group.name)
+      expect(page).not_to have_content(another_group.name)
     end
 
     it 'resets search when user cleans the input' do
-      fill_in 'filter_groups', with: group.name
+      fill_in 'filter', with: group.name
       wait_for_requests
 
-      fill_in 'filter_groups', with: ''
+      fill_in 'filter', with: ''
       wait_for_requests
 
-      expect(page).to have_content(group.full_name)
-      expect(page).to have_content(nested_group.full_name)
-      expect(page).not_to have_content(another_group.full_name)
+      expect(page).to have_content(group.name)
+      expect(page).to have_content(nested_group.parent.name)
+      expect(page).not_to have_content(another_group.name)
       expect(page.all('.js-groups-list-holder .content-list li').length).to eq 2
     end
   end
@@ -66,28 +88,29 @@ feature 'Dashboard Groups page', :js do
     end
 
     it 'shows subgroups inside of its parent group' do
-      expect(page).to have_selector('.groups-list-tree-container .group-list-tree', count: 2)
-      expect(page).to have_selector(".groups-list-tree-container #group-#{group.id} #group-#{subgroup.id}", count: 1)
+      expect(page).to have_selector("#group-#{group.id}")
+      click_group_caret(group)
+      expect(page).to have_selector("#group-#{group.id} #group-#{subgroup.id}")
     end
 
     it 'can toggle parent group' do
-      # Expanded by default
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
+      # Collapsed by default
+      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
+      expect(page).to have_selector("#group-#{group.id} .fa-caret-right")
 
-      # Collapse
-      find("#group-#{group.id}").trigger('click')
+      # expand
+      click_group_caret(group)
 
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down")
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-right", count: 1)
-      expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
-
-      # Expand
-      find("#group-#{group.id}").trigger('click')
-
-      expect(page).to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
-      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
+      expect(page).to have_selector("#group-#{group.id} .fa-caret-down")
+      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right", count: 1)
       expect(page).to have_selector("#group-#{group.id} #group-#{subgroup.id}")
+
+      # collapse
+      click_group_caret(group)
+
+      expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
+      expect(page).to have_selector("#group-#{group.id} .fa-caret-right")
+      expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
     end
   end
 

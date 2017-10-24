@@ -33,6 +33,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  default_value_for :id, 1
+
   validates :uuid, presence: true
 
   validates :session_expire_delay,
@@ -151,6 +153,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :circuitbreaker_failure_count_threshold,
+            :circuitbreaker_failure_wait_time,
+            :circuitbreaker_failure_reset_time,
+            :circuitbreaker_storage_timeout,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -194,7 +203,10 @@ class ApplicationSetting < ActiveRecord::Base
     ensure_cache_setup
 
     Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last
+      ApplicationSetting.last.tap do |settings|
+        # do not cache nils
+        raise 'missing settings' unless settings
+      end
     end
   rescue
     # Fall back to an uncached value if there are any problems (e.g. redis down)

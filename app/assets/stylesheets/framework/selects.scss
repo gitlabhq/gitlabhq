@@ -64,6 +64,10 @@
   z-index: 999;
 }
 
+.select2-drop-mask {
+  z-index: 998;
+}
+
 .select2-drop.select2-drop-above.select2-drop-active {
   border-top: 1px solid $dropdown-border-color;
   margin-top: -6px;

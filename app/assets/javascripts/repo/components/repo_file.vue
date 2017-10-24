@@ -1,107 +1,95 @@
 <script>
-import TimeAgoMixin from '../../vue_shared/mixins/timeago';
+  import timeAgoMixin from '../../vue_shared/mixins/timeago';
+  import eventHub from '../event_hub';
+  import repoMixin from '../mixins/repo_mixin';
 
-const RepoFile = {
-  mixins: [TimeAgoMixin],
-  props: {
-    file: {
-      type: Object,
-      required: true,
+  export default {
+    mixins: [
+      repoMixin,
+      timeAgoMixin,
+    ],
+    props: {
+      file: {
+        type: Object,
+        required: true,
+      },
     },
-    isMini: {
-      type: Boolean,
-      required: false,
-      default: false,
+    computed: {
+      fileIcon() {
+        const classObj = {
+          'fa-spinner fa-spin': this.file.loading,
+          [this.file.icon]: !this.file.loading,
+          'fa-folder-open': !this.file.loading && this.file.opened,
+        };
+        return classObj;
+      },
+      levelIndentation() {
+        return {
+          marginLeft: `${this.file.level * 16}px`,
+        };
+      },
+      shortId() {
+        return this.file.id.substr(0, 8);
+      },
     },
-    loading: {
-      type: Object,
-      required: false,
-      default() { return { tree: false }; },
+    methods: {
+      linkClicked(file) {
+        eventHub.$emit('fileNameClicked', file);
+      },
     },
-    hasFiles: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    activeFile: {
-      type: Object,
-      required: true,
-    },
-  },
-
-  computed: {
-    canShowFile() {
-      return !this.loading.tree || this.hasFiles;
-    },
-
-    fileIcon() {
-      const classObj = {
-        'fa-spinner fa-spin': this.file.loading,
-        [this.file.icon]: !this.file.loading,
-      };
-      return classObj;
-    },
-
-    fileIndentation() {
-      return {
-        'margin-left': `${this.file.level * 10}px`,
-      };
-    },
-
-    activeFileClass() {
-      return {
-        active: this.activeFile.url === this.file.url,
-      };
-    },
-  },
-
-  methods: {
-    linkClicked(file) {
-      this.$emit('linkclicked', file);
-    },
-  },
-};
-
-export default RepoFile;
+  };
 </script>
 
 <template>
-<tr
-  v-if="canShowFile"
-  class="file"
-  :class="activeFileClass"
-  @click.prevent="linkClicked(file)">
-  <td>
-    <i
-      class="fa fa-fw file-icon"
-      :class="fileIcon"
-      :style="fileIndentation"
-      aria-label="file icon">
-    </i>
-    <a
-      :href="file.url"
-      class="repo-file-name"
-      :title="file.url">
-      {{file.name}}
-    </a>
-  </td>
+  <tr
+    class="file"
+    @click.prevent="linkClicked(file)">
+    <td>
+      <i
+        class="fa fa-fw file-icon"
+        :class="fileIcon"
+        :style="levelIndentation"
+        aria-hidden="true"
+      >
+      </i>
+      <a
+        :href="file.url"
+        class="repo-file-name"
+      >
+        {{ file.name }}
+      </a>
+      <template v-if="file.type === 'submodule' && file.id">
+        @
+        <span class="commit-sha">
+          <a
+            @click.stop
+            :href="file.tree_url"
+          >
+            {{ shortId }}
+          </a>
+        </span>
+      </template>
+    </td>
 
-  <template v-if="!isMini">
-    <td class="hidden-sm hidden-xs">
-      <div class="commit-message">
-        <a @click.stop :href="file.lastCommitUrl">
-          {{file.lastCommitMessage}}
+    <template v-if="!isMini">
+      <td class="hidden-sm hidden-xs">
+        <a
+          @click.stop
+          :href="file.lastCommit.url"
+          class="commit-message"
+        >
+          {{ file.lastCommit.message }}
         </a>
-      </div>
-    </td>
+      </td>
 
-    <td class="hidden-xs text-right">
-      <span
-        class="commit-update"
-        :title="tooltipTitle(file.lastCommitUpdate)">
-        {{timeFormated(file.lastCommitUpdate)}}
-      </span>
-    </td>
-  </template>
-</tr>
+      <td class="commit-update hidden-xs text-right">
+        <span
+          v-if="file.lastCommit.updatedAt"
+          :title="tooltipTitle(file.lastCommit.updatedAt)"
+        >
+          {{ timeFormated(file.lastCommit.updatedAt) }}
+        </span>
+      </td>
+    </template>
+  </tr>
 </template>

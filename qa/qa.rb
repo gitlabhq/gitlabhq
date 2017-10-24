@@ -18,6 +18,7 @@ module QA
     # Support files
     #
     autoload :Actable, 'qa/scenario/actable'
+    autoload :Entrypoint, 'qa/scenario/entrypoint'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -25,6 +26,10 @@ module QA
     #
     module Test
       autoload :Instance, 'qa/scenario/test/instance'
+
+      module Integration
+        autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+      end
     end
 
     ##

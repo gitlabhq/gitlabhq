@@ -34,7 +34,8 @@ class Repository
   CACHED_METHODS = %i(size commit_count rendered_readme contribution_guide
                       changelog license_blob license_key gitignore koding_yml
                       gitlab_ci_yml branch_names tag_names branch_count
-                      tag_count avatar exists? empty? root_ref has_visible_content?).freeze
+                      tag_count avatar exists? empty? root_ref has_visible_content?
+                      issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
@@ -50,7 +51,9 @@ class Repository
     gitignore: :gitignore,
     koding: :koding_yml,
     gitlab_ci: :gitlab_ci_yml,
-    avatar: :avatar
+    avatar: :avatar,
+    issue_template: :issue_template_names,
+    merge_request_template: :merge_request_template_names
   }.freeze
 
   # Wraps around the given method and caches its output in Redis and an instance
@@ -465,9 +468,7 @@ class Repository
   end
 
   def blob_at(sha, path)
-    unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -534,6 +535,16 @@ class Repository
     end
   end
   cache_method :avatar
+
+  def issue_template_names
+    Gitlab::Template::IssueTemplate.dropdown_names(project)
+  end
+  cache_method :issue_template_names, fallback: []
+
+  def merge_request_template_names
+    Gitlab::Template::MergeRequestTemplate.dropdown_names(project)
+  end
+  cache_method :merge_request_template_names, fallback: []
 
   def readme
     if readme = tree(:head)&.readme
@@ -901,14 +912,6 @@ class Repository
     end
   end
 
-  def resolve_conflicts(user, branch_name, params)
-    with_branch(user, branch_name) do
-      committer = user_to_committer(user)
-
-      create_commit(params.merge(author: committer, committer: committer))
-    end
-  end
-
   def merged_to_root_ref?(branch_name)
     branch_commit = commit(branch_name)
     root_ref_commit = commit(root_ref)
@@ -1114,7 +1117,7 @@ class Repository
 
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
-    run_git(args).first.strip
+    raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
   end
 
   def repository_storage_path

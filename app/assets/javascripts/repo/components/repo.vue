@@ -8,10 +8,14 @@ import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import Store from '../stores/repo_store';
 import Helper from '../helpers/repo_helper';
+import Service from '../services/repo_service';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
+import eventHub from '../event_hub';
 
 export default {
-  data: () => Store,
+  data() {
+    return Store;
+  },
   mixins: [RepoMixin],
   components: {
     RepoSidebar,
@@ -22,12 +26,19 @@ export default {
     PopupDialog,
     RepoPreview,
   },
-
+  created() {
+    eventHub.$on('createNewBranch', this.createNewBranch);
+  },
   mounted() {
     Helper.getContent().catch(Helper.loadingError);
   },
-
+  destroyed() {
+    eventHub.$off('createNewBranch', this.createNewBranch);
+  },
   methods: {
+    getCurrentLocation() {
+      return location.href;
+    },
     toggleDialogOpen(toggle) {
       this.dialog.open = toggle;
     },
@@ -36,8 +47,25 @@ export default {
       this.toggleDialogOpen(false);
       this.dialog.status = status;
     },
-
     toggleBlobView: Store.toggleBlobView,
+    createNewBranch(branch) {
+      Service.createBranch({
+        branch,
+        ref: Store.currentBranch,
+      }).then((res) => {
+        const newBranchName = res.data.name;
+        const newUrl = this.getCurrentLocation().replace(Store.currentBranch, newBranchName);
+
+        Store.currentBranch = newBranchName;
+
+        history.pushState({ key: Helper.key }, '', newUrl);
+
+        eventHub.$emit('createNewBranchSuccess', newBranchName);
+        eventHub.$emit('toggleNewBranchDropdown');
+      }).catch((err) => {
+        eventHub.$emit('createNewBranchError', err.response.data.message);
+      });
+    },
   },
 };
 </script>

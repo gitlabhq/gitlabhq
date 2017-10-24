@@ -13,7 +13,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import autosize from 'vendor/autosize';
-import Dropzone from 'dropzone';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -22,13 +21,11 @@ import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
 import Autosave from './autosave';
-import './dropzone_input';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
 window.autosize = autosize;
-window.Dropzone = Dropzone;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');
@@ -1283,10 +1280,12 @@ export default class Notes {
    * Get data from Form attributes to use for saving/submitting comment.
    */
   getFormData($form) {
+    const content = $form.find('.js-note-text').val();
     return {
       formData: $form.serialize(),
-      formContent: _.escape($form.find('.js-note-text').val()),
+      formContent: _.escape(content),
       formAction: $form.attr('action'),
+      formContentOriginal: content,
     };
   }
 
@@ -1418,7 +1417,7 @@ export default class Notes {
     const isMainForm = $form.hasClass('js-main-target-form');
     const isDiscussionForm = $form.hasClass('js-discussion-note-form');
     const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
-    const { formData, formContent, formAction } = this.getFormData($form);
+    const { formData, formContent, formAction, formContentOriginal } = this.getFormData($form);
     let noteUniqueId;
     let systemNoteUniqueId;
     let hasQuickActions = false;
@@ -1577,7 +1576,7 @@ export default class Notes {
           $form = $notesContainer.parent().find('form');
         }
 
-        $form.find('.js-note-text').val(formContent);
+        $form.find('.js-note-text').val(formContentOriginal);
         this.reenableTargetFormSubmitButton(e);
         this.addNoteError($form);
       });

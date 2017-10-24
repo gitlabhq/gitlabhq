@@ -21,15 +21,6 @@ window._ = _;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
-// shortcuts
-import './shortcuts';
-import './shortcuts_blob';
-import './shortcuts_dashboard_navigation';
-import './shortcuts_navigation';
-import './shortcuts_find_file';
-import './shortcuts_issuable';
-import './shortcuts_network';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -52,24 +43,17 @@ import './admin';
 import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './broadcast_message';
 import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
-import './diff';
-import './dropzone_input';
-import './due_date_select';
-import './files_comment_button';
-import Flash from './flash';
+import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
 import './gl_form';
-import './group_avatar';
-import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
@@ -83,8 +67,6 @@ import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
-import './member_expiration_date';
-import './members';
 import './merge_request';
 import './merge_request_tabs';
 import './milestone';
@@ -338,4 +320,10 @@ $(function () {
     event.preventDefault();
     gl.utils.visitUrl(`${action}${$(this).serialize()}`);
   });
+
+  const flashContainer = document.querySelector('.flash-container');
+
+  if (flashContainer && flashContainer.children.length) {
+    removeFlashClickListener(flashContainer.children[0]);
+  }
 });
