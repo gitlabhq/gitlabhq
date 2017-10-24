@@ -7,10 +7,6 @@ feature 'Diffs URL', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
-    before do
-      page.driver.add_header('Accept', '*/*')
-    end
-
     it 'renders the notes' do
       create :note_on_merge_request, project: project, noteable: merge_request, note: 'Rebasing with master'
 
