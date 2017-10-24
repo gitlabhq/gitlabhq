@@ -7,27 +7,34 @@ describe "Admin::PushRules"  do
     sign_in(current_user)
   end
 
-  context 'when reject_unsigned_commits is unlicensed' do
-    before do
-      stub_licensed_features(reject_unsigned_commits: false)
+  push_rules_with_titles = {
+    reject_unsigned_commits: 'Reject unsigned commits',
+    commit_author_check: 'Author restriction'
+  }
+
+  push_rules_with_titles.each do |rule_attr, title|
+    context "when #{rule_attr} is unlicensed" do
+      before do
+        stub_licensed_features(rule_attr => false)
+      end
+
+      it 'does not render the setting checkbox' do
+        visit admin_push_rule_path
+
+        expect(page).not_to have_content(title)
+      end
     end
 
-    it 'does not render the setting checkbox' do
-      visit admin_push_rule_path
+    context "when #{rule_attr} is licensed" do
+      before do
+        stub_licensed_features(rule_attr => true)
+      end
 
-      expect(page).not_to have_content('Reject unsigned commits')
-    end
-  end
+      it 'renders the setting checkbox' do
+        visit admin_push_rule_path
 
-  context 'when reject_unsigned_commits is licensed' do
-    before do
-      stub_licensed_features(reject_unsigned_commits: true)
-    end
-
-    it 'renders the setting checkbox' do
-      visit admin_push_rule_path
-
-      expect(page).to have_content('Reject unsigned commits')
+        expect(page).to have_content(title)
+      end
     end
   end
 end

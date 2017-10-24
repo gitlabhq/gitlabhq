@@ -34,52 +34,54 @@ describe Projects::PushRulesController do
       end
     end
 
-    context 'Updating reject unsigned commit rule' do
-      context 'as an admin' do
-        let(:user) { create(:admin) }
+    PushRule::SETTINGS_WITH_GLOBAL_DEFAULT.each do |rule_attr|
+      context "Updating #{rule_attr} rule" do
+        context 'as an admin' do
+          let(:user) { create(:admin) }
 
-        it 'updates the setting' do
-          patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { reject_unsigned_commits: true }
-
-          expect(project.push_rule(true).reject_unsigned_commits).to be_truthy
-        end
-      end
-
-      context 'as a master user' do
-        before do
-          project.add_master(user)
-        end
-
-        context 'when global setting is disabled' do
           it 'updates the setting' do
-            patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { reject_unsigned_commits: true }
+            patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { rule_attr => true }
 
-            expect(project.push_rule(true).reject_unsigned_commits).to be_truthy
+            expect(project.push_rule(true).public_send(rule_attr)).to be_truthy
           end
         end
 
-        context 'when global setting is enabled' do
+        context 'as a master user' do
           before do
-            create(:push_rule_sample, reject_unsigned_commits: true)
+            project.add_master(user)
+          end
+
+          context 'when global setting is disabled' do
+            it 'updates the setting' do
+              patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { rule_attr => true }
+
+              expect(project.push_rule(true).public_send(rule_attr)).to be_truthy
+            end
+          end
+
+          context 'when global setting is enabled' do
+            before do
+              create(:push_rule_sample, rule_attr => true)
+            end
+
+            it 'does not update the setting' do
+              patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { rule_attr => false }
+
+              expect(project.push_rule(true).public_send(rule_attr)).to be_truthy
+            end
+          end
+        end
+
+        context 'as a developer user' do
+          before do
+            project.add_developer(user)
           end
 
           it 'does not update the setting' do
-            patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { reject_unsigned_commits: false }
+            patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { rule_attr => true }
 
-            expect(project.push_rule(true).reject_unsigned_commits).to be_truthy
+            expect(project.push_rule(true).public_send(rule_attr)).to be_falsy
           end
-        end
-      end
-
-      context 'as a developer user' do
-        before do
-          project.add_developer(user)
-        end
-
-        it 'does not update the setting' do
-          patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { reject_unsigned_commits: true }
-
-          expect(project.push_rule(true).reject_unsigned_commits).to be_falsy
         end
       end
     end

@@ -4,9 +4,9 @@
 - push_rule = local_assigns.fetch(:push_rule)
 
 .form-group
-  = form.check_box :commit_author_check, class: "pull-left", disabled: !can_change_push_rule?(f.object, :commit_author_check)
+  = form.check_box :commit_author_check, class: "pull-left", disabled: !can_change_push_rule?(form.object, :commit_author_check)
   .prepend-left-20
     = form.label :commit_author_check, class: "label-light append-bottom-0" do
       Author restriction
     %p.light.append-bottom-0
-      = commit_author_check_description(f.object)
+      = commit_author_check_description(push_rule)

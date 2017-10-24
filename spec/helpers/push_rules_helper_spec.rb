@@ -7,7 +7,8 @@ describe PushRulesHelper do
   let(:project_owner) { push_rule.project.owner }
   let(:possible_help_texts) do
     {
-      base_help: /Only signed commits can be pushed to this repository/,
+      commit_author_check_base_help: /Only the author of a commit can push changes to this repository/,
+      reject_unsigned_commits_base_help: /Only signed commits can be pushed to this repository/,
       default_admin_help: /This setting will be applied to all projects unless overridden by an admin/,
       setting_can_be_overridden: /This setting is applied on the server level and can be overridden by an admin/,
       setting_has_been_overridden: /This setting is applied on the server level but has been overridden for this project/,
@@ -43,20 +44,23 @@ describe PushRulesHelper do
   end
 
   with_them do
-    before do
-      global_push_rule.update_column(:reject_unsigned_commits, enabled_globally)
-      push_rule.update_column(:reject_unsigned_commits, enabled_in_project)
+    PushRule::SETTINGS_WITH_GLOBAL_DEFAULT.each do |rule_attr|
+      before do
+        global_push_rule.update_column(rule_attr, enabled_globally)
+        push_rule.update_column(rule_attr, enabled_in_project)
 
-      allow(helper).to receive(:current_user).and_return(users[current_user])
-    end
+        allow(helper).to receive(:current_user).and_return(users[current_user])
+      end
 
-    it 'has the correct help text' do
-      rule = global_setting ? global_push_rule : push_rule
+      it 'has the correct help text' do
+        rule = global_setting ? global_push_rule : push_rule
+        message = possible_help_texts["#{rule_attr}_#{help_text}".to_sym].presence || possible_help_texts[help_text]
 
-      expect(helper.reject_unsigned_commits_description(rule)).to match(possible_help_texts[help_text])
+        expect(helper.public_send("#{rule_attr}_description", rule)).to match(message)
 
-      if invalid_text
-        expect(helper.reject_unsigned_commits_description(rule)).not_to match(possible_help_texts[invalid_text])
+        if invalid_text
+          expect(helper.public_send("#{rule_attr}_description", rule)).not_to match(possible_help_texts[invalid_text])
+        end
       end
     end
   end
