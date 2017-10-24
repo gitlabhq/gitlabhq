@@ -15,7 +15,7 @@ module Gitlab
 
         private
 
-        def self.metric_view_rendering_duration_seconds
+        def metric_view_rendering_duration_seconds
           @metric_view_rendering_duration_seconds ||= Gitlab::Metrics.histogram(
             :gitlab_view_rendering_duration_seconds,
             'View rendering time',
@@ -28,7 +28,7 @@ module Gitlab
           values = values_for(event)
           tags   = tags_for(event)
 
-          self.class.metric_view_rendering_duration_seconds.observe(
+          self.metric_view_rendering_duration_seconds.observe(
             current_transaction.labels.merge(tags),
             event.duration
           )

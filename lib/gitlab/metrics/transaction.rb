@@ -6,6 +6,7 @@ module Gitlab
       BASE_LABELS = { controller: nil, action: nil }.freeze
 
       THREAD_KEY = :_gitlab_metrics_transaction
+      METRICS_MUTEX = Mutex.new
 
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'.freeze
@@ -132,44 +133,64 @@ module Gitlab
       end
 
       def self.metric_transaction_duration_seconds
-        @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
-          :gitlab_transaction_duration_seconds,
-          'Transaction duration',
-          BASE_LABELS,
-          [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
-        )
+        return @metric_transaction_duration_seconds if @metric_transaction_duration_seconds
+
+        METRICS_MUTEX.synchronize do
+          @metric_transaction_duration_seconds ||= Gitlab::Metrics.histogram(
+            :gitlab_transaction_duration_seconds,
+            'Transaction duration',
+            BASE_LABELS,
+            [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
+          )
+        end
       end
 
       def self.metric_transaction_allocated_memory_bytes
-        @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
-          :gitlab_transaction_allocated_memory_bytes,
-          'Transaction allocated memory bytes',
-          BASE_LABELS,
-          [1000, 10000, 20000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
-        )
+        return @metric_transaction_allocated_memory_bytes if @metric_transaction_allocated_memory_bytes
+
+        METRICS_MUTEX.synchronize do
+          @metric_transaction_allocated_memory_bytes ||= Gitlab::Metrics.histogram(
+            :gitlab_transaction_allocated_memory_bytes,
+            'Transaction allocated memory bytes',
+            BASE_LABELS,
+            [1000, 10000, 20000, 500000, 1000000, 2000000, 5000000, 10000000, 20000000, 100000000]
+          )
+        end
       end
 
       def self.metric_event_counter(event_name, tags)
-        @metric_event_counters ||= {}
-        @metric_event_counters[event_name] ||= Gitlab::Metrics.counter(
-          "gitlab_transaction_event_#{event_name}_total".to_sym,
-          "Transaction event #{event_name} counter",
-          tags.merge(BASE_LABELS)
-        )
+        return @metric_event_counters[event_name] if @metric_event_counters&.has_key?(event_name)
+
+        METRICS_MUTEX.synchronize do
+          @metric_event_counters ||= {}
+          @metric_event_counters[event_name] ||= Gitlab::Metrics.counter(
+            "gitlab_transaction_event_#{event_name}_total".to_sym,
+            "Transaction event #{event_name} counter",
+            tags.merge(BASE_LABELS)
+          )
+        end
       end
 
       def self.metric_transaction_counter(name)
-        @metric_transaction_counters ||= {}
-        @metric_transaction_counters[name] ||= Gitlab::Metrics.counter(
-          "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", BASE_LABELS
-        )
+        return @metric_transaction_counters[name] if @metric_transaction_counters&.has_key?(name)
+
+        METRICS_MUTEX.synchronize do
+          @metric_transaction_counters ||= {}
+          @metric_transaction_counters[name] ||= Gitlab::Metrics.counter(
+            "gitlab_transaction_#{name}_total".to_sym, "Transaction #{name} counter", BASE_LABELS
+          )
+        end
       end
 
       def self.metric_transaction_gauge(name)
-        @metric_transaction_gauges ||= {}
-        @metric_transaction_gauges[name] ||= Gitlab::Metrics.gauge(
-          "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", BASE_LABELS, :livesum
-        )
+        return @metric_transaction_gauges[name] if @metric_transaction_gauges&.has_key?(name)
+
+        METRICS_MUTEX.synchronize do
+          @metric_transaction_gauges ||= {}
+          @metric_transaction_gauges[name] ||= Gitlab::Metrics.gauge(
+            "gitlab_transaction_#{name}".to_sym, "Transaction gauge #{name}", BASE_LABELS, :livesum
+          )
+        end
       end
     end
   end
