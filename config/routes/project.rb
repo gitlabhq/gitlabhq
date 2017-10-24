@@ -73,7 +73,7 @@ constraints(ProjectUrlConstrainer.new) do
       namespace :workspaces do
         get :show
         get :attach
-        get '/attach.ws/authorize', to: 'workspaces#attach', constraints: { format: nil }
+        get '/attach.ws/authorize', action: 'attach', constraints: { format: nil }
       end
 
       resource :mattermost, only: [:new, :create]
