@@ -10,12 +10,12 @@ class ConfirmationsController < Devise::ConfirmationsController
     users_almost_there_path
   end
 
-  def after_confirmation_path_for(_resource_name, resource)
+  def after_confirmation_path_for(resource_name, resource)
     # incoming resource can either be a :user or an :email
     if signed_in?(:user)
       after_sign_in(resource)
     else
-      username = (_resource_name == :email ? resource.user.username : resource.username)
+      username = (resource_name == :email ? resource.user.username : resource.username)
       Gitlab::AppLogger.info("Email Confirmed: username=#{username} email=#{resource.email} ip=#{request.remote_ip}")
       flash[:notice] += " Please sign in."
       new_session_path(:user)
