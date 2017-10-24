@@ -57,7 +57,7 @@ export default class Shortcuts {
   static onTogglePerfBar(e) {
     e.preventDefault();
     const performanceBarCookieName = 'perf_bar_enabled';
-    const value = String(Cookies.get(performanceBarCookieName) !== 'true')
+    const value = String(Cookies.get(performanceBarCookieName) !== 'true');
     Cookies.set(performanceBarCookieName, value, { path: '/' });
 
     gl.utils.refreshCurrentPage();
