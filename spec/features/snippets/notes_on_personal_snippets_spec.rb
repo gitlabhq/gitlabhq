@@ -110,7 +110,7 @@ describe 'Comments on personal snippets', :js do
       open_more_actions_dropdown(snippet_notes[0])
 
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Delete comment'
+        accept_confirm { click_on 'Delete comment' }
       end
 
       wait_for_requests
