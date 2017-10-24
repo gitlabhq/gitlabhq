@@ -192,23 +192,13 @@ class FilteredSearchManager {
     this.unbindStateEvents();
   }
 
-  getVisualTokenValues(visualToken) {
-    const tokenName = visualToken && visualToken.querySelector('.name').textContent.trim();
-    let tokenValue = visualToken && visualToken.querySelector('.value') && visualToken.querySelector('.value').textContent.trim();
-    if (tokenName === 'label') {
-      // remove leading symbol and wrapping quotes
-      tokenValue = tokenValue.replace(/^~("|')?(.*)("|')?$/, '$2');
-    }
-    return { tokenName, tokenValue };
-  }
-
   checkForBackspace(e) {
     // 8 = Backspace Key
     // 46 = Delete Key
     if (e.keyCode === 8 || e.keyCode === 46) {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-      const { tokenName, tokenValue } = this.getVisualTokenValues(lastVisualToken);
+      const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(lastVisualToken);
       const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
       if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
@@ -359,7 +349,7 @@ class FilteredSearchManager {
       let canClearToken = t.classList.contains('js-visual-token');
 
       if (canClearToken) {
-        const { tokenName, tokenValue } = this.getVisualTokenValues(t);
+        const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(t);
         canClearToken = this.canEdit && this.canEdit(tokenName, tokenValue);
       }
 
