@@ -496,18 +496,23 @@ class Repository
   def exists?
     return false unless full_path
 
-    value = Gitlab::Redis::Cache.with { |redis| redis.get(exists_cache_key) }
-    return JSON.parse(value).first unless value.nil?
+    return @exists if defined(@exists)
 
-    new_value = raw_repository.exists?
+    redis_value = Gitlab::Redis::Cache.with { |redis| redis.get(exists_cache_key) }
 
-    # We don't use 'cache_method' because that has a two-week expiry time
-    # (via Rails.cache). A false negative from 'exists?' has a severe impact
-    # on user experience. By using a shorter expiry time we limit the impact
-    # of such a fault.
-    Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, [new_value].to_json, ex: EXISTS_CACHE_TTL) }
+    if redis_value.nil?
+      @exists = raw_repository.exists?
 
-    new_value
+      # We don't use 'cache_method' because that has a two-week expiry time
+      # (via Rails.cache). A false negative from 'exists?' has a severe impact
+      # on user experience. By using a shorter expiry time we limit the impact
+      # of such a fault.
+      Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, [@exists].to_json, ex: EXISTS_CACHE_TTL) }
+    else
+      @exists = JSON.parse(redis_value).first
+    end
+
+    @exists
   end
 
   def exists_cache_key
