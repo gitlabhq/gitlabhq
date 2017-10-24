@@ -9,6 +9,7 @@ class Namespace < ActiveRecord::Base
   include Routable
   include AfterCommitQueue
   include Storage::LegacyNamespace
+  include FasterCacheKeys
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -137,9 +138,18 @@ class Namespace < ActiveRecord::Base
   end
 
   def custom_emoji_map
-    @custom_emoji_map ||= custom_emoji.each_with_object({}) do |emoji, hsh|
-      hsh[emoji.name] = emoji.url
-    end
+    @custom_emoji_map ||=
+      Rails.cache.fetch(custom_emoji_cache_key) do
+        custom_emoji.each_with_object({}) { |emoji, hsh| hsh[emoji.name] = emoji.url }
+      end
+  end
+
+  def invalidate_custom_emoji_cache
+    Rails.cache.delete(custom_emoji_cache_key)
+  end
+
+  def custom_emoji_cache_key
+    "#{cache_key}/custom_emoji"
   end
 
   def kind

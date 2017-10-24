@@ -36,6 +36,7 @@ constraints(GroupUrlConstrainer.new) do
 
     resources :labels, except: [:show] do
       post :toggle_subscription, on: :member
+    end
 
     scope path: '-' do
       namespace :settings do
