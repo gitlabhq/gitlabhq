@@ -42,13 +42,16 @@ class SmartInterval {
     const cfg = this.cfg;
     const state = this.state;
 
-    if (cfg.immediateExecution) {
+    if (cfg.immediateExecution && !this.isLoading) {
       cfg.immediateExecution = false;
-      cfg.callback();
+      this.triggerCallback();
     }
 
     state.intervalId = window.setInterval(() => {
-      cfg.callback();
+      if (this.isLoading) {
+        return;
+      }
+      this.triggerCallback();
 
       if (this.getCurrentInterval() === cfg.maxInterval) {
         return;
@@ -76,7 +79,7 @@ class SmartInterval {
 
   // start a timer, using the existing interval
   resume() {
-    this.stopTimer(); // stop exsiting timer, in case timer was not previously stopped
+    this.stopTimer(); // stop existing timer, in case timer was not previously stopped
     this.start();
   }
 
@@ -102,6 +105,17 @@ class SmartInterval {
 
     this.initVisibilityChangeHandling();
     this.initPageUnloadHandling();
+  }
+
+  triggerCallback() {
+    this.isLoading = true;
+    this.cfg.callback()
+      .then(() => {
+        this.isLoading = false;
+      })
+      .catch(() => {
+        this.isLoading = false;
+      });
   }
 
   initVisibilityChangeHandling() {

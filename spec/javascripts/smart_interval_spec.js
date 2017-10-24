@@ -9,7 +9,7 @@ import '~/smart_interval';
 
   function createDefaultSmartInterval(config) {
     const defaultParams = {
-      callback: () => {},
+      callback: () => Promise.resolve(),
       startingInterval: DEFAULT_STARTING_INTERVAL,
       maxInterval: DEFAULT_MAX_INTERVAL,
       incrementByFactorOf: DEFAULT_INCREMENT_FACTOR,

@@ -81,7 +81,7 @@ export default {
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
-      this.service.checkStatus()
+      return this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
           this.handleNotification(res);
@@ -121,7 +121,7 @@ export default {
       }
     },
     fetchDeployments() {
-      this.service.fetchDeployments()
+      return this.service.fetchDeployments()
         .then(res => res.json())
         .then((res) => {
           if (res.length) {
