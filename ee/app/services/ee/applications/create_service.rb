@@ -1,18 +1,18 @@
 module EE
   module Applications
     module CreateService
-      def execute
+      def execute(request)
         super.tap do |application|
-          audit_event_service.for_user(application.name).security_event
+          audit_event_service(request.ip_address).for_user(application.name).security_event
         end
       end
 
-      def audit_event_service
+      def audit_event_service(ip_address)
         ::AuditEventService.new(@current_user,
                                 @current_user,
                                 action: :custom,
                                 custom_message: 'OAuth access granted',
-                                ip_address: @ip_address)
+                                ip_address: ip_address)
       end
     end
   end

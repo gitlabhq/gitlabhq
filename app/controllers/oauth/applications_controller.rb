@@ -16,7 +16,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, create_application_params).execute
+    @application = Applications::CreateService.new(current_user, create_application_params).execute(request)
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
@@ -58,7 +58,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def create_application_params
     application_params.tap do |params|
       params[:owner] = current_user
-      params[:ip_address] = request.remote_ip
     end
   end
 end
