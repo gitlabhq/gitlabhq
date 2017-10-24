@@ -156,6 +156,31 @@ module API
         end
       end
 
+      desc 'Get all reference a commit is pushed to' do
+        detail 'This feature was introduced in GitLab 10.6'
+        success Entities::SimpleRef
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha'
+        optional :type, type: String, values: %w(branches tags all), default: 'all', desc: 'Scope'
+      end
+      get ':id/repository/commits/:sha/refs', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+        not_found!('Commit') unless commit
+
+        case params[:type]
+        when 'branches'
+          refs = user_project.repository.branch_names_contains(commit.id)
+        when 'tags'
+          refs = user_project.repository.tag_names_contains(commit.id)
+        else
+          refs = user_project.repository.branch_names_contains(commit.id)
+          refs.push(*user_project.repository.tag_names_contains(commit.id))
+        end
+
+        present refs, with: Entities::SimpleRef
+      end
+
       desc 'Post comment to commit' do
         success Entities::CommitNote
       end
