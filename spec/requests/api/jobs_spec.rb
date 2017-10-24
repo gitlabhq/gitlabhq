@@ -317,15 +317,14 @@ describe API::Jobs do
           end
         end
 
-<<<<<<< HEAD
         it 'does not return job artifacts if not uploaded' do
           expect(response).to have_gitlab_http_status(404)
-=======
+        end
+
         it 'returns specific job artifacts' do
           expect(response).to have_gitlab_http_status(200)
           expect(response.headers).to include(download_headers)
           expect(response.body).to match_file(job.artifacts_file.file.file)
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
         end
       end
     end
@@ -352,7 +351,6 @@ describe API::Jobs do
         end
       end
 
-<<<<<<< HEAD
       context 'feature is disabled for EES' do
         let(:api_user) { user }
         let(:cross_project_pipeline_enabled) { false }
@@ -361,10 +359,10 @@ describe API::Jobs do
           expect(response).to have_gitlab_http_status(404)
         end
       end
-=======
+    end
+
     it 'does not return job artifacts if not uploaded' do
       expect(response).to have_gitlab_http_status(404)
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     end
   end
 
@@ -441,7 +439,6 @@ describe API::Jobs do
           it { expect(response.headers).to include(download_headers) }
         end
 
-<<<<<<< HEAD
         context 'when artifacts are stored remotely' do
           let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline, user: api_user) }
 
@@ -449,10 +446,9 @@ describe API::Jobs do
             expect(response).to have_gitlab_http_status(302)
           end
         end
-=======
+
         it { expect(response).to have_gitlab_http_status(200) }
         it { expect(response.headers).to include(download_headers) }
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
 
       context 'with regular branch' do

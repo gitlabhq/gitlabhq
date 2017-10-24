@@ -1169,7 +1169,6 @@ describe API::Runner do
           let(:job) { create(:ci_build, :artifacts) }
 
           context 'when using job token' do
-<<<<<<< HEAD
             context 'when artifacts are stored locally' do
               let(:download_headers) do
                 { 'Content-Transfer-Encoding' => 'binary',
@@ -1188,11 +1187,11 @@ describe API::Runner do
               it 'download artifacts' do
                 expect(response).to have_gitlab_http_status(302)
               end
-=======
+            end
+
             it 'download artifacts' do
               expect(response).to have_gitlab_http_status(200)
               expect(response.headers).to include download_headers
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
             end
           end
 
