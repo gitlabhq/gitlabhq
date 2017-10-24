@@ -862,36 +862,10 @@ describe Projects::IssuesController do
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
       end
 
-      context 'with cross-reference system note', :request_store do
-        let(:new_issue) { create(:issue) }
-        let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+      it 'filters notes that the user should not see' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        before do
-          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
-        end
-
-        it 'filters notes that the user should not see' do
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-          expect(JSON.parse(response.body).count).to eq(1)
-        end
-
-        it 'does not result in N+1 queries' do
-          # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-          RequestStore.clear!
-
-          control_count = ActiveRecord::QueryRecorder.new do
-            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-          end.count
-
-          RequestStore.clear!
-
-          create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
-
-          expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
-        end
+        expect(JSON.parse(response.body).count).to eq(1)
       end
     end
 
@@ -953,24 +927,12 @@ describe Projects::IssuesController do
         it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
       end
 
-      it 'returns discussion json' do
-        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
-      end
-
       context 'with cross-reference system note', :request_store do
         let(:new_issue) { create(:issue) }
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
 
         before do
           create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
-        end
-
-        it 'filters notes that the user should not see' do
-          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-          expect(JSON.parse(response.body).count).to eq(1)
         end
 
         it 'does not result in N+1 queries' do

@@ -1188,11 +1188,6 @@ describe API::Runner do
                 expect(response).to have_gitlab_http_status(302)
               end
             end
-
-            it 'download artifacts' do
-              expect(response).to have_gitlab_http_status(200)
-              expect(response.headers).to include download_headers
-            end
           end
 
           context 'when using runnners token' do
