@@ -25,6 +25,10 @@ module Gitlab
           !!@error
         end
 
+        def backing_off?
+          false
+        end
+
         def last_failure
           circuit_broken? ? Time.now : nil
         end
