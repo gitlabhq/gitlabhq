@@ -120,6 +120,15 @@ module ApplicationSettingsHelper
     message.html_safe
   end
 
+  def circuitbreaker_access_retries_help_text
+    _('The number of attempts GitLab will make to access a storage.')
+  end
+
+  def circuitbreaker_backoff_threshold_help_text
+    _("The number of failures after which GitLab will start temporarily "\
+      "disabling access to a storage shard on a host")
+  end
+
   def circuitbreaker_failure_wait_time_help_text
     _("When access to a storage fails. GitLab will prevent access to the "\
       "storage for the time specified here. This allows the filesystem to "\
@@ -144,6 +153,8 @@ module ApplicationSettingsHelper
       :akismet_api_key,
       :akismet_enabled,
       :auto_devops_enabled,
+      :circuitbreaker_access_retries,
+      :circuitbreaker_backoff_threshold,
       :circuitbreaker_failure_count_threshold,
       :circuitbreaker_failure_reset_time,
       :circuitbreaker_failure_wait_time,
