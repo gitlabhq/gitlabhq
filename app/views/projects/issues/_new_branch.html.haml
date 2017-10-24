@@ -35,12 +35,12 @@
         %li.droplab-item-ignore
           Branch name
           %input.js-branch-name.form-control.droplab-item-ignore{ autofocus: 'autofocus', type: 'text', placeholder: "#{@issue.to_branch_name}", value: "#{@issue.to_branch_name}" }
-          %span.js-branch-message.droplab-item-ignore.gl-field-success-message
+          %span.js-branch-message.branch-message.droplab-item-ignore
 
         %li.droplab-item-ignore
           Source (branch or tag)
           %input.js-ref.ref.form-control.droplab-item-ignore{ autofocus: 'autofocus', type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}" }
-          %span.ref-message.droplab-item-ignore.gl-field-success-message
+          %span.js-ref-message.ref-message.droplab-item-ignore
 
         %li.droplab-item-ignore
           %button.btn.btn-success.js-create-target.droplab-item-ignore{ type: 'button', data: { action: 'create-mr' } }

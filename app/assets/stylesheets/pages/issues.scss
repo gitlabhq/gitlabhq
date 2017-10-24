@@ -192,6 +192,15 @@ ul.related-merge-requests > li {
 .create-mr-dropdown-wrap {
   @include new-style-dropdown;
 
+  .branch-message,
+  .ref-message {
+    display: inline-block;
+
+    &:first-letter {
+      text-transform: capitalize;
+    }
+  }
+
   .ref::selection {
     color: $placeholder-text-color;
   }

@@ -20,7 +20,7 @@ export default class CreateMergeRequestDropdown {
     this.dropdownList = this.wrapperEl.querySelector('.dropdown-menu');
     this.dropdownToggle = this.wrapperEl.querySelector('.js-dropdown-toggle');
     this.refInput = this.wrapperEl.querySelector('.js-ref');
-    this.refMessage = this.wrapperEl.querySelector('.ref-message');
+    this.refMessage = this.wrapperEl.querySelector('.js-ref-message');
     this.unavailableButton = this.wrapperEl.querySelector('.unavailable');
     this.unavailableButtonArrow = this.unavailableButton.querySelector('.fa');
     this.unavailableButtonText = this.unavailableButton.querySelector('.text');
@@ -382,8 +382,6 @@ export default class CreateMergeRequestDropdown {
     }
 
     if (type === 'available') {
-      text = text.charAt(0).toUpperCase() + text.slice(1);
-
       input.classList.add('gl-field-success-outline');
       message.classList.add('gl-field-success-message');
       message.textContent = `${text} is available`;
