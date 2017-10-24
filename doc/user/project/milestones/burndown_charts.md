@@ -40,6 +40,8 @@ it was taken care of closely throughout the whole quarter
 
 ## How it works
 
+>**Note:** Burndown charts are only available for project milestones. They will be available for group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
+
 A Burndown Chart is available for every project milestone that has been attributed a **start
 date** and a **due date**.
 
