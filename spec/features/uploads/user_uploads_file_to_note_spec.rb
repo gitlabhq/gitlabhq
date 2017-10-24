@@ -21,6 +21,14 @@ feature 'User uploads file to note' do
   end
 
   context 'uploading is in progress' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.slow_requests!
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
     it 'shows "Cancel" button on uploading', :js do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
