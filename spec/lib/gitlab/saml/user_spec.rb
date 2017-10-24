@@ -20,7 +20,6 @@ describe Gitlab::Saml::User do
   let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
   describe '#save' do
-<<<<<<< HEAD
     def stub_omniauth_config(messages)
       allow(Gitlab.config.omniauth).to receive_messages(messages)
     end
@@ -41,8 +40,6 @@ describe Gitlab::Saml::User do
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', admin_groups: groups, args: {} } })
     end
 
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     before do
       stub_basic_saml_config
     end

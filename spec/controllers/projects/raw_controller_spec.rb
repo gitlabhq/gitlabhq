@@ -51,7 +51,6 @@ describe Projects::RawController do
             get_show(public_project, id)
 
             expect(response).to have_gitlab_http_status(200)
-<<<<<<< HEAD
           end
 
           context 'and lfs uses object storage' do
@@ -77,8 +76,6 @@ describe Projects::RawController do
 
               expect(params["response-content-disposition"].first).to eq 'attachment;filename="lfs_object.iso"'
             end
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
           end
         end
 

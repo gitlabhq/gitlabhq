@@ -854,7 +854,6 @@ describe Projects::IssuesController do
       before do
         project.add_developer(user)
         sign_in(user)
-<<<<<<< HEAD
       end
 
       it 'returns discussion json' do
@@ -893,12 +892,9 @@ describe Projects::IssuesController do
 
           expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
         end
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 
-<<<<<<< HEAD
     context 'with a related system note' do
       let(:confidential_issue) { create(:issue, :confidential, project: project) }
       let!(:system_note) { SystemNoteService.relate_issue(issue, confidential_issue, user) }
@@ -955,7 +951,8 @@ describe Projects::IssuesController do
         let(:project) { create(:project, :public) }
 
         it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
-=======
+      end
+
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
@@ -992,7 +989,6 @@ describe Projects::IssuesController do
 
           expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
         end
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
   end
