@@ -395,6 +395,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   updateInputState(target, ref, result) {
+    // These regexps are used to replace a backend generated new branch name and its source (ref) with
+    // user's inputs.
     const regexps = {
       branch: {
         createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
