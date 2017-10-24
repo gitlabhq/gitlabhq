@@ -8,12 +8,15 @@ module EE
       end
 
       def log_audit_event(key)
+        audit_event_service.for_user(key.title).security_event
+      end
+
+      def audit_event_service
         ::AuditEventService.new(@user,
                                 @user,
                                 action: :custom,
                                 custom_message: 'Added SSH key',
                                 ip_address: @ip_address)
-            .for_user(key.title).security_event
       end
     end
   end
