@@ -133,7 +133,7 @@ class KubernetesService < DeploymentService
     name = pod['metadata']['name']
     fs_port = pod['spec']['containers'].first['ports'].first['containerPort']
     app_port = pod['spec']['containers'].last['ports'].first['containerPort']
-    [ kubeclient.proxy_url('pod', name, fs_port, actual_namespace), kubeclient.proxy_url('pod', name, app_port, actual_namespace) ]
+    { fs: kubeclient.proxy_url('pod', name, fs_port, "default"), app: kubeclient.proxy_url('pod', name, app_port, "default"), token: token }
   end
 
 
@@ -225,24 +225,27 @@ class KubernetesService < DeploymentService
     }
   end
 
+  # TODO: use cache
   def development_pod(environment)
-    with_reactive_cache do |data|
-      pod = filter_by_label(data[:pods], environment: environment).first
+    client = build_kubeclient!
+    pod = filter_by_label(client.get_pods(namespace: "default").as_json, environment: environment.name).first
 
-      unless pod
-        pod = YAML.load_file(Rails.root.join('config/k8s-devenv-pod.yaml'))
-        pod['metadata']['name'] = "#{environment}-pod"
-        pod['metadata']['labels']['environment'] = environment
-        pod['spec']['containers'].first['env'].first['value'] = project.url_to_repo
-        # TODO: Figure out image dynamically
-        pod['spec']['containers'].last['image'] = 'micaelbergeron/gitlab-web-ide-app'
-        # TODO: Figure out port dynamically
-        pod['spec']['containers'].last['ports'].first['containerPort'] = 5000
-        pod['spec']['containers'].last['env']  = [ { name: 'PORT', value: '5000' } ]
-        build_kubeclient!.create_pod(pod.symbolize_keys)
-      end
-      pod
+    unless pod
+      pod_hash = YAML.load_file(Rails.root.join('config/k8s-devenv-pod.yaml'))
+      pod = ::Kubeclient::Resource.new(pod_hash)
+      pod.metadata.name = "#{environment.name}-pod"
+      pod.metadata.namespace = "default"
+      pod.metadata.labels.environment = environment.name
+      pod.spec.containers.first.env.first.value = "https://gitlab.com/cmattrex/gitlab-web-ide.git"
+      #pod.spec.containers.first.env.first.value = project.http_url_to_repo
+      # TODO: Figure out image dynamically
+      pod.spec.containers.last.image = 'micaelbergeron/gitlab-web-ide-app'
+      # TODO: Figure out port dynamically
+      pod.spec.containers.last.ports.first.containerPort = 5000
+      pod.spec.containers.last.env  = [ { name: 'PORT', value: '5000' } ]
+      client.create_pod(pod)
     end
+    pod
   end
 
   def enforce_namespace_to_lower_case
