@@ -1,7 +1,7 @@
 module NavHelper
   def page_with_sidebar_class
     class_name = page_gutter_class
-    class_name << 'page-with-new-sidebar' if defined?(@left_sidebar) && @left_sidebar
+    class_name << 'page-with-contextual-sidebar' if defined?(@left_sidebar) && @left_sidebar
     class_name << 'page-with-icon-sidebar' if collapsed_sidebar? && @left_sidebar
 
     class_name
