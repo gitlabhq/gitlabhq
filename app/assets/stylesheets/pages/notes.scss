@@ -466,6 +466,10 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
+
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
+  }
 }
 
 .note-actions {
