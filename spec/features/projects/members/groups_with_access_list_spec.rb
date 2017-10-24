@@ -40,7 +40,7 @@ feature 'Projects > Members > Groups with access list', :js do
 
   scenario 'deletes group link' do
     page.within(first('.group_member')) do
-      find('.btn-remove').click
+      accept_confirm { find('.btn-remove').click }
     end
     wait_for_requests
 
