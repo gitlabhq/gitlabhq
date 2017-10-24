@@ -1,7 +1,7 @@
 /* global Sidebar */
 /* eslint-disable no-new */
 import _ from 'underscore';
-import '~/right_sidebar';
+import RightSidebar from '~/right_sidebar/index';
 
 describe('Issuable right sidebar collapsed todo toggle', () => {
   const fixtureName = 'issues/open-issue.html.raw';
@@ -12,7 +12,7 @@ describe('Issuable right sidebar collapsed todo toggle', () => {
 
   beforeEach(() => {
     const todoData = getJSONFixture(jsonFixtureName);
-    new Sidebar();
+    new RightSidebar();
     loadFixtures(fixtureName);
 
     document.querySelector('.js-right-sidebar')

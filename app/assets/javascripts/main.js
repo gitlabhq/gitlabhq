@@ -98,7 +98,6 @@ import './projects_list';
 import './syntax_highlight';
 import './render_math';
 import './render_gfm';
-import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
