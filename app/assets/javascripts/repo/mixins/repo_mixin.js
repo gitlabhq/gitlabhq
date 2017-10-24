@@ -8,7 +8,7 @@ const RepoMixin = {
 
     changedFiles() {
       const changedFileList = this.openedFiles
-      .filter(file => file.changed);
+        .filter(file => file.changed || file.tempFile);
       return changedFileList;
     },
   },

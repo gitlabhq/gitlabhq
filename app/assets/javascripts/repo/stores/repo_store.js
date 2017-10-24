@@ -39,6 +39,7 @@ const RepoStore = {
   newMrTemplateUrl: '',
   branchChanged: false,
   commitMessage: '',
+  path: '',
   loading: {
     tree: false,
     blob: false,
@@ -77,21 +78,23 @@ const RepoStore = {
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
     } else {
-      Service.getRaw(file.raw_path)
+      Service.getRaw(file)
         .then((rawResponse) => {
           RepoStore.blobRaw = rawResponse.data;
           Helper.findOpenedFileFromActive().plain = rawResponse.data;
         }).catch(Helper.loadingError);
     }
 
-    if (!file.loading) Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
+    if (!file.loading && !file.tempFile) {
+      Helper.updateHistoryEntry(file.url, file.pageTitle || file.name);
+    }
     RepoStore.binary = file.binary;
     RepoStore.setActiveLine(-1);
   },
 
   setFileActivity(file, openedFile, i) {
     const activeFile = openedFile;
-    activeFile.active = file.url === activeFile.url;
+    activeFile.active = file.id === activeFile.id;
 
     if (activeFile.active) RepoStore.setActiveFile(activeFile, i);
 
@@ -99,7 +102,7 @@ const RepoStore = {
   },
 
   setActiveFile(activeFile, i) {
-    RepoStore.activeFile = Object.assign({}, RepoStore.activeFile, activeFile);
+    RepoStore.activeFile = Object.assign({}, Helper.getDefaultActiveFile(), activeFile);
     RepoStore.activeFileIndex = i;
   },
 
@@ -120,6 +123,11 @@ const RepoStore = {
       if (openedFile.path === file.path) foundIndex = i;
       return openedFile.path !== file.path;
     });
+
+    // remove the file from the sidebar if it is a tempFile
+    if (file.tempFile) {
+      RepoStore.files = RepoStore.files.filter(f => !(f.tempFile && f.path === file.path));
+    }
 
     // now activate the right tab based on what you closed.
     if (RepoStore.openedFiles.length === 0) {
@@ -170,7 +178,7 @@ const RepoStore = {
   // getters
 
   isActiveFile(file) {
-    return file && file.url === RepoStore.activeFile.url;
+    return file && file.id === RepoStore.activeFile.id;
   },
 
   isPreviewView() {

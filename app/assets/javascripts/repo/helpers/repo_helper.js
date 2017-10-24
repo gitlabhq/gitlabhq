@@ -1,4 +1,3 @@
-import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 import Service from '../services/repo_service';
 import Store from '../stores/repo_store';
 import Flash from '../../flash';
@@ -8,6 +7,7 @@ const RepoHelper = {
 
   getDefaultActiveFile() {
     return {
+      id: '',
       active: true,
       binary: false,
       extension: '',
@@ -62,6 +62,7 @@ const RepoHelper = {
     });
 
     RepoHelper.updateHistoryEntry(tree.url, title);
+    Store.path = tree.path;
   },
 
   setDirectoryToClosed(entry) {
@@ -96,8 +97,8 @@ const RepoHelper = {
     .then((response) => {
       const data = response.data;
       if (response.headers && response.headers['page-title']) data.pageTitle = decodeURI(response.headers['page-title']);
-      if (response.headers && response.headers['is-root'] && !Store.isInitialRoot) {
-        Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
+      if (data.path && !Store.isInitialRoot) {
+        Store.isRoot = data.path === '/';
         Store.isInitialRoot = Store.isRoot;
       }
 
@@ -110,7 +111,7 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView() && !data.render_error) {
-          Service.getRaw(data.raw_path)
+          Service.getRaw(data)
           .then((rawResponse) => {
             Store.blobRaw = rawResponse.data;
             data.plain = rawResponse.data;
@@ -138,6 +139,10 @@ const RepoHelper = {
 
   addToDirectory(file, data) {
     const tree = file || Store;
+
+    // TODO: Figure out why `popstate` is being trigger in the specs
+    if (!tree.files) return;
+
     const files = tree.files.concat(this.dataToListOfFiles(data, file ? file.level + 1 : 0));
 
     tree.files = files;
@@ -157,7 +162,18 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { id, url, name, icon, last_commit, tree_url } = entity;
+    const {
+      id,
+      url,
+      name,
+      icon,
+      last_commit,
+      tree_url,
+      path,
+      tempFile,
+      active,
+      opened,
+    } = entity;
 
     return {
       id,
@@ -165,11 +181,14 @@ const RepoHelper = {
       name,
       url,
       tree_url,
+      path,
       level,
+      tempFile,
       icon: `fa-${icon}`,
       files: [],
       loading: false,
-      opened: false,
+      opened,
+      active,
       // eslint-disable-next-line camelcase
       lastCommit: last_commit ? {
         url: `${Store.projectUrl}/commit/${last_commit.id}`,
@@ -213,7 +232,7 @@ const RepoHelper = {
   },
 
   findOpenedFileFromActive() {
-    return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
+    return Store.openedFiles.find(openedFile => Store.activeFile.id === openedFile.id);
   },
 
   getFileFromPath(path) {
@@ -222,6 +241,76 @@ const RepoHelper = {
 
   loadingError() {
     Flash('Unable to load this content at this time.');
+  },
+  openEditMode() {
+    Store.editMode = true;
+    Store.currentBlobView = 'repo-editor';
+  },
+  updateStorePath(path) {
+    Store.path = path;
+  },
+  findOrCreateEntry(type, tree, name) {
+    let exists = true;
+    let foundEntry = tree.files.find(dir => dir.type === type && dir.name === name);
+
+    if (!foundEntry) {
+      foundEntry = RepoHelper.serializeRepoEntity(type, {
+        id: name,
+        name,
+        path: tree.path ? `${tree.path}/${name}` : name,
+        icon: type === 'tree' ? 'folder' : 'file-text-o',
+        tempFile: true,
+        opened: true,
+        active: true,
+      }, tree.level !== undefined ? tree.level + 1 : 0);
+
+      exists = false;
+      tree.files.push(foundEntry);
+    }
+
+    return {
+      entry: foundEntry,
+      exists,
+    };
+  },
+  removeAllTmpFiles(storeFilesKey) {
+    Store[storeFilesKey] = Store[storeFilesKey].filter(f => !f.tempFile);
+  },
+  createNewEntry(name, type) {
+    const originalPath = Store.path;
+    let entryName = name;
+
+    if (entryName.indexOf(`${originalPath}/`) !== 0) {
+      this.updateStorePath('');
+    } else {
+      entryName = entryName.replace(`${originalPath}/`, '');
+    }
+
+    if (entryName === '') return;
+
+    const fileName = type === 'tree' ? '.gitkeep' : entryName;
+    let tree = Store;
+
+    if (type === 'tree') {
+      const dirNames = entryName.split('/');
+
+      dirNames.forEach((dirName) => {
+        if (dirName === '') return;
+
+        tree = this.findOrCreateEntry('tree', tree, dirName).entry;
+      });
+    }
+
+    if ((type === 'tree' && tree.tempFile) || type === 'blob') {
+      const file = this.findOrCreateEntry('blob', tree, fileName);
+
+      if (!file.exists) {
+        this.setFile(file.entry, file.entry);
+        this.openEditMode();
+      }
+    }
+
+    this.updateStorePath(originalPath);
   },
 };
 
