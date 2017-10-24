@@ -77,7 +77,7 @@ const RepoHelper = {
   },
 
   setBinaryDataAsBase64(file) {
-    Service.getBase64Content(file.raw_path)
+    Store.service.getBase64Content(file.raw_path)
     .then((response) => {
       Store.blobRaw = response;
       file.base64 = response; // eslint-disable-line no-param-reassign
@@ -92,7 +92,7 @@ const RepoHelper = {
       Store.loading.tree = true;
     }
 
-    return Service.getContent()
+    return Store.service.getContent()
     .then((response) => {
       const data = response.data;
       if (response.headers && response.headers['page-title']) data.pageTitle = decodeURI(response.headers['page-title']);
@@ -110,7 +110,7 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView() && !data.render_error) {
-          Service.getRaw(data.raw_path)
+          Store.service.getRaw(data.raw_path)
           .then((rawResponse) => {
             Store.blobRaw = rawResponse.data;
             data.plain = rawResponse.data;
@@ -131,7 +131,7 @@ const RepoHelper = {
 
         this.addToDirectory(file, data);
 
-        Store.prevURL = Service.blobURLtoParentTree(Service.url);
+        Store.prevURL = Store.service.blobURLtoParentTree(Store.service.url);
       }
     }).catch(RepoHelper.loadingError);
   },
@@ -145,7 +145,7 @@ const RepoHelper = {
 
   setFile(data, file) {
     const newFile = data;
-    newFile.url = file.url || Service.url; // Grab the URL from service, happens on page refresh.
+    newFile.url = file.url || Store.service.url; // Grab the URL from service, happens on page refresh.
 
     if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
@@ -220,7 +220,8 @@ const RepoHelper = {
     return Store.openedFiles.find(file => file.url === path);
   },
 
-  loadingError() {
+  loadingError(e) {
+    console.log(e);
     Flash('Unable to load this content at this time.');
   },
 };

@@ -1,11 +1,19 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import Terminal from 'vendor/xterm/xterm';
+import 'vendor/xterm/encoding-indexes';
+import 'vendor/xterm/encoding';
+import 'vendor/xterm/fit';
 import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 import Service from './services/repo_service';
+import IDEService from './services/ide_service';
 import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
 import Translate from '../vue_shared/translate';
+import '../terminal/terminal';
+
+window.Terminal = Terminal;
 
 function initDropdowns() {
   $('.js-tree-ref-target-holder').hide();
@@ -24,7 +32,10 @@ function addEventsForNonVueEls() {
 }
 
 function setInitialStore(data) {
-  Store.service = Service;
+  const isIde = data.isIde === 'true';
+
+  Store.service = isIde ? IDEService : Service;
+  Store.terminalEndpoint = data.terminalUrl;
   Store.service.url = data.url;
   Store.service.refsUrl = data.refsUrl;
   Store.projectId = data.projectId;
@@ -37,8 +48,11 @@ function setInitialStore(data) {
   Store.isRoot = convertPermissionToBoolean(data.root);
   Store.isInitialRoot = convertPermissionToBoolean(data.root);
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
-  Store.checkIsCommitable();
-  Store.setBranchHash();
+
+  if (!isIde) {
+    Store.checkIsCommitable();
+    Store.setBranchHash();
+  }
 }
 
 function initRepo(el) {
