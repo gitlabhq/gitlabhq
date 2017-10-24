@@ -50,11 +50,8 @@ import './compare_autocomplete';
 import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
-<<<<<<< HEAD
 import './diff';
 import './files_comment_button';
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';

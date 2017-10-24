@@ -1,10 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
 /* global Autosave */
-<<<<<<< HEAD
 /* global GroupsSelect */
-=======
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
 
 import Pikaday from 'pikaday';
 import UsersSelect from './users_select';

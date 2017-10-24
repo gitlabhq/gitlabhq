@@ -91,16 +91,13 @@ import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
-<<<<<<< HEAD
+import Diff from './diff';
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
-=======
-import Diff from './diff';
->>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
 
 (function() {
   var Dispatcher;
