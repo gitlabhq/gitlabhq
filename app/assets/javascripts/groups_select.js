@@ -2,7 +2,8 @@ import Api from './api';
 import { normalizeCRLFHeaders } from './lib/utils/common_utils';
 
 export default function groupsSelect() {
-  const PER_PAGE = 20;
+  // Needs to be accessible in rspec
+  window.GROUP_SELECT_PER_PAGE = 20;
   $('.ajax-groups-select').each(function setAjaxGroupsSelect2() {
     const $select = $(this);
     const allAvailable = $select.data('all-available');
@@ -16,8 +17,7 @@ export default function groupsSelect() {
         dataType: 'json',
         quietMillis: 250,
         transport(params) {
-          // eslint-disable-next-line promise/catch-or-return
-          $.ajax(params)
+          return $.ajax(params)
             .then((data, status, xhr) => {
               const results = data || [];
 
@@ -40,7 +40,7 @@ export default function groupsSelect() {
           return {
             search,
             page,
-            per_page: PER_PAGE,
+            per_page: window.GROUP_SELECT_PER_PAGE,
             all_available: allAvailable,
           };
         },
