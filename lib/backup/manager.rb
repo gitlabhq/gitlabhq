@@ -137,10 +137,19 @@ module Backup
 
         # restoring mismatching backups can lead to unexpected problems
         if settings[:gitlab_version] != Gitlab::VERSION
+<<<<<<< HEAD
           $progress.puts 'GitLab version mismatch:'.color(:red)
           $progress.puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
           $progress.puts '  Please switch to the following version and try again:'.color(:red)
           $progress.puts "  version: #{settings[:gitlab_version]}".color(:red)
+=======
+          $progress.puts(<<~HEREDOC.color(:red))
+            GitLab version mismatch:
+              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
+              Please switch to the following version and try again:
+              version: #{settings[:gitlab_version]}
+          HEREDOC
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
           $progress.puts
           $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
           exit 1

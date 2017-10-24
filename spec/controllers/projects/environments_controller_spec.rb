@@ -22,6 +22,7 @@ describe Projects::EnvironmentsController do
         get :index, environment_params
 
         expect(response).to have_gitlab_http_status(:ok)
+<<<<<<< HEAD
       end
 
       it 'expires etag cache to force reload environments list' do
@@ -29,6 +30,8 @@ describe Projects::EnvironmentsController do
           .to receive(:touch).with(project_environments_path(project, format: :json))
 
         get :index, environment_params
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 

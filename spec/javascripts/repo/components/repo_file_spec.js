@@ -93,6 +93,32 @@ describe('RepoFile', () => {
     expect(vm.linkClicked).toHaveBeenCalledWith(vm.file);
   });
 
+  describe('submodule', () => {
+    let f;
+    let vm;
+
+    beforeEach(() => {
+      f = file('submodule name', '123456789');
+      f.type = 'submodule';
+
+      vm = createComponent({
+        file: f,
+      });
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('renders submodule short ID', () => {
+      expect(vm.$el.querySelector('.commit-sha').textContent.trim()).toBe('12345678');
+    });
+
+    it('renders ID next to submodule name', () => {
+      expect(vm.$el.querySelector('td').textContent.replace(/\s+/g, ' ')).toContain('submodule name @ 12345678');
+    });
+  });
+
   describe('methods', () => {
     describe('linkClicked', () => {
       it('$emits fileNameClicked with file obj', () => {

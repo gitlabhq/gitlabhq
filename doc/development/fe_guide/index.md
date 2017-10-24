@@ -71,6 +71,9 @@ Vue specific design patterns and practices.
 
 ---
 
+## [Vue Resource](vue_resource.md)
+Vue resource specific practices and gotchas.
+
 ## [Icons](icons.md)
 How we use SVG for our Icons.
 

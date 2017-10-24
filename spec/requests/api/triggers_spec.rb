@@ -126,6 +126,7 @@ describe API::Triggers do
           end.to change(project.builds, :count).by(4)
 
           expect(response).to have_gitlab_http_status(201)
+<<<<<<< HEAD
         end
       end
     end
@@ -216,6 +217,8 @@ describe API::Triggers do
               expect(Ci::Pipeline.last.variables.map { |v| { v.key => v.value } }.last).to eq(params[:variables])
             end
           end
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
         end
       end
     end

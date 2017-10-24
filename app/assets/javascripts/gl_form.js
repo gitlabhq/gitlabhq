@@ -1,7 +1,7 @@
-/* global DropzoneInput */
 /* global autosize */
 
 import GfmAutoComplete from './gfm_auto_complete';
+import dropzoneInput from './dropzone_input';
 
 export default class GLForm {
   constructor(form, enableGFM = false) {
@@ -41,7 +41,7 @@ export default class GLForm {
         mergeRequests: this.enableGFM,
         labels: this.enableGFM,
       });
-      new DropzoneInput(this.form); // eslint-disable-line no-new
+      dropzoneInput(this.form);
       autosize(this.textarea);
     }
     // form and textarea event listeners

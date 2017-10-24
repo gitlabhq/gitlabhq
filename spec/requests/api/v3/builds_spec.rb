@@ -214,11 +214,18 @@ describe API::V3::Builds do
         end
       end
 
+<<<<<<< HEAD
       context 'when artifacts are stored remotely' do
         let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
         it 'returns location redirect' do
           expect(response).to have_gitlab_http_status(302)
+=======
+        it 'returns specific job artifacts' do
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers).to include(download_headers)
+          expect(response.body).to match_file(build.artifacts_file.file.file)
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
         end
       end
 
@@ -308,6 +315,7 @@ describe API::V3::Builds do
           it { expect(response.headers).to include(download_headers) }
         end
 
+<<<<<<< HEAD
         context 'when artifacts are stored remotely' do
           let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
 
@@ -315,6 +323,10 @@ describe API::V3::Builds do
             expect(response).to have_gitlab_http_status(302)
           end
         end
+=======
+        it { expect(response).to have_gitlab_http_status(200) }
+        it { expect(response.headers).to include(download_headers) }
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
 
       context 'with regular branch' do

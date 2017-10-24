@@ -7,7 +7,10 @@ describe API::Settings, 'Settings' do
   describe "GET /application/settings" do
     it "returns application settings" do
       get api("/application/settings", admin)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)

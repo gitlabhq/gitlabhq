@@ -223,6 +223,7 @@ describe ProjectsController do
         expect(response).to render_template('_files')
       end
 
+<<<<<<< HEAD
       context 'project repo over limit' do
         before do
           allow_any_instance_of(EE::Project)
@@ -244,6 +245,14 @@ describe ProjectsController do
 
           expect(response).not_to render_template('_above_size_limit_warning')
         end
+=======
+      it "renders the readme view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
+
+        get :show, namespace_id: public_project.namespace, id: public_project
+        expect(response).to render_template('_readme')
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 

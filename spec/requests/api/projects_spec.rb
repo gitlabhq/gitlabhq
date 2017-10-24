@@ -1357,6 +1357,7 @@ describe API::Projects do
         delete api("/projects/#{project.id}/share/#{group.id}", user)
 
         expect(response).to have_gitlab_http_status(204)
+<<<<<<< HEAD
         expect(project.project_group_links).to be_empty
       end
 
@@ -1364,6 +1365,8 @@ describe API::Projects do
         delete api("/projects/#{project.id}/share/#{group.id}", user)
 
         expect(response).to have_gitlab_http_status(204)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
         expect(project.project_group_links).to be_empty
       end
 

@@ -94,7 +94,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ### Issues and Merge Requests (MRs)
 
-- [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
+- [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project issue Board](user/project/issue_board.md)
 - **(EEP)** [Group Issue Boards](user/project/issue_board.md#group-issue-boards)
@@ -175,7 +175,7 @@ have access to GitLab administration tools and settings.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md): Learn how to use LFS under GitLab.
 - [GitLab Pages configuration](administration/pages/index.md): Configure GitLab Pages.
 - [High Availability](administration/high_availability/README.md): Configure multiple servers for scaling or high availability.
-- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
+- [User cohorts](user/admin_area/user_cohorts.md): View user activity over time.
 - [Web terminals](administration/integration/terminal.md): Provide terminal access to environments from within GitLab.
 - **(EES/EEP)** [Audit logs and events](administration/audit_events.md): View the changes made within the GitLab server.
 - **(EES/EEP)** [Elasticsearch](integration/elasticsearch.md): Enable Elasticsearch which powers GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.

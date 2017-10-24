@@ -540,6 +540,7 @@ describe API::MergeRequests do
       put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.diff_head_sha
 
       expect(response).to have_gitlab_http_status(200)
+<<<<<<< HEAD
     end
 
     it "updates the MR's squash attribute" do
@@ -548,6 +549,8 @@ describe API::MergeRequests do
       end.to change { merge_request.reload.squash }
 
       expect(response).to have_gitlab_http_status(200)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do
@@ -790,6 +793,7 @@ describe API::MergeRequests do
       delete v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/subscription", guest)
 
       expect(response).to have_gitlab_http_status(403)
+<<<<<<< HEAD
     end
   end
 
@@ -868,6 +872,8 @@ describe API::MergeRequests do
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
       end
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     end
   end
 

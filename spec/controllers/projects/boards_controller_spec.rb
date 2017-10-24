@@ -59,9 +59,13 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           list_boards format: :json
 
+<<<<<<< HEAD
           expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'application/json'
         end
+=======
+        expect(response).to have_gitlab_http_status(404)
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 
@@ -114,9 +118,13 @@ describe Projects::BoardsController do
         it 'returns a not found 404 response' do
           read_board board: board, format: :json
 
+<<<<<<< HEAD
           expect(response).to have_gitlab_http_status(404)
           expect(response.content_type).to eq 'application/json'
         end
+=======
+        expect(response).to have_gitlab_http_status(404)
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 

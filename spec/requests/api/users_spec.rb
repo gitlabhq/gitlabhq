@@ -595,6 +595,7 @@ describe API::Users do
         end.not_to change { user.reload.attributes }
 
         expect(response).to have_gitlab_http_status(403)
+<<<<<<< HEAD
       end
 
       it "cannot update their own shared_runners_minutes_limit" do
@@ -603,6 +604,8 @@ describe API::Users do
         end.not_to change { user.reload.shared_runners_minutes_limit }
 
         expect(response).to have_gitlab_http_status(403)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 

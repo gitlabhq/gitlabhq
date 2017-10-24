@@ -291,6 +291,7 @@ describe API::Groups do
         put api('/groups/1328', user1), name: new_group_name
 
         expect(response).to have_gitlab_http_status(404)
+<<<<<<< HEAD
       end
 
       # EE
@@ -310,6 +311,8 @@ describe API::Groups do
         end.not_to change { group1.shared_runners_minutes_limit }
 
         expect(response).to have_gitlab_http_status(200)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 
@@ -548,6 +551,7 @@ describe API::Groups do
         post api("/groups", user3), { name: 'test' }
 
         expect(response).to have_gitlab_http_status(400)
+<<<<<<< HEAD
       end
 
       it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
@@ -584,6 +588,8 @@ describe API::Groups do
             expect(json_response['shared_runners_minutes_limit']).to eq(133)
           end
         end
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
   end

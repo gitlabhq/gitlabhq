@@ -8,7 +8,8 @@
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
-/* global GroupAvatar */
+import groupAvatar from './group_avatar';
+import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
@@ -90,12 +91,16 @@ import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
+<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
+=======
+import Diff from './diff';
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
 
 (function() {
   var Dispatcher;
@@ -262,7 +267,7 @@ import initGroupAnalytics from './init_group_analytics';
           new GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
-          new gl.Diff();
+          new Diff();
           initChangesDropdown();
           break;
         case 'projects:branches:new':
@@ -300,7 +305,7 @@ import initGroupAnalytics from './init_group_analytics';
           new UserCallout();
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
@@ -334,7 +339,7 @@ import initGroupAnalytics from './init_group_analytics';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
@@ -350,7 +355,7 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new gl.Diff();
+          new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           new MiniPipelineGraph({
@@ -459,11 +464,11 @@ import initGroupAnalytics from './init_group_analytics';
         case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'groups:edit':
         case 'admin:groups:edit':
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -518,7 +523,7 @@ import initGroupAnalytics from './init_group_analytics';
             const $el = $(el);
 
             if ($el.find('.dropdown-group-label').length) {
-              new gl.GroupLabelSubscription($el);
+              new GroupLabelSubscription($el);
             } else {
               new gl.ProjectLabelSubscription($el);
             }

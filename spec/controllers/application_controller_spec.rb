@@ -225,6 +225,20 @@ describe ApplicationController do
     end
   end
 
+  describe '#set_page_title_header' do
+    let(:controller) { described_class.new }
+
+    it 'URI encodes UTF-8 characters in the title' do
+      response = double(headers: {})
+      allow_any_instance_of(PageLayoutHelper).to receive(:page_title).and_return('€100 · GitLab')
+      allow(controller).to receive(:response).and_return(response)
+
+      controller.send(:set_page_title_header)
+
+      expect(response.headers['Page-Title']).to eq('%E2%82%AC100%20%C2%B7%20GitLab')
+    end
+  end
+
   context 'two-factor authentication' do
     let(:controller) { described_class.new }
 

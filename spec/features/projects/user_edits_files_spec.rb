@@ -23,6 +23,7 @@ describe 'User edits files' do
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
@@ -40,6 +41,7 @@ describe 'User edits files' do
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
@@ -57,6 +59,7 @@ describe 'User edits files' do
 
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
@@ -74,6 +77,7 @@ describe 'User edits files' do
       find('.js-edit-blob').click
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
       click_link('Preview changes')
 
@@ -103,6 +107,7 @@ describe 'User edits files' do
 
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
@@ -119,6 +124,7 @@ describe 'User edits files' do
 
       find('.file-editor', match: :first)
 
+      find('#editor')
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
@@ -145,6 +151,7 @@ describe 'User edits files' do
         expect(page).not_to have_link('Fork')
         expect(page).not_to have_button('Cancel')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:commit_message, with: 'Another commit', visible: true)
         click_button('Commit changes')

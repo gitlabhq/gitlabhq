@@ -2,13 +2,15 @@ require 'spec_helper'
 
 describe Gitlab::Saml::User do
   include LdapHelpers
+  include LoginHelpers
 
   let(:saml_user) { described_class.new(auth_hash) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:dn) { 'uid=user1,ou=People,dc=example' }
   let(:provider) { 'saml' }
-  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) }) }
+  let(:raw_info_attr) { { 'groups' => %w(Developers Freelancers Designers) } }
+  let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new(raw_info_attr) }) }
   let(:info_hash) do
     {
       name: 'John',
@@ -18,6 +20,7 @@ describe Gitlab::Saml::User do
   let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, 'ldapmain') }
 
   describe '#save' do
+<<<<<<< HEAD
     def stub_omniauth_config(messages)
       allow(Gitlab.config.omniauth).to receive_messages(messages)
     end
@@ -38,6 +41,8 @@ describe Gitlab::Saml::User do
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', admin_groups: groups, args: {} } })
     end
 
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     before do
       stub_basic_saml_config
     end
@@ -455,6 +460,18 @@ describe Gitlab::Saml::User do
             expect(gl_user).not_to be_blocked
           end
         end
+      end
+    end
+  end
+
+  describe '#find_user' do
+    context 'raw info hash attributes empty' do
+      let(:raw_info_attr) { {} }
+
+      it 'does not mark user as external' do
+        stub_saml_group_config(%w(Freelancers))
+
+        expect(saml_user.find_user.external).to be_falsy
       end
     end
   end

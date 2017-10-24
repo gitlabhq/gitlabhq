@@ -229,7 +229,11 @@ shared_examples_for 'group and project milestones' do |route_definition|
       get api(issues_route, user)
 
       expect(response).to have_gitlab_http_status(200)
+<<<<<<< HEAD
       expect(response).to match_response_schema('public_api/v4/issues', dir: 'ee')
+=======
+      expect(response).to match_response_schema('public_api/v4/issues')
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
     end
 
     it 'returns a 401 error if user not authenticated' do

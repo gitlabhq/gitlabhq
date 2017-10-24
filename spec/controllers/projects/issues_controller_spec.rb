@@ -854,6 +854,7 @@ describe Projects::IssuesController do
       before do
         project.add_developer(user)
         sign_in(user)
+<<<<<<< HEAD
       end
 
       it 'returns discussion json' do
@@ -892,9 +893,12 @@ describe Projects::IssuesController do
 
           expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
         end
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
 
+<<<<<<< HEAD
     context 'with a related system note' do
       let(:confidential_issue) { create(:issue, :confidential, project: project) }
       let!(:system_note) { SystemNoteService.relate_issue(issue, confidential_issue, user) }
@@ -951,6 +955,44 @@ describe Projects::IssuesController do
         let(:project) { create(:project, :public) }
 
         it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
+=======
+      it 'returns discussion json' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
+      end
+
+      context 'with cross-reference system note', :request_store do
+        let(:new_issue) { create(:issue) }
+        let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+
+        before do
+          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+        end
+
+        it 'filters notes that the user should not see' do
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+          expect(JSON.parse(response.body).count).to eq(1)
+        end
+
+        it 'does not result in N+1 queries' do
+          # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+          RequestStore.clear!
+
+          control_count = ActiveRecord::QueryRecorder.new do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+          end.count
+
+          RequestStore.clear!
+
+          create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+
+          expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
+        end
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
   end

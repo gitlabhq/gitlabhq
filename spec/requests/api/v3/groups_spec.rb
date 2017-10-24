@@ -33,6 +33,7 @@ describe API::V3::Groups do
         get v3_api("/groups", user1)
 
         expect(response).to have_gitlab_http_status(200)
+<<<<<<< HEAD
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response)
@@ -164,6 +165,8 @@ describe API::V3::Groups do
         get v3_api("/groups", user1)
 
         expect(response).to have_gitlab_http_status(200)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response)
@@ -412,6 +415,7 @@ describe API::V3::Groups do
         put v3_api("/groups/#{group2.id}", user1), name: new_group_name
 
         expect(response).to have_gitlab_http_status(404)
+<<<<<<< HEAD
       end
     end
 
@@ -423,6 +427,8 @@ describe API::V3::Groups do
 
         expect(response.status).to eq(200)
         expect(group2.reload.name).to eq('Renamed')
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
   end
@@ -594,11 +600,14 @@ describe API::V3::Groups do
         post v3_api("/groups", user3), { name: 'test' }
 
         expect(response).to have_gitlab_http_status(400)
+<<<<<<< HEAD
       end
 
       it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
         group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
         expect { post v3_api("/groups", admin), group_attributes }.to change { LdapGroupLink.count }.by(1)
+=======
+>>>>>>> 82446a2bd009e7d7481c35a142063a3973be77ce
       end
     end
   end
