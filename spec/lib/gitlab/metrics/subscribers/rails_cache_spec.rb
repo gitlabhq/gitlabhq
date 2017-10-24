@@ -58,7 +58,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
         end
 
         it 'increments the cache_read_miss total' do
-          expect(described_class.metric_cache_misses_total).to receive(:increment).with({})
+          expect(subscriber.send(:metric_cache_misses_total)).to receive(:increment).with({})
 
           subscriber.cache_read(event)
         end
@@ -74,7 +74,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
           end
 
           it 'does not increment cache_read_miss total' do
-            expect(described_class.metric_cache_misses_total).not_to receive(:increment).with({})
+            expect(subscriber.send(:metric_cache_misses_total)).not_to receive(:increment).with({})
 
             subscriber.cache_read(event)
           end
@@ -157,7 +157,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       it 'increments the cache_read_miss total' do
-        expect(described_class.metric_cache_misses_total).to receive(:increment).with({})
+        expect(subscriber.send(:metric_cache_misses_total)).to receive(:increment).with({})
 
         subscriber.cache_generate(event)
       end
@@ -196,7 +196,7 @@ describe Gitlab::Metrics::Subscribers::RailsCache do
       end
 
       it 'observes cache metric' do
-        expect(described_class.metric_cache_operation_duration_seconds)
+        expect(subscriber.send(:metric_cache_operation_duration_seconds))
           .to receive(:observe)
                 .with(transaction.labels.merge(operation: :delete), event.duration / 1000.0)
 

@@ -28,7 +28,7 @@ module Gitlab
           values = values_for(event)
           tags   = tags_for(event)
 
-          self.metric_view_rendering_duration_seconds.observe(
+          metric_view_rendering_duration_seconds.observe(
             current_transaction.labels.merge(tags),
             event.duration
           )

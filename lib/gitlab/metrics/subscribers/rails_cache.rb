@@ -15,7 +15,7 @@ module Gitlab
           if event.payload[:hit]
             current_transaction.increment(:cache_read_hit_count, 1, false)
           else
-            self.metric_cache_misses_total.increment(current_transaction.labels)
+            metric_cache_misses_total.increment(current_transaction.labels)
             current_transaction.increment(:cache_read_miss_count, 1, false)
           end
         end
@@ -41,14 +41,14 @@ module Gitlab
         def cache_generate(event)
           return unless current_transaction
 
-          self.metric_cache_misses_total.increment(current_transaction.labels)
+          metric_cache_misses_total.increment(current_transaction.labels)
           current_transaction.increment(:cache_read_miss_count, 1)
         end
 
         def observe(key, duration)
           return unless current_transaction
 
-          self.metric_cache_operation_duration_seconds.observe(current_transaction.labels.merge({ operation: key }), duration / 1000.0)
+          metric_cache_operation_duration_seconds.observe(current_transaction.labels.merge({ operation: key }), duration / 1000.0)
           current_transaction.increment(:cache_duration, duration, false)
           current_transaction.increment(:cache_count, 1, false)
           current_transaction.increment("cache_#{key}_duration".to_sym, duration, false)

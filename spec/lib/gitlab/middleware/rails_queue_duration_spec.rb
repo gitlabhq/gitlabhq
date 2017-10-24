@@ -34,7 +34,7 @@ describe Gitlab::Middleware::RailsQueueDuration do
       it 'observes rails queue duration metrics and calls the app when the header is present' do
         env['HTTP_GITLAB_WORKHORSE_PROXY_START'] = '2000000000'
 
-        expect(described_class.metric_rails_queue_duration_seconds).to receive(:observe).with(transaction.labels, 1)
+        expect(middleware.send(:metric_rails_queue_duration_seconds)).to receive(:observe).with(transaction.labels, 1)
 
         Timecop.freeze(Time.at(3)) do
           expect(middleware.call(env)).to eq('yay')
