@@ -3,4 +3,4 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'repo'
 
-#repo{ data: { is_ide: 'true', url: project_workspaces_show_path(@project, :json), terminal_url: project_workspaces_attach_path(@project) } }
+#repo{ data: { is_ide: 'true', url: project_workspaces_show_path(@project, :json), terminal_url: project_workspaces_attach_path(@project, format: :ws) } }

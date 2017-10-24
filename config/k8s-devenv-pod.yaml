@@ -18,6 +18,10 @@ spec:
     env:
       - name: REPO_URL
         value:
+      - name: MINIO_ACCESS_KEY
+        value: abcdefghijklm
+      - name: MINIO_SECRET_KEY
+        value: abcdefghijklm
   - name: app
     image:
     ports:
