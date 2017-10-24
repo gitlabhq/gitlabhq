@@ -140,5 +140,16 @@
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
                 #{ _('Authentication Log') }
+      = nav_link(path: 'profiles#custom_emoji') do
+        = link_to profile_custom_emoji_index_path do
+          .nav-icon-container
+            = custom_icon('emoji_smiley')
+          %span.nav-item-name
+            Custom Emoji
+        %ul.sidebar-sub-level-items.is-fly-out-only
+          = nav_link(path: 'profiles#custom_emoji', html_options: { class: "fly-out-top-item" } ) do
+            = link_to profile_custom_emoji_index_path do
+              %strong.fly-out-top-item-name
+                #{ _('Custom emoji') }
 
     = render 'shared/sidebar_toggle_button'

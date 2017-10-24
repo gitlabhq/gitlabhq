@@ -25,6 +25,7 @@ resource :profile, only: [:show, :update] do
       end
     end
     resource :preferences, only: [:show, :update]
+    resources :custom_emoji, only: [:index, :new, :create, :destroy], controller: :custom_emoji
     resources :keys, only: [:index, :show, :create, :destroy]
     resources :gpg_keys, only: [:index, :create, :destroy] do
       member do
