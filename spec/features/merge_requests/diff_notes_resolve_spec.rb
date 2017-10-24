@@ -192,7 +192,7 @@ feature 'Diff notes resolve', :js do
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
+        expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 
       it 'hides jump to next button when all resolved' do
@@ -308,7 +308,7 @@ feature 'Diff notes resolve', :js do
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
+        expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 
       it 'updates updated text after resolving note' do
