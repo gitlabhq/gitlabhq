@@ -113,6 +113,7 @@ module Gitlab
 
     # Evaluates whether a feature toggle is on or off
     def self.feature_enabled?(feature_name, status: MigrationStatus::OPT_IN)
+      return false
       # Disabled features are always off!
       return false if status == MigrationStatus::DISABLED
 

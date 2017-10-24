@@ -44,9 +44,11 @@ module Gitlab
     end
 
     def add_terminal_auth(terminal, token:, max_session_time:, ca_pem: nil)
-      terminal[:headers]['Authorization'] << "Bearer #{token}"
-      terminal[:max_session_time] = max_session_time
-      terminal[:ca_pem] = ca_pem if ca_pem.present?
+      terminal.tap do
+        terminal[:headers]['Authorization'] << "Bearer #{token}"
+        terminal[:max_session_time] = max_session_time
+        terminal[:ca_pem] = ca_pem if ca_pem.present?
+      end
     end
 
     def container_exec_url(api_url, namespace, pod_name, container_name)

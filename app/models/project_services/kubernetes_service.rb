@@ -138,7 +138,10 @@ class KubernetesService < DeploymentService
 
 
   def development_terminal(environment)
-    terminal = terminals_for_pod(api_url, actual_namespace, development_pod(environment))
+    terminals = terminals_for_pod(api_url, actual_namespace, development_pod(environment))
+    terminal = terminals.find do |terminal|
+      terminal[:selectors][:container] == 'app'
+    end
     add_terminal_auth(terminal, terminal_auth)
   end
 
