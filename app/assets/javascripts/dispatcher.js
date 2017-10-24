@@ -229,6 +229,10 @@ import DueDateSelectors from './due_date_select';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
