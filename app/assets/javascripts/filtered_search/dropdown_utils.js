@@ -152,7 +152,7 @@ class DropdownUtils {
     let tokenValue = visualToken && visualToken.querySelector('.value') && visualToken.querySelector('.value').textContent.trim();
     if (tokenName === 'label' && tokenValue) {
       // remove leading symbol and wrapping quotes
-      tokenValue = tokenValue.replace(/^~("|')?(.*)("|')?$/, '$2');
+      tokenValue = tokenValue.replace(/^~("|')?(.*)/, '$2').replace(/("|')$/, '');
     }
     return { tokenName, tokenValue };
   }
