@@ -213,6 +213,10 @@ module Gitlab
           return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
         end
 
+        unless push_rule.author_allowed?(commit.committer_email, user_access.user.email)
+          return "You can only push your own commits to this repository"
+        end
+
         if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
           return "Commit must be signed with a GPG key"
         end
@@ -227,12 +231,6 @@ module Gitlab
             unless User.existing_member?(commit.committer_email.downcase)
               return "Committer '#{commit.committer_email}' is not a member of team"
             end
-          end
-        end
-
-        if push_rule.commit_author_check
-          unless commit.committer_email.casecmp(user_access.user.email) == 0
-            return "You can only push your own commits to this repository"
           end
         end
 

@@ -58,6 +58,13 @@ class PushRule < ActiveRecord::Base
     commit.has_signature?
   end
 
+  def author_allowed?(committer_email, current_user_email)
+    return true unless available?(:commit_author_check)
+    return true unless commit_author_check
+
+    committer_email.casecmp(current_user_email) == 0
+  end
+
   def commit_message_allowed?(message)
     data_match?(message, commit_message_regex)
   end
