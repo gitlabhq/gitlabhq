@@ -17,4 +17,33 @@ describe CustomEmoji, type: :model do
       create(:custom_emoji)
     end
   end
+
+  describe 'with subgroup' do
+    let(:parent_group) { create(:group) }
+    let(:subgroup) { create(:group, parent: parent_group) }
+
+    before do
+      create(:custom_emoji, namespace: parent_group)
+    end
+
+    context 'when subgroup has no custom emoji' do
+      it 'retrieves custom emoji when parent group has custom emoji' do
+        expect(described_class.for_namespace(subgroup.id).count).to be 1
+      end
+    end
+
+    context 'when subgroup has custom emoji' do
+      before do
+        create(:custom_emoji, namespace: subgroup)
+      end
+
+      it 'retrieves both parent and subgroup custom emoji for subgroup' do
+        expect(described_class.for_namespace(subgroup.id).count).to be 2
+      end
+
+      it 'does not retrieve subgroup custom emoji for parent' do
+        expect(described_class.for_namespace(parent_group.id).count).to be 1
+      end
+    end
+  end
 end

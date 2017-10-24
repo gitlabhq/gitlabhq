@@ -37,6 +37,18 @@ class AutocompleteController < ApplicationController
     render json: emoji_with_count.map { |k, v| { name: k } }
   end
 
+  def custom_emoji
+    project = Project.find(params[:project_id])
+
+    return render_404 unless can?(current_user, :read_project, project)
+
+    custom_emoji = project.namespace.custom_emoji_map.map do |k, v|
+      { name: k, url: v }
+    end
+
+    render json: custom_emoji
+  end
+
   private
 
   def load_group

@@ -58,5 +58,7 @@ constraints(GroupUrlConstrainer.new) do
     patch '/', action: :update
     put '/', action: :update
     delete '/', action: :destroy
+
+    get 'custom_emoji'
   end
 end

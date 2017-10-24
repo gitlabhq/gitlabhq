@@ -337,7 +337,6 @@ describe AutocompleteController do
   end
 
   context 'GET award_emojis' do
-    let(:user2) { create(:user) }
     let!(:award_emoji1) { create_list(:award_emoji, 2, user: user, name: 'thumbsup') }
     let!(:award_emoji2) { create_list(:award_emoji, 1, user: user, name: 'thumbsdown') }
     let!(:award_emoji3) { create_list(:award_emoji, 3, user: user, name: 'star') }
@@ -353,7 +352,9 @@ describe AutocompleteController do
 
     context 'sign in as user without award emoji' do
       it 'returns empty json' do
+        user2 = create(:user)
         sign_in(user2)
+
         get :award_emojis
 
         expect(json_response).to be_empty
@@ -370,6 +371,36 @@ describe AutocompleteController do
         expect(json_response[1]).to match('name' => 'thumbsup')
         expect(json_response[2]).to match('name' => 'tea')
         expect(json_response[3]).to match('name' => 'thumbsdown')
+      end
+    end
+  end
+
+  describe 'GET custom_emoji' do
+    let!(:custom_emoji1) { create(:custom_emoji, name: 'awesome_banana', namespace: project.namespace) }
+    let!(:custom_emoji2) { create(:custom_emoji, name: 'trollface', namespace: project.namespace) }
+    let!(:custom_emoji3) { create(:custom_emoji, name: 'partyparrot', namespace: project.namespace) }
+
+    context 'sign in as user without custom emoji' do
+      it 'returns empty json' do
+        user2 = create(:user)
+        sign_in(user2)
+
+        get :custom_emoji, project_id: project.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'sign in as user with custom emoji' do
+      it 'returns json sorted by name count' do
+        sign_in(user)
+
+        get :custom_emoji, project_id: project.id
+
+        expect(json_response.count).to eq 3
+        expect(json_response[0]['name']).to eq('awesome_banana')
+        expect(json_response[1]['name']).to eq('trollface')
+        expect(json_response[2]['name']).to eq('partyparrot')
       end
     end
   end

@@ -1,14 +1,13 @@
 require 'carrierwave/orm/activerecord'
 
 class CustomEmoji < ActiveRecord::Base
-  MAXIMUM = 100
-
   belongs_to :namespace
 
   mount_uploader :file, CustomEmojiUploader
 
   validates_integrity_of :file
 
+  validate :file_type
   validates :name,
     presence: true,
     uniqueness: { scope: :namespace_id },
@@ -16,20 +15,17 @@ class CustomEmoji < ActiveRecord::Base
     format: { with: /\A\w+\z/ },
     exclusion: { in: Gitlab::Emoji.emojis_names }
 
-  validate :file_type
-
-  before_create :limit_reached
   after_save :expire_cache
+
+  scope :for_namespace, ->(namespace_id) do
+    where(namespace_id: Namespace.find_by_id(namespace_id).self_and_ancestors.select(:id))
+  end
 
   def url
     "#{Rails.application.routes.url_helpers.root_url}#{file.url}"
   end
 
   private
-
-  def limit_reached
-    self.errors.add :custom_emoji, 'Custom emoji limit reached' unless self.namespace.custom_emoji.count < MAXIMUM
-  end
 
   def expire_cache
     namespace.invalidate_custom_emoji_cache

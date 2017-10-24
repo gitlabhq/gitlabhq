@@ -140,16 +140,20 @@ class Namespace < ActiveRecord::Base
   def custom_emoji_map
     @custom_emoji_map ||=
       Rails.cache.fetch(custom_emoji_cache_key) do
-        custom_emoji.each_with_object({}) { |emoji, hsh| hsh[emoji.name] = emoji.url }
+        CustomEmoji.for_namespace(id).each_with_object({}) do |emoji, hsh|
+          hsh[emoji.name] = emoji.url
+        end
       end
   end
 
   def invalidate_custom_emoji_cache
-    Rails.cache.delete(custom_emoji_cache_key)
+    self_and_ancestors.each do |namespace|
+      Rails.cache.delete(custom_emoji_cache_key(namespace))
+    end
   end
 
-  def custom_emoji_cache_key
-    "#{cache_key}/custom_emoji"
+  def custom_emoji_cache_key(namespace = self)
+    "#{namespace.cache_key}/custom_emoji"
   end
 
   def kind
