@@ -20,6 +20,8 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+
+      redirect_to oauth_application_url(@application)
     else
       set_index_vars
       render :index
