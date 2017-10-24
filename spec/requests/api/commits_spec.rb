@@ -465,6 +465,66 @@ describe API::Commits do
     end
   end
 
+  describe 'GET /projects/:id/repository/commits/:sha/refs' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:tag) { project.repository.find_tag('v1.1.0') }
+    let(:commit_id) { tag.dereferenced_target.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/refs" }
+
+    context 'when ref does not exist' do
+      let(:commit_id) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Commit Not Found' }
+      end
+    end
+
+    context 'when repository is disabled' do
+      include_context 'disabled repository'
+
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, current_user) }
+      end
+    end
+
+    context 'for a valid commit' do
+      it 'returns all refs with no scope' do
+        get api(route, current_user)
+
+        repo_refs = project.repository.branch_names_contains(commit_id)
+        repo_refs.push(*project.repository.tag_names_contains(commit_id))
+
+        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+      end
+
+      it 'returns all refs' do
+        get api(route, current_user), type: 'all'
+
+        repo_refs = project.repository.branch_names_contains(commit_id)
+        repo_refs.push(*project.repository.tag_names_contains(commit_id))
+
+        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+      end
+
+      it 'returns the branch refs' do
+        get api(route, current_user), type: 'branches'
+
+        repo_refs = project.repository.branch_names_contains(commit_id)
+
+        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+      end
+
+      it 'returns the tag refs' do
+        get api(route, current_user), type: 'tags'
+
+        repo_refs = project.repository.tag_names_contains(commit_id)
+
+        expect(json_response.map { |refs| refs['name'] }).to eq(repo_refs)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/repository/commits/:sha' do
     let(:commit) { project.repository.commit }
     let(:commit_id) { commit.id }
