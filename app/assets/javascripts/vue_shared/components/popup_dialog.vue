@@ -5,16 +5,29 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
     },
     text: {
       type: String,
       required: false,
+<<<<<<< HEAD
+=======
+    },
+    hideFooter: {
+      type: Boolean,
+      required: false,
+      default: false,
+>>>>>>> e8a46294c0... apply changes for JS and CSS from gitlab-ee!2912
     },
     kind: {
       type: String,
       required: false,
       default: 'primary',
+    },
+    modalDialogClass: {
+      type: String,
+      required: false,
+      default: '',
     },
     closeKind: {
       type: String,
@@ -29,6 +42,11 @@ export default {
     primaryButtonLabel: {
       type: String,
       required: true,
+    },
+    submitDisabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
@@ -57,26 +75,60 @@ export default {
 </script>
 
 <template>
-<div
-  class="modal popup-dialog"
-  role="dialog"
-  tabindex="-1">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button"
-          class="close"
-          @click="close"
-          aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title">{{this.title}}</h4>
-      </div>
-      <div class="modal-body">
-        <slot name="body" :text="text">
-          <p>{{text}}</p>
+<div class="modal-open">
+  <div
+    class="modal popup-dialog"
+    role="dialog"
+    tabindex="-1"
+  >
+    <div
+      :class="modalDialogClass"
+      class="modal-dialog"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <slot name="header">
+            <h4 class="modal-title pull-left">
+              {{this.title}}
+            </h4>
+            <button
+              type="button"
+              class="close pull-right"
+              @click="close"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </slot>
+        </div>
+        <div class="modal-body">
+          <slot name="body" :text="text">
+            <p>{{this.text}}</p>
+          </slot>
+        </div>
+        <slot name="footer">
+          <div class="modal-footer" v-if="!hideFooter">
+            <button
+              type="button"
+              class="btn btn-default pull-right"
+              @click="close"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn pull-left"
+              :disabled="submitDisabled"
+              :class="btnKindClass"
+              @click="emitSubmit(true)"
+            >
+              {{primaryButtonLabel}}
+            </button>
+          </div>
         </slot>
       </div>
+<<<<<<< HEAD
       <div class="modal-footer">
         <button
           type="button"
@@ -93,7 +145,10 @@ export default {
           {{ primaryButtonLabel }}
         </button>
       </div>
+=======
+>>>>>>> e8a46294c0... apply changes for JS and CSS from gitlab-ee!2912
     </div>
   </div>
+  <div class="modal-backdrop fade in" />
 </div>
 </template>
