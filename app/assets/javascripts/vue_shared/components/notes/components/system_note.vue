@@ -17,8 +17,8 @@
    *   />
    */
   import { mapGetters } from 'vuex';
-  import issueNoteHeader from '../../../notes/components/issue_note_header.vue';
-  import { spriteIcon } from '../../../lib/utils/common_utils';
+  import issueNoteHeader from '~/vue_shared/components/notes/components/issue_note_header.vue';
+  import { spriteIcon } from '../../../../lib/utils/common_utils';
 
   export default {
     name: 'systemNote',

@@ -1,6 +1,8 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import Flash from '~/flash';
+  import placeholderSystemNote from '~/vue_shared/components/notes/components/placeholder_system_note.vue';
+  import placeholderNote from '~/vue_shared/components/notes/components/placeholder_note.vue';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../user_avatar/user_avatar_link.vue';
@@ -9,8 +11,6 @@
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import issueNoteEditedText from './issue_note_edited_text.vue';
   import issueNoteForm from './issue_note_form.vue';
-  import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
-  import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
 
   export default {

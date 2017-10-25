@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
-import store from '~/notes/stores';
+import issueSystemNote from '~/vue_shared/components/notes/components/system_note.vue';
+import store from '~/vue_shared/components/notes/stores';
 
 describe('issue system note', () => {
   let vm;

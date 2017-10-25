@@ -6,10 +6,10 @@
   import * as constants from '../constants';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';
-  import systemNote from './issue_system_note.vue';
+  import systemNote from './system_note.vue';
   import issueCommentForm from './issue_comment_form.vue';
-  import placeholderNote from './issue_placeholder_note.vue';
-  import placeholderSystemNote from './issue_placeholder_system_note.vue';
+  import placeholderNote from './placeholder_note.vue';
+  import placeholderSystemNote from './placeholder_system_note.vue';
 
   export default {
     name: 'issueNotesApp',
