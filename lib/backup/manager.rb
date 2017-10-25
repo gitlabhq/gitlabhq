@@ -4,19 +4,23 @@ module Backup
     FOLDERS_TO_BACKUP = %w[repositories db].freeze
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'.freeze
 
+    def initialize(backup_config: {})
+      @backup_config = Gitlab.config.backup.deep_merge(backup_config)
+    end
+
     def pack
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
 
       Dir.chdir(backup_path) do
-        File.open("#{backup_path}/backup_information.yml", "w+") do |file|
+        File.open("backup_information.yml", "w+") do |file|
           file << backup_information.to_yaml.gsub(/^---\n/, '')
         end
 
         # create archive
         $progress.print "Creating backup archive: #{tar_file} ... "
         # Set file permissions on open to prevent chmod races.
-        tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
+        tar_system_options = { out: [tar_file, 'w', @backup_config.archive_permissions] }
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
           $progress.puts "done".color(:green)
         else
@@ -31,7 +35,7 @@ module Backup
     def upload
       $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
-      connection_settings = Gitlab.config.backup.upload.connection
+      connection_settings = @backup_config.upload.connection
       if connection_settings.blank?
         $progress.puts "skipped".color(:yellow)
         return
@@ -40,9 +44,9 @@ module Backup
       directory = connect_to_remote_directory(connection_settings)
 
       if directory.files.create(key: remote_target, body: File.open(tar_file), public: false,
-                                multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
-                                encryption: Gitlab.config.backup.upload.encryption,
-                                storage_class: Gitlab.config.backup.upload.storage_class)
+                                multipart_chunk_size: @backup_config.upload.multipart_chunk_size,
+                                encryption: @backup_config.upload.encryption,
+                                storage_class: @backup_config.upload.storage_class)
         $progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)
@@ -68,7 +72,7 @@ module Backup
     def remove_old
       # delete backups
       $progress.print "Deleting old backups ... "
-      keep_time = Gitlab.config.backup.keep_time.to_i
+      keep_time = @backup_config.keep_time.to_i
 
       if keep_time > 0
         removed = 0
@@ -160,7 +164,7 @@ module Backup
     private
 
     def backup_path
-      Gitlab.config.backup.path
+      @backup_config.path
     end
 
     def backup_file_list
@@ -182,7 +186,7 @@ module Backup
     end
 
     def remote_directory
-      Gitlab.config.backup.upload.remote_directory
+      @backup_config.upload.remote_directory
     end
 
     def remote_target

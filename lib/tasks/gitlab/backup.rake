@@ -4,7 +4,7 @@ namespace :gitlab do
   namespace :backup do
     # Create backup of GitLab system
     desc "GitLab | Create a backup of the GitLab system"
-    task create: :environment do
+    task :create, [:backup_config] => :environment do |task, args|
       warn_user_is_not_gitlab
       configure_cron_mode
 
@@ -17,7 +17,8 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:lfs:create"].invoke
       Rake::Task["gitlab:backup:registry:create"].invoke
 
-      backup = Backup::Manager.new
+      #TODO: Check task still works without args
+      backup = Backup::Manager.new(backup_config: args.backup_config)
       backup.pack
       backup.cleanup
       backup.remove_old
