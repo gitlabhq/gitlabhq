@@ -1,6 +1,24 @@
 <script>
+  /**
+   * Common component to render a system note, icon and user information.
+   *
+   * This component needs to be used with a vuex store.
+   * That vuex store needs to have a `targetNoteHash` getter
+   *
+   * @example
+   * <system-note
+   *   :note="{
+   *     id: String,
+   *     author: Object,
+   *     createdAt: String,
+   *     note_html: String,
+   *     system_note_icon_name: String
+   *    }"
+   *   />
+   */
   import { mapGetters } from 'vuex';
-  import issueNoteHeader from './issue_note_header.vue';
+  import issueNoteHeader from '../../../notes/components/issue_note_header.vue';
+  import { spriteIcon } from '../../../lib/utils/common_utils';
 
   export default {
     name: 'systemNote',
@@ -24,7 +42,7 @@
         return this.targetNoteHash === this.noteAnchorId;
       },
       iconHtml() {
-        return gl.utils.spriteIcon(this.note.system_note_icon_name);
+        return spriteIcon(this.note.system_note_icon_name);
       },
     },
   };
@@ -46,7 +64,8 @@
             :author="note.author"
             :created-at="note.created_at"
             :note-id="note.id"
-            :action-text-html="note.note_html" />
+            :action-text-html="note.note_html"
+            />
         </div>
       </div>
     </div>
