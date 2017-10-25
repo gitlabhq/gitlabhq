@@ -20,12 +20,8 @@ import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
-<<<<<<< HEAD
-import './autosave';
-=======
 import Autosave from './autosave';
 import './dropzone_input';
->>>>>>> 1c317af47772ed2862a9c1ed22ab952bb1a84874
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
