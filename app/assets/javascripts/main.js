@@ -41,7 +41,6 @@ import './behaviors/';
 import './activities';
 import './admin';
 import './aside';
-import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './commits';

@@ -1,3 +1,4 @@
+<<<<<<< HEAD:app/assets/stylesheets/framework/new-sidebar.scss
 @import "framework/variables";
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
@@ -13,12 +14,15 @@ $new-sidebar-width: 220px;
 $new-sidebar-collapsed-width: 50px;
 
 .page-with-new-sidebar {
+=======
+.page-with-contextual-sidebar {
+>>>>>>> 1c317af47772ed2862a9c1ed22ab952bb1a84874:app/assets/stylesheets/framework/contextual-sidebar.scss
   @media (min-width: $screen-md-min) {
-    padding-left: $new-sidebar-collapsed-width;
+    padding-left: $contextual-sidebar-collapsed-width;
   }
 
   @media (min-width: $screen-lg-min) {
-    padding-left: $new-sidebar-width;
+    padding-left: $contextual-sidebar-width;
   }
 
   // Override position: absolute
@@ -34,7 +38,7 @@ $new-sidebar-collapsed-width: 50px;
 
 .page-with-icon-sidebar {
   @media (min-width: $screen-sm-min) {
-    padding-left: $new-sidebar-collapsed-width;
+    padding-left: $contextual-sidebar-collapsed-width;
   }
 }
 
@@ -52,12 +56,12 @@ $new-sidebar-collapsed-width: 50px;
 
   &:hover,
   a:hover {
-    background-color: $hover-background;
-    color: $hover-color;
+    background-color: $link-hover-background;
+    color: $gl-text-color;
 
     .settings-avatar {
       svg {
-        fill: $hover-color;
+        fill: $gl-text-color;
       }
     }
   }
@@ -85,7 +89,7 @@ $new-sidebar-collapsed-width: 50px;
 .nav-sidebar {
   position: fixed;
   z-index: 400;
-  width: $new-sidebar-width;
+  width: $contextual-sidebar-width;
   transition: left $sidebar-transition-duration;
   top: $header-height;
   bottom: 0;
@@ -103,7 +107,7 @@ $new-sidebar-collapsed-width: 50px;
 
   &.sidebar-icons-only {
     width: auto;
-    min-width: $new-sidebar-collapsed-width;
+    min-width: $contextual-sidebar-collapsed-width;
 
     .nav-sidebar-inner-scroll {
       overflow-x: hidden;
@@ -149,11 +153,11 @@ $new-sidebar-collapsed-width: 50px;
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      color: $inactive-color;
+      color: $gl-text-color-secondary;
     }
 
     svg {
-      fill: $inactive-color;
+      fill: $gl-text-color-secondary;
     }
   }
 
@@ -168,7 +172,7 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   @media (max-width: $screen-xs-max) {
-    left: (-$new-sidebar-width);
+    left: (-$contextual-sidebar-width);
   }
 
   .nav-icon-container {
@@ -210,8 +214,8 @@ $new-sidebar-collapsed-width: 50px;
 
       &:hover,
       &:focus {
-        background: $active-hover-background;
-        color: $active-hover-color;
+        background: $link-active-background;
+        color: $gl-text-color;
       }
     }
 
@@ -220,7 +224,7 @@ $new-sidebar-collapsed-width: 50px;
         &,
         &:hover,
         &:focus {
-          background: $active-background;
+          background: $link-active-background;
         }
       }
     }
@@ -308,11 +312,11 @@ $new-sidebar-collapsed-width: 50px;
 
     .badge {
       background-color: $inactive-badge-background;
-      color: $inactive-color;
+      color: $gl-text-color-secondary;
     }
 
     &.active {
-      background: $active-background;
+      background: $link-active-background;
 
       > a {
         margin-left: 4px;
@@ -330,7 +334,11 @@ $new-sidebar-collapsed-width: 50px;
 
     &.active > a:hover,
     &.is-over > a {
+<<<<<<< HEAD:app/assets/stylesheets/framework/new-sidebar.scss
       background-color: $hover-background;
+=======
+      background-color: $link-hover-background;
+>>>>>>> 1c317af47772ed2862a9c1ed22ab952bb1a84874:app/assets/stylesheets/framework/contextual-sidebar.scss
     }
   }
 }
@@ -340,7 +348,7 @@ $new-sidebar-collapsed-width: 50px;
 
 .toggle-sidebar-button,
 .close-nav-button {
-  width: $new-sidebar-width - 2px;
+  width: $contextual-sidebar-width - 2px;
   position: fixed;
   bottom: 0;
   padding: 16px;
@@ -407,7 +415,7 @@ $new-sidebar-collapsed-width: 50px;
   }
 
   .toggle-sidebar-button {
-    width: $new-sidebar-collapsed-width - 2px;
+    width: $contextual-sidebar-collapsed-width - 2px;
     padding: 16px;
 
     .collapse-text,

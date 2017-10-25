@@ -186,41 +186,16 @@ The following guide assumes that:
     geo_secondary_role['enable'] = true
     ```
 
-1. Optional since GitLab 9.1, and required for GitLab 10.0 or higher:
-   [Enable tracking database on the secondary server](#enable-tracking-database-on-the-secondary-server)
-
-1. Otherwise, continue to [initiate the replication process](#step-3-initiate-the-replication-process).
-
-#### Enable tracking database on the secondary server
-
-Geo secondary nodes use a tracking database to keep track of replication status and recover
-automatically from some replication issues.
-
-It is added in GitLab 9.1, and since GitLab 10.0 it is required.
-
-> **IMPORTANT:** For this feature to work correctly, all nodes must be
-with their clocks synchronized. It is not required for all nodes to be set to
-the same time zone, but when the respective times are converted to UTC time,
-the clocks must be synchronized to within 60 seconds of each other.
+1. [Reconfigure GitLab][] for the changes to take effect.
 
 1. Setup clock synchronization service in your Linux distro.
    This can easily be done via any NTP-compatible daemon. For example,
    here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
-
-    ```ruby
-    geo_postgresql['enable'] = true
-    ```
-
-1. Set up the Geo tracking database:
-
-    ```
-    sudo gitlab-rake geo:db:migrate
-    ```
-
-1. [Reconfigure GitLab][] for the changes to take effect.
-1. Continue to [initiate the replication process](#step-3-initiate-the-replication-process).
+    **IMPORTANT:** For Geo to work correctly, all nodes must be with their
+    clocks synchronized. It is not required for all nodes to be set to the
+    same time zone, but when the respective times are converted to UTC time,
+    the clocks must be synchronized to within 60 seconds of each other.
 
 ### Step 3. Initiate the replication process
 

@@ -190,7 +190,11 @@ used for all GitLab Geo installations.
    you created previously. **Do NOT** check the box 'This is a primary node'.
 1. Added in GitLab 9.5: Choose which namespaces should be replicated by the secondary node. Leave blank to replicate all. Read more in [selective replication](#selective-replication).
 1. Click the **Add node** button.
+1. Restart GitLab on the secondary:
 
+    ```
+    gitlab-ctl restart
+    ```
 ---
 
 After the **Add Node** button is pressed, the primary node will start to notify

@@ -376,10 +376,6 @@ Select one node as a primary node.
     CREATE EXTENSION pg_trgm;
     ```
 
-    # Output:
-
-    CREATE EXTENSION
-
 1. Exit the database prompt by typing `\q` and Enter.
 1. Verify the cluster is initialized with one node:
 

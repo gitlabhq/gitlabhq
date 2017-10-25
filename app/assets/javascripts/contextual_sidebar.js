@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import _ from 'underscore';
 import bp from './breakpoints';
 
-export default class NewNavSidebar {
+export default class ContextualSidebar {
   constructor() {
     this.initDomElements();
     this.render();
@@ -55,7 +55,7 @@ export default class NewNavSidebar {
       this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
-    NewNavSidebar.setCollapsedCookie(collapsed);
+    ContextualSidebar.setCollapsedCookie(collapsed);
 
     this.toggleSidebarOverflow();
   }
