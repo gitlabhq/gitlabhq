@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017145932) do
+ActiveRecord::Schema.define(version: 20171025091951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,9 +161,11 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.string "awardable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "custom_emoji_id"
   end
 
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+  add_index "award_emoji", ["custom_emoji_id"], name: "index_award_emoji_on_custom_emoji_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
   create_table "boards", force: :cascade do |t|
@@ -1796,6 +1798,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "award_emoji", "custom_emoji", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
   add_foreign_key "ci_build_trace_section_names", "projects", on_delete: :cascade

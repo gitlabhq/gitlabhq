@@ -137,8 +137,8 @@ class Namespace < ActiveRecord::Base
     end
   end
 
-  def custom_emoji_map
-    @custom_emoji_map ||=
+  def custom_emoji_url_by_name
+    @custom_emoji_url_by_name ||=
       Rails.cache.fetch(custom_emoji_cache_key) do
         CustomEmoji.for_namespace(id).each_with_object({}) do |emoji, hsh|
           hsh[emoji.name] = emoji.url

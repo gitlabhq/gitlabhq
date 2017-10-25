@@ -32,7 +32,7 @@ module Banzai
       def custom_emoji_name_element_filter(text)
         text.gsub(custom_emoji_pattern) do |match|
           name = $1
-          image_tag(custom_emoji_map[name], alt: name, class: 'custom-emoji')
+          image_tag(custom_emoji_url_by_name[name], alt: name, class: 'custom-emoji')
         end
       end
 
@@ -42,12 +42,9 @@ module Banzai
         context[:project]
       end
 
-      def custom_emoji_map
-        project.namespace.custom_emoji_map
-      end
-
       def custom_emoji_to_regex
-        custom_emoji_map.keys.map { |name| Regexp.escape(name) }.join('|')
+        project.namespace.custom_emoji_url_by_name.
+          keys.map { |name| Regexp.escape(name) }.join('|')
       end
     end
   end

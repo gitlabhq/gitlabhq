@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe AwardEmoji do
+  set(:issue) { create(:issue) }
+  set(:user) { create(:user) }
+
   describe 'Associations' do
     it { is_expected.to belong_to(:awardable) }
     it { is_expected.to belong_to(:user) }
@@ -19,7 +22,6 @@ describe AwardEmoji do
     describe "scoped uniqueness validation" do
       it "rejects duplicate award emoji" do
         user  = create(:user)
-        issue = create(:issue)
         create(:award_emoji, user: user, awardable: issue)
         new_award = build(:award_emoji, user: user, awardable: issue)
 
@@ -32,12 +34,29 @@ describe AwardEmoji do
       # also needs to be moved to the ghost user - this cannot happen unless
       # the uniqueness validation is disabled for ghost users.
       it "allows duplicate award emoji for ghost users" do
-        user  = create(:user, :ghost)
-        issue = create(:issue)
-        create(:award_emoji, user: user, awardable: issue)
         new_award = build(:award_emoji, user: user, awardable: issue)
 
         expect(new_award).to be_valid
+      end
+    end
+
+    context 'when awarding custom emoji' do
+      let(:custom_emoji) { create(:custom_emoji, namespace: issue.project.namespace) }
+
+      it 'accepts the award emoji' do
+        new_award = build(:award_emoji, user: user, awardable: issue, name: custom_emoji.name)
+
+        expect(new_award).to be_valid
+      end
+    end
+
+    context 'when an invalid name is used' do
+      let(:issue) { create(:issue) }
+
+      it 'accepts the award emoji' do
+        new_award = build(:award_emoji, awardable: issue, name: 'z' * 30)
+
+        expect(new_award).not_to be_valid
       end
     end
   end

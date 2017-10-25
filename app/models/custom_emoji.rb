@@ -8,12 +8,13 @@ class CustomEmoji < ActiveRecord::Base
   validates_integrity_of :file
 
   validate :file_type
+  validate :valid_emoji_name
+
   validates :name,
     presence: true,
     uniqueness: { scope: :namespace_id },
     length: { maximum: 36 },
-    format: { with: /\A\w+\z/ },
-    exclusion: { in: Gitlab::Emoji.emojis_names }
+    format: { with: /\A\w+\z/ }
 
   after_save :expire_cache
 
@@ -33,5 +34,14 @@ class CustomEmoji < ActiveRecord::Base
 
   def file_type
     self.errors.add :file, 'Only images allowed' unless self.file.image?
+  end
+
+  def valid_emoji_name
+    valid_emoji = Gitlab::Emoji.emojis_names
+    valid_emoji += namespace.custom_emoji_url_by_name.keys
+
+    if valid_emoji.include?(name)
+      self.errors.add(:name, "#{self.name} is already being used for another emoji")
+    end
   end
 end

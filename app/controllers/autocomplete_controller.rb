@@ -2,7 +2,7 @@ class AutocompleteController < ApplicationController
   AWARD_EMOJI_MAX = 100
 
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
-  before_action :load_project, only: [:users]
+  before_action :load_project, only: [:users, :custom_emoji]
   before_action :load_group, only: [:users]
 
   def users
@@ -34,19 +34,11 @@ class AutocompleteController < ApplicationController
     # Transform from hash to array to guarantee json order
     # e.g. { 'thumbsup' => 2, 'thumbsdown' = 1 }
     #   => [{ name: 'thumbsup' }, { name: 'thumbsdown' }]
-    render json: emoji_with_count.map { |k, v| { name: k } }
+    render json: emoji_with_count.keys.map { |name| { name: name } }
   end
 
   def custom_emoji
-    project = Project.find(params[:project_id])
-
-    return render_404 unless can?(current_user, :read_project, project)
-
-    custom_emoji = project.namespace.custom_emoji_map.map do |k, v|
-      { name: k, url: v }
-    end
-
-    render json: custom_emoji
+    render json: @project.namespace.custom_emoji_url_by_name.map { |k, v| { name: k, url: v } }
   end
 
   private

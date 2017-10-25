@@ -9,8 +9,10 @@ class AwardEmoji < ActiveRecord::Base
   belongs_to :user
 
   validates :awardable, :user, presence: true
-  validates :name, presence: true, inclusion: { in: Gitlab::Emoji.emojis_names }
+  validates :name, presence: true
   validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }, unless: :ghost_user?
+
+  validate :valid_emoji_name
 
   participant :user
 
@@ -38,5 +40,18 @@ class AwardEmoji < ActiveRecord::Base
 
   def expire_etag_cache
     awardable.try(:expire_etag_cache)
+  end
+
+  private
+
+  def namespace
+    awardable.project.namespace || awardable.author.namespace
+  end
+
+  def valid_emoji_name
+    valid_emoji = Gitlab::Emoji.emojis_names
+    valid_emoji += namespace.custom_emoji_url_by_name.keys
+
+    self.errors.add(:name, 'invalid emoji name') unless valid_emoji.include?(name)
   end
 end

@@ -362,7 +362,7 @@ describe Projects::NotesController do
   describe 'POST toggle_award_emoji' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "toggles the award emoji" do
@@ -381,6 +381,15 @@ describe Projects::NotesController do
       end.to change { AwardEmoji.count }.by(-1)
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'allows custom emoji to be posted' do
+      namespace = note.project.namespace
+      emoji = create(:custom_emoji, namespace: namespace)
+
+      expect do
+        post(:toggle_award_emoji, request_params.merge(name: emoji.name))
+      end.to change { AwardEmoji.count }.by(1)
     end
   end
 
