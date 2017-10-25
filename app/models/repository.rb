@@ -496,7 +496,7 @@ class Repository
   def exists?
     return false unless full_path
 
-    return @exists if defined(@exists)
+    return @exists if defined?(@exists)
 
     redis_value = Gitlab::Redis::Cache.with { |redis| redis.get(exists_cache_key) }
 
