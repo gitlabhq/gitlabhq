@@ -105,6 +105,23 @@ module Gitlab
       ensure
         request_enum.close
       end
+
+      def user_ff_branch(user, source_sha, target_branch)
+        request = Gitaly::UserFFBranchRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit_id: source_sha,
+          branch: GitalyClient.encode(target_branch)
+        )
+
+        branch_update = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_ff_branch,
+          request
+        ).branch_update
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+      end
     end
   end
 end

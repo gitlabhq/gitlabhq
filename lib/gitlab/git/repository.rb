@@ -750,13 +750,13 @@ module Gitlab
       end
 
       def ff_merge(user, source_sha, target_branch)
-        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
-          raise ArgumentError, 'Invalid merge target' unless our_commit
-
-          source_sha
+        gitaly_migrate(:operation_user_ff_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ff_merge(user, source_sha, target_branch)
+          else
+            rugged_ff_merge(user, source_sha, target_branch)
+          end
         end
-      rescue Rugged::ReferenceError
-        raise ArgumentError, 'Invalid merge source'
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -1169,10 +1169,10 @@ module Gitlab
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       private
@@ -1613,6 +1613,22 @@ module Gitlab
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
         run_git(args, env: env)
+      end
+
+      def gitaly_ff_merge(user, source_sha, target_branch)
+        gitaly_operations_client.user_ff_branch(user, source_sha, target_branch)
+      rescue GRPC::FailedPrecondition => e
+        raise CommitError, e
+      end
+
+      def rugged_ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
     end
   end
