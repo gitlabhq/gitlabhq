@@ -1135,6 +1135,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#merged_branch_names' do
+    context 'when branch names are passed' do
+      it 'only returns the names we are asking' do
+        names = repository.merged_branch_names(%w[merge-test])
+
+        expect(names).to contain_exactly('merge-test')
+      end
+
+      it 'does not return unmerged branch names' do
+        names = repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
+    context 'when no branch names are specified' do
+      it 'returns all merged branch names' do
+        names = repository.merged_branch_names
+
+        expect(names).to include('merge-test')
+        expect(names).to include('fix-mode')
+        expect(names).not_to include('feature')
+      end
+    end
+  end
+
   describe "#ls_files" do
     let(:master_file_paths) { repository.ls_files("master") }
     let(:not_existed_branch) { repository.ls_files("not_existed_branch") }
