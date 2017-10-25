@@ -230,6 +230,8 @@ class User < ActiveRecord::Base
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('last_sign_in_at', 'ASC')) }
+  scope :confirmed,   -> { where.not(confirmed_at: nil) }
+  scope :unconfirmed, -> { where(confirmed_at: nil) }
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
@@ -436,7 +438,7 @@ class User < ActiveRecord::Base
   end
 
   def skip_confirmation=(bool)
-    skip_confirmation! if bool
+    # skip_confirmation! if bool
   end
 
   def generate_reset_token
@@ -509,8 +511,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  # user can specify an email that someone else has added as a secondary,
+  # as long as it hasn't been confirmed yet
   def unique_email
-    if !emails.exists?(email: email) && Email.exists?(email: email)
+    if !emails.exists?(email: email) && Email.confirmed.exists?(email: email)
       errors.add(:email, 'has already been taken')
     end
   end

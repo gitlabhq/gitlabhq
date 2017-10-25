@@ -13,7 +13,8 @@ class Email < ActiveRecord::Base
   validates_uniqueness_of :email, conditions: -> { where.not(confirmed_at: nil) }
   validate :unique_email
 
-  scope :confirmed, -> { where.not(confirmed_at: nil) }
+  scope :confirmed,   -> { where.not(confirmed_at: nil) }
+  scope :unconfirmed, -> { where(confirmed_at: nil) }
 
   after_commit :update_invalid_gpg_signatures, if: -> { previous_changes.key?('confirmed_at') }
 
