@@ -13,7 +13,7 @@ module Gitlab
           user: Util.gitaly_user(user)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
@@ -29,7 +29,7 @@ module Gitlab
           message: GitalyClient.encode(message.to_s)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
         elsif response.exists
@@ -49,7 +49,7 @@ module Gitlab
           start_point: GitalyClient.encode(start_point)
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
-          :user_create_branch, request)
+          :user_create_branch, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
         if response.pre_receive_error.present?
           raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
         end
@@ -68,7 +68,7 @@ module Gitlab
           user: Util.gitaly_user(user)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
@@ -81,7 +81,8 @@ module Gitlab
           @repository.storage,
           :operation_service,
           :user_merge_branch,
-          request_enum.each
+          request_enum.each,
+          timeout: GitalyClient::DEFAULT_TIMEOUT
         )
 
         request_enum.push(

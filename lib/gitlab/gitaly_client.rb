@@ -30,6 +30,11 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
+    # The default timeout on all Gitaly calls
+    DEFAULT_TIMEOUT = Sidekiq.server? ? 0.seconds : 50.seconds
+    FAST_TIMEOUT = 15.seconds
+    MEDIUM_TIMEOUT = 30.seconds
+
     MUTEX = Mutex.new
     private_constant :MUTEX
 
@@ -47,7 +52,7 @@ module Gitlab
           klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
           addr = address(storage)
           addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-          klass.new(addr, :this_channel_is_insecure)
+          klass.new(addr, :this_channel_is_insecure, timeout: DEFAULT_TIMEOUT)
         end
       end
     end
@@ -88,18 +93,19 @@ module Gitlab
     #   kwargs.merge(deadline: Time.now + 10)
     # end
     #
-    def self.call(storage, service, rpc, request)
+    def self.call(storage, service, rpc, request, timeout: nil)
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       enforce_gitaly_request_limits(:call)
 
-      kwargs = request_kwargs(storage)
+      kwargs = request_kwargs(storage, timeout)
       kwargs = yield(kwargs) if block_given?
+
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
     ensure
       self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
     end
 
-    def self.request_kwargs(storage)
+    def self.request_kwargs(storage, timeout)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
         'authorization' => "Bearer #{encoded_token}",
@@ -110,7 +116,9 @@ module Gitlab
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
 
-      { metadata: metadata }
+      deadline = Time.now + timeout if !timeout.nil? && timeout > 0
+
+      { metadata: metadata, deadline: deadline }
     end
 
     def self.token(storage)

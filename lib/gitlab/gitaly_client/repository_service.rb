@@ -10,32 +10,35 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
+        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient::FAST_TIMEOUT)
+
+        response.exists
       end
 
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
-        GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
+        GitalyClient.call(@storage, :repository_service, :garbage_collect, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def repack_full(create_bitmap)
         request = Gitaly::RepackFullRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
-        GitalyClient.call(@storage, :repository_service, :repack_full, request)
+        GitalyClient.call(@storage, :repository_service, :repack_full, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def repack_incremental
         request = Gitaly::RepackIncrementalRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repack_incremental, request)
+        GitalyClient.call(@storage, :repository_service, :repack_incremental, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response.size
       end
 
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
-        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def fetch_remote(remote, ssh_auth: nil, forced: false, no_tags: false)
@@ -51,17 +54,17 @@ module Gitlab
           end
         end
 
-        GitalyClient.call(@storage, :repository_service, :fetch_remote, request)
+        GitalyClient.call(@storage, :repository_service, :fetch_remote, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def create_repository
         request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :create_repository, request)
+        GitalyClient.call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
       end
 
       def has_local_branches?
         request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient::FAST_TIMEOUT)
 
         response.value
       end
