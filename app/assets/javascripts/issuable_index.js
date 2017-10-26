@@ -5,7 +5,6 @@ export default class IssuableIndex {
   constructor(pagePrefix) {
     this.initBulkUpdate(pagePrefix);
     IssuableIndex.resetIncomingEmailToken();
-    this.initLabelFilterRemove();
   }
   initBulkUpdate(pagePrefix) {
     const userCanBulkUpdate = $('.issues-bulk-update').length > 0;

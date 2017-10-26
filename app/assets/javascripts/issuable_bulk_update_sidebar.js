@@ -5,6 +5,10 @@
 /* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import './milestone_select';
+import './issue_status_select';
+import './subscription_select';
+import './labels_select';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
