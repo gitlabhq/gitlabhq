@@ -1,7 +1,6 @@
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
-import * as getters from './getters';
 import { visitUrl } from '../../lib/utils/url_utility';
 
 export const redirectToUrl = url => visitUrl(url);
@@ -10,8 +9,8 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 
 export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
 
-export const discardAllChanges = ({ commit, state }) => {
-  const changedFiles = getters.changedFiles(state);
+export const discardAllChanges = ({ commit, getters }) => {
+  const changedFiles = getters.changedFiles;
 
   changedFiles.forEach(file => commit(types.DISCARD_FILE_CHANGES, file));
 };
@@ -20,8 +19,8 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
-export const toggleEditMode = ({ commit, state, dispatch }, force = false) => {
-  const changedFiles = getters.changedFiles(state);
+export const toggleEditMode = ({ commit, getters, dispatch }, force = false) => {
+  const changedFiles = getters.changedFiles;
 
   if (changedFiles.length && !force) {
     commit(types.TOGGLE_DISCARD_POPUP, true);
@@ -78,8 +77,19 @@ export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =
   })
   .catch(() => flash('Error committing changes. Please try again.'));
 
-export const popHistoryState = ({ state, dispatch }) => {
-  const treeList = getters.treeList(state);
+export const createTempEntry = ({ state, dispatch }, { name, type }) => {
+  if (type === 'tree') {
+    dispatch('createTempTree', name);
+  } else if (type === 'blob') {
+    dispatch('createTempFile', {
+      tree: state,
+      name,
+    });
+  }
+};
+
+export const popHistoryState = ({ state, dispatch, getters }) => {
+  const treeList = getters.treeList;
   const tree = treeList.find(file => file.url === state.previousUrl);
 
   if (!tree) return;

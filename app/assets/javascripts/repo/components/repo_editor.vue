@@ -1,8 +1,8 @@
 <script>
 /* global monaco */
 import { mapGetters, mapActions } from 'vuex';
-import Helper from '../helpers/repo_helper';
 import flash from '../../flash';
+import monacoLoader from '../monaco_loader';
 
 export default {
   destroyed() {
@@ -11,7 +11,15 @@ export default {
     }
   },
   mounted() {
-    this.initMonaco();
+    if (this.monaco) {
+      this.initMonaco();
+    } else {
+      monacoLoader(['vs/editor/editor.main'], () => {
+        this.monaco = monaco;
+
+        this.initMonaco();
+      });
+    }
   },
   methods: {
     ...mapActions([
@@ -26,14 +34,14 @@ export default {
       this.getRawFileData(this.activeFile)
         .then(() => {
           if (!this.monacoInstance) {
-            this.monacoInstance = Helper.monaco.editor.create(this.$el, {
+            this.monacoInstance = this.monaco.editor.create(this.$el, {
               model: null,
               readOnly: false,
               contextmenu: true,
               scrollBeyondLastLine: false,
             });
 
-            this.languages = Helper.monaco.languages.getLanguages();
+            this.languages = this.monaco.languages.getLanguages();
 
             this.addMonacoEvents();
           }
@@ -46,7 +54,7 @@ export default {
       const foundLang = this.languages.find(lang =>
         lang.extensions && lang.extensions.indexOf(this.activeFileExtension) === 0,
       );
-      const newModel = Helper.monaco.editor.createModel(
+      const newModel = this.monaco.editor.createModel(
         this.activeFile.raw, foundLang ? foundLang.id : 'plaintext',
       );
 

@@ -47,4 +47,7 @@ export default {
       changed: false,
     });
   },
+  [types.CREATE_TMP_FILE](state, { file, parent }) {
+    parent.tree.push(file);
+  },
 };

@@ -1,7 +1,7 @@
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { activeFile } from '../getters';
+import { createTemp } from '../utils';
 
 export const closeFile = ({ commit }, file) => {
   if (file.changed || file.tempFile) return;
@@ -10,8 +10,8 @@ export const closeFile = ({ commit }, file) => {
   commit(types.SET_FILE_ACTIVE, { file, active: false });
 };
 
-export const setFileActive = ({ commit, state }, file) => {
-  const currentActiveFile = activeFile(state);
+export const setFileActive = ({ commit, state, getters }, file) => {
+  const currentActiveFile = getters.activeFile;
 
   if (currentActiveFile) {
     commit(types.SET_FILE_ACTIVE, { file: currentActiveFile, active: false });
@@ -38,8 +38,7 @@ export const getFileData = ({ commit, dispatch }, file) => {
     });
 };
 
-export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFileData(file.rawPath)
-  .then(res => res.text())
+export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFileData(file)
   .then((raw) => {
     commit(types.SET_FILE_RAW_DATA, { file, raw });
   })
@@ -47,4 +46,22 @@ export const getRawFileData = ({ commit, dispatch }, file) => service.getRawFile
 
 export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
+};
+
+export const createTempFile = ({ state, commit, dispatch }, { tree, name }) => {
+  const file = createTemp({
+    name: name.replace(`${state.path}/`, ''),
+    path: tree.path,
+    type: 'blob',
+    level: tree.level !== undefined ? tree.level + 1 : 0,
+    changed: true,
+  });
+
+  commit(types.CREATE_TMP_FILE, {
+    parent: tree,
+    file,
+  });
+  commit(types.TOGGLE_FILE_OPEN, file);
+  dispatch('setFileActive', file);
+  dispatch('toggleEditMode', true);
 };

@@ -8,6 +8,7 @@ export const SET_PREVIOUS_URL = 'SET_PREVIOUS_URL';
 // Tree mutation types
 export const SET_DIRECTORY_DATA = 'SET_DIRECTORY_DATA';
 export const TOGGLE_TREE_OPEN = 'TOGGLE_TREE_OPEN';
+export const CREATE_TMP_TREE = 'CREATE_TMP_TREE';
 
 // File mutation types
 export const SET_FILE_DATA = 'SET_FILE_DATA';
@@ -16,6 +17,7 @@ export const SET_FILE_ACTIVE = 'SET_FILE_ACTIVE';
 export const SET_FILE_RAW_DATA = 'SET_FILE_RAW_DATA';
 export const UPDATE_FILE_CONTENT = 'UPDATE_FILE_CONTENT';
 export const DISCARD_FILE_CHANGES = 'DISCARD_FILE_CHANGES';
+export const CREATE_TMP_FILE = 'CREATE_TMP_FILE';
 
 // Viewer mutation types
 export const SET_PREVIEW_MODE = 'SET_PREVIEW_MODE';

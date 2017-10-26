@@ -13,9 +13,24 @@ export default {
 
     Object.assign(tree, {
       tree: [
-        ...data.trees.map(t => utils.decorateData(t, 'tree', parentTreeUrl, level)),
-        ...data.submodules.map(m => utils.decorateData(m, 'submodule', parentTreeUrl, level)),
-        ...data.blobs.map(b => utils.decorateData(b, 'blob', parentTreeUrl, level)),
+        ...data.trees.map(t => utils.decorateData({
+          ...t,
+          type: 'tree',
+          parentTreeUrl,
+          level,
+        }, state.project.url)),
+        ...data.submodules.map(m => utils.decorateData({
+          ...m,
+          type: 'submodule',
+          parentTreeUrl,
+          level,
+        }, state.project.url)),
+        ...data.blobs.map(b => utils.decorateData({
+          ...b,
+          type: 'blob',
+          parentTreeUrl,
+          level,
+        }, state.project.url)),
       ],
     });
   },
@@ -23,5 +38,8 @@ export default {
     Object.assign(state, {
       parentTreeUrl: url,
     });
+  },
+  [types.CREATE_TMP_TREE](state, { parent, tmpEntry }) {
+    parent.tree.push(tmpEntry);
   },
 };

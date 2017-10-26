@@ -11,8 +11,13 @@ export default {
   getFileData(endpoint) {
     return Vue.http.get(endpoint, { params: { format: 'json' } });
   },
-  getRawFileData(endpoint) {
-    return Vue.http.get(endpoint);
+  getRawFileData(file) {
+    if (file.tempFile) {
+      return Promise.resolve('');
+    }
+
+    return Vue.http.get(file.rawPath, { params: { format: 'json' } })
+      .then(res => res.text());
   },
   getBranchData(projectId, currentBranch) {
     return Api.branchSingle(projectId, currentBranch);

@@ -5,7 +5,7 @@ import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoPreview from './repo_preview.vue';
-import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
+import repoEditor from './repo_editor.vue';
 
 export default {
   computed: {
@@ -22,7 +22,7 @@ export default {
     RepoSidebar,
     RepoTabs,
     RepoFileButtons,
-    'repo-editor': MonacoLoaderHelper.repoEditorLoader,
+    repoEditor,
     RepoCommitSection,
     RepoPreview,
   },

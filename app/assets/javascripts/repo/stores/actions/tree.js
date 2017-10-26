@@ -2,7 +2,12 @@ import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { pushState, setPageTitle } from '../utils';
+import {
+  pushState,
+  setPageTitle,
+  findEntry,
+  createTemp,
+} from '../utils';
 
 export const getTreeData = (
   { commit, state },
@@ -67,4 +72,36 @@ export const clickedTreeRow = ({ commit, dispatch }, row) => {
   } else {
     dispatch('getFileData', row);
   }
+};
+
+export const createTempTree = ({ state, commit, dispatch }, name) => {
+  let tree = state;
+  const dirNames = name.replace(`${state.path}/`, '').split('/');
+
+  dirNames.forEach((dirName) => {
+    const foundEntry = findEntry(tree, 'tree', dirName);
+
+    if (!foundEntry) {
+      const tmpEntry = createTemp({
+        name: dirName,
+        path: tree.path,
+        type: 'tree',
+        level: tree.level !== undefined ? tree.level + 1 : 0,
+      });
+
+      commit(types.CREATE_TMP_TREE, {
+        parent: tree,
+        tmpEntry,
+      });
+
+      tree = tmpEntry;
+    } else {
+      tree = foundEntry;
+    }
+  });
+
+  dispatch('createTempFile', {
+    tree,
+    name: '.gitkeep',
+  });
 };

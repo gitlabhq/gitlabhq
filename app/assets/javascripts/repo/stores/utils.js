@@ -1,4 +1,4 @@
-export const dataStructure = ({
+export const dataStructure = () => ({
   id: '',
   type: '',
   name: '',
@@ -25,9 +25,10 @@ export const dataStructure = ({
   parentTreeUrl: '',
 });
 
-export const decorateData = (entity, type, parentTreeUrl = '', level = 0) => {
+export const decorateData = (entity, projectUrl = '') => {
   const {
     id,
+    type,
     url,
     name,
     icon,
@@ -37,10 +38,13 @@ export const decorateData = (entity, type, parentTreeUrl = '', level = 0) => {
     tempFile,
     active = false,
     opened = false,
+    changed = false,
+    parentTreeUrl = '',
+    level = 0,
   } = entity;
 
   return {
-    ...dataStructure,
+    ...dataStructure(),
     id,
     type,
     name,
@@ -53,15 +57,19 @@ export const decorateData = (entity, type, parentTreeUrl = '', level = 0) => {
     opened,
     active,
     parentTreeUrl,
+    changed,
     // eslint-disable-next-line camelcase
     lastCommit: last_commit ? {
-      // url: `${Store.projectUrl}/commit/${last_commit.id}`,
+      url: `${projectUrl}/commit/${last_commit.id}`,
       message: last_commit.message,
       updatedAt: last_commit.committed_date,
     } : {},
   };
 };
 
+export const findEntry = (state, type, name) => state.tree.find(
+  f => f.type === type && f.name === name,
+);
 export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
 export const setPageTitle = (title) => {
@@ -70,4 +78,21 @@ export const setPageTitle = (title) => {
 
 export const pushState = (url) => {
   history.pushState({ url }, '', url);
+};
+
+export const createTemp = ({ name, path, type, level, changed, content }) => {
+  const treePath = path ? `${path}/${name}` : name;
+
+  return decorateData({
+    id: new Date().getTime().toString(),
+    name,
+    type,
+    tempFile: true,
+    path: treePath,
+    icon: type === 'tree' ? 'folder' : 'file-text-o',
+    changed,
+    content,
+    parentTreeUrl: '',
+    level,
+  });
 };

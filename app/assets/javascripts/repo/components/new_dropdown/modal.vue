@@ -1,7 +1,7 @@
 <script>
+  import { mapActions } from 'vuex';
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
-  import eventHub from '../../event_hub';
 
   export default {
     props: {
@@ -23,8 +23,16 @@
       popupDialog,
     },
     methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
       createEntryInStore() {
-        eventHub.$emit('createNewEntry', this.entryName, this.type);
+        this.createTempEntry({
+          name: this.entryName,
+          type: this.type,
+        });
+
+        this.toggleModalOpen();
       },
       toggleModalOpen() {
         this.$emit('toggle');
