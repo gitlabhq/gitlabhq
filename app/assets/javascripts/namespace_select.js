@@ -3,15 +3,12 @@ import Api from './api';
 
 export default class NamespaceSelect {
   constructor(opts) {
-    var fieldName, showAny;
+    const isFilter = opts.dropdown.dataset.isFilter === 'true';
+    var fieldName;
     this.dropdown = $(opts.dropdown);
-    showAny = true;
     fieldName = 'namespace_id';
     if (this.dropdown.attr('data-field-name')) {
       fieldName = this.dropdown.data('fieldName');
-    }
-    if (this.dropdown.attr('data-show-any')) {
-      showAny = this.dropdown.data('showAny');
     }
     this.dropdown.glDropdown({
       filterable: true,
@@ -31,7 +28,7 @@ export default class NamespaceSelect {
       data: function(term, dataCallback) {
         return Api.namespaces(term, function(namespaces) {
           var anyNamespace;
-          if (showAny) {
+          if (isFilter) {
             anyNamespace = {
               text: 'Any namespace',
               id: null
