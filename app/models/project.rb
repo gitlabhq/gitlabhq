@@ -1079,6 +1079,7 @@ class Project < ActiveRecord::Base
 
   def hook_attrs(backward: true)
     attrs = {
+      id: id,
       name: name,
       description: description,
       web_url: web_url,
