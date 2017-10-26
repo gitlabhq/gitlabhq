@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
@@ -173,7 +173,7 @@ import Diff from './diff';
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
