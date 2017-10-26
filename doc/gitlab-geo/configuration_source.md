@@ -9,6 +9,7 @@ using the Omnibus GitLab packages, follow the
    will serve as the secondary Geo node. Do not login or set up anything else
    in the secondary node for the moment.
 1. [Setup the database replication](database_source.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Configure SSH authorizations to use the database](ssh.md)
 1. **Configure GitLab to set the primary and secondary nodes.**
 1. [Follow the after setup steps](after_setup.md).
 
@@ -129,28 +130,7 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
-### Step 4. Regenerating the authorized keys in the secondary node
-
-> **IMPORTANT:** Since GitLab 10.0 `~/.ssh/authorized_keys` no longer
-> can be used, and this step is deprecated. Instead, follow the
-> instructions on [configuring SSH authorization via database lookups](../administration/operations/speed_up_ssh.html)
-> (for both primary AND secondary nodes).
-
-Regenerate the keys for `~/.ssh/authorized_keys`
-(HTTPS clone will still work without this extra step).
-
-1. On the **secondary** node where the database is [already replicated](./database.md),
-   run:
-
-     ```
-     # Installations from source
-     sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
-     ```
-
-This will enable `git` operations to authorize against your existing users.
-New users and SSH keys updated after this step, will be replicated automatically.
-
-### Step 5. Enabling hashed storage (from GitLab 10.0)
+### Step 4. Enabling hashed storage (from GitLab 10.0)
 
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
@@ -163,7 +143,7 @@ renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
 
-### Step 6. Enabling the secondary GitLab node
+### Step 5. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -208,7 +188,7 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](configuration.md#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 7. Replicating the repositories data
+### Step 6. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.
