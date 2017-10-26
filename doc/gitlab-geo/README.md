@@ -42,7 +42,7 @@ Keep in mind that:
 ## Use-cases
 
 - Can be used for cloning and fetching projects, in addition
-to reading any data available in the GitLab web interface
+to reading any data available in the GitLab web interface (see [current limitations](#current-limitations))
 - Overcomes slow connection between distant offices, saving time by
 improving speed for distributed teams
 - Helps reducing the loading time for automated tasks,
@@ -170,7 +170,9 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 ## Current limitations
 
 - You cannot push code to secondary nodes
-- Primary node has to be online for OAuth login to happen (existing sessions and git are not affected)
+- The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
+- It works for repos, wikis, issues, and merge requests, but not for job logs,
+  artifacts, and Docker images of the Container Registry
 
 ## Frequently Asked Questions
 
