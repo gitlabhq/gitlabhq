@@ -155,15 +155,8 @@ class KubernetesService < DeploymentService
   def default_namespace
     return unless project
 
-    # 1. lowercase
-    # 2. replace non kubernetes characters with dash
-    # 3. trim dash from the beginning and end
-
-    slugified = "#{project.path}-#{project.id}"
-    slugified.downcase!
-    slugified.gsub!(/[^a-z0-9]/, '-')
-    slugified.gsub!(/^-+|-+$/, '')
-    slugified
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
