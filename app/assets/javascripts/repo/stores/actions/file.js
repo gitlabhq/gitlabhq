@@ -39,6 +39,9 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
 
   commit(types.SET_FILE_ACTIVE, { file, active: true });
   dispatch('scrollToTab');
+
+  // reset hash for line highlighting
+  location.hash = '';
 };
 
 export const getFileData = ({ state, commit, dispatch }, file) => {

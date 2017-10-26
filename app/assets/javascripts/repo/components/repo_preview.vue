@@ -15,8 +15,6 @@ export default {
   },
   mounted() {
     this.highlightFile();
-
-    // TODO: get this to work across different files
     this.lineHighlighter = new LineHighlighter({
       fileHolderSelector: '.blob-viewer-container',
       scrollFileHolder: true,
