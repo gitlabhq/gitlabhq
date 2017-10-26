@@ -34,10 +34,6 @@ constraints(GroupUrlConstrainer.new) do
       end
     end
 
-    resources :labels, except: [:show] do
-      post :toggle_subscription, on: :member
-    end
-
     scope path: '-' do
       namespace :settings do
         resource :ci_cd, only: [:show], controller: 'ci_cd'
@@ -46,6 +42,10 @@ constraints(GroupUrlConstrainer.new) do
       resources :variables, only: [:index, :show, :update, :create, :destroy]
 
       resources :children, only: [:index]
+
+      resources :labels, except: [:show] do
+        post :toggle_subscription, on: :member
+      end
     end
   end
 
@@ -57,5 +57,11 @@ constraints(GroupUrlConstrainer.new) do
     patch '/', action: :update
     put '/', action: :update
     delete '/', action: :destroy
+  end
+
+  # Legacy paths should be defined last, so they would be ignored if routes with
+  # one of the previously reserved words exist.
+  scope(path: 'groups/*group_id') do
+    Gitlab::Routing.redirect_legacy_paths(self, :labels)
   end
 end

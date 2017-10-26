@@ -120,7 +120,6 @@ module Gitlab
       group_members
       hooks
       issues
-      labels
       ldap
       ldap_group_links
       merge_requests
