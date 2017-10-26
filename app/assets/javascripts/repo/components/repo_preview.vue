@@ -1,44 +1,31 @@
 <script>
 /* global LineHighlighter */
-
-import Store from '../stores/repo_store';
+import { mapGetters } from 'vuex';
 
 export default {
-  data() {
-    return Store;
-  },
   computed: {
-    html() {
-      return this.activeFile.html;
-    },
+    ...mapGetters([
+      'activeFile',
+    ]),
   },
   methods: {
     highlightFile() {
       $(this.$el).find('.file-content').syntaxHighlight();
     },
-    highlightLine() {
-      if (Store.activeLine > -1) {
-        this.lineHighlighter.highlightHash(`#L${Store.activeLine}`);
-      }
-    },
   },
   mounted() {
     this.highlightFile();
+
+    // TODO: get this to work across different files
     this.lineHighlighter = new LineHighlighter({
       fileHolderSelector: '.blob-viewer-container',
       scrollFileHolder: true,
     });
   },
-  watch: {
-    html() {
-      this.$nextTick(() => {
-        this.highlightFile();
-        this.highlightLine();
-      });
-    },
-    activeLine() {
-      this.highlightLine();
-    },
+  updated() {
+    this.$nextTick(() => {
+      this.highlightFile();
+    });
   },
 };
 </script>

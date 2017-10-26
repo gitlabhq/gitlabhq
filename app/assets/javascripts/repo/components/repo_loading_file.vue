@@ -1,10 +1,12 @@
 <script>
-  import repoMixin from '../mixins/repo_mixin';
+  import { mapGetters } from 'vuex';
 
   export default {
-    mixins: [
-      repoMixin,
-    ],
+    computed: {
+      ...mapGetters([
+        'isMini',
+      ]),
+    },
     methods: {
       lineOfCode(n) {
         return `skeleton-line-${n}`;

@@ -1,7 +1,7 @@
 <script>
-import Store from '../stores/repo_store';
+import { mapActions } from 'vuex';
 
-const RepoTab = {
+export default {
   props: {
     tab: {
       type: Object,
@@ -26,29 +26,23 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked(file) {
-      Store.setActiveFiles(file);
-    },
-    closeTab(file) {
-      if (file.changed || file.tempFile) return;
-
-      Store.removeFromOpenedFiles(file);
-    },
+    ...mapActions([
+      'setFileActive',
+      'closeFile',
+    ]),
   },
 };
-
-export default RepoTab;
 </script>
 
 <template>
   <li
     :class="{ active : tab.active }"
-    @click="tabClicked(tab)"
+    @click="setFileActive(tab)"
   >
     <button
       type="button"
       class="close-btn"
-      @click.stop.prevent="closeTab(tab)"
+      @click.stop.prevent="closeFile(tab)"
       :aria-label="closeLabel">
       <i
         class="fa"
@@ -61,7 +55,7 @@ export default RepoTab;
       href="#"
       class="repo-tab"
       :title="tab.url"
-      @click.prevent="tabClicked(tab)">
+      @click.prevent="setFileActive(tab)">
       {{tab.name}}
     </a>
   </li>

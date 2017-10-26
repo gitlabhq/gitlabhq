@@ -1,75 +1,42 @@
 <script>
+import { mapState, mapGetters } from 'vuex';
 import RepoSidebar from './repo_sidebar.vue';
 import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoPreview from './repo_preview.vue';
-import RepoMixin from '../mixins/repo_mixin';
-import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
-import Store from '../stores/repo_store';
-import Helper from '../helpers/repo_helper';
-import Service from '../services/repo_service';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
-import eventHub from '../event_hub';
 
 export default {
-  data() {
-    return Store;
+  computed: {
+    ...mapState([
+      'currentBlobView',
+      'editMode',
+    ]),
+    ...mapGetters([
+      'isMini',
+      'changedFiles',
+    ]),
   },
-  mixins: [RepoMixin],
   components: {
     RepoSidebar,
     RepoTabs,
     RepoFileButtons,
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
     RepoCommitSection,
-    PopupDialog,
     RepoPreview,
   },
-  created() {
-    eventHub.$on('createNewBranch', this.createNewBranch);
-  },
   mounted() {
-    Helper.getContent().catch(Helper.loadingError);
-  },
-  destroyed() {
-    eventHub.$off('createNewBranch', this.createNewBranch);
-  },
-  methods: {
-    getCurrentLocation() {
-      return location.href;
-    },
-    toggleDialogOpen(toggle) {
-      this.dialog.open = toggle;
-    },
+    window.onbeforeunload = (e) => {
+      const event = e || window.event;
 
-    dialogSubmitted(status) {
-      this.toggleDialogOpen(false);
-      this.dialog.status = status;
+      if (!this.changedFiles.length) return undefined;
 
-      // remove tmp files
-      Helper.removeAllTmpFiles('openedFiles');
-      Helper.removeAllTmpFiles('files');
-    },
-    toggleBlobView: Store.toggleBlobView,
-    createNewBranch(branch) {
-      Service.createBranch({
-        branch,
-        ref: Store.currentBranch,
-      }).then((res) => {
-        const newBranchName = res.data.name;
-        const newUrl = this.getCurrentLocation().replace(Store.currentBranch, newBranchName);
+      if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
 
-        Store.currentBranch = newBranchName;
-
-        history.pushState({ key: Helper.key }, '', newUrl);
-
-        eventHub.$emit('createNewBranchSuccess', newBranchName);
-        eventHub.$emit('toggleNewBranchDropdown');
-      }).catch((err) => {
-        eventHub.$emit('createNewBranchError', err.response.data.message);
-      });
-    },
+      // For Safari
+      return 'Are you sure you want to lose unsaved changes?';
+    };
   },
 };
 </script>
@@ -88,15 +55,6 @@ export default {
         <repo-file-buttons/>
       </div>
     </div>
-    <repo-commit-section/>
-    <popup-dialog
-      v-show="dialog.open"
-      :primary-button-label="__('Discard changes')"
-      kind="warning"
-      :title="__('Are you sure?')"
-      :text="__('Are you sure you want to discard your changes?')"
-      @toggle="toggleDialogOpen"
-      @submit="dialogSubmitted"
-    />
+    <repo-commit-section v-if="changedFiles.length" />
   </div>
 </template>

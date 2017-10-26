@@ -1,0 +1,21 @@
+export default {
+  project: {
+    id: 0,
+    name: '',
+  },
+  currentBranch: '',
+  endpoints: {},
+  isRoot: false,
+  isInitialRoot: false,
+  currentRef: '',
+  canCommit: false,
+  onTopOfBranch: false,
+  editMode: false,
+  loading: false,
+  currentBlobView: '',
+  discardPopupOpen: false,
+  tree: [],
+  openFiles: [],
+  parentTreeUrl: '',
+  previousUrl: '',
+};

@@ -1,11 +1,9 @@
 <script>
+  import { mapActions, mapGetters } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
-  import eventHub from '../event_hub';
-  import repoMixin from '../mixins/repo_mixin';
 
   export default {
     mixins: [
-      repoMixin,
       timeAgoMixin,
     ],
     props: {
@@ -15,13 +13,15 @@
       },
     },
     computed: {
+      ...mapGetters([
+        'isMini',
+      ]),
       fileIcon() {
-        const classObj = {
+        return {
           'fa-spinner fa-spin': this.file.loading,
           [this.file.icon]: !this.file.loading,
           'fa-folder-open': !this.file.loading && this.file.opened,
         };
-        return classObj;
       },
       levelIndentation() {
         return {
@@ -33,9 +33,10 @@
       },
     },
     methods: {
-      linkClicked(file) {
-        eventHub.$emit('fileNameClicked', file);
-      },
+      ...mapActions([
+        'getTreeData',
+        'clickedTreeRow',
+      ]),
     },
   };
 </script>
@@ -43,7 +44,7 @@
 <template>
   <tr
     class="file"
-    @click.prevent="linkClicked(file)">
+    @click.prevent="clickedTreeRow(file)">
     <td>
       <i
         class="fa fa-fw file-icon"

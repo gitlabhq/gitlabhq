@@ -7,15 +7,12 @@ const RepoStore = {
   canCommit: false,
   onTopOfBranch: false,
   editMode: false,
-  isRoot: null,
-  isInitialRoot: null,
   prevURL: '',
   projectId: '',
   projectName: '',
   projectUrl: '',
   branchUrl: '',
   blobRaw: '',
-  currentBlobView: 'repo-preview',
   openedFiles: [],
   submitCommitsLoading: false,
   dialog: {
@@ -40,10 +37,6 @@ const RepoStore = {
   branchChanged: false,
   commitMessage: '',
   path: '',
-  loading: {
-    tree: false,
-    blob: false,
-  },
 
   setBranchHash() {
     return Service.getBranch()
