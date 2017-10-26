@@ -40,5 +40,14 @@ module Gitlab
     def self.url_helpers
       @url_helpers ||= Gitlab::Application.routes.url_helpers
     end
+
+    def self.redirect_legacy_paths(router, *paths)
+      paths.each do |path|
+        router.match "/#{path}(/*rest)",
+                     via: [:get, :post, :patch, :delete],
+                     to: router.redirect { |_params, request| request.fullpath.gsub(%r{/#{path}/*}, "/-/#{path}/") },
+                     as: "legacy_#{path}_redirect"
+      end
+    end
   end
 end
