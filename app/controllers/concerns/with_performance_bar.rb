@@ -9,15 +9,7 @@ module WithPerformanceBar
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 
     cookie = cookies[:perf_bar_enabled]
-
-    unless cookie.present?
-      if Rails.env.development?
-        cookies[:perf_bar_enabled] = 'true'
-        return true
-      else
-        return false
-      end
-    end
+    cookie ||= (cookies[:perf_bar_enabled] = 'true') if Rails.env.development?
 
     cookie === 'true'
   end
