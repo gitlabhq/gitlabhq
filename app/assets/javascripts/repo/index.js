@@ -5,13 +5,13 @@ import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
 import newBranchForm from './components/new_branch_form.vue';
 import newDropdown from './components/new_dropdown/index.vue';
-import vStore from './stores';
+import store from './stores';
 import Translate from '../vue_shared/translate';
 
 function initRepo(el) {
   return new Vue({
     el,
-    store: vStore,
+    store,
     components: {
       repo: Repo,
     },
@@ -53,9 +53,12 @@ function initRepo(el) {
 function initRepoEditButton(el) {
   return new Vue({
     el,
-    store: vStore,
+    store,
     components: {
       repoEditButton: RepoEditButton,
+    },
+    render(createElement) {
+      return createElement('repo-edit-button');
     },
   });
 }
@@ -63,7 +66,7 @@ function initRepoEditButton(el) {
 function initNewDropdown(el) {
   return new Vue({
     el,
-    store: vStore,
+    store,
     components: {
       newDropdown,
     },
@@ -83,7 +86,7 @@ function initNewBranchForm() {
     components: {
       newBranchForm,
     },
-    store: vStore,
+    store,
     render(createElement) {
       return createElement('new-branch-form');
     },

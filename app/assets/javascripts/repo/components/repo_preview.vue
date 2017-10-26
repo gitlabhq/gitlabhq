@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-<div>
+<div class="blob-viewer-container">
   <div
     v-if="!activeFile.renderError"
     v-html="activeFile.html">

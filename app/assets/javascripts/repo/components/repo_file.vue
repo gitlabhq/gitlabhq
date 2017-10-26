@@ -34,7 +34,6 @@
     },
     methods: {
       ...mapActions([
-        'getTreeData',
         'clickedTreeRow',
       ]),
     },

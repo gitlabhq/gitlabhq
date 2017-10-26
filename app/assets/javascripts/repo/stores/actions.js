@@ -10,9 +10,7 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 
 export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
 
-export const discardAllChanges = ({ state, commit, getters, dispatch }) => {
-  if (state.editMode) return;
-
+export const discardAllChanges = ({ commit, getters, dispatch }) => {
   const changedFiles = getters.changedFiles;
 
   changedFiles.forEach((file) => {
@@ -82,6 +80,8 @@ export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =
       dispatch('discardAllChanges');
       dispatch('closeAllFiles');
       dispatch('toggleEditMode');
+
+      window.scrollTo(0, 0);
     }
   })
   .catch(() => flash('Error committing changes. Please try again.'));

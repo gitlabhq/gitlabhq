@@ -52,12 +52,13 @@ export default {
     },
     setupEditor() {
       if (!this.activeFile) return;
+      const content = this.activeFile.content !== '' ? this.activeFile.content : this.activeFile.raw;
 
       const foundLang = this.languages.find(lang =>
         lang.extensions && lang.extensions.indexOf(this.activeFileExtension) === 0,
       );
       const newModel = this.monaco.editor.createModel(
-        this.activeFile.raw, foundLang ? foundLang.id : 'plaintext',
+        content, foundLang ? foundLang.id : 'plaintext',
       );
 
       this.monacoInstance.setModel(newModel);
@@ -91,5 +92,5 @@ export default {
 </script>
 
 <template>
-<div id="ide" v-if='!shouldHideEditor'></div>
+  <div id="ide" v-if='!shouldHideEditor' class="blob-viewer-container blob-editor-container"></div>
 </template>

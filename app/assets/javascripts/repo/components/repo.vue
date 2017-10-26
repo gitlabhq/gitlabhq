@@ -11,7 +11,6 @@ export default {
   computed: {
     ...mapState([
       'currentBlobView',
-      'editMode',
     ]),
     ...mapGetters([
       'isMini',
@@ -45,13 +44,14 @@ export default {
   <div class="repository-view">
     <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isMini}">
       <repo-sidebar/>
-      <div v-if="isMini"
-      class="panel-right"
-      :class="{'edit-mode': editMode}">
+      <div
+        v-if="isMini"
+        class="panel-right"
+      >
         <repo-tabs/>
         <component
           :is="currentBlobView"
-          class="blob-viewer-container"/>
+        />
         <repo-file-buttons/>
       </div>
     </div>

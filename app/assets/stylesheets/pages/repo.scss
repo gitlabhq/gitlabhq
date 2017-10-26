@@ -72,10 +72,6 @@
           text-decoration: underline;
         }
       }
-
-      .cursor {
-        display: none !important;
-      }
     }
 
     .blob-no-preview {
@@ -85,18 +81,8 @@
       }
     }
 
-    &.edit-mode {
-      .blob-viewer-container {
-        overflow: hidden;
-      }
-
-      .monaco-editor.vs {
-        .cursor {
-          background: $black;
-          border-color: $black;
-          display: block !important;
-        }
-      }
+    &.blob-editor-container {
+      overflow: hidden;
     }
 
     .blob-viewer-container {

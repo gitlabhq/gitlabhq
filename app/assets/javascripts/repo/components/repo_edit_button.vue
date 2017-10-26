@@ -28,7 +28,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="editable-mode">
     <button
       v-if="canEditFile"
       class="btn btn-default"
