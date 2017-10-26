@@ -108,19 +108,19 @@ export default {
           <div class="modal-footer" v-if="!hideFooter">
             <button
               type="button"
-              class="btn pull-left"
+              class="btn btn-default pull-left"
+              @click="close"
+            >
+                Cancel
+            </button>
+            <button
+              type="button"
+              class="btn pull-right"
               :disabled="submitDisabled"
               :class="btnKindClass"
               @click="emitSubmit(true)"
             >
                 {{primaryButtonLabel}}
-            </button>
-            <button
-              type="button"
-              class="btn btn-default pull-right"
-              @click="close"
-            >
-                Cancel
             </button>
           </div>
         </slot>
