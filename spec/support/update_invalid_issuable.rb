@@ -25,13 +25,11 @@ shared_examples 'update invalid issuable' do |klass|
         .and_raise(ActiveRecord::StaleObjectError.new(issuable, :save))
     end
 
-    if klass == MergeRequest
-      it 'renders edit when format is html' do
-        put :update, params
+    it 'renders edit when format is html' do
+      put :update, params
 
-        expect(response).to render_template(:edit)
-        expect(assigns[:conflict]).to be_truthy
-      end
+      expect(response).to render_template(:edit)
+      expect(assigns[:conflict]).to be_truthy
     end
 
     it 'renders json error message when format is json' do
@@ -44,17 +42,16 @@ shared_examples 'update invalid issuable' do |klass|
     end
   end
 
-  if klass == MergeRequest
-    context 'when updating an invalid issuable' do
-      before do
-        params[:merge_request][:title] = ""
-      end
+  context 'when updating an invalid issuable' do
+    before do
+      key = klass == Issue ? :issue : :merge_request
+      params[key][:title] = ""
+    end
 
-      it 'renders edit when merge request is invalid' do
-        put :update, params
+    it 'renders edit when merge request is invalid' do
+      put :update, params
 
-        expect(response).to render_template(:edit)
-      end
+      expect(response).to render_template(:edit)
     end
   end
 end
