@@ -58,6 +58,18 @@ import '~/smart_interval';
           done();
         }, DEFAULT_LONG_TIMEOUT);
       });
+
+      it('does not increment while waiting for callback', function (done) {
+        const smartInterval = createDefaultSmartInterval({
+          callback: () => new Promise($.noop),
+        });
+
+        setTimeout(() => {
+          const oneInterval = smartInterval.cfg.startingInterval * DEFAULT_INCREMENT_FACTOR;
+          expect(smartInterval.getCurrentInterval()).toEqual(oneInterval);
+          done();
+        }, DEFAULT_SHORT_TIMEOUT);
+      });
     });
 
     describe('Public methods', function () {
