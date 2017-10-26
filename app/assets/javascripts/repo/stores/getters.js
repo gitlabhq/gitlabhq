@@ -35,5 +35,5 @@ export const canEditFile = (state) => {
   return state.canCommit &&
     state.onTopOfBranch &&
     openedFiles.length &&
-    (currentActiveFile && !currentActiveFile.render_error && !currentActiveFile.binary);
+    (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };

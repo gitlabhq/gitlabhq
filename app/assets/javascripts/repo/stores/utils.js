@@ -23,6 +23,7 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
+  renderError: false,
 });
 
 export const decorateData = (entity, projectUrl = '') => {
@@ -36,6 +37,7 @@ export const decorateData = (entity, projectUrl = '') => {
     tree_url,
     path,
     tempFile,
+    renderError,
     active = false,
     opened = false,
     changed = false,
@@ -58,6 +60,7 @@ export const decorateData = (entity, projectUrl = '') => {
     active,
     parentTreeUrl,
     changed,
+    renderError,
     // eslint-disable-next-line camelcase
     lastCommit: last_commit ? {
       url: `${projectUrl}/commit/${last_commit.id}`,

@@ -1,12 +1,3 @@
-.monaco-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparent;
-}
-
 .modal.popup-dialog {
   display: block;
   background-color: $black-transparent;
@@ -311,25 +302,5 @@
 
   p {
     width: 100%;
-  }
-}
-
-@keyframes swipeRightAppear {
-  0% {
-    transform: scaleX(0.00);
-  }
-
-  100% {
-    transform: scaleX(1.00);
-  }
-}
-
-@keyframes swipeRightDissapear {
-  0% {
-    transform: scaleX(1.00);
-  }
-
-  100% {
-    transform: scaleX(0.00);
   }
 }

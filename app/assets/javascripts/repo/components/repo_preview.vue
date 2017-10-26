@@ -33,21 +33,21 @@ export default {
 <template>
 <div>
   <div
-    v-if="!activeFile.render_error"
+    v-if="!activeFile.renderError"
     v-html="activeFile.html">
   </div>
   <div
-    v-else-if="activeFile.tooLarge"
+    v-else-if="activeFile.renderError == 'too_large'"
     class="vertical-center render-error">
     <p class="text-center">
-      The source could not be displayed because it is too large. You can <a :href="activeFile.raw_path">download</a> it instead.
+      The source could not be displayed because it is too large. You can <a :href="activeFile.rawPath" download>download</a> it instead.
     </p>
   </div>
   <div
     v-else
     class="vertical-center render-error">
     <p class="text-center">
-      The source could not be displayed because a rendering error occurred. You can <a :href="activeFile.raw_path">download</a> it instead.
+      The source could not be displayed because a rendering error occurred. You can <a :href="activeFile.rawPath" download>download</a> it instead.
     </p>
   </div>
 </div>

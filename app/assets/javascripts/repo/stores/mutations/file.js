@@ -26,6 +26,7 @@ export default {
       rawPath: data.raw_path,
       binary: data.binary,
       html: data.html,
+      renderError: data.render_error,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
