@@ -68,7 +68,7 @@ in your default browser.
 You may need to sign in first (the current user's credentials are displayed in
 the terminal).
 
-To resume the test run, you only need to press `c`.
+To resume the test run, press any key.
 
 For example:
 
@@ -79,8 +79,7 @@ Run options: include {:locations=>{"./spec/features/auto_deploy_spec.rb"=>[34]}}
 
 Current example is paused for live debugging
 The current user credentials are: user2 / 12345678
-Press 'c' to continue the execution of the example
-Please press 'c' to continue the execution of the example! ;) <- I pressed `d` here
+Press any key to resume the execution of the example!
 Back to the example!
 .
 
