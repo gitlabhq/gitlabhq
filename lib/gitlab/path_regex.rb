@@ -115,15 +115,12 @@ module Gitlab
       activity
       analytics
       audit_events
-      avatar
       edit
-      group_members
       hooks
       issues
       ldap
       ldap_group_links
       merge_requests
-      milestones
       notification_setting
       pipeline_quota
       projects

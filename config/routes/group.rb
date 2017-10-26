@@ -20,20 +20,6 @@ constraints(GroupUrlConstrainer.new) do
         module: :groups,
         as: :group,
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
-    resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
-      post :resend_invite, on: :member
-      delete :leave, on: :collection
-    end
-
-    resource :avatar, only: [:destroy]
-    resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
-      member do
-        get :merge_requests
-        get :participants
-        get :labels
-      end
-    end
-
     scope path: '-' do
       namespace :settings do
         resource :ci_cd, only: [:show], controller: 'ci_cd'
@@ -45,6 +31,21 @@ constraints(GroupUrlConstrainer.new) do
 
       resources :labels, except: [:show] do
         post :toggle_subscription, on: :member
+      end
+
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
+        member do
+          get :merge_requests
+          get :participants
+          get :labels
+        end
+      end
+
+      resource :avatar, only: [:destroy]
+
+      resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+        post :resend_invite, on: :member
+        delete :leave, on: :collection
       end
     end
   end
@@ -62,6 +63,6 @@ constraints(GroupUrlConstrainer.new) do
   # Legacy paths should be defined last, so they would be ignored if routes with
   # one of the previously reserved words exist.
   scope(path: 'groups/*group_id') do
-    Gitlab::Routing.redirect_legacy_paths(self, :labels)
+    Gitlab::Routing.redirect_legacy_paths(self, :labels, :milestones, :group_members)
   end
 end
