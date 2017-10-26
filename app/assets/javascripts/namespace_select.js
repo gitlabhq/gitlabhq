@@ -1,16 +1,13 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, max-len */
 import Api from './api';
+import './lib/utils/url_utility';
 
 export default class NamespaceSelect {
   constructor(opts) {
     const isFilter = opts.dropdown.dataset.isFilter === 'true';
-    var fieldName;
-    this.dropdown = $(opts.dropdown);
-    fieldName = 'namespace_id';
-    if (this.dropdown.attr('data-field-name')) {
-      fieldName = this.dropdown.data('fieldName');
-    }
-    this.dropdown.glDropdown({
+    const fieldName = opts.dropdown.dataset.fieldName || 'namespace_id';
+
+    $(opts.dropdown).glDropdown({
       filterable: true,
       selectable: true,
       filterRemote: true,
@@ -27,9 +24,8 @@ export default class NamespaceSelect {
       },
       data: function(term, dataCallback) {
         return Api.namespaces(term, function(namespaces) {
-          var anyNamespace;
           if (isFilter) {
-            anyNamespace = {
+            const anyNamespace = {
               text: 'Any namespace',
               id: null
             };
@@ -48,8 +44,13 @@ export default class NamespaceSelect {
       },
       renderRow: this.renderRow,
       clicked(options) {
-        const { e } = options;
-        return e.preventDefault();
+        if (!isFilter) {
+          const { e } = options;
+          e.preventDefault();
+        }
+      },
+      url(namespace) {
+        return gl.utils.mergeUrlParams({ [fieldName]: namespace.id }, window.location.href);
       },
     });
   }
