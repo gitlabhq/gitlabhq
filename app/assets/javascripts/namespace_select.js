@@ -3,7 +3,6 @@ import Api from './api';
 
 export default class NamespaceSelect {
   constructor(opts) {
-    this.onSelectItem = this.onSelectItem.bind(this);
     var fieldName, showAny;
     this.dropdown = $(opts.dropdown);
     showAny = true;
@@ -51,12 +50,10 @@ export default class NamespaceSelect {
         }
       },
       renderRow: this.renderRow,
-      clicked: this.onSelectItem
+      clicked(options) {
+        const { e } = options;
+        return e.preventDefault();
+      },
     });
-  }
-
-  onSelectItem(options) {
-    const { e } = options;
-    return e.preventDefault();
   }
 }
