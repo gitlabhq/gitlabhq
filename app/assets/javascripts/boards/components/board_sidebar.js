@@ -1,5 +1,5 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
-/* global IssuableContext */
+import IssuableContext from '../../issuable_context';
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */

@@ -58,8 +58,6 @@ import './gl_form';
 import './groups_select';
 import './header';
 import initImporterStatus from './importer_status';
-import './issuable_index';
-import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';

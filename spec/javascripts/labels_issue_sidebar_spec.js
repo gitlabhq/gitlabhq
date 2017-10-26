@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-/* global IssuableContext */
+import IssuableContext from '~/issuable_context';
 /* global LabelsSelect */
 
 import '~/gl_dropdown';
