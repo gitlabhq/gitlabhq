@@ -1,5 +1,4 @@
 <script>
-  import { mapState } from 'vuex';
   import newModal from './modal.vue';
 
   export default {
@@ -11,11 +10,6 @@
         openModal: false,
         modalType: '',
       };
-    },
-    computed: {
-      ...mapState({
-        currentPath: 'path',
-      }),
     },
     methods: {
       createNewItem(type) {
@@ -70,7 +64,6 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
-      :current-path="currentPath"
       @toggle="toggleModalOpen"
     />
   </div>

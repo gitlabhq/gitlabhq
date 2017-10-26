@@ -10,14 +10,22 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 
 export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
 
-export const discardAllChanges = ({ commit, getters }) => {
+export const discardAllChanges = ({ state, commit, getters, dispatch }) => {
+  if (state.editMode) return;
+
   const changedFiles = getters.changedFiles;
 
-  changedFiles.forEach(file => commit(types.DISCARD_FILE_CHANGES, file));
+  changedFiles.forEach((file) => {
+    commit(types.DISCARD_FILE_CHANGES, file);
+
+    if (file.tempFile) {
+      dispatch('closeFile', { file, force: true });
+    }
+  });
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', file));
+  state.openFiles.forEach(file => dispatch('closeFile', { file }));
 };
 
 export const toggleEditMode = ({ commit, getters, dispatch }, force = false) => {

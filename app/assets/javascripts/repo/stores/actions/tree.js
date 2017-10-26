@@ -93,6 +93,7 @@ export const createTempTree = ({ state, commit, dispatch }, name) => {
         parent: tree,
         tmpEntry,
       });
+      commit(types.TOGGLE_TREE_OPEN, tmpEntry);
 
       tree = tmpEntry;
     } else {

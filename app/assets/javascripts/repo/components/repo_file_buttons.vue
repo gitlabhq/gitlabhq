@@ -52,13 +52,5 @@ export default {
         Permalink
       </a>
     </div>
-
-    <!-- <a
-      v-if="canPreview"
-      href="#"
-      @click.prevent="rawPreviewToggle"
-      class="btn btn-default preview">
-      {{activeFileLabel}}
-    </a> -->
   </div>
 </template>

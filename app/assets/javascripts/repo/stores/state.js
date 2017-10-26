@@ -14,7 +14,7 @@ export default {
   onTopOfBranch: false,
   editMode: false,
   loading: false,
-  currentBlobView: '',
+  currentBlobView: 'repo-preview',
   discardPopupOpen: false,
   tree: [],
   openFiles: [],

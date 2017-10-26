@@ -1,13 +1,16 @@
+import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 import {
+  pushState,
+  setPageTitle,
   createTemp,
   findIndexOfFile,
 } from '../utils';
 
-export const closeFile = ({ commit, state, dispatch }, file) => {
-  if (file.changed || file.tempFile) return;
+export const closeFile = ({ commit, state, dispatch }, { file, force = false }) => {
+  if ((file.changed || file.tempFile) && !force) return;
 
   const indexOfClosedFile = findIndexOfFile(state.openFiles, file);
   const fileWasActive = file.active;
@@ -20,11 +23,15 @@ export const closeFile = ({ commit, state, dispatch }, file) => {
     const nextFileToOpen = state.openFiles[nextIndexToOpen];
 
     dispatch('setFileActive', nextFileToOpen);
+  } else if (!state.openFiles.length) {
+    pushState(file.parentTreeUrl);
   }
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
   const currentActiveFile = getters.activeFile;
+
+  if (file.active) return;
 
   if (currentActiveFile) {
     commit(types.SET_FILE_ACTIVE, { file: currentActiveFile, active: false });
@@ -34,17 +41,24 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
   dispatch('scrollToTab');
 };
 
-export const getFileData = ({ commit, dispatch }, file) => {
+export const getFileData = ({ state, commit, dispatch }, file) => {
   commit(types.TOGGLE_LOADING, file);
 
   service.getFileData(file.url)
-    .then(res => res.json())
+    .then((res) => {
+      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
+
+      setPageTitle(pageTitle);
+
+      return res.json();
+    })
     .then((data) => {
       commit(types.SET_FILE_DATA, { data, file });
-      commit(types.SET_PREVIEW_MODE);
       commit(types.TOGGLE_FILE_OPEN, file);
       dispatch('setFileActive', file);
       commit(types.TOGGLE_LOADING, file);
+
+      pushState(file.url);
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, file);

@@ -1,14 +1,10 @@
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
 
   export default {
     props: {
-      currentPath: {
-        type: String,
-        required: true,
-      },
       type: {
         type: String,
         required: true,
@@ -16,7 +12,7 @@
     },
     data() {
       return {
-        entryName: this.currentPath !== '' ? `${this.currentPath}/` : '',
+        entryName: '',
       };
     },
     components: {
@@ -39,6 +35,17 @@
       },
     },
     computed: {
+      ...mapState([
+        'path',
+      ]),
+      name: {
+        get() {
+          return this.path !== '' ? `${this.path}/${this.entryName}` : this.entryName;
+        },
+        set(newVal) {
+          this.entryName = newVal.replace(`${this.path}/`, '');
+        },
+      },
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');
@@ -88,7 +95,7 @@
           <input
             type="text"
             class="form-control"
-            v-model="entryName"
+            v-model="name"
             ref="fieldName"
           />
         </div>

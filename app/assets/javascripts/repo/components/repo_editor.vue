@@ -51,6 +51,8 @@ export default {
         .catch(() => flash('Error setting up monaco. Please try again.'));
     },
     setupEditor() {
+      if (!this.activeFile) return;
+
       const foundLang = this.languages.find(lang =>
         lang.extensions && lang.extensions.indexOf(this.activeFileExtension) === 0,
       );
@@ -71,7 +73,7 @@ export default {
   },
   watch: {
     activeFile(oldVal, newVal) {
-      if (newVal.active) {
+      if (!newVal.active) {
         this.initMonaco();
       }
     },

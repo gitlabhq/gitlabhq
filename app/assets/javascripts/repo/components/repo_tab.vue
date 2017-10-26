@@ -11,7 +11,7 @@ export default {
 
   computed: {
     closeLabel() {
-      if (this.tab.changed) {
+      if (this.tab.changed || this.tab.tempFile) {
         return `${this.tab.name} changed`;
       }
       return `Close ${this.tab.name}`;
@@ -42,7 +42,7 @@ export default {
     <button
       type="button"
       class="close-btn"
-      @click.stop.prevent="closeFile(tab)"
+      @click.stop.prevent="closeFile({ file: tab })"
       :aria-label="closeLabel">
       <i
         class="fa"
@@ -55,7 +55,7 @@ export default {
       href="#"
       class="repo-tab"
       :title="tab.url"
-      @click.prevent="setFileActive(tab)">
+      @click.prevent.stop="setFileActive(tab)">
       {{tab.name}}
     </a>
   </li>
