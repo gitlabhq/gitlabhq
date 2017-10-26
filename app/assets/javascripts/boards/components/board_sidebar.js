@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
-import IssuableContext from '../../issuable_context';
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */
@@ -11,6 +10,7 @@ import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
 import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
+import IssuableContext from '../../issuable_context';
 
 const Store = gl.issueBoards.BoardsStore;
 
