@@ -64,12 +64,6 @@ describe Group do
 
         expect(group).not_to be_valid
       end
-
-      it 'rejects reserved group paths' do
-        group = build(:group, path: 'activity', parent: create(:group))
-
-        expect(group).not_to be_valid
-      end
     end
 
     describe '#visibility_level_allowed_by_parent' do
