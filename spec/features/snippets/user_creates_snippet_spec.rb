@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'User creates snippet', :js do
   include DropzoneHelper
+  include InspectRequests
 
   let(:user) { create(:user) }
 
@@ -43,8 +44,8 @@ feature 'User creates snippet', :js do
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
       expect(link).to match(%r{/uploads/-/system/temp/\h{32}/banana_sample\.gif\z})
 
-      visit(link)
-      expect(page.status_code).to eq(200)
+      reqs = inspect_requests { visit(link) }
+      expect(reqs.first.status_code).to eq(200)
     end
   end
 
@@ -61,8 +62,8 @@ feature 'User creates snippet', :js do
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
-    visit(link)
-    expect(page.status_code).to eq(200)
+    reqs = inspect_requests { visit(link) }
+    expect(reqs.first.status_code).to eq(200)
   end
 
   scenario 'validation fails for the first time' do
@@ -86,8 +87,8 @@ feature 'User creates snippet', :js do
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
-    visit(link)
-    expect(page.status_code).to eq(200)
+    reqs = inspect_requests { visit(link) }
+    expect(reqs.first.status_code).to eq(200)
   end
 
   scenario 'Authenticated user creates a snippet with + in filename' do
