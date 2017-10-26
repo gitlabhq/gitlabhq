@@ -21,7 +21,7 @@ describe AwardEmoji do
     # To circumvent a bug in the shoulda matchers
     describe "scoped uniqueness validation" do
       it "rejects duplicate award emoji" do
-        user  = create(:user)
+        user = create(:user)
         create(:award_emoji, user: user, awardable: issue)
         new_award = build(:award_emoji, user: user, awardable: issue)
 
@@ -42,6 +42,12 @@ describe AwardEmoji do
 
     context 'when awarding custom emoji' do
       let(:custom_emoji) { create(:custom_emoji, namespace: issue.project.namespace) }
+
+      before do
+        allow_any_instance_of(Namespace).to receive(:custom_emoji_url_by_name).and_return({
+          custom_emoji.name => custom_emoji.url
+        })
+      end
 
       it 'accepts the award emoji' do
         new_award = build(:award_emoji, user: user, awardable: issue, name: custom_emoji.name)

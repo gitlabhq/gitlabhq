@@ -3,22 +3,6 @@ require 'spec_helper'
 describe UsersController do
   let(:user) { create(:user) }
 
-  describe 'GET #custom_emoji' do
-    let!(:custom_emoji) { create(:custom_emoji, namespace: user.namespace) }
-
-    context 'when user signed-in' do
-      before do
-        sign_in(user)
-      end
-
-      it 'lists emoji in JSON format' do
-        get :custom_emoji
-
-        expect(response).to be_success
-      end
-    end
-  end
-
   describe 'GET #show' do
     context 'with rendered views' do
       render_views

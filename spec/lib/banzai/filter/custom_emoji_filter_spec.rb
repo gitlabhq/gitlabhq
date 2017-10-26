@@ -6,7 +6,11 @@ describe Banzai::Filter::CustomEmojiFilter do
   let(:project) { create(:project) }
 
   before do
-    create(:custom_emoji, name: 'awesome_banana', namespace: project.namespace)
+    custom_emoji = create(:custom_emoji, name: 'awesome_banana', namespace: project.namespace)
+
+    allow_any_instance_of(Namespace).to receive(:custom_emoji_url_by_name).and_return({
+      custom_emoji.name => custom_emoji.url
+    })
   end
 
   it 'replaces supported name custom emoji' do

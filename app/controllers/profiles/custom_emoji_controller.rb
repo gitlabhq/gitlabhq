@@ -20,13 +20,13 @@ class Profiles::CustomEmojiController < Profiles::ApplicationController
   def destroy
     namespace.custom_emoji.find_by(id: params[:id])&.destroy!
 
-    redirect_to profile_custom_emoji_index_path
+    redirect_to profile_custom_emoji_index_path, status: 302
   end
 
   private
 
   def namespace
-    @namespace ||= current_user.namespace
+    current_user.namespace
   end
 
   def custom_emoji_params

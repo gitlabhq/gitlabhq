@@ -1,17 +1,1 @@
-- @no_container = true
-- breadcrumb_title "Custom Emoji"
-- page_title "New Custom Emoji"
-
-%div{ class: container_class }
-  .nav-controls
-    = form_for([@group, :settings, @custom_emoji], html: { class: 'group-form form-horizontal gl-show-field-errors' }) do |f|
-      .row
-        = f.label :name
-        = f.text_field :name, class: 'form-control', placeholder: 'emoji name'
-
-      .row.form-group
-        = f.file_field :file, accept: 'image/*'
-        .light the maximum file size allowed is 64kb.
-
-      = f.submit 'add custom emoji', class: 'btn btn-create'
-
+= render 'shared/custom_emoji/form', url: [@group, :settings, @custom_emoji]

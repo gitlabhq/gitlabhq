@@ -146,6 +146,10 @@ class Namespace < ActiveRecord::Base
       end
   end
 
+  def all_emoji_names
+    Gitlab::Emoji.emojis_names + custom_emoji_url_by_name.keys
+  end
+
   def invalidate_custom_emoji_cache
     self_and_ancestors.each do |namespace|
       Rails.cache.delete(custom_emoji_cache_key(namespace))

@@ -45,12 +45,19 @@ class AwardEmoji < ActiveRecord::Base
   private
 
   def namespace
-    awardable.project.namespace || awardable.author.namespace
+    return unless awardable
+
+    owner = awardable.project || awardable.author
+
+    owner.namespace
   end
 
   def valid_emoji_name
     valid_emoji = Gitlab::Emoji.emojis_names
-    valid_emoji += namespace.custom_emoji_url_by_name.keys
+
+    if namespace
+      valid_emoji += namespace.custom_emoji_url_by_name.keys
+    end
 
     self.errors.add(:name, 'invalid emoji name') unless valid_emoji.include?(name)
   end

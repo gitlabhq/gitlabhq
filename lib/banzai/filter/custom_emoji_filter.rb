@@ -26,13 +26,16 @@ module Banzai
 
       # Build a regexp that matches all valid :emoji: names.
       def custom_emoji_pattern
-        @emoji_pattern ||= /(?<=[^[:alnum:]:]|\n|^):(#{custom_emoji_to_regex}):(?=[^[:alnum:]:]|$)/x
+        @emoji_pattern ||=
+          /(?<=[^[:alnum:]:]|\n|^)
+          :(#{custom_emoji_to_regex}):
+          (?=[^[:alnum:]:]|$)/x
       end
 
       def custom_emoji_name_element_filter(text)
         text.gsub(custom_emoji_pattern) do |match|
           name = $1
-          image_tag(custom_emoji_url_by_name[name], alt: name, class: 'custom-emoji')
+          image_tag(project.namespace.custom_emoji_url_by_name[name], alt: name, class: 'custom-emoji')
         end
       end
 
@@ -43,8 +46,8 @@ module Banzai
       end
 
       def custom_emoji_to_regex
-        project.namespace.custom_emoji_url_by_name.
-          keys.map { |name| Regexp.escape(name) }.join('|')
+        project.namespace.custom_emoji_url_by_name
+          .keys.map { |name| Regexp.escape(name) }.join('|')
       end
     end
   end

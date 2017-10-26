@@ -37,10 +37,7 @@ class CustomEmoji < ActiveRecord::Base
   end
 
   def valid_emoji_name
-    valid_emoji = Gitlab::Emoji.emojis_names
-    valid_emoji += namespace.custom_emoji_url_by_name.keys
-
-    if valid_emoji.include?(name)
+    if namespace.all_emoji_names.include?(name)
       self.errors.add(:name, "#{self.name} is already being used for another emoji")
     end
   end

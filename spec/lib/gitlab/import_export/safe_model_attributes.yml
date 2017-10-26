@@ -479,6 +479,7 @@ ProtectedTag::CreateAccessLevel:
 AwardEmoji:
 - id
 - user_id
+- custom_emoji_id
 - name
 - awardable_type
 - created_at

@@ -24,7 +24,7 @@ module Groups
       def destroy
         @group.custom_emoji.find_by(id: params[:id])&.destroy!
 
-        redirect_to group_settings_custom_emoji_index_path(@group)
+        redirect_to group_settings_custom_emoji_index_path(@group), status: 302
       end
 
       private
