@@ -1,7 +1,7 @@
 module Gitlab
   module Metrics
     module InfluxDb
-      include Gitlab::CurrentSettings
+      # include Gitlab::CurrentSettings
       extend self
 
       MUTEX = Mutex.new
@@ -17,14 +17,14 @@ module Gitlab
 
       def settings
         @settings ||= {
-          enabled: current_application_settings[:metrics_enabled],
-          pool_size: current_application_settings[:metrics_pool_size],
-          timeout: current_application_settings[:metrics_timeout],
-          method_call_threshold: current_application_settings[:metrics_method_call_threshold],
-          host: current_application_settings[:metrics_host],
-          port: current_application_settings[:metrics_port],
-          sample_interval: current_application_settings[:metrics_sample_interval] || 15,
-          packet_size: current_application_settings[:metrics_packet_size] || 1
+          enabled: Gitlab::CurrentSettings.metrics_enabled,
+          pool_size: Gitlab::CurrentSettings.metrics_pool_size,
+          timeout: Gitlab::CurrentSettings.metrics_timeout,
+          method_call_threshold: Gitlab::CurrentSettings.metrics_method_call_threshold,
+          host: Gitlab::CurrentSettings.metrics_host,
+          port: Gitlab::CurrentSettings.metrics_port,
+          sample_interval: Gitlab::CurrentSettings.metrics_sample_interval || 15,
+          packet_size: Gitlab::CurrentSettings.metrics_packet_size || 1
         }
       end
 

@@ -11,7 +11,7 @@ class SubmitUsagePingService
                percentage_projects_prometheus_active leader_service_desk_issues instance_service_desk_issues
                percentage_service_desk_issues].freeze
 
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   def execute
     return false unless current_application_settings.usage_ping_enabled?

@@ -1,5 +1,5 @@
 module ProjectsHelper
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   def link_to_project(project)
     link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do

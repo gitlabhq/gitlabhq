@@ -1,5 +1,5 @@
 class GravatarService
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   def execute(email, size = nil, scale = 2, username: nil)
     return unless current_application_settings.gravatar_enabled?

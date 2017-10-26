@@ -202,7 +202,7 @@ module ApplicationHelper
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+    Gitlab::CurrentSettings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
   def page_filter_path(options = {})

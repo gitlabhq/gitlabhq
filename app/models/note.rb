@@ -3,7 +3,7 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
   include Participable
   include Mentionable
   include Awardable

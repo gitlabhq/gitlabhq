@@ -2,7 +2,7 @@ module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
   class RegisterJobService
-    include Gitlab::CurrentSettings
+    # include Gitlab::CurrentSettings
 
     attr_reader :runner
 

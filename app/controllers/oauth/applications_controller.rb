@@ -1,5 +1,5 @@
 class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
-  include Gitlab::CurrentSettings
+  # # include Gitlab::CurrentSettings
   include Gitlab::GonHelper
   include PageLayoutHelper
   include OauthApplications

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Key, :mailer do
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   describe 'modules' do
     subject { described_class }

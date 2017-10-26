@@ -21,7 +21,7 @@ module Gitlab
         private
 
         def application_settings
-          Gitlab::CurrentSettings.current_application_settings
+          Gitlab::CurrentSettings
         end
       end
     end

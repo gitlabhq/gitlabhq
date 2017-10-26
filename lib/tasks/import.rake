@@ -91,7 +91,7 @@ class GithubImport
   end
 
   def visibility_level
-    @repo['private'] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.current_application_settings.default_project_visibility
+    @repo['private'] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.default_project_visibility
   end
 end
 

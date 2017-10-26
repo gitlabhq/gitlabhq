@@ -1,6 +1,6 @@
 module Gitlab
   module Sentry
-    extend Gitlab::CurrentSettings
+    # extend Gitlab::CurrentSettings
 
     def self.enabled?
       Rails.env.production? && current_application_settings.sentry_enabled?

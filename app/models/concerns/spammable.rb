@@ -28,7 +28,7 @@ module Spammable
 
   def submittable_as_spam?
     if user_agent_detail
-      user_agent_detail.submittable? && Gitlab::CurrentSettings.current_application_settings.akismet_enabled
+      user_agent_detail.submittable? && Gitlab::CurrentSettings.akismet_enabled
     else
       false
     end

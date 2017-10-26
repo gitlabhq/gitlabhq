@@ -65,8 +65,7 @@ feature "Admin Health Check", :feature, :broken_storage do
 
     it 'shows storage failure information' do
       hostname = Gitlab::Environment.hostname
-      maximum_failures = Gitlab::CurrentSettings.current_application_settings
-                           .circuitbreaker_failure_count_threshold
+      maximum_failures = Gitlab::CurrentSettings.circuitbreaker_failure_count_threshold
 
       expect(page).to have_content('broken: failed storage access attempt on host:')
       expect(page).to have_content("#{hostname}: 1 of #{maximum_failures} failures.")

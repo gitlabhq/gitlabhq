@@ -1,5 +1,5 @@
 class KubernetesService < DeploymentService
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
   include ReactiveCaching
 

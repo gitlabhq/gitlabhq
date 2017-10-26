@@ -1,6 +1,6 @@
 module Projects
   class UpdatePagesService < BaseService
-    include Gitlab::CurrentSettings
+    # include Gitlab::CurrentSettings
 
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte

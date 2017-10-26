@@ -1,5 +1,5 @@
 class AkismetService
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   attr_accessor :owner, :text, :options
 

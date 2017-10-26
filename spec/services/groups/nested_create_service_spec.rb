@@ -7,8 +7,7 @@ describe Groups::NestedCreateService do
 
   shared_examples 'with a visibility level' do
     it 'creates the group with correct visibility level' do
-      allow(Gitlab::CurrentSettings.current_application_settings)
-        .to receive(:default_group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
+      allow(Gitlab::CurrentSettings).to receive(:default_group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
 
       group = service.execute
 

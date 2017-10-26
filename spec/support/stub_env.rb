@@ -1,6 +1,6 @@
 # Inspired by https://github.com/ljkbennett/stub_env/blob/master/lib/stub_env/helpers.rb
 module StubENV
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   def stub_env(key_or_hash, value = nil)
     init_stub unless env_stubbed?

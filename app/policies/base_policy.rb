@@ -13,6 +13,6 @@ class BasePolicy < DeclarativePolicy::Base
 
   desc "The application is restricted from public visibility"
   condition(:restricted_public_level, scope: :global) do
-    Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
+    Gitlab::CurrentSettings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
 end

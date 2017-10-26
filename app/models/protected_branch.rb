@@ -2,7 +2,7 @@ class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include ProtectedRef
 
-  extend Gitlab::CurrentSettings
+  # extend Gitlab::CurrentSettings
 
   protected_ref_access_levels :merge, :push
 

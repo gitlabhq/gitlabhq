@@ -12,7 +12,7 @@ describe 'projects/edit' do
     allow(controller).to receive(:current_user).and_return(user)
     allow(view).to receive_messages(current_user: user,
                                     can?: true,
-                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
+                                    current_application_settings: Gitlab::CurrentSettings)
   end
 
   context 'project export disabled' do

@@ -9,7 +9,7 @@ describe 'admin/dashboard/index.html.haml' do
     assign(:groups, create_list(:group, 1))
 
     allow(view).to receive(:admin?).and_return(true)
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings)
   end
 
   it "shows version of GitLab Workhorse" do

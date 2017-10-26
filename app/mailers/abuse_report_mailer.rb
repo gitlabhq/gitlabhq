@@ -1,5 +1,5 @@
 class AbuseReportMailer < BaseMailer
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   def notify(abuse_report_id)
     return unless deliverable?

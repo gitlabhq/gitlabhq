@@ -1,6 +1,6 @@
 # Read about interceptors in http://guides.rubyonrails.org/action_mailer_basics.html#intercepting-emails
 class EmailTemplateInterceptor
-  extend Gitlab::CurrentSettings
+  # # extend Gitlab::CurrentSettings
 
   def self.delivering_email(message)
     # Remove HTML part if HTML emails are disabled.

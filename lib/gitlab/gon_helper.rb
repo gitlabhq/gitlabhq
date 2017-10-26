@@ -3,7 +3,7 @@
 module Gitlab
   module GonHelper
     include WebpackHelper
-    include Gitlab::CurrentSettings
+    # include Gitlab::CurrentSettings
 
     def add_gon_variables
       gon.api_version            = 'v4'

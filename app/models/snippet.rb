@@ -10,7 +10,7 @@ class Snippet < ActiveRecord::Base
   include Spammable
   include Editable
 
-  extend Gitlab::CurrentSettings
+  # extend Gitlab::CurrentSettings
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description

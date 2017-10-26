@@ -5,7 +5,7 @@
 #
 module Gitlab
   module VisibilityLevel
-    extend CurrentSettings
+    # extend CurrentSettings
     extend ActiveSupport::Concern
 
     included do

@@ -1,6 +1,6 @@
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    extend Gitlab::CurrentSettings
+    # extend Gitlab::CurrentSettings
 
     AUDIENCE = 'container_registry'.freeze
 

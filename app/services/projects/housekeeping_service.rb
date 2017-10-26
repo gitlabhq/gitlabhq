@@ -7,7 +7,7 @@
 #
 module Projects
   class HousekeepingService < BaseService
-    include Gitlab::CurrentSettings
+    # include Gitlab::CurrentSettings
 
     # Timeout set to 24h
     LEASE_TIMEOUT = 86400

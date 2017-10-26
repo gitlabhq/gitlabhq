@@ -20,7 +20,7 @@ module Gitlab
         end
 
         def config
-          Gitlab::CurrentSettings.current_application_settings
+          Gitlab::CurrentSettings
         end
 
         def update_and_return_ips_count(user_id, ip)

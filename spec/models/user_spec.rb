@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
   include ProjectForksHelper
 
   describe 'modules' do

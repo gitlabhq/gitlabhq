@@ -1,7 +1,7 @@
 class GitGarbageCollectWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   sidekiq_options retry: false
 

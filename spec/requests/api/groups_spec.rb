@@ -471,7 +471,7 @@ describe API::Groups do
         expect(json_response["name"]).to eq(group[:name])
         expect(json_response["path"]).to eq(group[:path])
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
-        expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
+        expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.default_group_visibility))
       end
 
       it "creates a nested group", :nested_groups do

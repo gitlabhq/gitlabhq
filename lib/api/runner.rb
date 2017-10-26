@@ -225,7 +225,7 @@ module API
         job.artifacts_file = artifacts
         job.artifacts_metadata = metadata
         job.artifacts_expire_in = params['expire_in'] ||
-          Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
+          Gitlab::CurrentSettings.default_artifacts_expire_in
 
         if job.save
           present job, with: Entities::JobRequest::Response

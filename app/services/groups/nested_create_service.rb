@@ -38,7 +38,7 @@ module Groups
           name: subgroup_name,
           parent: last_group
         )
-        new_params[:visibility_level] ||= Gitlab::CurrentSettings.current_application_settings.default_group_visibility
+        new_params[:visibility_level] ||= Gitlab::CurrentSettings.default_group_visibility
 
         last_group = Group.find_by_full_path(partial_path) || Groups::CreateService.new(current_user, new_params).execute
       end

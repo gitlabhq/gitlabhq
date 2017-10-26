@@ -5,7 +5,7 @@ module Gitlab
         if Gitlab::CurrentSettings.sidekiq_throttling_enabled?
           require 'sidekiq-limit_fetch'
 
-          Gitlab::CurrentSettings.current_application_settings.sidekiq_throttling_queues.each do |queue|
+          Gitlab::CurrentSettings.sidekiq_throttling_queues.each do |queue|
             Sidekiq::Queue[queue].limit = queue_limit
           end
         end
@@ -16,7 +16,7 @@ module Gitlab
       def queue_limit
         @queue_limit ||=
           begin
-            factor = Gitlab::CurrentSettings.current_application_settings.sidekiq_throttling_factor
+            factor = Gitlab::CurrentSettings.sidekiq_throttling_factor
             (factor * Sidekiq.options[:concurrency]).ceil
           end
       end

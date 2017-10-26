@@ -87,7 +87,7 @@ describe ProjectsHelper do
     end
 
     it "includes the application settings" do
-      settings = Gitlab::CurrentSettings.current_application_settings
+      settings = Gitlab::CurrentSettings
 
       expect(helper.project_list_cache_key(project)).to include(settings.cache_key)
     end

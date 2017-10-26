@@ -28,7 +28,7 @@ describe 'projects/merge_requests/show.html.haml' do
 
     allow(view).to receive_messages(current_user: user,
                                     can?: true,
-                                    current_application_settings: Gitlab::CurrentSettings.current_application_settings)
+                                    current_application_settings: Gitlab::CurrentSettings)
   end
 
   context 'when the merge request is closed' do

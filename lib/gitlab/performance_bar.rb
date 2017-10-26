@@ -1,6 +1,6 @@
 module Gitlab
   module PerformanceBar
-    extend Gitlab::CurrentSettings
+    # extend Gitlab::CurrentSettings
 
     ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'.freeze
     EXPIRY_TIME = 5.minutes

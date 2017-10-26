@@ -1,7 +1,7 @@
 module Gitlab
   module GithubImport
     class ProjectCreator
-      include Gitlab::CurrentSettings
+      # include Gitlab::CurrentSettings
 
       attr_reader :repo, :name, :namespace, :current_user, :session_data, :type
 

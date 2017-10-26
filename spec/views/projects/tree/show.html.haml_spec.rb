@@ -12,7 +12,7 @@ describe 'projects/tree/show' do
 
     allow(view).to receive(:can?).and_return(true)
     allow(view).to receive(:can_collaborate_with_project?).and_return(true)
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings)
   end
 
   context 'for branch names ending on .json' do

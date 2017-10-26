@@ -1,7 +1,7 @@
 module RequiresWhitelistedMonitoringClient
   extend ActiveSupport::Concern
 
-  include Gitlab::CurrentSettings
+  # # include Gitlab::CurrentSettings
 
   included do
     before_action :validate_ip_whitelisted_or_valid_token!

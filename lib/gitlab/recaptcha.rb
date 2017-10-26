@@ -1,6 +1,6 @@
 module Gitlab
   module Recaptcha
-    extend Gitlab::CurrentSettings
+    # extend Gitlab::CurrentSettings
 
     def self.load_configurations!
       if current_application_settings.recaptcha_enabled

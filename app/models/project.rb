@@ -4,7 +4,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
   include AccessRequestable
   include Avatarable
   include CacheMarkdownField
@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   include GroupDescendant
 
   extend Gitlab::ConfigHelper
-  extend Gitlab::CurrentSettings
+  # extend Gitlab::CurrentSettings
 
   BoardLimitExceeded = Class.new(StandardError)
 

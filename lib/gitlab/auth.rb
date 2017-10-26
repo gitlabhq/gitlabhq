@@ -14,7 +14,7 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
-      include Gitlab::CurrentSettings
+      # include Gitlab::CurrentSettings
 
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?

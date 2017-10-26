@@ -1,5 +1,5 @@
 class BaseMailer < ActionMailer::Base
-  include Gitlab::CurrentSettings
+  # include Gitlab::CurrentSettings
 
   around_action :render_with_default_locale
 
