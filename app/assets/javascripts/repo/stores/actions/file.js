@@ -1,16 +1,29 @@
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
-import { createTemp } from '../utils';
+import {
+  createTemp,
+  findIndexOfFile,
+} from '../utils';
 
-export const closeFile = ({ commit }, file) => {
+export const closeFile = ({ commit, state, dispatch }, file) => {
   if (file.changed || file.tempFile) return;
+
+  const indexOfClosedFile = findIndexOfFile(state.openFiles, file);
+  const fileWasActive = file.active;
 
   commit(types.TOGGLE_FILE_OPEN, file);
   commit(types.SET_FILE_ACTIVE, { file, active: false });
+
+  if (state.openFiles.length > 0 && fileWasActive) {
+    const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
+    const nextFileToOpen = state.openFiles[nextIndexToOpen];
+
+    dispatch('setFileActive', nextFileToOpen);
+  }
 };
 
-export const setFileActive = ({ commit, state, getters }, file) => {
+export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
   const currentActiveFile = getters.activeFile;
 
   if (currentActiveFile) {
@@ -18,6 +31,7 @@ export const setFileActive = ({ commit, state, getters }, file) => {
   }
 
   commit(types.SET_FILE_ACTIVE, { file, active: true });
+  dispatch('scrollToTab');
 };
 
 export const getFileData = ({ commit, dispatch }, file) => {

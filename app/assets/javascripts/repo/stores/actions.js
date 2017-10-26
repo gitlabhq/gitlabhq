@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
@@ -97,6 +98,15 @@ export const popHistoryState = ({ state, dispatch, getters }) => {
   if (tree.type === 'tree') {
     dispatch('toggleTreeOpen', { endpoint: tree.url, tree });
   }
+};
+
+export const scrollToTab = () => {
+  Vue.nextTick(() => {
+    const tabs = document.getElementById('tabs');
+    const tabEl = tabs.querySelector('.active');
+
+    tabs.scrollLeft = tabEl.offsetLeft;
+  });
 };
 
 export * from './actions/tree';
