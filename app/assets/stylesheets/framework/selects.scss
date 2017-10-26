@@ -138,12 +138,13 @@
   }
 }
 
-.select2-search {
-  padding: 15px 15px 5px;
+.select2-search,
+.select2-drop-auto-width .select2-search {
+  padding: $grid-size #{2 * $grid-size};
+}
 
-  .select2-drop-auto-width & {
-    padding: 15px 15px 5px;
-  }
+.select2-search + .select2-results {
+  padding-top: 0;
 }
 
 .select2-search input {
