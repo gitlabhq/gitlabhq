@@ -315,7 +315,7 @@ import Diff from './diff';
 
           initIssuableSidebar();
           if (document.querySelector('.js-old-notes')) {
-            new gl.Diff();
+            new Diff();
             initNotes();
           }
           const mrShowNode = document.querySelector('.merge-request');
