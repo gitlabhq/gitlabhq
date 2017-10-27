@@ -8,8 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2017-10-18 11:13+0200\n"
 "PO-Revision-Date: 2017-10-18 11:13+0200\n"
+=======
+"POT-Creation-Date: 2017-10-22 16:40+0300\n"
+"PO-Revision-Date: 2017-10-22 16:40+0300\n"
+>>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -115,6 +120,12 @@ msgstr ""
 msgid "AdminHealthPageLink|health page"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+msgid "Advanced settings"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "All"
 msgstr ""
 
@@ -187,6 +198,7 @@ msgstr ""
 msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -241,6 +253,8 @@ msgstr ""
 msgid "BillingPlans|per user"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] ""
@@ -477,9 +491,12 @@ msgstr ""
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ClusterIntegration|Advanced settings"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "ClusterIntegration|Cluster details"
 msgstr ""
 
@@ -561,7 +578,7 @@ msgstr ""
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
 msgstr ""
 
-msgid "ClusterIntegration|Save"
+msgid "ClusterIntegration|See and edit the details for your cluster"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your cluster"
@@ -1694,6 +1711,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
 msgid "Save changes"
 msgstr ""
 
@@ -2230,12 +2250,15 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
 msgstr ""
 
 msgid "Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "When access to a storage fails. GitLab will prevent access to the storage for the time specified here. This allows the filesystem to recover. Repositories on failing shards are temporarly unavailable"
 msgstr ""
 

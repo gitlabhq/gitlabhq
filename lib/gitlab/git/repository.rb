@@ -166,7 +166,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
+        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -743,6 +743,16 @@ module Gitlab
         end
       rescue Gitlab::Git::CommitError # when merge_index.conflicts?
         nil
+      end
+
+      def ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)

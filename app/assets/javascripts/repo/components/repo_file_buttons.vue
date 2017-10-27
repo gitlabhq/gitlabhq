@@ -11,7 +11,12 @@ const RepoFileButtons = {
   mixins: [RepoMixin],
 
   computed: {
-
+    showButtons() {
+      return this.activeFile.raw_path ||
+        this.activeFile.blame_path ||
+        this.activeFile.commits_path ||
+        this.activeFile.permalink;
+    },
     rawDownloadButtonLabel() {
       return this.binary ? 'Download' : 'Raw';
     },
@@ -30,7 +35,10 @@ export default RepoFileButtons;
 </script>
 
 <template>
-  <div id="repo-file-buttons">
+  <div
+    v-if="showButtons"
+    class="repo-file-buttons"
+  >
     <a
       :href="activeFile.raw_path"
       target="_blank"

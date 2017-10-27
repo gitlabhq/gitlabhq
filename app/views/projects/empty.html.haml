@@ -72,6 +72,7 @@
           %pre.light-well
             :preserve
               cd existing_repo
+              git remote rename origin old-origin
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git push -u origin --all
               git push -u origin --tags

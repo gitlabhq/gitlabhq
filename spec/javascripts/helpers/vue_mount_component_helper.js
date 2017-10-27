@@ -1,4 +1,3 @@
-export default (Component, props = {}) => new Component({
+export default (Component, props = {}, el = null) => new Component({
   propsData: props,
-}).$mount();
-
+}).$mount(el);

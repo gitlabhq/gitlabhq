@@ -38,6 +38,7 @@ following locations:
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
+- [Pages Domains](pages_domains.md)
 - [Pipelines](pipelines.md)
 - [Pipeline Triggers](pipeline_triggers.md)
 - [Pipeline Schedules](pipeline_schedules.md)

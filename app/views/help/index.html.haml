@@ -9,9 +9,15 @@
     Enterprise Edition
     - if user_signed_in?
       %span= Gitlab::VERSION
+<<<<<<< HEAD
       %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ee', Gitlab::REVISION)
       - if current_application_settings.version_check_enabled
         = version_status_badge
+=======
+      %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
+      = version_status_badge
+
+>>>>>>> upstream/master
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
@@ -24,6 +30,7 @@
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
+    %p= link_to 'Check the current instance configuration ', help_instance_configuration_url
   %hr
 
 .row.prepend-top-default

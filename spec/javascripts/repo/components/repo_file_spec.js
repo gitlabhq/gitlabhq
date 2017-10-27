@@ -7,6 +7,7 @@ import { file } from '../mock_data';
 describe('RepoFile', () => {
   const updated = 'updated';
   const otherFile = {
+    id: 'test',
     html: '<p class="file-content">html</p>',
     pageTitle: 'otherpageTitle',
   };

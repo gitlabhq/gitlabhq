@@ -49,7 +49,7 @@ export default {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => ({
-        action: 'update',
+        action: f.tempFile ? 'create' : 'update',
         file_path: f.path,
         content: f.newContent,
       }));
@@ -62,7 +62,6 @@ export default {
       if (newBranch) {
         payload.start_branch = this.currentBranch;
       }
-      this.submitCommitsLoading = true;
       Service.commitFiles(payload)
         .then(() => {
           this.resetCommitState();
@@ -78,6 +77,8 @@ export default {
     },
 
     tryCommit(e, skipBranchCheck = false, newBranch = false) {
+      this.submitCommitsLoading = true;
+
       if (skipBranchCheck) {
         this.makeCommit(newBranch);
       } else {
@@ -90,6 +91,7 @@ export default {
             this.makeCommit(newBranch);
           })
           .catch(() => {
+            this.submitCommitsLoading = false;
             Flash('An error occurred while committing your changes');
           });
       }
