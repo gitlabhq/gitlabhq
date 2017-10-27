@@ -511,6 +511,10 @@ module Gitlab
         gitaly_commit_client.ancestor?(from, to)
       end
 
+      def merged_branch_names(branch_names = [])
+        Set.new(git_merged_branch_names(branch_names))
+      end
+
       # Return an array of Diff objects that represent the diff
       # between +from+ and +to+.  See Diff::filter_diff_options for the allowed
       # diff options.  The +options+ hash can also include :break_rewrites to
@@ -1178,6 +1182,13 @@ module Gitlab
         end
 
         sort_branches(branches, sort_by)
+      end
+
+      def git_merged_branch_names(branch_names = [])
+        lines = run_git(['branch', '--merged', root_ref] + branch_names)
+          .first.lines
+
+        lines.map(&:strip)
       end
 
       def log_using_shell?(options)
