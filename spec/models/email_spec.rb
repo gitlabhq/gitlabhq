@@ -40,10 +40,10 @@ describe Email do
       expect(user.emails.confirmed.count).to eq 1
     end
   end
-  
+
   describe 'delegation' do
     let(:user) { create(:user) }
-    
+
     it 'delegates to :user' do
       expect(build(:email, user: user).username).to eq user.username
     end
