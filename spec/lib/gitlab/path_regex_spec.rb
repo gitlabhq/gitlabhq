@@ -45,21 +45,16 @@ describe Gitlab::PathRegex do
       Found new routes that could cause conflicts with existing namespaced routes
       for groups or projects.
 
-      Add <#{missing_words.join(', ')}> to `Gitlab::PathRegex::#{constant_name}
-      to make sure no projects or namespaces can be created with those paths.
-
-      To rename any existing records with those paths you can use the
-      `Gitlab::Database::RenameReservedpathsMigration::<VERSION>.#{migration_helper}`
-      migration helper.
-
-      Make sure to make a note of the renamed records in the release blog post.
+      Nest <#{missing_words.join(', ')}> in a route containing `-`, that way
+      we know there will be no conflicts with groups or projects created with those
+      paths.
 
       MISSING
     end
 
     if additional_words.any?
       message += <<-ADDITIONAL
-      Why are <#{additional_words.join(', ')}> in `#{constant_name}`?
+      Is <#{additional_words.join(', ')}> in `#{constant_name}` required?
       If they are really required, update these specs to reflect that.
 
       ADDITIONAL
