@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-useless-escape, no-new, quotes, object-shorthand, no-unused-vars, comma-dangle, no-alert, consistent-return, no-else-return, prefer-template, one-var, one-var-declaration-per-line, curly, max-len */
 /* global GitLab */
-/* global GroupsSelect */
 
 import Pikaday from 'pikaday';
 import Autosave from './autosave';
@@ -8,6 +7,7 @@ import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import groupsSelect from './groups_select';
 
 (function() {
   this.IssuableForm = (function() {
@@ -22,7 +22,7 @@ import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
       this.handleSubmit = this.handleSubmit.bind(this);
       new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
       new UsersSelect();
-      new GroupsSelect();
+      groupsSelect();
       new ZenMode();
       this.titleField = this.form.find("input[name*='[title]']");
       this.descriptionField = this.form.find("textarea[name*='[description]']");

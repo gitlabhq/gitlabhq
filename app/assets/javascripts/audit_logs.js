@@ -1,9 +1,8 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props, no-new */
-/* global GroupsSelect */
 /* global ProjectSelect */
 
 import UsersSelect from './users_select';
-import './groups_select';
+import groupsSelect from './groups_select';
 import './project_select';
 
 class AuditLogs {
@@ -13,7 +12,7 @@ class AuditLogs {
 
   initFilters() {
     new ProjectSelect();
-    new GroupsSelect();
+    groupsSelect();
     new UsersSelect();
 
     this.initFilterDropdown($('.js-type-filter'), 'event_type', null, () => {

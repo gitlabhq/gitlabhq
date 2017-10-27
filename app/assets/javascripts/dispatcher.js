@@ -13,7 +13,7 @@ import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
@@ -400,7 +400,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:edit':
           new UsersSelect();
-          new GroupsSelect();
+          groupsSelect();
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
@@ -450,7 +450,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
