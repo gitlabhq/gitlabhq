@@ -26,8 +26,13 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  def new
+  # TODO fix this
+  def new_kubernetes_form
     @cluster = project.build_cluster
+  end
+
+  def new
+    # First page!
   end
 
   def create
