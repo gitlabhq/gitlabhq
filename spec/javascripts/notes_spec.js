@@ -380,13 +380,9 @@ import '~/notes';
           document.body.appendChild(line);
 
           $form.closest.and.returnValues($form);
-          spyOn(document, 'getElementById').and.callThrough();
-          spyOn($.fn, 'after').and.callThrough();
 
           Notes.prototype.renderDiscussionNote.call(notes, note, $form);
 
-          expect(document.getElementById).toHaveBeenCalledWith(note.discussion_line_code);
-          expect($.fn.after).toHaveBeenCalled();
           expect(line.nextSibling.outerHTML).toEqual(note.diff_discussion_html);
         });
       });

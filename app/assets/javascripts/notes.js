@@ -415,7 +415,7 @@ export default class Notes {
     this.note_ids.push(noteEntity.id);
 
     form = $form || $(`.js-discussion-note-form[data-discussion-id="${noteEntity.discussion_id}"]`);
-    row = form.length ? form.closest('tr') : $(`#${noteEntity.discussion_line_code}`);
+    row = (form.length || !noteEntity.discussion_line_code) ? form.closest('tr') : $(`#${noteEntity.discussion_line_code}`);
 
     if (noteEntity.on_image) {
       row = form;
