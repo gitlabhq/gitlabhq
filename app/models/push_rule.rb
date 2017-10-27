@@ -10,31 +10,6 @@ class PushRule < ActiveRecord::Base
     commit_author_check
   ].freeze
 
-  SETTINGS_WITH_GLOBAL_DEFAULT.each do |setting|
-    define_method(setting) do
-      value = super()
-
-      # return if value is true/false or if current object is the global setting
-      return value if global? || !value.nil?
-
-      PushRule.global&.public_send(setting)
-    end
-    alias_method "#{setting}?", setting
-
-    define_method("#{setting}=") do |value|
-      enabled_globally = PushRule.global&.public_send(setting)
-      is_disabled = !Gitlab::Utils.to_boolean(value)
-
-      # If setting is globally disabled and user disable it at project level,
-      # reset the attr so we can use the default global if required later.
-      if !enabled_globally && is_disabled
-        super(nil)
-      else
-        super(value)
-      end
-    end
-  end
-
   def self.global
     find_by(is_sample: true)
   end
@@ -97,6 +72,24 @@ class PushRule < ActiveRecord::Base
     end
   end
 
+  def reject_unsigned_commits
+    read_setting_with_global_default(:reject_unsigned_commits)
+  end
+  alias_method :reject_unsigned_commits?, :reject_unsigned_commits
+
+  def reject_unsigned_commits=(value)
+    write_setting_with_global_default(:reject_unsigned_commits, value)
+  end
+
+  def commit_author_check
+    read_setting_with_global_default(:commit_author_check)
+  end
+  alias_method :commit_author_check?, :commit_author_check
+
+  def commit_author_check=(value)
+    write_setting_with_global_default(:commit_author_check, value)
+  end
+
   private
 
   def data_match?(data, regex)
@@ -104,6 +97,28 @@ class PushRule < ActiveRecord::Base
       !!(data =~ Regexp.new(regex))
     else
       true
+    end
+  end
+
+  def read_setting_with_global_default(setting)
+    value = read_attribute(setting)
+
+    # return if value is true/false or if current object is the global setting
+    return value if global? || !value.nil?
+
+    PushRule.global&.public_send(setting)
+  end
+
+  def write_setting_with_global_default(setting, value)
+    enabled_globally = PushRule.global&.public_send(setting)
+    is_disabled = !Gitlab::Utils.to_boolean(value)
+
+    # If setting is globally disabled and user disable it at project level,
+    # reset the attr so we can use the default global if required later.
+    if !enabled_globally && is_disabled
+      write_attribute(setting, nil)
+    else
+      write_attribute(setting, value)
     end
   end
 end

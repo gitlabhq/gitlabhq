@@ -2,25 +2,24 @@ module PushRulesHelper
   def reject_unsigned_commits_description(push_rule)
     message = [s_("ProjectSettings|Only signed commits can be pushed to this repository.")]
 
-    annotate_with_update_message(message, push_rule,
-                                 enabled_globally: PushRule.global&.reject_unsigned_commits,
-                                 enabled_in_project: push_rule.reject_unsigned_commits)
+    push_rule_update_description(message, push_rule, :reject_unsigned_commits)
   end
 
   def commit_author_check_description(push_rule)
     message = [s_("ProjectSettings|Only the author of a commit can push changes to this repository.")]
 
-    annotate_with_update_message(message, push_rule,
-                                 enabled_globally: PushRule.global&.commit_author_check,
-                                 enabled_in_project: push_rule.commit_author_check)
+    push_rule_update_description(message, push_rule, :commit_author_check)
   end
 
   private
 
-  def annotate_with_update_message(message, push_rule, enabled_globally:, enabled_in_project:)
+  def push_rule_update_description(message, push_rule, rule)
     if push_rule.global?
       message << s_("ProjectSettings|This setting will be applied to all projects unless overridden by an admin.")
     else
+      enabled_globally = PushRule.global&.public_send(rule) # rubocop:disable GitlabSecurity/PublicSend
+      enabled_in_project = push_rule.public_send(rule) # rubocop:disable GitlabSecurity/PublicSend
+
       if enabled_globally
         message << if enabled_in_project
                      s_("ProjectSettings|This setting is applied on the server level and can be overridden by an admin.")
