@@ -93,7 +93,7 @@ export default {
           type="button"
           :disabled="unapproving"
           @click="unapproveMergeRequest"
-          class="btn btn-small unapprove-btn-wrap">
+          class="btn btn-sm unapprove-btn-wrap">
           <i
             v-if="unapproving"
             class="fa fa-spinner fa-spin"

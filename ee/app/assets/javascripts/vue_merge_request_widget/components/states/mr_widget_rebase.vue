@@ -109,7 +109,7 @@
         <div class="accept-merge-holder clearfix js-toggle-container accept-action media space-children">
           <button
             type="button"
-            class="btn btn-small btn-reopen btn-success"
+            class="btn btn-sm btn-reopen btn-success"
             :disabled="isMakingRequest"
             @click="rebase">
             <loading-icon v-if="isMakingRequest" />
