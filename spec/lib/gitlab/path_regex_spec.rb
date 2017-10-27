@@ -297,7 +297,7 @@ describe Gitlab::PathRegex do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/activity/')
+          expect(subject).not_to match('root/analytics/')
         end
       end
 
@@ -317,7 +317,7 @@ describe Gitlab::PathRegex do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/activity/more/')
+          expect(subject).not_to match('root/analytics/more/')
         end
       end
     end
@@ -350,7 +350,7 @@ describe Gitlab::PathRegex do
     end
 
     it 'accepts group routes' do
-      expect(subject).to match('activity/')
+      expect(subject).to match('analytics/')
     end
 
     it 'is not case sensitive' do
@@ -381,7 +381,7 @@ describe Gitlab::PathRegex do
     end
 
     it 'accepts group routes' do
-      expect(subject).to match('root/activity/')
+      expect(subject).to match('root/analytics/')
     end
 
     it 'is not case sensitive' do

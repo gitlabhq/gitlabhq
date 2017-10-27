@@ -112,18 +112,13 @@ module Gitlab
     # this would map to the activity-page of its parent.
     GROUP_ROUTES = %w[
       -
-      activity
       analytics
       audit_events
-      edit
       hooks
-      issues
       ldap
       ldap_group_links
-      merge_requests
       notification_setting
       pipeline_quota
-      projects
     ].freeze
 
     ILLEGAL_PROJECT_PATH_WORDS = PROJECT_WILDCARD_ROUTES

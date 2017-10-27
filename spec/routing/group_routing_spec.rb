@@ -18,37 +18,36 @@ describe "Groups", "routing" do
   end
 
   it "to #activity" do
-    expect(get("/groups/#{group_path}/activity")).to route_to('groups#activity', id: group_path)
+    expect(get("/groups/#{group_path}/-/activity")).to route_to('groups#activity', id: group_path)
   end
 
   it "to #issues" do
-    expect(get("/groups/#{group_path}/issues")).to route_to('groups#issues', id: group_path)
+    expect(get("/groups/#{group_path}/-/issues")).to route_to('groups#issues', id: group_path)
   end
 
   it "to #members" do
     expect(get("/groups/#{group_path}/-/group_members")).to route_to('groups/group_members#index', group_id: group_path)
   end
 
+  it "to #labels" do
+    expect(get("/groups/#{group_path}/-/labels")).to route_to('groups/labels#index', group_id: group_path)
+  end
+
+  it "to #milestones" do
+    expect(get("/groups/#{group_path}/-/milestones")).to route_to('groups/milestones#index', group_id: group_path)
+  end
+
   describe 'legacy redirection' do
-    shared_examples 'canonical groups route' do |path|
-      it "#{path} routes to the correct controller" do
-        expect(get("/groups/#{group_path}/-/#{path}"))
-          .to route_to(group_id: group_path,
-                       controller: "groups/#{path}",
-                       action: 'index')
-      end
-
-      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/#{path}", "/groups/complex.group-namegit/-/#{path}/" do
-        let(:resource) { create(:group, parent: group, path: path) }
-      end
-    end
-
     describe 'labels' do
-      it_behaves_like 'canonical groups route', 'labels'
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/labels", "/groups/complex.group-namegit/-/labels/" do
+        let(:resource) { create(:group, parent: group, path: 'labels') }
+      end
     end
 
     describe 'group_members' do
-      it_behaves_like 'canonical groups route', 'group_members'
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/group_members", "/groups/complex.group-namegit/-/group_members/" do
+        let(:resource) { create(:group, parent: group, path: 'group_members') }
+      end
     end
 
     describe 'avatar' do
@@ -61,7 +60,9 @@ describe "Groups", "routing" do
     end
 
     describe 'milestones' do
-      it_behaves_like 'canonical groups route', 'milestones'
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/milestones", "/groups/complex.group-namegit/-/milestones/" do
+        let(:resource) { create(:group, parent: group, path: 'milestones') }
+      end
 
       context 'nested routes' do
         include RSpec::Rails::RequestExampleGroup
@@ -72,6 +73,44 @@ describe "Groups", "routing" do
           request = get("/groups/#{group_path}/milestones/#{milestone.id}/merge_requests")
           expect(request).to redirect_to("/groups/#{group_path}/-/milestones/#{milestone.id}/merge_requests")
         end
+      end
+    end
+
+    describe 'edit' do
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/edit", "/groups/complex.group-namegit/-/edit/" do
+        let(:resource) do
+          pending('still rejected because of the wildcard reserved word')
+          create(:group, parent: group, path: 'edit')
+        end
+      end
+    end
+
+    describe 'issues' do
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/issues", "/groups/complex.group-namegit/-/issues/" do
+        let(:resource) { create(:group, parent: group, path: 'issues') }
+      end
+    end
+
+    describe 'merge_requests' do
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/merge_requests", "/groups/complex.group-namegit/-/merge_requests/" do
+        let(:resource) { create(:group, parent: group, path: 'merge_requests') }
+      end
+    end
+
+    describe 'projects' do
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/projects", "/groups/complex.group-namegit/-/projects/" do
+        let(:resource) { create(:group, parent: group, path: 'projects') }
+      end
+    end
+
+    describe 'activity' do
+      it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/activity", "/groups/complex.group-namegit/-/activity/" do
+        let(:resource) { create(:group, parent: group, path: 'activity') }
+      end
+
+      it_behaves_like 'redirecting a legacy path', "/groups/activity/activity", "/groups/activity/-/activity/" do
+        let!(:parent) { create(:group, path: 'activity') }
+        let(:resource) { create(:group, parent: parent, path: 'activity') }
       end
     end
   end
