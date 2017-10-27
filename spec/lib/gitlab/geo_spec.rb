@@ -101,24 +101,6 @@ describe Gitlab::Geo, :geo do
       end
     end
 
-    context 'when there is a database issue' do
-      it 'returns false when database connection is down' do
-        allow(GeoNode).to receive(:connected?) { false }
-
-        expect(described_class.enabled?).to be_falsey
-      end
-
-      it 'returns false when database schema does not contain required tables' do
-        if Gitlab::Database.mysql?
-          allow(GeoNode).to receive(:exists?).and_raise(Mysql2::Error, "Table 'gitlabhq_test.geo_nodes' doesn't exist: SHOW FULL FIELDS FROM `geo_nodes`")
-        else
-          allow(GeoNode).to receive(:exists?).and_raise(PG::UndefinedTable)
-        end
-
-        expect(described_class.enabled?).to be_falsey
-      end
-    end
-
     context 'with RequestStore enabled', :request_store do
       it 'return false when no GeoNode exists' do
         GeoNode.delete_all
@@ -126,6 +108,28 @@ describe Gitlab::Geo, :geo do
         expect(GeoNode).to receive(:exists?).once.and_call_original
 
         2.times { expect(described_class.enabled?).to be_falsey }
+      end
+    end
+  end
+
+  describe 'connected?' do
+    context 'when there is a database issue' do
+      it 'returns false when database connection is down' do
+        allow(GeoNode).to receive(:connected?) { false }
+
+        expect(described_class.connected?).to be_falsey
+      end
+
+      it 'returns false when the table does not exist' do
+        allow(GeoNode).to receive(:table_exists?) { false }
+
+        expect(described_class.connected?).to be_falsey
+      end
+
+      it 'returns false when MySQL is in use' do
+        allow(Gitlab::Database).to receive(:postgresql?) { false }
+
+        expect(described_class.connected?).to be_falsey
       end
     end
   end
@@ -139,7 +143,7 @@ describe Gitlab::Geo, :geo do
     end
 
     context 'current node is primary' do
-      it 'returns false ' do
+      it 'returns false' do
         expect(described_class.secondary?).to be_falsey
       end
     end
