@@ -32,8 +32,8 @@ module Gitlab
 
     # The default timeout on all Gitaly calls
     DEFAULT_TIMEOUT = Sidekiq.server? ? 0.seconds : 50.seconds
-    FAST_TIMEOUT = 15.seconds
-    MEDIUM_TIMEOUT = 30.seconds
+    FAST_TIMEOUT = 30.seconds
+    MEDIUM_TIMEOUT = 40.seconds
 
     MUTEX = Mutex.new
     private_constant :MUTEX
