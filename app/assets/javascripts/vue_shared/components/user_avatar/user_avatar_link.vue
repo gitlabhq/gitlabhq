@@ -69,11 +69,11 @@ export default {
     },
   },
   computed: {
-    showUsername() {
+    shouldShowUsername() {
       return this.username.length > 0;
     },
     avatarTooltipText() {
-      return this.showUsername ? '' : this.tooltipText;
+      return this.shouldShowUsername ? '' : this.tooltipText;
     },
   },
   directives: {
@@ -94,7 +94,7 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
     /><span
-      v-if="username.length > 0"
+      v-if="shouldShowUsername"
       v-tooltip
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
