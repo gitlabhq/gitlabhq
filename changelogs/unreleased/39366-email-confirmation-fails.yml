@@ -1,0 +1,5 @@
+---
+title: 'Fix #39366 : E-mail confirmation fails: NoMethodError: undefined method "username"'
+merge_request: 15010
+author:
+type: fixed
