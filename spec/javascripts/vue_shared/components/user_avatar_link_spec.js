@@ -56,8 +56,12 @@ describe('User Avatar Link Component', function () {
       Vue.nextTick(done);
     });
 
-    it('should not render <span> as a child element', function () {
-      expect(this.userAvatarLink.$el.querySelector('span')).toBeNull();
+    it('should only render image tag in link', function () {
+      const childElements = this.userAvatarLink.$el.childNodes;
+      expect(childElements[0].tagName).toBe('IMG');
+
+      // Vue will render the hidden component as <!---->
+      expect(childElements[1].tagName).toBeUndefined();
     });
 
     it('should render avatar image tooltip', function () {
