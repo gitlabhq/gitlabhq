@@ -9,15 +9,10 @@
     Enterprise Edition
     - if user_signed_in?
       %span= Gitlab::VERSION
-<<<<<<< HEAD
       %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ee', Gitlab::REVISION)
       - if current_application_settings.version_check_enabled
         = version_status_badge
-=======
-      %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
-      = version_status_badge
 
->>>>>>> upstream/master
   %p.slead
     GitLab is open source software to collaborate on code.
     %br

@@ -161,7 +161,6 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.integer "circuitbreaker_failure_wait_time", default: 30
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 30
-<<<<<<< HEAD
     t.boolean "remote_mirror_available", default: true, null: false
     t.integer "circuitbreaker_access_retries", default: 3
     t.integer "circuitbreaker_backoff_threshold", default: 80
@@ -182,10 +181,6 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.integer "circuitbreaker_access_retries", default: 3
-    t.integer "circuitbreaker_backoff_threshold", default: 80
->>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree

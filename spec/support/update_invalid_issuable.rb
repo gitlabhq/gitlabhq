@@ -27,7 +27,6 @@ shared_examples 'update invalid issuable' do |klass|
 
     it 'renders edit when format is html' do
       put :update, params
-<<<<<<< HEAD
 
       expect(response).to render_template(:edit)
       expect(assigns[:conflict]).to be_truthy
@@ -35,11 +34,6 @@ shared_examples 'update invalid issuable' do |klass|
       if klass == MergeRequest && issuable.requires_approve?
         expect(assigns[:suggested_approvers]).to be_an(Array)
       end
-=======
-
-      expect(response).to render_template(:edit)
-      expect(assigns[:conflict]).to be_truthy
->>>>>>> upstream/master
     end
 
     it 'renders json error message when format is json' do
