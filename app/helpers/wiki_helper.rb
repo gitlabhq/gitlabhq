@@ -11,6 +11,10 @@ module WikiHelper
       .join(' / ')
   end
 
+  def has_articles?
+    @sidebar_wiki_entries.any?
+  end
+
   def wiki_breadcrumb_dropdown_links(page_slug)
     page_slug_split = page_slug.split('/')
     page_slug_split.pop(1)
