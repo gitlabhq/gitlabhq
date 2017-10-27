@@ -28,6 +28,9 @@
           marginLeft: `${this.file.level * 16}px`,
         };
       },
+      shortId() {
+        return this.file.id.substr(0, 8);
+      },
     },
     methods: {
       linkClicked(file) {
@@ -55,6 +58,17 @@
       >
         {{ file.name }}
       </a>
+      <template v-if="file.type === 'submodule' && file.id">
+        @
+        <span class="commit-sha">
+          <a
+            @click.stop
+            :href="file.tree_url"
+          >
+            {{ shortId }}
+          </a>
+        </span>
+      </template>
     </td>
 
     <template v-if="!isMini">
@@ -69,7 +83,10 @@
       </td>
 
       <td class="commit-update hidden-xs text-right">
-        <span :title="tooltipTitle(file.lastCommit.updatedAt)">
+        <span
+          v-if="file.lastCommit.updatedAt"
+          :title="tooltipTitle(file.lastCommit.updatedAt)"
+        >
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>
       </td>

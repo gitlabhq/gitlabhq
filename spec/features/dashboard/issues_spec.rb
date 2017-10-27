@@ -87,8 +87,10 @@ RSpec.describe 'Dashboard Issues' do
       project_path = "/#{project.path_with_namespace}"
       project_json = { name: project.name_with_namespace, url: project_path }.to_json
 
-      # similate selection, and prevent overlap by dropdown menu
+      # simulate selection, and prevent overlap by dropdown menu
+      first('.project-item-select', visible: false)
       execute_script("$('.project-item-select').val('#{project_json}').trigger('change');")
+      find('#select2-drop-mask', visible: false)
       execute_script("$('#select2-drop-mask').remove();")
 
       find('.new-project-item-link').trigger('click')

@@ -29,7 +29,7 @@ describe Gitlab::CurrentSettings do
 
       it 'falls back to DB if Caching returns an empty value' do
         expect(ApplicationSetting).to receive(:cached).and_return(nil)
-        expect(ApplicationSetting).to receive(:last).and_call_original
+        expect(ApplicationSetting).to receive(:last).and_call_original.twice
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end

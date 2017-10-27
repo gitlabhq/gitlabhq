@@ -75,7 +75,7 @@ export default {
         <button
           :disabled="approving"
           @click="approveMergeRequest"
-          class="btn btn-primary btn-small approve-btn">
+          class="btn btn-primary btn-sm approve-btn">
           <i
             v-if="approving"
             class="fa fa-spinner fa-spin"

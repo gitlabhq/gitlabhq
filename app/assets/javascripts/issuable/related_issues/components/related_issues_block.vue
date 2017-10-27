@@ -119,7 +119,7 @@ export default {
               v-if="canAddRelatedIssues"
               ref="issueCountBadgeAddButton"
               type="button"
-              class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-small btn-default"
+              class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-sm btn-default"
               aria-label="Add an issue"
               data-placement="top"
               @click="toggleAddRelatedIssuesForm">

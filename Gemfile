@@ -105,7 +105,7 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.1.0'
+gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
 gem 'google-api-client', '~> 0.13.6'
@@ -414,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.42.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.45.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
