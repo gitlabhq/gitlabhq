@@ -30,6 +30,7 @@ module Geo
 
     def create
       return unless Gitlab::Geo.primary?
+      return unless Gitlab::Geo.secondary_nodes.any? # no need to create an event if no one is listening
 
       Geo::EventLog.create!("#{self.class.event_type}" => build_event)
     rescue ActiveRecord::RecordInvalid, NoMethodError => e
