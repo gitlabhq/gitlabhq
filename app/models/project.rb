@@ -26,7 +26,10 @@ class Project < ActiveRecord::Base
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
-  LATEST_STORAGE_VERSION = 1
+  # Hashed Storage versions handle rolling out new storage to project and dependents models
+  # 1: repository
+  # 2: attachments
+  LATEST_STORAGE_VERSION = 2
 
   cache_markdown_field :description, pipeline: :description
 
@@ -1384,7 +1387,7 @@ class Project < ActiveRecord::Base
     if storage.rename_repo
       Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
       rename_repo_notify!
-      after_rename_repo
+      storage.after_rename_repo
     else
       Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
 
@@ -1402,13 +1405,6 @@ class Project < ActiveRecord::Base
     SystemHooksService.new.execute_hooks_for(self, :rename)
 
     reload_repository!
-  end
-
-  def after_rename_repo
-    path_before_change = previous_changes['path'].first
-
-    Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
-    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def running_or_pending_build_count(force: false)

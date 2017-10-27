@@ -2452,6 +2452,7 @@ describe Project do
   context 'legacy storage' do
     let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:project_storage) { project.send(:storage) }
 
     before do
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
@@ -2545,6 +2546,30 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves uploads folder to new location' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
       end
     end
 
@@ -2649,10 +2674,6 @@ describe Project do
           .to receive(:execute_hooks_for)
             .with(project, :rename)
 
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
         expect(project).to receive(:expire_caches_before_rename)
 
         expect(project).to receive(:expires_full_path_cache)
@@ -2672,6 +2693,32 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        it 'keeps uploads folder location unchanged' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
+
+          project.rename_repo
+        end
+
+        context 'when not rolled out' do
+          let(:project) { create(:project, :repository, storage_version: 1) }
+
+          it 'moves pages folder to new location' do
+            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+            project.rename_repo
+          end
+        end
       end
     end
 
