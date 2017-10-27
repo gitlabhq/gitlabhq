@@ -902,17 +902,26 @@ class Repository
     end
   end
 
-  def merged_to_root_ref?(branch_name)
-    branch_commit = commit(branch_name)
-    root_ref_commit = commit(root_ref)
+  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+    branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
-    if branch_commit
-      same_head = branch_commit.id == root_ref_commit.id
-      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
+    if branch
+      root_ref_sha = commit(root_ref).sha
+      same_head = branch.target == root_ref_sha
+      merged =
+        if pre_loaded_merged_branches
+          pre_loaded_merged_branches.include?(branch.name)
+        else
+          ancestor?(branch.target, root_ref_sha)
+        end
+
+      !same_head && merged
     else
       nil
     end
   end
+
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
