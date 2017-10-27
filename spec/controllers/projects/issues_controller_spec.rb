@@ -557,6 +557,29 @@ describe Projects::IssuesController do
         end
       end
     end
+
+    describe 'GET #edit' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :edit,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+    end
+
+    describe 'PUT #update' do
+      it_behaves_like 'restricted action', success: 302
+
+      def go(id:)
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id,
+          issue: { title: 'New title' }
+      end
+    end
   end
 
   describe 'POST #create' do
