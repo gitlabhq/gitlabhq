@@ -13,6 +13,7 @@ const RepoStore = {
   projectId: '',
   projectName: '',
   projectUrl: '',
+  branchUrl: '',
   blobRaw: '',
   currentBlobView: 'repo-preview',
   openedFiles: [],

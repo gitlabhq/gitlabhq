@@ -95,7 +95,7 @@ const RepoHelper = {
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-      if (response.headers && response.headers['page-title']) data.pageTitle = response.headers['page-title'];
+      if (response.headers && response.headers['page-title']) data.pageTitle = decodeURI(response.headers['page-title']);
       if (response.headers && response.headers['is-root'] && !Store.isInitialRoot) {
         Store.isRoot = convertPermissionToBoolean(response.headers['is-root']);
         Store.isInitialRoot = Store.isRoot;
@@ -157,12 +157,14 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity, level = 0) {
-    const { url, name, icon, last_commit } = entity;
+    const { id, url, name, icon, last_commit, tree_url } = entity;
 
     return {
+      id,
       type,
       name,
       url,
+      tree_url,
       level,
       icon: `fa-${icon}`,
       files: [],

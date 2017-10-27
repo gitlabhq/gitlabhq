@@ -105,24 +105,5 @@ form. Click the icon to begin the authentication process. Google will ask the
 user to sign in and authorize the GitLab application. If everything goes well
 the user will be returned to GitLab and will be signed in.
 
-## Further Configuration
-
-This further configuration is not required for Google authentication to function
-but it is strongly recommended. Taking these steps will increase usability for
-users by providing a little more recognition and branding.
-
-At this point, when users first try to authenticate to your GitLab installation
-with Google they will see a generic application name on the prompt screen. The
-prompt informs the user that "Project Default Service Account" would like to
-access their account. "Project Default Service Account" isn't very recognizable
-and may confuse or cause users to be concerned. This is easily changeable:
-
-1. Select 'Consent screen' in the left menu. (See steps 1, 4 and 5 above for
-   instructions on how to get here if you closed your window).
-1. Scroll down until you find "Product Name". Change the product name to
-   something more descriptive.
-1. Add any additional information as you wish - homepage, logo, privacy policy,
-   etc. None of this is required, but it may help your users.
-
 [reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

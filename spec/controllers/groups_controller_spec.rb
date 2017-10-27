@@ -32,6 +32,31 @@ describe GroupsController do
     end
   end
 
+  describe 'GET #show' do
+    before do
+      sign_in(user)
+      project
+    end
+
+    context 'as html' do
+      it 'assigns whether or not a group has children' do
+        get :show, id: group.to_param
+
+        expect(assigns(:has_children)).to be_truthy
+      end
+    end
+
+    context 'as atom' do
+      it 'assigns events for all the projects in the group' do
+        create(:event, project: project)
+
+        get :show, id: group.to_param, format: :atom
+
+        expect(assigns(:events)).not_to be_empty
+      end
+    end
+  end
+
   describe 'GET #new' do
     context 'when creating subgroups', :nested_groups do
       [true, false].each do |can_create_group_status|

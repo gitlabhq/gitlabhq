@@ -38,7 +38,7 @@ export default {
       tag: element.name,
       revision: element.revision,
       shortRevision: element.short_revision,
-      size: element.size,
+      size: element.total_size,
       layers: element.layers,
       location: element.location,
       createdAt: element.created_at,

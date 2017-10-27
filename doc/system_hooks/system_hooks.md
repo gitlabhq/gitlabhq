@@ -2,6 +2,8 @@
 
 Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `project_rename`, `project_transfer`, `project_update`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
 
+The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
+
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
 > **Note:**
