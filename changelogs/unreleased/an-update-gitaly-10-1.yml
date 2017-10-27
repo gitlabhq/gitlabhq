@@ -1,0 +1,5 @@
+---
+title: Update gitaly in Gitlab 10.1 to 0.43.1 for temp file cleanup
+merge_request: 15055
+author:
+type: fixed
