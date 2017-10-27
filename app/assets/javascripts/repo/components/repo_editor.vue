@@ -74,7 +74,7 @@ export default {
   },
   watch: {
     activeFile(oldVal, newVal) {
-      if (!newVal.active) {
+      if (newVal && !newVal.active) {
         this.initMonaco();
       }
     },

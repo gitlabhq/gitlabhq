@@ -3,6 +3,7 @@ import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 import {
+  findEntry,
   pushState,
   setPageTitle,
   createTemp,
@@ -88,11 +89,16 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name }) => {
     changed: true,
   });
 
+  if (findEntry(tree, 'blob', file.name)) return;
+
   commit(types.CREATE_TMP_FILE, {
     parent: tree,
     file,
   });
   commit(types.TOGGLE_FILE_OPEN, file);
   dispatch('setFileActive', file);
-  dispatch('toggleEditMode', true);
+
+  if (!state.editMode) {
+    dispatch('toggleEditMode', true);
+  }
 };

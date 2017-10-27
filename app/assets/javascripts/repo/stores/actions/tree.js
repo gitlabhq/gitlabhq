@@ -76,7 +76,7 @@ export const clickedTreeRow = ({ commit, dispatch }, row) => {
 
 export const createTempTree = ({ state, commit, dispatch }, name) => {
   let tree = state;
-  const dirNames = name.replace(`${state.path}/`, '').split('/');
+  const dirNames = name.replace(new RegExp(`^${state.path}/`), '').split('/');
 
   dirNames.forEach((dirName) => {
     const foundEntry = findEntry(tree, 'tree', dirName);
@@ -101,8 +101,10 @@ export const createTempTree = ({ state, commit, dispatch }, name) => {
     }
   });
 
-  dispatch('createTempFile', {
-    tree,
-    name: '.gitkeep',
-  });
+  if (tree.tempFile) {
+    dispatch('createTempFile', {
+      tree,
+      name: '.gitkeep',
+    });
+  }
 };

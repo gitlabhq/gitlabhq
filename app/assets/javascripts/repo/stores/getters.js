@@ -15,11 +15,7 @@ export const changedFiles = (state) => {
   return files.filter(file => file.changed);
 };
 
-export const activeFile = (state) => {
-  const openedFiles = state.openFiles;
-
-  return openedFiles.find(file => file.active);
-};
+export const activeFile = state => state.openFiles.find(file => file.active);
 
 export const activeFileExtension = (state) => {
   const file = activeFile(state);

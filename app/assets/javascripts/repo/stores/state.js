@@ -1,4 +1,4 @@
-export default {
+export default () => ({
   project: {
     id: 0,
     name: '',
@@ -20,4 +20,4 @@ export default {
   openFiles: [],
   parentTreeUrl: '',
   previousUrl: '',
-};
+});

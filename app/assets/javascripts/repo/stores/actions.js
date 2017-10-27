@@ -2,9 +2,8 @@ import Vue from 'vue';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
-import { visitUrl } from '../../lib/utils/url_utility';
 
-export const redirectToUrl = url => visitUrl(url);
+export const redirectToUrl = url => gl.utils.visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
@@ -26,7 +25,7 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', { file }));
 };
 
-export const toggleEditMode = ({ commit, getters, dispatch }, force = false) => {
+export const toggleEditMode = ({ state, commit, getters, dispatch }, force = false) => {
   const changedFiles = getters.changedFiles;
 
   if (changedFiles.length && !force) {
@@ -35,7 +34,10 @@ export const toggleEditMode = ({ commit, getters, dispatch }, force = false) => 
     commit(types.TOGGLE_EDIT_MODE);
     commit(types.TOGGLE_DISCARD_POPUP, false);
     dispatch('toggleBlobView');
-    dispatch('discardAllChanges');
+
+    if (!state.editMode) {
+      dispatch('discardAllChanges');
+    }
   }
 };
 
@@ -111,9 +113,12 @@ export const popHistoryState = ({ state, dispatch, getters }) => {
 export const scrollToTab = () => {
   Vue.nextTick(() => {
     const tabs = document.getElementById('tabs');
-    const tabEl = tabs.querySelector('.active');
 
-    tabs.scrollLeft = tabEl.offsetLeft;
+    if (tabs) {
+      const tabEl = tabs.querySelector('.active');
+
+      tabs.scrollLeft = tabEl.offsetLeft;
+    }
   });
 };
 
