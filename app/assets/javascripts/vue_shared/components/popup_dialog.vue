@@ -104,26 +104,22 @@ export default {
             <p>{{this.text}}</p>
           </slot>
         </div>
-        <slot name="footer">
-          <div class="modal-footer" v-if="!hideFooter">
-            <button
-              type="button"
-              class="btn btn-default pull-left"
-              @click="close"
-            >
-                Cancel
-            </button>
-            <button
-              type="button"
-              class="btn pull-right"
-              :disabled="submitDisabled"
-              :class="btnKindClass"
-              @click="emitSubmit(true)"
-            >
-                {{primaryButtonLabel}}
-            </button>
-          </div>
-        </slot>
+        <div class="modal-footer" v-if="!hideFooter">
+          <button
+            type="button"
+            class="btn pull-left"
+            :class="btnCancelKindClass"
+            @click="close">
+            {{ closeButtonLabel }}
+          </button>
+          <button
+            type="button"
+            class="btn pull-right"
+            :class="btnKindClass"
+            @click="emitSubmit(true)">
+            {{ primaryButtonLabel }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
