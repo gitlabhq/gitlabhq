@@ -74,10 +74,6 @@ describe('User Avatar Link Component', function () {
       expect(this.userAvatarLink.$el.querySelector('img').dataset.originalTitle).toEqual('');
     });
 
-    it('should render <span> as a child element', function () {
-      expect(this.userAvatarLink.$el.querySelector('span')).toBeDefined();
-    });
-
     it('should render username prop in <span>', function () {
       expect(this.userAvatarLink.$el.querySelector('span').innerText.trim()).toEqual(this.propsData.username);
     });
