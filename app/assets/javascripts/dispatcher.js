@@ -265,7 +265,8 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:compare:show':
           new Diff();
-          initChangesDropdown();
+          const paddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':

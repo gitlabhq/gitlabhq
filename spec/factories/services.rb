@@ -38,6 +38,8 @@ FactoryGirl.define do
     active true
     properties(
       url: 'https://jira.example.com',
+      username: 'jira_user',
+      password: 'my-secret-password',
       project_key: 'jira-key'
     )
   end

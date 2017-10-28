@@ -46,6 +46,10 @@ export default {
     dialogSubmitted(status) {
       this.toggleDialogOpen(false);
       this.dialog.status = status;
+
+      // remove tmp files
+      Helper.removeAllTmpFiles('openedFiles');
+      Helper.removeAllTmpFiles('files');
     },
     toggleBlobView: Store.toggleBlobView,
     createNewBranch(branch) {

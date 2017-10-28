@@ -3,6 +3,15 @@ import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
 import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoFileButtons', () => {
+  const activeFile = {
+    extension: 'md',
+    url: 'url',
+    raw_path: 'raw_path',
+    blame_path: 'blame_path',
+    commits_path: 'commits_path',
+    permalink: 'permalink',
+  };
+
   function createComponent() {
     const RepoFileButtons = Vue.extend(repoFileButtons);
 
@@ -14,14 +23,6 @@ describe('RepoFileButtons', () => {
   });
 
   it('renders Raw, Blame, History, Permalink and Preview toggle', () => {
-    const activeFile = {
-      extension: 'md',
-      url: 'url',
-      raw_path: 'raw_path',
-      blame_path: 'blame_path',
-      commits_path: 'commits_path',
-      permalink: 'permalink',
-    };
     const activeFileLabel = 'activeFileLabel';
     RepoStore.openedFiles = new Array(1);
     RepoStore.activeFile = activeFile;
@@ -34,7 +35,6 @@ describe('RepoFileButtons', () => {
     const blame = vm.$el.querySelector('.blame');
     const history = vm.$el.querySelector('.history');
 
-    expect(vm.$el.id).toEqual('repo-file-buttons');
     expect(raw.href).toMatch(`/${activeFile.raw_path}`);
     expect(raw.textContent.trim()).toEqual('Raw');
     expect(blame.href).toMatch(`/${activeFile.blame_path}`);
@@ -46,10 +46,6 @@ describe('RepoFileButtons', () => {
   });
 
   it('triggers rawPreviewToggle on preview click', () => {
-    const activeFile = {
-      extension: 'md',
-      url: 'url',
-    };
     RepoStore.openedFiles = new Array(1);
     RepoStore.activeFile = activeFile;
     RepoStore.editMode = true;
@@ -65,10 +61,7 @@ describe('RepoFileButtons', () => {
   });
 
   it('does not render preview toggle if not canPreview', () => {
-    const activeFile = {
-      extension: 'abcd',
-      url: 'url',
-    };
+    activeFile.extension = 'js';
     RepoStore.openedFiles = new Array(1);
     RepoStore.activeFile = activeFile;
 

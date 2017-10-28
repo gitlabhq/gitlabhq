@@ -7,4 +7,5 @@
                blob_url: namespace_project_blob_path(project.namespace, project, '{{branch}}'),
                new_mr_template_url: namespace_project_new_merge_request_path(project.namespace, project, merge_request: { source_branch: '{{source_branch}}' }),
                can_commit: (!!can_push_branch?(project, @ref)).to_s,
-               on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s } }
+               on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s,
+               current_path: @path } }

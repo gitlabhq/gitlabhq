@@ -8,6 +8,7 @@ module Gitlab
           { name: name, email: email, message: message }
         end
       end
+      PageBlob = Struct.new(:name)
 
       def self.default_ref
         'master'
@@ -80,7 +81,15 @@ module Gitlab
       end
 
       def preview_slug(title, format)
-        gollum_wiki.preview_page(title, '', format).url_path
+        # Adapted from gollum gem (Gollum::Wiki#preview_page) to avoid
+        # using Rugged through a Gollum::Wiki instance
+        page_class = Gollum::Page
+        page = page_class.new(nil)
+        ext = page_class.format_to_ext(format.to_sym)
+        name = page_class.cname(title) + '.' + ext
+        blob = PageBlob.new(name)
+        page.populate(blob)
+        page.url_path
       end
 
       private

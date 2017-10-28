@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-18 11:13+0200\n"
-"PO-Revision-Date: 2017-10-18 11:13+0200\n"
+"POT-Creation-Date: 2017-10-22 16:40+0300\n"
+"PO-Revision-Date: 2017-10-22 16:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -113,6 +113,9 @@ msgid "Add new directory"
 msgstr ""
 
 msgid "AdminHealthPageLink|health page"
+msgstr ""
+
+msgid "Advanced settings"
 msgstr ""
 
 msgid "All"
@@ -561,7 +564,7 @@ msgstr ""
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
 msgstr ""
 
-msgid "ClusterIntegration|Save"
+msgid "ClusterIntegration|See and edit the details for your cluster"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your cluster"
@@ -1692,6 +1695,9 @@ msgid "Revert this merge request"
 msgstr ""
 
 msgid "SSH Keys"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 msgid "Save changes"

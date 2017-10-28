@@ -1165,5 +1165,22 @@ module API
       expose :key
       expose :value
     end
+
+    class PagesDomainCertificate < Grape::Entity
+      expose :subject
+      expose :expired?, as: :expired
+      expose :certificate
+      expose :certificate_text
+    end
+
+    class PagesDomain < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+             if: ->(pages_domain, _) { pages_domain.certificate? },
+             using: PagesDomainCertificate do |pages_domain|
+        pages_domain
+      end
+    end
   end
 end

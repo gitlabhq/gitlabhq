@@ -16,7 +16,7 @@ const RepoEditor = {
   },
 
   mounted() {
-    Service.getRaw(this.activeFile.raw_path)
+    Service.getRaw(this.activeFile)
       .then((rawResponse) => {
         Store.blobRaw = rawResponse.data;
         Store.activeFile.plain = rawResponse.data;

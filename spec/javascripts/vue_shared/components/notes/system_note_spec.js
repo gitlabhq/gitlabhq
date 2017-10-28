@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueSystemNote from '~/notes/components/issue_system_note.vue';
+import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import store from '~/notes/stores';
 
 describe('issue system note', () => {
@@ -31,6 +31,10 @@ describe('issue system note', () => {
       store,
       propsData: props,
     }).$mount();
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   it('should render a list item with correct id', () => {
