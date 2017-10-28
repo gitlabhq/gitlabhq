@@ -16,6 +16,11 @@ FactoryGirl.define do
       user.ensure_rss_token
     end
 
+    trait :unconfirmed do
+      confirmed_at { nil }
+      confirmation_token { 'token_1' }
+    end
+
     trait :admin do
       admin true
     end

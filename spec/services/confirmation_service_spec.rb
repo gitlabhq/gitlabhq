@@ -9,7 +9,7 @@ describe ConfirmationService do
     context 'confirming secondary email' do
       it 'removes secondary email duplicates' do
         user.emails.create(email: 'new@email.com', confirmation_token: 'token_1')
-        user2.emails.create(email: 'new@email.com')
+        user2.emails.create(email: 'New@email.com')
         
         expect(Email.where(email: 'new@email.com').count).to eq 2
 
@@ -39,7 +39,7 @@ describe ConfirmationService do
 
       it 'does not confirm with a confirmed secondary with same email' do
         user.emails.create(email: 'new@email.com', confirmation_token: 'token_1')
-        user2.emails.create(email: 'new@email.com', confirmed_at: Time.now)
+        user2.emails.create(email: 'New@email.com', confirmed_at: Time.now)
         
         expect(Email.confirmed.count).to eq 1
 

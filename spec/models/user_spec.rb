@@ -271,12 +271,30 @@ describe User do
         it 'email should be allowed if it is not confirmed yet' do
           create(:email, email: 'secondary@example.com')
           user = build(:user, email: 'secondary@example.com')
+
           expect(user).to be_valid
         end
 
         it 'email should not be allowed if it is confirmed' do
           create(:email, :confirmed, email: 'secondary@example.com')
           user = build(:user, email: 'secondary@example.com')
+
+          expect(user).not_to be_valid
+        end
+      end
+
+      context 'email registered by another user' do
+        it 'email should not be allowed if it is unconfirmed' do
+          create(:user, :unconfirmed, email: 'NewUser@example.com')
+          user = build(:user, email: 'newuser@example.com')
+
+          expect(user).not_to be_valid
+        end
+
+        it 'email should not be allowed if it is confirmed' do
+          create(:user, email: 'NewUser@example.com')
+          user = build(:user, email: 'newuser@example.com')
+
           expect(user).not_to be_valid
         end
       end

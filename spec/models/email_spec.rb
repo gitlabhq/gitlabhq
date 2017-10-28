@@ -12,27 +12,33 @@ describe Email do
     it 'can not add the same email to same user' do
       create(:email, email: 'new@email.com', user: user1)
 
-      expect(build(:email, email: 'new@email.com', user: user1)).not_to be_valid
+      expect(build(:email, email: 'New@email.com', user: user1)).not_to be_valid
     end
 
-    it 'can add the same email for different users' do
-      create(:email, email: 'new@email.com', user: user1)
+    context 'secondary already added by another user' do
+      it 'does not add if the other one is already confirmed' do
+        create(:email, :confirmed, email: 'new@email.com', user: user1)
 
-      expect(build(:email, email: 'new@email.com', user: user2)).to be_valid
+        expect(build(:email, email: 'New@email.com', user: user2)).not_to be_valid
+      end
+
+      it 'adds if the other one is not confirmed' do
+        create(:email, email: 'new@email.com', user: user1)
+
+        expect(build(:email, email: 'New@email.com', user: user2)).to be_valid
+      end
     end
 
-    it 'does not add duplicate email if the other one is already confirmed' do
-      create(:email, :confirmed, email: 'new@email.com', user: user1)
+    context 'user email already registered' do
+      it 'does not add if user email is confirmed' do
+        expect(build(:email, email: user1.email, user: user2)).not_to be_valid
+      end
 
-      expect(build(:email, email: 'new@email.com', user: user2)).not_to be_valid
-    end
+      it 'adds if user email is unconfirmed' do
+        user1 = create(:user, :unconfirmed)
 
-    it 'adds if another user has same email and not confirmed' do
-      expect(build(:email, email: user1.email, user: user2)).not_to be_valid
-
-      user1.update_attribute(:confirmed_at, nil)
-
-      expect(build(:email, email: user1.email, user: user2)).to be_valid
+        expect(build(:email, email: user1.email, user: user2)).to be_valid
+      end
     end
   end
 
