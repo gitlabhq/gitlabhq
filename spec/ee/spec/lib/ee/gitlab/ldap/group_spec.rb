@@ -163,6 +163,25 @@ describe EE::Gitlab::LDAP::Group do
           .to receive(:warn).with(/Received invalid member/)
         expect(group.member_dns).not_to include('invalid,ou=user,ou=groups,dc=example,dc=com')
       end
+
+      it 'resolves the correct member_dns when the LDAP base is not normalized' do
+        # E.g. When `base` has uppercase characters and extraneous spaces.
+        # Stub looks different because `LDAP#Config#base` must be exercised.
+        stub_ldap_config(options: { 'base' => 'DC=example, DC= com' })
+
+        nested_groups = [group2_entry]
+        stub_ldap_adapter_nested_groups(group.dn, nested_groups, adapter)
+        stub_ldap_adapter_nested_groups(group2_entry.dn, [], adapter)
+
+        expect(group.member_dns).to match_array(
+          %w(
+            uid=user1,ou=users,dc=example,dc=com
+            uid=user2,ou=users,dc=example,dc=com
+            uid=user3,ou=users,dc=example,dc=com
+            uid=user4,ou=users,dc=example,dc=com
+          )
+        )
+      end
     end
 
     it 'removes extraneous spaces from DNs' do
