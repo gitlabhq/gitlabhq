@@ -438,7 +438,7 @@ class User < ActiveRecord::Base
   end
 
   def skip_confirmation=(bool)
-    # skip_confirmation! if bool
+    skip_confirmation! if bool
   end
 
   def generate_reset_token
