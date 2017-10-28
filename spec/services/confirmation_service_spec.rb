@@ -25,7 +25,7 @@ describe ConfirmationService do
         user.update_attribute(:confirmed_at, nil)
         user2.emails.create(email: user.email, confirmation_token: 'token_1')
         user.update_attribute(:confirmed_at, Time.now)
-        
+
         expect(User.confirmed.count).to eq 2
         expect(Email.confirmed.count).to eq 0
 
@@ -40,7 +40,7 @@ describe ConfirmationService do
       it 'does not confirm with a confirmed secondary with same email' do
         user.emails.create(email: 'new@email.com', confirmation_token: 'token_1')
         user2.emails.create(email: 'New@email.com', confirmed_at: Time.now)
-        
+
         expect(Email.confirmed.count).to eq 1
 
         service  = described_class.new(Email, 'token_1')
@@ -50,12 +50,12 @@ describe ConfirmationService do
         expect(Email.confirmed.count).to eq 1
       end
     end
-    
+
     context 'confirming user email' do
       it 'removes secondary email duplicates' do
         user.update_attributes(confirmed_at: nil, confirmation_token: 'token_1')
         user2.emails.create(email: user.email)
-        
+
         service  = described_class.new(User, 'token_1')
         resource = service.execute
 

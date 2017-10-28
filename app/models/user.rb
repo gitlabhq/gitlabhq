@@ -282,6 +282,30 @@ class User < ActiveRecord::Base
       User.find_by_sql([sql, { email: email }]).first
     end
 
+    # Find a User by their primary email or any associated secondary email
+    # if there are multiple unconfirmed emails, return the user that first
+    # created that email
+    def find_by_any_email_created_first(email)
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email AND confirmed_at IS NOT NULL
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email AND confirmed_at IS NOT NULL
+      )
+      LIMIT 1;'
+
+      item = User.find_by_sql([sql, { email: email }]).first
+
+      unless item
+        users  = User.where(email: email)
+        emails = Email.where(email: email)
+        item   = (users + emails).sort {|a, b| a.created_at <=> b.created_at}.first
+        item   = item.user if item.is_a?(Email)
+      end
+      item
+    end
+
     def filter(filter_name)
       case filter_name
       when 'admins'

@@ -8,7 +8,7 @@ describe Email do
     it_behaves_like 'an object with email-formated attributes', :email do
       subject { build(:email) }
     end
-    
+
     it 'can not add the same email to same user' do
       create(:email, email: 'new@email.com', user: user1)
 

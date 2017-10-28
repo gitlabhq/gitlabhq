@@ -21,7 +21,7 @@ describe Commit do
 
     it 'caches the author', :request_store do
       user = create(:user, email: commit.author_email)
-      expect(User).to receive(:find_by_any_email).and_call_original
+      expect(User).to receive(:find_by_any_email_created_first).and_call_original
 
       expect(commit.author).to eq(user)
       key = "Commit:author:#{commit.author_email.downcase}"

@@ -266,7 +266,7 @@ describe User do
           expect(user).to be_valid
         end
       end
-      
+
       context 'email added by another user as a secondary' do
         it 'email should be allowed if it is not confirmed yet' do
           create(:email, email: 'secondary@example.com')
@@ -868,6 +868,41 @@ describe User do
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+  end
+
+  describe '.find_by_any_email_created_first' do
+    it 'finds by primary email' do
+      user = create(:user, email: 'foo@example.com')
+
+      expect(described_class.find_by_any_email_created_first(user.email)).to eq user
+    end
+
+    it 'finds by secondary email' do
+      email = create(:email, email: 'foo@example.com')
+      user  = email.user
+
+      expect(described_class.find_by_any_email_created_first(email.email)).to eq user
+    end
+
+    it 'finds earliest unconfirmed email' do
+      user1 = create(:user, :unconfirmed, email: 'foo@example.com')
+      user2 = create(:user)
+      email = create(:email, email: 'foo@example.com', user: user2, created_at: 3.days.ago)
+      
+      expect(described_class.find_by_any_email_created_first(email.email)).to eq user2
+    end
+
+    it 'finds only confirmed secondary email' do
+      user1 = create(:user, :unconfirmed, email: 'foo@example.com', created_at: 3.days.ago)
+      user2 = create(:user)
+      email = create(:email, :confirmed, email: 'foo@example.com', user: user2)
+      
+      expect(described_class.find_by_any_email_created_first(email.email)).to eq user2
+    end
+
+    it 'returns nil when nothing found' do
+      expect(described_class.find_by_any_email_created_first('')).to be_nil
     end
   end
 
