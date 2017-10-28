@@ -1,0 +1,5 @@
+---
+title: Fix LDAP group sync for nested groups e.g. when base has uppercase or extraneous spaces
+merge_request: 3217
+author:
+type: fixed
