@@ -213,6 +213,14 @@ class Milestone < ActiveRecord::Base
     project_id.present?
   end
 
+  def total_time_spent
+    issues.joins(:timelogs).sum(:time_spent) + merge_requests.joins(:timelogs).sum(:time_spent)
+  end
+
+  def human_total_time_spent
+    Gitlab::TimeTrackingFormatter.output(total_time_spent) || 0
+  end
+
   private
 
   # Milestone titles must be unique across project milestones and group milestones
