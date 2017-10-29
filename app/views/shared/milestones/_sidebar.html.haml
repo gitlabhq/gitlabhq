@@ -85,6 +85,16 @@
               Closed:
               = milestone.issues_visible_to_user(current_user).closed.count
 
+    .block.time_spent
+      .sidebar-collapsed-icon
+        %strong
+          = custom_icon('icon_clock_o')
+        %span= milestone.human_total_time_spent
+      .title.hide-collapsed
+        Total time spent
+      .value.hide-collapsed
+        = milestone.human_total_time_spent
+
     .block.merge-requests
       .sidebar-collapsed-icon
         %strong
