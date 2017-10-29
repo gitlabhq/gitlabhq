@@ -155,7 +155,7 @@ describe 'User comments on a diff', :js do
         find('.more-actions').click
         find('.more-actions .dropdown-menu li', match: :first)
 
-        find('.js-note-delete').click
+        accept_confirm { find('.js-note-delete').click }
       end
 
       page.within('.merge-request-tabs') do
