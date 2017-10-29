@@ -18,7 +18,7 @@ feature 'RavenJS' do
   end
 
   def has_requested_raven
-    page.all('script', visible: false).one? do | elm |
+    page.all('script', visible: false).one? do |elm|
       elm[:src] =~ /#{raven_path}$/
     end
   end
