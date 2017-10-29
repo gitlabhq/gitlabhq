@@ -6,15 +6,6 @@ module Clusters
 
     belongs_to :user
 
-    enum platform_type: {
-      kubernetes: 1
-    }
-
-    enum provider_type: {
-      user: 0,
-      gcp: 1
-    }
-
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'
 
@@ -32,6 +23,18 @@ module Clusters
     delegate :status_name, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
 
+    enum platform_type: {
+      kubernetes: 1
+    }
+
+    enum provider_type: {
+      user: 0,
+      gcp: 1
+    }
+
+    scope :enabled, -> { where(enabled: true) }
+    scope :disabled, -> { where(enabled: false) }
+
     def provider
       return provider_gcp if gcp?
     end
@@ -40,15 +43,12 @@ module Clusters
       return platform_kubernetes if kubernetes?
     end
 
-    def project
-      first_project
-    end
-
     def first_project
       return @first_project if defined?(@first_project)
 
       @first_project = projects.first
     end
+    alias_method :project, :first_project
 
     private
 

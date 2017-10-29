@@ -55,7 +55,8 @@ module Clusters
 
         before_transition any => [:creating] do |provider, transition|
           operation_id = transition.args.first
-          provider.operation_id = operation_id if operation_id
+          raise 'operation_id is required' unless operation_id
+          provider.operation_id = operation_id
         end
 
         before_transition any => [:errored] do |provider, transition|

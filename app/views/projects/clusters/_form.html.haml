@@ -35,7 +35,7 @@
         = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
           .form-group
           = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
-          = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: @cluster.platform_kubernetes.default_namespace(@project)
+          = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project)
 
         .form-group
           = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-save'

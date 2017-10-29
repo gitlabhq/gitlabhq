@@ -8,7 +8,7 @@ class ClusterNameValidator < ActiveModel::EachValidator
         record.errors.add(attribute, " has to be present")
       end
     elsif record.gcp?
-      if record.persisted? && record.name != value
+      if record.persisted? && record.name_changed?
         record.errors.add(attribute, " can not be changed because it's synchronized with provider")
       end
 
