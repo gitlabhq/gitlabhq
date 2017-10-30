@@ -72,10 +72,10 @@ class ImporterStatus {
 
 // eslint-disable-next-line consistent-return
 export default function initImporterStatus() {
-  const importerStatus = $('.js-importer-status');
-  const data = importerStatus.dataset;
+  const importerStatus = document.querySelector('.js-importer-status');
 
-  if (importerStatus.length) {
+  if (importerStatus) {
+    const data = importerStatus.dataset;
     return new ImporterStatus(data.jobsImportPath, data.importPath);
   }
 }
