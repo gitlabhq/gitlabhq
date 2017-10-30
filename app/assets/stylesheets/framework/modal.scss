@@ -42,3 +42,11 @@ body.modal-open {
     width: 98%;
   }
 }
+
+.modal.popup-dialog {
+  display: block;
+}
+
+.modal-body {
+  background-color: $modal-body-bg;
+}
