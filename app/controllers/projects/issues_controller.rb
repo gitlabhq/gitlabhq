@@ -16,7 +16,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:update, :move]
+  before_action :authorize_update_issue!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -60,6 +60,10 @@ class Projects::IssuesController < Projects::ApplicationController
     @merge_request_to_resolve_discussions_of = service.merge_request_to_resolve_discussions_of
     @discussion_to_resolve = service.discussions_to_resolve.first if params[:discussion_to_resolve]
 
+    respond_with(@issue)
+  end
+
+  def edit
     respond_with(@issue)
   end
 
@@ -122,6 +126,10 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
 
     respond_to do |format|
+      format.html do
+        recaptcha_check_with_fallback { render :edit }
+      end
+
       format.json do
         render_issue_json
       end

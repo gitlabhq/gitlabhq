@@ -57,6 +57,10 @@ class HelpController < ApplicationController
   def shortcuts
   end
 
+  def instance_configuration
+    @instance_configuration = InstanceConfiguration.new
+  end
+
   def ui
     @user = User.new(id: 0, name: 'John Doe', username: '@johndoe')
   end
