@@ -142,7 +142,7 @@ export default class CreateMergeRequestDropdown {
     this.dropdownToggle.removeAttribute('disabled');
   }
 
-  findByValue(objects, ref, returnFirstMatch = false) {
+  static findByValue(objects, ref, returnFirstMatch = false) {
     if (!objects || !objects.length) return false;
     if (objects.indexOf(ref) > -1) return ref;
     if (returnFirstMatch) return objects[0];
@@ -195,9 +195,9 @@ export default class CreateMergeRequestDropdown {
       let result;
 
       if (target === 'branch') {
-        result = this.findByValue(branches, ref);
+        result = CreateMergeRequestDropdown.findByValue(branches, ref);
       } else {
-        result = this.findByValue(branches, ref, true) || this.findByValue(tags, ref, true);
+        result = CreateMergeRequestDropdown.findByValue(branches, ref, true) || CreateMergeRequestDropdown.findByValue(tags, ref, true);
       }
 
       return this.updateInputState(target, ref, result);
@@ -419,11 +419,11 @@ export default class CreateMergeRequestDropdown {
     const regexps = {
       branch: {
         createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
-        createMrPath: new RegExp('(branch_name=)(.+?)(?=&ref)')
+        createMrPath: new RegExp('(branch_name=)(.+?)(?=&ref)'),
       },
       ref: {
         createBranchPath: new RegExp('(ref=)(.+?)$'),
-        createMrPath: new RegExp('(ref=)(.+?)$')
+        createMrPath: new RegExp('(ref=)(.+?)$'),
       },
     };
 

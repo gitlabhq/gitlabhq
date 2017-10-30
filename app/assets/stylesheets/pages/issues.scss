@@ -196,7 +196,7 @@ ul.related-merge-requests > li {
   .ref-message {
     display: inline-block;
 
-    &:first-letter {
+    &::first-letter {
       text-transform: capitalize;
     }
   }
