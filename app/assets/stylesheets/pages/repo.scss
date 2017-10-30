@@ -7,6 +7,19 @@
   background: $black-transparent;
 }
 
+.modal.popup-dialog {
+  display: block;
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
+}
+
 .project-refs-form,
 .project-refs-target-form {
   display: inline-block;
