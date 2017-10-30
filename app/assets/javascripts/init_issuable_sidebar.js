@@ -2,7 +2,7 @@
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global WeightSelect */
-/* global IssuableContext */
+import IssuableContext from './issuable_context';
 /* global Sidebar */
 
 import DueDateSelectors from './due_date_select';

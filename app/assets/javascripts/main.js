@@ -57,9 +57,7 @@ import './gl_field_error';
 import './gl_field_errors';
 import './gl_form';
 import './header';
-import './importer_status';
-import './issuable_index';
-import './issuable_context';
+import initImporterStatus from './importer_status';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
@@ -149,6 +147,7 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
+  initImporterStatus();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
