@@ -396,7 +396,7 @@ module API
     def sudo!
       return unless sudo_identifier
 
-      raise UnauthorizedError unless initial_current_user
+      unauthorized! unless initial_current_user
 
       unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
@@ -409,10 +409,7 @@ module API
       validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
-
-      unless sudoed_user
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
       @current_user = sudoed_user
     end
