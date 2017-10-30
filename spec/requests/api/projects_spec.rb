@@ -50,6 +50,12 @@ describe API::Projects do
         expect(json_response).to be_an Array
         expect(json_response.map { |p| p['id'] }).to contain_exactly(*projects.map(&:id))
       end
+
+      it 'returns the proper security headers' do
+        get api('/projects', current_user), filter
+
+        expect(response).to include_security_headers
+      end
     end
 
     shared_examples_for 'projects response without N + 1 queries' do
