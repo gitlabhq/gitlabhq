@@ -13,7 +13,7 @@ module Clusters
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes'
 
     accepts_nested_attributes_for :provider_gcp
-    accepts_nested_attributes_for :platform_kubernetes
+    accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update

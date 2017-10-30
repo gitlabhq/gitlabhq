@@ -111,9 +111,6 @@ module Clusters
         kubeclient = build_kubeclient!
 
         kubeclient.get_secrets.as_json
-      rescue KubeException => err
-        raise err unless err.error_code == 404
-        []
       end
 
       # Returns a hash of all pods in the namespace

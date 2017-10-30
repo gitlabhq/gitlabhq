@@ -3,6 +3,10 @@ FactoryGirl.define do
     cluster
     gcp_project_id 'test-gcp-project'
 
+    trait :scheduled do
+      access_token 'access_token_123'
+    end
+
     trait :creating do
       access_token 'access_token_123'
 

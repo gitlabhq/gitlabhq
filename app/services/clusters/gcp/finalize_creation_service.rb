@@ -14,9 +14,11 @@ module Clusters
           provider.make_created!
         end
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        cluster.make_errored!("Failed to request to CloudPlatform; #{e.message}")
+        provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
+      rescue KubeException => e
+        provider.make_errored!("Failed to request to Kubernetes; #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
-        cluster.make_errored!("Failed to configure GKE Cluster: #{e.message}")
+        provider.make_errored!("Failed to configure GKE Cluster: #{e.message}")
       end
 
       private
@@ -41,6 +43,8 @@ module Clusters
             return Base64.decode64(token_base64) if token_base64
           end
         end
+
+        nil
       end
 
       def gke_cluster
