@@ -5,18 +5,26 @@ describe 'Rack Attack global throttles' do
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
+  # Start with really high limits and override them with low limits to ensure
+  # the right settings are being exercised
+  let(:settings_to_set) do
+    {
+      throttle_unauthenticated_requests_per_period: 100,
+      throttle_unauthenticated_period_in_seconds: 1,
+      throttle_authenticated_api_requests_per_period: 100,
+      throttle_authenticated_api_period_in_seconds: 1,
+      throttle_authenticated_web_requests_per_period: 100,
+      throttle_authenticated_web_period_in_seconds: 1
+    }
+  end
+
+  let(:requests_per_period) { 1 }
+  let(:period_in_seconds) { 10000 }
+  let(:period) { period_in_seconds.seconds }
+
   before do
     # Instead of test environment's :null_store
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-
-    # Start with really high limits to ensure the right settings are being exercised.
-    # Also note, settings will be saved later.
-    settings.throttle_unauthenticated_requests_per_period = 100
-    settings.throttle_unauthenticated_period_in_seconds = 1
-    settings.throttle_authenticated_api_requests_per_period = 100
-    settings.throttle_authenticated_api_period_in_seconds = 1
-    settings.throttle_authenticated_web_requests_per_period = 100
-    settings.throttle_authenticated_web_period_in_seconds = 1
   end
 
   # Make time-dependent tests deterministic
@@ -29,19 +37,16 @@ describe 'Rack Attack global throttles' do
   # * get_args
   # * other_user_get_args
   shared_examples_for 'rate-limited token-authenticated requests' do
-    let(:requests_per_period) { settings.send(:"#{throttle_setting_prefix}_requests_per_period") }
-    let(:period) { settings.send(:"#{throttle_setting_prefix}_period_in_seconds").seconds }
-
     before do
       # Set low limits
-      settings.send(:"#{throttle_setting_prefix}_requests_per_period=", 1)
-      settings.send(:"#{throttle_setting_prefix}_period_in_seconds=", 10000)
+      settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
+      settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
     end
 
     context 'when the throttle is enabled' do
       before do
-        settings.send(:"#{throttle_setting_prefix}_enabled=", true)
-        settings.save!
+        settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
+        stub_application_setting(settings_to_set)
       end
 
       it 'rejects requests over the rate limit' do
@@ -98,8 +103,8 @@ describe 'Rack Attack global throttles' do
 
     context 'when the throttle is disabled' do
       before do
-        settings.send(:"#{throttle_setting_prefix}_enabled=", false)
-        settings.save!
+        settings_to_set[:"#{throttle_setting_prefix}_enabled"] = false
+        stub_application_setting(settings_to_set)
       end
 
       it 'allows requests over the rate limit' do
@@ -112,19 +117,16 @@ describe 'Rack Attack global throttles' do
   end
 
   describe 'unauthenticated requests' do
-    let(:requests_per_period) { settings.throttle_unauthenticated_requests_per_period }
-    let(:period) { settings.throttle_unauthenticated_period_in_seconds.seconds }
-
     before do
       # Set low limits
-      settings.throttle_unauthenticated_requests_per_period = 1
-      settings.throttle_unauthenticated_period_in_seconds = 10000
+      settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
+      settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
     end
 
     context 'when the throttle is enabled' do
       before do
-        settings.throttle_unauthenticated_enabled = true
-        settings.save!
+        settings_to_set[:throttle_unauthenticated_enabled] = true
+        stub_application_setting(settings_to_set)
       end
 
       it 'rejects requests over the rate limit' do
@@ -172,8 +174,8 @@ describe 'Rack Attack global throttles' do
 
     context 'when the throttle is disabled' do
       before do
-        settings.throttle_unauthenticated_enabled = false
-        settings.save!
+        settings_to_set[:throttle_unauthenticated_enabled] = false
+        stub_application_setting(settings_to_set)
       end
 
       it 'allows requests over the rate limit' do
@@ -186,8 +188,6 @@ describe 'Rack Attack global throttles' do
   end
 
   describe 'API requests authenticated with private token', :api do
-    let(:requests_per_period) { settings.throttle_authenticated_api_requests_per_period }
-    let(:period) { settings.throttle_authenticated_api_period_in_seconds.seconds }
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
@@ -230,8 +230,6 @@ describe 'Rack Attack global throttles' do
   end
 
   describe 'API requests authenticated with OAuth token', :api do
-    let(:requests_per_period) { settings.throttle_authenticated_api_requests_per_period }
-    let(:period) { settings.throttle_authenticated_api_period_in_seconds.seconds }
     let(:user) { create(:user) }
     let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
     let(:token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api") }
@@ -256,8 +254,6 @@ describe 'Rack Attack global throttles' do
   end
 
   describe '"web" (non-API) requests authenticated with RSS token' do
-    let(:requests_per_period) { settings.throttle_authenticated_web_requests_per_period }
-    let(:period) { settings.throttle_authenticated_web_period_in_seconds.seconds }
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
@@ -280,22 +276,20 @@ describe 'Rack Attack global throttles' do
   end
 
   describe 'web requests authenticated with regular login' do
-    let(:requests_per_period) { settings.throttle_authenticated_web_requests_per_period }
-    let(:period) { settings.throttle_authenticated_web_period_in_seconds.seconds }
     let(:user) { create(:user) }
 
     before do
       login_as(user)
 
       # Set low limits
-      settings.throttle_authenticated_web_requests_per_period = 1
-      settings.throttle_authenticated_web_period_in_seconds = 10000
+      settings_to_set[:throttle_authenticated_web_requests_per_period] = requests_per_period
+      settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
     end
 
     context 'when the throttle is enabled' do
       before do
-        settings.throttle_authenticated_web_enabled = true
-        settings.save!
+        settings_to_set[:throttle_authenticated_web_enabled] = true
+        stub_application_setting(settings_to_set)
       end
 
       it 'rejects requests over the rate limit' do
@@ -354,8 +348,8 @@ describe 'Rack Attack global throttles' do
 
     context 'when the throttle is disabled' do
       before do
-        settings.throttle_authenticated_web_enabled = false
-        settings.save!
+        settings_to_set[:throttle_authenticated_web_enabled] = false
+        stub_application_setting(settings_to_set)
       end
 
       it 'allows requests over the rate limit' do
