@@ -126,6 +126,25 @@ sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=db,uploads RAILS_ENV=production
 ```
 
+#### Using Google Cloud Storage
+
+If you want to use Google Cloud Storage to save backups, go to the storage
+settings page, select "Interoperability" and create an access key there.
+Copy "Access Key" and "Secret", fill the configurations in
+`/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_rails['backup_upload_connection'] = {
+  'provider' => 'Google',
+  'google_storage_access_key_id' => 'Access Key',
+  'google_storage_secret_access_key' => 'Secret'
+}
+gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
+```
+
+Make sure you have project and bucket setting up correctly, and run
+`sudo gitlab-ctl reconfigure` after making the changes.
+
 ### Uploading backups to a remote (cloud) storage
 
 Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
