@@ -78,7 +78,7 @@ describe 'Profile > Personal Access Tokens', :js do
 
     it "allows revocation of an active token" do
       visit profile_personal_access_tokens_path
-      click_on "Revoke"
+      accept_confirm { click_on "Revoke" }
 
       expect(page).to have_selector(".settings-message")
       expect(no_personal_access_tokens_message).to have_text("This user has no active Personal Access Tokens.")
@@ -100,7 +100,7 @@ describe 'Profile > Personal Access Tokens', :js do
         errors = ActiveModel::Errors.new(PersonalAccessToken.new).tap { |e| e.add(:name, "cannot be nil") }
         allow_any_instance_of(PersonalAccessToken).to receive(:errors).and_return(errors)
 
-        click_on "Revoke"
+        accept_confirm { click_on "Revoke" }
         expect(active_personal_access_tokens).to have_text(personal_access_token.name)
         expect(page).to have_content("Could not revoke")
       end
