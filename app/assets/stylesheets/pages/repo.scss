@@ -41,7 +41,9 @@
   }
 
   .panel-right {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
     width: 80%;
     height: 100%;
@@ -73,6 +75,7 @@
     }
 
     .blob-viewer-container {
+      -webkit-flex: 1;
       flex: 1;
       overflow: auto;
 

@@ -26,12 +26,14 @@ export default {
     RepoPreview,
   },
   mounted() {
-    const alertMessage = 'Are you sure you want to lose unsaved changes?';
+    const returnValue = 'Are you sure you want to lose unsaved changes?';
     window.onbeforeunload = (e) => {
       if (!this.changedFiles.length) return undefined;
 
-      e.returnValue = alertMessage;
-      return alertMessage;
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
     };
   },
 };

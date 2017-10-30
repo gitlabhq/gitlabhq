@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions } from 'vuex';
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
 
@@ -28,7 +28,7 @@
       ]),
       createEntryInStore() {
         this.createTempEntry({
-          name: this.entryName.replace(new RegExp(`^${this.path}\/`), ''),
+          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
           type: this.type,
         });
 

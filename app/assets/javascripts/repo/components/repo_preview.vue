@@ -8,7 +8,7 @@ export default {
       'activeFile',
     ]),
     renderErrorTooLarge() {
-      return this.activeFile.renderError == 'too_large';
+      return this.activeFile.renderError === 'too_large';
     },
   },
   methods: {

@@ -2,9 +2,6 @@ import Vue from 'vue';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
-import {
-  pushState,
-} from './utils';
 
 export const redirectToUrl = url => gl.utils.visitUrl(url);
 
@@ -118,9 +115,9 @@ export const scrollToTab = () => {
     const tabs = document.getElementById('tabs');
 
     if (tabs) {
-      const tabEl = tabs.querySelector('.active');
+      const tabEl = tabs.querySelector('.active .repo-tab');
 
-      tabs.scrollLeft = tabEl.offsetLeft;
+      tabEl.focus();
     }
   });
 };
