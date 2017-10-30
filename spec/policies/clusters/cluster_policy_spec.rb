@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gcp::ClusterPolicy, :models do
-  set(:project) { create(:project) }
-  set(:cluster) { create(:gcp_cluster, project: project) }
+describe Clusters::ClusterPolicy, :models do
+  let(:cluster) { create(:cluster, :project) }
+  let(:project) { cluster.project }
   let(:user) { create(:user) }
   let(:policy) { described_class.new(user, cluster) }
 
