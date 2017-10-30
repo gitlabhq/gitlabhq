@@ -911,6 +911,7 @@ class Repository
 
   def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
+<<<<<<< HEAD
 
     if branch
       root_ref_sha = commit(root_ref).sha
@@ -922,12 +923,26 @@ class Repository
           ancestor?(branch.target, root_ref_sha)
         end
 
+=======
+
+    if branch
+      root_ref_sha = commit(root_ref).sha
+      same_head = branch.target == root_ref_sha
+      merged =
+        if pre_loaded_merged_branches
+          pre_loaded_merged_branches.include?(branch.name)
+        else
+          ancestor?(branch.target, root_ref_sha)
+        end
+
+>>>>>>> ce-com/master
       !same_head && merged
     else
       nil
     end
   end
 
+<<<<<<< HEAD
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
     fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
@@ -976,6 +991,8 @@ class Repository
     end
   end
 
+=======
+>>>>>>> ce-com/master
   delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)

@@ -6,7 +6,7 @@ import _ from 'underscore';
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
-function UsersSelect(currentUser, els) {
+function UsersSelect(currentUser, els, options = {}) {
   var $els;
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
@@ -19,6 +19,8 @@ function UsersSelect(currentUser, els) {
       this.currentUser = JSON.parse(currentUser);
     }
   }
+
+  const { handleClick } = options;
 
   $els = $(els);
 
@@ -442,6 +444,9 @@ function UsersSelect(currentUser, els) {
           }
           if ($el.closest('.add-issues-modal').length) {
             gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
+          } else if (handleClick) {
+            e.preventDefault();
+            handleClick(user, isMarking);
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
           } else if ($dropdown.hasClass('js-filter-submit')) {

@@ -147,6 +147,16 @@ class DropdownUtils {
     return dataValue !== null;
   }
 
+  static getVisualTokenValues(visualToken) {
+    const tokenName = visualToken && visualToken.querySelector('.name').textContent.trim();
+    let tokenValue = visualToken && visualToken.querySelector('.value') && visualToken.querySelector('.value').textContent.trim();
+    if (tokenName === 'label' && tokenValue) {
+      // remove leading symbol and wrapping quotes
+      tokenValue = tokenValue.replace(/^~("|')?(.*)/, '$2').replace(/("|')$/, '');
+    }
+    return { tokenName, tokenValue };
+  }
+
   // Determines the full search query (visual tokens + input)
   static getSearchQuery(untilInput = false) {
     const container = FilteredSearchContainer.container;
