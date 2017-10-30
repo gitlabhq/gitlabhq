@@ -2,6 +2,7 @@
 import Flash from './flash';
 import DropLab from './droplab/drop_lab';
 import ISetter from './droplab/plugins/input_setter';
+import { __, sprintf } from './locale';
 
 // Todo: Remove this when fixing issue in input_setter plugin
 const InputSetter = Object.assign({}, ISetter);
@@ -362,7 +363,7 @@ export default class CreateMergeRequestDropdown {
     this.removeMessage(target);
     input.classList.add('gl-field-success-outline');
     message.classList.add('gl-field-success-message');
-    message.textContent = `${text} is available`;
+    message.textContent = sprintf(__('%{text} is available'), { text });
     message.classList.remove('hide');
   }
 
@@ -380,7 +381,7 @@ export default class CreateMergeRequestDropdown {
 
     this.removeMessage(target);
     message.classList.add('gl-field-hint');
-    message.textContent = `Checking ${text} availability...`;
+    message.textContent = sprintf(__('Checking %{text} availability...'), { text });
     message.classList.remove('hide');
   }
 
@@ -392,11 +393,11 @@ export default class CreateMergeRequestDropdown {
     if (target === 'branch') {
       input = this.branchInput;
       message = this.branchMessage;
-      text = 'Branch is already taken';
+      text = __('Branch is already taken');
     } else {
       input = this.refInput;
       message = this.refMessage;
-      text = 'Source is not available';
+      text = __('Source is not available');
     }
 
     this.removeMessage(target);
