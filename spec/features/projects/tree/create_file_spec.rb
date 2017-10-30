@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 feature 'Multi-file editor new file', :js do
+  include CookieHelper
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -10,7 +11,7 @@ feature 'Multi-file editor new file', :js do
     project.add_master(user)
     sign_in(user)
 
-    page.driver.set_cookie('new_repo', 'true')
+    set_cookie('new_repo', 'true')
 
     visit project_tree_path(project, :master)
 
