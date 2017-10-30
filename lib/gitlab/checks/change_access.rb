@@ -213,7 +213,7 @@ module Gitlab
           return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
         end
 
-        unless push_rule.author_allowed?(commit.committer_email, user_access.user.email)
+        unless push_rule.committer_allowed?(commit.committer, user_access.user)
           return "You can only push your own commits to this repository"
         end
 

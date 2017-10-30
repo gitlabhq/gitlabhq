@@ -352,4 +352,6 @@ describe MergeRequests::MergeService do
       end
     end
   end
+
+  context ''
 end

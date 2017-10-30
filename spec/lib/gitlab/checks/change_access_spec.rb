@@ -456,6 +456,13 @@ describe Gitlab::Checks::ChangeAccess do
           it 'does not return an error' do
             expect { subject }.not_to raise_error
           end
+
+          it 'allows the commit when they were done with another email that belongs to the current user' do
+            allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+            user.emails.create(email: 'secondary_email@user.com')
+
+            expect { subject }.not_to raise_error
+          end
         end
 
         context 'with a commit from a different user' do
