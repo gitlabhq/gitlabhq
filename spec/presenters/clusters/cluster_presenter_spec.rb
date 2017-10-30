@@ -1,8 +1,7 @@
 require 'spec_helper'
 
-describe Gcp::ClusterPresenter do
-  let(:project) { create(:project) }
-  let(:cluster) { create(:gcp_cluster, project: project) }
+describe Clusters::ClusterPresenter do
+  let(:cluster) { create(:cluster, :provided_by_gcp) }
 
   subject(:presenter) do
     described_class.new(cluster)
@@ -22,14 +21,14 @@ describe Gcp::ClusterPresenter do
     end
 
     it 'forwards missing methods to cluster' do
-      expect(presenter.gcp_cluster_zone).to eq(cluster.gcp_cluster_zone)
+      expect(presenter.status).to eq(cluster.status)
     end
   end
 
   describe '#gke_cluster_url' do
     subject { described_class.new(cluster).gke_cluster_url }
 
-    it { is_expected.to include(cluster.gcp_cluster_zone) }
-    it { is_expected.to include(cluster.gcp_cluster_name) }
+    it { is_expected.to include(cluster.provider.zone) }
+    it { is_expected.to include(cluster.name) }
   end
 end
