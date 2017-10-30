@@ -107,7 +107,7 @@ export default {
   },
 
   created() {
-    const { head_path, base_path } = this.mr.codeclimate;
+    const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
 
     this.isLoading = true;
 

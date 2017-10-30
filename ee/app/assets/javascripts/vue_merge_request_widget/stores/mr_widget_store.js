@@ -57,7 +57,10 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues) {
+    // newIssues link to head_blob_path+"/"+filename+"#L"+begin
     this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
+
+    // resolvedIssues link to base_blob_path+"/"+filename+"#L"+begin
     this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
   }
 
