@@ -231,12 +231,16 @@ import Diff from './diff';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
           new Diff();
