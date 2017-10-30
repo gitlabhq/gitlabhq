@@ -37,7 +37,6 @@
   .dropdown-menu-nav {
     @include set-visible;
     display: block;
-    min-height: 40px;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;

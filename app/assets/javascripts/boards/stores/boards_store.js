@@ -15,18 +15,16 @@ gl.issueBoards.BoardsStore = {
   },
   state: {},
   detail: {
-    issue: {},
+    issue: {}
   },
   moving: {
     issue: {},
-    list: {},
+    list: {}
   },
   create () {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
-    this.detail = {
-      issue: {},
-    };
+    this.detail = { issue: {} };
   },
   createNewListDropdownData() {
     this.state.currentBoard = {};

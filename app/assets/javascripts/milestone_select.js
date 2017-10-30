@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 (function() {
   this.MilestoneSelect = (function() {
-    function MilestoneSelect(currentProject, els, options = {}) {
+    function MilestoneSelect(currentProject, els) {
       var _this, $els;
       if (currentProject != null) {
         _this = this;
@@ -141,14 +141,13 @@ import _ from 'underscore';
           },
           opened: function(e) {
             const $el = $(e.currentTarget);
-            if ($dropdown.hasClass('js-issue-board-sidebar') || options.handleClick) {
+            if ($dropdown.hasClass('js-issue-board-sidebar')) {
               selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
             }
             $('a.is-active', $el).removeClass('is-active');
             $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-<<<<<<< HEAD
           hideRow: function(milestone) {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
               !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone) {
@@ -168,21 +167,9 @@ import _ from 'underscore';
           clicked: function(options) {
             const { $el, e } = options;
             let selected = options.selectedObj;
-=======
-          clicked: function(clickEvent) {
-            const { $el, e } = clickEvent;
-            let selected = clickEvent.selectedObj;
->>>>>>> ce-com/master
 
             var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
             if (!selected) return;
-
-            if (options.handleClick) {
-              e.preventDefault();
-              options.handleClick(selected);
-              return;
-            }
-
             page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');

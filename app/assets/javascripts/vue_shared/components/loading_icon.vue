@@ -18,12 +18,6 @@
         required: false,
         default: false,
       },
-
-      class: {
-        type: String,
-        required: false,
-        default: '',
-      },
     },
 
     computed: {
@@ -31,7 +25,7 @@
         return this.inline ? 'span' : 'div';
       },
       cssClass() {
-        return `fa-${this.size}x ${this.class}`.trim();
+        return `fa-${this.size}x`;
       },
     },
   };
