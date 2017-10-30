@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues', :js do
+describe 'Issues' do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper
@@ -24,15 +24,109 @@ describe 'Issues', :js do
     end
 
     before do
-      visit project_issue_path(project, issue)
-      page.within('.content .issuable-actions') do
-        find('.issuable-edit').click
-      end
-      find('.issue-details .content-block .js-zen-enter').click
+      visit edit_project_issue_path(project, issue)
+      find('.js-zen-enter').click
     end
 
     it 'opens new issue popup' do
-      expect(page).to have_content(issue.description)
+      expect(page).to have_content("Issue ##{issue.iid}")
+    end
+  end
+
+  describe 'Editing issue assignee' do
+    let!(:issue) do
+      create(:issue,
+             author: user,
+             assignees: [user],
+             project: project)
+    end
+
+    it 'allows user to select unassigned', :js do
+      visit edit_project_issue_path(project, issue)
+
+      expect(page).to have_content "Assignee #{user.name}"
+
+      first('.js-user-search').click
+      click_link 'Unassigned'
+
+      click_button 'Save changes'
+
+      page.within('.assignee') do
+        expect(page).to have_content 'No assignee - assign yourself'
+      end
+
+      expect(issue.reload.assignees).to be_empty
+    end
+  end
+
+  describe 'due date', :js do
+    context 'on new form' do
+      before do
+        visit new_project_issue_path(project)
+      end
+
+      it 'saves with due date' do
+        date = Date.today.at_beginning_of_month
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
+
+        page.within '.pika-single' do
+          click_button date.day
+        end
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        click_button 'Submit issue'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+    end
+
+    context 'on edit form' do
+      let(:issue) { create(:issue, author: user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+
+      before do
+        visit edit_project_issue_path(project, issue)
+      end
+
+      it 'saves with due date' do
+        date = Date.today.at_beginning_of_month
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        date = date.tomorrow
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+        find('#issuable-due-date').click
+
+        page.within '.pika-single' do
+          click_button date.day
+        end
+
+        expect(find('#issuable-due-date').value).to eq date.to_s
+
+        click_button 'Save changes'
+
+        page.within '.issuable-sidebar' do
+          expect(page).to have_content date.to_s(:medium)
+        end
+      end
+
+      it 'warns about version conflict' do
+        issue.update(title: "New title")
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Someone edited the issue the same time you did'
+      end
     end
   end
 

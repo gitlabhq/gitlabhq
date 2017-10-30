@@ -286,6 +286,7 @@ export default {
                 <input
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
+                  class="js-remove-source-branch-checkbox"
                   :disabled="isRemoveSourceBranchButtonDisabled"
                   type="checkbox"/> Remove source branch
               </label>
@@ -311,8 +312,8 @@ export default {
               </button>
             </template>
             <template v-else>
-              <span class="bold">
-                The pipeline for this merge request has not succeeded yet
+              <span class="bold js-resolve-mr-widget-items-message">
+                You can only merge once the items above are resolved
               </span>
             </template>
           </div>

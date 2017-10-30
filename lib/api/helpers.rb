@@ -184,6 +184,10 @@ module API
       end
     end
 
+    def require_pages_enabled!
+      not_found! unless user_project.pages_available?
+    end
+
     def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end

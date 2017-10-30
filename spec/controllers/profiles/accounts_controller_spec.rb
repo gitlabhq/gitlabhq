@@ -11,7 +11,7 @@ describe Profiles::AccountsController do
     it 'renders 404 if someone tries to unlink a non existent provider' do
       delete :unlink, provider: 'github'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     [:saml, :cas3].each do |provider|
@@ -23,7 +23,7 @@ describe Profiles::AccountsController do
 
           delete :unlink, provider: provider.to_s
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(user.reload.identities).to include(identity)
         end
       end
@@ -38,7 +38,7 @@ describe Profiles::AccountsController do
 
           delete :unlink, provider: provider.to_s
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
           expect(user.reload.identities).not_to include(identity)
         end
       end

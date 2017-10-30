@@ -25,7 +25,7 @@ describe Projects::DiscussionsController do
       it "returns status 404" do
         post :resolve, request_params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -42,7 +42,7 @@ describe Projects::DiscussionsController do
         it "returns status 404" do
           post :resolve, request_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -69,7 +69,7 @@ describe Projects::DiscussionsController do
         it "returns status 200" do
           post :resolve, request_params
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end
@@ -86,7 +86,7 @@ describe Projects::DiscussionsController do
       it "returns status 404" do
         delete :unresolve, request_params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -103,7 +103,7 @@ describe Projects::DiscussionsController do
         it "returns status 404" do
           delete :unresolve, request_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -117,7 +117,7 @@ describe Projects::DiscussionsController do
         it "returns status 200" do
           delete :unresolve, request_params
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
       end
     end

@@ -86,7 +86,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        project.repository.raw_repository.delete_branch(subject.target_branch)
+        project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1388,7 +1388,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do

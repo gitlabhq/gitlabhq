@@ -37,6 +37,7 @@ following locations:
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
 - [Open source license templates](templates/licenses.md)
+- [Pages Domains](pages_domains.md)
 - [Pipelines](pipelines.md)
 - [Pipeline Triggers](pipeline_triggers.md)
 - [Pipeline Schedules](pipeline_schedules.md)
@@ -458,7 +459,7 @@ Content-Type: application/json
 ## Encoding `+` in ISO 8601 dates
 
 If you need to include a `+` in a query parameter, you may need to use `%2B` instead due
-a [W3 recommendation]((http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
+a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 

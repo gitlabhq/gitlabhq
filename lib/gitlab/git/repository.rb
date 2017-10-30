@@ -166,7 +166,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
+        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -511,6 +511,10 @@ module Gitlab
         gitaly_commit_client.ancestor?(from, to)
       end
 
+      def merged_branch_names(branch_names = [])
+        Set.new(git_merged_branch_names(branch_names))
+      end
+
       # Return an array of Diff objects that represent the diff
       # between +from+ and +to+.  See Diff::filter_diff_options for the allowed
       # diff options.  The +options+ hash can also include :break_rewrites to
@@ -743,6 +747,16 @@ module Gitlab
         end
       rescue Gitlab::Git::CommitError # when merge_index.conflicts?
         nil
+      end
+
+      def ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -1178,6 +1192,13 @@ module Gitlab
         end
 
         sort_branches(branches, sort_by)
+      end
+
+      def git_merged_branch_names(branch_names = [])
+        lines = run_git(['branch', '--merged', root_ref] + branch_names)
+          .first.lines
+
+        lines.map(&:strip)
       end
 
       def log_using_shell?(options)

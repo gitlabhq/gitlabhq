@@ -1,7 +1,10 @@
 import axios from 'axios';
+import csrf from '../../lib/utils/csrf';
 import Store from '../stores/repo_store';
 import Api from '../../api';
 import Helper from '../helpers/repo_helper';
+
+axios.defaults.headers.common[csrf.headerKey] = csrf.token;
 
 const RepoService = {
   url: '',
@@ -10,10 +13,17 @@ const RepoService = {
       format: 'json',
     },
   },
+  createBranchPath: '/api/:version/projects/:id/repository/branches',
   richExtensionRegExp: /md/,
 
-  getRaw(url) {
-    return axios.get(url, {
+  getRaw(file) {
+    if (file.tempFile) {
+      return Promise.resolve({
+        data: '',
+      });
+    }
+
+    return axios.get(file.raw_path, {
       // Stop Axios from parsing a JSON file into a JS object
       transformResponse: [res => res],
     });
@@ -71,6 +81,12 @@ const RepoService = {
   commitFiles(payload) {
     return Api.commitMultiple(Store.projectId, payload)
       .then(this.commitFlash);
+  },
+
+  createBranch(payload) {
+    const url = Api.buildUrl(this.createBranchPath)
+      .replace(':id', Store.projectId);
+    return axios.post(url, payload);
   },
 
   commitFlash(data) {

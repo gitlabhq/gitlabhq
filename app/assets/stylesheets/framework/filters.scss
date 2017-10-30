@@ -65,7 +65,7 @@
     display: flex;
     flex: 1;
     -webkit-flex: 1;
-    padding-left: 30px;
+    padding-left: 12px;
     position: relative;
     margin-bottom: 0;
   }
@@ -221,10 +221,6 @@
     box-shadow: 0 0 4px $search-input-focus-shadow-color;
   }
 
-  &.focus .fa-filter {
-    color: $common-gray-dark;
-  }
-
   gl-emoji {
     display: inline-block;
     font-family: inherit;
@@ -249,13 +245,6 @@
       border-color: transparent;
       box-shadow: none;
     }
-  }
-
-  .fa-filter {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: $gray-darkest;
   }
 
   .fa-times {

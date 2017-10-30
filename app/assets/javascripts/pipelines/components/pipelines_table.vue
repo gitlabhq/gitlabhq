@@ -21,6 +21,10 @@
         type: String,
         required: true,
       },
+      viewType: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       pipelinesTableRowComponent,
@@ -59,6 +63,7 @@
       :pipeline="model"
       :update-graph-dropdown="updateGraphDropdown"
       :auto-devops-help-path="autoDevopsHelpPath"
+      :view-type="viewType"
     />
   </div>
 </template>

@@ -143,7 +143,7 @@ describe Projects::MergeRequestsController do
         get_merge_requests(last_page)
 
         expect(assigns(:merge_requests).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -278,7 +278,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -434,7 +434,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context "when the user is owner" do
@@ -449,7 +449,7 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 
@@ -539,7 +539,7 @@ describe Projects::MergeRequestsController do
       subject
     end
 
-    it { is_expected.to have_http_status(:success) }
+    it { is_expected.to have_gitlab_http_status(:success) }
 
     it 'renders MergeRequest as JSON' do
       subject
@@ -636,7 +636,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return a detailed head_pipeline status in json' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
@@ -650,7 +650,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return empty' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
       end
     end

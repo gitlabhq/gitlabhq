@@ -24,6 +24,8 @@ describe JiraService do
       end
 
       it { is_expected.not_to validate_presence_of(:url) }
+      it { is_expected.not_to validate_presence_of(:username) }
+      it { is_expected.not_to validate_presence_of(:password) }
     end
 
     context 'validating urls' do
@@ -50,6 +52,18 @@ describe JiraService do
 
       it 'is not valid when api url is not a valid url' do
         service.api_url = 'not valid'
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is not valid when username is missing' do
+        service.username = nil
+
+        expect(service).not_to be_valid
+      end
+
+      it 'is not valid when password is missing' do
+        service.password = nil
 
         expect(service).not_to be_valid
       end

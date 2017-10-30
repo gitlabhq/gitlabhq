@@ -5,6 +5,8 @@ import Service from './services/repo_service';
 import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
+import newBranchForm from './components/new_branch_form.vue';
+import newDropdown from './components/new_dropdown/index.vue';
 import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
@@ -27,6 +29,7 @@ function setInitialStore(data) {
   Store.service = Service;
   Store.service.url = data.url;
   Store.service.refsUrl = data.refsUrl;
+  Store.path = data.currentPath;
   Store.projectId = data.projectId;
   Store.projectName = data.projectName;
   Store.projectUrl = data.projectUrl;
@@ -62,9 +65,42 @@ function initRepoEditButton(el) {
   });
 }
 
+function initNewDropdown(el) {
+  return new Vue({
+    el,
+    components: {
+      newDropdown,
+    },
+    render(createElement) {
+      return createElement('new-dropdown');
+    },
+  });
+}
+
+function initNewBranchForm() {
+  const el = document.querySelector('.js-new-branch-dropdown');
+
+  if (!el) return null;
+
+  return new Vue({
+    el,
+    components: {
+      newBranchForm,
+    },
+    render(createElement) {
+      return createElement('new-branch-form', {
+        props: {
+          currentBranch: Store.currentBranch,
+        },
+      });
+    },
+  });
+}
+
 function initRepoBundle() {
   const repo = document.getElementById('repo');
   const editButton = document.querySelector('.editable-mode');
+  const newDropdownHolder = document.querySelector('.js-new-dropdown');
   setInitialStore(repo.dataset);
   addEventsForNonVueEls();
   initDropdowns();
@@ -73,6 +109,8 @@ function initRepoBundle() {
 
   initRepo(repo);
   initRepoEditButton(editButton);
+  initNewBranchForm();
+  initNewDropdown(newDropdownHolder);
 }
 
 $(initRepoBundle);

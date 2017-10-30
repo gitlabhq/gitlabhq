@@ -313,13 +313,13 @@ module API
           desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
-          required: false,
+          required: true,
           name: :username,
           type: String,
           desc: 'The username of the user created to be used with GitLab/JIRA'
         },
         {
-          required: false,
+          required: true,
           name: :password,
           type: String,
           desc: 'The password of the user created to be used with GitLab/JIRA'

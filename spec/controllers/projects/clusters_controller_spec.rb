@@ -169,7 +169,7 @@ describe Projects::ClustersController do
     it "responds with matching schema" do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('cluster_status')
     end
   end
@@ -189,14 +189,14 @@ describe Projects::ClustersController do
       it "allows to update cluster" do
         subject
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include("Save")
       end
 
       it "allows remove integration" do
         subject
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to include("Remove integration")
       end
     end
@@ -207,7 +207,7 @@ describe Projects::ClustersController do
       it "does not allow to access page" do
         subject
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -251,7 +251,7 @@ describe Projects::ClustersController do
         it "rejects changes" do
           subject
 
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:show)
         end
       end
@@ -263,7 +263,7 @@ describe Projects::ClustersController do
       it "does not allow to update cluster" do
         subject
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -292,7 +292,7 @@ describe Projects::ClustersController do
       it "does not allow to destroy cluster" do
         subject
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
