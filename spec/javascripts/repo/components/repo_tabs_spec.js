@@ -5,6 +5,7 @@ import { file, resetStore } from '../helpers';
 
 describe('RepoTabs', () => {
   const openedFiles = [file(), file()];
+  let vm;
 
   function createComponent() {
     const RepoTabs = Vue.extend(repoTabs);
@@ -19,7 +20,7 @@ describe('RepoTabs', () => {
   });
 
   it('renders a list of tabs', (done) => {
-    const vm = createComponent();
+    vm = createComponent();
     openedFiles[0].active = true;
     vm.$store.state.openFiles = openedFiles;
 

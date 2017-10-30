@@ -9,10 +9,14 @@
         type: String,
         required: true,
       },
+      path: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
-        entryName: '',
+        entryName: this.path !== '' ? `${this.path}/` : '',
       };
     },
     components: {
@@ -24,7 +28,7 @@
       ]),
       createEntryInStore() {
         this.createTempEntry({
-          name: this.entryName,
+          name: this.entryName.replace(new RegExp(`^${this.path}\/`), ''),
           type: this.type,
         });
 
@@ -35,17 +39,6 @@
       },
     },
     computed: {
-      ...mapState([
-        'path',
-      ]),
-      name: {
-        get() {
-          return this.path !== '' ? `${this.path}/${this.entryName}` : this.entryName;
-        },
-        set(newVal) {
-          this.entryName = newVal.replace(`${this.path}/`, '');
-        },
-      },
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');
@@ -95,7 +88,7 @@
           <input
             type="text"
             class="form-control"
-            v-model="name"
+            v-model="entryName"
             ref="fieldName"
           />
         </div>

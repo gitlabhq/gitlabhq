@@ -7,10 +7,10 @@
         'parentTreeUrl',
       ]),
       ...mapGetters([
-        'isMini',
+        'isCollapsed',
       ]),
       colSpanCondition() {
-        return this.isMini ? undefined : 3;
+        return this.isCollapsed ? undefined : 3;
       },
     },
     methods: {

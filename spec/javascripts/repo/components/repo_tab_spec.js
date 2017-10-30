@@ -4,6 +4,8 @@ import repoTab from '~/repo/components/repo_tab.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTab', () => {
+  let vm;
+
   function createComponent(propsData) {
     const RepoTab = Vue.extend(repoTab);
 
@@ -18,7 +20,7 @@ describe('RepoTab', () => {
   });
 
   it('renders a close link and a name link', () => {
-    const vm = createComponent({
+    vm = createComponent({
       tab: file(),
     });
     vm.$store.state.openFiles.push(vm.tab);
@@ -30,7 +32,7 @@ describe('RepoTab', () => {
   });
 
   it('calls setFileActive when clicking tab', () => {
-    const vm = createComponent({
+    vm = createComponent({
       tab: file(),
     });
 
@@ -42,7 +44,7 @@ describe('RepoTab', () => {
   });
 
   it('calls closeFile when clicking close button', () => {
-    const vm = createComponent({
+    vm = createComponent({
       tab: file(),
     });
 
@@ -56,7 +58,7 @@ describe('RepoTab', () => {
   it('renders an fa-circle icon if tab is changed', () => {
     const tab = file();
     tab.changed = true;
-    const vm = createComponent({
+    vm = createComponent({
       tab,
     });
 
@@ -69,7 +71,7 @@ describe('RepoTab', () => {
         const tab = file();
         tab.changed = true;
         tab.opened = true;
-        const vm = createComponent({
+        vm = createComponent({
           tab,
         });
         vm.$store.state.openFiles.push(tab);
@@ -87,7 +89,7 @@ describe('RepoTab', () => {
       it('closes tab when clicking close btn', (done) => {
         const tab = file('lose');
         tab.opened = true;
-        const vm = createComponent({
+        vm = createComponent({
           tab,
         });
         vm.$store.state.openFiles.push(tab);

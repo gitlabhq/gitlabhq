@@ -4,7 +4,7 @@
   export default {
     computed: {
       ...mapGetters([
-        'isMini',
+        'isCollapsed',
       ]),
     },
     methods: {
@@ -30,7 +30,7 @@
         </div>
       </div>
     </td>
-    <template v-if="!isMini">
+    <template v-if="!isCollapsed">
       <td
         class="hidden-sm hidden-xs">
         <div class="animation-container">

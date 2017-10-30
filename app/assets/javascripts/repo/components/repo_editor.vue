@@ -92,5 +92,10 @@ export default {
 </script>
 
 <template>
-  <div id="ide" v-if='!shouldHideEditor' class="blob-viewer-container blob-editor-container"></div>
+  <div
+    id="ide"
+    v-if='!shouldHideEditor'
+    class="blob-viewer-container blob-editor-container"
+  >
+  </div>
 </template>

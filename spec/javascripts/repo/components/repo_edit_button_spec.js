@@ -15,7 +15,6 @@ describe('RepoEditButton', () => {
     });
 
     f.active = true;
-    f.changed = true;
     vm.$store.dispatch('setInitialData', {
       canCommit: true,
       onTopOfBranch: true,
@@ -45,17 +44,23 @@ describe('RepoEditButton', () => {
     expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
   });
 
-  it('toggles edit mode on click', () => {
+  it('toggles edit mode on click', (done) => {
     vm.$mount();
 
     vm.$el.querySelector('.btn').click();
 
-    expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
+
+      done();
+    });
   });
 
   describe('discardPopupOpen', () => {
     beforeEach(() => {
       vm.$store.state.discardPopupOpen = true;
+      vm.$store.state.editMode = true;
+      vm.$store.state.openFiles[0].changed = true;
 
       vm.$mount();
     });

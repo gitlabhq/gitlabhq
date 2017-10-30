@@ -14,7 +14,7 @@
     },
     computed: {
       ...mapGetters([
-        'isMini',
+        'isCollapsed',
       ]),
       fileIcon() {
         return {
@@ -71,7 +71,7 @@
       </template>
     </td>
 
-    <template v-if="!isMini">
+    <template v-if="!isCollapsed">
       <td class="hidden-sm hidden-xs">
         <a
           @click.stop

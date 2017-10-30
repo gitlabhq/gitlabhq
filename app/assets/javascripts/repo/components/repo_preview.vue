@@ -7,6 +7,9 @@ export default {
     ...mapGetters([
       'activeFile',
     ]),
+    renderErrorTooLarge() {
+      return this.activeFile.renderError == 'too_large';
+    },
   },
   methods: {
     highlightFile() {
@@ -35,7 +38,7 @@ export default {
     v-html="activeFile.html">
   </div>
   <div
-    v-else-if="activeFile.renderError == 'too_large'"
+    v-else-if="renderErrorTooLarge"
     class="vertical-center render-error">
     <p class="text-center">
       The source could not be displayed because it is too large. You can <a :href="activeFile.rawPath" download>download</a> it instead.

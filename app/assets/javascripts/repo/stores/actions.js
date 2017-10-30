@@ -2,6 +2,9 @@ import Vue from 'vue';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
+import {
+  pushState,
+} from './utils';
 
 export const redirectToUrl = url => gl.utils.visitUrl(url);
 
@@ -67,6 +70,7 @@ export const checkCommitStatus = ({ state }) => service.getBranchData(
 export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =>
   service.commit(state.project.id, payload)
   .then((data) => {
+    const { branch } = payload;
     if (!data.short_id) {
       flash(data.message);
       return;
@@ -75,9 +79,8 @@ export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =
     flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
 
     if (newMr) {
-      redirectToUrl(`${state.endpoints.newMergeRequestUrl}${payload.branch}`);
+      redirectToUrl(`${state.endpoints.newMergeRequestUrl}${branch}`);
     } else {
-      // TODO: push a new state with the branch name
       commit(types.SET_COMMIT_REF, data.id);
       dispatch('discardAllChanges');
       dispatch('closeAllFiles');

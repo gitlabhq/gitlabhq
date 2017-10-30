@@ -33,6 +33,7 @@ export default {
     ...mapActions([
       'checkCommitStatus',
       'commitChanges',
+      'getTreeData',
     ]),
     makeCommit(newBranch = false) {
       const createNewBranch = newBranch || this.startNewMR;
@@ -54,6 +55,7 @@ export default {
       this.commitChanges({ payload, newMr: this.startNewMR })
         .then(() => {
           this.submitCommitsLoading = false;
+          this.getTreeData();
         })
         .catch(() => {
           this.submitCommitsLoading = false;

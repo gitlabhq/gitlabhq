@@ -13,7 +13,7 @@ export default {
       'currentBlobView',
     ]),
     ...mapGetters([
-      'isMini',
+      'isCollapsed',
       'changedFiles',
     ]),
   },
@@ -26,15 +26,12 @@ export default {
     RepoPreview,
   },
   mounted() {
+    const alertMessage = 'Are you sure you want to lose unsaved changes?';
     window.onbeforeunload = (e) => {
-      const event = e || window.event;
-
       if (!this.changedFiles.length) return undefined;
 
-      if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
-
-      // For Safari
-      return 'Are you sure you want to lose unsaved changes?';
+      e.returnValue = alertMessage;
+      return alertMessage;
     };
   },
 };
@@ -42,10 +39,10 @@ export default {
 
 <template>
   <div class="repository-view">
-    <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isMini}">
+    <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isCollapsed}">
       <repo-sidebar/>
       <div
-        v-if="isMini"
+        v-if="isCollapsed"
         class="panel-right"
       >
         <repo-tabs/>

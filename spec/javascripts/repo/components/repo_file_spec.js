@@ -5,6 +5,7 @@ import { file, resetStore } from '../helpers';
 
 describe('RepoFile', () => {
   const updated = 'updated';
+  let vm;
 
   function createComponent(propsData) {
     const RepoFile = Vue.extend(repoFile);
@@ -21,7 +22,7 @@ describe('RepoFile', () => {
 
   it('renders link, icon, name and last commit details', () => {
     const RepoFile = Vue.extend(repoFile);
-    const vm = new RepoFile({
+    vm = new RepoFile({
       store,
       propsData: {
         file: file(),
@@ -43,7 +44,7 @@ describe('RepoFile', () => {
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
-    const vm = createComponent({
+    vm = createComponent({
       file: file(),
     });
 
@@ -53,7 +54,7 @@ describe('RepoFile', () => {
   it('renders a spinner if the file is loading', () => {
     const f = file();
     f.loading = true;
-    const vm = createComponent({
+    vm = createComponent({
       file: f,
     });
 
@@ -62,7 +63,7 @@ describe('RepoFile', () => {
   });
 
   it('does not render commit message and datetime if mini', (done) => {
-    const vm = createComponent({
+    vm = createComponent({
       file: file(),
     });
     vm.$store.state.openFiles.push(vm.file);
@@ -76,7 +77,7 @@ describe('RepoFile', () => {
   });
 
   it('fires clickedTreeRow when the link is clicked', () => {
-    const vm = createComponent({
+    vm = createComponent({
       file: file(),
     });
 
@@ -89,7 +90,6 @@ describe('RepoFile', () => {
 
   describe('submodule', () => {
     let f;
-    let vm;
 
     beforeEach(() => {
       f = file('submodule name', '123456789');

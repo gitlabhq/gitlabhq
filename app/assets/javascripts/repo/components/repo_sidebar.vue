@@ -31,7 +31,7 @@ export default {
     }),
     ...mapGetters([
       'treeList',
-      'isMini',
+      'isCollapsed',
     ]),
   },
   methods: {
@@ -44,12 +44,12 @@ export default {
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isMini}">
+<div id="sidebar" :class="{'sidebar-mini' : isCollapsed}">
   <table class="table">
     <thead>
       <tr>
         <th
-          v-if="isMini"
+          v-if="isCollapsed"
           class="repo-file-options title"
         >
           <strong class="clgray">
