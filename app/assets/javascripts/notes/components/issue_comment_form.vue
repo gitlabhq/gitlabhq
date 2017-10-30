@@ -1,10 +1,9 @@
 <script>
-  /* global Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import autosize from 'vendor/autosize';
   import Flash from '../../flash';
-  import '../../autosave';
+  import Autosave from '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
