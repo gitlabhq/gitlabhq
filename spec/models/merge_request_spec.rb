@@ -1472,6 +1472,12 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
+    it 'returns true when the merge request is locked' do
+      merge_request = build_stubbed(:merge_request, state: :locked)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
     it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
       allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }

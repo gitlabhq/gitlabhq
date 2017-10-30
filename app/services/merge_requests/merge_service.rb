@@ -78,16 +78,17 @@ module MergeRequests
       @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
     end
 
-    # Logs merge error message and cleans `MergeRequest#merge_jid`.
+    # Verify again that the source branch can be removed, since branch may be protected,
+    # or the source branch may have been updated, or the user may not have permission
     #
+    def delete_source_branch?
+      params.fetch('should_remove_source_branch', @merge_request.force_remove_source_branch?) &&
+        @merge_request.can_remove_source_branch?(branch_deletion_user)
+    end
+
     def handle_merge_error(log_message:, save_message_on_model: false)
       Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
-
-      if save_message_on_model
-        @merge_request.update(merge_error: log_message, merge_jid: nil)
-      else
-        clean_merge_jid
-      end
+      @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
     def merge_request_info

@@ -392,6 +392,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
+    # While the MergeRequest is locked, it should present itself as 'merge ongoing'.
+    # The unlocking process is handled by StuckMergeJobsWorker scheduled in Cron.
+    return true if locked?
+
     !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
