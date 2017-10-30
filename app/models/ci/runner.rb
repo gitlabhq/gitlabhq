@@ -125,7 +125,7 @@ module Ci
     end
 
     def group?
-      runner_groups.present?
+      runner_groups.any?
     end
 
     def project?
