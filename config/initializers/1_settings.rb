@@ -455,17 +455,6 @@ Settings.repositories.storages.each do |key, storage|
 
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
-  # Set failure defaults
-  storage['failure_count_threshold'] ||= 10
-  storage['failure_wait_time'] ||= 30
-  storage['failure_reset_time'] ||= 1800
-  storage['storage_timeout'] ||= 5
-  # Set turn strings into numbers
-  storage['failure_count_threshold'] = storage['failure_count_threshold'].to_i
-  storage['failure_wait_time'] = storage['failure_wait_time'].to_i
-  storage['failure_reset_time'] = storage['failure_reset_time'].to_i
-  # We might want to have a timeout shorter than 1 second.
-  storage['storage_timeout'] = storage['storage_timeout'].to_f
 
   Settings.repositories.storages[key] = storage
 end
