@@ -423,8 +423,11 @@
 }
 
 .breadcrumb-item-text {
-  @include str-truncated(128px);
   text-decoration: inherit;
+
+  @media (max-width: $screen-xs-max) {
+    @include str-truncated(128px);
+  }
 }
 
 .breadcrumbs-list-angle {
