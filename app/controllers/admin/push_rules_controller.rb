@@ -32,8 +32,8 @@ class Admin::PushRulesController < Admin::ApplicationController
       allowed_fields << :reject_unsigned_commits
     end
 
-    if @push_rule.available?(:commit_author_check)
-      allowed_fields << :commit_author_check
+    if @push_rule.available?(:commit_committer_check)
+      allowed_fields << :commit_committer_check
     end
 
     params.require(:push_rule).permit(allowed_fields)

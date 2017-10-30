@@ -48,7 +48,7 @@ class License < ActiveRecord::Base
     service_desk
     variable_environment_scope
     reject_unsigned_commits
-    commit_author_check
+    commit_committer_check
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES

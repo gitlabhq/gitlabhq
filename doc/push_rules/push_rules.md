@@ -63,7 +63,7 @@ The following options are available.
 | --------- | :------------: | ----------- |
 | Removal of tags with `git push` | 7.10 | Forbid users to remove git tags with `git push`. Tags will still be able to be deleted through the web UI. |
 | Check whether author is a GitLab user | 7.10 | Restrict commits by author (email) to existing GitLab users. |
-| Check whether author is the current authenticated user | 10.2 | GitLab will reject any commit that does not belongs to the current authenticated user |
+| Check whether committer is the current authenticated user | 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
 | Check whether commit is signed through GPG | 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
 | Prevent committing secrets to Git | 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
 | Restrict by commit message | 7.10 | Only commit messages that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any commit message. |

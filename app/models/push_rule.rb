@@ -7,7 +7,7 @@ class PushRule < ActiveRecord::Base
   FILES_BLACKLIST = YAML.load_file(Rails.root.join('lib/gitlab/checks/files_blacklist.yml'))
   SETTINGS_WITH_GLOBAL_DEFAULT = %i[
     reject_unsigned_commits
-    commit_author_check
+    commit_committer_check
   ].freeze
 
   def self.global
@@ -19,7 +19,7 @@ class PushRule < ActiveRecord::Base
       branch_name_regex.present? ||
       author_email_regex.present? ||
       reject_unsigned_commits ||
-      commit_author_check ||
+      commit_committer_check ||
       member_check ||
       file_name_regex.present? ||
       max_file_size > 0 ||
@@ -34,8 +34,8 @@ class PushRule < ActiveRecord::Base
   end
 
   def committer_allowed?(committer, current_user)
-    return true unless available?(:commit_author_check)
-    return true unless commit_author_check
+    return true unless available?(:commit_committer_check)
+    return true unless commit_committer_check
 
     current_user == committer
   end
@@ -81,13 +81,13 @@ class PushRule < ActiveRecord::Base
     write_setting_with_global_default(:reject_unsigned_commits, value)
   end
 
-  def commit_author_check
-    read_setting_with_global_default(:commit_author_check)
+  def commit_committer_check
+    read_setting_with_global_default(:commit_committer_check)
   end
-  alias_method :commit_author_check?, :commit_author_check
+  alias_method :commit_committer_check?, :commit_committer_check
 
-  def commit_author_check=(value)
-    write_setting_with_global_default(:commit_author_check, value)
+  def commit_committer_check=(value)
+    write_setting_with_global_default(:commit_committer_check, value)
   end
 
   private

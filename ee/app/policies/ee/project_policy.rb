@@ -21,8 +21,8 @@ module EE
       end
 
       with_scope :global
-      condition(:commit_author_check_disabled_globally) do
-        !PushRule.global&.commit_author_check
+      condition(:commit_committer_check_disabled_globally) do
+        !PushRule.global&.commit_committer_check
       end
 
       with_scope :global
@@ -90,7 +90,7 @@ module EE
 
       rule { admin | (reject_unsigned_commits_disabled_globally & can?(:master_access)) }.enable :change_reject_unsigned_commits
 
-      rule { admin | (commit_author_check_disabled_globally & can?(:master_access)) }.enable :change_commit_author_check
+      rule { admin | (commit_committer_check_disabled_globally & can?(:master_access)) }.enable :change_commit_committer_check
     end
   end
 end

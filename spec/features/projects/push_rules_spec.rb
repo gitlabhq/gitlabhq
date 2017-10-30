@@ -12,7 +12,7 @@ feature 'Projects > Push Rules', :js do
 
   push_rules_with_titles = {
     reject_unsigned_commits: 'Reject unsigned commits',
-    commit_author_check: 'Author restriction'
+    commit_committer_check: 'Author restriction'
   }
 
   push_rules_with_titles.each do |rule_attr, title|

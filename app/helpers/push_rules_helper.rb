@@ -5,10 +5,10 @@ module PushRulesHelper
     push_rule_update_description(message, push_rule, :reject_unsigned_commits)
   end
 
-  def commit_author_check_description(push_rule)
-    message = [s_("ProjectSettings|Only the author of a commit can push changes to this repository.")]
+  def commit_committer_check_description(push_rule)
+    message = [s_("ProjectSettings|Only the committer of a commit can push changes to this repository.")]
 
-    push_rule_update_description(message, push_rule, :commit_author_check)
+    push_rule_update_description(message, push_rule, :commit_committer_check)
   end
 
   private

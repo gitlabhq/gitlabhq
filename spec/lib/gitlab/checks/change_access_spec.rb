@@ -443,10 +443,10 @@ describe Gitlab::Checks::ChangeAccess do
 
       context 'Check commit author rules' do
         before do
-          stub_licensed_features(commit_author_check: true)
+          stub_licensed_features(commit_committer_check: true)
         end
 
-        let(:push_rule) { create(:push_rule, commit_author_check: true) }
+        let(:push_rule) { create(:push_rule, commit_committer_check: true) }
 
         context 'with a commit from the authenticated user' do
           before do
