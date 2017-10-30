@@ -1,0 +1,5 @@
+---
+title: Fix widget of locked merge requests not being presented
+merge_request:
+author:
+type: fixed

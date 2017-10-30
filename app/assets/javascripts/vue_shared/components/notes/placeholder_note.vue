@@ -1,9 +1,26 @@
 <script>
+  /**
+   * Common component to render a placeholder note and user information.
+   *
+   * This component needs to be used with a vuex store.
+   * That vuex store needs to have a `getUserData` getter that contains
+   * {
+   *   path: String,
+   *   avatar_url: String,
+   *   name: String,
+   *   username: String,
+   * }
+   *
+   * @example
+   * <placeholder-note
+   *   :note="{body: 'This is a note'}"
+   *   />
+   */
   import { mapGetters } from 'vuex';
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import userAvatarLink from '../user_avatar/user_avatar_link.vue';
 
   export default {
-    name: 'issuePlaceholderNote',
+    name: 'placeholderNote',
     props: {
       note: {
         type: Object,

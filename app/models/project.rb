@@ -540,6 +540,10 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  def commit_by(oid:)
+    repository.commit_by(oid: oid)
+  end
+
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
     latest_pipeline = pipelines.latest_successful_for(ref)
@@ -553,7 +557,7 @@ class Project < ActiveRecord::Base
 
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
-    repository.commit(sha) if sha
+    commit_by(oid: sha) if sha
   end
 
   def saved?

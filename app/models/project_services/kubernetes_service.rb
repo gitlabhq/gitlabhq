@@ -153,7 +153,10 @@ class KubernetesService < DeploymentService
   end
 
   def default_namespace
-    "#{project.path}-#{project.id}" if project.present?
+    return unless project
+
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
