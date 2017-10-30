@@ -112,7 +112,7 @@ feature 'Contributions Calendar', :js do
         end
 
         it 'hides calendar day activities' do
-          expect(selected_day_activities).to be_empty
+          expect(find('.user-calendar-activities', visible: false).text).to be_empty
         end
       end
     end
