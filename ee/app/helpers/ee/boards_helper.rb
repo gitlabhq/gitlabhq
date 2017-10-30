@@ -62,5 +62,16 @@ module EE
         s_("IssueBoards|Board")
       end
     end
+
+    def current_board_json
+      board = @board || @boards.first
+
+      board.to_json(
+        only: [:id, :name, :milestone_id],
+        include: {
+          milestone: { only: [:title] }
+        }
+      )
+    end
   end
 end
