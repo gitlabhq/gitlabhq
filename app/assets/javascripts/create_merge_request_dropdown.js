@@ -268,11 +268,11 @@ export default class CreateMergeRequestDropdown {
       this.createMrPath = this.wrapperEl.dataset.createMrPath;
       this.inputsAreValid = true;
       this.enable();
-      this.showMessage(target, 'available');
+      this.showAvailableMessage(target);
       return true;
     }
 
-    this.showMessage(target, 'checking');
+    this.showCheckingMessage(target);
     clearTimeout(this.getRefDelay);
 
     this.getRefDelay = setTimeout(() => {
@@ -322,6 +322,16 @@ export default class CreateMergeRequestDropdown {
     this.refInput.value = value;
   }
 
+  removeMessage(target) {
+    const input = target === 'branch' ? this.branchInput : this.refInput;
+    const message = target === 'branch' ? this.branchMessage : this.refMessage;
+    const inputClasses = ['gl-field-error-outline', 'gl-field-success-outline'];
+    const messageClasses = ['gl-field-hint', 'gl-field-error-message', 'gl-field-success-message'];
+
+    inputClasses.forEach((cssClass) => { input.classList.remove(cssClass); });
+    messageClasses.forEach((cssClass) => { message.classList.remove(cssClass); });
+  }
+
   setUnavailableButtonState(isLoading = true) {
     if (isLoading) {
       this.unavailableButtonArrow.classList.add('fa-spinner', 'fa-spin');
@@ -334,9 +344,7 @@ export default class CreateMergeRequestDropdown {
     }
   }
 
-  // target: 'branch', 'ref'
-  // type: 'checking', 'available', 'not_available'
-  showMessage(target, type) {
+  showAvailableMessage(target) {
     let input;
     let message;
     let text;
@@ -351,42 +359,51 @@ export default class CreateMergeRequestDropdown {
       text = 'source';
     }
 
-    // Remove gl-field error classes
-    input.classList.remove('gl-field-error-outline');
-    input.classList.remove('gl-field-success-outline');
-    message.classList.remove('gl-field-hint');
-    message.classList.remove('gl-field-error-message');
-    message.classList.remove('gl-field-success-message');
+    this.removeMessage(target);
+    input.classList.add('gl-field-success-outline');
+    message.classList.add('gl-field-success-message');
+    message.textContent = `${text} is available`;
+    message.classList.remove('hide');
+  }
 
-    if (type === 'checking') {
-      message.classList.add('gl-field-hint');
-      message.textContent = `Checking ${text} availability...`;
-      message.classList.remove('hide');
+  showCheckingMessage(target) {
+    let message;
+    let text;
 
-      return;
+    if (target === 'branch') {
+      message = this.branchMessage;
+      text = 'branch name';
+    } else {
+      message = this.refMessage;
+      text = 'source';
     }
 
-    if (type === 'not_available') {
-      if (target === 'branch') {
-        text = 'Branch is already taken';
-      } else {
-        text = 'Source is not available';
-      }
+    this.removeMessage(target);
+    message.classList.add('gl-field-hint');
+    message.textContent = `Checking ${text} availability...`;
+    message.classList.remove('hide');
+  }
 
-      input.classList.add('gl-field-error-outline');
-      message.classList.add('gl-field-error-message');
-      message.textContent = text;
-      message.classList.remove('hide');
+  showNotAvailableMessage(target) {
+    let input;
+    let message;
+    let text;
 
-      return;
+    if (target === 'branch') {
+      input = this.branchInput;
+      message = this.branchMessage;
+      text = 'Branch is already taken';
+    } else {
+      input = this.refInput;
+      message = this.refMessage;
+      text = 'Source is not available';
     }
 
-    if (type === 'available') {
-      input.classList.add('gl-field-success-outline');
-      message.classList.add('gl-field-success-message');
-      message.textContent = `${text} is available`;
-      message.classList.remove('hide');
-    }
+    this.removeMessage(target);
+    input.classList.add('gl-field-error-outline');
+    message.classList.add('gl-field-error-message');
+    message.textContent = text;
+    message.classList.remove('hide');
   }
 
   unavailable() {
@@ -395,8 +412,9 @@ export default class CreateMergeRequestDropdown {
   }
 
   updateInputState(target, ref, result) {
-    // These regexps are used to replace a backend generated new branch name and its source (ref) with
-    // user's inputs.
+    // These regexps are used to replace
+    // a backend generated new branch name and its source (ref)
+    // with user's inputs.
     const regexps = {
       branch: {
         createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
@@ -414,26 +432,24 @@ export default class CreateMergeRequestDropdown {
       if (target === 'branch') {
         this.inputsAreValid = false;
         this.disableCreateAction();
-        this.showMessage('branch', 'not_available');
+        this.showNotAvailableMessage('branch');
       } else {
         this.inputsAreValid = true;
         this.enable();
-        this.showMessage('ref', 'available');
+        this.showAvailableMessage('ref');
         this.createBranchPath = this.createBranchPath.replace(regexps.ref.createBranchPath, `$1${ref}`);
         this.createMrPath = this.createMrPath.replace(regexps.ref.createMrPath, `$1${ref}`);
       }
+    } else if (target === 'branch') {
+      this.inputsAreValid = true;
+      this.enable();
+      this.showAvailableMessage('branch');
+      this.createBranchPath = this.createBranchPath.replace(regexps.branch.createBranchPath, `$1${ref}`);
+      this.createMrPath = this.createMrPath.replace(regexps.branch.createMrPath, `$1${ref}`);
     } else {
-      if (target === 'branch') {
-        this.inputsAreValid = true;
-        this.enable();
-        this.showMessage('branch', 'available');
-        this.createBranchPath = this.createBranchPath.replace(regexps.branch.createBranchPath, `$1${ref}`);
-        this.createMrPath = this.createMrPath.replace(regexps.branch.createMrPath, `$1${ref}`);
-      } else {
-        this.inputsAreValid = false;
-        this.disableCreateAction();
-        this.showMessage('ref', 'not_available');
-      }
+      this.inputsAreValid = false;
+      this.disableCreateAction();
+      this.showNotAvailableMessage('ref');
     }
   }
 }
