@@ -56,7 +56,8 @@ export default class CreateMergeRequestDropdown {
     this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
     this.branchInput.addEventListener('keyup', this.onChangeInput.bind(this));
     this.refInput.addEventListener('keyup', this.onChangeInput.bind(this));
-    // this.refInput.addEventListener('keydown', this.processTab.bind(this));
+    this.refInput.addEventListener('keydown', CreateMergeRequestDropdown.processTab.bind(this));
+    this.refInput.addEventListener('blur', this.clearRefHint.bind(this));
   }
 
   checkAbilityToCreateBranch() {
@@ -86,6 +87,11 @@ export default class CreateMergeRequestDropdown {
       this.disable();
       new Flash('Failed to check if a new branch can be created.');
     });
+  }
+
+  clearRefHint() {
+    this.refInput.value = this.refInput.value.slice(0, this.refInput.selectionStart) +
+      this.refInput.value.slice(this.refInput.selectionEnd);
   }
 
   createBranch() {
@@ -145,7 +151,7 @@ export default class CreateMergeRequestDropdown {
   static findByValue(objects, ref, returnFirstMatch = false) {
     if (!objects || !objects.length) return false;
     if (objects.indexOf(ref) > -1) return ref;
-    if (returnFirstMatch) return objects[0];
+    if (returnFirstMatch) return objects.find(item => new RegExp(`^${ref}`).test(item));
 
     return false;
   }
@@ -197,7 +203,8 @@ export default class CreateMergeRequestDropdown {
       if (target === 'branch') {
         result = CreateMergeRequestDropdown.findByValue(branches, ref);
       } else {
-        result = CreateMergeRequestDropdown.findByValue(branches, ref, true) || CreateMergeRequestDropdown.findByValue(tags, ref, true);
+        result = CreateMergeRequestDropdown.findByValue(branches, ref, true) ||
+          CreateMergeRequestDropdown.findByValue(tags, ref, true);
       }
 
       return this.updateInputState(target, ref, result);
@@ -312,15 +319,11 @@ export default class CreateMergeRequestDropdown {
   }
 
   // `TAB` autocompletes the source.
-  processTab(event) {
+  static processTab(event) {
     if (event.keyCode !== 9) return;
 
-    const value = event.srcElement.value;
-
     event.preventDefault();
-
-    this.refInput.value = '';
-    this.refInput.value = value;
+    window.getSelection().removeAllRanges();
   }
 
   removeMessage(target) {
@@ -451,6 +454,12 @@ export default class CreateMergeRequestDropdown {
       this.inputsAreValid = false;
       this.disableCreateAction();
       this.showNotAvailableMessage('ref');
+
+      // Show ref hint.
+      if (result) {
+        this.refInput.value = result;
+        this.refInput.setSelectionRange(ref.length, result.length);
+      }
     }
   }
 }
