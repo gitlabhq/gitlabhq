@@ -125,7 +125,7 @@ export default {
 
     borderlessIcon() {
       return `${this.stage.status.icon}_borderless`;
-    }
+    },
   },
 };
 </script>
