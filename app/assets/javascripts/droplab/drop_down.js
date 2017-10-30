@@ -68,6 +68,17 @@ class DropDown {
   addEvents() {
     this.eventWrapper.clickEvent = this.clickEvent.bind(this);
     this.list.addEventListener('click', this.eventWrapper.clickEvent);
+    this.list.addEventListener('keyup', this.closeDropdown.bind(this));
+  }
+
+  closeDropdown(event) {
+    // `ESC` key closes the dropdown.
+    if (event.keyCode === 27) {
+      event.preventDefault();
+      return this.toggle();
+    }
+
+    return true;
   }
 
   setData(data) {
