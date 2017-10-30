@@ -1,6 +1,5 @@
-/* global IssuableContext */
-import '~/issuable_context';
 import $ from 'jquery';
+import IssuableContext from '~/issuable_context';
 
 describe('IssuableContext', () => {
   describe('toggleHiddenParticipants', () => {
