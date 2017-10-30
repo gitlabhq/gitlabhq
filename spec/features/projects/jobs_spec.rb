@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'tempfile'
 
 feature 'Jobs' do
+  include InspectRequests
+
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -441,27 +443,30 @@ feature 'Jobs' do
     context 'access source' do
       context 'job from project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job.run!
-          visit project_job_path(project, job)
-          find('.js-raw-link-controller').click()
         end
 
         it 'sends the right headers' do
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+
+          expect(requests.first.status_code).to eq(200)
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
         end
       end
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job2.run!
-          visit raw_project_job_path(project, job2)
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(404)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job2)
+          end
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end
@@ -470,8 +475,6 @@ feature 'Jobs' do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
-
         job.run!
       end
 
@@ -480,15 +483,14 @@ feature 'Jobs' do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)
             .and_return([existing_file])
-
-          visit project_job_path(project, job)
-
-          find('.js-raw-link-controller').click
         end
 
         it 'sends the right headers' do
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
         end
       end
 

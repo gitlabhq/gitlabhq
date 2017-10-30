@@ -4,8 +4,8 @@ module InspectRequests
   extend self
   include WaitForRequests
 
-  def inspect_requests
-    Gitlab::Testing::RequestInspectorMiddleware.log_requests!
+  def inspect_requests(inject_headers: {})
+    Gitlab::Testing::RequestInspectorMiddleware.log_requests!(inject_headers)
     yield
     block_and_wait_for_requests_complete
     Gitlab::Testing::RequestInspectorMiddleware.requests

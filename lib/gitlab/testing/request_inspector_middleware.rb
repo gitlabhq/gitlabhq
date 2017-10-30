@@ -5,9 +5,11 @@ module Gitlab
     class RequestInspectorMiddleware
       @@log_requests = Concurrent::AtomicBoolean.new(false)
       @@logged_requests = Concurrent::Array.new
+      @@inject_headers = Concurrent::Hash.new
 
       # Resets the current request log and starts logging requests
-      def self.log_requests!
+      def self.log_requests!(headers = {})
+        @@inject_headers.replace(headers)
         @@logged_requests.replace([])
         @@log_requests.value = true
       end
@@ -29,6 +31,7 @@ module Gitlab
         return @app.call(env) unless @@log_requests.true?
 
         url = env['REQUEST_URI']
+        env.merge! http_headers_env(@@inject_headers) if @@inject_headers.any?
         request_headers = env_http_headers(env)
         status, headers, body = @app.call(env)
 
@@ -50,6 +53,13 @@ module Gitlab
           .collect {|k, v| [k.sub(/^HTTP_/, ''), v]}
           .collect {|k, v| [k.split('_').collect(&:capitalize).join('-'), v]}
           .sort
+          .flatten]
+      end
+
+      def http_headers_env(headers)
+        Hash[*headers
+          .collect {|k, v| [k.split('-').collect(&:upcase).join('_'), v]}
+          .collect {|k, v| [k.prepend('HTTP_'), v]}
           .flatten]
       end
 
