@@ -129,77 +129,89 @@
 /**
  * Deploy boards
  */
+.deploy-board {
+  padding: 10px;
+  background-color: $gray-light;
+  min-height: 20px;
 
-.deploy-board > div {
-  display: flex;
-  justify-content: space-between;
+  .fa-spinner {
+    margin: 0 auto;
+    width: 20px;
+    display: block;
+    font-size: 20px;
+  }
 
-  .deploy-board-information {
-    order: 1;
+  > div {
     display: flex;
-    width: 70px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 20px 0 20px 5px;
+    justify-content: space-between;
 
-    > span {
-      text-align: center;
-    }
-
-    .percentage {
-      color: $gl-text-color;
-    }
-
-    .text {
-      color: $gl-text-color-secondary;
-    }
-  }
-
-  .deploy-board-instances {
-    order: 2;
-    margin-left: 20px;
-    width: 100%;
-
-    .text {
-      color: $gl-text-color-secondary;
-      font-size: 12px;
-    }
-
-    .deploy-board-instances-container {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-      margin-top: -8px;
-    }
-  }
-
-  .deploy-board-actions {
-    order: 3;
-    align-self: center;
-    min-width: 150px;
-    margin-left: 10px;
-  }
-
-  &.deploy-board-error-message {
-    justify-content: center;
-  }
-
-  .deploy-board-empty-state-svg {
-    order: 1;
-    width: 90px;
-    margin: auto 0 auto 20px;
-  }
-
-  .deploy-board-empty-state-text {
-    order: 2;
-    flex-wrap: wrap;
-    margin: auto auto 15px 0;
-
-    .title {
+    .deploy-board-information {
       order: 1;
       display: flex;
-      font-size: 17px;
-      line-height: 40px;
+      width: 70px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0 20px 5px;
+
+      > span {
+        text-align: center;
+      }
+
+      .percentage {
+        color: $gl-text-color;
+      }
+
+      .text {
+        color: $gl-text-color-secondary;
+      }
+    }
+
+    .deploy-board-instances {
+      order: 2;
+      margin-left: 20px;
+      width: 100%;
+
+      .text {
+        color: $gl-text-color-secondary;
+        font-size: 12px;
+      }
+
+      .deploy-board-instances-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        margin-top: -8px;
+      }
+    }
+
+    .deploy-board-actions {
+      order: 3;
+      align-self: center;
+      min-width: 150px;
+      margin-left: 10px;
+    }
+
+    &.deploy-board-error-message {
+      justify-content: center;
+    }
+
+    .deploy-board-empty-state-svg {
+      order: 1;
+      width: 90px;
+      margin: auto 0 auto 20px;
+    }
+
+    .deploy-board-empty-state-text {
+      order: 2;
+      flex-wrap: wrap;
+      margin: auto auto 15px 0;
+
+      .title {
+        order: 1;
+        display: flex;
+        font-size: 17px;
+        line-height: 40px;
+      }
     }
   }
 }
@@ -272,18 +284,7 @@
   }
 }
 
-.deploy-board {
-  padding: 10px;
-  background-color: $gray-light;
-  min-height: 20px;
 
-  .fa-spinner {
-    margin: 0 auto;
-    width: 20px;
-    display: block;
-    font-size: 20px;
-  }
-}
 
 .gl-responsive-table-row {
   .branch-commit {

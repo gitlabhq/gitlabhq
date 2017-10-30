@@ -40,34 +40,33 @@
     }
 
   }
-}
 
-.user-callout.promotion-callout.promotion-empty-page {
-  margin-top: 56px;
-}
-
-.user-callout.promotion-callout.promotion-advanced-search {
-  margin: 0;
-  border-bottom: solid 1px $border-color;
-
-  h5 {
-    margin-top: 0;
+  &.promotion-empty-page {
+    margin-top: 56px;
   }
 
-  .bordered-box.content-block {
-    border: none;
-    padding: 20px 0;
-    justify-content: left;
+  &.promotion-advanced-search {
+    margin: 0;
+    border-bottom: solid 1px $border-color;
 
-    svg {
-      height: auto;
+    h5 {
+      margin-top: 0;
+    }
+
+    .bordered-box.content-block {
+      border: none;
+      padding: 20px 0;
+      justify-content: left;
+
+      svg {
+        height: auto;
+      }
+    }
+
+    .user-callout-copy {
+      margin-left: 0;
     }
   }
-
-  .user-callout-copy {
-    margin-left: 0;
-  }
-
 }
 
 .promotion-modal {
