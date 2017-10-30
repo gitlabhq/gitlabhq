@@ -3,7 +3,7 @@
 Geo feature requires that we orchestrate a lot of components together.
 For the Database we need to setup a streaming replication. Any operation on disk
 is logged in an events table, that will leverage the database replication itself
-from **Primary** to **Secondary** nodes. These events are processed by the 
+from **Primary** to **Secondary** nodes. These events are processed by the
 **Geo Log Cursor** daemon (on the Secondary) and asynchronous jobs takes care of
 the changes.
 
@@ -20,11 +20,11 @@ operations. Both share the same codebase and are distinguished by a feature
 toggle mechanism (see `Gitlab::Geo`).
 
 We use the values from `gitlab.yml`: `host`, `port`, `relative_url_root`
-and search in the database to identity which node we are in
+and search in the database to identify which node we are in
 (see `Gitlab::Geo.current_node`).
 
 Most of the Geo important methods are cached by the `RequestStore`, to reduce
-the performance impact of using the methods throghout the codebase.
+the performance impact of using the methods throughout the codebase.
 
 To execute a piece of code in a **Primary** node use:
 
@@ -95,10 +95,10 @@ to see if there are changes since the last time the log was checked
 and will handle repository updates, deletes, changes & renames.
 
 The table is within the replicated database. This has two advantages over the
-old method: 
+old method:
 
 1. Replication is synchronous and we preserve the order of events
-2. Replication of the events happen at the same time as the changes in the 
+2. Replication of the events happen at the same time as the changes in the
    database
 
 
@@ -158,7 +158,7 @@ If the data checks out, then the Geo primary sends data via the
 feature, which allows nginx to handle the file transfer without tying up Rails
 or Workhorse.
 
-Please note that JWT requires synchronized clocks between involved machines, 
+Please note that JWT requires synchronized clocks between involved machines,
 otherwise it may fail with an encryption error.
 
 
@@ -181,7 +181,7 @@ To migrate the tracking database, run:
 bundle exec rake geo:db:migrate
 ```
 
-In 10.1 we are introducing PostgreSQL FDW to bridge this database with the 
+In 10.1 we are introducing PostgreSQL FDW to bridge this database with the
 replicated one, so we can perform queries joining tables from both instances.
 
 This is useful for the Geo Log Cursor and improves the performance of some
@@ -189,4 +189,4 @@ synchronization operations.
 
 While FDW is available in older versions of Postgres, we needed to bump the
 minimum required version to 9.6 as this includes many performance improvements
-to the FDW implementation. 
+to the FDW implementation.
