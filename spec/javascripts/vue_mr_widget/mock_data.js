@@ -222,15 +222,9 @@ export const headIssues = [
     "check_name": "Rubocop/Lint/UselessAssignment",
     "location": {
       "path": "lib/six.rb",
-      "positions": {
-        "begin": {
-          "column": 6,
-          "line": 59
-        },
-        "end": {
-          "column": 7,
-          "line": 59
-        }
+      "lines": {
+        "begin": 6,
+        "end": 7,
       }
     },
     "fingerprint": "e879dd9bbc0953cad5037cde7ff0f627",

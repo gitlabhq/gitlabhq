@@ -777,7 +777,9 @@
 }
 
 .mr-widget-code-quality {
-  padding-top: $gl-padding-top;
+  .ci-status-icon-warning svg {
+    fill: $theme-gray-600;
+  }
 
   .code-quality-container {
     border-top: 1px solid $gray-darker;
@@ -792,12 +794,29 @@
       margin: 0;
       line-height: $code_line_height;
 
+      .mr-widget-code-quality-icon svg {
+        width: 10px;
+        height: 10px;
+      }
+
       li.success {
-        color: $green-500;
+        .mr-widget-code-quality-title {
+          color: $green-500;
+        }
+
+        .mr-widget-code-quality-icon svg {
+          fill: $green-500;
+        }
       }
 
       li.failed {
-        color: $red-500;
+        .mr-widget-code-quality-title {
+          color: $red-500;
+        }
+
+        .mr-widget-code-quality-icon svg {
+          fill: $red-500;
+        }
       }
     }
   }

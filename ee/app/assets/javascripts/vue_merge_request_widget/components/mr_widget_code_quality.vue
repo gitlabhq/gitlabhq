@@ -36,7 +36,7 @@ export default {
   computed: {
     status() {
       if (this.loadingFailed || this.mr.codeclimateMetrics.newIssues.length) {
-        return 'failed';
+        return 'warning';
       }
       return 'success';
     },
@@ -118,7 +118,7 @@ export default {
         .then(resp => resp.json()),
     ])
       .then((values) => {
-        this.mr.compareCodeclimateMetrics(values[0], values[1]);
+        this.mr.compareCodeclimateMetrics(values[0], values[1], head_blob_path, base_blob_path);
         this.isLoading = false;
       })
       .catch(() => this.handleError());
