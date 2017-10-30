@@ -29,7 +29,7 @@ class CustomEmoji < ActiveRecord::Base
   private
 
   def expire_cache
-    namespace.invalidate_custom_emoji_cache
+    namespace.expire_custom_emoji_cache
   end
 
   def file_type
@@ -37,8 +37,12 @@ class CustomEmoji < ActiveRecord::Base
   end
 
   def valid_emoji_name
-    if namespace.all_emoji_names.include?(name)
+    if taken_emoji_names.include?(name)
       self.errors.add(:name, "#{self.name} is already being used for another emoji")
     end
+  end
+
+  def taken_emoji_names
+    Gitlab::Emoji.emojis_names + namespace.custom_emoji_names
   end
 end

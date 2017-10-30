@@ -10,6 +10,7 @@ class AddCustomEmojiIdOnAwardEmoji < ActiveRecord::Migration
   end
 
   def down
+    remove_foreign_key :award_emoji, :custom_emoji
     remove_reference :award_emoji, :custom_emoji
   end
 end
