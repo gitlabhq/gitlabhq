@@ -122,6 +122,10 @@ export default {
     triggerButtonClass() {
       return `ci-status-icon-${this.stage.status.group}`;
     },
+
+    borderlessIcon() {
+      return `${this.stage.status.icon}_borderless`;
+    }
   },
 };
 </script>
@@ -145,7 +149,7 @@ export default {
         aria-hidden="true"
         :aria-label="stage.title">
         <icon
-          :name="stage.status.icon"/>
+          :name="borderlessIcon"/>
       </span>
 
       <i
