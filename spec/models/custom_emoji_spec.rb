@@ -4,6 +4,7 @@ describe CustomEmoji, type: :model do
   subject { create(:custom_emoji) }
 
   it { is_expected.to belong_to(:namespace) }
+  it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   it { is_expected.to have_db_column(:file) }
   it { is_expected.to validate_length_of(:name).is_at_most(36) }
   it { is_expected.to validate_presence_of(:name) }
@@ -16,6 +17,9 @@ describe CustomEmoji, type: :model do
     end
 
     it 'disallows duplicate custom emoji names' do
+      ## Needed to invalidate the memoization, not needed in production
+      subject.namespace.instance_variable_set(:@custom_emoji_url_by_name, nil)
+
       new_emoji = build(:custom_emoji, name: subject.name, namespace: subject.namespace)
 
       expect(new_emoji).not_to be_valid
@@ -55,6 +59,12 @@ describe CustomEmoji, type: :model do
 
       it 'does not retrieve subgroup custom emoji for parent' do
         expect(described_class.for_namespace(parent_group.id).count).to be 1
+      end
+
+      it 'exeutees only one query' do
+        count = ActiveRecord::QueryRecorder.new { described_class.for_namespace(subgroup.id) }.count
+
+        expect(count).to be(1)
       end
     end
   end

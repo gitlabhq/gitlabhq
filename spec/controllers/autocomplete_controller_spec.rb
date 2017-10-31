@@ -382,8 +382,7 @@ describe AutocompleteController do
 
     context 'sign in as user without custom emoji' do
       it 'returns empty json' do
-        user2 = create(:user)
-        sign_in(user2)
+        sign_in(create(:user))
 
         get :custom_emoji, project_id: project.id
 

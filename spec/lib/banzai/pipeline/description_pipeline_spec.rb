@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 describe Banzai::Pipeline::DescriptionPipeline do
+  set(:project) { create(:project) }
+
   def parse(html)
     # When we pass HTML to Redcarpet, it gets wrapped in `p` tags...
     # ...except when we pass it pre-wrapped text. Rabble rabble.
     unwrap = !html.start_with?('<p ')
 
-    output = described_class.to_html(html, project: spy)
+    output = described_class.to_html(html, project: project)
 
     output.gsub!(%r{\A<p dir="auto">(.*)</p>(.*)\z}, '\1\2') if unwrap
 

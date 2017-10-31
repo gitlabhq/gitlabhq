@@ -12,11 +12,11 @@ class CustomEmoji < ActiveRecord::Base
 
   validates :name,
     presence: true,
-    uniqueness: { scope: :namespace_id },
+    uniqueness: { case_sensitive: false },
     length: { maximum: 36 },
     format: { with: /\A\w+\z/ }
 
-  after_save :expire_cache
+  after_commit :expire_cache
 
   scope :for_namespace, ->(namespace_id) do
     where(namespace_id: Namespace.find_by_id(namespace_id).self_and_ancestors.select(:id))
@@ -33,12 +33,12 @@ class CustomEmoji < ActiveRecord::Base
   end
 
   def file_type
-    self.errors.add :file, 'Only images allowed' unless self.file.image?
+    self.errors.add :file, _('Only images allowed') unless self.file.image?
   end
 
   def valid_emoji_name
     if taken_emoji_names.include?(name)
-      self.errors.add(:name, "#{self.name} is already being used for another emoji")
+      self.errors.add(:name, _("#{self.name} is already being used for another emoji"))
     end
   end
 
