@@ -22,6 +22,10 @@ describe 'Rack Attack global throttles' do
   let(:period_in_seconds) { 10000 }
   let(:period) { period_in_seconds.seconds }
 
+  let(:url_that_does_not_require_authentication) { '/users/sign_in' }
+  let(:url_that_requires_authentication) { '/dashboard/snippets' }
+  let(:api_partial_url) { '/todos' }
+
   # Make time-dependent tests deterministic
   around do |example|
     # Instead of test environment's :null_store
@@ -132,42 +136,42 @@ describe 'Rack Attack global throttles' do
       it 'rejects requests over the rate limit' do
         # At first, allow requests under the rate limit.
         requests_per_period.times do
-          get '/users/sign_in'
+          get url_that_does_not_require_authentication
           expect(response).to have_http_status 200
         end
 
         # the last straw
-        expect_rejection { get '/users/sign_in' }
+        expect_rejection { get url_that_does_not_require_authentication }
       end
 
       it 'allows requests after throttling and then waiting for the next period' do
         requests_per_period.times do
-          get '/users/sign_in'
+          get url_that_does_not_require_authentication
           expect(response).to have_http_status 200
         end
 
-        expect_rejection { get '/users/sign_in' }
+        expect_rejection { get url_that_does_not_require_authentication }
 
         Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
           requests_per_period.times do
-            get '/users/sign_in'
+            get url_that_does_not_require_authentication
             expect(response).to have_http_status 200
           end
 
-          expect_rejection { get '/users/sign_in' }
+          expect_rejection { get url_that_does_not_require_authentication }
         end
       end
 
       it 'counts requests from different IPs separately' do
         requests_per_period.times do
-          get '/users/sign_in'
+          get url_that_does_not_require_authentication
           expect(response).to have_http_status 200
         end
 
         expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
 
         # would be over limit for the same IP
-        get '/users/sign_in'
+        get url_that_does_not_require_authentication
         expect(response).to have_http_status 200
       end
     end
@@ -180,7 +184,7 @@ describe 'Rack Attack global throttles' do
 
       it 'allows requests over the rate limit' do
         (1 + requests_per_period).times do
-          get '/users/sign_in'
+          get url_that_does_not_require_authentication
           expect(response).to have_http_status 200
         end
       end
@@ -193,15 +197,15 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
 
     context 'with the token in the query string' do
-      let(:get_args) { [api('/todos', user)] }
-      let(:other_user_get_args) { [api('/todos', other_user)] }
+      let(:get_args) { [api(api_partial_url, user)] }
+      let(:other_user_get_args) { [api(api_partial_url, other_user)] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
 
     context 'with the token in the headers' do
-      let(:get_args) { ["/api/#{API::API.version}/todos", nil, private_token_headers(user)] }
-      let(:other_user_get_args) { ["/api/#{API::API.version}/todos", nil, private_token_headers(other_user)] }
+      let(:get_args) { api_get_args_with_token_headers(api_partial_url, private_token_headers(user)) }
+      let(:other_user_get_args) { api_get_args_with_token_headers(api_partial_url, private_token_headers(other_user)) }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
@@ -215,15 +219,15 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
 
     context 'with the token in the query string' do
-      let(:get_args) { [api('/todos', personal_access_token: token)] }
-      let(:other_user_get_args) { [api('/todos', personal_access_token: other_user_token)] }
+      let(:get_args) { [api(api_partial_url, personal_access_token: token)] }
+      let(:other_user_get_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
 
     context 'with the token in the headers' do
-      let(:get_args) { ["/api/#{API::API.version}/todos", nil, personal_access_token_headers(token)] }
-      let(:other_user_get_args) { ["/api/#{API::API.version}/todos", nil, personal_access_token_headers(other_user_token)] }
+      let(:get_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
+      let(:other_user_get_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
@@ -239,15 +243,15 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
 
     context 'with the token in the query string' do
-      let(:get_args) { [api('/todos', oauth_access_token: token)] }
-      let(:other_user_get_args) { [api('/todos', oauth_access_token: other_user_token)] }
+      let(:get_args) { [api(api_partial_url, oauth_access_token: token)] }
+      let(:other_user_get_args) { [api(api_partial_url, oauth_access_token: other_user_token)] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
 
     context 'with the token in the headers' do
-      let(:get_args) { ["/api/#{API::API.version}/todos", nil, oauth_token_headers(token)] }
-      let(:other_user_get_args) { ["/api/#{API::API.version}/todos", nil, oauth_token_headers(other_user_token)] }
+      let(:get_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(token)) }
+      let(:other_user_get_args) { api_get_args_with_token_headers(api_partial_url, oauth_token_headers(other_user_token)) }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
@@ -260,15 +264,15 @@ describe 'Rack Attack global throttles' do
 
     context 'with the token in the query string' do
       context 'with the atom extension' do
-        let(:get_args) { ["/dashboard/projects.atom?rss_token=#{user.rss_token}"] }
-        let(:other_user_get_args) { ["/dashboard/projects.atom?rss_token=#{other_user.rss_token}"] }
+        let(:get_args) { [rss_url(user)] }
+        let(:other_user_get_args) { [rss_url(other_user)] }
 
         it_behaves_like 'rate-limited token-authenticated requests'
       end
 
       context 'with the atom format in the Accept header' do
-        let(:get_args) { ["/dashboard/projects?rss_token=#{user.rss_token}", nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
-        let(:other_user_get_args) { ["/dashboard/projects?rss_token=#{other_user.rss_token}", nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
+        let(:get_args) { [rss_url(user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
+        let(:other_user_get_args) { [rss_url(other_user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
 
         it_behaves_like 'rate-limited token-authenticated requests'
       end
@@ -295,54 +299,54 @@ describe 'Rack Attack global throttles' do
       it 'rejects requests over the rate limit' do
         # At first, allow requests under the rate limit.
         requests_per_period.times do
-          get '/dashboard/snippets'
+          get url_that_requires_authentication
           expect(response).to have_http_status 200
         end
 
         # the last straw
-        expect_rejection { get '/dashboard/snippets' }
+        expect_rejection { get url_that_requires_authentication }
       end
 
       it 'allows requests after throttling and then waiting for the next period' do
         requests_per_period.times do
-          get '/dashboard/snippets'
+          get url_that_requires_authentication
           expect(response).to have_http_status 200
         end
 
-        expect_rejection { get '/dashboard/snippets' }
+        expect_rejection { get url_that_requires_authentication }
 
         Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
           requests_per_period.times do
-            get '/dashboard/snippets'
+            get url_that_requires_authentication
             expect(response).to have_http_status 200
           end
 
-          expect_rejection { get '/dashboard/snippets' }
+          expect_rejection { get url_that_requires_authentication }
         end
       end
 
       it 'counts requests from different users separately, even from the same IP' do
         requests_per_period.times do
-          get '/dashboard/snippets'
+          get url_that_requires_authentication
           expect(response).to have_http_status 200
         end
 
         # would be over the limit if this wasn't a different user
         login_as(create(:user))
 
-        get '/dashboard/snippets'
+        get url_that_requires_authentication
         expect(response).to have_http_status 200
       end
 
       it 'counts all requests from the same user, even via different IPs' do
         requests_per_period.times do
-          get '/dashboard/snippets'
+          get url_that_requires_authentication
           expect(response).to have_http_status 200
         end
 
         expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
 
-        expect_rejection { get '/dashboard/snippets' }
+        expect_rejection { get url_that_requires_authentication }
       end
     end
 
@@ -354,11 +358,19 @@ describe 'Rack Attack global throttles' do
 
       it 'allows requests over the rate limit' do
         (1 + requests_per_period).times do
-          get '/dashboard/snippets'
+          get url_that_requires_authentication
           expect(response).to have_http_status 200
         end
       end
     end
+  end
+
+  def api_get_args_with_token_headers(partial_url, token_headers)
+    ["/api/#{API::API.version}#{partial_url}", nil, token_headers]
+  end
+
+  def rss_url(user)
+    "/dashboard/projects.atom?rss_token=#{user.rss_token}"
   end
 
   def private_token_headers(user)
