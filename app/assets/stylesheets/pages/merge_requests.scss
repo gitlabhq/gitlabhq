@@ -790,14 +790,19 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 0px 36px;
+      padding: 0 12px;
       margin: 0;
       line-height: $code_line_height;
 
-      .mr-widget-code-quality-icon svg {
-        width: 10px;
-        height: 10px;
+      .mr-widget-code-quality-icon {
+        margin-right: 12px;
+
+        svg {
+          width: 10px;
+          height: 10px;
+        }
       }
+
 
       li.success {
         .mr-widget-code-quality-title {
