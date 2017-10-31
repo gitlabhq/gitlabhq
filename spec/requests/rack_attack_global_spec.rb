@@ -1,7 +1,22 @@
 require 'spec_helper'
 
 describe 'Rack Attack global throttles' do
-  NUM_TRIES_FOR_REJECTION = 3 # Flaky tests, have not figured out how to fix it
+  # If the tests are being flaky as described below, then this constant
+  # can be set to greater than 1 to make multiple attempts to get a 429.
+  #
+  # In tests exceeding the rate limit within a time period (which we know we
+  # have accomplished because we've made exactly 1 more request than allowed
+  # while time is stopped) we expect a 429. But sometimes we get a 200,
+  # sometimes for more than one request, but eventually we get a 429. This
+  # constant and its usages should be removed if we figure out why this happens.
+  NUM_TRIES_FOR_REJECTION = 1
+
+  # Extra time travel past what should be strictly necessary to ensure the
+  # throttle we are testing is using a cache key where the request count is 0.
+  #
+  # Why add this? Sometimes we get a 429 when we expect a 200. This constant and
+  # its usages should be removed if we figure out why this happens.
+  NEXT_TIME_PERIOD_BUFFER = 0.seconds
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
@@ -26,11 +41,11 @@ describe 'Rack Attack global throttles' do
   let(:url_that_requires_authentication) { '/dashboard/snippets' }
   let(:api_partial_url) { '/todos' }
 
-  # Make time-dependent tests deterministic
   around do |example|
-    # Instead of test environment's :null_store
+    # Instead of test environment's :null_store so the throttles can increment
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
+    # Make time-dependent tests deterministic
     Timecop.freeze { example.run }
 
     Rack::Attack.cache.store = Rails.cache
@@ -72,7 +87,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get(*get_args) }
 
-        Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
+        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
           requests_per_period.times do
             get(*get_args)
             expect(response).to have_http_status 200
@@ -152,7 +167,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get url_that_does_not_require_authentication }
 
-        Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
+        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
           requests_per_period.times do
             get url_that_does_not_require_authentication
             expect(response).to have_http_status 200
@@ -315,7 +330,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get url_that_requires_authentication }
 
-        Timecop.travel((1.second + period).from_now) do # Add 1 because flaky
+        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
           requests_per_period.times do
             get url_that_requires_authentication
             expect(response).to have_http_status 200
@@ -389,7 +404,7 @@ describe 'Rack Attack global throttles' do
     NUM_TRIES_FOR_REJECTION.times do |i|
       yield
       break if response.status == 429 # success
-      Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})"
+      Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})" if i + 1 < NUM_TRIES_FOR_REJECTION
     end
 
     expect(response).to have_http_status(429)
