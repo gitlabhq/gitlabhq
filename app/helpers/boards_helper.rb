@@ -20,6 +20,17 @@ module BoardsHelper
     project_issues_path(@project)
   end
 
+  def current_board_json
+    board = @board || @boards.first
+
+    board.to_json(
+      only: [:id, :name, :milestone_id],
+      include: {
+        milestone: { only: [:title] }
+      }
+    )
+  end
+
   def board_base_url
     project_boards_path(@project)
   end

@@ -878,7 +878,7 @@ class MergeRequest < ActiveRecord::Base
   #
   def all_commit_shas
     if persisted?
-      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).pluck('DISTINCT(sha)')
+      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).limit(10_000).pluck('sha')
       serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
 
       (column_shas + serialised_shas).uniq
