@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.1 (2017-10-31)
+
+- [FIXED] Auto Devops kubernetes default namespace is now correctly built out of gitlab project group-name. !14642 (Mircea Danila Dumitrescu)
+- [FIXED] Forbid the usage of `Redis#keys`. !14889
+- [FIXED] Make the circuitbreaker more robust by adding higher thresholds, and multiple access attempts. !14933
+- [FIXED] Only cache last push event for existing projects when pushing to a fork. !14989
+- [FIXED] Fix bug preventing secondary emails from being confirmed. !15010
+- [FIXED] Fix broken wiki pages that link to a wiki file. !15019
+- [FIXED] Don't rename paths that were freed up when upgrading. !15029
+- [FIXED] Fix bitbucket login. !15051
+- [FIXED] Update gitaly in Gitlab 10.1 to 0.43.1 for temp file cleanup. !15055
+- [FIXED] Use the correct visibility attribute for projects in system hooks. !15065
+- [FIXED] Normalize LDAP DN when looking up identity.
+- [FIXED] Adds callback functions for initial request in clusters page.
+- [FIXED] Fix missing Import/Export issue assignees.
+- [FIXED] Allow boards as top level route.
+- [FIXED] Fix widget of locked merge requests not being presented.
+- [FIXED] Fix editing issue description in mobile view.
+- [FIXED] Fix deletion of container registry or images returning an error.
+- [FIXED] Fix the writing of invalid environment refs.
+- [CHANGED] Store circuitbreaker settings in the database instead of config. !14842
+- [CHANGED] Update default disabled merge request widget message to reflect a general failure. !14960
+- [PERFORMANCE] Stop merge requests with thousands of commits from timing out. !15063
+
 ## 10.1.0 (2017-10-22)
 
 - [SECURITY] Use a timeout on certain git operations. !14872
