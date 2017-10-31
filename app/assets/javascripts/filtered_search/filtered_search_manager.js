@@ -284,25 +284,25 @@ class FilteredSearchManager {
   }
 
   toggleClearSearchButton() {
-    const query = gl.DropdownUtils.getSearchQuery();
+    const showPlaceholderText = gl.DropdownUtils.showPlaceholderText();
     const hidden = 'hidden';
-    const hasHidden = this.clearSearchButton.classList.contains(hidden);
+    const isHidden = this.clearSearchButton.classList.contains(hidden);
 
-    if (query.length === 0 && !hasHidden) {
+    if (showPlaceholderText && !isHidden) {
       this.clearSearchButton.classList.add(hidden);
-    } else if (query.length && hasHidden) {
+    } else if (!showPlaceholderText && isHidden) {
       this.clearSearchButton.classList.remove(hidden);
     }
   }
 
   handleInputPlaceholder() {
-    const query = gl.DropdownUtils.getSearchQuery();
+    const showPlaceholderText = gl.DropdownUtils.showPlaceholderText();
     const placeholder = 'Search or filter results...';
     const currentPlaceholder = this.filteredSearchInput.placeholder;
 
-    if (query.length === 0 && currentPlaceholder !== placeholder) {
+    if (showPlaceholderText && currentPlaceholder !== placeholder) {
       this.filteredSearchInput.placeholder = placeholder;
-    } else if (query.length > 0 && currentPlaceholder !== '') {
+    } else if (!showPlaceholderText && currentPlaceholder !== '') {
       this.filteredSearchInput.placeholder = '';
     }
   }

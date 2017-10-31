@@ -147,6 +147,22 @@ class DropdownUtils {
     return dataValue !== null;
   }
 
+  static showPlaceholderText() {
+    const container = FilteredSearchContainer.container;
+
+    const textInput = container.querySelector('.filtered-search');
+    if (textInput && textInput.value) {
+      return false;
+    }
+
+    const tokens = [].slice.call(container.querySelectorAll('.tokens-container .filtered-search-token'));
+    if (tokens.find(token => !token.firstElementChild.classList.contains('hidden'))) {
+      return false;
+    }
+
+    return true;
+  }
+
   // Determines the full search query (visual tokens + input)
   static getSearchQuery(untilInput = false) {
     const container = FilteredSearchContainer.container;
