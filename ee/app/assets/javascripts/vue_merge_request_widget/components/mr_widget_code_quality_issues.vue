@@ -60,7 +60,7 @@
         :href="issue.location.urlPath"
         target="_blank"
         rel="noopener noreferrer nofollow">
-        {{issue.location.path}}
+        {{issue.location.path}}<template v-if="issue.location.lines && issue.location.lines.begin">:{{issue.location.lines.begin}}</template>
       </a>
   </li>
   </ul>

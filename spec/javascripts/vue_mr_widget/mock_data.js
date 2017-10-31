@@ -268,4 +268,4 @@ export const baseIssues = [
     },
     "fingerprint": "ca2354534dee94ae60ba2f54e3857c50e5",
   }
-]
+];

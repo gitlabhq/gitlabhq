@@ -22,7 +22,9 @@ describe('merge request code quality issues', () => {
               path: 'bar',
               urlPath: 'foo',
               positions: '81',
-              lines: '21',
+              lines: {
+                begin: '21',
+              },
             },
           }],
         });
@@ -31,7 +33,7 @@ describe('merge request code quality issues', () => {
       it('should render issue', () => {
         expect(
           vm.$el.querySelector('li').textContent.trim().replace(/\s+/g, ''),
-        ).toEqual('Fixed:fooinbar');
+        ).toEqual('Fixed:fooinbar:21');
       });
     });
 
@@ -44,7 +46,9 @@ describe('merge request code quality issues', () => {
             location: {
               path: 'bar',
               positions: '81',
-              lines: '21',
+              lines: {
+                begin: '21',
+              },
             },
           }],
         });
@@ -65,7 +69,9 @@ describe('merge request code quality issues', () => {
             location: {
               path: 'bar',
               positions: '81',
-              lines: '21',
+              lines: {
+                begin: '21',
+              },
             },
           }],
         });
