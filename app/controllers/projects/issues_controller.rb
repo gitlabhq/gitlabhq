@@ -76,7 +76,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: serializer.represent(@issue)
+        render json: serializer.represent(@issue, serializer: params[:serializer])
       end
     end
   end
