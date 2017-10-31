@@ -22,14 +22,14 @@ describe 'Rack Attack global throttles' do
   let(:period_in_seconds) { 10000 }
   let(:period) { period_in_seconds.seconds }
 
-  before do
-    # Instead of test environment's :null_store
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-  end
-
   # Make time-dependent tests deterministic
   around do |example|
+    # Instead of test environment's :null_store
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+
     Timecop.freeze { example.run }
+
+    Rack::Attack.cache.store = Rails.cache
   end
 
   # Requires let variables:
