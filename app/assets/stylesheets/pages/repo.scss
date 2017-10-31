@@ -1,12 +1,3 @@
-.monaco-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparent;
-}
-
 .modal.popup-dialog {
   display: block;
   background-color: $black-transparent;
@@ -54,6 +45,7 @@
   }
 
   .tree-content-holder {
+    display: -webkit-flex;
     display: flex;
     min-height: 300px;
   }
@@ -63,7 +55,9 @@
   }
 
   .panel-right {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
     width: 80%;
     height: 100%;
@@ -81,10 +75,6 @@
           text-decoration: underline;
         }
       }
-
-      .cursor {
-        display: none !important;
-      }
     }
 
     .blob-no-preview {
@@ -94,21 +84,12 @@
       }
     }
 
-    &.edit-mode {
-      .blob-viewer-container {
-        overflow: hidden;
-      }
-
-      .monaco-editor.vs {
-        .cursor {
-          background: $black;
-          border-color: $black;
-          display: block !important;
-        }
-      }
+    &.blob-editor-container {
+      overflow: hidden;
     }
 
     .blob-viewer-container {
+      -webkit-flex: 1;
       flex: 1;
       overflow: auto;
 
@@ -138,6 +119,7 @@
     }
 
     #tabs {
+      position: relative;
       flex-shrink: 0;
       display: flex;
       width: 100%;
@@ -166,6 +148,10 @@
           vertical-align: middle;
           text-decoration: none;
           margin-right: 12px;
+
+          &:focus {
+            outline: none;
+          }
         }
 
         .close-btn {
@@ -310,25 +296,5 @@
 
   p {
     width: 100%;
-  }
-}
-
-@keyframes swipeRightAppear {
-  0% {
-    transform: scaleX(0.00);
-  }
-
-  100% {
-    transform: scaleX(1.00);
-  }
-}
-
-@keyframes swipeRightDissapear {
-  0% {
-    transform: scaleX(1.00);
-  }
-
-  100% {
-    transform: scaleX(0.00);
   }
 }

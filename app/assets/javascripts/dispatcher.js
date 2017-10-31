@@ -1,8 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
-/* global IssuableForm */
+import IssuableForm from './issuable_form';
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global NewBranchForm */
@@ -173,7 +173,7 @@ import Diff from './diff';
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
@@ -231,12 +231,16 @@ import Diff from './diff';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
           new Diff();

@@ -539,7 +539,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_selector('.js-new-board-list')
+      expect(page).not_to have_button('.js-new-board-list')
     end
 
     it 'does not allow dragging' do

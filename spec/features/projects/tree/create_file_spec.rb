@@ -29,8 +29,6 @@ feature 'Multi-file editor new file', :js do
       click_button('Create file')
     end
 
-    find('.inputarea').send_keys('file content')
-
     fill_in('commit-message', with: 'commit message')
 
     click_button('Commit 1 file')

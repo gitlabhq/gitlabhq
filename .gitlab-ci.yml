@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
 
 .default-cache: &default-cache
-  key: "ruby-233-with-yarn"
+  key: "ruby-235-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -455,7 +455,7 @@ db:migrate:reset-mysql:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch origin v8.14.10
+    - git fetch origin v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml

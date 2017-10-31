@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import RepoStore from '~/repo/stores/repo_store';
+import store from '~/repo/stores';
 import modal from '~/repo/components/new_dropdown/modal.vue';
-import eventHub from '~/repo/event_hub';
-import createComponent from '../../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { file, resetStore } from '../../helpers';
 
 describe('new file modal component', () => {
   const Component = Vue.extend(modal);
@@ -11,18 +11,18 @@ describe('new file modal component', () => {
   afterEach(() => {
     vm.$destroy();
 
-    RepoStore.files = [];
-    RepoStore.openedFiles = [];
-    RepoStore.setViewToPreview();
+    resetStore(vm.$store);
   });
 
   ['tree', 'blob'].forEach((type) => {
     describe(type, () => {
       beforeEach(() => {
-        vm = createComponent(Component, {
+        vm = createComponentWithStore(Component, store, {
           type,
-          currentPath: RepoStore.path,
-        });
+          path: '',
+        }).$mount();
+
+        vm.entryName = 'testing';
       });
 
       it(`sets modal title as ${type}`, () => {
@@ -42,35 +42,157 @@ describe('new file modal component', () => {
 
         expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe(`${title} name`);
       });
+
+      describe('createEntryInStore', () => {
+        it('calls createTempEntry', () => {
+          spyOn(vm, 'createTempEntry');
+
+          vm.createEntryInStore();
+
+          expect(vm.createTempEntry).toHaveBeenCalledWith({
+            name: 'testing',
+            type,
+          });
+        });
+
+        it('sets editMode to true', (done) => {
+          vm.createEntryInStore();
+
+          setTimeout(() => {
+            expect(vm.$store.state.editMode).toBeTruthy();
+
+            done();
+          });
+        });
+
+        it('toggles blob view', (done) => {
+          vm.createEntryInStore();
+
+          setTimeout(() => {
+            expect(vm.$store.state.currentBlobView).toBe('repo-editor');
+
+            done();
+          });
+        });
+
+        it('opens newly created file', (done) => {
+          vm.createEntryInStore();
+
+          setTimeout(() => {
+            expect(vm.$store.state.openFiles.length).toBe(1);
+            expect(vm.$store.state.openFiles[0].name).toBe(type === 'blob' ? 'testing' : '.gitkeep');
+
+            done();
+          });
+        });
+
+        it(`creates ${type} in the current stores path`, (done) => {
+          vm.$store.state.path = 'app';
+
+          vm.createEntryInStore();
+
+          setTimeout(() => {
+            expect(vm.$store.state.tree[0].path).toBe('app/testing');
+            expect(vm.$store.state.tree[0].name).toBe('testing');
+
+            if (type === 'tree') {
+              expect(vm.$store.state.tree[0].tree.length).toBe(1);
+            }
+
+            done();
+          });
+        });
+
+        if (type === 'blob') {
+          it('creates new file', (done) => {
+            vm.createEntryInStore();
+
+            setTimeout(() => {
+              expect(vm.$store.state.tree.length).toBe(1);
+              expect(vm.$store.state.tree[0].name).toBe('testing');
+              expect(vm.$store.state.tree[0].type).toBe('blob');
+              expect(vm.$store.state.tree[0].tempFile).toBeTruthy();
+
+              done();
+            });
+          });
+
+          it('does not create temp file when file already exists', (done) => {
+            vm.$store.state.tree.push(file('testing', '1', type));
+
+            vm.createEntryInStore();
+
+            setTimeout(() => {
+              expect(vm.$store.state.tree.length).toBe(1);
+              expect(vm.$store.state.tree[0].name).toBe('testing');
+              expect(vm.$store.state.tree[0].type).toBe('blob');
+              expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
+
+              done();
+            });
+          });
+        } else {
+          it('creates new tree', () => {
+            vm.createEntryInStore();
+
+            expect(vm.$store.state.tree.length).toBe(1);
+            expect(vm.$store.state.tree[0].name).toBe('testing');
+            expect(vm.$store.state.tree[0].type).toBe('tree');
+            expect(vm.$store.state.tree[0].tempFile).toBeTruthy();
+            expect(vm.$store.state.tree[0].tree.length).toBe(1);
+            expect(vm.$store.state.tree[0].tree[0].name).toBe('.gitkeep');
+          });
+
+          it('creates multiple trees when entryName has slashes', () => {
+            vm.entryName = 'app/test';
+            vm.createEntryInStore();
+
+            expect(vm.$store.state.tree.length).toBe(1);
+            expect(vm.$store.state.tree[0].name).toBe('app');
+            expect(vm.$store.state.tree[0].tree[0].name).toBe('test');
+            expect(vm.$store.state.tree[0].tree[0].tree[0].name).toBe('.gitkeep');
+          });
+
+          it('creates tree in existing tree', () => {
+            vm.$store.state.tree.push(file('app', '1', 'tree'));
+
+            vm.entryName = 'app/test';
+            vm.createEntryInStore();
+
+            expect(vm.$store.state.tree.length).toBe(1);
+            expect(vm.$store.state.tree[0].name).toBe('app');
+            expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
+            expect(vm.$store.state.tree[0].tree[0].tempFile).toBeTruthy();
+            expect(vm.$store.state.tree[0].tree[0].name).toBe('test');
+            expect(vm.$store.state.tree[0].tree[0].tree[0].name).toBe('.gitkeep');
+          });
+
+          it('does not create new tree when already exists', () => {
+            vm.$store.state.tree.push(file('app', '1', 'tree'));
+
+            vm.entryName = 'app';
+            vm.createEntryInStore();
+
+            expect(vm.$store.state.tree.length).toBe(1);
+            expect(vm.$store.state.tree[0].name).toBe('app');
+            expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
+            expect(vm.$store.state.tree[0].tree.length).toBe(0);
+          });
+        }
+      });
     });
   });
 
   it('focuses field on mount', () => {
     document.body.innerHTML += '<div class="js-test"></div>';
 
-    vm = createComponent(Component, {
+    vm = createComponentWithStore(Component, store, {
       type: 'tree',
-      currentPath: RepoStore.path,
-    }, '.js-test');
+      path: '',
+    }).$mount('.js-test');
 
     expect(document.activeElement).toBe(vm.$refs.fieldName);
 
     vm.$el.remove();
-  });
-
-  describe('createEntryInStore', () => {
-    it('emits createNewEntry event', () => {
-      spyOn(eventHub, '$emit');
-
-      vm = createComponent(Component, {
-        type: 'tree',
-        currentPath: RepoStore.path,
-      });
-      vm.entryName = 'testing';
-
-      vm.createEntryInStore();
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', 'testing', 'tree');
-    });
   });
 });

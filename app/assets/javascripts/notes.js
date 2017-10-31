@@ -5,14 +5,14 @@ default-case, prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
 brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
 newline-per-chained-call, no-useless-escape, class-methods-use-this */
-/* global Autosave */
+
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import autosize from 'vendor/autosize';
+import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -20,12 +20,12 @@ import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
-import './autosave';
+import Autosave from './autosave';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
-window.autosize = autosize;
+window.autosize = Autosize;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');

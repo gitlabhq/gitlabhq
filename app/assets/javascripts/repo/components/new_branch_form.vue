@@ -1,17 +1,11 @@
 <script>
+  import { mapState, mapActions } from 'vuex';
   import flash, { hideFlash } from '../../flash';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import eventHub from '../event_hub';
 
   export default {
     components: {
       loadingIcon,
-    },
-    props: {
-      currentBranch: {
-        type: String,
-        required: true,
-      },
     },
     data() {
       return {
@@ -20,11 +14,17 @@
       };
     },
     computed: {
+      ...mapState([
+        'currentBranch',
+      ]),
       btnDisabled() {
         return this.loading || this.branchName === '';
       },
     },
     methods: {
+      ...mapActions([
+        'createNewBranch',
+      ]),
       toggleDropdown() {
         this.$dropdown.dropdown('toggle');
       },
@@ -38,19 +38,21 @@
           hideFlash(flashEl, false);
         }
 
-        eventHub.$emit('createNewBranch', this.branchName);
-      },
-      showErrorMessage(message) {
-        this.loading = false;
-        flash(message, 'alert', this.$el);
-      },
-      createdNewBranch(newBranchName) {
-        this.loading = false;
-        this.branchName = '';
+        this.createNewBranch(this.branchName)
+          .then(() => {
+            this.loading = false;
+            this.branchName = '';
 
-        if (this.dropdownText) {
-          this.dropdownText.textContent = newBranchName;
-        }
+            if (this.dropdownText) {
+              this.dropdownText.textContent = this.currentBranch;
+            }
+
+            this.toggleDropdown();
+          })
+          .catch(res => res.json().then((data) => {
+            this.loading = false;
+            flash(data.message, 'alert', this.$el);
+          }));
       },
     },
     created() {
@@ -59,15 +61,6 @@
 
       // text element is outside Vue app
       this.dropdownText = document.querySelector('.project-refs-form .dropdown-toggle-text');
-
-      eventHub.$on('createNewBranchSuccess', this.createdNewBranch);
-      eventHub.$on('createNewBranchError', this.showErrorMessage);
-      eventHub.$on('toggleNewBranchDropdown', this.toggleDropdown);
-    },
-    destroyed() {
-      eventHub.$off('createNewBranchSuccess', this.createdNewBranch);
-      eventHub.$off('toggleNewBranchDropdown', this.toggleDropdown);
-      eventHub.$off('createNewBranchError', this.showErrorMessage);
     },
   };
 </script>

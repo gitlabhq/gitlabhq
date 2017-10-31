@@ -1,0 +1,5 @@
+---
+title: Adds project_id to pipeline hook data
+merge_request: 15044
+author: Jacopo Beschi @jacopo-beschi
+type: added

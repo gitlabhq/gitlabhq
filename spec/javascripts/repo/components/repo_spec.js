@@ -1,9 +1,8 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repo from '~/repo/components/repo.vue';
-import RepoStore from '~/repo/stores/repo_store';
-import Service from '~/repo/services/repo_service';
-import eventHub from '~/repo/event_hub';
-import createComponent from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { file, resetStore } from '../helpers';
 
 describe('repo component', () => {
   let vm;
@@ -11,86 +10,26 @@ describe('repo component', () => {
   beforeEach(() => {
     const Component = Vue.extend(repo);
 
-    RepoStore.currentBranch = 'master';
-
-    vm = createComponent(Component);
+    vm = createComponentWithStore(Component, store).$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
 
-    RepoStore.currentBranch = '';
+    resetStore(vm.$store);
   });
 
-  describe('createNewBranch', () => {
-    beforeEach(() => {
-      spyOn(history, 'pushState');
-    });
+  it('does not render panel right when no files open', () => {
+    expect(vm.$el.querySelector('.panel-right')).toBeNull();
+  });
 
-    describe('success', () => {
-      beforeEach(() => {
-        spyOn(Service, 'createBranch').and.returnValue(Promise.resolve({
-          data: {
-            name: 'test',
-          },
-        }));
-      });
+  it('renders panel right when files are open', (done) => {
+    vm.$store.state.tree.push(file());
 
-      it('calls createBranch with branchName', () => {
-        eventHub.$emit('createNewBranch', 'test');
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('.panel-right')).toBeNull();
 
-        expect(Service.createBranch).toHaveBeenCalledWith({
-          branch: 'test',
-          ref: RepoStore.currentBranch,
-        });
-      });
-
-      it('pushes new history state', (done) => {
-        RepoStore.currentBranch = 'master';
-
-        spyOn(vm, 'getCurrentLocation').and.returnValue('http://test.com/master');
-
-        eventHub.$emit('createNewBranch', 'test');
-
-        setTimeout(() => {
-          expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'http://test.com/test');
-          done();
-        });
-      });
-
-      it('updates stores currentBranch', (done) => {
-        eventHub.$emit('createNewBranch', 'test');
-
-        setTimeout(() => {
-          expect(RepoStore.currentBranch).toBe('test');
-
-          done();
-        });
-      });
-    });
-
-    describe('failure', () => {
-      beforeEach(() => {
-        spyOn(Service, 'createBranch').and.returnValue(Promise.reject({
-          response: {
-            data: {
-              message: 'test',
-            },
-          },
-        }));
-      });
-
-      it('emits createNewBranchError event', (done) => {
-        spyOn(eventHub, '$emit').and.callThrough();
-
-        eventHub.$emit('createNewBranch', 'test');
-
-        setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('createNewBranchError', 'test');
-
-          done();
-        });
-      });
+      done();
     });
   });
 });

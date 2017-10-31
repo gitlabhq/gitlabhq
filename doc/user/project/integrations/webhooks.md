@@ -76,6 +76,7 @@ X-Gitlab-Event: Push Hook
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
   "project_id": 15,
   "project":{
+    "id": 15,
     "name":"Diaspora",
     "description":"",
     "web_url":"http://example.com/mike/diaspora",
@@ -156,6 +157,7 @@ X-Gitlab-Event: Tag Push Hook
   "user_avatar": "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
   "project_id": 1,
   "project":{
+    "id": 1,
     "name":"Example",
     "description":"",
     "web_url":"http://example.com/jsmith/example",
@@ -206,6 +208,7 @@ X-Gitlab-Event: Issue Hook
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
   },
   "project": {
+    "id": 1,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlabhq/gitlab-test",
@@ -335,6 +338,7 @@ X-Gitlab-Event: Note Hook
   },
   "project_id": 5,
   "project":{
+    "id": 5,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlabhq/gitlab-test",
@@ -414,6 +418,7 @@ X-Gitlab-Event: Note Hook
   },
   "project_id": 5,
   "project":{
+    "id": 5,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlab-org/gitlab-test",
@@ -540,6 +545,7 @@ X-Gitlab-Event: Note Hook
   },
   "project_id": 5,
   "project":{
+    "id": 5,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlab-org/gitlab-test",
@@ -618,6 +624,7 @@ X-Gitlab-Event: Note Hook
   },
   "project_id": 5,
   "project":{
+    "id": 5,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlab-org/gitlab-test",
@@ -692,6 +699,7 @@ X-Gitlab-Event: Merge Request Hook
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
   },
   "project": {
+    "id": 1,
     "name":"Gitlab Test",
     "description":"Aut reprehenderit ut est.",
     "web_url":"http://example.com/gitlabhq/gitlab-test",
@@ -848,6 +856,7 @@ X-Gitlab-Event: Wiki Page Hook
     "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon"
   },
   "project": {
+    "id": 1,
     "name": "awesome-project",
     "description": "This is awesome",
     "web_url": "http://example.com/root/awesome-project",
@@ -919,6 +928,7 @@ X-Gitlab-Event: Pipeline Hook
       "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
    },
    "project":{
+      "id": 1,
       "name": "Gitlab Test",
       "description": "Atque in sunt eos similique dolores voluptatem.",
       "web_url": "http://192.168.64.1:3005/gitlab-org/gitlab-test",

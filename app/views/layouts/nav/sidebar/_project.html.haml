@@ -274,7 +274,7 @@
               Members
           %ul.sidebar-sub-level-items.is-fly-out-only
             = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_settings_members_path(@project) do
+              = link_to project_project_members_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('Members') }
 
