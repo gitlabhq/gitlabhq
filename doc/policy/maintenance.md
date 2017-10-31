@@ -19,24 +19,30 @@ For example, for GitLab version 10.5.7:
 * `5` represents minor version
 * `7` represents patch number
 
-## Security releases
+## Patch releases
 
-The current stable release will receive security patches and bug fixes
-(eg. `8.9.0` -> `8.9.1`).
+Patch releases usually only include bug fixes and are only done for the current
+stable release. That said, in some cases, we may backport it to previous stable
+release, depending on the severity of the bug.
 
-Feature releases will mark the next supported stable
-release where the minor version is increased numerically by increments of one
-(eg. `8.9 -> 8.10`).
+For instance, if we release `10.1.1` with a fix for a severe bug introduced in
+`10.0.0`, we could backport the fix to a new `10.0.x` patch release.
 
-Our current policy is to support one stable release at any given time.
-For medium-level security issues, we may consider backporting to the previous two
+### Security releases
+
+Security releases are a special kind of patch release that only include security
+fixes and patches (see below).
+
+Our current policy is to support one stable release at any given time, but for
+medium-level security issues, we may backport security fixes to the previous two
 monthly releases.
 
-For very serious security issues, there is [precedent](https://about.gitlab.com/2016/05/02/cve-2016-4340-patches/)
-to backport security fixes to even more monthly releases of GitLab. This decision
-is made on a case-by-case basis.
+For very serious security issues, there is
+[precedent](https://about.gitlab.com/2016/05/02/cve-2016-4340-patches/)
+to backport security fixes to even more monthly releases of GitLab.
+This decision is made on a case-by-case basis.
 
-## Version support
+## Upgrade recommendations
 
 We encourage everyone to run the latest stable release to ensure that you can
 easily upgrade to the most secure and feature-rich GitLab experience. In order
@@ -70,7 +76,6 @@ Please see the table below for some examples:
 | -------------- | ------------ | ------------------------ | ---------------- |
 | 9.4.5   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.4.5`     | `8.17.7` is the last version in version `8` |
 | 10.1.4   | 8.13.4   | `8.13.4` -> `8.17.7` -> `9.5.8` -> `10.1.4` | `8.17.7` is the last version in version `8`, `9.5.8` is the last version in version `9` |
-|
 
 More information about the release procedures can be found in our
 [release-tools documentation][rel]. You may also want to read our
