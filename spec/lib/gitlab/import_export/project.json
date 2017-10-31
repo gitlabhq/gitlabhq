@@ -43,7 +43,7 @@
   "issues": [
     {
       "id": 40,
-      "title": "Voluptatem amet doloribus deleniti eos maxime repudiandae molestias.",
+      "title": "Voluptatem",
       "assignee_id": 1,
       "author_id": 22,
       "project_id": 5,
@@ -70,6 +70,12 @@
         "updated_at": "2016-06-14T15:02:04.415Z",
         "state": "active",
         "iid": 1,
+        "issue_assignees": [
+          {
+            "user_id": 1,
+            "issue_id": 1
+          }
+        ]
         "events": [
           {
             "id": 487,
