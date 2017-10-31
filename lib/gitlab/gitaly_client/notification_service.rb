@@ -12,8 +12,7 @@ module Gitlab
           @storage,
           :notification_service,
           :post_receive,
-          Gitaly::PostReceiveRequest.new(repository: @gitaly_repo),
-          timeout: GitalyClient::DEFAULT_TIMEOUT
+          Gitaly::PostReceiveRequest.new(repository: @gitaly_repo)
         )
       end
     end

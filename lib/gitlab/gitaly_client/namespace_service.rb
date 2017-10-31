@@ -32,7 +32,7 @@ module Gitlab
       private
 
       def gitaly_client_call(type, request)
-        GitalyClient.call(@storage, :namespace_service, type, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        GitalyClient.call(@storage, :namespace_service, type, request)
       end
     end
   end

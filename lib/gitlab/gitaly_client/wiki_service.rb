@@ -35,7 +35,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_write_page, enum, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_write_page, enum)
         if error = response.duplicate_error.presence
           raise Gitlab::Git::Wiki::DuplicatePageError, error
         end

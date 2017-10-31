@@ -12,7 +12,7 @@ module Gitlab
 
       def branches
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
 
         response.flat_map do |message|
           message.branches.map do |branch|
@@ -24,19 +24,19 @@ module Gitlab
 
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request)
         Gitlab::Git.branch_name(response.name)
       end
 
       def branch_names
         request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request)
         consume_refs_response(response) { |name| Gitlab::Git.branch_name(name) }
       end
 
       def tag_names
         request = Gitaly::FindAllTagNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_tag_names, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tag_names, request)
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
@@ -46,7 +46,7 @@ module Gitlab
           commit_id: commit_id,
           prefix: ref_prefix
         )
-        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request)
         encode!(response.name.dup)
       end
 
@@ -61,19 +61,19 @@ module Gitlab
       def local_branches(sort_by: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
-        response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
         consume_branches_response(response)
       end
 
       def tags
         request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request)
         consume_tags_response(response)
       end
 
       def ref_exists?(ref_name)
         request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: GitalyClient.encode(ref_name))
-        response = GitalyClient.call(@storage, :ref_service, :ref_exists, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
         response.value
       rescue GRPC::InvalidArgument => e
         raise ArgumentError, e.message
@@ -85,7 +85,7 @@ module Gitlab
           name: GitalyClient.encode(branch_name)
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
         branch = response.branch
         return unless branch
 
@@ -100,7 +100,7 @@ module Gitlab
           start_point: GitalyClient.encode(start_point)
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
 
         case response.status
         when :OK
@@ -124,7 +124,7 @@ module Gitlab
           name: GitalyClient.encode(branch_name)
         )
 
-        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
       private

@@ -64,7 +64,7 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
 
         response.flat_map { |msg| msg.deltas }
       end
@@ -185,7 +185,7 @@ module Gitlab
 
       def languages(ref = nil)
         request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: ref || '')
-        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request)
 
         response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
       end

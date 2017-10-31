@@ -11,7 +11,7 @@ module Gitlab
           oid: oid,
           limit: limit
         )
-        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request, timeout: GitalyClient::DEFAULT_TIMEOUT)
+        response = GitalyClient.call(@gitaly_repo.storage_name, :blob_service, :get_blob, request)
 
         data = ''
         blob = nil
