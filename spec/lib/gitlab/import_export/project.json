@@ -60,6 +60,12 @@
       "due_date": null,
       "moved_to_id": null,
       "test_ee_field": "test",
+      "issue_assignees": [
+        {
+          "user_id": 1,
+          "issue_id": 1
+        }
+      ],
       "milestone": {
         "id": 1,
         "title": "test milestone",
@@ -70,12 +76,6 @@
         "updated_at": "2016-06-14T15:02:04.415Z",
         "state": "active",
         "iid": 1,
-        "issue_assignees": [
-          {
-            "user_id": 1,
-            "issue_id": 1
-          }
-        ]
         "events": [
           {
             "id": 487,

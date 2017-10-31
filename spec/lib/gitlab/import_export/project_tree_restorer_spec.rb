@@ -64,7 +64,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'has issue assignees' do
-        expect(project.issues.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
+        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
       end
 
       it 'contains the merge access levels on a protected branch' do
