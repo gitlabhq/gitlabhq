@@ -2,13 +2,13 @@ class Projects::MilestonesController < Projects::ApplicationController
   include MilestoneActions
 
   before_action :check_issuables_available!
-  before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels]
+  before_action :milestone, only: [:edit, :update, :destroy, :show, :merge_requests, :participants, :labels, :promote]
 
   # Allow read any milestone
   before_action :authorize_read_milestone!
 
   # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels]
+  before_action :authorize_admin_milestone!, except: [:index, :show, :merge_requests, :participants, :labels, :promote]
 
   respond_to :html
 
@@ -67,6 +67,14 @@ class Projects::MilestonesController < Projects::ApplicationController
         end
       end
     end
+  end
+
+  def promote
+    promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
+    flash[:notice] = "Milestone has been promoted to group milestone."
+    redirect_to group_milestone_path(project.group, promoted_milestone.iid)
+  rescue Milestones::PromoteService::PromoteMilestoneError => error
+    redirect_to milestone, alert: error.message
   end
 
   def destroy
