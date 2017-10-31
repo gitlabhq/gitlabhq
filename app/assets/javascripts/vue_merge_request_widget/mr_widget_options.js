@@ -1,3 +1,4 @@
+import SmartInterval from '~/smart_interval';
 import Flash from '../flash';
 import {
   WidgetHeader,
@@ -97,7 +98,7 @@ export default {
         });
     },
     initPolling() {
-      this.pollingInterval = new gl.SmartInterval({
+      this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: 10000,
         maxInterval: 30000,
@@ -106,7 +107,7 @@ export default {
       });
     },
     initDeploymentsPolling() {
-      this.deploymentsInterval = new gl.SmartInterval({
+      this.deploymentsInterval = new SmartInterval({
         callback: this.fetchDeployments,
         startingInterval: 30000,
         maxInterval: 120000,

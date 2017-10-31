@@ -3,7 +3,7 @@
  * and controllable by a public API.
  */
 
-class SmartInterval {
+export default class SmartInterval {
   /**
    * @param { function } opts.callback Function to be called on each iteration (required)
    * @param { milliseconds } opts.startingInterval `currentInterval` is set to this initially
@@ -168,4 +168,3 @@ class SmartInterval {
   }
 }
 
-window.gl.SmartInterval = SmartInterval;
