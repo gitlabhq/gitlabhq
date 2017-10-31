@@ -1,7 +1,5 @@
 module Gitlab
   module Database
-    extend ::EE::Gitlab::Database
-
     # The max value of INTEGER type is the same between MySQL and PostgreSQL:
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
@@ -33,7 +31,7 @@ module Gitlab
 
     # Overridden in EE
     def self.read_only?
-      false
+      Gitlab::Geo.secondary?
     end
 
     def self.read_write?
