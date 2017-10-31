@@ -9,6 +9,8 @@ import store from './stores';
 import Translate from '../vue_shared/translate';
 
 function initRepo(el) {
+  if (!el) return null;
+
   return new Vue({
     el,
     store,
@@ -38,8 +40,7 @@ function initRepo(el) {
         onTopOfBranch: convertPermissionToBoolean(data.onTopOfBranch),
         currentRef: data.ref,
         path: data.currentPath,
-        // TODO: get through data attribute
-        currentBranch: document.querySelector('.js-project-refs-dropdown').dataset.ref,
+        currentBranch: data.currentBranch,
         isRoot: convertPermissionToBoolean(data.root),
         isInitialRoot: convertPermissionToBoolean(data.root),
       });

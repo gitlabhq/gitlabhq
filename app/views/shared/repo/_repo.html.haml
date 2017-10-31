@@ -1,6 +1,7 @@
 #repo{ data: { root: @path.empty?.to_s,
                root_url: project_tree_path(project),
                url: content_url,
+               current_branch: @ref,
                ref: @commit.id,
                project_name: project.name,
                project_url: project_path(project),
