@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.1.1 (2017-10-31)
+
+- [FIXED] Fix LDAP group sync for nested groups e.g. when base has uppercase or extraneous spaces. !3217
+- [FIXED] Geo: read-only safeguards was not working on Secondary node. !3227
+- [FIXED] fix height of rebase and approve buttons.
+- [FIXED] Move group boards routes under - and remove "boards" from reserved paths.
+
 ## 10.1.0 (2017-10-22)
 
 - [SECURITY] Prevent Related Issues from leaking confidential issues. !541
