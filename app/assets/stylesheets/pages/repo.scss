@@ -32,6 +32,7 @@
   }
 
   .tree-content-holder {
+    display: -webkit-flex;
     display: flex;
     min-height: 300px;
   }
@@ -134,6 +135,10 @@
           vertical-align: middle;
           text-decoration: none;
           margin-right: 12px;
+
+          &:focus {
+            outline: none;
+          }
         }
 
         .close-btn {

@@ -19,6 +19,7 @@ describe('new file modal component', () => {
       beforeEach(() => {
         vm = createComponentWithStore(Component, store, {
           type,
+          path: '',
         }).$mount();
 
         vm.entryName = 'testing';
@@ -187,6 +188,7 @@ describe('new file modal component', () => {
 
     vm = createComponentWithStore(Component, store, {
       type: 'tree',
+      path: '',
     }).$mount('.js-test');
 
     expect(document.activeElement).toBe(vm.$refs.fieldName);
