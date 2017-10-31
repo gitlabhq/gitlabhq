@@ -1,3 +1,3 @@
 # Legal
 
-[Developer Certificate of Origina + License](https://drive.google.com/drive/u/0/folders/0BykczzmVcN2_U3hQV0M2M1p0N2M)
+[Developer Certificate of Origina + License](https://docs.google.com/document/d/1HQGOMtkXU1Pipp46M5H4Un4M2xAc4D1wckTnrtii0Lo/edit)
