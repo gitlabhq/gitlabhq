@@ -32,19 +32,6 @@ module Storage
       true
     end
 
-    def after_rename_repo
-      path_before_change = project.previous_changes['path'].first
-
-      # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-      # if we need execute any take action or no-op.
-
-      unless project.storage_version >= 2
-        Gitlab::UploadsTransfer.new.rename_project(path_before_change, project.path, project.namespace.full_path)
-      end
-
-      Gitlab::PagesTransfer.new.rename_project(path_before_change, project.path, project.namespace.full_path)
-    end
-
     private
 
     # Generates the hash for the project path and name on disk

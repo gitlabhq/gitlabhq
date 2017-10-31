@@ -26,10 +26,15 @@ class Project < ActiveRecord::Base
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
-  # Hashed Storage versions handle rolling out new storage to project and dependents models
+  # Hashed Storage versions handle rolling out new storage to project and dependents models:
+  # nil: legacy
   # 1: repository
   # 2: attachments
   LATEST_STORAGE_VERSION = 2
+  HASHED_STORAGE_FEATURES = {
+    repository: 1,
+    attachments: 2
+  }.freeze
 
   cache_markdown_field :description, pipeline: :description
 
@@ -1387,7 +1392,7 @@ class Project < ActiveRecord::Base
     if storage.rename_repo
       Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
       rename_repo_notify!
-      storage.after_rename_repo
+      after_rename_repo
     else
       Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
 
@@ -1395,6 +1400,19 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise StandardError.new('repository cannot be renamed')
     end
+  end
+
+  def after_rename_repo
+    path_before_change = previous_changes['path'].first
+
+    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
+    # if we need execute any take action or no-op.
+
+    unless hashed_storage?(:attachments)
+      Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    end
+
+    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def rename_repo_notify!
@@ -1596,8 +1614,10 @@ class Project < ActiveRecord::Base
     [nil, 0].include?(self.storage_version)
   end
 
-  def hashed_storage?
-    self.storage_version && self.storage_version >= 1
+  def hashed_storage?(feature=:repository)
+    raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
+
+    self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
   end
 
   def renamed?

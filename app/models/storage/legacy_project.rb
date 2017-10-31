@@ -47,12 +47,5 @@ module Storage
 
       false
     end
-
-    def after_rename_repo
-      path_before_change = project.previous_changes['path'].first
-
-      Gitlab::UploadsTransfer.new.rename_project(path_before_change, project.path, project.namespace.full_path)
-      Gitlab::PagesTransfer.new.rename_project(path_before_change, project.path, project.namespace.full_path)
-    end
   end
 end
