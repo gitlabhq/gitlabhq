@@ -32,8 +32,8 @@ module Gitlab
 
     # The default timeout on all Gitaly calls
     DEFAULT_TIMEOUT = Sidekiq.server? ? 0.seconds : 50.seconds
-    FAST_TIMEOUT = 30.seconds
-    MEDIUM_TIMEOUT = 40.seconds
+    FAST_TIMEOUT = 10.seconds
+    MEDIUM_TIMEOUT = 30.seconds
 
     MUTEX = Mutex.new
     private_constant :MUTEX
@@ -52,7 +52,7 @@ module Gitlab
           klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
           addr = address(storage)
           addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-          klass.new(addr, :this_channel_is_insecure, timeout: DEFAULT_TIMEOUT)
+          klass.new(addr, :this_channel_is_insecure)
         end
       end
     end
@@ -116,9 +116,19 @@ module Gitlab
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
 
-      deadline = Time.now + timeout if !timeout.nil? && timeout > 0
+      result = { metadata: metadata }
 
-      { metadata: metadata, deadline: deadline }
+      return result unless !timeout.nil? && timeout > 0
+
+      # Do not use `Time.now` for deadline calculation, since it
+      # will be affected by Timecop in some tests, but grpc's c-core
+      # uses system time instead of timecop's time, so tests will fail
+      # `Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))` will
+      # circumvent timecop
+      deadline = Time.at(Process.clock_gettime(Process::CLOCK_REALTIME)) + timeout
+      result[:deadline] = deadline
+
+      result
     end
 
     def self.token(storage)
