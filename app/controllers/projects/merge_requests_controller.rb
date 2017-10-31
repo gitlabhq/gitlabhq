@@ -85,7 +85,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: serializer.represent(@merge_request, basic: params[:basic])
+        render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
       format.patch  do
