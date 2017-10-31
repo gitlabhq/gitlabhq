@@ -5,7 +5,7 @@
 
 export default class SmartInterval {
   /**
-   * @param { function } opts.callback Function to be called on each iteration (required)
+   * @param { function } opts.callback A Promise, called on each iteration (required) unless still in progress
    * @param { milliseconds } opts.startingInterval `currentInterval` is set to this initially
    * @param { milliseconds } opts.maxInterval `currentInterval` will be incremented to this
    * @param { milliseconds } opts.hiddenInterval `currentInterval` is set to this
