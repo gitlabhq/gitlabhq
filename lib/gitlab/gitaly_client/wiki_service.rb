@@ -47,6 +47,39 @@ module Gitlab
         GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request)
       end
 
+      def find_page(title:, version: nil, dir: nil)
+        request = Gitaly::WikiFindPageRequest.new(
+          repository: @gitaly_repo,
+          title: GitalyClient.encode(title),
+          revision: GitalyClient.encode(version),
+          directory: GitalyClient.encode(dir)
+        )
+
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request)
+        wiki_page = version = nil
+
+        response.each do |message|
+          page = message.page
+          next unless page
+
+          if wiki_page
+            wiki_page.raw_data << page.raw_data
+          else
+            wiki_page = GitalyClient::WikiPage.new(page.to_h)
+            # All gRPC strings in a response are frozen, so we get
+            # an unfrozen version here so appending in the else clause below doesn't blow up.
+            wiki_page.raw_data = wiki_page.raw_data.dup
+
+            version = Gitlab::Git::WikiPageVersion.new(
+              Gitlab::Git::Commit.decorate(@repository, page.version.commit),
+              page.version.format
+            )
+          end
+        end
+
+        [wiki_page, version]
+      end
+
       private
 
       def gitaly_commit_details(commit_details)
