@@ -364,11 +364,11 @@ describe 'Pipelines', :js do
             find('.js-builds-dropdown-button').click
             dropdown_item = find('.mini-pipeline-graph-dropdown-item').native
 
-            %i(control command alt).each do |command|
+            %i(alt control).each do |meta_key|
               page.driver.browser.action
-                .key_down(:command)
+                .key_down(meta_key)
                 .click(dropdown_item)
-                .key_up(:command)
+                .key_up(meta_key)
                 .perform
             end
 
