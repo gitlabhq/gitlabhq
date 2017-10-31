@@ -11,6 +11,7 @@
   - if show_new_repo?
     .editable-mode
   - else
+    = lock_file_link(html_options: { class: 'btn path-lock' })
     = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
