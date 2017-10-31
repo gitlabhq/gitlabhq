@@ -151,7 +151,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def expire_custom_emoji_cache
-    self_and_ancestors.each do |namespace|
+    self_and_descendants.each do |namespace|
       Rails.cache.delete(custom_emoji_cache_key(namespace))
     end
   end

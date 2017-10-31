@@ -19,6 +19,6 @@ class CustomEmojiUploader < GitlabUploader
   private
 
   def size_range
-    1..128.kilobytes
+    0..128.kilobytes
   end
 end

@@ -1,0 +1,25 @@
+- page_title _("Custom Emoji")
+
+%div{ class: container_class }
+  .top-area.adjust
+    .nav-text
+      = _("Custom Emoji can be used in for example titles, descriptions and notes for both issues and merge requests. They can also be used as award emoji")
+
+    .nav-controls
+      = link_to new_profile_custom_emoji_path, class: "btn btn-new" do
+        = _('New custom emoji')
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th
+          = _("CustomEmoji|Image")
+        %th
+          = _("CustomEmoji|Name")
+        %th
+    - @custom_emoji.each do |emoji|
+      %tr
+        %td= image_tag(emoji.url, alt: emoji.name, class: 'custom-emoji')
+        %td= emoji.name
+        %td= link_to 'Remove', profile_custom_emoji_path(emoji), method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'
