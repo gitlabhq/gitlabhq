@@ -12,7 +12,7 @@ newline-per-chained-call, no-useless-escape, class-methods-use-this */
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import autosize from 'vendor/autosize';
+import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -25,7 +25,7 @@ import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
-window.autosize = autosize;
+window.autosize = Autosize;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');

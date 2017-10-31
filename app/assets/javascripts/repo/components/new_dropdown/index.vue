@@ -1,10 +1,12 @@
 <script>
   import { mapState } from 'vuex';
   import newModal from './modal.vue';
+  import upload from './upload.vue';
 
   export default {
     components: {
       newModal,
+      upload,
     },
     data() {
       return {
@@ -54,6 +56,11 @@
             >
               {{ __('New file') }}
             </a>
+          </li>
+          <li>
+            <upload
+              :current-path="currentPath"
+            />
           </li>
           <li>
             <a

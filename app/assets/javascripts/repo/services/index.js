@@ -13,7 +13,7 @@ export default {
   },
   getRawFileData(file) {
     if (file.tempFile) {
-      return Promise.resolve('');
+      return Promise.resolve(file.content);
     }
 
     return Vue.http.get(file.rawPath, { params: { format: 'json' } })

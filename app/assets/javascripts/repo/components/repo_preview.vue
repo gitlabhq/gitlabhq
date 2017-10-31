@@ -38,6 +38,13 @@ export default {
     v-html="activeFile.html">
   </div>
   <div
+    v-else-if="activeFile.tempFile"
+    class="vertical-center render-error">
+    <p class="text-center">
+      The source could not be displayed for this temporary file.
+    </p>
+  </div>
+  <div
     v-else-if="renderErrorTooLarge"
     class="vertical-center render-error">
     <p class="text-center">
