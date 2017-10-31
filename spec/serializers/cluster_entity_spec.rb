@@ -18,5 +18,9 @@ describe ClusterEntity do
     it 'contains status reason' do
       expect(subject[:status_reason]).to eq('general error')
     end
+
+    it 'contains applications' do
+      expect(subject[:applications]).to eq({})
+    end
   end
 end

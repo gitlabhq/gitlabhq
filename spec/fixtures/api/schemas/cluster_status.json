@@ -5,7 +5,38 @@
   ],
   "properties" : {
     "status": { "type": "string" },
-    "status_reason": { "type": ["string", "null"] }
+    "status_reason": { "type": ["string", "null"] },
+    "applications": { "$ref": "#/definitions/applications" }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "definitions": {
+    "applications": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties" : {
+        "helm": { "$ref": "#/definitions/app_status" },
+        "runner": { "$ref": "#/definitions/app_status" },
+        "ingress": { "$ref": "#/definitions/app_status" },
+        "prometheus": { "$ref": "#/definitions/app_status" }
+      }
+    },
+    "app_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties" : {
+        "status": {
+          "type": {
+            "enum": [
+              "installable",
+              "installing",
+              "installed",
+              "error"
+            ]
+          }
+        },
+        "status_reason": { "type": ["string", "null"] }
+      },
+      "required" : [ "status" ]
+    }
+  }
 }
