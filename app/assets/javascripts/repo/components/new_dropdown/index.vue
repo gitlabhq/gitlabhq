@@ -59,7 +59,7 @@
           </li>
           <li>
             <upload
-              :current-path="currentPath"
+              :path="path"
             />
           </li>
           <li>

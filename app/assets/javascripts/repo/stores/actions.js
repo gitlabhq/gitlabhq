@@ -88,13 +88,15 @@ export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =
   })
   .catch(() => flash('Error committing changes. Please try again.'));
 
-export const createTempEntry = ({ state, dispatch }, { name, type }) => {
+export const createTempEntry = ({ state, dispatch }, { name, type, content = '', base64 = false }) => {
   if (type === 'tree') {
     dispatch('createTempTree', name);
   } else if (type === 'blob') {
     dispatch('createTempFile', {
       tree: state,
       name,
+      base64,
+      content,
     });
   }
 };

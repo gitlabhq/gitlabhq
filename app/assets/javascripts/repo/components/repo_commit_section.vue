@@ -45,6 +45,7 @@ export default {
           action: f.tempFile ? 'create' : 'update',
           file_path: f.path,
           content: f.content,
+          encoding: f.base64 ? 'base64' : 'text',
         })),
         start_branch: createNewBranch ? this.currentBranch : undefined,
       };

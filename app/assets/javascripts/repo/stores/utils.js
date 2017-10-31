@@ -24,6 +24,7 @@ export const dataStructure = () => ({
   content: '',
   parentTreeUrl: '',
   renderError: false,
+  base64: false,
 });
 
 export const decorateData = (entity, projectUrl = '') => {
@@ -37,12 +38,14 @@ export const decorateData = (entity, projectUrl = '') => {
     tree_url,
     path,
     renderError,
+    content = '',
     tempFile = false,
     active = false,
     opened = false,
     changed = false,
     parentTreeUrl = '',
     level = 0,
+    base64 = false,
   } = entity;
 
   return {
@@ -61,6 +64,8 @@ export const decorateData = (entity, projectUrl = '') => {
     parentTreeUrl,
     changed,
     renderError,
+    content,
+    base64,
     // eslint-disable-next-line camelcase
     lastCommit: last_commit ? {
       url: `${projectUrl}/commit/${last_commit.id}`,
@@ -83,7 +88,7 @@ export const pushState = (url) => {
   history.pushState({ url }, '', url);
 };
 
-export const createTemp = ({ name, path, type, level, changed, content }) => {
+export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {
   const treePath = path ? `${path}/${name}` : name;
 
   return decorateData({
@@ -97,5 +102,7 @@ export const createTemp = ({ name, path, type, level, changed, content }) => {
     content,
     parentTreeUrl: '',
     level,
+    base64,
+    renderError: base64,
   });
 };
