@@ -83,15 +83,15 @@ describe Projects::MergeRequestsController do
     end
 
     describe 'as json' do
-      context 'with basic param' do
+      context 'with basic serializer param' do
         it 'renders basic MR entity as json' do
-          go(basic: true, format: :json)
+          go(serializer: 'basic', format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_basic')
         end
       end
 
-      context 'without basic param' do
+      context 'without basic serializer param' do
         it 'renders the merge request in the json format' do
           go(format: :json)
 
