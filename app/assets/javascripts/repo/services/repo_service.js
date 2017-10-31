@@ -19,7 +19,7 @@ const RepoService = {
   getRaw(file) {
     if (file.tempFile) {
       return Promise.resolve({
-        data: '',
+        data: file.newContent ? file.newContent : '',
       });
     }
 

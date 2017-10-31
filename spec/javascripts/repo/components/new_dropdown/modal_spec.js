@@ -70,7 +70,11 @@ describe('new file modal component', () => {
 
       vm.createEntryInStore();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', 'testing', 'tree');
+      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', {
+        name: 'testing',
+        type: 'tree',
+        toggleModal: true,
+      });
     });
   });
 });

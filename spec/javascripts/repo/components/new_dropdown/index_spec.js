@@ -74,25 +74,38 @@ describe('new dropdown component', () => {
         it('closes modal after creating file', () => {
           vm.openModal = true;
 
-          eventHub.$emit('createNewEntry', 'testing', type);
+          eventHub.$emit('createNewEntry', {
+            name: 'testing',
+            type,
+            toggleModal: true,
+          });
 
           expect(vm.openModal).toBeFalsy();
         });
 
         it('sets editMode to true', () => {
-          eventHub.$emit('createNewEntry', 'testing', type);
+          eventHub.$emit('createNewEntry', {
+            name: 'testing',
+            type,
+          });
 
           expect(RepoStore.editMode).toBeTruthy();
         });
 
         it('toggles blob view', () => {
-          eventHub.$emit('createNewEntry', 'testing', type);
+          eventHub.$emit('createNewEntry', {
+            name: 'testing',
+            type,
+          });
 
           expect(RepoStore.isPreviewView()).toBeFalsy();
         });
 
         it('adds file into activeFiles', () => {
-          eventHub.$emit('createNewEntry', 'testing', type);
+          eventHub.$emit('createNewEntry', {
+            name: 'testing',
+            type,
+          });
 
           expect(RepoStore.openedFiles.length).toBe(1);
         });
@@ -100,7 +113,10 @@ describe('new dropdown component', () => {
         it(`creates ${type} in the current stores path`, () => {
           RepoStore.path = 'testing';
 
-          eventHub.$emit('createNewEntry', 'testing/app', type);
+          eventHub.$emit('createNewEntry', {
+            name: 'testing/app',
+            type,
+          });
 
           expect(RepoStore.files[0].path).toBe('testing/app');
           expect(RepoStore.files[0].name).toBe('app');
@@ -116,7 +132,10 @@ describe('new dropdown component', () => {
 
     describe('file', () => {
       it('creates new file', () => {
-        eventHub.$emit('createNewEntry', 'testing', 'blob');
+        eventHub.$emit('createNewEntry', {
+          name: 'testing',
+          type: 'blob',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('testing');
@@ -129,7 +148,10 @@ describe('new dropdown component', () => {
           name: 'testing',
         }));
 
-        eventHub.$emit('createNewEntry', 'testing', 'blob');
+        eventHub.$emit('createNewEntry', {
+          name: 'testing',
+          type: 'blob',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('testing');
@@ -140,7 +162,10 @@ describe('new dropdown component', () => {
 
     describe('tree', () => {
       it('creates new tree', () => {
-        eventHub.$emit('createNewEntry', 'testing', 'tree');
+        eventHub.$emit('createNewEntry', {
+          name: 'testing',
+          type: 'tree',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('testing');
@@ -151,7 +176,10 @@ describe('new dropdown component', () => {
       });
 
       it('creates multiple trees when entryName has slashes', () => {
-        eventHub.$emit('createNewEntry', 'app/test', 'tree');
+        eventHub.$emit('createNewEntry', {
+          name: 'app/test',
+          type: 'tree',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('app');
@@ -164,7 +192,10 @@ describe('new dropdown component', () => {
           name: 'app',
         }));
 
-        eventHub.$emit('createNewEntry', 'app/test', 'tree');
+        eventHub.$emit('createNewEntry', {
+          name: 'app/test',
+          type: 'tree',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('app');
@@ -179,7 +210,10 @@ describe('new dropdown component', () => {
           name: 'app',
         }));
 
-        eventHub.$emit('createNewEntry', 'app', 'tree');
+        eventHub.$emit('createNewEntry', {
+          name: 'app',
+          type: 'tree',
+        });
 
         expect(RepoStore.files.length).toBe(1);
         expect(RepoStore.files[0].name).toBe('app');
