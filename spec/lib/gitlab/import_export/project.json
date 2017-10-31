@@ -43,7 +43,7 @@
   "issues": [
     {
       "id": 40,
-      "title": "Voluptatem amet doloribus deleniti eos maxime repudiandae molestias.",
+      "title": "Voluptatem",
       "assignee_id": 1,
       "author_id": 22,
       "project_id": 5,
@@ -60,6 +60,12 @@
       "due_date": null,
       "moved_to_id": null,
       "test_ee_field": "test",
+      "issue_assignees": [
+        {
+          "user_id": 1,
+          "issue_id": 1
+        }
+      ],
       "milestone": {
         "id": 1,
         "title": "test milestone",
