@@ -1,4 +1,3 @@
-require Rails.root.join('ee/lib/ee/gitlab/database')
 require Rails.root.join('lib/gitlab/database')
 require Rails.root.join('lib/gitlab/database/migration_helpers')
 require Rails.root.join('db/migrate/20151007120511_namespaces_projects_path_lower_indexes')
