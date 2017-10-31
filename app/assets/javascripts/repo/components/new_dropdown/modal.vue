@@ -24,7 +24,11 @@
     },
     methods: {
       createEntryInStore() {
-        eventHub.$emit('createNewEntry', this.entryName, this.type);
+        eventHub.$emit('createNewEntry', {
+          name: this.entryName,
+          type: this.type,
+          toggleModal: true,
+        });
       },
       toggleModalOpen() {
         this.$emit('toggle');

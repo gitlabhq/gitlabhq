@@ -155,7 +155,7 @@ const RepoHelper = {
     if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }
-    newFile.newContent = '';
+    newFile.newContent = file.newContent ? file.newContent : '';
 
     Store.addToOpenedFiles(newFile);
     Store.setActiveFiles(newFile);
@@ -276,7 +276,13 @@ const RepoHelper = {
   removeAllTmpFiles(storeFilesKey) {
     Store[storeFilesKey] = Store[storeFilesKey].filter(f => !f.tempFile);
   },
-  createNewEntry(name, type) {
+  createNewEntry(options, openEditMode = true) {
+    const {
+      name,
+      type,
+      content = '',
+      base64 = false,
+    } = options;
     const originalPath = Store.path;
     let entryName = name;
 
@@ -304,9 +310,24 @@ const RepoHelper = {
     if ((type === 'tree' && tree.tempFile) || type === 'blob') {
       const file = this.findOrCreateEntry('blob', tree, fileName);
 
-      if (!file.exists) {
-        this.setFile(file.entry, file.entry);
-        this.openEditMode();
+      if (file.exists) {
+        Flash(`The name "${file.entry.name}" is already taken in this directory.`);
+      } else {
+        const { entry } = file;
+        entry.newContent = content;
+        entry.base64 = base64;
+
+        if (entry.base64) {
+          entry.render_error = true;
+        }
+
+        this.setFile(entry, entry);
+
+        if (openEditMode) {
+          this.openEditMode();
+        } else {
+          file.entry.render_error = 'asdsad';
+        }
       }
     }
 

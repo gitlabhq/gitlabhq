@@ -52,6 +52,7 @@ export default {
         action: f.tempFile ? 'create' : 'update',
         file_path: f.path,
         content: f.newContent,
+        encoding: f.base64 ? 'base64' : 'text',
       }));
       const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
       const payload = {
