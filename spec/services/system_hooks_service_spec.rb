@@ -63,6 +63,12 @@ describe SystemHooksService do
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
+
+    it 'includes the correct project visibility level' do
+      data = event_data(project, :create)
+
+      expect(data[:project_visibility]).to eq('private')
+    end
   end
 
   context 'event names' do
