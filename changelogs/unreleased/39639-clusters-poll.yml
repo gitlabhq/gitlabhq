@@ -1,0 +1,5 @@
+---
+title: Adds callback functions for initial request in clusters page
+merge_request:
+author:
+type: fixed

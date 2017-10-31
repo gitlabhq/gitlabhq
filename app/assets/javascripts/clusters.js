@@ -61,19 +61,16 @@ export default class Clusters {
     this.poll = new Poll({
       resource: this.service,
       method: 'fetchData',
-      successCallback: (data) => {
-        const { status, status_reason } = data.data;
-        this.updateContainer(status, status_reason);
-      },
-      errorCallback: () => {
-        Flash(s__('ClusterIntegration|Something went wrong on our end.'));
-      },
+      successCallback: data => this.handleSuccess(data),
+      errorCallback: () => Clusters.handleError(),
     });
 
     if (!Visibility.hidden()) {
       this.poll.makeRequest();
     } else {
-      this.service.fetchData();
+      this.service.fetchData()
+        .then(data => this.handleSuccess(data))
+        .catch(() => Clusters.handleError());
     }
 
     Visibility.change(() => {
@@ -83,6 +80,15 @@ export default class Clusters {
         this.poll.stop();
       }
     });
+  }
+
+  static handleError() {
+    Flash(s__('ClusterIntegration|Something went wrong on our end.'));
+  }
+
+  handleSuccess(data) {
+    const { status, status_reason } = data.data;
+    this.updateContainer(status, status_reason);
   }
 
   hideAll() {
