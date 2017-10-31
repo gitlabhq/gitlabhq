@@ -9,6 +9,8 @@ describe 'Rack Attack global throttles' do
   # while time is stopped) we expect a 429. But sometimes we get a 200,
   # sometimes for more than one request, but eventually we get a 429. This
   # constant and its usages should be removed if we figure out why this happens.
+  # More on this:
+  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14708#note_45151688
   NUM_TRIES_FOR_REJECTION = 1
 
   # Extra time travel past what should be strictly necessary to ensure the
@@ -16,6 +18,8 @@ describe 'Rack Attack global throttles' do
   #
   # Why add this? Sometimes we get a 429 when we expect a 200. This constant and
   # its usages should be removed if we figure out why this happens.
+  # More on this:
+  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14708#note_45151688
   NEXT_TIME_PERIOD_BUFFER = 0.seconds
 
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
