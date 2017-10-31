@@ -19,7 +19,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params.merge(ip_address: request.remote_ip)).execute
+    @application = Applications::CreateService.new(current_user, application_params.merge.execute(request)
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
