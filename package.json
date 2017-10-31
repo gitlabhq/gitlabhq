@@ -13,6 +13,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "autosize": "^4.0.0",
     "axios": "^0.16.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.2.1",

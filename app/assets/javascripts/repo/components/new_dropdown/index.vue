@@ -3,10 +3,12 @@
   import RepoHelper from '../../helpers/repo_helper';
   import eventHub from '../../event_hub';
   import newModal from './modal.vue';
+  import upload from './upload.vue';
 
   export default {
     components: {
       newModal,
+      upload,
     },
     data() {
       return {
@@ -23,10 +25,12 @@
       toggleModalOpen() {
         this.openModal = !this.openModal;
       },
-      createNewEntryInStore(name, type) {
-        RepoHelper.createNewEntry(name, type);
+      createNewEntryInStore(options, openEditMode = true) {
+        RepoHelper.createNewEntry(options, openEditMode);
 
-        this.toggleModalOpen();
+        if (options.toggleModal) {
+          this.toggleModalOpen();
+        }
       },
     },
     created() {
@@ -63,6 +67,11 @@
             >
               {{ __('New file') }}
             </a>
+          </li>
+          <li>
+            <upload
+              :current-path="currentPath"
+            />
           </li>
           <li>
             <a

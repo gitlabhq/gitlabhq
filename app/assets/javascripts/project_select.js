@@ -7,9 +7,14 @@ import ProjectSelectComboButton from './project_select_combo_button';
     function ProjectSelect() {
       $('.ajax-project-select').each(function(i, select) {
         var placeholder;
+        const simpleFilter = $(select).data('simple-filter') || false;
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
+<<<<<<< HEAD
         this.allProjects = $(select).data('allprojects') || false;
+=======
+        this.allProjects = $(select).data('all-projects') || false;
+>>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
         this.orderBy = $(select).data('order-by') || 'id';
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
@@ -52,12 +57,17 @@ import ProjectSelectComboButton from './project_select_combo_button';
                   order_by: _this.orderBy,
                   with_issues_enabled: _this.withIssuesEnabled,
                   with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+<<<<<<< HEAD
                   membership: !_this.allProjects
+=======
+                  membership: !_this.allProjects,
+>>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
                 }, projectsCallback);
               }
             };
           })(this),
           id: function(project) {
+            if (simpleFilter) return project.id;
             return JSON.stringify({
               name: project.name,
               url: project.web_url,
@@ -68,7 +78,7 @@ import ProjectSelectComboButton from './project_select_combo_button';
           },
           dropdownCssClass: "ajax-project-dropdown"
         });
-
+        if (simpleFilter) return select;
         return new ProjectSelectComboButton(select);
       });
     }

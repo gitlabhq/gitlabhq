@@ -1171,6 +1171,7 @@ describe API::MergeRequests do
     end
   end
 
+<<<<<<< HEAD
   describe 'GET :id/merge_requests/:merge_request_iid/approvals' do
     it 'retrieves the approval status' do
       approver = create :user
@@ -1287,6 +1288,29 @@ describe API::MergeRequests do
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
       end
+=======
+  describe 'POST :id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
+    before do
+      ::MergeRequests::MergeWhenPipelineSucceedsService.new(merge_request.target_project, user).execute(merge_request)
+    end
+
+    it 'removes the merge_when_pipeline_succeeds status' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'returns 404 if the merge request id is used instead of iid' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(404)
+>>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
     end
   end
 

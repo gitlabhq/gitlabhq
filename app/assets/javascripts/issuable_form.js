@@ -20,7 +20,10 @@ export default class IssuableForm {
 
     new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
     new UsersSelect();
+<<<<<<< HEAD
     groupsSelect();
+=======
+>>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
     new ZenMode();
 
     this.titleField = this.form.find('input[name*="[title]"]');

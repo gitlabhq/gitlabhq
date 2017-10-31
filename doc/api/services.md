@@ -582,6 +582,40 @@ Delete Mattermost slash command service for a project.
 DELETE /projects/:id/services/mattermost-slash-commands
 ```
 
+## Packagist
+
+Update your project on Packagist, the main Composer repository, when commits or tags are pushed to GitLab.
+
+### Create/Edit Packagist service
+
+Set Packagist service for a project.
+
+```
+PUT /projects/:id/services/packagist
+```
+
+Parameters:
+
+- `username` (**required**)
+- `token` (**required**)
+- `server` (optional)
+
+### Delete Packagist service
+
+Delete Packagist service for a project.
+
+```
+DELETE /projects/:id/services/packagist
+```
+
+### Get Packagist service settings
+
+Get Packagist service settings for a project.
+
+```
+GET /projects/:id/services/packagist
+```
+
 ## Pipeline-Emails
 
 Get emails for GitLab CI pipelines.

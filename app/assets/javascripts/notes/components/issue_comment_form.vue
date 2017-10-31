@@ -1,7 +1,7 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
-  import autosize from 'vendor/autosize';
+  import Autosize from 'autosize';
   import Flash from '../../flash';
   import Autosave from '../../autosave';
   import TaskList from '../../task_list';
@@ -219,7 +219,7 @@
       },
       resizeTextarea() {
         this.$nextTick(() => {
-          autosize.update(this.$refs.textarea);
+          Autosize.update(this.$refs.textarea);
         });
       },
     },

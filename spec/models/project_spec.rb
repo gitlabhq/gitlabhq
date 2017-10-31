@@ -24,6 +24,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
@@ -2886,6 +2887,7 @@ describe Project do
   context 'legacy storage' do
     let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:project_storage) { project.send(:storage) }
 
     before do
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
@@ -2927,7 +2929,7 @@ describe Project do
 
     describe '#hashed_storage?' do
       it 'returns false' do
-        expect(project.hashed_storage?).to be_falsey
+        expect(project.hashed_storage?(:repository)).to be_falsey
       end
     end
 
@@ -2985,6 +2987,30 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves uploads folder to new location' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
       end
     end
 
@@ -3045,8 +3071,14 @@ describe Project do
     end
 
     describe '#hashed_storage?' do
-      it 'returns true' do
-        expect(project.hashed_storage?).to be_truthy
+      it 'returns true if rolled out' do
+        expect(project.hashed_storage?(:attachments)).to be_truthy
+      end
+
+      it 'returns false when not rolled out yet' do
+        project.storage_version = 1
+
+        expect(project.hashed_storage?(:attachments)).to be_falsey
       end
     end
 
@@ -3089,10 +3121,6 @@ describe Project do
           .to receive(:execute_hooks_for)
             .with(project, :rename)
 
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
         expect(project).to receive(:expire_caches_before_rename)
 
         expect(project).to receive(:expires_full_path_cache)
@@ -3112,6 +3140,32 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        it 'keeps uploads folder location unchanged' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
+
+          project.rename_repo
+        end
+
+        context 'when not rolled out' do
+          let(:project) { create(:project, :repository, storage_version: 1) }
+
+          it 'moves pages folder to new location' do
+            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+            project.rename_repo
+          end
+        end
       end
     end
 

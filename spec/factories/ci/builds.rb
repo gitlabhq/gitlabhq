@@ -119,7 +119,7 @@ FactoryGirl.define do
       finished_at nil
     end
 
-    factory :ci_build_tag do
+    trait :tag do
       tag true
     end
 
