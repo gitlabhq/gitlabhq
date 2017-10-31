@@ -15,11 +15,7 @@ module Gitlab
           repository: @gitaly_repo,
           name: GitalyClient.encode(name),
           format: format.to_s,
-          commit_details: Gitaly::WikiCommitDetails.new(
-            name: GitalyClient.encode(commit_details.name),
-            email: GitalyClient.encode(commit_details.email),
-            message: GitalyClient.encode(commit_details.message)
-          )
+          commit_details: gitaly_commit_details(commit_details)
         )
 
         strio = StringIO.new(content)
@@ -39,6 +35,26 @@ module Gitlab
         if error = response.duplicate_error.presence
           raise Gitlab::Git::Wiki::DuplicatePageError, error
         end
+      end
+
+      def delete_page(page_path, commit_details)
+        request = Gitaly::WikiDeletePageRequest.new(
+          repository: @gitaly_repo,
+          page_path: GitalyClient.encode(page_path),
+          commit_details: gitaly_commit_details(commit_details)
+        )
+
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request)
+      end
+
+      private
+
+      def gitaly_commit_details(commit_details)
+        Gitaly::WikiCommitDetails.new(
+          name: GitalyClient.encode(commit_details.name),
+          email: GitalyClient.encode(commit_details.email),
+          message: GitalyClient.encode(commit_details.message)
+        )
       end
     end
   end

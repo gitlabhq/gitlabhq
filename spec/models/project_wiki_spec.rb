@@ -265,23 +265,33 @@ describe ProjectWiki do
   end
 
   describe "#delete_page" do
-    before do
-      create_page("index", "some content")
-      @page = subject.wiki.page(title: "index")
+    shared_examples 'deleting a wiki page' do
+      before do
+        create_page("index", "some content")
+        @page = subject.wiki.page(title: "index")
+      end
+
+      it "deletes the page" do
+        subject.delete_page(@page)
+        expect(subject.pages.count).to eq(0)
+      end
+
+      it 'updates project activity' do
+        subject.delete_page(@page)
+
+        project.reload
+
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+      end
     end
 
-    it "deletes the page" do
-      subject.delete_page(@page)
-      expect(subject.pages.count).to eq(0)
+    context 'when Gitaly wiki_delete_page is enabled' do
+      it_behaves_like 'deleting a wiki page'
     end
 
-    it 'updates project activity' do
-      subject.delete_page(@page)
-
-      project.reload
-
-      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+    context 'when Gitaly wiki_delete_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'deleting a wiki page'
     end
   end
 
@@ -343,6 +353,6 @@ describe ProjectWiki do
   end
 
   def destroy_page(page)
-    subject.delete_page(page, commit_details)
+    subject.delete_page(page, "test commit")
   end
 end
