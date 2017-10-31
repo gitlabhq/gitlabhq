@@ -76,5 +76,11 @@ describe('MergeRequestStore', () => {
         MergeRequestStore.addPathToIssues(headIssues, 'path')[0].location.urlPath,
       ).toEqual(`path/${headIssues[0].location.path}#L${headIssues[0].location.lines.begin}`);
     });
+
+    it('should return the same object whe there is no locaiton', () => {
+      expect(
+        MergeRequestStore.addPathToIssues([{ check_name: 'foo' }], 'path'),
+      ).toEqual([{ check_name: 'foo' }]);
+    });
   });
 });

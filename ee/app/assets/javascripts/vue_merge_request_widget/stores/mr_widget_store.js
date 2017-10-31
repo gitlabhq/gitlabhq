@@ -76,15 +76,18 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   static addPathToIssues(issues, path) {
     return issues.map((issue) => {
-      let parsedUrl = `${path}/${issue.location.path}`;
+      if (issue.location) {
+        let parsedUrl = `${path}/${issue.location.path}`;
 
-      if (issue.location.lines && issue.location.lines.begin) {
-        parsedUrl += `#L${issue.location.lines.begin}`;
+        if (issue.location.lines && issue.location.lines.begin) {
+          parsedUrl += `#L${issue.location.lines.begin}`;
+        }
+
+        return Object.assign({}, issue, {
+          location: Object.assign({}, issue.location, { urlPath: parsedUrl }),
+        });
       }
-
-      return Object.assign({}, issue, {
-        location: Object.assign({}, issue.location, { urlPath: parsedUrl }),
-      });
+      return issue;
     });
   }
 }
