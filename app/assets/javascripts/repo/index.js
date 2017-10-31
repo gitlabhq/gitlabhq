@@ -1,54 +1,49 @@
-import $ from 'jquery';
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 import { convertPermissionToBoolean } from '../lib/utils/common_utils';
-import Service from './services/repo_service';
-import Store from './stores/repo_store';
 import Repo from './components/repo.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
 import newBranchForm from './components/new_branch_form.vue';
 import newDropdown from './components/new_dropdown/index.vue';
+import store from './stores';
 import Translate from '../vue_shared/translate';
 
-function initDropdowns() {
-  $('.js-tree-ref-target-holder').hide();
-}
-
-function addEventsForNonVueEls() {
-  window.onbeforeunload = function confirmUnload(e) {
-    const hasChanged = Store.openedFiles
-      .some(file => file.changed);
-    if (!hasChanged) return undefined;
-    const event = e || window.event;
-    if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
-    // For Safari
-    return 'Are you sure you want to lose unsaved changes?';
-  };
-}
-
-function setInitialStore(data) {
-  Store.service = Service;
-  Store.service.url = data.url;
-  Store.service.refsUrl = data.refsUrl;
-  Store.path = data.currentPath;
-  Store.projectId = data.projectId;
-  Store.projectName = data.projectName;
-  Store.projectUrl = data.projectUrl;
-  Store.canCommit = data.canCommit;
-  Store.onTopOfBranch = data.onTopOfBranch;
-  Store.newMrTemplateUrl = decodeURIComponent(data.newMrTemplateUrl);
-  Store.customBranchURL = decodeURIComponent(data.blobUrl);
-  Store.isRoot = convertPermissionToBoolean(data.root);
-  Store.isInitialRoot = convertPermissionToBoolean(data.root);
-  Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
-  Store.checkIsCommitable();
-  Store.setBranchHash();
-}
-
 function initRepo(el) {
+  if (!el) return null;
+
   return new Vue({
     el,
+    store,
     components: {
       repo: Repo,
+    },
+    methods: {
+      ...mapActions([
+        'setInitialData',
+      ]),
+    },
+    created() {
+      const data = el.dataset;
+
+      this.setInitialData({
+        project: {
+          id: data.projectId,
+          name: data.projectName,
+          url: data.projectUrl,
+        },
+        endpoints: {
+          rootEndpoint: data.url,
+          newMergeRequestUrl: data.newMergeRequestUrl,
+          rootUrl: data.rootUrl,
+        },
+        canCommit: convertPermissionToBoolean(data.canCommit),
+        onTopOfBranch: convertPermissionToBoolean(data.onTopOfBranch),
+        currentRef: data.ref,
+        path: data.currentPath,
+        currentBranch: data.currentBranch,
+        isRoot: convertPermissionToBoolean(data.root),
+        isInitialRoot: convertPermissionToBoolean(data.root),
+      });
     },
     render(createElement) {
       return createElement('repo');
@@ -59,8 +54,12 @@ function initRepo(el) {
 function initRepoEditButton(el) {
   return new Vue({
     el,
+    store,
     components: {
       repoEditButton: RepoEditButton,
+    },
+    render(createElement) {
+      return createElement('repo-edit-button');
     },
   });
 }
@@ -68,6 +67,7 @@ function initRepoEditButton(el) {
 function initNewDropdown(el) {
   return new Vue({
     el,
+    store,
     components: {
       newDropdown,
     },
@@ -87,32 +87,20 @@ function initNewBranchForm() {
     components: {
       newBranchForm,
     },
+    store,
     render(createElement) {
-      return createElement('new-branch-form', {
-        props: {
-          currentBranch: Store.currentBranch,
-        },
-      });
+      return createElement('new-branch-form');
     },
   });
 }
 
-function initRepoBundle() {
-  const repo = document.getElementById('repo');
-  const editButton = document.querySelector('.editable-mode');
-  const newDropdownHolder = document.querySelector('.js-new-dropdown');
-  setInitialStore(repo.dataset);
-  addEventsForNonVueEls();
-  initDropdowns();
+const repo = document.getElementById('repo');
+const editButton = document.querySelector('.editable-mode');
+const newDropdownHolder = document.querySelector('.js-new-dropdown');
 
-  Vue.use(Translate);
+Vue.use(Translate);
 
-  initRepo(repo);
-  initRepoEditButton(editButton);
-  initNewBranchForm();
-  initNewDropdown(newDropdownHolder);
-}
-
-$(initRepoBundle);
-
-export default initRepoBundle;
+initRepo(repo);
+initRepoEditButton(editButton);
+initNewBranchForm();
+initNewDropdown(newDropdownHolder);

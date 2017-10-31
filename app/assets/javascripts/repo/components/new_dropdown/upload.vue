@@ -1,30 +1,31 @@
 <script>
-  import eventHub from '../../event_hub';
+  import { mapActions } from 'vuex';
 
   export default {
     props: {
-      currentPath: {
+      path: {
         type: String,
         required: true,
       },
     },
     methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
       createFile(target, file, isText) {
         const { name } = file;
-        const nameWithPath = `${this.currentPath !== '' ? `${this.currentPath}/` : ''}${name}`;
         let { result } = target;
 
         if (!isText) {
           result = result.split('base64,')[1];
         }
 
-        eventHub.$emit('createNewEntry', {
-          name: nameWithPath,
+        this.createTempEntry({
+          name,
           type: 'blob',
           content: result,
-          toggleModal: false,
           base64: !isText,
-        }, isText);
+        });
       },
       readFile(file) {
         const reader = new FileReader();
