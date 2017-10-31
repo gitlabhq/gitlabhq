@@ -1,10 +1,7 @@
 /* eslint-disable no-new */
 /* global MilestoneSelect */
 /* global LabelsSelect */
-<<<<<<< HEAD
 /* global WeightSelect */
-=======
->>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
 import IssuableContext from './issuable_context';
 /* global Sidebar */
 

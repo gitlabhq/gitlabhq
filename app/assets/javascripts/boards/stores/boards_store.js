@@ -25,14 +25,11 @@ gl.issueBoards.BoardsStore = {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
     this.detail = { issue: {} };
-<<<<<<< HEAD
   },
   createNewListDropdownData() {
     this.state.currentBoard = {};
     this.state.currentPage = '';
     this.state.reload = false;
-=======
->>>>>>> bfb5107ae720232a15060ee55feba213ee7dd097
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
