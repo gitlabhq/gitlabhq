@@ -10,11 +10,13 @@ module Clusters
     has_many :projects, through: :cluster_projects, class_name: '::Project'
 
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp'
-    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes'
+    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', validate: { if: :update }
 
-    accepts_nested_attributes_for :provider_gcp
+    accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
+    validates :provider_type, presence: true
+    validates :platform_type, presence: true
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 

@@ -42,7 +42,9 @@ FactoryGirl.define do
       end
 
       after(:create) do |cluster, evaluator|
-        create(:platform_kubernetes, cluster: cluster)
+        build(:platform_kubernetes, cluster: cluster).tap do |platform|
+          platform.save!(validate: false)
+        end
       end
     end
   end

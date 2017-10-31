@@ -11,7 +11,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
   describe 'before_validation' do
     context 'when namespace includes upper case' do
-      let(:kubernetes) { create(:platform_kubernetes, namespace: namespace) }
+      let(:kubernetes) { create(:platform_kubernetes, :configured, namespace: namespace) }
       let(:namespace) { 'ABC' }
 
       it 'converts to lower case' do
@@ -24,7 +24,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     subject { kubernetes.valid? }
 
     context 'when validates namespace' do
-      let(:kubernetes) { build(:platform_kubernetes, namespace: namespace) }
+      let(:kubernetes) { build(:platform_kubernetes, :configured, namespace: namespace) }
 
       context 'when namespace is blank' do
         let(:namespace) { '' }
@@ -52,74 +52,42 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'when validates api_url' do
-      context 'when updates a record' do
-        let(:kubernetes) { create(:platform_kubernetes) }
+      let(:kubernetes) { build(:platform_kubernetes, :configured) }
 
-        before do
-          kubernetes.api_url = api_url
-        end
-
-        context 'when api_url is invalid url' do
-          let(:api_url) { '!!!!!!' }
-
-          it { expect(kubernetes.save).to be_falsey }
-        end
-
-        context 'when api_url is nil' do
-          let(:api_url) { nil }
-
-          it { expect(kubernetes.save).to be_falsey }
-        end
-
-        context 'when api_url is valid url' do
-          let(:api_url) { 'https://111.111.111.111' }
-
-          it { expect(kubernetes.save).to be_truthy }
-        end
+      before do
+        kubernetes.api_url = api_url
       end
 
-      context 'when creates a record' do
-        let(:kubernetes) { build(:platform_kubernetes) }
+      context 'when api_url is invalid url' do
+        let(:api_url) { '!!!!!!' }
 
-        before do
-          kubernetes.api_url = api_url
-        end
+        it { expect(kubernetes.save).to be_falsey }
+      end
 
-        context 'when api_url is nil' do
-          let(:api_url) { nil }
+      context 'when api_url is nil' do
+        let(:api_url) { nil }
 
-          it { expect(kubernetes.save).to be_truthy }
-        end
+        it { expect(kubernetes.save).to be_falsey }
+      end
+
+      context 'when api_url is valid url' do
+        let(:api_url) { 'https://111.111.111.111' }
+
+        it { expect(kubernetes.save).to be_truthy }
       end
     end
 
     context 'when validates token' do
-      context 'when updates a record' do
-        let(:kubernetes) { create(:platform_kubernetes) }
+      let(:kubernetes) { build(:platform_kubernetes, :configured) }
 
-        before do
-          kubernetes.token = token
-        end
-
-        context 'when token is nil' do
-          let(:token) { nil }
-
-          it { expect(kubernetes.save).to be_falsey }
-        end
+      before do
+        kubernetes.token = token
       end
 
-      context 'when creates a record' do
-        let(:kubernetes) { build(:platform_kubernetes) }
+      context 'when token is nil' do
+        let(:token) { nil }
 
-        before do
-          kubernetes.token = token
-        end
-
-        context 'when token is nil' do
-          let(:token) { nil }
-
-          it { expect(kubernetes.save).to be_truthy }
-        end
+        it { expect(kubernetes.save).to be_falsey }
       end
     end
   end
@@ -128,7 +96,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     subject { kubernetes.actual_namespace }
 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-    let(:kubernetes) { create(:platform_kubernetes, namespace: namespace) }
+    let(:project) { cluster.project }
+    let(:kubernetes) { create(:platform_kubernetes, :configured, namespace: namespace) }
 
     context 'when namespace is present' do
       let(:namespace) { 'namespace-123' }
@@ -139,7 +108,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     context 'when namespace is not present' do
       let(:namespace) { nil }
 
-      it { is_expected.to eq("#{cluster.project.path}-#{cluster.project.id}") }
+      it { is_expected.to eq("#{project.path}-#{project.id}") }
     end
   end
 
@@ -154,12 +123,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   describe '#default_namespace' do
     subject { kubernetes.default_namespace }
 
-    let(:kubernetes) { create(:platform_kubernetes) }
+    let(:kubernetes) { create(:platform_kubernetes, :configured) }
 
     context 'when cluster belongs to a project' do
       let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
+      let(:project) { cluster.project }
 
-      it { is_expected.to eq("#{cluster.project.path}-#{cluster.project.id}") }
+      it { is_expected.to eq("#{project.path}-#{project.id}") }
     end
 
     context 'when cluster belongs to nothing' do
@@ -229,7 +199,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: service) }
     let(:project) { cluster.project }
-    let(:service) { create(:platform_kubernetes) }
+    let(:service) { create(:platform_kubernetes, :configured) }
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
 
     context 'with invalid pods' do
@@ -268,7 +238,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     subject { service.calculate_reactive_cache }
 
     let!(:cluster) { create(:cluster, :project, enabled: enabled, platform_kubernetes: service) }
-    let(:service) { create(:platform_kubernetes, :ca_cert) }
+    let(:service) { create(:platform_kubernetes, :configured) }
     let(:enabled) { true }
 
     context 'when cluster is disabled' do

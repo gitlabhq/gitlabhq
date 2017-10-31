@@ -28,10 +28,10 @@ module Clusters
     def cluster_params
       return @cluster_params if defined?(@cluster_params)
 
-      params[:provider_gcp_attributes][:machine_type] ||=
-        GoogleApi::CloudPlatform::Client::DEFAULT_MACHINE_TYPE
-
-      params[:provider_gcp_attributes][:access_token] ||= access_token
+      params[:provider_gcp_attributes].try do |h|
+        h[:machine_type] ||= GoogleApi::CloudPlatform::Client::DEFAULT_MACHINE_TYPE
+        h[:access_token] ||= access_token
+      end
 
       @cluster_params = params.merge(user: current_user)
     end

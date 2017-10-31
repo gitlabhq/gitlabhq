@@ -14,7 +14,7 @@ module KubernetesHelpers
   end
 
   def stub_kubeclient_pods(response = nil)
-    stub_kubeclient_discover
+    stub_kubeclient_discover(service.api_url)
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)

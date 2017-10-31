@@ -1,5 +1,15 @@
 module GoogleApi
   module CloudPlatformHelpers
+    def stub_google_api_validate_token
+      request.session[GoogleApi::CloudPlatform::Client.session_key_for_token] = 'token'
+      request.session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = 1.hour.since.to_i.to_s
+    end
+
+    def stub_google_api_expired_token
+      request.session[GoogleApi::CloudPlatform::Client.session_key_for_token] = 'token'
+      request.session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = 1.hour.ago.to_i.to_s
+    end
+
     def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
       WebMock.stub_request(:get, cloud_platform_get_zone_cluster_url(project_id, zone, cluster_id))
         .to_return(cloud_platform_response(cloud_platform_cluster_body(options)))

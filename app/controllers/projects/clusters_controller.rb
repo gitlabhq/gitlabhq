@@ -27,13 +27,14 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
-    @cluster = Clusters::Cluster.new(
-      platform_type: :kubernetes,
-      provider_type: :gcp).tap do |cluster|
-      cluster.build_provider_gcp
-      cluster.build_platform_kubernetes
-      cluster.projects << project
-    end
+    # @cluster = Clusters::Cluster.new(
+    #   platform_type: :kubernetes,
+    #   provider_type: :gcp).tap do |cluster|
+    #   cluster.build_provider_gcp
+    #   cluster.build_platform_kubernetes
+    #   cluster.projects << project
+    # end
+    @cluster = Clusters::Cluster.new
   end
 
   def create
