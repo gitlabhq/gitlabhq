@@ -1,6 +1,0 @@
----
-title: Make the circuitbreaker more robust by adding higher thresholds, and multiple
-  access attempts.
-merge_request: 14933
-author:
-type: fixed
