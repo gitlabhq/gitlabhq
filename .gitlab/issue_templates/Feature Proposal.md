@@ -46,5 +46,7 @@ with a link to the relevant commit.
 - [ ] [Feature assurance](https://about.gitlab.com/handbook/product/#feature-assurance)
 - [ ] Documentation
 - [ ] Added to [features.yml](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)
+- [ ] Internationalization required/considered
+- [ ] If paid feature, have we considered GitLab.com plan and how it works for groups and is there a design for promoting it to users who aren't on the correct plan
 
 /label ~"feature proposal"
