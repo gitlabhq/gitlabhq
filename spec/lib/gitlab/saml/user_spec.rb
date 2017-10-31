@@ -6,7 +6,7 @@ describe Gitlab::Saml::User do
   let(:saml_user) { described_class.new(auth_hash) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
-  let(:dn) { 'uid=user1,ou=People,dc=example' }
+  let(:dn) { 'uid=user1,ou=people,dc=example' }
   let(:provider) { 'saml' }
   let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash, extra: { raw_info: OneLogin::RubySaml::Attributes.new({ 'groups' => %w(Developers Freelancers Designers) }) }) }
   let(:info_hash) do
