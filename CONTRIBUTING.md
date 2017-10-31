@@ -7,7 +7,7 @@ distributed by GitLab B.V., You reserve all right, title, and interest in and to
 Your Contributions. All Contributions are subject to the following DCO + License 
 terms.
 
-[DCO + License](https://drive.google.com/drive/u/0/folders/0BykczzmVcN2_U3hQV0M2M1p0N2M)
+[DCO + License](https://docs.google.com/document/d/1HQGOMtkXU1Pipp46M5H4Un4M2xAc4D1wckTnrtii0Lo/edit)
 
 
 _This notice should stay as the first item in the CONTRIBUTING.md file._
