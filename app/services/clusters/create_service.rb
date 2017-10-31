@@ -29,8 +29,7 @@ module Clusters
       return @cluster_params if defined?(@cluster_params)
 
       params[:provider_gcp_attributes].try do |h|
-        h[:machine_type] ||= GoogleApi::CloudPlatform::Client::DEFAULT_MACHINE_TYPE
-        h[:access_token] ||= access_token
+        h[:access_token] = access_token
       end
 
       @cluster_params = params.merge(user: current_user)

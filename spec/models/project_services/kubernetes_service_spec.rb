@@ -156,7 +156,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
 
     before do
-      stub_kubeclient_discover
+      stub_kubeclient_discover(service.api_url)
     end
 
     context 'with path prefix in api_url' do
@@ -164,7 +164,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
       it 'tests with the prefix' do
         service.api_url = 'https://kubernetes.example.com/prefix'
-        stub_kubeclient_discover
+        stub_kubeclient_discover(service.api_url)
 
         expect(service.test[:success]).to be_truthy
         expect(WebMock).to have_requested(:get, discovery_url).once

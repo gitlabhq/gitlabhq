@@ -208,7 +208,12 @@ describe Projects::ClustersController do
               cluster: {
                 name: 'new-cluster',
                 platform_type: :kubernetes,
-                provider_type: :user
+                provider_type: :user,
+                platform_kubernetes_attributes: {
+                  namespace: 'custom-namespace',
+                  api_url: 'https://111.111.111.111',
+                  token: 'token'
+                }
               }
             }
           end

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Clusters', :js do
+  include GoogleApi::CloudPlatformHelpers
+
   let!(:project) { create(:project, :repository) }
   let!(:user) { create(:user) }
 
@@ -11,8 +13,10 @@ feature 'Clusters', :js do
 
   context 'when user has signed in Google' do
     before do
-      allow_any_instance_of(GoogleApi::CloudPlatform::Client)
-        .to receive(:validate_token).and_return(true)
+      allow_any_instance_of(Projects::ClustersController)
+        .to receive(:token_in_session).and_return('token')
+      allow_any_instance_of(Projects::ClustersController)
+        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
     end
 
     context 'when user does not have a cluster and visits cluster index page' do
@@ -36,15 +40,15 @@ feature 'Clusters', :js do
 
           allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
 
-          fill_in 'cluster_gcp_project_id', with: 'gcp-project-123'
-          fill_in 'cluster_gcp_cluster_name', with: 'dev-cluster'
+          fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+          fill_in 'cluster_name', with: 'dev-cluster'
           click_button 'Create cluster'
         end
 
         it 'user sees a cluster details page and creation status' do
           expect(page).to have_content('Cluster is being created on Google Container Engine...')
 
-          Gcp::Cluster.last.make_created!
+          Clusters::Cluster.last.provider.make_created!
 
           expect(page).to have_content('Cluster was successfully created on Google Container Engine')
         end
@@ -62,7 +66,8 @@ feature 'Clusters', :js do
     end
 
     context 'when user has a cluster and visits cluster index page' do
-      let!(:cluster) { create(:gcp_cluster, :created_on_gke, :with_kubernetes_service, project: project) }
+      let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
 
       before do
         visit project_clusters_path(project)
@@ -70,7 +75,7 @@ feature 'Clusters', :js do
 
       it 'user sees an cluster details page' do
         expect(page).to have_button('Save')
-        expect(page.find(:css, '.cluster-name').value).to eq(cluster.gcp_cluster_name)
+        expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
       end
 
       context 'when user disables the cluster' do

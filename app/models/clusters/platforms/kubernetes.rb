@@ -30,8 +30,10 @@ module Clusters
           message: Gitlab::Regex.kubernetes_namespace_regex_message
         }
 
-      validates :api_url, url: true, presence: true
-      validates :token, presence: true
+      # TODO: when cluster.gcp? skip validation when create a record
+      # TODO: when cluster.user? validates always
+      # validates :api_url, url: true, presence: true
+      # validates :token, presence: true
 
       after_save :clear_reactive_cache!
 
