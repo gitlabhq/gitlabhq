@@ -17,7 +17,7 @@ export default function simulateInput(target, text) {
       triggerEvents(input);
     });
   } else {
-    triggerEvents();
+    triggerEvents(input);
   }
   return true;
 }
