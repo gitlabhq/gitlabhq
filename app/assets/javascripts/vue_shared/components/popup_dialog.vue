@@ -10,14 +10,11 @@ export default {
     text: {
       type: String,
       required: false,
-<<<<<<< HEAD
-=======
     },
     hideFooter: {
       type: Boolean,
       required: false,
       default: false,
->>>>>>> e8a46294c0... apply changes for JS and CSS from gitlab-ee!2912
     },
     kind: {
       type: String,
@@ -107,46 +104,24 @@ export default {
             <p>{{this.text}}</p>
           </slot>
         </div>
-        <slot name="footer">
-          <div class="modal-footer" v-if="!hideFooter">
-            <button
-              type="button"
-              class="btn btn-default pull-left"
-              @click="close"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn pull-right"
-              :disabled="submitDisabled"
-              :class="btnKindClass"
-              @click="emitSubmit(true)"
-            >
-              {{primaryButtonLabel}}
-            </button>
-          </div>
-        </slot>
+        <div class="modal-footer" v-if="!hideFooter">
+          <button
+            type="button"
+            class="btn pull-left"
+            :class="btnCancelKindClass"
+            @click="close">
+            {{ closeButtonLabel }}
+          </button>
+          <button
+            type="button"
+            class="btn pull-right"
+            :disabled="submitDisabled"
+            :class="btnKindClass"
+            @click="emitSubmit(true)">
+            {{ primaryButtonLabel }}
+          </button>
+        </div>
       </div>
-<<<<<<< HEAD
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn"
-          :class="btnCancelKindClass"
-          @click="close">
-          {{ closeButtonLabel }}
-        </button>
-        <button
-          type="button"
-          class="btn"
-          :class="btnKindClass"
-          @click="emitSubmit(true)">
-          {{ primaryButtonLabel }}
-        </button>
-      </div>
-=======
->>>>>>> e8a46294c0... apply changes for JS and CSS from gitlab-ee!2912
     </div>
   </div>
   <div class="modal-backdrop fade in" />
