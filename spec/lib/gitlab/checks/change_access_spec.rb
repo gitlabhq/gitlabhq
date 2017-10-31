@@ -459,19 +459,30 @@ describe Gitlab::Checks::ChangeAccess do
 
           it 'allows the commit when they were done with another email that belongs to the current user' do
             allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
-            user.emails.create(email: 'secondary_email@user.com')
+            user.emails.create(email: 'secondary_email@user.com', confirmed_at: Time.now)
 
             expect { subject }.not_to raise_error
           end
+
+          it 'raises an error when the commit was done with an unverified email' do
+            allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+            user.emails.create(email: 'secondary_email@user.com')
+
+            expect { subject }
+              .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                              "Committer email 'secondary_email@user.com' not verified. Verify the email on your profile page.")
+          end
         end
 
-        context 'with a commit from a different user' do
+        context 'with a commit using an unknown e-mail' do
           before do
             allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
           end
 
           it 'returns an error' do
-            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "You can only push your own commits to this repository")
+            expect { subject }
+              .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                              "Committer 'some@mail.com' unknown, do you need to add that email to your profile?")
           end
         end
       end

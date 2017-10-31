@@ -15,7 +15,10 @@ module Gitlab
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
-        push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'"
+        push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
+        push_rule_committer_unknown: "Committer '%{committer_email}' unknown, do you need to add that email to your profile?",
+        push_rule_committer_not_verified: "Committer email '%{committer_email}' not verified. Verify the email on your profile page.",
+        push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}', you can only push your own commits."
       }.freeze
 
       # protocol is currently used only in EE
@@ -213,9 +216,8 @@ module Gitlab
           return "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
         end
 
-        unless push_rule.committer_allowed?(commit.committer, user_access.user)
-          return "You can only push your own commits to this repository"
-        end
+        committer_error_message = committer_check(commit, push_rule)
+        return committer_error_message if committer_error_message
 
         if !updated_from_web? && !push_rule.commit_signature_allowed?(commit)
           return "Commit must be signed with a GPG key"
@@ -235,6 +237,18 @@ module Gitlab
         end
 
         nil
+      end
+
+      def committer_check(commit, push_rule)
+        unless push_rule.committer_allowed?(commit.committer_email, user_access.user)
+          if commit.committer.nil?
+            ERROR_MESSAGES[:push_rule_committer_unknown] % { committer_email: commit.committer_email }
+          elsif !commit.committer.verified_email?(commit.committer_email)
+            ERROR_MESSAGES[:push_rule_committer_not_verified] % { committer_email: commit.committer_email }
+          else
+            ERROR_MESSAGES[:push_rule_committer_not_allowed] % { committer_email: commit.committer_email }
+          end
+        end
       end
 
       def check_commit_diff(commit, push_rule)
