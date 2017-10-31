@@ -12,7 +12,7 @@ module Gitlab
           trans.set(:sidekiq_queue_duration, Time.now.to_f - (message['enqueued_at'] || message['created_at'] || 0))
           trans.run { yield }
 
-          worker.targets.each { |name, target| trans.add_tag(name, target) } if worker.respond_to?(:targets)
+          worker.metrics_tags.each { |tag, value| trans.add_tag(tag, value) } if worker.respond_to?(:metrics_tags)
         rescue Exception => error # rubocop: disable Lint/RescueException
           trans.add_event(:sidekiq_exception)
 

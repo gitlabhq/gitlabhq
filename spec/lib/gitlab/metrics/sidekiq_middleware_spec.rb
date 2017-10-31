@@ -47,11 +47,11 @@ describe Gitlab::Metrics::SidekiqMiddleware do
     end
 
     it 'tags the metrics accordingly' do
-      targets = { one: 1, two: 2 }
+      tags = { one: 1, two: 2 }
       worker = double(:worker, class: double(:class, name: 'TestWorker'))
-      allow(worker).to receive(:targets).and_return(targets)
+      allow(worker).to receive(:metrics_tags).and_return(tags)
 
-      targets.each do |tag, value|
+      tags.each do |tag, value|
         expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:add_tag)
           .with(tag, value)
       end

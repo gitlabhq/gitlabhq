@@ -2,10 +2,10 @@ class UpdateMergeRequestsWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  attr_reader :targets # for metrics tags
+  attr_reader :metrics_tags
 
   def initialize
-    @targets = {}
+    @metrics_tags = {}
   end
 
   def perform(project_id, user_id, oldrev, newrev, ref)
@@ -15,10 +15,11 @@ class UpdateMergeRequestsWorker
     user = User.find_by(id: user_id)
     return unless user
 
-    @targets = {
+    @metrics_tags = {
       project_id: project_id,
       user_id: user_id
     }
+
     MergeRequests::RefreshService.new(project, user).execute(oldrev, newrev, ref)
   end
 end
