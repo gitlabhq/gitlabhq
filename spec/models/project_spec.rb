@@ -2494,7 +2494,7 @@ describe Project do
 
     describe '#hashed_storage?' do
       it 'returns false' do
-        expect(project.hashed_storage?).to be_falsey
+        expect(project.hashed_storage?(:repository)).to be_falsey
       end
     end
 
@@ -2630,22 +2630,14 @@ describe Project do
     end
 
     describe '#hashed_storage?' do
-      context 'without specifying feature' do
-        it 'returns true' do
-          expect(project.hashed_storage?).to be_truthy
-        end
+      it 'returns true if rolled out' do
+        expect(project.hashed_storage?(:attachments)).to be_truthy
       end
 
-      context 'specifying feature' do
-        it 'returns true if rolled out' do
-          expect(project.hashed_storage?(:attachments)).to be_truthy
-        end
+      it 'returns false when not rolled out yet' do
+        project.storage_version = 1
 
-        it 'returns false when not rolled out yet' do
-          project.storage_version = 1
-
-          expect(project.hashed_storage?(:attachments)).to be_falsey
-        end
+        expect(project.hashed_storage?(:attachments)).to be_falsey
       end
     end
 

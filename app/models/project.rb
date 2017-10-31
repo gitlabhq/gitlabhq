@@ -1614,7 +1614,10 @@ class Project < ActiveRecord::Base
     [nil, 0].include?(self.storage_version)
   end
 
-  def hashed_storage?(feature=:repository)
+  # Check if Hashed Storage is enabled for the project with at least informed feature rolled out
+  #
+  # @param [Symbol] feature that needs to be rolled out for the project (:repository, :attachments)
+  def hashed_storage?(feature)
     raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
 
     self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
@@ -1653,7 +1656,7 @@ class Project < ActiveRecord::Base
   end
 
   def migrate_to_hashed_storage!
-    return if hashed_storage?
+    return if hashed_storage?(:repository)
 
     update!(repository_read_only: true)
 
@@ -1678,7 +1681,7 @@ class Project < ActiveRecord::Base
 
   def storage
     @storage ||=
-      if hashed_storage?
+      if hashed_storage?(:repository)
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)
