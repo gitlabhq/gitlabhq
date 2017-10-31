@@ -2,16 +2,15 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
 
-  - if show_new_repo?
+  - if show_new_repo? && can_push_branch?(@project, @ref)
     .js-new-dropdown
   - else
     = render 'projects/tree/old_tree_header'
 
 .tree-controls
   - if show_new_repo?
-    = render 'shared/repo/editable_mode'
+    .editable-mode
   - else
-    = lock_file_link(html_options: { class: 'btn path-lock' })
     = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
