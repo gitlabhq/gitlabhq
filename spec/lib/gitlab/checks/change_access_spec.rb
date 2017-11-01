@@ -440,52 +440,6 @@ describe Gitlab::Checks::ChangeAccess do
           end
         end
       end
-
-      context 'Check commit author rules' do
-        before do
-          stub_licensed_features(commit_committer_check: true)
-        end
-
-        let(:push_rule) { create(:push_rule, commit_committer_check: true) }
-
-        context 'with a commit from the authenticated user' do
-          before do
-            allow_any_instance_of(Commit).to receive(:committer_email).and_return(user.email)
-          end
-
-          it 'does not return an error' do
-            expect { subject }.not_to raise_error
-          end
-
-          it 'allows the commit when they were done with another email that belongs to the current user' do
-            allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
-            user.emails.create(email: 'secondary_email@user.com', confirmed_at: Time.now)
-
-            expect { subject }.not_to raise_error
-          end
-
-          it 'raises an error when the commit was done with an unverified email' do
-            allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
-            user.emails.create(email: 'secondary_email@user.com')
-
-            expect { subject }
-              .to raise_error(Gitlab::GitAccess::UnauthorizedError,
-                              "Committer email 'secondary_email@user.com' not verified. Verify the email on your profile page.")
-          end
-        end
-
-        context 'with a commit using an unknown e-mail' do
-          before do
-            allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
-          end
-
-          it 'returns an error' do
-            expect { subject }
-              .to raise_error(Gitlab::GitAccess::UnauthorizedError,
-                              "Committer 'some@mail.com' unknown, do you need to add that email to your profile?")
-          end
-        end
-      end
     end
 
     context 'file lock rules' do
@@ -499,6 +453,60 @@ describe Gitlab::Checks::ChangeAccess do
 
       it 'returns an error if the changes update a path locked by another user' do
         expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked by #{path_lock.user.name}")
+      end
+    end
+
+    context 'Check commit author rules' do
+      before do
+        stub_licensed_features(commit_committer_check: true)
+      end
+
+      let(:push_rule) { create(:push_rule, commit_committer_check: true) }
+      let(:project) { create(:project, :public, :repository, push_rule: push_rule) }
+
+      context 'with a commit from the authenticated user' do
+        before do
+          allow(project.repository).to receive(:new_commits).and_return(
+            project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
+          )
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return(user.email)
+        end
+
+        it 'does not return an error' do
+          expect { subject }.not_to raise_error
+        end
+
+        it 'allows the commit when they were done with another email that belongs to the current user' do
+          user.emails.create(email: 'secondary_email@user.com', confirmed_at: Time.now)
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+
+          expect { subject }.not_to raise_error
+        end
+
+        it 'raises an error when the commit was done with an unverified email' do
+          user.emails.create(email: 'secondary_email@user.com')
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+
+          expect { subject }
+            .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                            "Committer email 'secondary_email@user.com' not verified. Verify the email on your profile page.")
+        end
+
+        it 'raises an error when using an unknown email' do
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
+          expect { subject }
+            .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                            "Committer 'some@mail.com' unknown, do you need to add that email to your profile?")
+        end
+      end
+
+      context 'for an ff merge request' do
+        # the signed-commits branch fast-forwards onto master
+        let(:newrev) { '2d1096e3' }
+
+        it 'does not raise errors for a fast forward' do
+          expect { subject }.not_to raise_error
+        end
       end
     end
   end
