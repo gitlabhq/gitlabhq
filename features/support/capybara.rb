@@ -5,9 +5,12 @@ timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 60 : 30
 
 Capybara.javascript_driver = :chrome
 Capybara.register_driver :chrome do |app|
+  extra_args = []
+  extra_args << 'headless' unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
+
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
     chromeOptions: {
-      'args' => %w[headless no-sandbox disable-gpu --window-size=1240,1400]
+      'args' => %w[no-sandbox disable-gpu --window-size=1240,1400] + extra_args
     }
   )
 
