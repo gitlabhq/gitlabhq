@@ -10,7 +10,7 @@ module Clusters
           if provider.make_creating(operation_id)
             WaitForClusterCreationWorker.perform_in(
               Clusters::Gcp::VerifyProvisionStatusService::INITIAL_INTERVAL,
-              provider.id)
+              provider.cluster_id)
           else
             provider.make_errored!("Failed to update provider record; #{provider.errors}")
           end
