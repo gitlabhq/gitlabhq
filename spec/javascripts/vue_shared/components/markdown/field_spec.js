@@ -54,7 +54,7 @@ describe('Markdown field component', () => {
         }));
 
         previewLink = vm.$el.querySelector('.nav-links .js-preview-link');
-        writeLink = vm.$el.querySelector('.nav-links js-write-link');
+        writeLink = vm.$el.querySelector('.nav-links .js-write-link');
       });
 
       it('sets preview link as active', (done) => {
