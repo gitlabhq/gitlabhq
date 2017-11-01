@@ -31,8 +31,8 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
       end
 
       it 'creates correct entries in the merge_request_diff_commits table' do
-        expect(updated_merge_request_diff.merge_request_diff_commits.count).to eq(commits.count)
-        expect(updated_merge_request_diff.commits.map(&:to_hash)).to eq(commits)
+        expect(updated_merge_request_diff.merge_request_diff_commits.count).to eq(expected_commits.count)
+        expect(updated_merge_request_diff.commits.map(&:to_hash)).to eq(expected_commits)
       end
 
       it 'creates correct entries in the merge_request_diff_files table' do
@@ -199,6 +199,16 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diff has valid commits and diffs' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
+      let(:diffs) { diffs_to_hashes(merge_request_diff.merge_request_diff_files) }
+      let(:expected_diffs) { diffs }
+
+      include_examples 'updated MR diff'
+    end
+
+    context 'when the merge request diff has diffs but no commits' do
+      let(:commits) { nil }
+      let(:expected_commits) { [] }
       let(:diffs) { diffs_to_hashes(merge_request_diff.merge_request_diff_files) }
       let(:expected_diffs) { diffs }
 
@@ -207,6 +217,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs do not have too_large set' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
       let(:expected_diffs) { diffs_to_hashes(merge_request_diff.merge_request_diff_files) }
 
       let(:diffs) do
@@ -218,6 +229,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs do not have a_mode and b_mode set' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
       let(:expected_diffs) { diffs_to_hashes(merge_request_diff.merge_request_diff_files) }
 
       let(:diffs) do
@@ -229,6 +241,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs have binary content' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
       let(:expected_diffs) { diffs }
 
       # The start of a PDF created by Illustrator
@@ -257,6 +270,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diff has commits, but no diffs' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
       let(:diffs) { [] }
       let(:expected_diffs) { diffs }
 
@@ -265,6 +279,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
 
     context 'when the merge request diffs have invalid content' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
+      let(:expected_commits) { commits }
       let(:diffs) { ['--broken-diff'] }
       let(:expected_diffs) { [] }
 
@@ -274,6 +289,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
     context 'when the merge request diffs are Rugged::Patch instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
+      let(:expected_commits) { commits }
       let(:diffs) { first_commit.rugged_diff_from_parent.patches }
       let(:expected_diffs) { [] }
 
@@ -283,6 +299,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :t
     context 'when the merge request diffs are Rugged::Diff::Delta instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
+      let(:expected_commits) { commits }
       let(:diffs) { first_commit.rugged_diff_from_parent.deltas }
       let(:expected_diffs) { [] }
 

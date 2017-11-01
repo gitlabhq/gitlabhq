@@ -4,6 +4,7 @@
 @import 'framework/tw_bootstrap';
 @import "framework/layout";
 @import "framework/animations";
+@import "framework/vue_transitions";
 @import "framework/avatar";
 @import "framework/asciidoctor";
 @import "framework/banner";
@@ -35,7 +36,7 @@
 @import "framework/secondary-navigation-elements";
 @import "framework/selects";
 @import "framework/sidebar";
-@import "framework/new-sidebar";
+@import "framework/contextual-sidebar";
 @import "framework/tables";
 @import "framework/notes";
 @import "framework/tabs";

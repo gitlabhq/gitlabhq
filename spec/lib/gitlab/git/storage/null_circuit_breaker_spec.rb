@@ -54,6 +54,10 @@ describe Gitlab::Git::Storage::NullCircuitBreaker do
   end
 
   describe '#failure_count_threshold' do
+    before do
+      stub_application_setting(circuitbreaker_failure_count_threshold: 1)
+    end
+
     it { expect(breaker.failure_count_threshold).to eq(1) }
   end
 
@@ -61,17 +65,6 @@ describe Gitlab::Git::Storage::NullCircuitBreaker do
     ours = described_class.public_instance_methods
     theirs = Gitlab::Git::Storage::CircuitBreaker.public_instance_methods
 
-    # These methods are not part of the public API, but are public to allow the
-    # CircuitBreaker specs to operate. They should be made private over time.
-    exceptions = %i[
-      cache_key
-      check_storage_accessible!
-      no_failures?
-      storage_available?
-      track_storage_accessible
-      track_storage_inaccessible
-    ]
-
-    expect(theirs - ours).to contain_exactly(*exceptions)
+    expect(theirs - ours).to be_empty
   end
 end

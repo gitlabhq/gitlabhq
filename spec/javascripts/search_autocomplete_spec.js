@@ -3,7 +3,6 @@
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-import 'vendor/fuzzaldrin-plus';
 
 (function() {
   var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;

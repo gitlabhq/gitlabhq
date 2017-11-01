@@ -29,5 +29,12 @@ describe Gitlab::SQL::Union do
 
       expect(union.to_sql).to include('UNION ALL')
     end
+
+    it 'returns `NULL` if all relations are empty' do
+      empty_relation = User.none
+      union = described_class.new([empty_relation, empty_relation])
+
+      expect(union.to_sql).to eq('NULL')
+    end
   end
 end

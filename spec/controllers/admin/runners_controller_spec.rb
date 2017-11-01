@@ -11,7 +11,7 @@ describe Admin::RunnersController do
     it 'lists all runners' do
       get :index
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -19,13 +19,13 @@ describe Admin::RunnersController do
     it 'shows a particular runner' do
       get :show, id: runner.id
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'shows 404 for unknown runner' do
       get :show, id: 0
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -39,7 +39,7 @@ describe Admin::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.description).to eq(new_desc)
     end
   end
@@ -48,7 +48,7 @@ describe Admin::RunnersController do
     it 'destroys the runner' do
       delete :destroy, id: runner.id
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(Ci::Runner.find_by(id: runner.id)).to be_nil
     end
   end
@@ -63,7 +63,7 @@ describe Admin::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.active).to eq(true)
     end
   end
@@ -78,7 +78,7 @@ describe Admin::RunnersController do
 
       runner.reload
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(runner.active).to eq(false)
     end
   end

@@ -1,15 +1,14 @@
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity $sidebar-transition-duration;
-}
+.modal.popup-dialog {
+  display: block;
+  background-color: $black-transparent;
+  z-index: 2100;
 
-.monaco-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparent;
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
 }
 
 .project-refs-form,
@@ -46,6 +45,7 @@
   }
 
   .tree-content-holder {
+    display: -webkit-flex;
     display: flex;
     min-height: 300px;
   }
@@ -55,7 +55,9 @@
   }
 
   .panel-right {
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
     width: 80%;
     height: 100%;
@@ -73,10 +75,6 @@
           text-decoration: underline;
         }
       }
-
-      .cursor {
-        display: none !important;
-      }
     }
 
     .blob-no-preview {
@@ -86,21 +84,12 @@
       }
     }
 
-    &.edit-mode {
-      .blob-viewer-container {
-        overflow: hidden;
-      }
-
-      .monaco-editor.vs {
-        .cursor {
-          background: $black;
-          border-color: $black;
-          display: block !important;
-        }
-      }
+    &.blob-editor-container {
+      overflow: hidden;
     }
 
     .blob-viewer-container {
+      -webkit-flex: 1;
       flex: 1;
       overflow: auto;
 
@@ -130,6 +119,7 @@
     }
 
     #tabs {
+      position: relative;
       flex-shrink: 0;
       display: flex;
       width: 100%;
@@ -140,27 +130,12 @@
       overflow-x: auto;
 
       li {
-        animation: swipeRightAppear ease-in 0.1s;
-        animation-iteration-count: 1;
-        transform-origin: 0% 50%;
-        list-style-type: none;
+        position: relative;
         background: $gray-normal;
-        display: inline-block;
         padding: #{$gl-padding / 2} $gl-padding;
         border-right: 1px solid $white-dark;
         border-bottom: 1px solid $white-dark;
-        white-space: nowrap;
         cursor: pointer;
-
-        &.remove {
-          animation: swipeRightDissapear ease-in 0.1s;
-          animation-iteration-count: 1;
-          transform-origin: 0% 50%;
-
-          a {
-            width: 0;
-          }
-        }
 
         &.active {
           background: $white-light;
@@ -169,17 +144,25 @@
 
         a {
           @include str-truncated(100px);
-          color: $black;
+          color: $gl-text-color;
           vertical-align: middle;
           text-decoration: none;
           margin-right: 12px;
 
-          &.close {
-            width: auto;
-            font-size: 15px;
-            opacity: 1;
-            margin-right: -6px;
+          &:focus {
+            outline: none;
           }
+        }
+
+        .close-btn {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          padding: 0;
+          background: none;
+          border: 0;
+          font-size: $gl-font-size;
+          transform: translateY(-50%);
         }
 
         .close-icon:hover {
@@ -188,9 +171,6 @@
 
         .close-icon,
         .unsaved-icon {
-          float: right;
-          margin-top: 3px;
-          margin-left: 15px;
           color: $gray-darkest;
         }
 
@@ -207,11 +187,9 @@
       }
     }
 
-    #repo-file-buttons {
+    .repo-file-buttons {
       background-color: $white-light;
-      border-bottom: 1px solid $white-normal;
       padding: 5px 10px;
-      position: relative;
       border-top: 1px solid $white-normal;
     }
 
@@ -274,37 +252,23 @@
       overflow: auto;
     }
 
-    table {
+    .table {
       margin-bottom: 0;
     }
 
     tr {
-      animation: fadein 0.5s;
-      cursor: pointer;
-
-      &.repo-file-options td {
-        padding: 0;
-        border-top: none;
-        background: $gray-light;
+      .repo-file-options {
+        padding: 2px 16px;
         width: 100%;
-        display: inline-block;
+      }
 
-        &:first-child {
-          border-top-left-radius: 2px;
-        }
-
-        .title {
-          display: inline-block;
-          font-size: 10px;
-          text-transform: uppercase;
-          font-weight: $gl-font-weight-bold;
-          color: $gray-darkest;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          vertical-align: middle;
-          padding: 2px 16px;
-        }
+      .title {
+        font-size: 10px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
       }
 
       .file-icon {
@@ -316,11 +280,13 @@
       }
     }
 
+    .file {
+      cursor: pointer;
+    }
+
     a {
       @include str-truncated(250px);
       color: $almost-black;
-      display: inline-block;
-      vertical-align: middle;
     }
   }
 }
@@ -330,25 +296,5 @@
 
   p {
     width: 100%;
-  }
-}
-
-@keyframes swipeRightAppear {
-  0% {
-    transform: scaleX(0.00);
-  }
-
-  100% {
-    transform: scaleX(1.00);
-  }
-}
-
-@keyframes swipeRightDissapear {
-  0% {
-    transform: scaleX(1.00);
-  }
-
-  100% {
-    transform: scaleX(0.00);
   }
 }

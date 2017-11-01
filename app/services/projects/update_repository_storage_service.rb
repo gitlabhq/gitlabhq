@@ -11,7 +11,7 @@ module Projects
       result = move_storage(project.disk_path, new_storage_path)
 
       if project.wiki.repository_exists?
-        result &&= move_storage("#{project.disk_path}.wiki", new_storage_path)
+        result &&= move_storage(project.wiki.disk_path, new_storage_path)
       end
 
       if result
@@ -44,7 +44,7 @@ module Projects
         if wiki.repository_exists?
           GitlabShellWorker.perform_async(:mv_repository,
                                           old_repository_storage_path,
-                                          "#{disk_path}.wiki",
+                                          wiki.disk_path,
                                           "#{new_project_path}.wiki")
         end
       end

@@ -1,0 +1,5 @@
+---
+title: 'Geo: read-only safeguards was not working on Secondary node'
+merge_request: 3227
+author:
+type: fixed

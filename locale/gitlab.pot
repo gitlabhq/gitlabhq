@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-06 22:39+0200\n"
-"PO-Revision-Date: 2017-10-06 22:39+0200\n"
+"POT-Creation-Date: 2017-10-22 16:40+0300\n"
+"PO-Revision-Date: 2017-10-22 16:40+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -112,7 +112,16 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "AdminHealthPageLink|health page"
+msgstr ""
+
+msgid "Advanced settings"
+msgstr ""
+
 msgid "All"
+msgstr ""
+
+msgid "An error occurred. Please try again."
 msgstr ""
 
 msgid "Appearance"
@@ -128,6 +137,9 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
 msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to leave this group?"
 msgstr ""
 
 msgid "Are you sure you want to reset registration token?"
@@ -163,16 +175,19 @@ msgstr ""
 msgid "AutoDevOps|Auto DevOps (Beta)"
 msgstr ""
 
-msgid "AutoDevOps|Auto DevOps can be activated for this project. It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
 msgid "AutoDevOps|Enable in settings"
 msgstr ""
 
+msgid "AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
 msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
+msgstr ""
+
+msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
 msgid "Billing"
@@ -235,6 +250,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr ""
+
+msgid "Branch has changed"
 msgstr ""
 
 msgid "BranchSwitcherPlaceholder|Search branches"
@@ -447,13 +465,25 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CircuitBreakerApiLink|circuitbreaker api"
+msgstr ""
+
 msgid "Clone repository"
 msgstr ""
 
 msgid "Close"
 msgstr ""
 
+msgid "Cluster"
+msgstr ""
+
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgstr ""
+
+msgid "ClusterIntegration|Advanced settings"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster details"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster integration"
@@ -498,16 +528,16 @@ msgstr ""
 msgid "ClusterIntegration|Google Container Engine project"
 msgstr ""
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr ""
-
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr ""
 
-msgid "ClusterIntegration|See machine types"
+msgid "ClusterIntegration|Machine type"
 msgstr ""
 
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters"
+msgstr ""
+
+msgid "ClusterIntegration|Manage Cluster integration on your GitLab project"
 msgstr ""
 
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
@@ -516,7 +546,13 @@ msgstr ""
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
+msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgstr ""
+
 msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgstr ""
+
+msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|Remove cluster integration"
@@ -528,7 +564,13 @@ msgstr ""
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
 msgstr ""
 
-msgid "ClusterIntegration|Save changes"
+msgid "ClusterIntegration|See and edit the details for your cluster"
+msgstr ""
+
+msgid "ClusterIntegration|See and edit the details for your cluster"
+msgstr ""
+
+msgid "ClusterIntegration|See machine types"
 msgstr ""
 
 msgid "ClusterIntegration|See your projects"
@@ -540,16 +582,10 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine."
-msgstr ""
-
-msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
 msgstr ""
 
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
@@ -665,6 +701,12 @@ msgstr ""
 msgid "Contributors"
 msgstr ""
 
+msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
+msgstr ""
+
+msgid "Control the maximum concurrency of repository backfill for this secondary node"
+msgstr ""
+
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
@@ -687,6 +729,9 @@ msgid "Create empty bare repository"
 msgstr ""
 
 msgid "Create merge request"
+msgstr ""
+
+msgid "Create new branch"
 msgstr ""
 
 msgid "Create new..."
@@ -775,6 +820,9 @@ msgstr ""
 msgid "Discard changes"
 msgstr ""
 
+msgid "Dismiss Cycle Analytics introduction box"
+msgstr ""
+
 msgid "Dismiss Merge Request promotion"
 msgstr ""
 
@@ -847,6 +895,9 @@ msgstr ""
 msgid "Explore projects"
 msgstr ""
 
+msgid "Explore public groups"
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -897,7 +948,13 @@ msgstr ""
 msgid "Geo Nodes"
 msgstr ""
 
+msgid "Geo|File sync capacity"
+msgstr ""
+
 msgid "Geo|Groups to replicate"
+msgstr ""
+
+msgid "Geo|Repository sync capacity"
 msgstr ""
 
 msgid "Geo|Select groups to replicate."
@@ -940,6 +997,51 @@ msgid "GroupSettings|cannot be disabled when the parent group \"Share with group
 msgstr ""
 
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
+msgstr ""
+
+msgid "GroupsEmptyState|A group is a collection of several projects."
+msgstr ""
+
+msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
+msgstr ""
+
+msgid "GroupsEmptyState|No groups found"
+msgstr ""
+
+msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
+msgstr ""
+
+msgid "GroupsTreeRole|as"
+msgstr ""
+
+msgid "GroupsTree|Are you sure you want to leave the \"${this.group.fullName}\" group?"
+msgstr ""
+
+msgid "GroupsTree|Create a project in this group."
+msgstr ""
+
+msgid "GroupsTree|Create a subgroup in this group."
+msgstr ""
+
+msgid "GroupsTree|Edit group"
+msgstr ""
+
+msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
+msgstr ""
+
+msgid "GroupsTree|Filter by name..."
+msgstr ""
+
+msgid "GroupsTree|Leave this group"
+msgstr ""
+
+msgid "GroupsTree|Loading groups"
+msgstr ""
+
+msgid "GroupsTree|Sorry, no groups matched your search"
+msgstr ""
+
+msgid "GroupsTree|Sorry, no groups or projects matched your search"
 msgstr ""
 
 msgid "Health Check"
@@ -985,6 +1087,12 @@ msgid "Instance"
 msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Internal - The group and any internal projects can be viewed by any logged in user."
+msgstr ""
+
+msgid "Internal - The project can be accessed by any logged in user."
+msgstr ""
 
 msgid "Interval Pattern"
 msgstr ""
@@ -1054,6 +1162,9 @@ msgstr ""
 msgid "Learn more in the|pipeline schedules documentation"
 msgstr ""
 
+msgid "Leave"
+msgstr ""
+
 msgid "Leave group"
 msgstr ""
 
@@ -1075,6 +1186,12 @@ msgid "Locked"
 msgstr ""
 
 msgid "Locked Files"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Maximum git storage failures"
 msgstr ""
 
 msgid "Median"
@@ -1107,6 +1224,9 @@ msgstr ""
 msgid "Multiple issue boards"
 msgstr ""
 
+msgid "New Cluster"
+msgstr ""
+
 msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
@@ -1124,16 +1244,25 @@ msgstr ""
 msgid "New file"
 msgstr ""
 
+msgid "New group"
+msgstr ""
+
 msgid "New issue"
 msgstr ""
 
 msgid "New merge request"
 msgstr ""
 
+msgid "New project"
+msgstr ""
+
 msgid "New schedule"
 msgstr ""
 
 msgid "New snippet"
+msgstr ""
+
+msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
@@ -1355,7 +1484,52 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
+msgid "Private - Project access must be granted explicitly to each user."
+msgstr ""
+
+msgid "Private - The group and its projects can only be viewed by members."
+msgstr ""
+
 msgid "Profile"
+msgstr ""
+
+msgid "Profiles|Account scheduled for removal."
+msgstr ""
+
+msgid "Profiles|Delete Account"
+msgstr ""
+
+msgid "Profiles|Delete account"
+msgstr ""
+
+msgid "Profiles|Delete your account?"
+msgstr ""
+
+msgid "Profiles|Deleting an account has the following effects:"
+msgstr ""
+
+msgid "Profiles|Invalid password"
+msgstr ""
+
+msgid "Profiles|Invalid username"
+msgstr ""
+
+msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|You don't have access to delete this user."
+msgstr ""
+
+msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
+msgstr ""
+
+msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|your account"
+msgstr ""
+
+msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -1365,9 +1539,6 @@ msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
-msgstr ""
-
-msgid "Project '%{project_name}' will be deleted."
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
@@ -1427,6 +1598,9 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
+msgid "Projects"
+msgstr ""
+
 msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
@@ -1446,6 +1620,12 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr ""
 
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
+msgid "Public - The group and any public projects can be viewed without any authentication."
+msgstr ""
+
+msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
 msgid "Push Rules"
@@ -1517,6 +1697,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
 msgid "Save changes"
 msgstr ""
 
@@ -1533,6 +1716,15 @@ msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Search branches and tags"
+msgstr ""
+
+msgid "Seconds before reseting failure information"
+msgstr ""
+
+msgid "Seconds to wait after a storage failure"
+msgstr ""
+
+msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
 msgid "Select Archive Format"
@@ -1582,13 +1774,16 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+msgstr ""
+
 msgid "Something went wrong while fetching the projects."
 msgstr ""
 
 msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
-msgid "Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}"
+msgid "Sort by"
 msgstr ""
 
 msgid "SortOptions|Access level, ascending"
@@ -1708,6 +1903,9 @@ msgstr ""
 msgid "Start the Runner!"
 msgstr ""
 
+msgid "Subgroups"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -1746,6 +1944,9 @@ msgstr ""
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
+msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
+
 msgid "The phase of the development lifecycle."
 msgstr ""
 
@@ -1776,6 +1977,12 @@ msgstr ""
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
+msgid "The time in seconds GitLab will keep failure information. When no failures occur during this time, information about the mount is reset."
+msgstr ""
+
+msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
+msgstr ""
+
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
@@ -1783,6 +1990,9 @@ msgid "The value lying at the midpoint of a series of observed values. E.g., bet
 msgstr ""
 
 msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
 msgid "This is a confidential issue."
@@ -2032,6 +2242,9 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
+msgid "When access to a storage fails. GitLab will prevent access to the storage for the time specified here. This allows the filesystem to recover. Repositories on failing shards are temporarly unavailable"
+msgstr ""
+
 msgid "Wiki"
 msgstr ""
 
@@ -2152,7 +2365,19 @@ msgstr ""
 msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are on a read-only GitLab instance."
+msgstr ""
+
+msgid "You are on a read-only GitLab instance. If you want to make any changes, you must visit the %{link_to_primary_node}."
+msgstr ""
+
 msgid "You can only add files when you are on a branch"
+msgstr ""
+
+msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
+msgstr ""
+
+msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You have reached your project limit"
@@ -2188,6 +2413,9 @@ msgstr ""
 msgid "Your comment will not be visible to the public."
 msgstr ""
 
+msgid "Your groups"
+msgstr ""
+
 msgid "Your name"
 msgstr ""
 
@@ -2213,8 +2441,14 @@ msgid_plural "parents"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "to help your contributors communicate effectively!"
+msgid "password"
 msgstr ""
 
 msgid "personal access token"
+msgstr ""
+
+msgid "to help your contributors communicate effectively!"
+msgstr ""
+
+msgid "username"
 msgstr ""

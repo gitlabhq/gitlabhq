@@ -407,7 +407,7 @@ feature 'Jobs' do
       end
 
       it 'shows the right status and buttons', :js do
-        expect(page).to have_http_status(200)
+        expect(page).to have_gitlab_http_status(200)
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end

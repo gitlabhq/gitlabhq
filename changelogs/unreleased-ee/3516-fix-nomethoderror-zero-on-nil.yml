@@ -1,5 +1,0 @@
----
-title: Fix an error reporting some failures in the elasticsearch indexer
-merge_request: 2998
-author:
-type: fixed

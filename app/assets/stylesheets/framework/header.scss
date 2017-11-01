@@ -239,10 +239,8 @@
             fill: currentColor;
           }
 
-          &.header-user-dropdown-toggle {
-            .header-user-avatar {
-              border-color: $white-light;
-            }
+          &.header-user-dropdown-toggle .header-user-avatar {
+            border-color: $white-light;
           }
         }
       }

@@ -269,7 +269,7 @@ ul.notes {
           display: none;
         }
 
-        &.system-note-commit-list {
+        &.system-note-commit-list:not(.hide-shade) {
           max-height: 70px;
           overflow: hidden;
           display: block;
@@ -290,16 +290,6 @@ ul.notes {
             left: 0;
             bottom: 0;
             background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
           }
         }
       }
@@ -466,6 +456,10 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
+
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
+  }
 }
 
 .note-actions {
@@ -531,13 +525,12 @@ ul.notes {
   padding: 0;
   min-width: 16px;
   color: $gray-darkest;
+  fill: $gray-darkest;
 
   .fa {
     position: relative;
     font-size: 16px;
   }
-
-
 
   svg {
     height: 16px;
@@ -566,6 +559,7 @@ ul.notes {
 
     .link-highlight {
       color: $gl-link-color;
+      fill: $gl-link-color;
 
       svg {
         fill: $gl-link-color;

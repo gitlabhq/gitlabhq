@@ -299,6 +299,24 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'when pre-loaded merged branches are provided' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch, :pre_loaded, :expected) do
+        'not-merged-branch' | ['branch-merged']     | false
+        'branch-merged'     | ['not-merged-branch'] | false
+        'branch-merged'     | ['branch-merged']     | true
+        'not-merged-branch' | ['not-merged-branch'] | false
+        'master'            | ['master']            | false
+      end
+
+      with_them do
+        subject { repository.merged_to_root_ref?(branch, pre_loaded) }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
   end
 
   describe '#can_be_merged?' do
@@ -2227,19 +2245,41 @@ describe Repository do
   end
 
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
+    let(:fallback) { 10 }
+
     context 'with a non-existing repository' do
-      let(:value) do
-        repository.cache_method_output(:cats, fallback: 10) do
-          raise Rugged::ReferenceError
+      let(:project) { create(:project) } # No repository
+
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          repository.cats_call_stub
         end
       end
 
-      it 'returns a fallback value' do
-        expect(value).to eq(10)
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
+      end
+
+      it 'avoids calling the original method' do
+        expect(repository).not_to receive(:cats_call_stub)
+
+        subject
+      end
+    end
+
+    context 'with a method throwing a non-existing-repository error' do
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          raise Gitlab::Git::Repository::NoRepository
+        end
+      end
+
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
       end
 
       it 'does not cache the data' do
-        value
+        subject
 
         expect(repository.instance_variable_defined?(:@cats)).to eq(false)
         expect(repository.send(:cache).exist?(:cats)).to eq(false)
@@ -2368,6 +2408,26 @@ describe Repository do
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
       end
+    end
+  end
+
+  describe 'commit cache' do
+    set(:project) { create(:project, :repository) }
+
+    it 'caches based on SHA' do
+      # Gets the commit oid, and warms the cache
+      oid = project.commit.id
+
+      expect(Gitlab::Git::Commit).not_to receive(:find).once
+
+      project.commit_by(oid: oid)
+    end
+
+    it 'caches nil values' do
+      expect(Gitlab::Git::Commit).to receive(:find).once
+
+      project.commit_by(oid: '1' * 40)
+      project.commit_by(oid: '1' * 40)
     end
   end
 end

@@ -208,6 +208,7 @@ project:
 - slack_slash_commands_service
 - gitlab_slack_application_service
 - irker_service
+- packagist_service
 - pivotaltracker_service
 - prometheus_service
 - hipchat_service
@@ -313,3 +314,6 @@ timelogs:
 - user
 push_event_payload:
 - event
+issue_assignees:
+- issue
+- assignee

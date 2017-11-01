@@ -296,6 +296,11 @@
   }
 }
 
+.btn-align-content {
+  display: flex;
+  align-items: center;
+}
+
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;

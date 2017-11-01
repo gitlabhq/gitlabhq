@@ -277,6 +277,15 @@ describe Project do
       update_remote_mirrors
     end
 
+    it 'does nothing when remote mirror is disabled globally and not overridden' do
+      stub_application_setting(remote_mirror_available: false)
+      project.remote_mirror_available_overridden = false
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
     it 'does nothing when unlicensed' do
       stub_licensed_features(repository_mirrors: false)
 
@@ -820,6 +829,32 @@ describe Project do
         end
 
         it_behaves_like 'project without disabled services'
+      end
+    end
+  end
+
+  describe '#remote_mirror_available?' do
+    let(:project) { create(:project) }
+
+    context 'when remote mirror global setting is enabled' do
+      it 'returns true' do
+        expect(project.remote_mirror_available?).to be(true)
+      end
+    end
+
+    context 'when remote mirror global setting is disabled' do
+      before do
+        stub_application_setting(remote_mirror_available: false)
+      end
+
+      it 'returns true when overridden' do
+        project.remote_mirror_available_overridden = true
+
+        expect(project.remote_mirror_available?).to be(true)
+      end
+
+      it 'returns false when not overridden' do
+        expect(project.remote_mirror_available?).to be(false)
       end
     end
   end

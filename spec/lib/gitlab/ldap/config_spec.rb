@@ -362,4 +362,38 @@ describe Gitlab::LDAP::Config do
       })
     end
   end
+
+  describe '#base' do
+    context 'when the configured base is not normalized' do
+      it 'returns the normalized base' do
+        stub_ldap_config(options: { 'base' => 'DC=example, DC= com' })
+
+        expect(config.base).to eq('dc=example,dc=com')
+      end
+    end
+
+    context 'when the configured base is normalized' do
+      it 'returns the base unaltered' do
+        stub_ldap_config(options: { 'base' => 'dc=example,dc=com' })
+
+        expect(config.base).to eq('dc=example,dc=com')
+      end
+    end
+
+    context 'when the configured base is malformed' do
+      it 'returns the base unaltered' do
+        stub_ldap_config(options: { 'base' => 'invalid,dc=example,dc=com' })
+
+        expect(config.base).to eq('invalid,dc=example,dc=com')
+      end
+    end
+
+    context 'when the configured base is blank' do
+      it 'returns the base unaltered' do
+        stub_ldap_config(options: { 'base' => '' })
+
+        expect(config.base).to eq('')
+      end
+    end
+  end
 end

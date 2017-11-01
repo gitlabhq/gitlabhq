@@ -93,7 +93,7 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.1'
+gem 'carrierwave', '~> 1.2'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -105,7 +105,7 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.1.0'
+gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
 gem 'google-api-client', '~> 0.13.6'
@@ -293,7 +293,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta18'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -414,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.42.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.51.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

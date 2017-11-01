@@ -1,5 +1,0 @@
----
-title: Prevent failed file syncs from stalling Geo backfill
-merge_request: 3101
-author:
-type: fixed

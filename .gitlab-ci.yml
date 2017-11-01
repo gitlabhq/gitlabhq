@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
 
 .default-cache: &default-cache
-  key: "ruby-233-with-yarn"
+  key: "ruby-235-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -52,11 +52,11 @@ stages:
     - gitlab-org
 
 .tests-metadata-state: &tests-metadata-state
-  services: []
+  <<: *dedicated-runner
   variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
+  before_script:
+    - source scripts/utils.sh
   artifacts:
     expire_in: 31d
     paths:
@@ -92,6 +92,7 @@ stages:
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -121,7 +122,6 @@ stages:
 .rspec-metadata-pg: &rspec-metadata-pg
   <<: *rspec-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .rspec-geo-pg-9-6: &rspec-metadata-pg-geo
   <<: *use-pg-9-6
@@ -137,11 +137,11 @@ stages:
 .rspec-metadata-mysql: &rspec-metadata-mysql
   <<: *rspec-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
   <<: *pull-cache
+  <<: *except-docs
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -164,12 +164,10 @@ stages:
 .spinach-metadata-pg: &spinach-metadata-pg
   <<: *spinach-metadata
   <<: *use-pg
-  <<: *except-docs
 
 .spinach-metadata-mysql: &spinach-metadata-mysql
   <<: *spinach-metadata
   <<: *use-mysql
-  <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters
   only:
@@ -180,13 +178,8 @@ stages:
 
 # Trigger a package build in omnibus-gitlab repository
 build-package:
-  image: ruby:2.3-alpine
+  image: ruby:2.4-alpine
   before_script: []
-  services: []
-  variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
-    EE_PACKAGE: "true"
   stage: build
   cache: {}
   when: manual
@@ -207,13 +200,9 @@ build-package:
     - apk add --update openssl
     - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
     - chmod 755 trigger-build-docs
-  services: []
   cache: {}
   dependencies: []
-  artifacts: {}
   variables:
-    SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false"
     GIT_STRATEGY: none
   when: manual
   only:
@@ -246,7 +235,6 @@ review-docs-cleanup:
 # Retrieve knapsack and rspec_flaky reports
 retrieve-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
   cache:
@@ -264,7 +252,6 @@ retrieve-tests-metadata:
 
 update-tests-metadata:
   <<: *tests-metadata-state
-  <<: *dedicated-runner
   <<: *only-canonical-masters
   stage: post-test
   cache:
@@ -329,71 +316,71 @@ setup-test-env:
       - public/assets
       - tmp/tests
 
-rspec-pg 0 25: *rspec-metadata-pg
-rspec-pg 1 25: *rspec-metadata-pg
-rspec-pg 2 25: *rspec-metadata-pg
-rspec-pg 3 25: *rspec-metadata-pg
-rspec-pg 4 25: *rspec-metadata-pg
-rspec-pg 5 25: *rspec-metadata-pg
-rspec-pg 6 25: *rspec-metadata-pg
-rspec-pg 7 25: *rspec-metadata-pg
-rspec-pg 8 25: *rspec-metadata-pg
-rspec-pg 9 25: *rspec-metadata-pg
-rspec-pg 10 25: *rspec-metadata-pg
-rspec-pg 11 25: *rspec-metadata-pg
-rspec-pg 12 25: *rspec-metadata-pg
-rspec-pg 13 25: *rspec-metadata-pg
-rspec-pg 14 25: *rspec-metadata-pg
-rspec-pg 15 25: *rspec-metadata-pg
-rspec-pg 16 25: *rspec-metadata-pg
-rspec-pg 17 25: *rspec-metadata-pg
-rspec-pg 18 25: *rspec-metadata-pg
-rspec-pg 19 25: *rspec-metadata-pg
-rspec-pg 20 25: *rspec-metadata-pg
-rspec-pg 21 25: *rspec-metadata-pg
-rspec-pg 22 25: *rspec-metadata-pg
-rspec-pg 23 25: *rspec-metadata-pg
-rspec-pg 24 25: *rspec-metadata-pg
-
 rspec-pg geo: *rspec-metadata-pg-geo
 
-rspec-mysql 0 25: *rspec-metadata-mysql
-rspec-mysql 1 25: *rspec-metadata-mysql
-rspec-mysql 2 25: *rspec-metadata-mysql
-rspec-mysql 3 25: *rspec-metadata-mysql
-rspec-mysql 4 25: *rspec-metadata-mysql
-rspec-mysql 5 25: *rspec-metadata-mysql
-rspec-mysql 6 25: *rspec-metadata-mysql
-rspec-mysql 7 25: *rspec-metadata-mysql
-rspec-mysql 8 25: *rspec-metadata-mysql
-rspec-mysql 9 25: *rspec-metadata-mysql
-rspec-mysql 10 25: *rspec-metadata-mysql
-rspec-mysql 11 25: *rspec-metadata-mysql
-rspec-mysql 12 25: *rspec-metadata-mysql
-rspec-mysql 13 25: *rspec-metadata-mysql
-rspec-mysql 14 25: *rspec-metadata-mysql
-rspec-mysql 15 25: *rspec-metadata-mysql
-rspec-mysql 16 25: *rspec-metadata-mysql
-rspec-mysql 17 25: *rspec-metadata-mysql
-rspec-mysql 18 25: *rspec-metadata-mysql
-rspec-mysql 19 25: *rspec-metadata-mysql
-rspec-mysql 20 25: *rspec-metadata-mysql
-rspec-mysql 21 25: *rspec-metadata-mysql
-rspec-mysql 22 25: *rspec-metadata-mysql
-rspec-mysql 23 25: *rspec-metadata-mysql
-rspec-mysql 24 25: *rspec-metadata-mysql
+rspec-pg 0 26: *rspec-metadata-pg
+rspec-pg 1 26: *rspec-metadata-pg
+rspec-pg 2 26: *rspec-metadata-pg
+rspec-pg 3 26: *rspec-metadata-pg
+rspec-pg 4 26: *rspec-metadata-pg
+rspec-pg 5 26: *rspec-metadata-pg
+rspec-pg 6 26: *rspec-metadata-pg
+rspec-pg 7 26: *rspec-metadata-pg
+rspec-pg 8 26: *rspec-metadata-pg
+rspec-pg 9 26: *rspec-metadata-pg
+rspec-pg 10 26: *rspec-metadata-pg
+rspec-pg 11 26: *rspec-metadata-pg
+rspec-pg 12 26: *rspec-metadata-pg
+rspec-pg 13 26: *rspec-metadata-pg
+rspec-pg 14 26: *rspec-metadata-pg
+rspec-pg 15 26: *rspec-metadata-pg
+rspec-pg 16 26: *rspec-metadata-pg
+rspec-pg 17 26: *rspec-metadata-pg
+rspec-pg 18 26: *rspec-metadata-pg
+rspec-pg 19 26: *rspec-metadata-pg
+rspec-pg 20 26: *rspec-metadata-pg
+rspec-pg 21 26: *rspec-metadata-pg
+rspec-pg 22 26: *rspec-metadata-pg
+rspec-pg 23 26: *rspec-metadata-pg
+rspec-pg 24 26: *rspec-metadata-pg
+rspec-pg 25 26: *rspec-metadata-pg
 
-spinach-pg 0 5: *spinach-metadata-pg
-spinach-pg 1 5: *spinach-metadata-pg
-spinach-pg 2 5: *spinach-metadata-pg
-spinach-pg 3 5: *spinach-metadata-pg
-spinach-pg 4 5: *spinach-metadata-pg
+rspec-mysql 0 26: *rspec-metadata-mysql
+rspec-mysql 1 26: *rspec-metadata-mysql
+rspec-mysql 2 26: *rspec-metadata-mysql
+rspec-mysql 3 26: *rspec-metadata-mysql
+rspec-mysql 4 26: *rspec-metadata-mysql
+rspec-mysql 5 26: *rspec-metadata-mysql
+rspec-mysql 6 26: *rspec-metadata-mysql
+rspec-mysql 7 26: *rspec-metadata-mysql
+rspec-mysql 8 26: *rspec-metadata-mysql
+rspec-mysql 9 26: *rspec-metadata-mysql
+rspec-mysql 10 26: *rspec-metadata-mysql
+rspec-mysql 11 26: *rspec-metadata-mysql
+rspec-mysql 12 26: *rspec-metadata-mysql
+rspec-mysql 13 26: *rspec-metadata-mysql
+rspec-mysql 14 26: *rspec-metadata-mysql
+rspec-mysql 15 26: *rspec-metadata-mysql
+rspec-mysql 16 26: *rspec-metadata-mysql
+rspec-mysql 17 26: *rspec-metadata-mysql
+rspec-mysql 18 26: *rspec-metadata-mysql
+rspec-mysql 19 26: *rspec-metadata-mysql
+rspec-mysql 20 26: *rspec-metadata-mysql
+rspec-mysql 21 26: *rspec-metadata-mysql
+rspec-mysql 22 26: *rspec-metadata-mysql
+rspec-mysql 23 26: *rspec-metadata-mysql
+rspec-mysql 24 26: *rspec-metadata-mysql
+rspec-mysql 25 26: *rspec-metadata-mysql
 
-spinach-mysql 0 5: *spinach-metadata-mysql
-spinach-mysql 1 5: *spinach-metadata-mysql
-spinach-mysql 2 5: *spinach-metadata-mysql
-spinach-mysql 3 5: *spinach-metadata-mysql
-spinach-mysql 4 5: *spinach-metadata-mysql
+spinach-pg 0 4: *spinach-metadata-pg
+spinach-pg 1 4: *spinach-metadata-pg
+spinach-pg 2 4: *spinach-metadata-pg
+spinach-pg 3 4: *spinach-metadata-pg
+
+spinach-mysql 0 4: *spinach-metadata-mysql
+spinach-mysql 1 4: *spinach-metadata-mysql
+spinach-mysql 2 4: *spinach-metadata-mysql
+spinach-mysql 3 4: *spinach-metadata-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
@@ -493,7 +480,7 @@ db:migrate:reset-mysql:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch origin v8.14.10-ee
+    - git fetch origin v9.3.0-ee
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml
@@ -589,7 +576,7 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"

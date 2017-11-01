@@ -48,6 +48,7 @@ class License < ActiveRecord::Base
     object_storage
     service_desk
     variable_environment_scope
+    reject_unsigned_commits
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES
@@ -90,6 +91,13 @@ class License < ActiveRecord::Base
     ULTIMATE_PLAN      => EEU_FEATURES,
     EARLY_ADOPTER_PLAN => EARLY_ADOPTER_FEATURES
   }.freeze
+
+  PLANS_BY_FEATURE = FEATURES_BY_PLAN.each_with_object({}) do |(plan, features), hash|
+    features.each do |feature|
+      hash[feature] ||= []
+      hash[feature] << plan
+    end
+  end.freeze
 
   # Add on codes that may occur in legacy licenses that don't have a plan yet.
   FEATURES_FOR_ADD_ONS = {
@@ -134,6 +142,18 @@ class License < ActiveRecord::Base
       FEATURES_BY_PLAN.fetch(plan, [])
     end
 
+    def plans_with_feature(feature)
+      if GLOBAL_FEATURES.include?(feature)
+        raise ArgumentError, "Use `License.feature_available?` for features that cannot be restricted to only a subset of projects or namespaces"
+      end
+
+      PLANS_BY_FEATURE.fetch(feature, [])
+    end
+
+    def plan_includes_feature?(plan, feature)
+      plans_with_feature(feature).include?(plan)
+    end
+
     def current
       if RequestStore.active?
         RequestStore.fetch(:current_license) { load_license }
@@ -146,14 +166,6 @@ class License < ActiveRecord::Base
 
     def reset_current
       RequestStore.delete(:current_license)
-    end
-
-    def plan_includes_feature?(plan, feature)
-      if GLOBAL_FEATURES.include?(feature)
-        raise ArgumentError, "Use `License.feature_available?` for features that cannot be restricted to only a subset of projects or namespaces"
-      end
-
-      features_for_plan(plan).include?(feature)
     end
 
     def load_license

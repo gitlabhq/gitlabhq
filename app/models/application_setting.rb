@@ -34,6 +34,8 @@ class ApplicationSetting < ActiveRecord::Base
 
   attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
+  default_value_for :id, 1
+
   validates :uuid, presence: true
 
   validates :session_expire_delay,
@@ -164,6 +166,25 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :circuitbreaker_backoff_threshold,
+            :circuitbreaker_failure_count_threshold,
+            :circuitbreaker_failure_wait_time,
+            :circuitbreaker_failure_reset_time,
+            :circuitbreaker_storage_timeout,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :circuitbreaker_access_retries,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 1 }
+
+  validates_each :circuitbreaker_backoff_threshold do |record, attr, value|
+    if value.to_i >= record.circuitbreaker_failure_count_threshold
+      record.errors.add(attr, _("The circuitbreaker backoff threshold should be "\
+                                "lower than the failure count threshold"))
+    end
+  end
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -207,7 +228,10 @@ class ApplicationSetting < ActiveRecord::Base
     ensure_cache_setup
 
     Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last
+      ApplicationSetting.last.tap do |settings|
+        # do not cache nils
+        raise 'missing settings' unless settings
+      end
     end
   rescue
     # Fall back to an uncached value if there are any problems (e.g. redis down)
@@ -443,7 +467,7 @@ class ApplicationSetting < ActiveRecord::Base
   #   the enabling/disabling is `performance_bar_allowed_group_id`
   # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
   def performance_bar_enabled=(enable)
-    return if enable
+    return if Gitlab::Utils.to_boolean(enable)
 
     self.performance_bar_allowed_group_id = nil
   end

@@ -29,7 +29,7 @@ describe Projects::ApproverGroupsController do
         it 'returns a 404' do
           destroy_merge_request_approver_group
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not destroy any approver groups' do
@@ -47,7 +47,7 @@ describe Projects::ApproverGroupsController do
         it 'returns a 404' do
           destroy_merge_request_approver_group
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not destroy any approver groups' do
@@ -82,7 +82,7 @@ describe Projects::ApproverGroupsController do
         it 'returns a 404' do
           destroy_project_approver_group
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not destroy any approver groups' do

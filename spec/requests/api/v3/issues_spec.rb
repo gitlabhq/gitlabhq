@@ -59,7 +59,7 @@ describe API::V3::Issues, :mailer do
       it "returns authentication error" do
         get v3_api("/issues")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -67,7 +67,7 @@ describe API::V3::Issues, :mailer do
       it "returns an array of issues" do
         get v3_api("/issues", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(issue.title)
         expect(json_response.last).to have_key('web_url')
@@ -76,7 +76,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of closed issues' do
         get v3_api('/issues?state=closed', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(closed_issue.id)
@@ -85,7 +85,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of opened issues' do
         get v3_api('/issues?state=opened', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(issue.id)
@@ -94,7 +94,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of all issues' do
         get v3_api('/issues?state=all', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['id']).to eq(issue.id)
@@ -104,7 +104,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of labeled issues' do
         get v3_api("/issues?labels=#{label.title}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -113,7 +113,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of labeled issues when at least one label matches' do
         get v3_api("/issues?labels=#{label.title},foo,bar", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -122,7 +122,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an empty array if no issue matches labels' do
         get v3_api('/issues?labels=foo,bar', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
@@ -130,7 +130,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of labeled issues matching given state' do
         get v3_api("/issues?labels=#{label.title}&state=opened", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -140,7 +140,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an empty array if no issue matches labels and state filters' do
         get v3_api("/issues?labels=#{label.title}&state=closed", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
@@ -148,7 +148,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an empty array if no issue matches milestone' do
         get v3_api("/issues?milestone=#{empty_milestone.title}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
@@ -156,7 +156,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an empty array if milestone does not exist' do
         get v3_api("/issues?milestone=foo", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
@@ -164,7 +164,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of issues in given milestone' do
         get v3_api("/issues?milestone=#{milestone.title}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['id']).to eq(issue.id)
@@ -175,7 +175,7 @@ describe API::V3::Issues, :mailer do
         get v3_api("/issues?milestone=#{milestone.title}",  user),
           '&state=closed'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(closed_issue.id)
@@ -184,7 +184,7 @@ describe API::V3::Issues, :mailer do
       it 'returns an array of issues with no milestone' do
         get v3_api("/issues?milestone=#{no_milestone_title}", author)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(confidential_issue.id)
@@ -195,7 +195,7 @@ describe API::V3::Issues, :mailer do
 
         response_dates = json_response.map { |issue| issue['created_at'] }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
@@ -205,7 +205,7 @@ describe API::V3::Issues, :mailer do
 
         response_dates = json_response.map { |issue| issue['created_at'] }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort)
       end
@@ -215,7 +215,7 @@ describe API::V3::Issues, :mailer do
 
         response_dates = json_response.map { |issue| issue['updated_at'] }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
@@ -225,7 +225,7 @@ describe API::V3::Issues, :mailer do
 
         response_dates = json_response.map { |issue| issue['updated_at'] }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(response_dates).to eq(response_dates.sort)
       end
@@ -233,7 +233,7 @@ describe API::V3::Issues, :mailer do
       it 'matches V3 response schema' do
         get v3_api('/issues', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v3/issues')
       end
     end
@@ -285,7 +285,7 @@ describe API::V3::Issues, :mailer do
     it 'returns all group issues (including opened and closed)' do
       get v3_api(base_url, admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
     end
@@ -293,7 +293,7 @@ describe API::V3::Issues, :mailer do
     it 'returns group issues without confidential issues for non project members' do
       get v3_api("#{base_url}?state=opened", non_member)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['title']).to eq(group_issue.title)
@@ -302,7 +302,7 @@ describe API::V3::Issues, :mailer do
     it 'returns group confidential issues for author' do
       get v3_api("#{base_url}?state=opened", author)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
     end
@@ -310,7 +310,7 @@ describe API::V3::Issues, :mailer do
     it 'returns group confidential issues for assignee' do
       get v3_api("#{base_url}?state=opened", assignee)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
     end
@@ -318,7 +318,7 @@ describe API::V3::Issues, :mailer do
     it 'returns group issues with confidential issues for project members' do
       get v3_api("#{base_url}?state=opened", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
     end
@@ -326,7 +326,7 @@ describe API::V3::Issues, :mailer do
     it 'returns group confidential issues for admin' do
       get v3_api("#{base_url}?state=opened", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
     end
@@ -334,7 +334,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of labeled group issues' do
       get v3_api("#{base_url}?labels=#{group_label.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([group_label.title])
@@ -343,7 +343,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of labeled group issues where all labels match' do
       get v3_api("#{base_url}?labels=#{group_label.title},foo,bar", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -351,7 +351,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if no group issue matches labels' do
       get v3_api("#{base_url}?labels=foo,bar", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -359,7 +359,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if no issue matches milestone' do
       get v3_api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -367,7 +367,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if milestone does not exist' do
       get v3_api("#{base_url}?milestone=foo", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -375,7 +375,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of issues in given milestone' do
       get v3_api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(group_issue.id)
@@ -385,7 +385,7 @@ describe API::V3::Issues, :mailer do
       get v3_api("#{base_url}?milestone=#{group_milestone.title}", user),
         '&state=closed'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(group_closed_issue.id)
@@ -394,7 +394,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of issues with no milestone' do
       get v3_api("#{base_url}?milestone=#{no_milestone_title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(group_confidential_issue.id)
@@ -405,7 +405,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['created_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort.reverse)
     end
@@ -415,7 +415,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['created_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort)
     end
@@ -425,7 +425,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort.reverse)
     end
@@ -435,7 +435,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort)
     end
@@ -447,7 +447,7 @@ describe API::V3::Issues, :mailer do
     it 'returns 404 when project does not exist' do
       get v3_api('/projects/1000/issues', non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns 404 on private projects for other users" do
@@ -456,7 +456,7 @@ describe API::V3::Issues, :mailer do
 
       get v3_api("/projects/#{private_project.id}/issues", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns no issues when user has access to project but not issues' do
@@ -471,7 +471,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project issues without confidential issues for non project members' do
       get v3_api("#{base_url}/issues", non_member)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['title']).to eq(issue.title)
@@ -480,7 +480,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project issues without confidential issues for project members with guest role' do
       get v3_api("#{base_url}/issues", guest)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['title']).to eq(issue.title)
@@ -489,7 +489,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project confidential issues for author' do
       get v3_api("#{base_url}/issues", author)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -498,7 +498,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project confidential issues for assignee' do
       get v3_api("#{base_url}/issues", assignee)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -507,7 +507,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project issues with confidential issues for project members' do
       get v3_api("#{base_url}/issues", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -516,7 +516,7 @@ describe API::V3::Issues, :mailer do
     it 'returns project confidential issues for admin' do
       get v3_api("#{base_url}/issues", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -525,7 +525,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of labeled project issues' do
       get v3_api("#{base_url}/issues?labels=#{label.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label.title])
@@ -534,7 +534,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of labeled project issues where all labels match' do
       get v3_api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label.title])
@@ -543,7 +543,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if no project issue matches labels' do
       get v3_api("#{base_url}/issues?labels=foo,bar", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -551,7 +551,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if no issue matches milestone' do
       get v3_api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -559,7 +559,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an empty array if milestone does not exist' do
       get v3_api("#{base_url}/issues?milestone=foo", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
@@ -567,7 +567,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of issues in given milestone' do
       get v3_api("#{base_url}/issues?milestone=#{milestone.title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['id']).to eq(issue.id)
@@ -578,7 +578,7 @@ describe API::V3::Issues, :mailer do
       get v3_api("#{base_url}/issues?milestone=#{milestone.title}", user),
         '&state=closed'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
@@ -587,7 +587,7 @@ describe API::V3::Issues, :mailer do
     it 'returns an array of issues with no milestone' do
       get v3_api("#{base_url}/issues?milestone=#{no_milestone_title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(confidential_issue.id)
@@ -598,7 +598,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['created_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort.reverse)
     end
@@ -608,7 +608,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['created_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort)
     end
@@ -618,7 +618,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort.reverse)
     end
@@ -628,7 +628,7 @@ describe API::V3::Issues, :mailer do
 
       response_dates = json_response.map { |issue| issue['updated_at'] }
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(response_dates).to eq(response_dates.sort)
     end
@@ -638,7 +638,7 @@ describe API::V3::Issues, :mailer do
     it 'exposes known attributes' do
       get v3_api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq(issue.id)
       expect(json_response['iid']).to eq(issue.iid)
       expect(json_response['project_id']).to eq(issue.project.id)
@@ -658,7 +658,7 @@ describe API::V3::Issues, :mailer do
     it "returns a project issue by id" do
       get v3_api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
     end
@@ -683,26 +683,26 @@ describe API::V3::Issues, :mailer do
     it "returns 404 if issue id not found" do
       get v3_api("/projects/#{project.id}/issues/54321", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context 'confidential issues' do
       it "returns 404 for non project members" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 for project members with guest role" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns confidential issue for project members" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -710,7 +710,7 @@ describe API::V3::Issues, :mailer do
       it "returns confidential issue for author" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", author)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -718,7 +718,7 @@ describe API::V3::Issues, :mailer do
       it "returns confidential issue for assignee" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", assignee)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -726,7 +726,7 @@ describe API::V3::Issues, :mailer do
       it "returns confidential issue for admin" do
         get v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -738,7 +738,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3, assignee_id: assignee.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
@@ -751,7 +751,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: true
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_truthy
     end
@@ -760,7 +760,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: 'y'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_truthy
     end
@@ -769,7 +769,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: false
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_falsy
     end
@@ -778,7 +778,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: 'foo'
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('confidential is invalid')
     end
 
@@ -797,7 +797,7 @@ describe API::V3::Issues, :mailer do
     it "returns a 400 bad request if title not given" do
       post v3_api("/projects/#{project.id}/issues", user), labels: 'label, label2'
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'allows special label names' do
@@ -817,7 +817,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues", user),
            title: 'g' * 256
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -836,7 +836,7 @@ describe API::V3::Issues, :mailer do
       end
 
       it 'creates a new project issue' do
-        expect(response).to have_http_status(:created)
+        expect(response).to have_gitlab_http_status(:created)
       end
 
       it 'resolves the discussions in a merge request' do
@@ -857,7 +857,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues", user),
           title: 'new issue', due_date: due_date
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('new issue')
         expect(json_response['description']).to be_nil
         expect(json_response['due_date']).to eq(due_date)
@@ -870,7 +870,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues", user),
           title: 'new issue', labels: 'label, label2', created_at: creation_time
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
       end
     end
@@ -901,7 +901,7 @@ describe API::V3::Issues, :mailer do
     it "does not create a new project issue" do
       expect { post v3_api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 
       spam_logs = SpamLog.all
@@ -919,7 +919,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
         title: 'updated title'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq('updated title')
     end
 
@@ -927,7 +927,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'allows special label names' do
@@ -948,21 +948,21 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member),
           title: 'updated title'
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns 403 for project members with guest role" do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest),
           title: 'updated title'
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "updates a confidential issue for project members" do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           title: 'updated title'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
@@ -970,7 +970,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", author),
           title: 'updated title'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
@@ -978,7 +978,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin),
           title: 'updated title'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
@@ -986,7 +986,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
           confidential: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['confidential']).to be_truthy
       end
 
@@ -994,7 +994,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           confidential: false
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['confidential']).to be_falsy
       end
 
@@ -1002,7 +1002,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           confidential: 'foo'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('confidential is invalid')
       end
     end
@@ -1023,7 +1023,7 @@ describe API::V3::Issues, :mailer do
 
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 
       spam_logs = SpamLog.all
@@ -1043,7 +1043,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([label.title])
     end
 
@@ -1062,7 +1062,7 @@ describe API::V3::Issues, :mailer do
     it 'removes all labels' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), labels: ''
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
     end
 
@@ -1070,7 +1070,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'foo,bar'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
     end
@@ -1094,7 +1094,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'g' * 256
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -1106,7 +1106,7 @@ describe API::V3::Issues, :mailer do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
         labels: 'label2', state_event: "close"
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'label2'
       expect(json_response['state']).to eq "closed"
     end
@@ -1114,7 +1114,7 @@ describe API::V3::Issues, :mailer do
     it 'reopens a project isssue' do
       put v3_api("/projects/#{project.id}/issues/#{closed_issue.id}", user), state_event: 'reopen'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['state']).to eq 'opened'
     end
 
@@ -1124,7 +1124,7 @@ describe API::V3::Issues, :mailer do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
@@ -1137,7 +1137,7 @@ describe API::V3::Issues, :mailer do
 
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), due_date: due_date
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
     end
   end
@@ -1146,14 +1146,14 @@ describe API::V3::Issues, :mailer do
     it 'updates an issue with no assignee' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['assignee']).to eq(nil)
     end
 
     it 'updates an issue with assignee' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['assignee']['name']).to eq(user2.name)
     end
   end
@@ -1162,7 +1162,7 @@ describe API::V3::Issues, :mailer do
     it 'updates an issue with no weight' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['weight']).to eq(5)
     end
 
@@ -1171,21 +1171,21 @@ describe API::V3::Issues, :mailer do
 
       put v3_api("/projects/#{project.id}/issues/#{weighted_issue.id}", user), weight: nil
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['weight']).to be_nil
     end
 
     it 'returns 400 if weight is less than minimum weight' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: -1
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
     it 'returns 400 if weight is more than maximum weight' do
       put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 10
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('weight does not have a valid value')
     end
 
@@ -1197,7 +1197,7 @@ describe API::V3::Issues, :mailer do
       it 'ignores the update' do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), weight: 5
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['weight']).to be_nil
         expect(issue.reload.read_attribute(:weight)).to be_nil
       end
@@ -1208,13 +1208,13 @@ describe API::V3::Issues, :mailer do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "rejects a developer from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", author)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     context "when the user is project owner" do
@@ -1224,7 +1224,7 @@ describe API::V3::Issues, :mailer do
       it "deletes the issue if an admin requests it" do
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}", owner)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['state']).to eq 'opened'
       end
     end
@@ -1233,7 +1233,7 @@ describe API::V3::Issues, :mailer do
       it 'returns 404 when trying to move an issue' do
         delete v3_api("/projects/#{project.id}/issues/123", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -1246,7 +1246,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                to_project_id: target_project.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['project_id']).to eq(target_project.id)
     end
 
@@ -1255,7 +1255,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: project.id
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
       end
     end
@@ -1265,7 +1265,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: target_project2.id
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
       end
     end
@@ -1274,7 +1274,7 @@ describe API::V3::Issues, :mailer do
       post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", admin),
                to_project_id: target_project2.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['project_id']).to eq(target_project2.id)
     end
 
@@ -1283,7 +1283,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues/123/move", user),
                  to_project_id: target_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Issue Not Found')
       end
     end
@@ -1293,7 +1293,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/123/issues/#{issue.id}/move", user),
                  to_project_id: target_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
     end
@@ -1303,7 +1303,7 @@ describe API::V3::Issues, :mailer do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: 123
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -1312,26 +1312,26 @@ describe API::V3::Issues, :mailer do
     it 'subscribes to an issue' do
       post v3_api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
       post v3_api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
-      expect(response).to have_http_status(304)
+      expect(response).to have_gitlab_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       post v3_api("/projects/#{project.id}/issues/123/subscription", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       post v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1339,26 +1339,26 @@ describe API::V3::Issues, :mailer do
     it 'unsubscribes from an issue' do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
 
-      expect(response).to have_http_status(304)
+      expect(response).to have_gitlab_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       delete v3_api("/projects/#{project.id}/issues/123/subscription", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       delete v3_api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 

@@ -2,7 +2,7 @@
 
 .billing-plan-header.content-block.center
   .billing-plan-logo
-    - if Namespace::EE_PLANS.keys.include?(plan.code)
+    - if Namespace::PLANS.include?(plan.code)
       = render "shared/billings/plans/#{plan.code}.svg"
     - elsif plan.free?
       = render "shared/billings/plans/free.svg"

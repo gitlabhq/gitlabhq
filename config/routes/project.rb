@@ -316,13 +316,19 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :registry do
         resources :repository, only: [] do
-          resources :tags, only: [:index, :destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+          # We default to JSON format in the controller to avoid ambiguity.
+          # `latest.json` could either be a request for a tag named `latest`
+          # in JSON format, or a request for tag named `latest.json`.
+          scope format: false do
+            resources :tags, only: [:index, :destroy],
+                             constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+          end
         end
       end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
+          post :promote
           put :sort_issues
           put :sort_merge_requests
           get :merge_requests
@@ -438,7 +444,7 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
 
       namespace :settings do
-        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
+        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
 

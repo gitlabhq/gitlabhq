@@ -26,7 +26,7 @@ describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs' do
 
     it 'returns a 404 when merge_request_id not found' do
       get v3_api("/projects/#{project.id}/merge_requests/999/versions", user)
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -44,7 +44,7 @@ describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs' do
     it 'returns a 404 when merge_request_id not found' do
       get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/999", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 end

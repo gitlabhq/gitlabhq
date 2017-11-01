@@ -198,7 +198,7 @@ feature 'Environment' do
       end
 
       it 'renders a correct environment folder' do
-        expect(page).to have_http_status(:ok)
+        expect(page).to have_gitlab_http_status(:ok)
         expect(page).to have_content('Environments / staging-1.0')
       end
     end

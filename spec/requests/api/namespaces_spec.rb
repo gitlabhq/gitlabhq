@@ -10,7 +10,7 @@ describe API::Namespaces do
     context "when unauthenticated" do
       it "returns authentication error" do
         get api("/namespaces")
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -21,7 +21,7 @@ describe API::Namespaces do
         group_kind_json_response = json_response.find { |resource| resource['kind'] == 'group' }
         user_kind_json_response = json_response.find { |resource| resource['kind'] == 'user' }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(group_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
                                                                  'parent_id', 'members_count_with_descendants',
@@ -34,7 +34,7 @@ describe API::Namespaces do
       it "admin: returns an array of all namespaces" do
         get api("/namespaces", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(Namespace.count)
@@ -43,7 +43,7 @@ describe API::Namespaces do
       it "admin: returns an array of matched namespaces" do
         get api("/namespaces?search=#{group2.name}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -77,7 +77,7 @@ describe API::Namespaces do
       it "user: returns an array of namespaces" do
         get api("/namespaces", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -86,7 +86,7 @@ describe API::Namespaces do
       it "admin: returns an array of matched namespaces" do
         get api("/namespaces?search=#{user.username}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -99,7 +99,7 @@ describe API::Namespaces do
       it 'updates namespace using full_path' do
         put api("/namespaces/#{group1.full_path}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['plan']).to eq('silver')
         expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
@@ -107,7 +107,7 @@ describe API::Namespaces do
       it 'updates namespace using id' do
         put api("/namespaces/#{group1.id}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['plan']).to eq('silver')
         expect(json_response['shared_runners_minutes_limit']).to eq(9001)
       end
@@ -117,7 +117,7 @@ describe API::Namespaces do
       it 'retuns 403' do
         put api("/namespaces/#{group1.id}", user), plan: 'silver'
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -125,7 +125,7 @@ describe API::Namespaces do
       it 'returns 404' do
         put api("/namespaces/12345", admin), plan: 'silver'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response).to eq('message' => '404 Namespace Not Found')
       end
     end
@@ -134,7 +134,7 @@ describe API::Namespaces do
       it 'returns validation error' do
         put api("/namespaces/#{group1.id}", admin), plan: 'unknown'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('plan' => ['is not included in the list'])
       end
     end

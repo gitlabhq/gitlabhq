@@ -1,0 +1,5 @@
+---
+title: Renders 404 in commits controller if no commits are found for a given path
+merge_request: 14610
+author: Guilherme Vieira
+type: fixed

@@ -104,7 +104,7 @@ describe ProjectMirrorData, type: :model do
 
             expect do
               mirror_data.set_next_execution_timestamp!
-            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 15.minutes)
+            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 45.minutes)
           end
         end
       end

@@ -71,7 +71,7 @@ describe API::Issues, :mailer do
       it "returns authentication error" do
         get api("/issues")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
     context "when authenticated" do
@@ -301,7 +301,7 @@ describe API::Issues, :mailer do
       it 'matches V4 response schema' do
         get api('/issues', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/issues')
       end
     end
@@ -478,7 +478,7 @@ describe API::Issues, :mailer do
     it 'returns an array of issues with no milestone' do
       get api("#{base_url}?milestone=#{no_milestone_title}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect_paginated_array_response(size: 1)
       expect(json_response.first['id']).to eq(group_confidential_issue.id)
@@ -539,7 +539,7 @@ describe API::Issues, :mailer do
     it 'returns 404 when project does not exist' do
       get api('/projects/1000/issues', non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns 404 on private projects for other users" do
@@ -548,7 +548,7 @@ describe API::Issues, :mailer do
 
       get api("/projects/#{private_project.id}/issues", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns no issues when user has access to project but not issues' do
@@ -736,7 +736,7 @@ describe API::Issues, :mailer do
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq(issue.id)
       expect(json_response['iid']).to eq(issue.iid)
       expect(json_response['project_id']).to eq(issue.project.id)
@@ -757,7 +757,7 @@ describe API::Issues, :mailer do
     it "exposes the 'closed_at' attribute" do
       get api("/projects/#{project.id}/issues/#{closed_issue.iid}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['closed_at']).to be_present
     end
 
@@ -777,39 +777,39 @@ describe API::Issues, :mailer do
     it "returns a project issue by internal id" do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
     end
 
     it "returns 404 if issue id not found" do
       get api("/projects/#{project.id}/issues/54321", user)
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns 404 if the issue ID is used" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context 'confidential issues' do
       it "returns 404 for non project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 for project members with guest role" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns confidential issue for project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -817,7 +817,7 @@ describe API::Issues, :mailer do
       it "returns confidential issue for author" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -825,7 +825,7 @@ describe API::Issues, :mailer do
       it "returns confidential issue for assignee" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", assignee)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -833,7 +833,7 @@ describe API::Issues, :mailer do
       it "returns confidential issue for admin" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -846,7 +846,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', assignee_id: user2.id
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('new issue')
         expect(json_response['assignee']['name']).to eq(user2.name)
         expect(json_response['assignees'].first['name']).to eq(user2.name)
@@ -858,7 +858,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', assignee_ids: [user2.id, guest.id]
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('new issue')
         expect(json_response['assignees'].count).to eq(1)
       end
@@ -869,7 +869,7 @@ describe API::Issues, :mailer do
         title: 'new issue', labels: 'label, label2', weight: 3,
         assignee_ids: [user2.id]
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
@@ -882,7 +882,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: true
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_truthy
     end
@@ -891,7 +891,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: 'y'
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_truthy
     end
@@ -900,7 +900,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: false
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['confidential']).to be_falsy
     end
@@ -909,7 +909,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', confidential: 'foo'
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('confidential is invalid')
     end
 
@@ -927,7 +927,7 @@ describe API::Issues, :mailer do
 
     it "returns a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'allows special label names' do
@@ -945,7 +945,7 @@ describe API::Issues, :mailer do
     it 'returns 400 if title is too long' do
       post api("/projects/#{project.id}/issues", user),
            title: 'g' * 256
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -989,7 +989,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', due_date: due_date
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('new issue')
         expect(json_response['description']).to be_nil
         expect(json_response['due_date']).to eq(due_date)
@@ -1002,7 +1002,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', labels: 'label, label2', created_at: creation_time
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
       end
     end
@@ -1032,7 +1032,7 @@ describe API::Issues, :mailer do
 
     it "does not create a new project issue" do
       expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 
       spam_logs = SpamLog.all
@@ -1048,7 +1048,7 @@ describe API::Issues, :mailer do
     it "updates a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         title: 'updated title'
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['title']).to eq('updated title')
     end
@@ -1056,13 +1056,13 @@ describe API::Issues, :mailer do
     it "returns 404 error if issue iid not found" do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns 404 error if issue id is used instead of the iid" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title'
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'allows special label names' do
@@ -1082,33 +1082,33 @@ describe API::Issues, :mailer do
       it "returns 403 for non project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", non_member),
           title: 'updated title'
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns 403 for project members with guest role" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", guest),
           title: 'updated title'
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "updates a confidential issue for project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           title: 'updated title'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
       it "updates a confidential issue for author" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", author),
           title: 'updated title'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
       it "updates a confidential issue for admin" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", admin),
           title: 'updated title'
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
@@ -1116,7 +1116,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           confidential: true
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['confidential']).to be_truthy
       end
 
@@ -1124,7 +1124,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           confidential: false
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['confidential']).to be_falsy
       end
 
@@ -1132,7 +1132,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{confidential_issue.iid}", user),
           confidential: 'foo'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('confidential is invalid')
       end
     end
@@ -1153,7 +1153,7 @@ describe API::Issues, :mailer do
 
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 
       spam_logs = SpamLog.all
@@ -1171,7 +1171,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_id: 0
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         expect(json_response['assignee']).to be_nil
       end
@@ -1180,7 +1180,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_id: user2.id
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         expect(json_response['assignee']['name']).to eq(user2.name)
       end
@@ -1190,7 +1190,7 @@ describe API::Issues, :mailer do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         assignee_ids: [0]
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['assignees']).to be_empty
     end
@@ -1199,7 +1199,7 @@ describe API::Issues, :mailer do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         assignee_ids: [user2.id]
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
@@ -1209,7 +1209,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_ids: [user2.id, guest.id]
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         expect(json_response['assignees'].size).to eq(1)
       end
@@ -1223,7 +1223,7 @@ describe API::Issues, :mailer do
     it 'does not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           title: 'updated title'
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([label.title])
     end
 
@@ -1242,14 +1242,14 @@ describe API::Issues, :mailer do
     it 'removes all labels' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
     end
 
     it 'updates labels' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'foo,bar'
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
     end
@@ -1271,7 +1271,7 @@ describe API::Issues, :mailer do
     it 'returns 400 if title is too long' do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           title: 'g' * 256
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -1282,7 +1282,7 @@ describe API::Issues, :mailer do
     it "updates a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.iid}", user),
         labels: 'label2', state_event: "close"
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
 
       expect(json_response['labels']).to include 'label2'
       expect(json_response['state']).to eq "closed"
@@ -1291,7 +1291,7 @@ describe API::Issues, :mailer do
     it 'reopens a project isssue' do
       put api("/projects/#{project.id}/issues/#{closed_issue.iid}", user), state_event: 'reopen'
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['state']).to eq 'opened'
     end
 
@@ -1301,7 +1301,7 @@ describe API::Issues, :mailer do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_like_time(update_time)
       end
@@ -1314,7 +1314,7 @@ describe API::Issues, :mailer do
 
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), due_date: due_date
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
     end
   end
@@ -1322,12 +1322,12 @@ describe API::Issues, :mailer do
   describe "DELETE /projects/:id/issues/:issue_iid" do
     it "rejects a non member from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.iid}", non_member)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "rejects a developer from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.iid}", author)
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     context "when the user is project owner" do
@@ -1337,7 +1337,7 @@ describe API::Issues, :mailer do
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.iid}", owner)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
       end
 
       it_behaves_like '412 response' do
@@ -1349,14 +1349,14 @@ describe API::Issues, :mailer do
       it 'returns 404 when trying to move an issue' do
         delete api("/projects/#{project.id}/issues/123", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
     it 'returns 404 when using the issue ID instead of IID' do
       delete api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1368,7 +1368,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
                to_project_id: target_project.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['project_id']).to eq(target_project.id)
     end
 
@@ -1377,7 +1377,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
                  to_project_id: project.id
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
       end
     end
@@ -1387,7 +1387,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
                  to_project_id: target_project2.id
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
       end
     end
@@ -1396,7 +1396,7 @@ describe API::Issues, :mailer do
       post api("/projects/#{project.id}/issues/#{issue.iid}/move", admin),
                to_project_id: target_project2.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['project_id']).to eq(target_project2.id)
     end
 
@@ -1405,7 +1405,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
              to_project_id: target_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Issue Not Found')
       end
     end
@@ -1415,7 +1415,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues/123/move", user),
                  to_project_id: target_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Issue Not Found')
       end
     end
@@ -1425,7 +1425,7 @@ describe API::Issues, :mailer do
         post api("/projects/123/issues/#{issue.iid}/move", user),
                  to_project_id: target_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
     end
@@ -1435,7 +1435,7 @@ describe API::Issues, :mailer do
         post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
                  to_project_id: 123
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -1444,32 +1444,32 @@ describe API::Issues, :mailer do
     it 'subscribes to an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", user2)
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/subscribe", user)
 
-      expect(response).to have_http_status(304)
+      expect(response).to have_gitlab_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       post api("/projects/#{project.id}/issues/123/subscribe", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the issue ID is used instead of the iid' do
       post api("/projects/#{project.id}/issues/#{issue.id}/subscribe", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/subscribe", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1477,32 +1477,32 @@ describe API::Issues, :mailer do
     it 'unsubscribes from an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", user)
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/unsubscribe", user2)
 
-      expect(response).to have_http_status(304)
+      expect(response).to have_gitlab_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       post api("/projects/#{project.id}/issues/123/unsubscribe", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if using the issue ID instead of iid' do
       post api("/projects/#{project.id}/issues/#{issue.id}/unsubscribe", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       post api("/projects/#{project.id}/issues/#{confidential_issue.iid}/unsubscribe", non_member)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1543,7 +1543,7 @@ describe API::Issues, :mailer do
     it "returns 404 when issue doesn't exists" do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -1553,7 +1553,7 @@ describe API::Issues, :mailer do
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
@@ -1562,12 +1562,12 @@ describe API::Issues, :mailer do
     it "returns unautorized for non-admin users" do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
   def expect_paginated_array_response(size: nil)
-    expect(response).to have_http_status(200)
+    expect(response).to have_gitlab_http_status(200)
     expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.length).to eq(size) if size

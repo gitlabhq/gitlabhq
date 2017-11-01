@@ -1,5 +1,0 @@
----
-title: Fix case sensitive email confirmation on signup
-merge_request: 14606
-author: robdel12
-type: fixed

@@ -19,6 +19,7 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
@@ -105,6 +106,7 @@ excluded_attributes:
     - :mirror_user_id
     - :mirror_trigger_builds
     - :storage_version
+    - :remote_mirror_available_overridden
   snippets:
     - :expired_at
   merge_request_diff:

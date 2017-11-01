@@ -86,7 +86,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        project.repository.raw_repository.delete_branch(subject.target_branch)
+        project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1815,7 +1815,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1887,6 +1887,12 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
+    it 'returns true when the merge request is locked' do
+      merge_request = build_stubbed(:merge_request, state: :locked)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
     it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
       allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }

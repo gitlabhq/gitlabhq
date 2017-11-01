@@ -13,12 +13,15 @@ module EE
     GOLD_PLAN = 'gold'.freeze
     EARLY_ADOPTER_PLAN = 'early_adopter'.freeze
 
-    EE_PLANS = {
+    NAMESPACE_PLANS_TO_LICENSE_PLANS = {
       BRONZE_PLAN        => License::STARTER_PLAN,
       SILVER_PLAN        => License::PREMIUM_PLAN,
       GOLD_PLAN          => License::ULTIMATE_PLAN,
       EARLY_ADOPTER_PLAN => License::EARLY_ADOPTER_PLAN
     }.freeze
+
+    LICENSE_PLANS_TO_NAMESPACE_PLANS = NAMESPACE_PLANS_TO_LICENSE_PLANS.invert.freeze
+    PLANS = NAMESPACE_PLANS_TO_LICENSE_PLANS.keys.freeze
 
     prepended do
       belongs_to :plan
@@ -31,6 +34,12 @@ module EE
         to: :namespace_statistics, allow_nil: true
 
       validate :validate_plan_name
+    end
+
+    module ClassMethods
+      def plans_with_feature(feature)
+        LICENSE_PLANS_TO_NAMESPACE_PLANS.values_at(*License.plans_with_feature(feature))
+      end
     end
 
     def root_ancestor
@@ -70,7 +79,7 @@ module EE
 
     def feature_available_in_plan?(feature)
       @features_available_in_plan ||= Hash.new do |h, feature|
-        h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan&.name], feature) }
+        h[feature] = (plans.map(&:name) & self.class.plans_with_feature(feature)).any?
       end
 
       @features_available_in_plan[feature]
@@ -126,7 +135,7 @@ module EE
     private
 
     def validate_plan_name
-      if @plan_name.present? && EE_PLANS.keys.exclude?(@plan_name)
+      if @plan_name.present? && PLANS.exclude?(@plan_name)
         errors.add(:plan, 'is not included in the list')
       end
     end
@@ -142,11 +151,11 @@ module EE
     end
 
     def plans
-      @ancestors_plans ||=
+      @plans ||=
         if parent_id
-          Plan.where(id: ancestors.with_plan.reorder(nil).select('plan_id')) + [plan]
+          Plan.where(id: self_and_ancestors.with_plan.reorder(nil).select(:plan_id))
         else
-          [plan]
+          Array(plan)
         end
     end
   end

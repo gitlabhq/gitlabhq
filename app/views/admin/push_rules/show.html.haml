@@ -11,4 +11,4 @@
     .alert.alert-danger
       - @push_rule.errors.full_messages.each do |msg|
         %p= msg
-  = render "shared/push_rules_form", f: f
+  = render "shared/push_rules/form", f: f

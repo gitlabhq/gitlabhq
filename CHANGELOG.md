@@ -2,6 +2,204 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.0 (2017-10-22)
+
+- [SECURITY] Use a timeout on certain git operations. !14872
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [REMOVED] Remove the ability to visit the issue edit form directly. !14523
+- [REMOVED] Remove animate.js and label animation.
+- [FIXED] Perform prometheus data endpoint requests in parallel. !14003
+- [FIXED] Escape quotes in git username. !14020 (Brandon Everett)
+- [FIXED] Fixed non-UTF-8 valid branch names from causing an error. !14090
+- [FIXED] Read import sources from setting at first initialization. !14141 (Visay Keo)
+- [FIXED] Display full pre-receive and post-receive hook output in GitLab UI. !14222 (Robin Bobbitt)
+- [FIXED] Fix incorrect X-axis labels in Prometheus graphs. !14258
+- [FIXED] Fix the default branches sorting to actually be 'Last updated'. !14295
+- [FIXED] Fixes project denial of service via gitmodules using Extended ASCII. !14301
+- [FIXED] Fix the filesystem shard health check to check all configured shards. !14341
+- [FIXED] Compare email addresses case insensitively when verifying GPG signatures. !14376 (Tim Bishop)
+- [FIXED] Allow the git circuit breaker to correctly handle missing repository storages. !14417
+- [FIXED] Fix `rake gitlab:incoming_email:check` and make it report the actual error. !14423
+- [FIXED] Does not check if an invariant hashed storage path exists on disk when renaming projects. !14428
+- [FIXED] Also reserve refs/replace after importing a project. !14436
+- [FIXED] Fix profile image orientation based on EXIF data gvieira37. !14461 (gvieira37)
+- [FIXED] Move the deployment flag content to the left when deployment marker is near the end. !14514
+- [FIXED] Fix notes type created from import. This should fix some missing notes issues from imported projects. !14524
+- [FIXED] Fix bottom spacing for dropdowns that open upwards. !14535
+- [FIXED] Adjusts tag link to avoid underlining spaces. !14544 (Guilherme Vieira)
+- [FIXED] Add missing space in Sidekiq memory killer log message. !14553 (Benjamin Drung)
+- [FIXED] Ensure no exception is raised when Raven tries to get the current user in API context. !14580
+- [FIXED] Fix edit project service cancel button position. !14596 (Matt Coleman)
+- [FIXED] Fix case sensitive email confirmation on signup. !14606 (robdel12)
+- [FIXED] Whitelist authorized_keys.lock in the gitlab:check rake task. !14624
+- [FIXED] Allow merge in MR widget with no pipeline but using "Only allow merge requests to be merged if the pipeline succeeds". !14633
+- [FIXED] Fix navigation dropdown close animation on mobile screens. !14649
+- [FIXED] Fix the project import with issues and milestones. !14657
+- [FIXED] Use explicit boolean true attribute for show-disabled-button in Vue files. !14672
+- [FIXED] Make tabs on top scrollable on admin dashboard. !14685 (Takuya Noguchi)
+- [FIXED] Fix broken Y-axis scaling in some Prometheus graphs. !14693
+- [FIXED] Search or compare LDAP DNs case-insensitively and ignore excess whitespace. !14697
+- [FIXED] Allow prometheus graphs to correctly handle NaN values. !14741
+- [FIXED] Don't show an "Unsubscribe" link in snippet comment notifications. !14764
+- [FIXED] Fixed duplicate notifications when added multiple labels on an issue. !14798
+- [FIXED] Fix alignment for indeterminate marker in dropdowns. !14809
+- [FIXED] Fix error when updating a forked project with deleted `ForkedProjectLink`. !14916
+- [FIXED] Correctly render asset path for locales with a region. !14924
+- [FIXED] Fix the external URLs generated for online view of HTML artifacts. !14977
+- [FIXED] Reschedule merge request diff background migrations to catch failures from 9.5 run.
+- [FIXED] fix merge request widget status icon for failed CI.
+- [FIXED] Fix the number representing the amount of commits related to a push event.
+- [FIXED] Sync up hover and legend data across all graphs for the prometheus dashboard.
+- [FIXED] Fixes mini pipeline graph in commit view.
+- [FIXED] Fix comment deletion confirmation dialog typo.
+- [FIXED] Fix project snippets breadcrumb link.
+- [FIXED] Make usage ping scheduling more robust.
+- [FIXED] Make "merge ongoing" check more consistent.
+- [FIXED] Add 1000+ counters to job page.
+- [FIXED] Fixed issue/merge request breadcrumb titles not having links.
+- [FIXED] Fixed commit avatars being centered vertically.
+- [FIXED] Tooltips in the commit info box now all face the same direction. (Jedidiah Broadbent)
+- [FIXED] Fixed navbar title colors leaking out of the navbar.
+- [FIXED] Fix bug that caused merge requests with diff notes imported from Bitbucket to raise errors.
+- [FIXED] Correctly detect multiple issue URLs after 'Closes...' in MR descriptions.
+- [FIXED] Set default scope on PATs that don't have one set to allow them to be revoked.
+- [FIXED] Fix application setting to cache nil object.
+- [FIXED] Fix image diff swipe handle offset to correctly align with the frame.
+- [FIXED] Force non diff resolved discussion to display when collapse toggled.
+- [FIXED] Fix resolved discussions not expanding on side by side view.
+- [FIXED] Fixed the sidebar scrollbar overlapping links.
+- [FIXED] Issue board tooltips are now the correct width when the column is collapsed. (Jedidiah Broadbent)
+- [FIXED] Improve autodevops banner UX and render it only in project page.
+- [FIXED] Fix typo in cycle analytics breaking time component.
+- [FIXED] Force two up view to load by default for image diffs.
+- [FIXED] Fixed milestone breadcrumb links.
+- [FIXED] Fixed group sort dropdown defaulting to empty.
+- [FIXED] Fixed notes not being scrolled to in merge requests.
+- [FIXED] Adds Event polyfill for IE11.
+- [FIXED] Update native unicode emojis to always render as normal text (previously could render italicized). (Branka Martinovic)
+- [FIXED] Sort JobsController by id, not created_at.
+- [FIXED] Fix revision and total size missing for Container Registry.
+- [FIXED] Fixed milestone issuable assignee link URL.
+- [FIXED] Fixed breadcrumbs container expanding in side-by-side diff view.
+- [FIXED] Fixed merge request widget merged & closed date tooltip text.
+- [FIXED] Prevent creating multiple ApplicationSetting instances.
+- [FIXED] Fix username and ID not logging in production_json.log for Git activity.
+- [FIXED] Make Redcarpet Markdown renderer thread-safe.
+- [FIXED] Two factor auth messages in settings no longer overlap the button. (Jedidiah Broadbent)
+- [FIXED] Made the "remember me" check boxes have consistent styles and alignment. (Jedidiah Broadbent)
+- [FIXED] Prevent branches or tags from starting with invalid characters (e.g. -, .).
+- [DEPRECATED] Removed two legacy config options. (Daniel Voogsgerd)
+- [CHANGED] Show notes number more user-friendly in the graph. !13949 (Vladislav Kaverin)
+- [CHANGED] Link SAML users to LDAP by email. !14216
+- [CHANGED] Display whether branch has been merged when deleting protected branch. !14220
+- [CHANGED] Make the labels in the Compare form less confusing. !14225
+- [CHANGED] Confirmation email shows link as text instead of human readable text. !14243 (bitsapien)
+- [CHANGED] Return only group's members in user dropdowns on issuables list pages. !14249
+- [CHANGED] Added defaults for protected branches dropdowns on the repository settings. !14278
+- [CHANGED] Show confirmation modal before deleting account. !14360
+- [CHANGED] Allow creating merge requests across a fork network. !14422
+- [CHANGED] Re-arrange <script> tags before <template> tags in .vue files. !14671
+- [CHANGED] Create idea of read-only database. !14688
+- [CHANGED] Add active states to nav bar counters.
+- [CHANGED] Add view replaced file link for image diffs.
+- [CHANGED] Adjust tooltips to adhere to 8px grid and make them more readable.
+- [CHANGED] breadcrumbs receives padding when double lined.
+- [CHANGED] Allow developer role to admin milestones.
+- [CHANGED] Stop using Sidekiq for updating Key#last_used_at.
+- [CHANGED] Include GitLab full name in Slack messages.
+- [ADDED] Expose last pipeline details in API response when getting a single commit. !13521 (Mehdi Lahmam (@mehlah))
+- [ADDED] Allow to use same periods for different housekeeping tasks (effectively skipping the lesser task). !13711 (cernvcs)
+- [ADDED] Add GitLab-Pages version to Admin Dashboard. !14040 (travismiller)
+- [ADDED] Commenting on image diffs. !14061
+- [ADDED] Script to migrate project's repositories to new Hashed Storage. !14067
+- [ADDED] Hide close MR button after merge without reloading page. !14122 (Jacopo Beschi @jacopo-beschi)
+- [ADDED] Add Gitaly version to Admin Dashboard. !14313 (Jacopo Beschi @jacopo-beschi)
+- [ADDED] Add 'closed_at' attribute to Issues API. !14316 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Add tooltip for milestone due date to issue and merge request lists. !14318 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Improve list of sorting options. !14320 (Vitaliy @blackst0ne Klachkov)
+- [ADDED] Add client and call site metadata to Gitaly calls for better traceability. !14332
+- [ADDED] Strip gitlab-runner section markers in build trace HTML view. !14393
+- [ADDED] Add online view of HTML artifacts for public projects. !14399
+- [ADDED] Create Kubernetes cluster on GKE from k8s service. !14470
+- [ADDED] Add support for GPG subkeys in signature verification. !14517
+- [ADDED] Parse and store gitlab-runner timestamped section markers. !14551
+- [ADDED] Add "implements" to the default issue closing message regex. !14612 (Guilherme Vieira)
+- [ADDED] Replace `tag: true` into `:tag` in the specs. !14653 (Jacopo Beschi @jacopo-beschi)
+- [ADDED] Discussion lock for issues and merge requests.
+- [ADDED] Add an API endpoint to determine the forks of a project.
+- [ADDED] Add help text to runner edit: tags should be separated by commas. (Brendan O'Leary)
+- [ADDED] Only copy old/new code when selecting left/right side of parallel diff.
+- [ADDED] Expose avatar_url when requesting list of projects from API with simple=true.
+- [ADDED] A confirmation email is now sent when adding a secondary email address. (digitalmoksha)
+- [ADDED] Move Custom merge methods from EE.
+- [ADDED] Makes @mentions links have a different styling for better separation.
+- [ADDED] Added tabs to dashboard/projects to easily switch to personal projects.
+- [OTHER] Extract AutocompleteController#users into finder. !13778 (Maxim Rydkin, Mayra Cabrera)
+- [OTHER] Replace 'project/wiki.feature' spinach test with an rspec analog. !13856 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Expand docs for changing username or group path. !13914
+- [OTHER] Move `lib/ci` to `lib/gitlab/ci`. !14078 (Maxim Rydkin)
+- [OTHER] Decrease Cyclomatic Complexity threshold to 13. !14152 (Maxim Rydkin)
+- [OTHER] Decrease Perceived Complexity threshold to 15. !14160 (Maxim Rydkin)
+- [OTHER] Replace project/group_links.feature spinach test with an rspec analog. !14169 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the project/milestone.feature spinach test with an rspec analog. !14171 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the profile/emails.feature spinach test with an rspec analog. !14172 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the project/team_management.feature spinach test with an rspec analog. !14173 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/merge_requests/accept.feature' spinach test with an rspec analog. !14176 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/builds/summary.feature' spinach test with an rspec analog. !14177 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Optimize the boards' issues fetching. !14198
+- [OTHER] Replace the 'project/merge_requests/revert.feature' spinach test with an rspec analog. !14201 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/issues/award_emoji.feature' spinach test with an rspec analog. !14202 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'profile/active_tab.feature' spinach test with an rspec analog. !14239 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'search.feature' spinach test with an rspec analog. !14248 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Load sidebar participants avatars only when visible. !14270
+- [OTHER] Adds gitlab features and components to usage ping data. !14305
+- [OTHER] Replace the 'project/archived.feature' spinach test with an rspec analog. !14322 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/commits/revert.feature' spinach test with an rspec analog. !14325 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/snippets.feature' spinach test with an rspec analog. !14326 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Add link to OpenID Connect documentation. !14368 (Markus Koller)
+- [OTHER] Upgrade doorkeeper-openid_connect. !14372 (Markus Koller)
+- [OTHER] Upgrade gitlab-markup gem. !14395 (Markus Koller)
+- [OTHER] Index projects on repository storage. !14414
+- [OTHER] Replace the 'project/shortcuts.feature' spinach test with an rspec analog. !14431 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Replace the 'project/service.feature' spinach test with an rspec analog. !14432 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Improve GitHub import performance. !14445
+- [OTHER] Add basic sprintf implementation to JavaScript. !14506
+- [OTHER] Replace the 'project/merge_requests.feature' spinach test with an rspec analog. !14621 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Update GitLab Pages to v0.6.0. !14630
+- [OTHER] Add documentation to summarise project archiving. !14650
+- [OTHER] Remove 'Repo' prefix from API entites. !14694 (Vitaliy @blackst0ne Klachkov)
+- [OTHER] Removes cycle analytics service and store from global namespace.
+- [OTHER] Improves i18n for Auto Devops callout.
+- [OTHER] Exports common_utils utility functions as modules.
+- [OTHER] Use `simple=true` for projects API in Projects dropdown for better search performance.
+- [OTHER] Change index on ci_builds to optimize Jobs Controller.
+- [OTHER] Add index for merge_requests.merge_commit_sha.
+- [OTHER] Add (partial) index on Labels.template.
+- [OTHER] Cache issue and MR template names in Redis.
+- [OTHER] changed dashed border button color to be darker.
+- [OTHER] Speed up permission checks.
+- [OTHER] Fix docs for lightweight tag creation via API.
+- [OTHER] Clarify artifact download via the API only accepts branch or tag name for ref.
+- [OTHER] Change recommended MySQL version to 5.6.
+- [OTHER] Bump google-api-client Gem from 0.8.6 to 0.13.6.
+- [OTHER] Detect when changelog entries are invalid.
+- [OTHER] Use a UNION ALL for getting merge request notes.
+- [OTHER] Remove an index on ci_builds meant to be only temporary.
+- [OTHER] Remove a SQL query from the todos index page.
+- Support custom attributes on users. !13038 (Markus Koller)
+- made read-only APIs for public merge requests available without authentication. !13291 (haseebeqx)
+- Hide read_registry scope when registry is disabled on instance. !13314 (Robin Bobbitt)
+- creation of keys moved to services. !13331 (haseebeqx)
+- Add username as GL_USERNAME in hooks.
+
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] find_user Users helper method no longer overrides find_user API helper method. !14418
@@ -211,6 +409,14 @@ entry.
 - Move ConvDev Index location to after Cohorts.
 - Added type to CHANGELOG entries. (Jacopo Beschi @jacopo-beschi)
 - [BUGIFX] Improves subgroup creation permissions. !13418
+
+## 9.5.9 (2017-10-16)
+
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
 
 ## 9.5.8 (2017-10-04)
 
@@ -456,6 +662,15 @@ entry.
 - Skip oAuth authorization for trusted applications.
 - Use a specialized class for querying events to improve performance.
 - Update build badges to be pipeline badges and display passing instead of success.
+
+## 9.4.7 (2017-10-16)
+
+- [SECURITY] Upgrade mail and nokogiri gems due to security issues. !13662 (Markus Koller)
+- [SECURITY] Move project repositories between namespaces when renaming users.
+- [SECURITY] Prevent an open redirect on project pages.
+- [SECURITY] Prevent a persistent XSS in user-provided markup.
+- [FIXED] Allow using newlines in pipeline email service recipients. !14250
+- Escape user name in filtered search bar.
 
 ## 9.4.6 (2017-09-06)
 

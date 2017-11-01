@@ -1,9 +1,11 @@
 /* eslint-disable no-new */
 /* global MilestoneSelect */
-/* global LabelsSelect */
 /* global WeightSelect */
-/* global IssuableContext */
+import LabelsSelect from './labels_select';
+import IssuableContext from './issuable_context';
 /* global Sidebar */
+
+import DueDateSelectors from './due_date_select';
 
 export default () => {
   const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
@@ -15,6 +17,6 @@ export default () => {
   new WeightSelect();
   new IssuableContext(sidebarOptions.currentUser);
   gl.Subscription.bindAll('.subscription');
-  new gl.DueDateSelectors();
+  new DueDateSelectors();
   window.sidebar = new Sidebar();
 };

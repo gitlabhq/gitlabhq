@@ -269,7 +269,7 @@ module Gitlab
       if deploy_key?
         deploy_key.has_access_to?(project)
       elsif geo_node_key?
-        true
+        geo_node_key.active?
       elsif user
         user.can?(:read_project, project)
       elsif ci?

@@ -5,15 +5,14 @@ default-case, prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, comma-dangle, no-new,
 brace-style, no-lonely-if, vars-on-top, no-unused-vars, no-sequences, no-shadow,
 newline-per-chained-call, no-useless-escape, class-methods-use-this */
-/* global Autosave */
+
 /* global ResolveService */
 /* global mrRefreshWidgetUrl */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import autosize from 'vendor/autosize';
-import Dropzone from 'dropzone';
+import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -21,14 +20,12 @@ import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
-import './autosave';
-import './dropzone_input';
+import Autosave from './autosave';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
 
-window.autosize = autosize;
-window.Dropzone = Dropzone;
+window.autosize = Autosize;
 
 function normalizeNewlines(str) {
   return str.replace(/\r\n/g, '\n');
@@ -1283,10 +1280,12 @@ export default class Notes {
    * Get data from Form attributes to use for saving/submitting comment.
    */
   getFormData($form) {
+    const content = $form.find('.js-note-text').val();
     return {
       formData: $form.serialize(),
-      formContent: _.escape($form.find('.js-note-text').val()),
+      formContent: _.escape(content),
       formAction: $form.attr('action'),
+      formContentOriginal: content,
     };
   }
 
@@ -1418,7 +1417,7 @@ export default class Notes {
     const isMainForm = $form.hasClass('js-main-target-form');
     const isDiscussionForm = $form.hasClass('js-discussion-note-form');
     const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
-    const { formData, formContent, formAction } = this.getFormData($form);
+    const { formData, formContent, formAction, formContentOriginal } = this.getFormData($form);
     let noteUniqueId;
     let systemNoteUniqueId;
     let hasQuickActions = false;
@@ -1577,7 +1576,7 @@ export default class Notes {
           $form = $notesContainer.parent().find('form');
         }
 
-        $form.find('.js-note-text').val(formContent);
+        $form.find('.js-note-text').val(formContentOriginal);
         this.reenableTargetFormSubmitButton(e);
         this.addNoteError($form);
       });

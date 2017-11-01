@@ -4,6 +4,37 @@ describe Projects::MirrorsController do
   include ReactiveCachingHelpers
 
   describe 'setting up a remote mirror' do
+    set(:project) { create(:project, :repository) }
+    let(:url) { 'http://foo.com' }
+
+    context 'when remote mirrors are disabled' do
+      before do
+        stub_application_setting(remote_mirror_available: false)
+      end
+
+      context 'when user is admin' do
+        let(:admin) { create(:user, :admin) }
+
+        it 'creates a new remote mirror' do
+          sign_in(admin)
+
+          expect do
+            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
+          end.to change { RemoteMirror.count }.to(1)
+        end
+      end
+
+      context 'when user is not admin' do
+        it 'does not create a new remote mirror' do
+          sign_in(project.owner)
+
+          expect do
+            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
+          end.not_to change { RemoteMirror.count }
+        end
+      end
+    end
+
     context 'when the current project is a mirror' do
       let(:project) { create(:project, :repository, :mirror) }
 
@@ -38,7 +69,6 @@ describe Projects::MirrorsController do
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do
-        project = create(:project, :repository)
         sign_in(project.owner)
 
         expect do
@@ -48,7 +78,6 @@ describe Projects::MirrorsController do
     end
 
     context 'when the current project has a remote mirror' do
-      let(:project) { create(:project, :repository) }
       let(:remote_mirror) { project.remote_mirrors.create!(enabled: 1, url: 'http://local.dev') }
 
       before do
@@ -117,7 +146,7 @@ describe Projects::MirrorsController do
     end
   end
 
-  describe 'forcing an update' do
+  describe 'forcing an update on a pull mirror' do
     it 'forces update' do
       expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
@@ -125,6 +154,25 @@ describe Projects::MirrorsController do
       sign_in(project.owner)
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
+    end
+  end
+
+  describe 'forcing an update on a push mirror' do
+    context 'when remote mirrors are disabled' do
+      let(:project) { create(:project, :repository, :remote_mirror) }
+
+      before do
+        stub_application_setting(remote_mirror_available: false)
+        sign_in(project.owner)
+      end
+
+      it 'updates now when overridden' do
+        project.update(remote_mirror_available_overridden: true)
+
+        expect_any_instance_of(EE::Project).to receive(:update_remote_mirrors)
+
+        put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param, sync_remote: 1 }
+      end
     end
   end
 
@@ -143,14 +191,14 @@ describe Projects::MirrorsController do
       it 'processes a successful update' do
         do_put(project, { import_url: 'https://updated.example.com' }, format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['import_url']).to eq('https://updated.example.com')
       end
 
       it 'processes an unsuccessful update' do
         do_put(project, { import_url: 'ftp://invalid.invalid' }, format: :json)
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
         expect(json_response['import_url'].first).to match /valid URL/
       end
 
@@ -159,14 +207,14 @@ describe Projects::MirrorsController do
 
         do_put(project, { import_data_attributes: { password: 'update' } }, format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(project.import_data(true).id).to eq(import_data_id)
       end
 
       it 'sets ssh_known_hosts_verified_at and verified_by when the update sets known hosts' do
         do_put(project, { import_data_attributes: { ssh_known_hosts: 'update' } }, format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         import_data = project.import_data(true)
         expect(import_data.ssh_known_hosts_verified_at).to be_within(1.minute).of(Time.now)
@@ -178,7 +226,7 @@ describe Projects::MirrorsController do
 
         do_put(project, { import_data_attributes: { ssh_known_hosts: '' } }, format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
 
         import_data = project.import_data(true)
         expect(import_data.ssh_known_hosts_verified_at).to be_nil
@@ -193,7 +241,7 @@ describe Projects::MirrorsController do
 
         do_put(project, { mirror_user_id: other_user.id }, format: :json)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(project.mirror_user(true)).to eq(mirror_user)
       end
     end
@@ -230,7 +278,7 @@ describe Projects::MirrorsController do
         it 'returns an error with a 400 response' do
           do_get(project, url)
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response).to eq('message' => 'Invalid URL')
         end
       end
@@ -242,7 +290,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
       end
     end
 
@@ -252,7 +300,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response).to eq('message' => 'An error')
       end
     end
@@ -266,7 +314,7 @@ describe Projects::MirrorsController do
 
         do_get(project)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys], 'changes_project_import_data' => true)
       end
     end

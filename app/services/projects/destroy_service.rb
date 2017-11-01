@@ -52,7 +52,7 @@ module Projects
     end
 
     def wiki_path
-      repo_path + '.wiki'
+      project.wiki.disk_path
     end
 
     def trash_repositories!

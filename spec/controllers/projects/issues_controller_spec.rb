@@ -20,7 +20,7 @@ describe Projects::IssuesController do
 
           get :index, namespace_id: project.namespace, project_id: project
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -28,7 +28,7 @@ describe Projects::IssuesController do
         it 'renders the "index" template' do
           get :index, namespace_id: project.namespace, project_id: project
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template(:index)
         end
       end
@@ -45,7 +45,7 @@ describe Projects::IssuesController do
       it "returns index" do
         get :index, namespace_id: project.namespace, project_id: project
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "returns 301 if request path doesn't match project path" do
@@ -59,7 +59,7 @@ describe Projects::IssuesController do
         project.save!
 
         get :index, namespace_id: project.namespace, project_id: project
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -89,7 +89,7 @@ describe Projects::IssuesController do
           page: last_page.to_param
 
         expect(assigns(:issues).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -166,7 +166,7 @@ describe Projects::IssuesController do
 
           get :new, namespace_id: project.namespace, project_id: project
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -174,7 +174,7 @@ describe Projects::IssuesController do
         it 'renders the "new" template' do
           get :new, namespace_id: project.namespace, project_id: project
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to render_template(:new)
         end
       end
@@ -224,7 +224,7 @@ describe Projects::IssuesController do
         it 'moves issue to another project' do
           move_issue
 
-          expect(response).to have_http_status :ok
+          expect(response).to have_gitlab_http_status :ok
           expect(another_project.issues).not_to be_empty
         end
       end
@@ -233,7 +233,7 @@ describe Projects::IssuesController do
         it 'responds with 404' do
           move_issue
 
-          expect(response).to have_http_status :not_found
+          expect(response).to have_gitlab_http_status :not_found
         end
       end
 
@@ -329,14 +329,14 @@ describe Projects::IssuesController do
         sign_out(:user)
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status :not_found
+        expect(response).to have_gitlab_http_status :not_found
       end
 
       it 'returns 404 for non project members' do
         sign_in(non_member)
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status :not_found
+        expect(response).to have_gitlab_http_status :not_found
       end
 
       it 'returns 404 for project members with guest role' do
@@ -344,21 +344,21 @@ describe Projects::IssuesController do
         project.team << [member, :guest]
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status :not_found
+        expect(response).to have_gitlab_http_status :not_found
       end
 
       it "returns #{http_status[:success]} for author" do
         sign_in(author)
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status http_status[:success]
+        expect(response).to have_gitlab_http_status http_status[:success]
       end
 
       it "returns #{http_status[:success]} for assignee" do
         sign_in(assignee)
         go(id: request_forgery_timing_attack.to_param)
 
-        expect(response).to have_http_status http_status[:success]
+        expect(response).to have_gitlab_http_status http_status[:success]
       end
 
       it "returns #{http_status[:success]} for project members" do
@@ -366,14 +366,14 @@ describe Projects::IssuesController do
         project.team << [member, :developer]
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status http_status[:success]
+        expect(response).to have_gitlab_http_status http_status[:success]
       end
 
       it "returns #{http_status[:success]} for admin" do
         sign_in(admin)
         go(id: unescaped_parameter_value.to_param)
 
-        expect(response).to have_http_status http_status[:success]
+        expect(response).to have_gitlab_http_status http_status[:success]
       end
     end
 
@@ -475,7 +475,7 @@ describe Projects::IssuesController do
             it 'returns 422 status' do
               update_issue
 
-              expect(response).to have_http_status(422)
+              expect(response).to have_gitlab_http_status(422)
             end
           end
 
@@ -495,7 +495,7 @@ describe Projects::IssuesController do
             end
 
             it 'returns 200 status' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -553,8 +553,31 @@ describe Projects::IssuesController do
         it 'returns 200' do
           go(id: issue.iid)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
+      end
+    end
+
+    describe 'GET #edit' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :edit,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+    end
+
+    describe 'PUT #update' do
+      it_behaves_like 'restricted action', success: 302
+
+      def go(id:)
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id,
+          issue: { title: 'New title' }
       end
     end
   end
@@ -778,7 +801,7 @@ describe Projects::IssuesController do
 
       it "rejects a developer to destroy an issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -794,7 +817,7 @@ describe Projects::IssuesController do
       it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
@@ -818,7 +841,7 @@ describe Projects::IssuesController do
                                   project_id: project, id: issue.iid, name: "thumbsup")
       end.to change { issue.award_emoji.count }.by(1)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -850,24 +873,16 @@ describe Projects::IssuesController do
 
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
-
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
-
-    it 'returns discussion json' do
-      get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-
-      expect(JSON.parse(response.body).first.keys).to match_array(%w[id reply_id expanded notes individual_note])
-    end
-
-    context 'with cross-reference system note', :request_store do
-      let(:new_issue) { create(:issue) }
-      let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
-
+    context 'when authenticated' do
       before do
-        create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'returns discussion json' do
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes individual_note])
       end
 
       it 'filters notes that the user should not see' do
@@ -875,22 +890,90 @@ describe Projects::IssuesController do
 
         expect(JSON.parse(response.body).count).to eq(1)
       end
+    end
 
-      it 'does not result in N+1 queries' do
-        # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
-        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+    context 'with a related system note' do
+      let(:confidential_issue) { create(:issue, :confidential, project: project) }
+      let!(:system_note) { SystemNoteService.relate_issue(issue, confidential_issue, user) }
 
-        RequestStore.clear!
+      shared_examples 'user can see confidential issue' do |access_level|
+        context "when a user is a #{access_level}" do
+          before do
+            project.add_user(user, access_level)
+          end
 
-        control_count = ActiveRecord::QueryRecorder.new do
+          it 'displays related notes' do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+            discussions = json_response
+            notes = discussions.flat_map {|d| d['notes']}
+
+            expect(discussions.count).to equal(2)
+            expect(notes).to include(a_hash_including('id' => system_note.id))
+          end
+        end
+      end
+
+      shared_examples 'user cannot see confidential issue' do |access_level|
+        context "when a user is a #{access_level}" do
+          before do
+            project.add_user(user, access_level)
+          end
+
+          it 'redacts note related to a confidential issue' do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+            discussions = json_response
+            notes = discussions.flat_map {|d| d['notes']}
+
+            expect(discussions.count).to equal(1)
+            expect(notes).not_to include(a_hash_including('id' => system_note.id))
+          end
+        end
+      end
+
+      context 'when authenticated' do
+        before do
+          sign_in(user)
+        end
+
+        %i(reporter developer master).each do |access|
+          it_behaves_like 'user can see confidential issue', access
+        end
+
+        it_behaves_like 'user cannot see confidential issue', :guest
+      end
+
+      context 'when unauthenticated' do
+        let(:project) { create(:project, :public) }
+
+        it_behaves_like 'user cannot see confidential issue', Gitlab::Access::NO_ACCESS
+      end
+
+      context 'with cross-reference system note', :request_store do
+        let(:new_issue) { create(:issue) }
+        let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }
+
+        before do
+          create(:discussion_note_on_issue, :system, noteable: issue, project: issue.project, note: cross_reference)
+        end
+
+        it 'does not result in N+1 queries' do
+          # Instantiate the controller variables to ensure QueryRecorder has an accurate base count
           get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
-        end.count
 
-        RequestStore.clear!
+          RequestStore.clear!
 
-        create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+          control_count = ActiveRecord::QueryRecorder.new do
+            get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+          end.count
 
-        expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
+          RequestStore.clear!
+
+          create_list(:discussion_note_on_issue, 2, :system, noteable: issue, project: issue.project, note: cross_reference)
+
+          expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }.not_to exceed_query_limit(control_count)
+        end
       end
     end
   end

@@ -173,12 +173,14 @@ describe 'Issue Boards', :js do
         expect(page).to have_selector('.card', count: 20)
         expect(page).to have_content('Showing 20 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
@@ -451,11 +453,13 @@ describe 'Issue Boards', :js do
           expect(page).to have_selector('.card', count: 20)
           expect(page).to have_content('Showing 20 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 51)
@@ -552,7 +556,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_selector('.js-new-board-list')
+      expect(page).not_to have_button('.js-new-board-list')
     end
 
     it 'does not allow dragging' do

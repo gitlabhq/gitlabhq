@@ -23,31 +23,49 @@ spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
 ## Separation of EE code
 
-Merging changes from GitLab CE to EE can result in numerous conflicts.
-To reduce conflicts, EE code should be separated in to the `EE` module
-as much as possible.
+We want a [single code base][] eventually, but before we reach the goal,
+we still need to merge changes from GitLab CE to EE. To help us get there,
+we should make sure that we no longer edit CE files in place in order to
+implement EE features.
 
-When referencing constants *outside* of the `EE` namespace from within it, you
-should always use absolute constants - e.g., `::User` instead of `User`. This
-will prevent `::EE::User` from being picked instead of `::User`. Follow this
-rule even if the constant doesn't exist in the `EE` namespace at present - it
-may be added in the future.
+Instead, all EE codes should be put inside the `ee/` top-level directory, and
+tests should be put inside `spec/ee/`. We don't use `ee/spec` for now due to
+technical limitation. The rest of codes should be as close as to the CE files.
 
-### Classes vs. Module Mixins
+[single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
 
-If the feature being developed is not present in any form in CE,
-separation is easy - build the class entirely in the `EE` namespace.
+### EE-only features
+
+If the feature being developed is not present in any form in CE, we don't
+need to put the codes under `EE` namespace. For example, an EE model could
+go into: `ee/app/models/awesome.rb` using `Awesome` as the class name. This
+is applied not only to models. Here's a list of other examples:
+
+- `ee/app/controllers/foos_controller.rb`
+- `ee/app/finders/foos_finder.rb`
+- `ee/app/helpers/foos_helper.rb`
+- `ee/app/mailers/foos_mailer.rb`
+- `ee/app/models/foo.rb`
+- `ee/app/policies/foo_policy.rb`
+- `ee/app/serializers/foo_entity.rb`
+- `ee/app/serializers/foo_serializer.rb`
+- `ee/app/services/foo/create_service.rb`
+- `ee/app/validators/foo_attr_validator.rb`
+- `ee/app/workers/foo_worker.rb`
+
+### EE features based on CE features
 
 For features that build on existing CE features, write a module in the
 `EE` namespace and `prepend` it in the CE class. This makes conflicts
 less likely to happen during CE to EE merges because only one line is
 added to the CE class - the `prepend` line.
 
-### Adding EE-only files
+Since the module would require an `EE` namespace, the file should also be
+put in an `ee/` sub-directory. For example, we want to extend the user model
+in EE, so we have a module called `::EE::User` put inside
+`ee/app/models/ee/user.rb`.
 
-Place EE-only controllers, finders, helpers, mailers, models, policies,
-serializers/entities, services, validators and workers in the top-level
-`EE` module namespace, and in the `ee/` specific sub-directory:
+This is also not just applied to models. Here's a list of other examples:
 
 - `ee/app/controllers/ee/foos_controller.rb`
 - `ee/app/finders/ee/foos_finder.rb`
@@ -60,8 +78,6 @@ serializers/entities, services, validators and workers in the top-level
 - `ee/app/services/ee/foo/create_service.rb`
 - `ee/app/validators/ee/foo_attr_validator.rb`
 - `ee/app/workers/ee/foo_worker.rb`
-
-This applies to both EE-only classes and EE module mixins.
 
 #### Overriding CE methods
 

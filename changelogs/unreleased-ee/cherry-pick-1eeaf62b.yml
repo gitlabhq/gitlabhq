@@ -1,5 +1,0 @@
----
-title: Fix a Geo node validation, preventing admins from locking themselves out
-merge_request: 3040
-author:
-type: fixed

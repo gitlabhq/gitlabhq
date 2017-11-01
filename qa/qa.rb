@@ -8,6 +8,7 @@ module QA
     autoload :Release, 'qa/runtime/release'
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
+    autoload :Scenario, 'qa/runtime/scenario'
   end
 
   ##
@@ -79,6 +80,11 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
+    end
+
+    module Mattermost
+      autoload :Main, 'qa/page/mattermost/main'
+      autoload :Login, 'qa/page/mattermost/login'
     end
   end
 

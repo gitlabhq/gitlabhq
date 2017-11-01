@@ -17,7 +17,7 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { size: 16 }
+    default_opts = { size: 16, lazy_load: false }
     opts = default_opts.merge(opts)
 
     classes = %W[avatar avatar-inline s#{opts[:size]}]
@@ -29,8 +29,26 @@ module ProjectsHelper
     image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
   end
 
+  def author_content_tag(author, opts = {})
+    default_opts = { author_class: 'author', tooltip: false, by_username: false }
+    opts = default_opts.merge(opts)
+
+    has_tooltip = !opts[:by_username] && opts[:tooltip]
+
+    username = opts[:by_username] ? author.to_reference : author.name
+    name_tag_options = { class: [opts[:author_class]] }
+
+    if has_tooltip
+      name_tag_options[:title] = author.to_reference
+      name_tag_options[:data] = { placement: 'top' }
+      name_tag_options[:class] << 'has-tooltip'
+    end
+
+    content_tag(:span, sanitize(username), name_tag_options)
+  end
+
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false, lazy_load: false }
+    default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -41,12 +59,7 @@ module ProjectsHelper
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
-    if opts[:by_username]
-      author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
-    else
-      tooltip_data = { placement: 'top' }
-      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
-    end
+    author_html << author_content_tag(author, opts) if opts[:name]
 
     author_html << capture(&block) if block
 

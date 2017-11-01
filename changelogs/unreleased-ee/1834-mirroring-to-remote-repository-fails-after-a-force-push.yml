@@ -1,5 +1,0 @@
----
-title: Mirroring to remote repository no longer fails after a force push.
-merge_request: 2919
-author:
-type: fixed

@@ -3,4 +3,5 @@
 
 - if @project.feature_available?(:repository_mirrors)
   = render 'projects/mirrors/pull'
-  = render 'projects/mirrors/push'
+  - if can?(current_user, :admin_remote_mirror, @project)
+    = render 'projects/mirrors/push'

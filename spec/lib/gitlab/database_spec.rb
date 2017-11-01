@@ -273,4 +273,57 @@ describe Gitlab::Database do
       expect(config['prepared_statements']).to eq(false)
     end
   end
+
+  describe '.read_only?' do
+    context 'with Geo enabled' do
+      before do
+        allow(Gitlab::Geo).to receive(:enabled?) { true }
+        allow(Gitlab::Geo).to receive(:current_node) { geo_node }
+      end
+
+      context 'is Geo secondary node' do
+        let(:geo_node) { create(:geo_node) }
+
+        it 'returns true' do
+          expect(described_class.read_only?).to be_truthy
+        end
+      end
+
+      context 'is Geo primary node' do
+        let(:geo_node) { create(:geo_node, :primary) }
+
+        it 'returns false when is Geo primary node' do
+          expect(described_class.read_only?).to be_falsey
+        end
+      end
+    end
+
+    context 'with Geo disabled' do
+      it 'returns false' do
+        expect(described_class.read_only?).to be_falsey
+      end
+    end
+  end
+
+  describe '#sanitize_timestamp' do
+    let(:max_timestamp) { Time.at((1 << 31) - 1) }
+
+    subject { described_class.sanitize_timestamp(timestamp) }
+
+    context 'with a timestamp smaller than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp - 10.years }
+
+      it 'returns the given timestamp' do
+        expect(subject).to eq(timestamp)
+      end
+    end
+
+    context 'with a timestamp larger than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp + 1.second }
+
+      it 'returns MAX_TIMESTAMP_VALUE' do
+        expect(subject).to eq(max_timestamp)
+      end
+    end
+  end
 end

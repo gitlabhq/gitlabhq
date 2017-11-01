@@ -23,7 +23,7 @@ describe Projects::IssueLinksController do
 
       get namespace_project_issue_links_path(issue_links_params)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq(list_service_response.as_json)
     end
   end
@@ -45,7 +45,7 @@ describe Projects::IssueLinksController do
 
         list_service_response = IssueLinks::ListService.new(issue, user).execute
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to eq('message' => nil,
                                     'issues' => list_service_response.as_json)
       end
@@ -59,7 +59,7 @@ describe Projects::IssueLinksController do
         it 'returns 403' do
           post namespace_project_issue_links_path(issue_links_params(issue_references: issue_references))
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -72,7 +72,7 @@ describe Projects::IssueLinksController do
 
           list_service_response = IssueLinks::ListService.new(issue, user).execute
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
           expect(json_response).to eq('message' => 'No Issue found for given params', 'issues' => list_service_response.as_json)
         end
       end
@@ -95,7 +95,7 @@ describe Projects::IssueLinksController do
         it 'returns 403' do
           delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -107,7 +107,7 @@ describe Projects::IssueLinksController do
         it 'returns 404' do
           delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

@@ -77,7 +77,14 @@ class Admin::GeoNodesController < Admin::ApplicationController
   private
 
   def geo_node_params
-    params.require(:geo_node).permit(:url, :primary, :namespace_ids, geo_node_key_attributes: [:key])
+    params.require(:geo_node).permit(
+      :url,
+      :primary,
+      :namespace_ids,
+      :repos_max_capacity,
+      :files_max_capacity,
+      geo_node_key_attributes: [:key]
+    )
   end
 
   def check_license

@@ -14,6 +14,8 @@ module Gitlab
 
     SECONDARY_JOBS = %i(repository_sync_job file_download_job).freeze
 
+    FDW_SCHEMA = 'gitlab_secondary'.freeze
+
     def self.current_node
       self.cache_value(:geo_node_current) do
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
@@ -30,13 +32,20 @@ module Gitlab
       self.cache_value(:geo_secondary_nodes) { GeoNode.where(primary: false) }
     end
 
-    def self.enabled?
-      GeoNode.connected? && self.cache_value(:geo_node_enabled) { GeoNode.exists? }
-    rescue => e
-      # We can't use the actual classes in rescue because we load only one of them based on database supported
-      raise e unless %w(PG::UndefinedTable Mysql2::Error).include? e.class.name
+    def self.connected?
+      Gitlab::Database.postgresql? && GeoNode.connected? && GeoNode.table_exists?
+    end
 
-      false
+    def self.enabled?
+      cache_value(:geo_node_enabled) { GeoNode.exists? }
+    end
+
+    def self.primary?
+      self.enabled? && self.current_node&.primary?
+    end
+
+    def self.secondary?
+      self.enabled? && self.current_node&.secondary?
     end
 
     def self.current_node_enabled?
@@ -62,14 +71,6 @@ module Gitlab
       ::License.feature_available?(:geo)
     end
 
-    def self.primary?
-      self.cache_value(:geo_node_primary) { self.enabled? && self.current_node && self.current_node.primary? }
-    end
-
-    def self.secondary?
-      self.cache_value(:geo_node_secondary) { self.enabled? && self.current_node && self.current_node.secondary? }
-    end
-
     def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
     end
@@ -77,13 +78,13 @@ module Gitlab
     def self.fdw?
       self.cache_value(:geo_fdw?) do
         ::Geo::BaseRegistry.connection.execute(
-          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{self.fdw_schema}' AND table_type = 'FOREIGN TABLE'"
+          "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '#{FDW_SCHEMA}' AND table_type = 'FOREIGN TABLE'"
         ).first.fetch('count').to_i.positive?
       end
     end
 
-    def self.fdw_schema
-      'gitlab_secondary'.freeze
+    def self.fdw_table(table_name)
+      FDW_SCHEMA + ".#{table_name}"
     end
 
     def self.repository_sync_job

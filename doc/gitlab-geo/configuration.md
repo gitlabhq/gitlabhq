@@ -9,6 +9,7 @@ from source**](configuration_source.md) guide.
    as the secondary Geo node. Do not login or set up anything else in the
    secondary node for the moment.
 1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Configure SSH authorizations to use the database](ssh.md)
 1. **Configure GitLab to set the primary and secondary nodes.**
 1. [Follow the after setup steps](after_setup.md).
 
@@ -136,28 +137,7 @@ sensitive data in the database. Any secondary node must have the
     gitlab-ctl reconfigure
     ```
 
-### Step 4. Regenerating the authorized keys in the secondary node
-
-> **IMPORTANT:** Since GitLab 10.0 `~/.ssh/authorized_keys` no longer
-> can be used, and this step is deprecated. Instead, follow the
-> instructions on [configuring SSH authorization via database lookups](../administration/operations/speed_up_ssh.html)
-> (for both primary AND secondary nodes).
-
-Regenerate the keys for `~/.ssh/authorized_keys`
-(HTTPS clone will still work without this extra step).
-
-1. On the **secondary** node where the database is [already replicated](./database.md),
-   run:
-
-     ```
-     # For Omnibus installations
-     gitlab-rake gitlab:shell:setup
-     ```
-
-This will enable `git` operations to authorize against your existing users.
-New users and SSH keys updated after this step, will be replicated automatically.
-
-### Step 5. Enabling hashed storage (from GitLab 10.0)
+### Step 4. Enabling hashed storage (from GitLab 10.0)
 
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
@@ -169,7 +149,7 @@ Using hashed storage significantly improves Geo replication - project and group
 renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
-### Step 6. Enabling the secondary GitLab node
+### Step 5. Enabling the secondary GitLab node
 
 1. SSH into the **secondary** node and login as root:
 
@@ -190,7 +170,11 @@ used for all GitLab Geo installations.
    you created previously. **Do NOT** check the box 'This is a primary node'.
 1. Added in GitLab 9.5: Choose which namespaces should be replicated by the secondary node. Leave blank to replicate all. Read more in [selective replication](#selective-replication).
 1. Click the **Add node** button.
+1. Restart GitLab on the secondary:
 
+    ```
+    gitlab-ctl restart
+    ```
 ---
 
 After the **Add Node** button is pressed, the primary node will start to notify
@@ -206,7 +190,7 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 7. Replicating the repositories data
+### Step 6. Replicating the repositories data
 
 Getting a new secondary Geo node up and running, will also require the
 repositories data to be synced.

@@ -29,7 +29,7 @@ describe Projects::Settings::SlacksController do
 
       get :slack_auth, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(response).to redirect_to(redirect_url(project))
       expect(flash[:alert]).to be_nil
     end
@@ -39,7 +39,7 @@ describe Projects::Settings::SlacksController do
 
       get :slack_auth, namespace_id: project.namespace, project_id: project
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
       expect(response).to redirect_to(redirect_url(project))
       expect(flash[:alert]).to eq('error')
     end

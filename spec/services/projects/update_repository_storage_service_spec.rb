@@ -83,12 +83,12 @@ describe Projects::UpdateRepositoryStorageService do
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', "#{project.disk_path}.wiki", 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.wiki.disk_path, 'tmp/tests/storage_b')
             .and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
-              "#{project.disk_path}.wiki",
+              project.wiki.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}.wiki")
 
           subject.execute('b')
@@ -104,7 +104,7 @@ describe Projects::UpdateRepositoryStorageService do
             .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
             .and_return(true)
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', "#{project.disk_path}.wiki", 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.wiki.disk_path, 'tmp/tests/storage_b')
             .and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 

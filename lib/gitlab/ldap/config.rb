@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def base
-        options['base']
+        @base ||= Person.normalize_dn(options['base'])
       end
 
       def uid

@@ -1,5 +1,44 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.1.0 (2017-10-22)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues. !541
+- [FIXED] Geo - Selective replication allows admins to select any groups. !2779
+- [FIXED] Fix CSV export when filtering issues by multiple labels. !2852
+- [FIXED] Impersonation no longer gets stuck on password change. !2904
+- [FIXED] Mirroring to remote repository no longer fails after a force push. !2919
+- [FIXED] Fix a merge request validation error on forked projects. !2932
+- [FIXED] Fix an error reporting some failures in the elasticsearch indexer. !2998
+- [FIXED] Fix a Geo node validation, preventing admins from locking themselves out. !3040
+- [FIXED] Find stuck scheduled import jobs and also mark them as failed. !3055
+- [FIXED] Fix removing the username from the git repository URL for pull mirroring. !3060
+- [FIXED] Prevent failed file syncs from stalling Geo backfill. !3101
+- [FIXED] Fix reading the status of a secondary Geo node from the primary. !3140
+- [FIXED] Always allow the default branch as a branch name. !3154
+- [FIXED] Show errors when rebase onto target branch fails in the UI.
+- [FIXED] Fix base link for issues on group boards.
+- [FIXED] Don't create todos for old issue assignees.
+- [FIXED] Geo: Fix attachments/avatars saving to the wrong directory.
+- [FIXED] Save Geo files to a temporary file and rename after success.
+- [FIXED] Fix personal snippets not downloading in Geo secondaries.
+- [FIXED] Geo: Limit the huge cross-database pluck for LFS objects and attachments.
+- [CHANGED] Schedule repository synchronization when processing events on a Geo secondary node. !2838
+- [CHANGED] Create idea of read-only database and add method to check for it. !2954
+- [CHANGED] Remove the backoff delay from Geo repository sync. !3009
+- [CHANGED] Improves visibility of deploy boards.
+- [CHANGED] Improve performance of rebasing by using worktree.
+- [ADDED] Add suport for CI/CD pipeline policy management. !2986
+- [ADDED] Add LDAP synchronization based on filter for GitLab groups.
+- [OTHER] Add Geo rake task descriptions. !2925
+- [OTHER] Improve logging output for several Geo background workers. !2961
+- [OTHER] Add partial index on push_rules.is_sample.
+- Add new push rule to reject unsigned commits. !2913
+
+## 10.0.4 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues. !541
+- [SECURITY] Escape user name in filtered search bar.
+
 ## 10.0.3 (2017-10-05)
 
 - [FIXED] Rewrite Geo database rake tasks so they operate on the correct database. !3052
@@ -60,6 +99,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: When MR approvals are disabled, but approvers were previously assigned, all approvers receive a notification on every MR.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
+
+## 9.5.9 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues.
+- Escape user name in filtered search bar.
 
 ## 9.5.8 (2017-10-04)
 
@@ -136,6 +180,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix accessing individual files on Object Storage.
 - Fix rebase button when merge request is created from a fork.
 - Skip oAuth authorization for trusted applications.
+
+## 9.4.7 (2017-10-16)
+
+- [SECURITY] Prevent Related Issues from leaking confidential issues.
+- Fix when pushing without a branch name. !2879
+- Escape user name in filtered search bar.
 
 ## 9.4.6 (2017-09-06)
 

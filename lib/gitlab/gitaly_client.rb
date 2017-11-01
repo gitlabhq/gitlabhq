@@ -33,6 +33,12 @@ module Gitlab
     MUTEX = Mutex.new
     private_constant :MUTEX
 
+    class << self
+      attr_accessor :query_time
+    end
+
+    self.query_time = 0
+
     def self.stub(name, storage)
       MUTEX.synchronize do
         @stubs ||= {}
@@ -83,11 +89,14 @@ module Gitlab
     # end
     #
     def self.call(storage, service, rpc, request)
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage)
       kwargs = yield(kwargs) if block_given?
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    ensure
+      self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
     end
 
     def self.request_kwargs(storage)

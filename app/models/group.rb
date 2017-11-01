@@ -9,6 +9,8 @@ class Group < Namespace
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
+  include LoadedInGroupList
+  include GroupDescendant
   prepend EE::GeoAwareAvatar
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent

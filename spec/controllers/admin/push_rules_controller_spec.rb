@@ -32,7 +32,7 @@ describe Admin::PushRulesController do
       it 'returns 404' do
         patch :update, push_rule: params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -41,7 +41,7 @@ describe Admin::PushRulesController do
     it 'returns 200' do
       get :show
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     context 'push rules unlicensed' do
@@ -52,7 +52,7 @@ describe Admin::PushRulesController do
       it 'returns 404' do
         get :show
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
