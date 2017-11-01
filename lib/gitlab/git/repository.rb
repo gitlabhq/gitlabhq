@@ -290,6 +290,14 @@ module Gitlab
         end
       end
 
+      def batch_existence(object_ids, existing: true)
+        filter_method = existing ? :select : :reject
+
+        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
+          rugged.exists?(oid)
+        end
+      end
+
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
