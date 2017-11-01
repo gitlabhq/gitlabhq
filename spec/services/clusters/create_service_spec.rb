@@ -42,7 +42,8 @@ describe Clusters::CreateService do
         expect(result.provider.machine_type).to eq('machine_type-a')
         expect(result.provider.access_token).to eq(access_token)
         expect(result.platform.namespace).to eq('custom-namespace')
-        expect(result.platform.valid?).to be_falsey
+        expect(result.platform.api_url).to eq(Clusters::CreateService::TEMPOLARY_API_URL)
+        expect(result.platform.token).to eq(Clusters::CreateService::TEMPOLARY_TOKEN)
       end
     end
 
@@ -99,7 +100,6 @@ describe Clusters::CreateService do
         expect(result.project).to eq(project)
         expect(result.provider).to be_nil
         expect(result.platform.namespace).to eq('custom-namespace')
-        expect(result.platform.valid?).to be_truthy
       end
     end
 

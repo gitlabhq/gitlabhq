@@ -51,45 +51,45 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
     end
 
-    # context 'when validates api_url' do
-    #   let(:kubernetes) { build(:platform_kubernetes, :configured) }
+    context 'when validates api_url' do
+      let(:kubernetes) { build(:platform_kubernetes, :configured) }
 
-    #   before do
-    #     kubernetes.api_url = api_url
-    #   end
+      before do
+        kubernetes.api_url = api_url
+      end
 
-    #   context 'when api_url is invalid url' do
-    #     let(:api_url) { '!!!!!!' }
+      context 'when api_url is invalid url' do
+        let(:api_url) { '!!!!!!' }
 
-    #     it { expect(kubernetes.save).to be_falsey }
-    #   end
+        it { expect(kubernetes.save).to be_falsey }
+      end
 
-    #   context 'when api_url is nil' do
-    #     let(:api_url) { nil }
+      context 'when api_url is nil' do
+        let(:api_url) { nil }
 
-    #     it { expect(kubernetes.save).to be_falsey }
-    #   end
+        it { expect(kubernetes.save).to be_falsey }
+      end
 
-    #   context 'when api_url is valid url' do
-    #     let(:api_url) { 'https://111.111.111.111' }
+      context 'when api_url is valid url' do
+        let(:api_url) { 'https://111.111.111.111' }
 
-    #     it { expect(kubernetes.save).to be_truthy }
-    #   end
-    # end
+        it { expect(kubernetes.save).to be_truthy }
+      end
+    end
 
-    # context 'when validates token' do
-    #   let(:kubernetes) { build(:platform_kubernetes, :configured) }
+    context 'when validates token' do
+      let(:kubernetes) { build(:platform_kubernetes, :configured) }
 
-    #   before do
-    #     kubernetes.token = token
-    #   end
+      before do
+        kubernetes.token = token
+      end
 
-    #   context 'when token is nil' do
-    #     let(:token) { nil }
+      context 'when token is nil' do
+        let(:token) { nil }
 
-    #     it { expect(kubernetes.save).to be_falsey }
-    #   end
-    # end
+        it { expect(kubernetes.save).to be_falsey }
+      end
+    end
   end
 
   describe '#actual_namespace' do

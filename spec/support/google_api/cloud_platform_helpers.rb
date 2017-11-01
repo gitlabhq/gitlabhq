@@ -61,6 +61,11 @@ module GoogleApi
       Base64.encode64(File.read(pem_file))
     end
 
+    ##
+    # gcloud container clusters create
+    # https://cloud.google.com/container-engine/reference/rest/v1/projects.zones.clusters/create
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     def cloud_platform_cluster_body(**options)
       {
         "name": options[:name] || 'string',

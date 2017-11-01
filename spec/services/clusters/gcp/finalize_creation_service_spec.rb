@@ -40,7 +40,7 @@ describe Clusters::Gcp::FinalizeCreationService do
           {
             endpoint: endpoint,
             username: username,
-            password: password,
+            password: password
           }
         )
 

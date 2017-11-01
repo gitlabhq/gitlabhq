@@ -72,7 +72,7 @@ describe Projects::ClustersController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(namespace_project_clusters_url(project.namespace, project))
+          expect(session[session_key_for_redirect_uri]).to eq(project_clusters_url(project))
         end
       end
 
@@ -175,7 +175,7 @@ describe Projects::ClustersController do
           platform_type: :kubernetes,
           provider_type: :gcp,
           provider_gcp_attributes: {
-            gcp_project_id: '111',
+            gcp_project_id: '111'
           }
         }
       }
