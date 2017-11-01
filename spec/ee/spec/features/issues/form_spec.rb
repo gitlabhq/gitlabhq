@@ -119,7 +119,7 @@ describe 'New/edit issue', :js do
       end
       expect(find('a', text: 'Assign to me')).to be_visible
 
-      find('a', text: 'Assign to me').trigger('click')
+      find('a', text: 'Assign to me').click
       assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
 
       expect(assignee_ids[0].value).to match(user2.id.to_s)

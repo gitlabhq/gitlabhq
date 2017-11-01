@@ -97,8 +97,7 @@ feature 'Projects > Audit Events', :js do
         click_link 'Master'
       end
 
-      # This is to avoid a Capybara::Poltergeist::MouseEventFailed error
-      find(:link, text: 'Settings').trigger('click')
+      find(:link, text: 'Settings').click
 
       click_link 'Audit Events'
 

@@ -15,7 +15,7 @@ feature 'New project' do
 
       it 'shows mirror repository checkbox enabled', :js do
         visit new_project_path
-        find('#import-project-tab').trigger('click')
+        find('#import-project-tab').click
         first('.import_git').click
 
         expect(page).to have_unchecked_field('Mirror repository', disabled: false)
