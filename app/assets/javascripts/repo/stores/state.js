@@ -1,0 +1,23 @@
+export default () => ({
+  canCommit: false,
+  currentBranch: '',
+  currentBlobView: 'repo-preview',
+  currentRef: '',
+  discardPopupOpen: false,
+  editMode: false,
+  endpoints: {},
+  isRoot: false,
+  isInitialRoot: false,
+  loading: false,
+  onTopOfBranch: false,
+  openFiles: [],
+  path: '',
+  project: {
+    id: 0,
+    name: '',
+    url: '',
+  },
+  parentTreeUrl: '',
+  previousUrl: '',
+  tree: [],
+});

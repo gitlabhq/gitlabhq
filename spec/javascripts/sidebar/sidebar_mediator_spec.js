@@ -57,8 +57,8 @@ describe('Sidebar mediator', () => {
       .then(() => {
         expect(this.mediator.service.getProjectsAutocomplete).toHaveBeenCalledWith(searchTerm);
         expect(this.mediator.store.setAutocompleteProjects).toHaveBeenCalled();
-        done();
       })
+      .then(done)
       .catch(done.fail);
   });
 
@@ -72,8 +72,21 @@ describe('Sidebar mediator', () => {
       .then(() => {
         expect(this.mediator.service.moveIssue).toHaveBeenCalledWith(moveToProjectId);
         expect(gl.utils.visitUrl).toHaveBeenCalledWith('/root/some-project/issues/5');
-        done();
       })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('toggle subscription', (done) => {
+    this.mediator.store.setSubscribedState(false);
+    spyOn(this.mediator.service, 'toggleSubscription').and.callThrough();
+
+    this.mediator.toggleSubscription()
+      .then(() => {
+        expect(this.mediator.service.toggleSubscription).toHaveBeenCalled();
+        expect(this.mediator.store.subscribed).toEqual(true);
+      })
+      .then(done)
       .catch(done.fail);
   });
 });

@@ -776,12 +776,15 @@
       a,
       button,
       .menu-item {
+        margin-bottom: 0;
         border-radius: 0;
         box-shadow: none;
         padding: 8px 16px;
         text-align: left;
         white-space: normal;
         width: 100%;
+        font-weight: $gl-font-weight-normal;
+        line-height: normal;
 
         &.dropdown-menu-user-link {
           white-space: nowrap;

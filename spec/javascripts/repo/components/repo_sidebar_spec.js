@@ -1,32 +1,31 @@
 import Vue from 'vue';
-import Helper from '~/repo/helpers/repo_helper';
-import RepoService from '~/repo/services/repo_service';
-import RepoStore from '~/repo/stores/repo_store';
+import store from '~/repo/stores';
 import repoSidebar from '~/repo/components/repo_sidebar.vue';
-import { file } from '../mock_data';
+import { file, resetStore } from '../helpers';
 
 describe('RepoSidebar', () => {
   let vm;
 
-  function createComponent() {
+  beforeEach(() => {
     const RepoSidebar = Vue.extend(repoSidebar);
 
-    return new RepoSidebar().$mount();
-  }
+    vm = new RepoSidebar({
+      store,
+    });
+
+    vm.$store.state.isRoot = true;
+    vm.$store.state.tree.push(file());
+
+    vm.$mount();
+  });
 
   afterEach(() => {
     vm.$destroy();
 
-    RepoStore.files = [];
-    RepoStore.openedFiles = [];
+    resetStore(vm.$store);
   });
 
   it('renders a sidebar', () => {
-    RepoStore.files = [file()];
-    RepoStore.openedFiles = [];
-    RepoStore.isRoot = true;
-
-    vm = createComponent();
     const thead = vm.$el.querySelector('thead');
     const tbody = vm.$el.querySelector('tbody');
 
@@ -41,139 +40,36 @@ describe('RepoSidebar', () => {
     expect(tbody.querySelector('.file')).toBeTruthy();
   });
 
-  it('does not render a thead, renders repo-file-options and sets sidebar-mini class if isMini', () => {
-    RepoStore.openedFiles = [{
-      id: 0,
-    }];
-    vm = createComponent();
+  it('does not render a thead, renders repo-file-options and sets sidebar-mini class if isMini', (done) => {
+    vm.$store.state.openFiles.push(vm.$store.state.tree[0]);
 
-    expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
-    expect(vm.$el.querySelector('thead')).toBeTruthy();
-    expect(vm.$el.querySelector('thead .repo-file-options')).toBeTruthy();
-  });
+    Vue.nextTick(() => {
+      expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
+      expect(vm.$el.querySelector('thead')).toBeTruthy();
+      expect(vm.$el.querySelector('thead .repo-file-options')).toBeTruthy();
 
-  it('renders 5 loading files if tree is loading and not hasFiles', () => {
-    RepoStore.loading.tree = true;
-    RepoStore.files = [];
-    vm = createComponent();
-
-    expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
-  });
-
-  it('renders a prev directory if is not root', () => {
-    RepoStore.files = [file()];
-    RepoStore.isRoot = false;
-    RepoStore.loading.tree = false;
-    vm = createComponent();
-
-    expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
-  });
-
-  describe('flattendFiles', () => {
-    it('returns a flattend array of files', () => {
-      const f = file();
-      f.files.push(file('testing 123'));
-      const files = [f, file()];
-      vm = createComponent();
-      vm.files = files;
-
-      expect(vm.flattendFiles.length).toBe(3);
-      expect(vm.flattendFiles[1].name).toBe('testing 123');
+      done();
     });
   });
 
-  describe('methods', () => {
-    describe('fileClicked', () => {
-      it('should fetch data for new file', () => {
-        spyOn(Helper, 'getContent').and.callThrough();
-        RepoStore.files = [file()];
-        RepoStore.isRoot = true;
-        vm = createComponent();
+  it('renders 5 loading files if tree is loading', (done) => {
+    vm.$store.state.tree = [];
+    vm.$store.state.loading = true;
 
-        vm.fileClicked(RepoStore.files[0]);
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
 
-        expect(Helper.getContent).toHaveBeenCalledWith(RepoStore.files[0]);
-      });
-
-      it('should not fetch data for already opened files', () => {
-        const f = file();
-        spyOn(Helper, 'getFileFromPath').and.returnValue(f);
-        spyOn(RepoStore, 'setActiveFiles');
-        vm = createComponent();
-        vm.fileClicked(f);
-
-        expect(RepoStore.setActiveFiles).toHaveBeenCalledWith(f);
-      });
-
-      it('should hide files in directory if already open', () => {
-        spyOn(Helper, 'setDirectoryToClosed').and.callThrough();
-        const f = file();
-        f.opened = true;
-        f.type = 'tree';
-        RepoStore.files = [f];
-        vm = createComponent();
-
-        vm.fileClicked(RepoStore.files[0]);
-
-        expect(Helper.setDirectoryToClosed).toHaveBeenCalledWith(RepoStore.files[0]);
-      });
-
-      describe('submodule', () => {
-        it('opens submodule project URL', () => {
-          spyOn(gl.utils, 'visitUrl');
-
-          const f = file();
-          f.type = 'submodule';
-
-          vm = createComponent();
-
-          vm.fileClicked(f);
-
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('url');
-        });
-      });
+      done();
     });
+  });
 
-    describe('goToPreviousDirectoryClicked', () => {
-      it('should hide files in directory if already open', () => {
-        const prevUrl = 'foo/bar';
-        vm = createComponent();
+  it('renders a prev directory if is not root', (done) => {
+    vm.$store.state.isRoot = false;
 
-        vm.goToPreviousDirectoryClicked(prevUrl);
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
 
-        expect(RepoService.url).toEqual(prevUrl);
-      });
-    });
-
-    describe('back button', () => {
-      beforeEach(() => {
-        const f = file();
-        const file2 = Object.assign({}, file());
-        file2.url = 'test';
-        RepoStore.files = [f, file2];
-        RepoStore.openedFiles = [];
-        RepoStore.isRoot = true;
-
-        vm = createComponent();
-      });
-
-      it('render previous file when using back button', () => {
-        spyOn(Helper, 'getContent').and.callThrough();
-
-        vm.fileClicked(RepoStore.files[1]);
-        expect(Helper.getContent).toHaveBeenCalledWith(RepoStore.files[1]);
-
-        history.pushState({
-          key: Math.random(),
-        }, '', RepoStore.files[1].url);
-        const popEvent = document.createEvent('Event');
-        popEvent.initEvent('popstate', true, true);
-        window.dispatchEvent(popEvent);
-
-        expect(Helper.getContent.calls.mostRecent().args[0].url).toContain(RepoStore.files[1].url);
-
-        window.history.pushState({}, null, '/');
-      });
+      done();
     });
   });
 });

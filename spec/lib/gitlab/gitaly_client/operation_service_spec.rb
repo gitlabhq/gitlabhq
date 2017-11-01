@@ -5,7 +5,7 @@ describe Gitlab::GitalyClient::OperationService do
   let(:repository) { project.repository.raw }
   let(:client) { described_class.new(repository) }
   let(:user) { create(:user) }
-  let(:gitaly_user) { Gitlab::GitalyClient::Util.gitaly_user(user) }
+  let(:gitaly_user) { Gitlab::Git::User.from_gitlab(user).to_gitaly }
 
   describe '#user_create_branch' do
     let(:branch_name) { 'new' }

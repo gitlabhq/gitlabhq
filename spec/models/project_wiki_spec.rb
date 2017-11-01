@@ -117,65 +117,74 @@ describe ProjectWiki do
   end
 
   describe "#find_page" do
-    before do
-      create_page("index page", "This is an awesome Gollum Wiki")
+    shared_examples 'finding a wiki page' do
+      before do
+        create_page("index page", "This is an awesome Gollum Wiki")
+      end
+
+      after do
+        destroy_page(subject.pages.first.page)
+      end
+
+      it "returns the latest version of the page if it exists" do
+        page = subject.find_page("index page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns nil if the page does not exist" do
+        expect(subject.find_page("non-existant")).to eq(nil)
+      end
+
+      it "can find a page by slug" do
+        page = subject.find_page("index-page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns a WikiPage instance" do
+        page = subject.find_page("index page")
+        expect(page).to be_a WikiPage
+      end
     end
 
-    after do
-      destroy_page(subject.pages.first.page)
+    context 'when Gitaly wiki_find_page is enabled' do
+      it_behaves_like 'finding a wiki page'
     end
 
-    it "returns the latest version of the page if it exists" do
-      page = subject.find_page("index page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns nil if the page does not exist" do
-      expect(subject.find_page("non-existant")).to eq(nil)
-    end
-
-    it "can find a page by slug" do
-      page = subject.find_page("index-page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns a WikiPage instance" do
-      page = subject.find_page("index page")
-      expect(page).to be_a WikiPage
+    context 'when Gitaly wiki_find_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding a wiki page'
     end
   end
 
   describe '#find_file' do
-    before do
-      file = Gollum::File.new(subject.wiki)
-      allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('image.jpg', 'master')
-                   .and_return(file)
-      allow_any_instance_of(Gollum::File)
-                   .to receive(:mime_type)
-                   .and_return('image/jpeg')
-      allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('non-existant', 'master')
-                   .and_return(nil)
+    shared_examples 'finding a wiki file' do
+      before do
+        file = File.open(Rails.root.join('spec', 'fixtures', 'dk.png'))
+        subject.wiki # Make sure the wiki repo exists
+
+        BareRepoOperations.new(subject.repository.path_to_repo).commit_file(file, 'image.png')
+      end
+
+      it 'returns the latest version of the file if it exists' do
+        file = subject.find_file('image.png')
+        expect(file.mime_type).to eq('image/png')
+      end
+
+      it 'returns nil if the page does not exist' do
+        expect(subject.find_file('non-existant')).to eq(nil)
+      end
+
+      it 'returns a Gitlab::Git::WikiFile instance' do
+        file = subject.find_file('image.png')
+        expect(file).to be_a Gitlab::Git::WikiFile
+      end
     end
 
-    after do
-      allow_any_instance_of(Gollum::Wiki).to receive(:file).and_call_original
-      allow_any_instance_of(Gollum::File).to receive(:mime_type).and_call_original
+    context 'when Gitaly wiki_find_file is enabled' do
+      it_behaves_like 'finding a wiki file'
     end
 
-    it 'returns the latest version of the file if it exists' do
-      file = subject.find_file('image.jpg')
-      expect(file.mime_type).to eq('image/jpeg')
-    end
-
-    it 'returns nil if the page does not exist' do
-      expect(subject.find_file('non-existant')).to eq(nil)
-    end
-
-    it 'returns a Gitlab::Git::WikiFile instance' do
-      file = subject.find_file('image.jpg')
-      expect(file).to be_a Gitlab::Git::WikiFile
+    context 'when Gitaly wiki_find_file is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding a wiki file'
     end
   end
 
@@ -265,23 +274,33 @@ describe ProjectWiki do
   end
 
   describe "#delete_page" do
-    before do
-      create_page("index", "some content")
-      @page = subject.wiki.page(title: "index")
+    shared_examples 'deleting a wiki page' do
+      before do
+        create_page("index", "some content")
+        @page = subject.wiki.page(title: "index")
+      end
+
+      it "deletes the page" do
+        subject.delete_page(@page)
+        expect(subject.pages.count).to eq(0)
+      end
+
+      it 'updates project activity' do
+        subject.delete_page(@page)
+
+        project.reload
+
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+      end
     end
 
-    it "deletes the page" do
-      subject.delete_page(@page)
-      expect(subject.pages.count).to eq(0)
+    context 'when Gitaly wiki_delete_page is enabled' do
+      it_behaves_like 'deleting a wiki page'
     end
 
-    it 'updates project activity' do
-      subject.delete_page(@page)
-
-      project.reload
-
-      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+    context 'when Gitaly wiki_delete_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'deleting a wiki page'
     end
   end
 
@@ -343,6 +362,6 @@ describe ProjectWiki do
   end
 
   def destroy_page(page)
-    subject.delete_page(page, commit_details)
+    subject.delete_page(page, "test commit")
   end
 end

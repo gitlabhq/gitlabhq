@@ -195,6 +195,7 @@ project:
 - mattermost_slash_commands_service
 - slack_slash_commands_service
 - irker_service
+- packagist_service
 - pivotaltracker_service
 - prometheus_service
 - hipchat_service
@@ -286,3 +287,6 @@ timelogs:
 - user
 push_event_payload:
 - event
+issue_assignees:
+- issue
+- assignee

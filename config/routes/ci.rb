@@ -1,5 +1,5 @@
 namespace :ci do
   resource :lint, only: [:show, :create]
 
-  root to: redirect('/')
+  root to: redirect('')
 end

@@ -15,8 +15,6 @@ module QA
             Scenario::Gitlab::Sandbox::Prepare.perform
 
             Page::Group::Show.perform do |page|
-              page.go_to_subgroups
-
               if page.has_subgroup?(Runtime::Namespace.name)
                 page.go_to_subgroup(Runtime::Namespace.name)
               else
