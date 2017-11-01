@@ -9,8 +9,11 @@ module Clusters
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'
 
-    has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp'
-    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes'
+    # we force autosave to happen when we save `Cluster` model
+    has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
+
+    # We have to ":destroy" it today to ensure that we clean also the Kubernetes Integration
+    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
