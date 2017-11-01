@@ -143,7 +143,7 @@ feature 'Project mirror', :js do
         expect(page).to have_content(first_key)
 
         # Check regenerating the public key works
-        click_without_sidekiq 'Regenerate key'
+        accept_confirm { click_without_sidekiq 'Regenerate key' }
         wait_for_requests
 
         expect(page).not_to have_content(first_key)

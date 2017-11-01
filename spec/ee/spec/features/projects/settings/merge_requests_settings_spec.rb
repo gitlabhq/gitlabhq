@@ -77,7 +77,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
       expect(find('.js-current-approvers')).to have_content(group.name)
 
       within('.js-current-approvers') do
-        click_on "Remove"
+        accept_confirm { click_on "Remove" }
       end
 
       expect(find('.js-current-approvers')).not_to have_content(group.name)
