@@ -186,7 +186,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :clusters, except: [:edit] do
         collection do
           get :login
-          get '/providers/gcp/new', to: :new_gcp
+          get '/providers/gcp/new', action: :new_gcp
         end
 
         member do

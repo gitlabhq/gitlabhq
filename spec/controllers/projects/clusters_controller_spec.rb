@@ -73,11 +73,11 @@ describe Projects::ClustersController do
     end
   end
 
-  describe 'GET new' do
+  describe 'GET new_gcp' do
     render_views
 
     subject do
-      get :new, namespace_id: project.namespace,
+      get :new_gcp, namespace_id: project.namespace,
                 project_id: project
     end
 
@@ -150,7 +150,7 @@ describe Projects::ClustersController do
         it 'shows an error message' do
           expect { subject }.not_to change { Gcp::Cluster.count }
 
-          expect(response).to render_template(:new)
+          expect(response).to render_template(:new_gcp)
         end
       end
     end

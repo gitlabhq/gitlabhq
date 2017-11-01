@@ -41,7 +41,7 @@ class Projects::ClustersController < Projects::ApplicationController
     if @cluster.persisted?
       redirect_to project_cluster_path(project, @cluster)
     else
-      render :new
+      render :new_gcp
     end
   end
 

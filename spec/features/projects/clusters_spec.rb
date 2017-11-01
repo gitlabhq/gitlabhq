@@ -18,6 +18,8 @@ feature 'Clusters', :js do
     context 'when user does not have a cluster and visits cluster index page' do
       before do
         visit project_clusters_path(project)
+
+        click_link 'Create on GKE'
       end
 
       it 'user sees a new page' do
@@ -93,7 +95,7 @@ feature 'Clusters', :js do
 
         it 'user sees creation form with the succeccful message' do
           expect(page).to have_content('Cluster integration was successfully removed.')
-          expect(page).to have_button('Create cluster')
+          expect(page).to have_content('Choose how to set up cluster integration')
         end
       end
     end
@@ -102,6 +104,8 @@ feature 'Clusters', :js do
   context 'when user has not signed in Google' do
     before do
       visit project_clusters_path(project)
+
+      click_link 'Create on GKE'
     end
 
     it 'user sees a login page' do
