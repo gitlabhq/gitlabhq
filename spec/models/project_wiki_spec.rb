@@ -125,31 +125,41 @@ describe ProjectWiki do
   end
 
   describe "#find_page" do
-    before do
-      create_page("index page", "This is an awesome Gollum Wiki")
+    shared_examples 'finding a wiki page' do
+      before do
+        create_page("index page", "This is an awesome Gollum Wiki")
+      end
+
+      after do
+        destroy_page(subject.pages.first.page)
+      end
+
+      it "returns the latest version of the page if it exists" do
+        page = subject.find_page("index page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns nil if the page does not exist" do
+        expect(subject.find_page("non-existant")).to eq(nil)
+      end
+
+      it "can find a page by slug" do
+        page = subject.find_page("index-page")
+        expect(page.title).to eq("index page")
+      end
+
+      it "returns a WikiPage instance" do
+        page = subject.find_page("index page")
+        expect(page).to be_a WikiPage
+      end
     end
 
-    after do
-      destroy_page(subject.pages.first.page)
+    context 'when Gitaly wiki_find_page is enabled' do
+      it_behaves_like 'finding a wiki page'
     end
 
-    it "returns the latest version of the page if it exists" do
-      page = subject.find_page("index page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns nil if the page does not exist" do
-      expect(subject.find_page("non-existant")).to eq(nil)
-    end
-
-    it "can find a page by slug" do
-      page = subject.find_page("index-page")
-      expect(page.title).to eq("index page")
-    end
-
-    it "returns a WikiPage instance" do
-      page = subject.find_page("index page")
-      expect(page).to be_a WikiPage
+    context 'when Gitaly wiki_find_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding a wiki page'
     end
   end
 
@@ -273,23 +283,33 @@ describe ProjectWiki do
   end
 
   describe "#delete_page" do
-    before do
-      create_page("index", "some content")
-      @page = subject.wiki.page(title: "index")
+    shared_examples 'deleting a wiki page' do
+      before do
+        create_page("index", "some content")
+        @page = subject.wiki.page(title: "index")
+      end
+
+      it "deletes the page" do
+        subject.delete_page(@page)
+        expect(subject.pages.count).to eq(0)
+      end
+
+      it 'updates project activity' do
+        subject.delete_page(@page)
+
+        project.reload
+
+        expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+        expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+      end
     end
 
-    it "deletes the page" do
-      subject.delete_page(@page)
-      expect(subject.pages.count).to eq(0)
+    context 'when Gitaly wiki_delete_page is enabled' do
+      it_behaves_like 'deleting a wiki page'
     end
 
-    it 'updates project activity' do
-      subject.delete_page(@page)
-
-      project.reload
-
-      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
-      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
+    context 'when Gitaly wiki_delete_page is disabled', :skip_gitaly_mock do
+      it_behaves_like 'deleting a wiki page'
     end
   end
 
@@ -351,6 +371,6 @@ describe ProjectWiki do
   end
 
   def destroy_page(page)
-    subject.delete_page(page, commit_details)
+    subject.delete_page(page, "test commit")
   end
 end

@@ -5,11 +5,11 @@
 
   export default {
     props: {
-      path: {
+      type: {
         type: String,
         required: true,
       },
-      type: {
+      path: {
         type: String,
         required: true,
       },

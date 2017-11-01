@@ -1,0 +1,5 @@
+---
+title: Fix namespacing for MergeWhenPipelineSucceedsService in MR API
+merge_request:
+author:
+type: fixed
