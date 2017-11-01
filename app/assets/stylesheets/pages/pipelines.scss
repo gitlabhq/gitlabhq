@@ -731,11 +731,11 @@ button.mini-pipeline-graph-dropdown-toggle {
 
       svg {
         fill: $gl-text-color-secondary;
-        width: $ci-action-icon-size;
-        height: $ci-action-icon-size;
+        width: #{$ci-action-icon-size - 6};
+        height: #{$ci-action-icon-size - 6};
         left: -3px;
         position: relative;
-        top: 0;
+        top: -2px;
       }
 
       &:hover svg,
