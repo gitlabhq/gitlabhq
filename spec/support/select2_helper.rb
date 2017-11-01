@@ -11,11 +11,6 @@
 #
 
 module Select2Helper
-  def capybara_select2(value)
-    # Taken from https://github.com/goodwill/capybara-select2/blob/master/gem/lib/capybara-select2.rb#L45
-    find('.select2-drop li.select2-result-selectable', text: value).click
-  end
-
   def select2(value, options = {})
     raise ArgumentError, 'options must be a Hash' unless options.is_a?(Hash)
 
