@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-/* global LabelsSelect */
+import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 /* global SubscriptionSelect */
 

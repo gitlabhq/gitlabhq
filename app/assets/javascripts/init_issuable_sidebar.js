@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 /* global MilestoneSelect */
-/* global LabelsSelect */
+import LabelsSelect from './labels_select';
 import IssuableContext from './issuable_context';
 /* global Sidebar */
 
