@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
+import setTimeoutPromise from '../../../helpers/set_timeout_promise_helper';
 
 describe('Markdown field component', () => {
   let vm;
@@ -115,29 +116,19 @@ describe('Markdown field component', () => {
       it('clicking already active write or preview link does nothing', (done) => {
         writeLink.click();
 
-        setTimeout(() => {
-          assertLinks(true);
-
-          writeLink.click();
-
-          setTimeout(() => {
-            assertLinks(true);
-
-            previewLink.click();
-
-            setTimeout(() => {
-              assertLinks(false);
-
-              previewLink.click();
-
-              setTimeout(() => {
-                assertLinks(false);
-
-                done();
-              });
-            });
-          });
-        });
+        setTimeoutPromise()
+          .then(() => assertLinks(true))
+          .then(() => writeLink.click())
+          .then(() => setTimeoutPromise())
+          .then(() => assertLinks(true))
+          .then(() => previewLink.click())
+          .then(() => setTimeoutPromise())
+          .then(() => assertLinks(false))
+          .then(() => previewLink.click())
+          .then(() => setTimeoutPromise())
+          .then(() => assertLinks(false))
+          .then(done)
+          .catch(done.fail);
       });
     });
 
