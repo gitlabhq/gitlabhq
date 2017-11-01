@@ -2,10 +2,8 @@ class UpdateMergeRequestsWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  attr_reader :metrics_tags
-
-  def initialize
-    @metrics_tags = {}
+  def metrics_tags
+    @metrics_tags || {}
   end
 
   def perform(project_id, user_id, oldrev, newrev, ref)
