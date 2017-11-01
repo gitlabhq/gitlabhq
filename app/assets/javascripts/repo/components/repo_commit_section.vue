@@ -38,22 +38,6 @@ export default {
     makeCommit(newBranch = false) {
       const createNewBranch = newBranch || this.startNewMR;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    makeCommit(newBranch) {
-      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => ({
-        action: f.tempFile ? 'create' : 'update',
-        file_path: f.path,
-        content: f.newContent,
-        encoding: f.base64 ? 'base64' : 'text',
-      }));
-      const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
-=======
->>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
-=======
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
       const payload = {
         branch: createNewBranch ? `${this.currentBranch}-${new Date().getTime().toString()}` : this.currentBranch,
         commit_message: this.commitMessage,

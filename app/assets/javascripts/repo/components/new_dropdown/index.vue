@@ -27,25 +27,6 @@
       toggleModalOpen() {
         this.openModal = !this.openModal;
       },
-<<<<<<< HEAD
-<<<<<<< HEAD
-      createNewEntryInStore(options, openEditMode = true) {
-        RepoHelper.createNewEntry(options, openEditMode);
-
-        if (options.toggleModal) {
-          this.toggleModalOpen();
-        }
-      },
-    },
-    created() {
-      eventHub.$on('createNewEntry', this.createNewEntryInStore);
-    },
-    beforeDestroy() {
-      eventHub.$off('createNewEntry', this.createNewEntryInStore);
-=======
->>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
-=======
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
     },
   };
 </script>
