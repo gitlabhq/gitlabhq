@@ -111,8 +111,8 @@ export const createTempTree = ({ state, commit, dispatch }, name) => {
   }
 };
 
-export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => {
-  if (tree.lastCommitPath === '') return;
+export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
+  if (tree.lastCommitPath === '' || getters.isCollapsed) return;
 
   service.getTreeLastCommit(tree.lastCommitPath)
     .then((res) => {
