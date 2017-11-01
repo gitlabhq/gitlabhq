@@ -22,19 +22,26 @@
 
       toggleMarkdownPreview(e, isPreview, form) {
         if (e.target.blur) e.target.blur();
-
         if (this.isMarkdownForm(form)) return;
 
         this.$emit('toggle-markdown', isPreview);
       },
+
+      toggleMarkdownPreviewShow(event, form) {
+        return this.toggleMarkdownPreview(event, true, form);
+      },
+
+      toggleMarkdownPreviewHide(event, form) {
+        return this.toggleMarkdownPreview(event, false, form);
+      },
     },
     mounted() {
-      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
-      $(document).on('markdown-preview:hide.vue', this.toggleMarkdownPreview);
+      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreviewShow);
+      $(document).on('markdown-preview:hide.vue', this.toggleMarkdownPreviewHide);
     },
     beforeDestroy() {
-      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
-      $(document).off('markdown-preview:hide.vue', this.toggleMarkdownPreview);
+      $(document).off('markdown-preview:show.vue', this.toggleMarkdownPreviewShow);
+      $(document).off('markdown-preview:hide.vue', this.toggleMarkdownPreviewHide);
     },
   };
 </script>
