@@ -10,15 +10,16 @@ describe Gitlab::Checks::ChangeAccess do
     let(:ref) { 'refs/heads/master' }
     let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
-
-    subject do
+    let(:change_access) do
       described_class.new(
         changes,
         project: project,
         user_access: user_access,
         protocol: protocol
-      ).exec
+      )
     end
+
+    subject { change_access.exec }
 
     before do
       project.add_developer(user)
@@ -505,6 +506,36 @@ describe Gitlab::Checks::ChangeAccess do
         let(:newrev) { '2d1096e3' }
 
         it 'does not raise errors for a fast forward' do
+          expect(change_access).not_to receive(:committer_check)
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      context 'for a normal merge' do
+        # This creates a merge commit without adding it to a target branch
+        # that is what the repository would look like during the `pre-receive` hook.
+        #
+        # That means only the merge commit should be validated.
+        let(:newrev) do
+          rugged = project.repository.raw_repository.rugged
+          base = oldrev
+          to_merge = '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba'
+
+          merge_index = rugged.merge_commits(base, to_merge)
+          options = {
+            parents: [base, to_merge],
+            tree: merge_index.write_tree(rugged),
+            message: 'The merge commit',
+            author: { name: user.name, email: user.email, time: Time.now },
+            committer: { name: user.name, email: user.email, time: Time.now }
+          }
+
+          Rugged::Commit.create(rugged, options)
+        end
+
+        it 'does not raise errors for a merge commit' do
+          expect(change_access).to receive(:committer_check).once
+                                     .and_call_original
           expect { subject }.not_to raise_error
         end
       end
