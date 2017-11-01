@@ -41,13 +41,17 @@ RSpec.configure do |config|
   end
 
   config.before(:example, :js) do
+    session = Capybara.current_session
+
     allow(Gitlab::Application.routes).to receive(:default_url_options).and_return(
-      host: Capybara.current_session.server.host,
-      port: Capybara.current_session.server.port,
+      host: session.server.host,
+      port: session.server.port,
       protocol: 'http')
 
     # reset window size between tests
-    Capybara.current_session.current_window.resize_to(1240, 1400)
+    unless session.current_window.size == [1240, 1400]
+      session.current_window.resize_to(1240, 1400) rescue nil
+    end
   end
 
   config.after(:example, :js) do |example|
