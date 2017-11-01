@@ -1,4 +1,4 @@
-# Variables
+# GitLab CI/CD Variables
 
 When receiving a job from GitLab CI, the [Runner] prepares the build environment.
 It starts by setting a list of **predefined variables** (environment variables)

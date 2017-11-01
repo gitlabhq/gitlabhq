@@ -1,4 +1,4 @@
-# Runners
+# Configuring GitLab Runners
 
 In GitLab CI, Runners run the code defined in [`.gitlab-ci.yml`](../yaml/README.md).
 They are isolated (virtual) machines that pick up jobs through the coordinator
