@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this, no-new */
-/* global LabelsSelect */
 /* global MilestoneSelect */
 /* global SubscriptionSelect */
 
@@ -7,7 +6,7 @@ import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import './milestone_select';
 import issueStatusSelect from './issue_status_select';
 import './subscription_select';
-import './labels_select';
+import LabelsSelect from './labels_select';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
