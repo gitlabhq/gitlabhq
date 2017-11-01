@@ -1,8 +1,8 @@
 class Projects::ClustersController < Projects::ApplicationController
-  before_action :cluster, except: [:login, :index, :new, :create]
+  before_action :cluster, except: [:login, :index, :new, :new_gcp, :create]
   before_action :authorize_read_cluster!
-  before_action :authorize_create_cluster!, only: [:new, :create]
-  before_action :authorize_google_api, only: [:new, :create]
+  before_action :authorize_create_cluster!, only: [:new, :new_gcp, :create]
+  before_action :authorize_google_api, only: [:new_gcp, :create]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
 
@@ -16,7 +16,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def login
     begin
-      state = generate_session_key_redirect(namespace_project_clusters_url.to_s)
+      state = generate_session_key_redirect(providers_gcp_new_namespace_project_clusters_url.to_s)
 
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
         nil, callback_google_api_auth_url,
@@ -26,13 +26,11 @@ class Projects::ClustersController < Projects::ApplicationController
     end
   end
 
-  # TODO fix this
-  def new_kubernetes_form
-    @cluster = project.build_cluster
+  def new
   end
 
-  def new
-    # First page!
+  def new_gcp
+    @cluster = project.build_cluster
   end
 
   def create
