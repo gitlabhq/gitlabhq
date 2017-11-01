@@ -305,16 +305,18 @@ module Gitlab
 
     def self.fast_timeout
       gitaly_timeout_fast = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_fast
+      gitaly_timeout_default = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default
 
-      [gitaly_timeout_fast, Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default].min
+      [gitaly_timeout_fast, gitaly_timeout_default].min
     end
 
     # Medium timeout is enforced in Sidekiq
     # it's the lowest of thrice the fast timeout or the default timeout
     def self.medium_timeout
       gitaly_timeout_medium = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_fast * 3
+      gitaly_timeout_default = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default
 
-      [gitaly_timeout_medium, Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default].min
+      [gitaly_timeout_medium, gitaly_timeout_default].min
     end
 
     # Count a stack. Used for n+1 detection

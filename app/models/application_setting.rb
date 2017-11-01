@@ -160,10 +160,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  validates :gitaly_timeout_fast,
-            :gitaly_timeout_default,
+  validates :gitaly_timeout_default,
             presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            numericality: { only_integer: true, greater_than: 0 }
+
+  validates :gitaly_timeout_fast,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: :gitaly_timeout_default }
 
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
