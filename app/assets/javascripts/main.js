@@ -57,11 +57,10 @@ import './gl_field_errors';
 import './gl_form';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
-import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
-import './logo';
+import initLogoAnimation from './logo';
 import './merge_request';
 import './merge_request_tabs';
 import './milestone';
@@ -145,6 +144,7 @@ $(function () {
   initBreadcrumbs();
   initImporterStatus();
   initTodoToggle();
+  initLogoAnimation();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
