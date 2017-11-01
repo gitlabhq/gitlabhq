@@ -1,7 +1,10 @@
 module Milestones
   class PromoteService < Milestones::BaseService
+<<<<<<< HEAD
     prepend EE::Milestones::PromoteService
 
+=======
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
     PromoteMilestoneError = Class.new(StandardError)
 
     def execute(milestone)

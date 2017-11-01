@@ -5,11 +5,15 @@
 
   export default {
     props: {
+<<<<<<< HEAD
       path: {
+=======
+      type: {
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
         type: String,
         required: true,
       },
-      type: {
+      path: {
         type: String,
         required: true,
       },
@@ -28,11 +32,16 @@
       ]),
       createEntryInStore() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         eventHub.$emit('createNewEntry', {
           name: this.entryName,
+=======
+        this.createTempEntry({
+          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
           type: this.type,
-          toggleModal: true,
         });
+<<<<<<< HEAD
 =======
         this.createTempEntry({
           name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
@@ -41,6 +50,10 @@
 
         this.toggleModalOpen();
 >>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
+=======
+
+        this.toggleModalOpen();
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
       },
       toggleModalOpen() {
         this.$emit('toggle');

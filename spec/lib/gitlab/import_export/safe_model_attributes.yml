@@ -526,3 +526,6 @@ ProjectAutoDevops:
 - project_id
 - created_at
 - updated_at
+IssueAssignee:
+- user_id
+- issue_id

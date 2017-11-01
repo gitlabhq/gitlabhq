@@ -9,7 +9,10 @@
     "human_time_estimate": { "type": ["string", "null"] },
     "human_total_time_spent": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
+<<<<<<< HEAD
     "rebase_in_progress": { "type": "boolean" },
+=======
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
     "assignee_id": { "type": ["integer", "null"] },
     "subscribed": { "type": ["boolean", "null"] },
     "participants": { "type": "array" }

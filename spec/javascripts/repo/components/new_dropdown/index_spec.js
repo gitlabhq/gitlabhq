@@ -69,6 +69,7 @@ describe('new dropdown component', () => {
     });
   });
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   describe('createEntryInStore', () => {
     ['tree', 'blob'].forEach((type) => {
@@ -226,4 +227,6 @@ describe('new dropdown component', () => {
   });
 =======
 >>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
+=======
+>>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
 });

@@ -93,7 +93,7 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.1'
+gem 'carrierwave', '~> 1.2'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -414,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.48.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.51.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
