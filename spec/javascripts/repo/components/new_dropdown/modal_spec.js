@@ -195,30 +195,4 @@ describe('new file modal component', () => {
 
     vm.$el.remove();
   });
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-  describe('createEntryInStore', () => {
-    it('emits createNewEntry event', () => {
-      spyOn(eventHub, '$emit');
-
-      vm = createComponent(Component, {
-        type: 'tree',
-        currentPath: RepoStore.path,
-      });
-      vm.entryName = 'testing';
-
-      vm.createEntryInStore();
-
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', {
-        name: 'testing',
-        type: 'tree',
-        toggleModal: true,
-      });
-    });
-  });
-=======
->>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
-=======
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
 });
