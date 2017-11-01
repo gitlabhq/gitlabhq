@@ -5,8 +5,7 @@
       = s_('ClusterIntegration|Read our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
       = form_for @cluster, url: namespace_project_clusters_path(@project.namespace, @project, @cluster), as: :cluster do |field|
-        = field.hidden_field :platform_type, :value => 'kubernetes'
-        = field.hidden_field :provider_type, :value => 'gcp'
+        = field.hidden_field :provider_type, value: :gcp
         = form_errors(@cluster)
         .form-group
           = field.label :name, s_('ClusterIntegration|Cluster name')
@@ -31,11 +30,6 @@
             = provider_gcp_field.label :machine_type, s_('ClusterIntegration|Machine type')
             = link_to(s_('ClusterIntegration|See machine types'), 'https://cloud.google.com/compute/docs/machine-types', target: '_blank', rel: 'noopener noreferrer')
             = provider_gcp_field.text_field :machine_type, class: 'form-control', placeholder: 'n1-standard-4'
-
-        = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
-          .form-group
-          = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
-          = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project)
 
         .form-group
           = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-save'

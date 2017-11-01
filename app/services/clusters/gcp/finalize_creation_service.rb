@@ -9,10 +9,7 @@ module Clusters
         configure_provider
         configure_kubernetes
 
-        ActiveRecord::Base.transaction do
-          kubernetes.save!
-          provider.make_created!
-        end
+        provider.make_created!
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
       rescue KubeException => e
@@ -28,23 +25,21 @@ module Clusters
       end
 
       def configure_kubernetes
-        kubernetes.api_url = 'https://' + gke_cluster.endpoint
-        kubernetes.ca_cert = Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate)
-        kubernetes.username = gke_cluster.master_auth.username
-        kubernetes.password = gke_cluster.master_auth.password
-        kubernetes.token = request_kuberenetes_token
+        cluster.platform_type = :kubernetes
+        cluster.build_platform_kubernetes(
+          api_url: 'https://' + gke_cluster.endpoint,
+          ca_cert: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
+          username: gke_cluster.master_auth.username,
+          password: gke_cluster.master_auth.password,
+          token: request_kuberenetes_token)
       end
 
       def request_kuberenetes_token
-        kubernetes.read_secrets.each do |secret|
-          name = secret.dig('metadata', 'name')
-          if /default-token/ =~ name
-            token_base64 = secret.dig('data', 'token')
-            return Base64.decode64(token_base64) if token_base64
-          end
-        end
-
-        nil
+        Ci::FetchKubernetesTokenService.new(
+          'https://' + gke_cluster.endpoint,
+          Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
+          gke_cluster.master_auth.username,
+          gke_cluster.master_auth.password)
       end
 
       def gke_cluster
@@ -56,10 +51,6 @@ module Clusters
 
       def cluster
         @cluster ||= provider.cluster
-      end
-
-      def kubernetes
-        @kubernetes ||= cluster.platform_kubernetes
       end
     end
   end

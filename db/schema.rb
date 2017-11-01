@@ -508,8 +508,8 @@ ActiveRecord::Schema.define(version: 20171017145932) do
 
   create_table "clusters", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "provider_type", null: false
-    t.integer "platform_type", null: false
+    t.integer "provider_type"
+    t.integer "platform_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enabled", default: true

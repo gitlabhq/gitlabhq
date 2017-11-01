@@ -5,8 +5,8 @@ class CreateNewClustersArchitectures < ActiveRecord::Migration
     create_table :clusters do |t|
       t.references :user, null: false, index: true, foreign_key: { on_delete: :nullify }
 
-      t.integer :provider_type, null: false
-      t.integer :platform_type, null: false
+      t.integer :provider_type
+      t.integer :platform_type
 
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false

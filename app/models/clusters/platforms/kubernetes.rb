@@ -28,7 +28,7 @@ module Clusters
         }
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
-      with_options presence: true, if: :active? do
+      with_options presence: true, if: :enabled? do
         validates :api_url, url: true, presence: true
         validates :token, presence: true
       end
@@ -41,10 +41,6 @@ module Clusters
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
-
-      def active?
-        enabled? && api_url.present?
-      end
 
       class << self
         def namespace_for_project(project)
@@ -87,7 +83,7 @@ module Clusters
         return raise 'Kubernetes service already configured' unless manages_kubernetes_service?
 
         ensure_kubernetes_service.update!(
-          active: active?,
+          active: enabled?,
           api_url: api_url,
           namespace: namespace,
           token: token,

@@ -29,7 +29,6 @@ class Projects::ClustersController < Projects::ApplicationController
   def new
     @cluster = Clusters::Cluster.new.tap do |cluster|
       cluster.build_provider_gcp
-      cluster.build_platform_kubernetes
     end
   end
 
