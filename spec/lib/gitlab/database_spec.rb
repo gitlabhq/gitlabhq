@@ -257,7 +257,6 @@ describe Gitlab::Database do
     end
   end
 
-<<<<<<< HEAD
   describe '#disable_prepared_statements' do
     it 'disables prepared statements' do
       config = {}
@@ -306,8 +305,6 @@ describe Gitlab::Database do
     end
   end
 
-=======
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
   describe '#sanitize_timestamp' do
     let(:max_timestamp) { Time.at((1 << 31) - 1) }
 

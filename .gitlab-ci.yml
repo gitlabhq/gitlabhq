@@ -480,11 +480,7 @@ db:migrate:reset-mysql:
   variables:
     SETUP_DB: "false"
   script:
-<<<<<<< HEAD
-    - git fetch origin v8.14.10-ee
-=======
-    - git fetch origin v9.3.0
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
+    - git fetch origin v9.3.0-ee
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml

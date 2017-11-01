@@ -10,10 +10,7 @@
     "title": { "type": "string" },
     "moved_to_id": { "type": ["integer", "null"] },
     "project_id": { "type": "integer" },
-<<<<<<< HEAD
     "weight": { "type": ["integer", "null"] },
-=======
->>>>>>> 6306e797acca358c79c120e5b12c29a5ec604571
     "web_url": { "type": "string" },
     "state": { "type": "string" },
     "create_note_path": { "type": "string" },
