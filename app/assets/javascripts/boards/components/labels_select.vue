@@ -1,7 +1,7 @@
 <script>
-/* global LabelsSelect */
 /* global ListLabel */
 
+import LabelsSelect from '~/labels_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 export default {
