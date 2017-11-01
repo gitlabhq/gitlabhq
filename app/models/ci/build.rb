@@ -41,6 +41,7 @@ module Ci
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
+    scope :sast, ->() { where(name: 'sast') }
     scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
@@ -473,6 +474,11 @@ module Ci
 
     def has_codeclimate_json?
       options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
+        artifacts_metadata?
+    end
+
+    def has_sast_json?
+      options.dig(:artifacts, :paths) == ['gl-sast-report.json'] &&
         artifacts_metadata?
     end
 

@@ -50,7 +50,9 @@ class License < ActiveRecord::Base
     reject_unsigned_commits
   ].freeze
 
-  EEU_FEATURES = EEP_FEATURES
+  EEU_FEATURES = EEP_FEATURES + %i[
+    sast
+  ].freeze
 
   # List all features available for early adopters,
   # i.e. users that started using GitLab.com before

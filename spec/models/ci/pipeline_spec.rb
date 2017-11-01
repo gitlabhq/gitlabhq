@@ -1500,4 +1500,32 @@ describe Ci::Pipeline, :mailer do
       it { expect(pipeline.codeclimate_artifact).to be_nil }
     end
   end
+
+  describe '#sast_artifact' do
+    context 'has sast job' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'sast',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['gl-sast-report.json']
+            }
+          }
+        )
+      end
+
+      it { expect(pipeline.sast_artifact).to eq(build) }
+    end
+
+    context 'no sast job' do
+      before do
+        create(:ci_build, pipeline: pipeline)
+      end
+
+      it { expect(pipeline.sast_artifact).to be_nil }
+    end
+  end
 end
