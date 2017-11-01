@@ -982,8 +982,8 @@ class Repository
     gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
   end
 
-  def fetch_source_branch(source_repository, source_branch, local_ref)
-    raw_repository.fetch_source_branch(source_repository.raw_repository, source_branch, local_ref)
+  def fetch_source_branch!(source_repository, source_branch, local_ref)
+    raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)

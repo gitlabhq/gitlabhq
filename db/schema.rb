@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026082505) do
+ActiveRecord::Schema.define(version: 20171101134435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -970,7 +970,6 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
-    t.boolean "ref_fetched"
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"

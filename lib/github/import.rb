@@ -161,7 +161,6 @@ module Github
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
-              ref_fetched: true,
               source_project: pull_request.source_project,
               source_branch: pull_request.source_branch_name,
               source_branch_sha: pull_request.source_branch_sha,
