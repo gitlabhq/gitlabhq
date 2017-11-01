@@ -33,26 +33,26 @@ describe API::MergeRequests do
       it 'returns an array of all merge requests' do
         get api('/merge_requests', user), scope: 'all'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
       end
 
       it "returns authentication error without any scope" do
         get api("/merge_requests")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it "returns authentication error  when scope is assigned-to-me" do
         get api("/merge_requests"), scope: 'assigned-to-me'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it "returns authentication error  when scope is created-by-me" do
         get api("/merge_requests"), scope: 'created-by-me'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -158,7 +158,7 @@ describe API::MergeRequests do
       it 'returns merge requests for public projects' do
         get api("/projects/#{project.id}/merge_requests")
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
       end
 
@@ -166,7 +166,7 @@ describe API::MergeRequests do
         project = create(:project, :private)
         get api("/projects/#{project.id}/merge_requests")
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -1058,6 +1058,30 @@ describe API::MergeRequests do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", guest)
 
       expect(response).to have_gitlab_http_status(403)
+    end
+  end
+
+  describe 'POST :id/merge_requests/:merge_request_iid/cancel_merge_when_pipeline_succeeds' do
+    before do
+      ::MergeRequests::MergeWhenPipelineSucceedsService.new(merge_request.target_project, user).execute(merge_request)
+    end
+
+    it 'removes the merge_when_pipeline_succeeds status' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/cancel_merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(201)
+    end
+
+    it 'returns 404 if the merge request is not found' do
+      post api("/projects/#{project.id}/merge_requests/123/merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'returns 404 if the merge request id is used instead of iid' do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge_when_pipeline_succeeds", user)
+
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 

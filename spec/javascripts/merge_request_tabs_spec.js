@@ -5,8 +5,7 @@ import '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
-import '~/diff';
-import '~/files_comment_button';
+import Diff from '~/diff';
 import '~/notes';
 import 'vendor/jquery.scrollTo';
 
@@ -225,7 +224,7 @@ import 'vendor/jquery.scrollTo';
       describe('with "Side-by-side"/parallel diff view', () => {
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
-          gl.Diff.prototype.diffViewType = () => 'parallel';
+          Diff.prototype.diffViewType = () => 'parallel';
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {

@@ -109,6 +109,11 @@ This can be configured from the admin interface:
 
 ![circuitbreaker configuration](img/circuitbreaker_config.png)
 
+**Number of access attempts**: The number of attempts GitLab will make to access a
+storage when probing a shard.
+
+**Number of failures before backing off**: The number of failures after which
+GitLab will start temporarily disabling access to a storage shard on a host.
 
 **Maximum git storage failures:** The number of failures of after which GitLab will
 completely prevent access to the storage. The number of failures can be reset in
@@ -125,6 +130,15 @@ mount is reset.
 
 **Seconds to wait for a storage access attempt:** The time in seconds GitLab will
 try to access storage. After this time a timeout error will be raised.
+
+To enable the circuitbreaker for repository storage you can flip the feature flag from a rails console:
+
+```
+Feature.enable('git_storage_circuit_breaker')
+```
+
+Alternatively it can be enabled by setting `true` in the `GIT_STORAGE_CIRCUIT_BREAKER` environment variable.
+This approach would be used when enabling the circuit breaker on a single host.
 
 When storage failures occur, this will be visible in the admin interface like this:
 

@@ -1,8 +1,8 @@
-import autosize from 'vendor/autosize';
+import Autosize from 'autosize';
 
 document.addEventListener('DOMContentLoaded', () => {
   const autosizeEls = document.querySelectorAll('.js-autosize');
 
-  autosize(autosizeEls);
-  autosize.update(autosizeEls);
+  Autosize(autosizeEls);
+  Autosize.update(autosizeEls);
 });

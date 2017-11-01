@@ -9,7 +9,7 @@ export default {
     },
     text: {
       type: String,
-      required: true,
+      required: false,
     },
     kind: {
       type: String,
@@ -82,14 +82,15 @@ export default {
           type="button"
           class="btn"
           :class="btnCancelKindClass"
-          @click="emitSubmit(false)">
-            {{closeButtonLabel}}
+          @click="close">
+          {{ closeButtonLabel }}
         </button>
-        <button type="button"
+        <button
+          type="button"
           class="btn"
           :class="btnKindClass"
           @click="emitSubmit(true)">
-            {{primaryButtonLabel}}
+          {{ primaryButtonLabel }}
         </button>
       </div>
     </div>

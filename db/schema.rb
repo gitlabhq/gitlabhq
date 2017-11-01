@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171013104327) do
+ActiveRecord::Schema.define(version: 20171017145932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,6 +138,8 @@ ActiveRecord::Schema.define(version: 20171013104327) do
     t.integer "circuitbreaker_failure_wait_time", default: 30
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 30
+    t.integer "circuitbreaker_access_retries", default: 3
+    t.integer "circuitbreaker_backoff_threshold", default: 80
   end
 
   create_table "audit_events", force: :cascade do |t|

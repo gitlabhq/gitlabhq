@@ -19,6 +19,7 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:

@@ -575,6 +575,16 @@ describe Environment do
     end
   end
 
+  describe '#ref_path' do
+    subject(:environment) do
+      create(:environment, name: 'staging / review-1')
+    end
+
+    it 'returns a path that uses the slug and does not have spaces' do
+      expect(environment.ref_path).to start_with('refs/environments/staging-review-1-')
+    end
+  end
+
   describe '#external_url_for' do
     let(:source_path) { 'source/file.html' }
     let(:sha) { RepoHelpers.sample_commit.id }

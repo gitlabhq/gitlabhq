@@ -13,13 +13,13 @@ describe Projects::BadgesController do
   it 'requests the pipeline badge successfully' do
     get_badge(:pipeline)
 
-    expect(response).to have_http_status(:ok)
+    expect(response).to have_gitlab_http_status(:ok)
   end
 
   it 'requests the coverage badge successfully' do
     get_badge(:coverage)
 
-    expect(response).to have_http_status(:ok)
+    expect(response).to have_gitlab_http_status(:ok)
   end
 
   def get_badge(badge)

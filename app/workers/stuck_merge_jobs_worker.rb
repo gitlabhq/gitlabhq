@@ -23,7 +23,7 @@ class StuckMergeJobsWorker
     merge_requests = MergeRequest.where(id: completed_ids)
 
     merge_requests.where.not(merge_commit_sha: nil).update_all(state: :merged)
-    merge_requests.where(merge_commit_sha: nil).update_all(state: :opened)
+    merge_requests.where(merge_commit_sha: nil).update_all(state: :opened, merge_jid: nil)
 
     Rails.logger.info("Updated state of locked merge jobs. JIDs: #{completed_jids.join(', ')}")
   end

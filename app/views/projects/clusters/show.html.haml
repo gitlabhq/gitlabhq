@@ -47,7 +47,7 @@
 
         - if can?(current_user, :update_cluster, @cluster)
           .form-group
-            = field.submit s_('ClusterIntegration|Save'), class: 'btn btn-success'
+            = field.submit _('Save'), class: 'btn btn-success'
 
   %section.settings#js-cluster-details
     .settings-header
@@ -68,7 +68,7 @@
 
   %section.settings#js-cluster-advanced-settings
     .settings-header
-      %h4= s_('ClusterIntegration|Advanced settings')
+      %h4= _('Advanced settings')
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p= s_('ClusterIntegration|Manage Cluster integration on your GitLab project')

@@ -121,7 +121,8 @@ linters:
 
   # Avoid nesting selectors too deeply.
   NestingDepth:
-    enabled: false
+    enabled: true
+    max_depth: 6
 
   # Always use placeholder selectors in @extend.
   PlaceholderInExtend:

@@ -16,9 +16,9 @@ class PagesDomain < ActiveRecord::Base
     key: Gitlab::Application.secrets.db_key_base,
     algorithm: 'aes-256-cbc'
 
-  after_create :update
-  after_save :update
-  after_destroy :update
+  after_create :update_daemon
+  after_save :update_daemon
+  after_destroy :update_daemon
 
   def to_param
     domain
@@ -80,7 +80,7 @@ class PagesDomain < ActiveRecord::Base
 
   private
 
-  def update
+  def update_daemon
     ::Projects::UpdatePagesConfigurationService.new(project).execute
   end
 

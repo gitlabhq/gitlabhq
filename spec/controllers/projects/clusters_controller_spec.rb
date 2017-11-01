@@ -290,7 +290,7 @@ describe Projects::ClustersController do
       it "responds with matching schema" do
         go
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
       end
     end
@@ -329,7 +329,7 @@ describe Projects::ClustersController do
       it "renders view" do
         go
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:cluster)).to eq(cluster)
       end
     end
@@ -386,7 +386,7 @@ describe Projects::ClustersController do
           it "rejects changes" do
             go
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template(:show)
             expect(cluster.enabled).to be_truthy
           end
@@ -421,7 +421,7 @@ describe Projects::ClustersController do
           it "rejects changes" do
             go
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template(:show)
             expect(cluster.platform.namespace).not_to eq(namespace)
           end

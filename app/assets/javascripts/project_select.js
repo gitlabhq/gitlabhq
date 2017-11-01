@@ -2,13 +2,15 @@
 import Api from './api';
 import ProjectSelectComboButton from './project_select_combo_button';
 
-(function() {
-  this.ProjectSelect = (function() {
+(function () {
+  this.ProjectSelect = (function () {
     function ProjectSelect() {
       $('.ajax-project-select').each(function(i, select) {
         var placeholder;
+        const simpleFilter = $(select).data('simple-filter') || false;
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
+        this.allProjects = $(select).data('all-projects') || false;
         this.orderBy = $(select).data('order-by') || 'id';
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
@@ -21,10 +23,10 @@ import ProjectSelectComboButton from './project_select_combo_button';
         $(select).select2({
           placeholder: placeholder,
           minimumInputLength: 0,
-          query: (function(_this) {
-            return function(query) {
+          query: (function (_this) {
+            return function (query) {
               var finalCallback, projectsCallback;
-              finalCallback = function(projects) {
+              finalCallback = function (projects) {
                 var data;
                 data = {
                   results: projects
@@ -32,9 +34,9 @@ import ProjectSelectComboButton from './project_select_combo_button';
                 return query.callback(data);
               };
               if (_this.includeGroups) {
-                projectsCallback = function(projects) {
+                projectsCallback = function (projects) {
                   var groupsCallback;
-                  groupsCallback = function(groups) {
+                  groupsCallback = function (groups) {
                     var data;
                     data = groups.concat(projects);
                     return finalCallback(data);
@@ -50,23 +52,25 @@ import ProjectSelectComboButton from './project_select_combo_button';
                 return Api.projects(query.term, {
                   order_by: _this.orderBy,
                   with_issues_enabled: _this.withIssuesEnabled,
-                  with_merge_requests_enabled: _this.withMergeRequestsEnabled
+                  with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+                  membership: !_this.allProjects,
                 }, projectsCallback);
               }
             };
           })(this),
           id: function(project) {
+            if (simpleFilter) return project.id;
             return JSON.stringify({
               name: project.name,
               url: project.web_url,
             });
           },
-          text: function(project) {
+          text: function (project) {
             return project.name_with_namespace || project.name;
           },
           dropdownCssClass: "ajax-project-dropdown"
         });
-
+        if (simpleFilter) return select;
         return new ProjectSelectComboButton(select);
       });
     }

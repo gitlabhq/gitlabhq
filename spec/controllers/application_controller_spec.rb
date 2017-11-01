@@ -61,7 +61,7 @@ describe ApplicationController do
       context "when the 'private_token' param is populated with the private token" do
         it "logs the user in" do
           get :index, private_token: user.private_token
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.body).to eq("authenticated")
         end
       end
@@ -70,7 +70,7 @@ describe ApplicationController do
         it "logs the user in" do
           @request.headers['PRIVATE-TOKEN'] = user.private_token
           get :index
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.body).to eq("authenticated")
         end
       end
@@ -95,7 +95,7 @@ describe ApplicationController do
       context "when the 'personal_access_token' param is populated with the personal access token" do
         it "logs the user in" do
           get :index, private_token: personal_access_token.token
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.body).to eq('authenticated')
         end
       end
@@ -104,7 +104,7 @@ describe ApplicationController do
         it "logs the user in" do
           @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
           get :index
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response.body).to eq('authenticated')
         end
       end
@@ -158,7 +158,7 @@ describe ApplicationController do
       it 'returns 200 response' do
         get :index, private_token: user.private_token, format: requested_format
 
-        expect(response).to have_http_status 200
+        expect(response).to have_gitlab_http_status 200
       end
     end
 
@@ -166,7 +166,7 @@ describe ApplicationController do
       it 'returns 404 response' do
         get :index, private_token: user.private_token
 
-        expect(response).to have_http_status 404
+        expect(response).to have_gitlab_http_status 404
       end
     end
   end
@@ -183,7 +183,7 @@ describe ApplicationController do
         context 'when the request format is atom' do
           it "logs the user in" do
             get :index, rss_token: user.rss_token, format: :atom
-            expect(response).to have_http_status 200
+            expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
         end
@@ -191,7 +191,7 @@ describe ApplicationController do
         context 'when the request format is not atom' do
           it "doesn't log the user in" do
             get :index, rss_token: user.rss_token
-            expect(response.status).not_to have_http_status 200
+            expect(response.status).not_to have_gitlab_http_status 200
             expect(response.body).not_to eq 'authenticated'
           end
         end

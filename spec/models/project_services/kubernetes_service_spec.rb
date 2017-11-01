@@ -99,8 +99,25 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
   describe '#actual_namespace' do
     subject { service.actual_namespace }
 
-    it "returns the default namespace" do
-      is_expected.to eq(service.send(:default_namespace))
+    shared_examples 'a correctly formatted namespace' do
+      it 'returns a valid Kubernetes namespace name' do
+        expect(subject).to match(Gitlab::Regex.kubernetes_namespace_regex)
+        expect(subject).to eq(expected_namespace)
+      end
+    end
+
+    it_behaves_like 'a correctly formatted namespace' do
+      let(:expected_namespace) { service.send(:default_namespace) }
+    end
+
+    context 'when the project path contains forbidden characters' do
+      before do
+        project.path = '-a_Strange.Path--forSure'
+      end
+
+      it_behaves_like 'a correctly formatted namespace' do
+        let(:expected_namespace) { "a-strange-path--forsure-#{project.id}" }
+      end
     end
 
     context 'when namespace is specified' do
@@ -108,8 +125,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
         service.namespace = 'my-namespace'
       end
 
-      it "returns the user-namespace" do
-        is_expected.to eq('my-namespace')
+      it_behaves_like 'a correctly formatted namespace' do
+        let(:expected_namespace) { 'my-namespace' }
       end
     end
 
@@ -118,35 +135,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
         service.project = nil
       end
 
-      it "does not return namespace" do
-        is_expected.to be_nil
-      end
-    end
-  end
-
-  describe '#actual_namespace' do
-    subject { service.actual_namespace }
-
-    it "returns the default namespace" do
-      is_expected.to eq(service.send(:default_namespace))
-    end
-
-    context 'when namespace is specified' do
-      before do
-        service.namespace = 'my-namespace'
-      end
-
-      it "returns the user-namespace" do
-        is_expected.to eq('my-namespace')
-      end
-    end
-
-    context 'when service is not assigned to project' do
-      before do
-        service.project = nil
-      end
-
-      it "does not return namespace" do
+      it 'does not return namespace' do
         is_expected.to be_nil
       end
     end

@@ -1,18 +1,19 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
-/* global IssuableForm */
+import IssuableForm from './issuable_form';
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
-/* global GroupAvatar */
+import groupAvatar from './group_avatar';
+import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
@@ -87,6 +88,7 @@ import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
+import Diff from './diff';
 
 (function() {
   var Dispatcher;
@@ -171,7 +173,7 @@ import DueDateSelectors from './due_date_select';
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
@@ -229,16 +231,21 @@ import DueDateSelectors from './due_date_select';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
-          new gl.Diff();
-          initChangesDropdown();
+          new Diff();
+          const paddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -273,7 +280,7 @@ import DueDateSelectors from './due_date_select';
           }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
@@ -307,7 +314,7 @@ import DueDateSelectors from './due_date_select';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
@@ -323,7 +330,7 @@ import DueDateSelectors from './due_date_select';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new gl.Diff();
+          new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           new MiniPipelineGraph({
@@ -411,7 +418,7 @@ import DueDateSelectors from './due_date_select';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
@@ -422,11 +429,11 @@ import DueDateSelectors from './due_date_select';
         case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'groups:edit':
         case 'admin:groups:edit':
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -473,7 +480,7 @@ import DueDateSelectors from './due_date_select';
             const $el = $(el);
 
             if ($el.find('.dropdown-group-label').length) {
-              new gl.GroupLabelSubscription($el);
+              new GroupLabelSubscription($el);
             } else {
               new gl.ProjectLabelSubscription($el);
             }

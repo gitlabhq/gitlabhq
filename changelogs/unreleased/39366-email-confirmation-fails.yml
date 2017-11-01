@@ -1,0 +1,5 @@
+---
+title: 'Fix bug preventing secondary emails from being confirmed'
+merge_request: 15010
+author:
+type: fixed

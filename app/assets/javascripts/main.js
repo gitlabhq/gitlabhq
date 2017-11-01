@@ -41,7 +41,6 @@ import './behaviors/';
 import './activities';
 import './admin';
 import './aside';
-import './autosave';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './commits';
@@ -50,23 +49,13 @@ import './compare_autocomplete';
 import './confirm_danger_modal';
 import './copy_as_gfm';
 import './copy_to_clipboard';
-import './diff';
-import './files_comment_button';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
 import './gl_form';
-import './group_avatar';
-import './group_label_subscription';
-import './groups_select';
-import './header';
-import './importer_status';
-import './issuable_index';
-import './issuable_context';
-import './issuable_form';
-import './issue';
-import './issue_status_select';
+import initTodoToggle from './header';
+import initImporterStatus from './importer_status';
 import './labels_select';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
@@ -144,6 +133,8 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
+  initImporterStatus();
+  initTodoToggle();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
