@@ -293,7 +293,7 @@ class ApplicationSetting < ActiveRecord::Base
       polling_interval_multiplier: 1,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       gitaly_timeout_fast: 10,
-      gitaly_timeout_default: 60
+      gitaly_timeout_default: 55
     }
   end
 
