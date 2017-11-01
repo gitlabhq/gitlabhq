@@ -1,120 +1,55 @@
 <script>
-import _ from 'underscore';
-import Service from '../services/repo_service';
-import Helper from '../helpers/repo_helper';
-import Store from '../stores/repo_store';
-import eventHub from '../event_hub';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
-import RepoMixin from '../mixins/repo_mixin';
 
 export default {
-  mixins: [RepoMixin],
   components: {
     'repo-previous-directory': RepoPreviousDirectory,
     'repo-file': RepoFile,
     'repo-loading-file': RepoLoadingFile,
   },
   created() {
-    window.addEventListener('popstate', this.checkHistory);
+    window.addEventListener('popstate', this.popHistoryState);
   },
   destroyed() {
-    eventHub.$off('fileNameClicked', this.fileClicked);
-    eventHub.$off('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
-    window.removeEventListener('popstate', this.checkHistory);
+    window.removeEventListener('popstate', this.popHistoryState);
   },
   mounted() {
-    eventHub.$on('fileNameClicked', this.fileClicked);
-    eventHub.$on('goToPreviousDirectoryClicked', this.goToPreviousDirectoryClicked);
-  },
-  data() {
-    return Store;
+    this.getTreeData();
   },
   computed: {
-    flattendFiles() {
-      const mapFiles = arr => (!arr.files.length ? [] : _.map(arr.files, a => [a, mapFiles(a)]));
-
-      return _.chain(this.files)
-        .map(arr => [arr, mapFiles(arr)])
-        .flatten()
-        .value();
-    },
+    ...mapState([
+      'loading',
+      'isRoot',
+    ]),
+    ...mapState({
+      projectName(state) {
+        return state.project.name;
+      },
+    }),
+    ...mapGetters([
+      'treeList',
+      'isCollapsed',
+    ]),
   },
   methods: {
-    checkHistory() {
-      let selectedFile = this.files.find(file => location.pathname.indexOf(file.url) > -1);
-      if (!selectedFile) {
-        // Maybe it is not in the current tree but in the opened tabs
-        selectedFile = Helper.getFileFromPath(location.pathname);
-      }
-
-      let lineNumber = null;
-      if (location.hash.indexOf('#L') > -1) lineNumber = Number(location.hash.substr(2));
-
-      if (selectedFile) {
-        if (selectedFile.url !== this.activeFile.url) {
-          this.fileClicked(selectedFile, lineNumber);
-        } else {
-          Store.setActiveLine(lineNumber);
-        }
-      } else {
-        // Not opened at all lets open new tab
-        this.fileClicked({
-          url: location.href,
-        }, lineNumber);
-      }
-    },
-
-    fileClicked(clickedFile, lineNumber) {
-      const file = clickedFile;
-
-      if (file.loading) return;
-
-      if (file.type === 'tree' && file.opened) {
-        Helper.setDirectoryToClosed(file);
-        Store.setActiveLine(lineNumber);
-      } else if (file.type === 'submodule') {
-        file.loading = true;
-
-        gl.utils.visitUrl(file.url);
-      } else {
-        const openFile = Helper.getFileFromPath(file.url);
-
-        if (openFile) {
-          Store.setActiveFiles(openFile);
-          Store.setActiveLine(lineNumber);
-        } else {
-          file.loading = true;
-          Service.url = file.url;
-          Helper.getContent(file)
-            .then(() => {
-              file.loading = false;
-              Helper.scrollTabsRight();
-              Store.setActiveLine(lineNumber);
-            })
-            .catch(Helper.loadingError);
-        }
-      }
-    },
-
-    goToPreviousDirectoryClicked(prevURL) {
-      Service.url = prevURL;
-      Helper.getContent(null, true)
-        .then(() => Helper.scrollTabsRight())
-        .catch(Helper.loadingError);
-    },
+    ...mapActions([
+      'getTreeData',
+      'popHistoryState',
+    ]),
   },
 };
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isMini}">
+<div id="sidebar" :class="{'sidebar-mini' : isCollapsed}">
   <table class="table">
     <thead>
       <tr>
         <th
-          v-if="isMini"
+          v-if="isCollapsed"
           class="repo-file-options title"
         >
           <strong class="clgray">
@@ -136,17 +71,16 @@ export default {
     </thead>
     <tbody>
       <repo-previous-directory
-        v-if="!isRoot && !loading.tree"
-        :prev-url="prevURL"
+        v-if="!isRoot && treeList.length"
       />
       <repo-loading-file
-        v-if="!flattendFiles.length && loading.tree"
+        v-if="!treeList.length && loading"
         v-for="n in 5"
         :key="n"
       />
       <repo-file
-        v-for="file in flattendFiles"
-        :key="file.id"
+        v-for="(file, index) in treeList"
+        :key="index"
         :file="file"
       />
     </tbody>

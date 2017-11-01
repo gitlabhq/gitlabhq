@@ -77,6 +77,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
+      it 'has issue assignees' do
+        expect(saved_project_json['issues'].first['issue_assignees']).not_to be_empty
+      end
+
       it 'has author on issue comments' do
         expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
       end

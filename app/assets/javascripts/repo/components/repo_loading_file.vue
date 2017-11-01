@@ -1,10 +1,12 @@
 <script>
-  import repoMixin from '../mixins/repo_mixin';
+  import { mapGetters } from 'vuex';
 
   export default {
-    mixins: [
-      repoMixin,
-    ],
+    computed: {
+      ...mapGetters([
+        'isCollapsed',
+      ]),
+    },
     methods: {
       lineOfCode(n) {
         return `skeleton-line-${n}`;
@@ -28,7 +30,7 @@
         </div>
       </div>
     </td>
-    <template v-if="!isMini">
+    <template v-if="!isCollapsed">
       <td
         class="hidden-sm hidden-xs">
         <div class="animation-container">

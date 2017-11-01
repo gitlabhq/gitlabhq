@@ -5,10 +5,9 @@ namespace :gitlab do
       opts =
         if ENV['CI']
           {
-            # We don't use CI_REPOSITORY_URL since it includes `gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@`
-            # which is confusing in the steps suggested in the job's output.
-            ce_repo: "#{ENV['CI_PROJECT_URL']}.git",
-            branch: ENV['CI_COMMIT_REF_NAME']
+            ce_project_url: ENV['CI_PROJECT_URL'],
+            branch: ENV['CI_COMMIT_REF_NAME'],
+            job_id: ENV['CI_JOB_ID']
           }
         else
           unless args[:branch]

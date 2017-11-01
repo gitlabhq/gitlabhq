@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import upload from '~/repo/components/new_dropdown/upload.vue';
-import eventHub from '~/repo/event_hub';
-import createComponent from '../../../helpers/vue_mount_component_helper';
+import store from '~/repo/stores';
+import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { resetStore } from '../../helpers';
 
 describe('new dropdown upload', () => {
   let vm;
@@ -9,13 +10,17 @@ describe('new dropdown upload', () => {
   beforeEach(() => {
     const Component = Vue.extend(upload);
 
-    vm = createComponent(Component, {
-      currentPath: '',
+    vm = createComponentWithStore(Component, store, {
+      path: '',
     });
+
+    vm.$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
+
+    resetStore(vm.$store);
   });
 
   describe('readFile', () => {
@@ -56,45 +61,43 @@ describe('new dropdown upload', () => {
       name: 'file',
     };
 
-    beforeEach(() => {
-      spyOn(eventHub, '$emit');
-    });
-
-    it('emits createNewEntry event', () => {
+    it('creates new file', (done) => {
       vm.createFile(target, file, true);
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', {
-        name: 'file',
-        type: 'blob',
-        content: 'content',
-        toggleModal: false,
-        base64: false,
-      }, true);
+      vm.$nextTick(() => {
+        expect(vm.$store.state.tree.length).toBe(1);
+        expect(vm.$store.state.tree[0].name).toBe(file.name);
+        expect(vm.$store.state.tree[0].content).toBe(target.result);
+
+        done();
+      });
     });
 
-    it('createNewEntry event name contains current path', () => {
-      vm.currentPath = 'testing';
+    it('creates new file in path', (done) => {
+      vm.$store.state.path = 'testing';
       vm.createFile(target, file, true);
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', {
-        name: 'testing/file',
-        type: 'blob',
-        content: 'content',
-        toggleModal: false,
-        base64: false,
-      }, true);
+      vm.$nextTick(() => {
+        expect(vm.$store.state.tree.length).toBe(1);
+        expect(vm.$store.state.tree[0].name).toBe(file.name);
+        expect(vm.$store.state.tree[0].content).toBe(target.result);
+        expect(vm.$store.state.tree[0].path).toBe(`testing/${file.name}`);
+
+        done();
+      });
     });
 
-    it('splits content on base64 if binary', () => {
+    it('splits content on base64 if binary', (done) => {
       vm.createFile(binaryTarget, file, false);
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewEntry', {
-        name: 'file',
-        type: 'blob',
-        content: 'base64content',
-        toggleModal: false,
-        base64: true,
-      }, false);
+      vm.$nextTick(() => {
+        expect(vm.$store.state.tree.length).toBe(1);
+        expect(vm.$store.state.tree[0].name).toBe(file.name);
+        expect(vm.$store.state.tree[0].content).toBe(binaryTarget.result.split('base64,')[1]);
+        expect(vm.$store.state.tree[0].base64).toBe(true);
+
+        done();
+      });
     });
   });
 });

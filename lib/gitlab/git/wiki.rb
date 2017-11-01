@@ -35,10 +35,14 @@ module Gitlab
       end
 
       def delete_page(page_path, commit_details)
-        assert_type!(commit_details, CommitDetails)
-
-        gollum_wiki.delete_page(gollum_page_by_path(page_path), commit_details.to_h)
-        nil
+        @repository.gitaly_migrate(:wiki_delete_page) do |is_enabled|
+          if is_enabled
+            gitaly_delete_page(page_path, commit_details)
+            gollum_wiki.clear_cache
+          else
+            gollum_delete_page(page_path, commit_details)
+          end
+        end
       end
 
       def update_page(page_path, title, format, content, commit_details)
@@ -54,22 +58,23 @@ module Gitlab
       end
 
       def page(title:, version: nil, dir: nil)
-        if version
-          version = Gitlab::Git::Commit.find(@repository, version).id
+        @repository.gitaly_migrate(:wiki_find_page) do |is_enabled|
+          if is_enabled
+            gitaly_find_page(title: title, version: version, dir: dir)
+          else
+            gollum_find_page(title: title, version: version, dir: dir)
+          end
         end
-
-        gollum_page = gollum_wiki.page(title, version, dir)
-        return unless gollum_page
-
-        new_page(gollum_page)
       end
 
       def file(name, version)
-        version ||= self.class.default_ref
-        gollum_file = gollum_wiki.file(name, version)
-        return unless gollum_file
-
-        Gitlab::Git::WikiFile.new(gollum_file)
+        @repository.gitaly_migrate(:wiki_find_file) do |is_enabled|
+          if is_enabled
+            gitaly_find_file(name, version)
+          else
+            gollum_find_file(name, version)
+          end
+        end
       end
 
       def page_versions(page_path)
@@ -135,8 +140,52 @@ module Gitlab
         raise Gitlab::Git::Wiki::DuplicatePageError, e.message
       end
 
+      def gollum_delete_page(page_path, commit_details)
+        assert_type!(commit_details, CommitDetails)
+
+        gollum_wiki.delete_page(gollum_page_by_path(page_path), commit_details.to_h)
+        nil
+      end
+
+      def gollum_find_page(title:, version: nil, dir: nil)
+        if version
+          version = Gitlab::Git::Commit.find(@repository, version).id
+        end
+
+        gollum_page = gollum_wiki.page(title, version, dir)
+        return unless gollum_page
+
+        new_page(gollum_page)
+      end
+
+      def gollum_find_file(name, version)
+        version ||= self.class.default_ref
+        gollum_file = gollum_wiki.file(name, version)
+        return unless gollum_file
+
+        Gitlab::Git::WikiFile.new(gollum_file)
+      end
+
       def gitaly_write_page(name, format, content, commit_details)
         gitaly_wiki_client.write_page(name, format, content, commit_details)
+      end
+
+      def gitaly_delete_page(page_path, commit_details)
+        gitaly_wiki_client.delete_page(page_path, commit_details)
+      end
+
+      def gitaly_find_page(title:, version: nil, dir: nil)
+        wiki_page, version = gitaly_wiki_client.find_page(title: title, version: version, dir: dir)
+        return unless wiki_page
+
+        Gitlab::Git::WikiPage.new(wiki_page, version)
+      end
+
+      def gitaly_find_file(name, version)
+        wiki_file = gitaly_wiki_client.find_file(name, version)
+        return unless wiki_file
+
+        Gitlab::Git::WikiFile.new(wiki_file)
       end
     end
   end
