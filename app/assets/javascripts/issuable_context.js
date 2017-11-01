@@ -2,11 +2,8 @@ import Cookies from 'js-cookie';
 import bp from './breakpoints';
 import UsersSelect from './users_select';
 
-const PARTICIPANTS_ROW_COUNT = 7;
-
 export default class IssuableContext {
   constructor(currentUser) {
-    this.initParticipants();
     this.userSelect = new UsersSelect(currentUser);
 
     $('select.select2').select2({
@@ -50,30 +47,5 @@ export default class IssuableContext {
         Cookies.set('collapsed_gutter', true);
       }
     });
-  }
-
-  initParticipants() {
-    $(document).on('click', '.js-participants-more', this.toggleHiddenParticipants);
-    return $('.js-participants-author').each(function forEachAuthor(i) {
-      if (i >= PARTICIPANTS_ROW_COUNT) {
-        $(this).addClass('js-participants-hidden').hide();
-      }
-    });
-  }
-
-  toggleHiddenParticipants() {
-    const currentText = $(this).text().trim();
-    const lessText = $(this).data('less-text');
-    const originalText = $(this).data('original-text');
-
-    if (currentText === originalText) {
-      $(this).text(lessText);
-
-      if (gl.lazyLoader) gl.lazyLoader.loadCheck();
-    } else {
-      $(this).text(originalText);
-    }
-
-    $('.js-participants-hidden').toggle();
   }
 }

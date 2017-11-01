@@ -542,7 +542,9 @@
 }
 
 .participants-list {
-  margin: -5px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -7px;
 }
 
 .user-list {
@@ -552,7 +554,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 5px;
+  padding: 7px;
 
   &:nth-of-type(7n) {
     padding-right: 0;

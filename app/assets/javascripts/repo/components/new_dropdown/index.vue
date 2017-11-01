@@ -1,7 +1,5 @@
 <script>
-  import RepoStore from '../../stores/repo_store';
-  import RepoHelper from '../../helpers/repo_helper';
-  import eventHub from '../../event_hub';
+  import { mapState } from 'vuex';
   import newModal from './modal.vue';
   import upload from './upload.vue';
 
@@ -14,8 +12,12 @@
       return {
         openModal: false,
         modalType: '',
-        currentPath: RepoStore.path,
       };
+    },
+    computed: {
+      ...mapState([
+        'path',
+      ]),
     },
     methods: {
       createNewItem(type) {
@@ -25,6 +27,7 @@
       toggleModalOpen() {
         this.openModal = !this.openModal;
       },
+<<<<<<< HEAD
       createNewEntryInStore(options, openEditMode = true) {
         RepoHelper.createNewEntry(options, openEditMode);
 
@@ -38,6 +41,8 @@
     },
     beforeDestroy() {
       eventHub.$off('createNewEntry', this.createNewEntryInStore);
+=======
+>>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
     },
   };
 </script>
@@ -88,7 +93,7 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
-      :current-path="currentPath"
+      :path="path"
       @toggle="toggleModalOpen"
     />
   </div>

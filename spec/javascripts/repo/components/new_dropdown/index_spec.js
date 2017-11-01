@@ -1,9 +1,8 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import newDropdown from '~/repo/components/new_dropdown/index.vue';
-import RepoStore from '~/repo/stores/repo_store';
-import RepoHelper from '~/repo/helpers/repo_helper';
-import eventHub from '~/repo/event_hub';
-import createComponent from '../../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
+import { resetStore } from '../../helpers';
 
 describe('new dropdown component', () => {
   let vm;
@@ -11,15 +10,17 @@ describe('new dropdown component', () => {
   beforeEach(() => {
     const component = Vue.extend(newDropdown);
 
-    vm = createComponent(component);
+    vm = createComponentWithStore(component, store);
+
+    vm.$store.state.path = '';
+
+    vm.$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
 
-    RepoStore.files = [];
-    RepoStore.openedFiles = [];
-    RepoStore.setViewToPreview();
+    resetStore(vm.$store);
   });
 
   it('renders new file and new directory links', () => {
@@ -67,6 +68,7 @@ describe('new dropdown component', () => {
         .catch(done.fail);
     });
   });
+<<<<<<< HEAD
 
   describe('createEntryInStore', () => {
     ['tree', 'blob'].forEach((type) => {
@@ -222,4 +224,6 @@ describe('new dropdown component', () => {
       });
     });
   });
+=======
+>>>>>>> e24d1890aea9c550e02d9145f50e8e1ae153a3a3
 });

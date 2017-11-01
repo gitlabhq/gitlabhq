@@ -86,4 +86,32 @@ describe Projects::MilestonesController do
       expect(last_note).to eq('removed milestone')
     end
   end
+
+  describe '#promote' do
+    context 'promotion succeeds' do
+      before do
+        group = create(:group)
+        group.add_developer(user)
+        milestone.project.update(namespace: group)
+      end
+
+      it 'shows group milestone' do
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        group_milestone = assigns(:milestone)
+
+        expect(response).to redirect_to(group_milestone_path(project.group, group_milestone.iid))
+        expect(flash[:notice]).to eq('Milestone has been promoted to group milestone.')
+      end
+    end
+
+    context 'promotion fails' do
+      it 'shows project milestone' do
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        expect(response).to redirect_to(project_milestone_path(project, milestone))
+        expect(flash[:alert]).to eq('Promotion failed - Project does not belong to a group.')
+      end
+    end
+  end
 end
