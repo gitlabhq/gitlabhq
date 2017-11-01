@@ -45,8 +45,10 @@
       },
     },
     methods: {
-      toggleMarkdownPreview() {
-        this.previewMarkdown = !this.previewMarkdown;
+      toggleMarkdownPreview(isPreview) {
+        if (isPreview === this.previewMarkdown) return;
+
+        this.previewMarkdown = isPreview;
 
         /*
           Can't use `$refs` as the component is technically in the parent component

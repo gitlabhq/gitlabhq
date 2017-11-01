@@ -20,16 +20,12 @@
         return form && !form.find('.js-vue-markdown-field').length;
       },
 
-      isActiveTarget(target) {
-        return target.closest('li').classList.contains('active');
-      },
-
-      toggleMarkdownPreview(e, form) {
+      toggleMarkdownPreview(e, isPreview, form) {
         if (e.target.blur) e.target.blur();
 
-        if (this.isMarkdownForm(form) || this.isActiveTarget(e.target)) return;
+        if (this.isMarkdownForm(form)) return;
 
-        this.$emit('toggle-markdown');
+        this.$emit('toggle-markdown', isPreview);
       },
     },
     mounted() {
@@ -48,17 +44,19 @@
     <ul class="nav-links clearfix">
       <li :class="{ active: !previewMarkdown }">
         <a
+          class="js-write-link"
           href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event)">
+          @click.prevent="toggleMarkdownPreview($event, false)">
           Write
         </a>
       </li>
       <li :class="{ active: previewMarkdown }">
         <a
+          class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event)">
+          @click.prevent="toggleMarkdownPreview($event, true)">
           Preview
         </a>
       </li>
