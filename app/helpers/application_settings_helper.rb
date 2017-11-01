@@ -166,6 +166,8 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :gitaly_timeout_default,
+      :gitaly_timeout_fast,
       :gravatar_enabled,
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,

@@ -707,6 +707,24 @@
           Number of Git pushes after which 'git gc' is run.
 
   %fieldset
+    %legend Gitaly Timeouts
+    .form-group
+      = f.label :gitaly_timeout_default, 'Default Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_default, class: 'form-control'
+        .help-block
+          Timeout for Gitaly calls from the GitLab application (in seconds). This timeout is not enforced
+          for git fetch/push operations or Sidekiq jobs.
+    .form-group
+      = f.label :gitaly_timeout_fast, 'Fast Timeout Period', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :gitaly_timeout_fast, class: 'form-control'
+        .help-block
+          Fast operation timeout (in seconds). Some Gitaly operations are expected to be fast.
+          If they exceed this threshold, there may be a problem with a storage shard and 'failing fast'
+          can help maintain the stability of the GitLab instance.
+
+  %fieldset
     %legend Web terminal
     .form-group
       = f.label :terminal_max_session_time, 'Max session time', class: 'control-label col-sm-2'

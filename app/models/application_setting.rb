@@ -160,6 +160,11 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :gitaly_timeout_fast,
+            :gitaly_timeout_default,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -286,7 +291,9 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_default: 60
     }
   end
 

@@ -30,11 +30,6 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
-    # The default timeout on all Gitaly calls
-    DEFAULT_TIMEOUT = Sidekiq.server? ? 0.seconds : 50.seconds
-    FAST_TIMEOUT = 10.seconds
-    MEDIUM_TIMEOUT = 30.seconds
-
     MUTEX = Mutex.new
     private_constant :MUTEX
 
@@ -93,7 +88,7 @@ module Gitlab
     #   kwargs.merge(deadline: Time.now + 10)
     # end
     #
-    def self.call(storage, service, rpc, request, timeout: DEFAULT_TIMEOUT)
+    def self.call(storage, service, rpc, request, timeout: nil)
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       enforce_gitaly_request_limits(:call)
 
@@ -118,7 +113,10 @@ module Gitlab
 
       result = { metadata: metadata }
 
-      return result unless !timeout.nil? && timeout > 0
+      # nil timeout indicates that we should use the default
+      timeout = default_timeout if timeout.nil?
+
+      return result unless timeout > 0
 
       # Do not use `Time.now` for deadline calculation, since it
       # will be affected by Timecop in some tests, but grpc's c-core
@@ -296,6 +294,27 @@ module Gitlab
 
     def self.encode_repeated(a)
       Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
+    end
+
+    # The default timeout on all Gitaly calls
+    def self.default_timeout
+      return 0 if Sidekiq.server?
+
+      Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default
+    end
+
+    def self.fast_timeout
+      gitaly_timeout_fast = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_fast
+
+      [gitaly_timeout_fast, Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default].min
+    end
+
+    # Medium timeout is enforced in Sidekiq
+    # it's the lowest of thrice the fast timeout or the default timeout
+    def self.medium_timeout
+      gitaly_timeout_medium = Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_fast * 3
+
+      [gitaly_timeout_medium, Gitlab::CurrentSettings.current_application_settings.gitaly_timeout_default].min
     end
 
     # Count a stack. Used for n+1 detection

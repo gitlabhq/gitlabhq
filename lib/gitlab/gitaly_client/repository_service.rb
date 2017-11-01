@@ -10,7 +10,7 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient::FAST_TIMEOUT)
+        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient.fast_timeout)
 
         response.exists
       end
@@ -64,7 +64,7 @@ module Gitlab
 
       def has_local_branches?
         request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient::FAST_TIMEOUT)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient.fast_timeout)
 
         response.value
       end
