@@ -33,7 +33,7 @@
     <template v-if="!isCollapsed">
       <td
         class="hidden-sm hidden-xs">
-        <div class="animation-container">
+        <div class="animation-container animation-container-small">
           <div
             v-for="n in 6"
             :key="n"

@@ -10,7 +10,7 @@ import {
 } from '../utils';
 
 export const getTreeData = (
-  { commit, state },
+  { commit, state, dispatch },
   { endpoint = state.endpoints.rootEndpoint, tree = state } = {},
 ) => {
   commit(types.TOGGLE_LOADING, tree);
@@ -30,7 +30,9 @@ export const getTreeData = (
 
       commit(types.SET_DIRECTORY_DATA, { data, tree });
       commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
+      commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
       commit(types.TOGGLE_LOADING, tree);
+      dispatch('getLastCommitData', tree);
 
       pushState(endpoint);
     })
@@ -107,4 +109,29 @@ export const createTempTree = ({ state, commit, dispatch }, name) => {
       name: '.gitkeep',
     });
   }
+};
+
+export const getLastCommitData = ({ state, commit, dispatch }, tree = state) => {
+  if (tree.lastCommitPath === '') return;
+
+  service.getTreeLastCommit(tree.lastCommitPath)
+    .then((res) => {
+      const lastCommitPath = normalizeHeaders(res.headers)['LOG-URL'];
+
+      commit(types.SET_LAST_COMMIT_URL, { tree, url: lastCommitPath });
+
+      return res.json();
+    })
+    .then((data) => {
+      data.forEach((lastCommit) => {
+        const entry = findEntry(tree, lastCommit.type, lastCommit.file_name);
+
+        if (entry) {
+          commit(types.SET_LAST_COMMIT_DATA, { entry, lastCommit });
+        }
+      });
+
+      dispatch('getLastCommitData', tree);
+    })
+    .catch(() => flash('Error fetching log data.'));
 };

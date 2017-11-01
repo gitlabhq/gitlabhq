@@ -48,6 +48,13 @@ export default {
       previousUrl,
     });
   },
+  [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
+    Object.assign(entry.lastCommit, {
+      url: `${state.project.url}/commit/${lastCommit.commit.id}`,
+      message: lastCommit.commit.message,
+      updatedAt: lastCommit.commit.authored_date,
+    });
+  },
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,

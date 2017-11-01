@@ -16,6 +16,9 @@
       ...mapGetters([
         'isCollapsed',
       ]),
+      isSubmodule() {
+        return this.file.type === 'submodule';
+      },
       fileIcon() {
         return {
           'fa-spinner fa-spin': this.file.loading,
@@ -31,6 +34,9 @@
       shortId() {
         return this.file.id.substr(0, 8);
       },
+      submoduleColSpan() {
+        return !this.isCollapsed && this.isSubmodule ? 3 : undefined;
+      },
     },
     methods: {
       ...mapActions([
@@ -44,7 +50,7 @@
   <tr
     class="file"
     @click.prevent="clickedTreeRow(file)">
-    <td>
+    <td :colspan="submoduleColSpan">
       <i
         class="fa fa-fw file-icon"
         :class="fileIcon"
@@ -58,7 +64,7 @@
       >
         {{ file.name }}
       </a>
-      <template v-if="file.type === 'submodule' && file.id">
+      <template v-if="isSubmodule && file.id">
         @
         <span class="commit-sha">
           <a
@@ -71,15 +77,27 @@
       </template>
     </td>
 
-    <template v-if="!isCollapsed">
+    <template v-if="!isCollapsed && !isSubmodule">
       <td class="hidden-sm hidden-xs">
         <a
+          v-if="file.lastCommit.message"
           @click.stop
           :href="file.lastCommit.url"
           class="commit-message"
         >
           {{ file.lastCommit.message }}
         </a>
+        <div
+          v-else
+          class="animation-container animation-container-small"
+        >
+          <div
+            v-for="n in 6"
+            :key="n"
+            :class="'skeleton-line-' + n"
+          >
+          </div>
+        </div>
       </td>
 
       <td class="commit-update hidden-xs text-right">
@@ -89,6 +107,17 @@
         >
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>
+        <div
+          v-else
+          class="animation-container animation-container-small animation-container-right"
+        >
+          <div
+            v-for="n in 6"
+            :key="n"
+            :class="'skeleton-line-' + n"
+          >
+          </div>
+        </div>
       </td>
     </template>
   </tr>

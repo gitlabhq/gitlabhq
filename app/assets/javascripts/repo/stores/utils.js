@@ -12,7 +12,12 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
-  lastCommit: {},
+  lastCommitPath: '',
+  lastCommit: {
+    url: '',
+    message: '',
+    updatedAt: '',
+  },
   tree_url: '',
   blamePath: '',
   commitsPath: '',
@@ -27,14 +32,13 @@ export const dataStructure = () => ({
   base64: false,
 });
 
-export const decorateData = (entity, projectUrl = '') => {
+export const decorateData = (entity) => {
   const {
     id,
     type,
     url,
     name,
     icon,
-    last_commit,
     tree_url,
     path,
     renderError,
@@ -66,12 +70,6 @@ export const decorateData = (entity, projectUrl = '') => {
     renderError,
     content,
     base64,
-    // eslint-disable-next-line camelcase
-    lastCommit: last_commit ? {
-      url: `${projectUrl}/commit/${last_commit.id}`,
-      message: last_commit.message,
-      updatedAt: last_commit.committed_date,
-    } : {},
   };
 };
 
