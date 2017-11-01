@@ -17,6 +17,7 @@ describe('RepoEditor', () => {
     f.active = true;
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
+    vm.$store.getters.activeFile.html = 'testing';
     vm.monaco = true;
 
     vm.$mount();
@@ -31,18 +32,25 @@ describe('RepoEditor', () => {
   it('renders an ide container', (done) => {
     Vue.nextTick(() => {
       expect(vm.shouldHideEditor).toBeFalsy();
+      expect(vm.$el.textContent.trim()).toBe('');
+
       done();
     });
   });
 
   describe('when open file is binary and not raw', () => {
-    it('does not render the IDE', (done) => {
+    beforeEach((done) => {
       vm.$store.getters.activeFile.binary = true;
 
-      Vue.nextTick(() => {
-        expect(vm.shouldHideEditor).toBeTruthy();
-        done();
-      });
+      Vue.nextTick(done);
+    });
+
+    it('does not render the IDE', () => {
+      expect(vm.shouldHideEditor).toBeTruthy();
+    });
+
+    it('shows activeFile html', () => {
+      expect(vm.$el.textContent.trim()).toBe('testing');
     });
   });
 });
