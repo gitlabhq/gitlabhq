@@ -149,7 +149,8 @@ describe Projects::UpdateService, '#execute' do
   end
 
   context 'when renaming a project' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+    let(:repository_storage) { 'default' }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
     context 'with legacy storage' do
       before do
