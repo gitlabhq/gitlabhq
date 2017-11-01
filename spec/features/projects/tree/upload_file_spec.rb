@@ -30,7 +30,7 @@ feature 'Multi-file editor upload file', :js do
     find('.add-to-tree').click
 
     expect(page).to have_selector('.repo-tab', text: 'doc_sample.txt')
-    expect(page).to have_content(File.open(txt_file, &:readline))
+    expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline))
   end
 
   it 'uploads image file' do
