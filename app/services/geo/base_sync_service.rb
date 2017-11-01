@@ -15,6 +15,8 @@ module Geo
 
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'geo_sync_service'.freeze
+    RETRY_BEFORE_REDOWNLOAD = 5
+    RETRY_LIMIT = 8
 
     def initialize(project)
       @project = project
@@ -23,7 +25,18 @@ module Geo
     def execute
       try_obtain_lease do
         log_info("Started #{type} sync")
-        sync_repository
+
+        if should_be_retried?
+          sync_repository
+        elsif should_be_redownloaded?
+          sync_repository(true)
+        else
+          # Clean up the state of sync to start a new cycle
+          registry.delete
+          log_info("Clean up #{type} sync status")
+          return
+        end
+
         log_info("Finished #{type} sync")
       end
     end
@@ -47,6 +60,22 @@ module Geo
     end
 
     private
+
+    def retry_count
+      registry.public_send("#{type}_retry_count") || 0
+    end
+
+    def should_be_retried?
+      retry_count <= RETRY_BEFORE_REDOWNLOAD
+    end
+
+    def should_be_redownloaded?
+      (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
+    end
+
+    def delay(retry_count = 0)
+      (retry_count ** 4) + 15 + (rand(30) * (retry_count + 1))
+    end
 
     def sync_repository
       raise NotImplementedError, 'This class should implement sync_repository method'
@@ -101,11 +130,17 @@ module Geo
 
       attrs = {}
 
-      attrs["last_#{type}_synced_at"] = started_at if started_at
+      if started_at
+        attrs["last_#{type}_synced_at"] = started_at
+        attrs["#{type}_retry_count"] = retry_count + 1
+        attrs["#{type}_retry_at"] = Time.now + delay(retry_count).seconds
+      end
 
       if finished_at
         attrs["last_#{type}_successful_sync_at"] = finished_at
         attrs["resync_#{type}"] = false
+        attrs["#{type}_retry_count"] = nil
+        attrs["#{type}_retry_at"] = nil
       end
 
       registry.update!(attrs)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009162209) do
+ActiveRecord::Schema.define(version: 20171101105200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 20171009162209) do
     t.string "sha256"
     t.datetime "created_at", null: false
     t.boolean "success", default: false, null: false
+    t.integer "retry_count"
+    t.datetime "retry_at"
   end
 
   add_index "file_registry", ["file_type", "file_id"], name: "index_file_registry_on_file_type_and_file_id", unique: true, using: :btree
@@ -41,6 +43,10 @@ ActiveRecord::Schema.define(version: 20171009162209) do
     t.boolean "resync_wiki", default: true, null: false
     t.datetime "last_wiki_synced_at"
     t.datetime "last_wiki_successful_sync_at"
+    t.integer "repository_retry_count"
+    t.integer "wiki_retry_count"
+    t.datetime "repository_retry_at"
+    t.datetime "wiki_retry_at"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
