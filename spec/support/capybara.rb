@@ -45,12 +45,12 @@ RSpec.configure do |config|
       host: Capybara.current_session.server.host,
       port: Capybara.current_session.server.port,
       protocol: 'http')
+
+    # reset window size between tests
+    Capybara.current_session.current_window.resize_to(1240, 1400)
   end
 
   config.after(:example, :js) do |example|
-    # reset window size between tests
-    Capybara.current_session.current_window.resize_to(1240, 1400);
-
     # prevent localstorage from introducing side effects based on test order
     execute_script("localStorage.clear();")
 
