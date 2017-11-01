@@ -241,10 +241,8 @@ feature 'Diff notes resolve', :js do
       end
 
       it 'resolves discussion' do
-        page.all('.note').each do |note|
-          note.all('.line-resolve-btn').each do |button|
-            button.click
-          end
+        page.all('.note .line-resolve-btn').each do |button|
+          button.click
         end
 
         expect(page).to have_content('Resolved by')
