@@ -9,6 +9,6 @@ class RemoveRefFetchedFromMergeRequests < ActiveRecord::Migration
   #
   # See https://gitlab.com/gitlab-org/gitlab-ce/issues/36061
   def change
-    remove_column :merge_requests, :ref_fetched
+    remove_column :merge_requests, :ref_fetched, :boolean
   end
 end
