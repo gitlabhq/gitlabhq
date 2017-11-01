@@ -78,7 +78,7 @@ describe Projects::ClustersController do
 
     subject do
       get :new_gcp, namespace_id: project.namespace,
-                project_id: project
+                    project_id: project
     end
 
     context 'when logged' do
