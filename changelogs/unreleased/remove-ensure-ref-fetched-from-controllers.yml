@@ -1,0 +1,5 @@
+---
+title: Removed merge requests fetching their refs on every action.
+merge_request:
+author:
+type: removed
