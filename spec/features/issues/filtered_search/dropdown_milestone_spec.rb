@@ -50,9 +50,11 @@ describe 'Dropdown milestone', :js do
     end
 
     it 'should show loading indicator when opened' do
+      Gitlab::Testing::RequestBlockerMiddleware.slow_requests!
       filtered_search.set('milestone:')
 
       expect(page).to have_css('#js-dropdown-milestone .filter-dropdown-loading', visible: true)
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
     end
 
     it 'should hide loading indicator when loaded' do

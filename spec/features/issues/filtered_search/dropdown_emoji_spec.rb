@@ -70,9 +70,11 @@ describe 'Dropdown emoji', :js do
       end
 
       it 'should show loading indicator when opened' do
+        Gitlab::Testing::RequestBlockerMiddleware.slow_requests!
         filtered_search.set('my-reaction:')
 
         expect(page).to have_css('#js-dropdown-my-reaction .filter-dropdown-loading', visible: true)
+        Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
       end
 
       it 'should hide loading indicator when loaded' do
