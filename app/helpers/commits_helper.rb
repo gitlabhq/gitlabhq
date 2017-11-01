@@ -60,7 +60,7 @@ module CommitsHelper
     branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
   end
 
-  # returns a link formatted as a commit branch link
+  # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     link_to(url, class: 'label label-gray ref-name') do
       icon('code-fork') + " #{text}"
@@ -74,10 +74,22 @@ module CommitsHelper
     end.join(' ').html_safe
   end
 
-  # returns a link formatted as a commit tag link
+  # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     link_to(url, class: 'label label-gray ref-name') do
       icon('tag') + " #{text}"
+    end
+  end
+
+  def branches_unavailable_message
+    link_to('#', class: 'label label-gray ref-name', title: 'Project has too many branches to search') do
+      icon('tag') + ' Branches unavailable'
+    end
+  end
+
+  def tags_unavailable_message
+    link_to('#', class: 'label label-gray ref-name', title: 'Project has too many tags to search') do
+      icon('tag') + ' Tags unavailable'
     end
   end
 
