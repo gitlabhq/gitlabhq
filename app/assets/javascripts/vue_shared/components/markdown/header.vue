@@ -16,12 +16,18 @@
       toolbarButton,
     },
     methods: {
+      isMarkdownForm(form) {
+        return form && !form.find('.js-vue-markdown-field').length;
+      },
+
+      isActiveTarget(target) {
+        return target.closest('li').classList.contains('active');
+      },
+
       toggleMarkdownPreview(e, form) {
-        if (form && !form.find('.js-vue-markdown-field').length) {
-          return;
-        } else if (e.target.blur) {
-          e.target.blur();
-        }
+        if (e.target.blur) e.target.blur();
+
+        if (this.isMarkdownForm(form) || this.isActiveTarget(e.target)) return;
 
         this.$emit('toggle-markdown');
       },

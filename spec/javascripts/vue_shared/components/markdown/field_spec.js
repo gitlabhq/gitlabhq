@@ -39,6 +39,7 @@ describe('Markdown field component', () => {
 
     describe('markdown preview', () => {
       let previewLink;
+      let writeLink;
 
       beforeEach(() => {
         spyOn(Vue.http, 'post').and.callFake(() => new Promise((resolve) => {
@@ -52,6 +53,7 @@ describe('Markdown field component', () => {
         }));
 
         previewLink = vm.$el.querySelector('.nav-links li:nth-child(2) a');
+        writeLink = vm.$el.querySelector('.nav-links li:nth-child(1) a');
       });
 
       it('sets preview link as active', (done) => {
@@ -102,6 +104,40 @@ describe('Markdown field component', () => {
 
           done();
         }, 0);
+      });
+
+      function assertLinks(isWrite) {
+        expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
+        expect(previewLink.parentNode.classList.contains('active')).toEqual(!isWrite);
+        expect(vm.$el.querySelector('.md-preview').style.display).toEqual(isWrite ? 'none' : '');
+      }
+
+      it('clicking already active write or preview link does nothing', (done) => {
+        writeLink.click();
+
+        setTimeout(() => {
+          assertLinks(true);
+
+          writeLink.click();
+
+          setTimeout(() => {
+            assertLinks(true);
+
+            previewLink.click();
+
+            setTimeout(() => {
+              assertLinks(false);
+
+              previewLink.click();
+
+              setTimeout(() => {
+                assertLinks(false);
+
+                done();
+              });
+            });
+          });
+        });
       });
     });
 
