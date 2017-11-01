@@ -12,7 +12,6 @@ import svg4everybody from 'svg4everybody';
 // libraries with import side-effects
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
-import 'vendor/fuzzaldrin-plus';
 
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
