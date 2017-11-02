@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::BareRepositoryImporter, repository: true do
-  subject(:importer) { described_class.new('default', project_path) }
+  subject(:importer) { described_class.new(project_path) }
 
   let!(:admin) { create(:admin) }
 
@@ -15,11 +15,11 @@ describe Gitlab::BareRepositoryImporter, repository: true do
         FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project_path}.git"))
         fake_importer = double
 
-        expect(described_class).to receive(:new).with('default', project_path)
+        expect(described_class).to receive(:new).with(project_path)
                                      .and_return(fake_importer)
         expect(fake_importer).to receive(:create_project_if_needed)
 
-        described_class.execute
+        described_class.execute(TestEnv.repos_path)
       end
 
       it 'skips wiki repos' do
@@ -28,7 +28,7 @@ describe Gitlab::BareRepositoryImporter, repository: true do
         expect(described_class).to receive(:log).with(' * Skipping wiki repo')
         expect(described_class).not_to receive(:new)
 
-        described_class.execute
+        described_class.execute(TestEnv.repos_path)
       end
     end
 
