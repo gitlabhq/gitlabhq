@@ -91,7 +91,7 @@
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
             = link_to project_job_path(@project, build) do
-              = icon('arrow-right')
+              = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)
               %span
@@ -100,4 +100,5 @@
                 - else
                   = build.id
               - if build.retried?
-                %i.fa.fa-refresh.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+                %span.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
+                  = sprite_icon('retry', size:16, css_class: 'icon-retry')

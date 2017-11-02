@@ -18,7 +18,7 @@ feature 'Mini Pipeline Graph in Commit View', :js do
 
       expect(page).to have_selector('.mr-widget-pipeline-graph')
 
-      first('.mini-pipeline-graph-dropdown-toggle').click
+      first('.mini-pipeline-graph-dropdown-toggle').trigger('click')
 
       wait_for_requests
 
