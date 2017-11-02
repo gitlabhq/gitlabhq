@@ -249,7 +249,7 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, addressable_url: true, if: :external_import?
+  validates :import_url, addressable_url: true, if: [:external_import?, :import_url_changed?]
   validates :import_url, importable_url: true, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
@@ -560,6 +560,8 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
+    return mark_import_as_failed('Import URL is invalid.') unless valid_import_url?
+
     job_id =
       if forked?
         RepositoryForkWorker.perform_async(id,

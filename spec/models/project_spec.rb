@@ -188,10 +188,18 @@ describe Project do
       end
     end
 
-    it 'does not allow an invalid URI as import_url' do
-      project2 = build(:project, import_url: 'invalid://')
+    context 'with invalid import URI' do
+      let(:project2) { build(:project, import_url: 'invalid://') }
 
-      expect(project2).not_to be_valid
+      it 'does not allow an invalid URI as import_url' do
+        expect(project2).not_to be_valid
+      end
+
+      it 'is valid if invalid URI was already set and did not change during save' do
+        project2.save!(validate: false)
+
+        expect(project2).to be_valid
+      end
     end
 
     it 'does allow a valid URI as import_url' do
@@ -1733,6 +1741,26 @@ describe Project do
 
   describe '#add_import_job' do
     let(:import_jid) { '123' }
+
+    context 'with invalid import URI' do
+      let(:project2) { build(:project, import_url: 'invalid://') }
+
+      before do
+        project2.save!(validate: false)
+      end
+
+      it 'does not schedule a RepositoryImportWorker job' do
+        expect(RepositoryImportWorker).not_to receive(:perform_async)
+
+        project2.add_import_job
+      end
+
+      it 'sets import error' do
+        project2.add_import_job
+
+        expect(project2.reload.import_error).to eq('Import URL is invalid.')
+      end
+    end
 
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
