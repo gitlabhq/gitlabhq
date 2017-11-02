@@ -1,13 +1,12 @@
 /* eslint-disable no-new */
 import IssuableContext from '~/issuable_context';
-/* global LabelsSelect */
+import LabelsSelect from '~/labels_select';
 
 import '~/gl_dropdown';
 import 'select2';
 import '~/api';
 import '~/create_label';
 import '~/users_select';
-import '~/labels_select';
 
 (() => {
   let saveLabelCount = 0;

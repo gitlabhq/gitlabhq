@@ -1,6 +1,5 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
 /* global MilestoneSelect */
-/* global LabelsSelect */
 /* global Sidebar */
 
 import Vue from 'vue';
@@ -11,6 +10,7 @@ import Assignees from '../../sidebar/components/assignees/assignees';
 import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
 import IssuableContext from '../../issuable_context';
+import LabelsSelect from '../../labels_select';
 
 const Store = gl.issueBoards.BoardsStore;
 

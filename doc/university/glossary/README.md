@@ -1,4 +1,8 @@
-## What is the Glossary
+---
+comments: false
+---
+
+# What is the Glossary
 
 This contains a simplified list and definitions of some of the terms that you will encounter in your day to day activities when working with GitLab.
 Please add any terms that you discover that you think would be useful for others.

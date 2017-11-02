@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab University
 
 GitLab University is the best place to learn about **Version Control with Git and GitLab**.

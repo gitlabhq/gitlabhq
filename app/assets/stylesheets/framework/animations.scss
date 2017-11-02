@@ -23,9 +23,14 @@
     @include webkit-prefix(animation-duration, 2s);
   }
 
-  &.spin {
+  &.spin-cw {
     transform-origin: center;
     animation: spin 4s linear infinite;
+  }
+
+  &.spin-ccw {
+    transform-origin: center;
+    animation: spin 4s linear infinite reverse;
   }
 
   &.flipOutX,
