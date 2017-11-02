@@ -7,9 +7,10 @@ module Gitlab
         Gitlab::Geo::Logger.info(data)
       end
 
-      def log_error(message, error)
+      def log_error(message, error = nil, details = {})
         data = base_log_data(message)
-        data[:error] = error.to_s
+        data[:error] = error.to_s if error
+        data.merge!(details) if details
         Gitlab::Geo::Logger.error(data)
       end
 

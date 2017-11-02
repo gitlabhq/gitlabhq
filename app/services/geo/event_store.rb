@@ -17,6 +17,8 @@ module Geo
   # The `build_event` method is supposed to return an instance of the event
   # that will be logged.
   class EventStore
+    include ::Gitlab::Geo::ProjectLogHelpers
+
     class << self
       attr_accessor :event_type
     end
@@ -42,21 +44,6 @@ module Geo
     def build_event
       raise NotImplementedError,
         "#{self.class} does not implement #{__method__}"
-    end
-
-    def log_error(message, error)
-      Gitlab::Geo::Logger.error({
-        class: self.class.name,
-        message: message,
-        error: error
-      }.merge(log_params))
-    end
-
-    def log_params
-      {
-        project_id: project.id,
-        project_path: project.full_path
-      }
     end
   end
 end

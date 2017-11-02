@@ -3,16 +3,12 @@ module Geo
     include Sidekiq::Worker
     include CronjobQueue
     include ExclusiveLeaseGuard
+    include ::Gitlab::Geo::LogHelpers
 
     LEASE_TIMEOUT = 60.minutes
 
     def lease_timeout
       LEASE_TIMEOUT
-    end
-
-    def log_error(message, extra_args = {})
-      args = { class: self.class.name, message: message }.merge(extra_args)
-      Gitlab::Geo::Logger.error(args)
     end
 
     def perform
