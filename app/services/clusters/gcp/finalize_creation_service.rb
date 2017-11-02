@@ -9,11 +9,9 @@ module Clusters
         configure_provider
         configure_kubernetes
 
-        provider.make_created!
+        cluster.save!
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
         provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
-      rescue KubeException => e
-        provider.make_errored!("Failed to request to Kubernetes; #{e.message}")
       rescue ActiveRecord::RecordInvalid => e
         provider.make_errored!("Failed to configure GKE Cluster: #{e.message}")
       end
@@ -22,6 +20,7 @@ module Clusters
 
       def configure_provider
         provider.endpoint = gke_cluster.endpoint
+        provider.status_event = :make_created
       end
 
       def configure_kubernetes
@@ -39,7 +38,7 @@ module Clusters
           'https://' + gke_cluster.endpoint,
           Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           gke_cluster.master_auth.username,
-          gke_cluster.master_auth.password)
+          gke_cluster.master_auth.password).execute
       end
 
       def gke_cluster

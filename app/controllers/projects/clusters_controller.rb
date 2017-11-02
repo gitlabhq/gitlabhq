@@ -94,9 +94,6 @@ class Projects::ClustersController < Projects::ApplicationController
       :name,
       :platform_type,
       :provider_type,
-      platform_kubernetes_attributes: [
-        :namespace
-      ],
       provider_gcp_attributes: [
         :gcp_project_id,
         :zone,
@@ -106,11 +103,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update_params
-    params.require(:cluster).permit(
-      :enabled,
-      platform_kubernetes_attributes: [
-        :namespace
-      ])
+    params.require(:cluster).permit(:enabled)
   end
 
   def authorize_google_api

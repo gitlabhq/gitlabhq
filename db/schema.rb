@@ -464,8 +464,8 @@ ActiveRecord::Schema.define(version: 20171017145932) do
 
   create_table "cluster_platforms_kubernetes", force: :cascade do |t|
     t.integer "cluster_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "api_url"
     t.text "ca_cert"
     t.string "namespace"
@@ -492,8 +492,8 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.integer "cluster_id", null: false
     t.integer "status"
     t.integer "num_nodes", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
     t.string "gcp_project_id", null: false
     t.string "zone", null: false
@@ -510,8 +510,8 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.integer "user_id", null: false
     t.integer "provider_type"
     t.integer "platform_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
   end
