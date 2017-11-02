@@ -2,13 +2,12 @@
 /* global boardObj */
 /* global BoardService */
 /* global mockBoardService */
-/* global IssuableContext */
 
 import Vue from 'vue';
 import AssigneeSelect from '~/boards/components/assignee_select.vue';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import '~/issuable_context';
+import IssuableContext from '~/issuable_context';
 
 let vm;
 

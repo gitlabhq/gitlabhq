@@ -1,8 +1,6 @@
-/* global IssuableContext */
-
 import Vue from 'vue';
 import WeightSelect from '~/boards/components/weight_select.vue';
-import '~/issuable_context';
+import IssuableContext from '~/issuable_context';
 
 let vm;
 let board;

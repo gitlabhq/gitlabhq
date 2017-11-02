@@ -2,11 +2,10 @@
 /* global boardObj */
 /* global BoardService */
 /* global mockBoardService */
-/* global IssuableContext */
 
 import Vue from 'vue';
 import MilestoneSelect from '~/boards/components/milestone_select.vue';
-import '~/issuable_context';
+import IssuableContext from '~/issuable_context';
 
 let vm;
 
