@@ -1,4 +1,5 @@
 - board = local_assigns.fetch(:board, nil)
+- group = local_assigns.fetch(:group, false)
 - @no_breadcrumb_container = true
 - @no_container = true
 - @content_class = "issue-boards-content js-focus-mode-board"
@@ -30,7 +31,7 @@
       ":root-path" => "rootPath",
       ":board-id" => "boardId",
       ":key" => "_uid" }
-  = render "shared/boards/components/sidebar"
+  = render "shared/boards/components/sidebar", group: group
   - if @project
     %board-add-issues-modal{ "new-issue-path" => new_project_issue_path(@project),
       "milestone-path" => milestones_filter_dropdown_path,
