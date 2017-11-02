@@ -25,7 +25,7 @@ module Geo
         end
 
         cursor_last_event_ids = Gitlab::Geo.secondary_nodes.map do |node|
-          node_status_service.call(node).cursor_last_event_id
+          Geo::NodeStatusService.new.call(node).cursor_last_event_id
         end
 
         # Abort when any of the nodes could not be contacted
@@ -33,12 +33,6 @@ module Geo
 
         Geo::EventLog.delete_all(['id < ?', cursor_last_event_ids.min])
       end
-    end
-
-    private
-
-    def node_status_service
-      @node_status_service ||= Geo::NodeStatusService.new
     end
   end
 end

@@ -54,25 +54,32 @@ describe Geo::PruneEventLogWorker, :geo do
         let(:healthy_status) { build(:geo_node_status, :healthy) }
         let(:unhealthy_status) { build(:geo_node_status, :unhealthy) }
 
+        let(:node_status_service) do
+          service = double
+          allow(Geo::NodeStatusService).to receive(:new).and_return(service)
+          service
+        end
+
         it 'contacts all secondary nodes for their status' do
-          expect_any_instance_of(Geo::NodeStatusService).to receive(:call).twice { healthy_status }
+          expect(node_status_service).to receive(:call).twice { healthy_status }
           expect(Geo::EventLog).to receive(:delete_all)
 
           worker.perform
         end
 
         it 'aborts when there are unhealthy nodes' do
-          expect_any_instance_of(Geo::NodeStatusService).to receive(:call) { healthy_status }
-          expect_any_instance_of(Geo::NodeStatusService).to receive(:call) { unhealthy_status }
+          expect(node_status_service).to receive(:call).twice.and_return(healthy_status, unhealthy_status)
           expect(Geo::EventLog).not_to receive(:delete_all)
 
           worker.perform
         end
 
         it 'takes the integer-minimum value of all nodes' do
-          allow_any_instance_of(Geo::NodeStatusService).to receive(:call) { build(:geo_node_status, :healthy, cursor_last_event_id: 3) }
-          allow_any_instance_of(Geo::NodeStatusService).to receive(:call) { build(:geo_node_status, :healthy, cursor_last_event_id: 10) }
-          expect(Geo::EventLog).not_to receive(:delete_all).with(['id < ?', 3])
+          allow(node_status_service).to receive(:call).twice.and_return(
+            build(:geo_node_status, :healthy, cursor_last_event_id: 3),
+            build(:geo_node_status, :healthy, cursor_last_event_id: 10)
+          )
+          expect(Geo::EventLog).to receive(:delete_all).with(['id < ?', 3])
 
           worker.perform
         end
