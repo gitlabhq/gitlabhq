@@ -72,7 +72,7 @@ To resume the test run, press any key.
 
 For example:
 
-```ruby
+```
 $ bin/rspec spec/features/auto_deploy_spec.rb:34
 Running via Spring preloader in process 8999
 Run options: include {:locations=>{"./spec/features/auto_deploy_spec.rb"=>[34]}}

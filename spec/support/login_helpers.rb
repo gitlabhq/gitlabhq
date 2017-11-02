@@ -11,6 +11,13 @@ module LoginHelpers
     @current_user = resource
   end
 
+  # Overriding Devise::Test::IntegrationHelpers#sign_out to clear @current_user.
+  def sign_out(resource_or_scope)
+    super
+
+    @current_user = nil
+  end
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -49,6 +56,7 @@ module LoginHelpers
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
+    @current_user = nil
 
     expect(page).to have_button('Sign in')
   end
