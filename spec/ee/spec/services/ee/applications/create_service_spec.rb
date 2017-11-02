@@ -7,7 +7,9 @@ describe ::Applications::CreateService do
 
   subject { described_class.new(user, params) }
 
-  it 'creates an application' do
-    expect { subject.execute(request) }.to change { Doorkeeper::Application.count }.by(1)
+  it 'creates an audit log' do
+    stub_licensed_features(extended_audit_events: true)
+
+    expect { subject.execute(request) }.to change { SecurityEvent.count }.by(1)
   end
 end
