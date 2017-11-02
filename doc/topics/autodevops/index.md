@@ -517,7 +517,7 @@ Feature.get(:auto_devops_banner_disabled).enable
 Or through the HTTP API with an admin access token:
 
 ```sh
-curl --data "value=true" --header "PRIVATE-TOKEN: private_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
 ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115
