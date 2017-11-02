@@ -4,18 +4,14 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:create]
 
-  def new
-  end
-
   def create
     return render_404 if application
 
-    new_application = application_class.create(cluster: cluster)
-
     respond_to do |format|
       format.json do
-        if new_application.persisted?
-          head :ok
+        # TODO: Do that via Service
+        if application_class.create(cluster: cluster).persisted?
+          head :no_data
         else
           head :bad_request
         end
@@ -26,11 +22,11 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   private
 
   def cluster
-    @cluster ||= project.clusters.find_by(cluster_id: params[:cluster_id]).present(current_user: current_user)
+    @cluster ||= project.clusters.find(params[:id]) || render_404
   end
 
   def application_class
-    Clusters::Cluster::Applications.find(params[:application])
+    Clusters::Cluster::APPLICATIONS[params[:application]] || render_404
   end
 
   def application

@@ -191,8 +191,8 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           get :status, format: :json
 
-          scope '*application' do
-            resource :applications, only: [:create]
+          scope :applications do
+            get '/*application', to: 'clusters/applications#create'
           end
         end
       end

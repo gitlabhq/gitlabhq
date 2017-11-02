@@ -7,7 +7,7 @@ module Clusters
 
       include ::Clusters::Concerns::AppStatus
 
-      belongs_to :cluser, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
+      belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
 
       default_value_for :version, Gitlab::Clusters::Helm::HELM_VERSION
 
