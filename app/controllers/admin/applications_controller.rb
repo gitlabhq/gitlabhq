@@ -19,7 +19,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
   end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params).execute(request))
+    @application = Applications::CreateService.new(current_user, application_params).execute(request)
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
