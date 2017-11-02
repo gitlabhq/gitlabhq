@@ -16,6 +16,7 @@ module Geo
 
       try_obtain_lease do
         if Gitlab::Geo.secondary_nodes.empty?
+          log_info('No secondary nodes, delete all Geo Event Log entries')
           Geo::EventLog.delete_all
           return
         end
@@ -24,9 +25,12 @@ module Geo
           Geo::NodeStatusService.new.call(node).cursor_last_event_id
         end
 
-        # Abort when any of the nodes could not be contacted
-        return if cursor_last_event_ids.include?(nil)
+        if cursor_last_event_ids.include?(nil)
+          log_info('Could not get status of all nodes, not deleting any entries from Geo Event Log', unhealthy_node_count: cursor_last_event_ids.count(nil))
+          return
+        end
 
+        log_info('Delete Geo Event Log entries up to id', geo_event_log_id: cursor_last_event_ids.min)
         Geo::EventLog.delete_all(['id < ?', cursor_last_event_ids.min])
       end
     end

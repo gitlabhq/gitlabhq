@@ -43,6 +43,7 @@ describe Geo::PruneEventLogWorker, :geo do
         end
 
         it 'deletes everything from the Geo event log' do
+          expect(worker).to receive(:log_info).with('No secondary nodes, delete all Geo Event Log entries')
           expect(Geo::EventLog).to receive(:delete_all)
 
           worker.perform
@@ -62,6 +63,7 @@ describe Geo::PruneEventLogWorker, :geo do
 
         it 'contacts all secondary nodes for their status' do
           expect(node_status_service).to receive(:call).twice { healthy_status }
+          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', anything)
           expect(Geo::EventLog).to receive(:delete_all)
 
           worker.perform
@@ -69,6 +71,7 @@ describe Geo::PruneEventLogWorker, :geo do
 
         it 'aborts when there are unhealthy nodes' do
           expect(node_status_service).to receive(:call).twice.and_return(healthy_status, unhealthy_status)
+          expect(worker).to receive(:log_info).with('Could not get status of all nodes, not deleting any entries from Geo Event Log', unhealthy_node_count: 1)
           expect(Geo::EventLog).not_to receive(:delete_all)
 
           worker.perform
@@ -79,6 +82,7 @@ describe Geo::PruneEventLogWorker, :geo do
             build(:geo_node_status, :healthy, cursor_last_event_id: 3),
             build(:geo_node_status, :healthy, cursor_last_event_id: 10)
           )
+          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: 3)
           expect(Geo::EventLog).to receive(:delete_all).with(['id < ?', 3])
 
           worker.perform
