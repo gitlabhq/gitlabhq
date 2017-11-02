@@ -68,8 +68,8 @@
       pipelineTooltipText(pipeline) {
         return `${pipeline.project.name} - ${pipeline.details.status.label}`;
       },
-      getStatusIcon(icon) {
-        return `${icon}_borderless`;
+      getStatusIcon(iconName) {
+        return `${iconName}_borderless`;
       },
       triggerButtonClass(group) {
         return `ci-status-icon-${group}`;
